@@ -1,0 +1,18 @@
+{
+  "name": "Bower",
+  "version": "1.0.0",
+  "authors": [
+    ""
+  ],
+  "dependencies": {
+    "bootstrap": "~3.0.0",
+    "jquery": "~2.0.3",
+    "underscore": "~1.5.2",
+    "bxslider-4":"4.2.5",
+    "fancybox":"2.1.5",
+    "malihu-custom-scrollbar-plugin":"*",
+    "components-font-awesome":"*",
+    "html5shiv":"3.7.3"
+
+  }
+}

@@ -1,0 +1,5 @@
+install dependencies:
+     $ cd src && npm install
+
+   run the app:
+     $ DEBUG=src:* npm start
