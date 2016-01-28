@@ -1,33 +1,26 @@
 import React from 'react'
 import ReactDom from 'react-dom'
-import Router from 'react-router'
-import { browserHistory, DefaultRoute, Link, Route, RouteHandler} from 'react-router'
+import { Router , Route, browserHistory } from 'react-router'
 
 import Main from './pages/main';
-import SignUp from './pages/Signup/Signup';
+import Signup from './pages/signup/Signup';
+import Secretary from './pages/signup/Secretary';
+import DashBoard from './pages/dashboard/DashBoard';
 
-/*const rootRoute = {
-  component: 'div',
-  childRoutes: [ {
-    path: '/',
-    component: require('./pages/main')
-    childRoutes: [
-      //require('./pages/signup'),
-      ,
-    ]
-  } ]
-}*/
+
 let rootRoute =(
-	<Route name="app" path="/" handler={Main}>
-    	<Route name="signup" path="/signup" handler={SignUp}/>
-  	</Route>
+   <Route name="main" path="/" component={Main}>
+        <Route name="signup" path="/signup" component={Signup}/>
+        <Route name="choose-secretary" path="/choose-secretary" component={Secretary}/>
+        <Route name="dashboard" path="/dashboard" component={DashBoard}/>
+      </Route>
 );
-
-Router.run(rootRoute, function (Handler) {  
+ReactDom.render((
+	<Router  history={browserHistory}  routes={rootRoute}/>
+		 
 	
-  ReactDom.render(<Handler/>, document.getElementById('proglob-app-container'));
-});
-/*render(
-	<Router history={browserHistory} routes={rootRoute} />,
-	document.getElementById('proglob-app-container')
-);*/
+
+), document.getElementById('proglob-app-container'));
+
+
+

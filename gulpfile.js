@@ -6,7 +6,8 @@ var babelify = require('babelify');
 
 var dependencies = [
 	'react',
-  	'react-dom'
+  	'react-dom',
+  	'react-router'
 ];
 // keep a count of the times a task refires
 var scriptsCount = 0;
