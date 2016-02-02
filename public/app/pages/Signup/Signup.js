@@ -1,4 +1,5 @@
 import React from 'react'
+import InputField from '../../components/elements/InputField'
 
 class Signup extends React.Component {
 
@@ -10,34 +11,21 @@ class Signup extends React.Component {
                     <div className="col-xs-8 pgs-middle-sign-wrapper-inner">
                         <div className="row row-clr pgs-middle-sign-wrapper-inner-cover">
                         	<h2>Let’s create your account</h2>
-                            
                             <div className="row row-clr pgs-middle-sign-wrapper-inner-form">
                                 <form method="get" action="/choose-secretary">
                                     <div className="row">
-                                        <div className="col-xs-6">
-                                            <p>First Name</p>
-                                            <input type="text" placeholder="Soham" className="pgs-sign-inputs"/>
-                                        </div>
-                                        <div className="col-xs-6">
-                                            <p>Last Name</p>
-                                            <input type="text" placeholder="Khaitan" className="pgs-sign-inputs"/>
-                                        </div>
+
+                                        <InputField type="text" size="6" label="First Name" placeholder="Soham" classes="pgs-sign-inputs" />
+
+                                        <InputField type="text" size="6" label="Last Name" placeholder="Khaitan" classes="pgs-sign-inputs" />
+
                                     </div>
                                     <div className="row">
-                                        <div className="col-xs-12">
-                                            <p>Your email address</p>
-                                            <input type="email" placeholder="sohamkhaitan@gmail,com" className="pgs-sign-inputs"/>
-                                        </div>
+                                        <InputField type="email" size="12" label="Your email address" placeholder="sohamkhaitan@gmail.com" classes="pgs-sign-inputs" />
                                     </div>
                                     <div className="row">
-                                        <div className="col-xs-6">
-                                            <p>Password</p>
-                                            <input type="password" placeholder="••••••••••" className="pgs-sign-inputs"/>
-                                        </div>
-                                        <div className="col-xs-6">
-                                            <p>Confirm Password</p>
-                                            <input type="password" placeholder="••••••••••" className="pgs-sign-inputs"/>
-                                        </div>
+                                        <InputField type="password" size="6" label="Password" placeholder="••••••••••" classes="pgs-sign-inputs" />
+                                        <InputField type="password" size="6" label="Confirm Password" placeholder="••••••••••" classes="pgs-sign-inputs" />
                                     </div>
                                     <div className="row">
                                         <div className="col-xs-6">

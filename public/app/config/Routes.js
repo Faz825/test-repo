@@ -11,6 +11,7 @@ const Routes =(
 	 <Route name="main" path="/" component={Main}>
 		<Route name="signup" path="/signup" component={Signup}/>
 		<Route name="dashboard" path="/dashboard" component={DashBoard}/>
+
 	</Route>
 );
 
