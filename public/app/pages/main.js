@@ -3,7 +3,7 @@ import Header from '../components/header/Header'
 import Signup from '../pages/Signup/Signup';
 class Main extends React.Component {
   render() {
-    
+    console.log(logged_user);
     return (
       <div>	
       	<Header />

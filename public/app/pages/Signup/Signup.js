@@ -1,6 +1,10 @@
 import React from 'react'
 
 class Signup extends React.Component {
+    onSubmit(){
+        console.log("resdasd")
+    }
+
 
 	render(){
 
@@ -12,7 +16,9 @@ class Signup extends React.Component {
                         	<h2>Let’s create your account</h2>
                             
                             <div className="row row-clr pgs-middle-sign-wrapper-inner-form">
-                                <form method="get" action="/choose-secretary">
+                                <form action={this.props.submitTo} 
+                                    name="Signup" method={this.props.method} 
+                                    onSubmit={this.formSubmitHandler} noValidate="novalidate">
                                     <div className="row">
                                         <div className="col-xs-6">
                                             <p>First Name</p>
@@ -44,7 +50,7 @@ class Signup extends React.Component {
                                             <input type="reset" className="pgs-sign-submit-cancel" value="cancel"/>
                                         </div>
                                         <div className="col-xs-6">
-                                            <input type="submit" className="pgs-sign-submit" value="next"/>
+                                            <input type="button" className="pgs-sign-submit" value="next" onClick={this.onSubmit}/>
                                         </div>
                                     </div>
                                 </form>    
