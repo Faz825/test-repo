@@ -6,33 +6,40 @@ class Signup extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {formData: []};
-
-        this.fnameChangeHandler = this.fnameChangeHandler.bind(this)
-        this.lnameChangeHandler = this.lnameChangeHandler.bind(this)
+        this.state= {
+            formData:{},
+            signupURL:'/auth/doSignUp'
+        };
+        this.elementChangeHandler = this.elementChangeHandler.bind(this)
+        
     }
 
     validateForm(e){
         e.preventDefault();
-        console.log( this.state.formData);
-    }
 
-    fnameChangeHandler(data){
-        this.setState({
-            formData:
-                {'fname':data}
+        $.ajax({
+            url: this.state.signupURL,
+            method: "POST",
+            data: this.state.formData,
+            dataType: "JSON"
+        }).done(function( msg ) {
+            console.log( msg );
+        }).fail(function( jqXHR, textStatus ) {
+          alert( "Request failed: " + textStatus );
         });
-        console.log(data)
+
     }
 
-    lnameChangeHandler(data){
-        this.setState({
-            formData:
-                {'lname':data}
-        });
-        console.log(data)
-    }
+    elementChangeHandler(key,data){
+        
+        let _formData = this.state.formData;
+        _formData[key]=data;
+  
 
+        this.setState({formData:_formData});
+    
+    }
+    
     handleChange(e){
         
         console.log(  this.state.formData);
@@ -53,16 +60,16 @@ class Signup extends React.Component {
 
                                     <div className="row">
 
-                                        <InputField type="text" name="fName" size="6" label="First Name" placeholder="Soham" classes="pgs-sign-inputs" textChange={this.fnameChangeHandler} />
+                                        <InputField type="text" name="fName" size="6" label="First Name" placeholder="Soham" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
 
-                                        <InputField type="text" name="lName" size="6" label="Last Name" placeholder="Khaitan" classes="pgs-sign-inputs" textChange={this.lnameChangeHandler} />
+                                        <InputField type="text" name="lName" size="6" label="Last Name" placeholder="Khaitan" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
                                     </div>
                                     <div className="row">
-                                        <InputField type="email" name="email" size="12" label="Your email address" placeholder="sohamkhaitan@gmail.com" classes="pgs-sign-inputs" />
+                                        <InputField type="email" name="email" size="12" label="Your email address" placeholder="sohamkhaitan@gmail.com" classes="pgs-sign-inputs" textChange={this.elementChangeHandler}/>
                                     </div>
                                     <div className="row">
-                                        <InputField type="password" name="password" size="6" label="Password" placeholder="••••••••••" classes="pgs-sign-inputs" />
-                                        <InputField type="password" name="confPassword" size="6" label="Confirm Password" placeholder="••••••••••" classes="pgs-sign-inputs" />
+                                        <InputField type="password" name="password" size="6" label="Password" placeholder="••••••••••" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
+                                        <InputField type="password" name="confPassword" size="6" label="Confirm Password" placeholder="••••••••••" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
                                     </div>
                                     <div className="row">
 
