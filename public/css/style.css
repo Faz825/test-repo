@@ -77,7 +77,9 @@ body {
 
 .pgs-middle-sign-wrapper-inner-form p {margin:0;font: 9px 'montserratsemi_bold', sans-serif;color: #7795a8;text-transform:uppercase;padding-bottom:5px;}
 
-.pgs-sign-inputs {width: 100%;font: 12px 'montserratregular', sans-serif;color: #2d5164;border: none;background-color: #fff;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;border:1px solid #d7e2ea;padding:10px 14px;margin-bottom:25px;}
+.pgs-middle-sign-wrapper-inner-form .input-field {margin:0 0 25px;}
+
+.pgs-sign-inputs {width: 100%;font: 12px 'montserratregular', sans-serif;color: #2d5164;border: none;background-color: #fff;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;border:1px solid #d7e2ea;padding:10px 14px;}
 
 .pgs-sign-inputs:focus {
 	outline: 0;
