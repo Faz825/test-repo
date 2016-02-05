@@ -5,7 +5,6 @@ import { Router , Route, browserHistory } from 'react-router'
 import Main from './pages/main';
 import Signup from './pages/signup/Signup';
 import Secretary from './pages/signup/Secretary';
-import DashBoard from './pages/dashboard/DashBoard';
 
 
 let rootRoute =(
