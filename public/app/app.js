@@ -12,7 +12,7 @@ let rootRoute =(
    	<Route name="main" path="/" component={Main}>
 		<Route name="signup" path="/signup" component={Signup}/>
 		<Route name="choose-secretary" path="/choose-secretary" component={Secretary}/>
-		<Route name="dashboard" path="/dashboard" component={DashBoard}/>
+		
 	</Route>
 );
 ReactDom.render((

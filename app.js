@@ -5,7 +5,15 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
+
+
+
+GLOBAL.Config = require('./config/app.config');
+require('./config/alert.message');
+
+//Define Clusters 
+var Clusters = require('./config/clusters');
+Clusters.init();
 
 
 var app = express();
@@ -16,11 +24,19 @@ app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+
+
+require('./core/model');
+var routes = require('./routes/route');
+
+
 
 app.use('/', routes);
 

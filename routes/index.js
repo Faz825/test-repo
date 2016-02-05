@@ -1,12 +1,19 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
-router.get('/data', function(req, res, next) {
-  res.json("data");
-});
+require('../model/UserModel');
 
-/* GET home page. */
+var UserControler = require('../controller/UserController');
+router.get('/auth/*', UserControler.doSignup);
+
+
+
+
+
+
+
+var UserControler = require('../controller/UserController');
+/* Load Default Routes  */
 router.get('/*', function(req, res, next) {
   res.render('index');
 });
