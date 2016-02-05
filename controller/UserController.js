@@ -12,8 +12,6 @@ var UserControler ={
 			email:req.body.email,
 			password:req.body.password,
 		}
-		console.log(user)
-
 		User.findByEmail(user.email,function(ResultSet){
 		
 			if(ResultSet.status == 200 && ResultSet.user == null ){
