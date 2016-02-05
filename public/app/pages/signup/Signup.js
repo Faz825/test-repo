@@ -17,8 +17,9 @@ class Signup extends React.Component {
         super(props);
         this.state= {
             formData:{},
+            errorData:{},
             validateAlert: "",
-            signupURL:'/auth/doSignUp'
+            signupURL:'/doSignup'
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this)
         this.clearValidations     = this.clearValidations.bind(this)
@@ -35,18 +36,15 @@ class Signup extends React.Component {
     validateForm(e){
         e.preventDefault();
 
-        let formFieldData = this.state.formData;
 
-        if(Object.keys(formFieldData).length != 5 ){
-
+        if(Object.keys(this.state.errorData).length != 5 ){
             this.setState({validateAlert: Alert.FILL_EMPTY_FIELDS});
-
         }else{
 
-            if(this.allInvalid(formFieldData)){
+            if(this.allInvalid(this.state.formData)){
 
-                let pass = formFieldData.password.val;
-                let confpass = formFieldData.confPassword.val;
+                let pass = this.state.formData.password;
+                let confpass = this.state.formData.confPassword;
 
                 if(pass != confpass){
                     this.setState({validateAlert: Alert.PASSWORD_MISMATCH});
@@ -57,11 +55,18 @@ class Signup extends React.Component {
                         url: this.state.signupURL,
                         method: "POST",
                         data: this.state.formData,
-                        dataType: "JSON"
-                    }).done(function( msg ) {
-                        console.log( msg );
-                    }).fail(function( jqXHR, textStatus ) {
-                      alert( "Request failed: " + textStatus );
+                        dataType: "JSON",
+                        success: function (data, text) {
+                            console.log(data);
+                            console.log(text)
+                        },
+                        error: function (request, status, error) {
+                            console.log(request.responseText);
+                            console.log(status);
+                            console.log(error);
+                        }
+
+                    
                     });
 
                 }
@@ -78,9 +83,12 @@ class Signup extends React.Component {
     elementChangeHandler(key,data,status){
         
         let _formData = this.state.formData;
-        _formData[key] = {"val": data, "status": status };
+        let _errorData = this.state.errorData;
 
+        _formData[key] = data;
+        _errorData[key] = status;
         this.setState({formData:_formData});
+        this.setState({errorData:_errorData});
     
     }
 

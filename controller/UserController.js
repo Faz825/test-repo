@@ -7,14 +7,15 @@ var UserControler ={
 		var User = require('mongoose').model('User');
 
 		var user ={
-			first_name:"Piusha",
-			last_name:"Kalyana",
-			email:"piusha2@gmail.com",
-			password:"1234",
+			first_name:req.body.fName,
+			last_name:req.body.lName,
+			email:req.body.email,
+			password:req.body.password,
 		}
+		console.log(user)
 
 		User.findByEmail(user.email,function(ResultSet){
-			
+		
 			if(ResultSet.status == 200 && ResultSet.user == null ){
 
 				User.create(user,function(_ResultSet){
@@ -32,8 +33,9 @@ var UserControler ={
 						var _out_put= {
 							status:'sucess',
 							message:Alert.ACCOUNT_CREATION_SUCCESS
-						}	
-						if(cacheData){
+						}
+						console.log()	
+						if(!cacheData){
 							_out_put['extra']=Alert.CACHE_CREATION_ERROR
 						}
 						_out_put['user']=_ResultSet.user

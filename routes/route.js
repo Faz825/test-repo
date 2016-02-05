@@ -18,7 +18,7 @@ var DefualtController = require('../controller/DefualtController'),
  * Basically those URLs will be site assets.
  * This URL can be image, Stylesheet, Javascript file
  */
-GLOBAL.publicURLs = ['/images','/css','/web'];
+GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
 
 /**
  *This URLs will be normal URL that execute out side the authentication component.
@@ -32,7 +32,7 @@ GLOBAL.AccessAllow = [
 /** 
  * Actual Routes Implementation without Authentication
  */
-router.get('/doSignup',UserControler.doSignup);
+router.post('/doSignup',UserControler.doSignup);
 
 
 
