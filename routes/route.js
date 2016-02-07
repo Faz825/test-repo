@@ -7,10 +7,12 @@ var oAuth = require('../middleware/Authentication');
  * Load Models
  */
 require('../model/UserModel');
+require('../model/SecretaryModel');
 /** Load  Controllers
  */
 var DefualtController = require('../controller/DefualtController'),
-	UserControler = require('../controller/UserController');
+	UserControler = require('../controller/UserController'),
+	SecretaryController = require('../controller/SecretaryController');
 
 /**
  * Define Public URLs
@@ -25,7 +27,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
  * this URL can be accessed through web browser without login
  */
 GLOBAL.AccessAllow = [
-    '/','/signup','/choose-secretary','/doSignup'
+    '/','/signup','/choose-secretary','/doSignup','/secretaries'
 ];
 
 
@@ -33,7 +35,7 @@ GLOBAL.AccessAllow = [
  * Actual Routes Implementation without Authentication
  */
 router.post('/doSignup',UserControler.doSignup);
-
+router.get('/secretaries',SecretaryController.getSeretaries);
 
 
 /**

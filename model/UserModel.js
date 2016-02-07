@@ -30,7 +30,7 @@ var UserSchema = new Schema({
 	},
 	status:{
 		type:Number,
-		default:1 // 1 - CREATE YOUR ACCOUNT | 2 - CHOOSE YOUR SECRETARY  
+		default:1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETTED CHOOSE YOUR SECRETARY  
 	},
 	secretary:{
 		 type: Schema.ObjectId, 
@@ -64,12 +64,14 @@ UserSchema.pre('save', function(next){
  */
 UserSchema.statics.create = function(UserData,callBack){
 
+	console.log(UserData);
 	var newUser = new this();
 	newUser.first_name 	= UserData.first_name;
 	newUser.last_name  	= UserData.last_name;
 	newUser.email		= UserData.email;
 	newUser.password	= createHash(UserData.password);
-	newUser.status		= 1;
+	newUser.status		= UserData.status;
+	newUser.secretary		= UserData.secretary;
 	newUser.save(function(err,resultSet){
 
 		if(!err){

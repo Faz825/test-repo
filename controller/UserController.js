@@ -11,6 +11,8 @@ var UserControler ={
 			last_name:req.body.lName,
 			email:req.body.email,
 			password:req.body.password,
+			status:req.body.status,
+			secretary:req.body.secretary
 		}
 		User.findByEmail(user.email,function(ResultSet){
 		
@@ -29,10 +31,9 @@ var UserControler ={
 					CacheEngine.addToCache(_cache_key,_ResultSet.user,function(cacheData){
 						
 						var _out_put= {
-							status:'sucess',
+							status:'success',
 							message:Alert.ACCOUNT_CREATION_SUCCESS
 						}
-						console.log()	
 						if(!cacheData){
 							_out_put['extra']=Alert.CACHE_CREATION_ERROR
 						}

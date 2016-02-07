@@ -1,14 +1,26 @@
 import React from 'react'
 import Header from '../components/header/Header'
-import Signup from '../pages/signup/Signup';
+import SignupIndex from '../pages/signup/Index';
+
+import Session  from '../middleware/Session';
+
+
 class Main extends React.Component {
+
+	constructor(props) {
+		super(props);
+		
+
+	}
+
+
   render() {
-    console.log(logged_user);
+  	
     return (
       <div>	
       	<Header />
-        
-          {this.props.children || <Signup />}
+        		
+          {this.props.children || <SignupIndex />}
        
       </div>
     )
