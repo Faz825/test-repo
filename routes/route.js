@@ -46,5 +46,6 @@ router.all('/*',oAuth.Authentication);
 /** 
  * Implement Actual Routes that need to Authenticate
  */
- 
+
+router.post('/secretary/save',UserControler.saveSecretary);
 module.exports = router;

@@ -2,7 +2,7 @@
 GLOBAL.Alert={
     'ACCOUNT_CREATION_SUCCESS':'Congratulation your Account has been created',
     
-    'INVALID_TOKEN':'Invalid token or Token cannot be found',
+    'INVALID_TOKEN':'Invalid request token',
     'AUTHENTICATION_FAILED':'Invalid Email Id or Password',
 
     //USER
@@ -13,6 +13,8 @@ GLOBAL.Alert={
     'ACCOUNT_EXIST':'Account email ID is already exist in the system',
 
     //CACHE
-    'CACHE_CREATION_ERROR':'Oops There is an error while creating cache '
+    'CACHE_CREATION_ERROR':'Oops There is an error while creating cache ',
+
+    'ADDED_SECRETARY':'Update secretary detaile'
 
 }

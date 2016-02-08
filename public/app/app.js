@@ -11,35 +11,19 @@ let SessionClient =  new Session();
 let sessionData = SessionClient.getSession('prg_lg');
 
 
-if(SessionClient.isSessionSet('prg_lg') && sessionData.status > 2 ){
-	let rootRoute =(
-	   	<Route name="main" path="/" component={Main} state="1">
-			<Route name="signup" path="/choose-secretary" component={SelectSecretary}/>
-		</Route>
-	);
-
-	ReactDom.render((
-		<Router  history={browserHistory}  routes={rootRoute}/>
-
-	), document.getElementById('proglob-app-container'));
-}else{
-	let rootRoute =(
-	   	<Route name="main" path="/" component={Main} state="1">
-			<Route name="signup" path="/signup" component={SignupIndex}/>
-		</Route>
-	);
-
-
-	ReactDom.render((
-		<Router  history={browserHistory}  routes={rootRoute}/>
-			 
-		
-
-	), document.getElementById('proglob-app-container'));
-}
 
 
 
+let rootRoute =(
+	<Route name="main" path="/" component={Main} state="1">
+		<Route name="signupIndex" path="/signup" component={SignupIndex}/>
+	</Route>
+);
+
+
+ReactDom.render((
+	<Router  history={browserHistory}  routes={rootRoute}/>
 
 
 
+), document.getElementById('proglob-app-container'));

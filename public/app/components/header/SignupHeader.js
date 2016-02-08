@@ -1,20 +1,28 @@
+/**
+ * Header component for users who are not logged in
+ */
+
 import React from 'react';
 import Img from '../elements/Img'
 import { Link} from 'react-router'
-
+import Logo from './Logo'
 export default class Header extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+
+    }
+
 	render(){
 		return(
 			 <div className="row row-clr pgs-top-navigation">
-            
+
             	<div className="container">
                 
                 	<div className="row">
                     
-                    	<div className="col-xs-3 pgs-main-logo-area">
-                            <Img src="images/logo.png" alt="Logo" />                        	
-                        </div>
-                        
+                        <Logo url ="images/logo.png" />
                         <div className="col-xs-6 pgs-main-nav-area">
                         	<div className="row row-clr pgs-main-nav-area-inner">
                                 <ul>
@@ -26,7 +34,6 @@ export default class Header extends React.Component {
                                 </ul>
                             </div>
                         </div>
-                        
                         <div className="col-xs-3 pgs-main-btn-area">
                         	<div className="row row-clr pgs-main-btn-area-inner">
                                     
@@ -35,11 +42,8 @@ export default class Header extends React.Component {
                                     
                             </div>
                         </div>
-                    
                     </div>
-                
                 </div>
-            
             </div>
 		);
 	}

@@ -25,13 +25,14 @@ class Signup extends React.Component {
         this.state= {
             formData:{},
             errorData:{},
+            signupURL:'/doSignup',
             validateAlert: ""
             
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this)
         this.clearValidations     = this.clearValidations.bind(this)
         
-        this.session = new Session();
+
     }
 
     allInvalid(elements) { 
@@ -59,29 +60,33 @@ class Signup extends React.Component {
                 }else{
                     this.setState({validateAlert: ""});
 
-                    this.state.formData['status'] = 1
-                   
-                       $.ajax({
-                            url: this.state.signupURL,
-                            method: "POST",
-                            data: this.state.signupFormData,
-                            dataType: "JSON",
-                            success: function (data, text) {
-                                 console.log(data)
-                                if(data.status === 'success'){
-                                    SessionClient.createSession("prg_lg",data.user);
-                                    console.log(data)
-                                }
-                                
-                            },
-                            error: function (request, status, error) {
+                    this.state.formData['status'] = 1;
 
-                                console.log(request.responseText);
-                                console.log(status);
-                                console.log(error);
+                    let SessionClient = new Session();
+
+                    let _this = this;
+                    $.ajax({
+                        url: this.state.signupURL,
+                        method: "POST",
+                        data: this.state.formData,
+                        dataType: "JSON",
+
+                        success: function (data, text) {
+
+                            if (data.status === 'success') {
+                                SessionClient.createSession("prg_lg", data.user);
+                                _this.props.onNextStep(data.user);
                             }
-                        });
-                   
+
+                        },
+                        error: function (request, status, error) {
+
+                            console.log(request.responseText);
+                            console.log(status);
+                            console.log(error);
+                        }
+                    });
+
                 }
 
             }else{

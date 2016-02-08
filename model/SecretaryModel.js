@@ -61,5 +61,32 @@ SecretarySchema.statics.getSecreties =function(callBack){
 		});
 }
 
+/**
+ * Get Secretary by Id
+ * @param id
+ * @param callBack
+ */
+SecretarySchema.statics.getSecretaryById=function(id,callBack){
+
+    this.findOne({_id:id}).
+        exec(function(err,resultSet){
+        if(! err){
+
+            var secrataries = {
+                id:resultSet._id,
+                full_name:resultSet.full_name,
+                gender:resultSet.gender,
+                image_name:Config.CDN_URL+"static/"+resultSet.image_name
+            };
+
+
+            callBack(secrataries);
+        }else{
+            console.log(err)
+            callBack({status:400,error:err})
+        }
+    });
+}
+
 
 mongoose.model('Secretary',SecretarySchema);

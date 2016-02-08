@@ -64,20 +64,27 @@ UserSchema.pre('save', function(next){
  */
 UserSchema.statics.create = function(UserData,callBack){
 
-	console.log(UserData);
+
 	var newUser = new this();
 	newUser.first_name 	= UserData.first_name;
 	newUser.last_name  	= UserData.last_name;
 	newUser.email		= UserData.email;
 	newUser.password	= createHash(UserData.password);
 	newUser.status		= UserData.status;
-	newUser.secretary		= UserData.secretary;
-	newUser.save(function(err,resultSet){
+	newUser.secretary	= UserData.secretary;
+	newUser.save(newUser,function(err,resultSet){
 
 		if(!err){
 			callBack({
 				status:200,
-				user:resultSet
+				user:{
+                    id:resultSet._id,
+                    token:createHash(resultSet._id+"---"+resultSet.email),
+                    first_name:resultSet.first_name,
+                    last_name:resultSet.last_name,
+                    email:resultSet.email,
+                    status:resultSet.status
+                }
 
 			});
 		}else{
@@ -113,5 +120,29 @@ UserSchema.statics.findByEmail = function(email,callBack){
 
 
 }
+
+/**
+ * Add Secretary for the user
+ */
+UserSchema.statics.addSecretary =function(userId,secretaryId,callBack){
+
+    var _this = this;
+    _this.update({_id:userId},
+        {$set:{
+            secretary:secretaryId
+        }},function(err,resultSet){
+
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+}
+
 
 mongoose.model('User',UserSchema);

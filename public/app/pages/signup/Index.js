@@ -10,21 +10,33 @@ class Index extends React.Component {
 		super(props);
 		
 		this.state={
-			signupFormData:{},
-			signupURL:'/doSignup'
+			step:1,
+            userData:{},
+            signupURL:"/doSignup"
 		};
 		this.onNextStep = this.onNextStep.bind(this);
 		this.onPreviousStep = this.onPreviousStep.bind(this);
-	
-        
-	}
 
-	onNextStep(formData){
-		let _frmData = this.state.signupFormData;
-			_frmData = Object.assign({}, _frmData, formData);
-		this.setState({signupFormData: _frmData}, function () {
-		    this.loadNextStep()
-		    this.submitData();
+
+	}
+	componentDidMount() {
+		let SessionClient = new Session();
+		if(SessionClient.isSessionSet('prg_lg')){
+            let ses_user = SessionClient.getSession('prg_lg')
+            this.setState({userData: ses_user}, function () {
+                this.loadNextStep()
+            });
+		}
+
+	}
+	onNextStep(data){
+        let _data = this.state.userData;
+        let _frmData = Object.assign(_data,data);
+		this.setState({userData: _frmData}, function () {
+		    this.loadNextStep();
+
+
+
 		});
 	}
 	onPreviousStep(){
@@ -32,9 +44,10 @@ class Index extends React.Component {
 	}
 
 	loadNextStep(){
-		let _frmData = this.state.signupFormData;
-			_frmData.status = _frmData.status+1;
-		this.setState({_frmData: _frmData})
+		let _sesUser = this.state.userData;
+        let _step =  _sesUser.status+1;
+
+        this.setState({step:_step});
 	}
 
 	loadPreviousStep(){
@@ -42,22 +55,24 @@ class Index extends React.Component {
 			_frmData.status = _frmData.status-1;
 		this.setState({_frmData: _frmData})
 	}
-	submitData(){
-		if(this.state.signupFormData.status > 2){
-			
-		}
-		
-	}
+
+    saveFormData(){
+        console.log(this.state.userData);
+
+
+
+    }
+
 
 	showSteps(){
-		
-		switch(this.state.signupFormData.status){
+
+		switch(this.state.step){
 			case 2:
-				return (<Secretary onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+				return (<SelectSecretary onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
 			case 1:
 				return (<Signup onNextStep ={this.onNextStep}/>);
 			case 3:
-				return  (<Secretary onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+				return  (<SelectSecretary onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
 			default:
 				return (<Signup onNextStep ={this.onNextStep}/>);
 		}
