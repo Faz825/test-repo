@@ -17,6 +17,7 @@ let sessionData = SessionClient.getSession('prg_lg');
 let rootRoute =(
 	<Route name="main" path="/" component={Main} state="1">
 		<Route name="signupIndex" path="/signup" component={SignupIndex}/>
+        <Route name="aboutyou" path="/about-you" component={SignupIndex}/>
 	</Route>
 );
 

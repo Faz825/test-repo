@@ -70,6 +70,7 @@ var UserControler ={
             Secretary.getSecretaryById(req.body.secretary,function(resultSet){
                 var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
                 CurrentSession['secretary'] = resultSet;
+                CurrentSession['status']    = 2;
                 CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
 
                     var _out_put= {

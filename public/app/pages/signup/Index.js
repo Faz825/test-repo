@@ -2,7 +2,7 @@ import React from 'react';
 import Session  from '../../middleware/Session';
 import Signup from './Signup';
 import SelectSecretary from './SelectSecretary';
-
+import AboutYou from './AboutYou';
 
 class Index extends React.Component {
 
@@ -67,12 +67,12 @@ class Index extends React.Component {
 	showSteps(){
 
 		switch(this.state.step){
+            case 1:
+                return (<Signup onNextStep ={this.onNextStep}/>);
 			case 2:
 				return (<SelectSecretary onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
-			case 1:
-				return (<Signup onNextStep ={this.onNextStep}/>);
 			case 3:
-				return  (<SelectSecretary onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+				return  (<AboutYou onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
 			default:
 				return (<Signup onNextStep ={this.onNextStep}/>);
 		}

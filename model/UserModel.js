@@ -30,7 +30,7 @@ var UserSchema = new Schema({
 	},
 	status:{
 		type:Number,
-		default:1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETTED CHOOSE YOUR SECRETARY  
+		default:1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETED CHOOSE YOUR SECRETARY
 	},
 	secretary:{
 		 type: Schema.ObjectId, 
@@ -129,7 +129,8 @@ UserSchema.statics.addSecretary =function(userId,secretaryId,callBack){
     var _this = this;
     _this.update({_id:userId},
         {$set:{
-            secretary:secretaryId
+            secretary:secretaryId,
+            status:2
         }},function(err,resultSet){
 
             if(!err){

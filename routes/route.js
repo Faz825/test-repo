@@ -27,7 +27,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
  * this URL can be accessed through web browser without login
  */
 GLOBAL.AccessAllow = [
-    '/','/signup','/choose-secretary','/doSignup','/secretaries'
+    '/','/signup','/choose-secretary','/doSignup','/secretaries','/about-you'
 ];
 
 
