@@ -1,7 +1,5 @@
 /**
  * Authenticate class will handle to make user log in and maintain session
- * When front end request came with auth as first part of the URL (/auth/*), it will go through auth module
- * in order to allow logged user to access releven service calls  from the server it check 
  */
 
 
@@ -22,6 +20,39 @@ exports.Authentication= function(req,res,next){
         res.render('index');
         return;
     }
+
+
+    /**
+     * Handle Logged User sessions
+     */
+    if(typeof req.headers['prg-auth-header'] != 'undefined'){
+
+
+        CacheEngine.getCachedDate(req.headers['prg-auth-header'],function(cachedUser){
+
+            if(typeof cachedUser == 'undefined'){
+                var _out_put= {
+                    status:'success',
+                    message:Alert.INVALID_TOKEN
+                }
+                res.status(401).json(_out_put);
+                return ;
+            }
+
+            CurrentSession = cachedUser;
+            next();
+            return;
+        });
+
+    }else{
+        var _out_put= {
+            status:'success',
+            message:Alert.INVALID_TOKEN
+        }
+        res.status(401).json(_out_put);
+        return ;
+    }
+
 
 
  }

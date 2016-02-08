@@ -47,7 +47,22 @@ var CacheEngine ={
 			}
 		});
 
-	}
+	},
+
+    /**
+     * Update Cache Data
+     * @param cacheKey
+     * @param data
+     * @param callBack
+     */
+    updateCache:function(cacheKey,data,callBack){
+        var _this = this;
+        this._memcached.replace(cacheKey,data,Config.CACHE_TTL,function(err){
+            _this.getCachedDate(cacheKey,function(cachedData){
+                callBack(cachedData);
+            })
+        });
+    }
 };
 
 module.exports = CacheEngine;

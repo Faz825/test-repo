@@ -3,6 +3,9 @@ import InputField from '../../components/elements/InputField'
 import Button from '../../components/elements/Button'
 import {Alert} from '../../config/Alert';
 
+import Session  from '../../middleware/Session';
+
+
 let errorStyles = {
     color         : "#ed0909",
     fontSize      : "0.8em",
@@ -10,20 +13,26 @@ let errorStyles = {
     margin        : '0 0 15px',
     display       : "inline-block"
 }
-
+/**
+ * TODO :: Set formData objects for each element as defualt value when plugin load
+ */
 class Signup extends React.Component {
+
+
 
     constructor(props) {
         super(props);
         this.state= {
             formData:{},
             errorData:{},
-            validateAlert: "",
-            signupURL:'/doSignup'
+            signupURL:'/doSignup',
+            validateAlert: ""
+            
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this)
         this.clearValidations     = this.clearValidations.bind(this)
         
+
     }
 
     allInvalid(elements) { 
@@ -51,22 +60,31 @@ class Signup extends React.Component {
                 }else{
                     this.setState({validateAlert: ""});
 
+                    this.state.formData['status'] = 1;
+
+                    let SessionClient = new Session();
+
+                    let _this = this;
                     $.ajax({
                         url: this.state.signupURL,
                         method: "POST",
                         data: this.state.formData,
                         dataType: "JSON",
+
                         success: function (data, text) {
-                            console.log(data);
-                            console.log(text)
+
+                            if (data.status === 'success') {
+                                SessionClient.createSession("prg_lg", data.user);
+                                _this.props.onNextStep(data.user);
+                            }
+
                         },
                         error: function (request, status, error) {
+
                             console.log(request.responseText);
                             console.log(status);
                             console.log(error);
                         }
-
-                    
                     });
 
                 }
@@ -74,9 +92,7 @@ class Signup extends React.Component {
             }else{
                 this.setState({validateAlert: Alert.FILL_EMPTY_FIELDS});
             }
-
         }
-
 
     }
 
