@@ -18,7 +18,19 @@ export default class InputField extends React.Component{
 	}
 
 	handleChange(e) {
-		this.props.textChange(this.props.name,e.target.value);
+		let status;
+
+		if(this.props.required){
+			if(e.target.value.length != 0 ){
+				status = "valid";
+			}else{
+				status = "invalid";
+			}
+		}else{
+			status = "";
+		}
+
+		this.props.textChange(this.props.name,e.target.value,status);
 	}
 
 	handleBlur(e){
