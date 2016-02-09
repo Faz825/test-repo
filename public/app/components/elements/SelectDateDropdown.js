@@ -27,9 +27,14 @@ export default class SelectDateDropdown extends React.Component{
 
 		if(Object.keys(this.state.date).length == 3){
 			let _fData = this.state.date[dateFormat[0]]+"-"+this.state.date[dateFormat[1]]+"-"+this.state.date[dateFormat[2]];
-			//console.log(_fData);
 
-			this.props.optChange("dob", _fData, "valid");
+			if(this.props.required){
+				status = "valid";
+			}else{
+				status = "";
+			}
+
+			this.props.optChange("dob", _fData, status);
 		}
  		
 	}

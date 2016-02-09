@@ -40,24 +40,25 @@ export default class AboutCollegeAndJob extends React.Component{
         let _errorData = this.state.errorData;
 
         _formData[key] = data;
-        _errorData[key] = {"status": status};
         this.setState({formData:_formData});
-        this.setState({errorData:_errorData});
+
+        if(status != ""){
+        	_errorData[key] = {"status": status};
+        	this.setState({errorData:_errorData});
+        }
     
     }
 
     collectData(e){
     	e.preventDefault();
 
-    	if(Object.keys(this.state.formData).length != 4){
-    		this.setState({validateAlert: Alert.FILL_EMPTY_FIELDS});
+    	if(Object.keys(this.state.errorData).length != 2){
+    		this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
     	}else{
-    		this.setState({validateAlert: Alert.FILL_EMPTY_FIELDS});
+    		this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
 
     		if(this.allInvalid(this.state.errorData)){
     			this.setState({validateAlert: ""});
-	    		console.log(this.state.formData);
-	    		console.log("no errr");
 	    	}
     	}
 
@@ -83,7 +84,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                     <div className="row row-clr pgs-middle-sign-wrapper-about-inner">
                                         <h1>Hello Soham,</h1>
                                         <h2>Welcome to Proglobe</h2>
-                                        <h5>I, Donna, will now be your very own personal assistant and will be makingyour life easier.<br/>We are bonded forever now. Yay!</h5>
+                                        <h5>I, Donna, will now be your very own personal assistant and will be making your life easier.<br/>We are bonded forever now. Yay!</h5>
                                     </div>
                                     
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form">
@@ -92,9 +93,9 @@ export default class AboutCollegeAndJob extends React.Component{
                                         <form method="post" onSubmit={this.collectData.bind(this)}>
                                         
                                         <div className="row pgs-middle-about-inputs">
-                                        	<InputField type="text" name="schoolName" size="7" label="School Name" placeholder="University of California, Berkeley" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
+                                        	<InputField type="text" name="schoolName" size="7" label="School Name" placeholder="University of California, Berkeley" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
 
-                                        	<SelectDateDropdown title="Graduation Date" dateFormat="mm-dd-yyyy" optChange={this.elementChangeHandler} />
+                                        	<SelectDateDropdown title="Graduation Date" dateFormat="mm-dd-yyyy" optChange={this.elementChangeHandler} required="true"/>
                                             
                                         </div>
                                         
