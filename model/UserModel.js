@@ -145,5 +145,24 @@ UserSchema.statics.addSecretary =function(userId,secretaryId,callBack){
 
 }
 
-
+/**
+ * Update User profile based on the criterais
+ * @param userId
+ * @param data
+ * @param callBack
+ */
+UserSchema.statics.update=function(userId,data,callBack){
+    var _this = this;
+    _this.update({_id:userId},
+        {$set:data},function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+}
 mongoose.model('User',UserSchema);

@@ -20,14 +20,13 @@ class Index extends React.Component {
 
 	}
 	componentDidMount() {
-		let SessionClient = new Session();
-		if(SessionClient.isSessionSet('prg_lg')){
-            let ses_user = SessionClient.getSession('prg_lg')
+
+		if(Session.isSessionSet('prg_lg')){
+            let ses_user = Session.getSession('prg_lg')
             this.setState({userData: ses_user}, function () {
                 this.loadNextStep()
             });
 		}
-
 	}
 	onNextStep(data){
         let _data = this.state.userData;

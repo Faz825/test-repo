@@ -60,6 +60,7 @@ class SelectSecretary extends React.Component {
                 data:this.state.secretary,
                 success: function (data, text) {
                     if (data.status === 'success') {
+                        data.user
                         SessionClient.createSession("prg_lg", data.user);
                         location.href='/about-you';
                     }

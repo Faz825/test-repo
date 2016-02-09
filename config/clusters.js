@@ -1,5 +1,5 @@
 /**
- * Clusters file willbe use to define all Thirdparty server clustors configurations and initilaizations
+ * Clusters file willbe use to define all Third party server clustors configurations and initilaizations
  */
 
  var Clusters ={
