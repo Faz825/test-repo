@@ -220,7 +220,7 @@ body {
 
 .pgs-establish-connection-box p {margin:0;font: 10px 'montserratregular', sans-serif;color: #2d5164;}
 
-.pgs-establish-connection-box a {text-decoration:none;background-color:#61b3de;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;width:110px;padding:9px 0px;display:block;font: 10px 'montserratsemi_bold', sans-serif;color: #fff;text-transform:uppercase;text-align:center;float:right;margin-top:5px;}
+.pgs-establish-connection-box a {cursor: pointer; text-decoration:none;background-color:#61b3de;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;width:110px;padding:9px 0px;display:block;font: 10px 'montserratsemi_bold', sans-serif;color: #fff;text-transform:uppercase;text-align:center;float:right;margin-top:5px;}
 
 .pgs-establish-connection-box a:after {
 	visibility: hidden;
