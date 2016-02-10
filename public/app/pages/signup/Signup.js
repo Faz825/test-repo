@@ -62,7 +62,7 @@ class Signup extends React.Component {
 
                     this.state.formData['status'] = 1;
 
-                    let SessionClient = new Session();
+
 
                     let _this = this;
                     $.ajax({
@@ -74,8 +74,9 @@ class Signup extends React.Component {
                         success: function (data, text) {
 
                             if (data.status === 'success') {
-                                SessionClient.createSession("prg_lg", data.user);
+                                Session.createSession("prg_lg", data.user);
                                 _this.props.onNextStep(data.user);
+                                window.history.pushState('choose-secretary','Choose Secretary','/choose-secretary');
                             }
 
                         },

@@ -66,13 +66,21 @@ var UserControler ={
     saveSecretary:function(req,res){
         var User = require('mongoose').model('User'),
             Secretary = require('mongoose').model('Secretary');
-        User.addSecretary(CurrentSession.id,req.body.secretary,function(resultSet){
+
+        var secretary ={
+            secretary:req.body.secretary,
+            status:2
+        }
+        User.saveUpdates(CurrentSession.id,secretary,function(resultSet){
             Secretary.getSecretaryById(req.body.secretary,function(resultSet){
                 var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
-                CurrentSession['secretary'] = resultSet;
-                CurrentSession['status']    = 2;
-                CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+                CurrentSession['secretary_name']        = resultSet.full_name;
+                CurrentSession['secretary_id']          = resultSet.id;
+                CurrentSession['secretary_image_url']   = resultSet.image_name;
+                CurrentSession['status']                = 2;
 
+
+                CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
                     var _out_put= {
                         status:'success',
                         message:Alert.ADDED_SECRETARY

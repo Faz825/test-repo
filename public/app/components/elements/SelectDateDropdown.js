@@ -72,6 +72,7 @@ class Dropdown extends React.Component{
 		let options = [];
 		let fieldName = this.props.fieldName;
 
+
 		switch(fieldName) {
 		    case "mm":
 		        start = "1";
@@ -85,7 +86,9 @@ class Dropdown extends React.Component{
 		        start = "1991";
 		        end = "2016";
 		        break;
-		}
+
+		} 
+
 
 		for(let i = start; i <= end; i++){
 			i = (i < 10 ? '0'+ i : i);

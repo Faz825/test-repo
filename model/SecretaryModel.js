@@ -1,5 +1,5 @@
 /**
- * Secratary Model will communicate with secretaries collection
+ * Secretary Model will communicate with secretaries collection
  */
 
  'use strict'

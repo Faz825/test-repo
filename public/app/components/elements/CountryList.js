@@ -9,7 +9,20 @@ export default class CountryList extends React.Component{
     }
 
     selectChange(e){
-		this.props.optChange("country",e.target.value);
+
+
+    	if(this.props.required){ 
+			if(e.target.value.length != 0 ){
+				status = "valid";
+			}else{
+				status = "invalid";
+			}
+		}else{
+			status = "";
+		}
+
+		this.props.optChange("country",e.target.value,status);
+
     }
 
 	render(){
@@ -18,8 +31,8 @@ export default class CountryList extends React.Component{
 	            <p>Country</p>
 	            <select name="country" className="pgs-sign-select" onChange={this.selectChange.bind(this)}>
 	            	{Countries.map(function(country, i){
-						return <option value={country.name} key={i}>{country.name}</option> 
-	            	})};
+						return <option value={country.key} key={i}>{country.name}</option>;
+	            	})}
 	            </select>
             </div>
 		); 

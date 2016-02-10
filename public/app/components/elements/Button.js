@@ -1,14 +1,12 @@
 //Button
 import React from 'react';
 
-export default class Button extends React.Component{
-	render(){
-		let size = "button col-xs-" + this.props.size;
-
-		return(
-			<div className={size}>
-                <input type={this.props.type} className={this.props.classes} value={this.props.value} />
-            </div>
-		)
-	}
+const Button = (props)=>{
+    let size = "button col-xs-" + props.size;
+    return(
+        <div className={size}>
+            <input type={props.type} className={props.classes} value={props.value} />
+        </div>
+    )
 }
+export default Button;

@@ -56,4 +56,4 @@
 
  }
 
- module.exports = Session;
+export default new Session;

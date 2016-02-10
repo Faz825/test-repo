@@ -12,9 +12,9 @@ class Main extends React.Component {
 		super(props);
 	}
     layoutSelector() {
-        let SessionClient = new Session();
 
-        if (SessionClient.isSessionSet('prg_lg')) {
+        console.log(Session.getSession('prg_lg'))
+        if (Session.isSessionSet('prg_lg')) {
             return (
                 <div className="row row-clr pg-full-wrapper">
                     <SigninHeader />
