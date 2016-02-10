@@ -6,6 +6,7 @@ import Button from '../../components/elements/Button'
 import {Alert} from '../../config/Alert'
 import Session  from '../../middleware/Session';
 import SecretaryThumbnail from '../../components/elements/SecretaryThumbnail'
+import AboutInner from '../../components/elements/AboutInner'
 
 let errorStyles = {
     color         : "#ed0909",
@@ -19,15 +20,10 @@ export default class AboutYou extends React.Component{
 	constructor(props) {
         super(props);
         this.state= {
-<<<<<<< HEAD
-            formData:{},//,
-            sesData:{}
-=======
+            sesData:{},
             formData:{},
             errorData:{},
             validateAlert: ""
->>>>>>> PROG-23
-            //signupURL:'/doSignup'
         };
         this.collectData = this.collectData.bind(this);
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
@@ -95,13 +91,8 @@ export default class AboutYou extends React.Component{
                             <div className="col-xs-10">
                                 <div className="row row-clr pgs-middle-sign-wrapper-inner-cover pgs-middle-sign-wrapper-inner-cover-secretary pgs-middle-sign-wrapper-about">
                                 <img src="images/sign-left-arrow-1.png" alt="" className="img-responsive pgs-sign-left-arrow" />
-                                	
-                                    <div className="row row-clr pgs-middle-sign-wrapper-about-inner">
-                                        <h1>Hello {this.state.sesData.secretary_name},</h1>
-                                        <h2>THANK YOU FOR CHOOSING ME</h2>
-                                        <h5>I, {this.state.sesData.secretary_name}, will now be your very own personal assistant and will be makingyour life easier.<br />We are bonded for life now. Yay!</h5>
-                                    </div>
-                                    
+
+                                    <AboutInner secretary_name ={this.state.sesData.secretary_name}/>
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form">
                                     
                                     	<h6>First, Let me know a little more about you...</h6>
@@ -118,7 +109,7 @@ export default class AboutYou extends React.Component{
 
 	                                        <div className="row">
 		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
-		                                        <Button type="button" size="6" classes="pgs-sign-submit" value="next" />
+		                                        <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
 		                                    </div>
                                         </form>    
                                     </div>

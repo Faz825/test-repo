@@ -71,7 +71,7 @@ var UserControler ={
             secretary:req.body.secretary,
             status:2
         }
-        User.update(CurrentSession.id,req.body.secretary,function(resultSet){
+        User.saveUpdates(CurrentSession.id,secretary,function(resultSet){
             Secretary.getSecretaryById(req.body.secretary,function(resultSet){
                 var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
                 CurrentSession['secretary_name']        = resultSet.full_name;

@@ -31,7 +31,7 @@ export default class CountryList extends React.Component{
 	            <p>Country</p>
 	            <select name="country" className="pgs-sign-select" onChange={this.selectChange.bind(this)}>
 	            	{Countries.map(function(country, i){
-						return <option value={country.name} key={i}>{country.name}</option>;
+						return <option value={country.key} key={i}>{country.name}</option>;
 	            	})}
 	            </select>
             </div>

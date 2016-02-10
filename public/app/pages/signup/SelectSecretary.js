@@ -49,8 +49,8 @@ class SelectSecretary extends React.Component {
 
     onNextStep(){
         if(this.state.secretary){
-            let SessionClient = new Session();
-            let user = SessionClient.getSession('prg_lg');
+
+            let user = Session.getSession('prg_lg');
             let _this =  this;
             $.ajax({
                 url: '/secretary/save',
@@ -61,11 +61,13 @@ class SelectSecretary extends React.Component {
                 success: function (data, text) {
                     if (data.status === 'success') {
                         data.user
-                        SessionClient.createSession("prg_lg", data.user);
-                        location.href='/about-you';
+                        Session.createSession("prg_lg", data.user);
+                        _this.props.onNextStep(data.user);
+                        window.history.pushState('about-you','About You','/about-you');
+
                     }
 
-                    console.log(SessionClient.getSession("prg_lg"));
+                    console.log(Session.getSession("prg_lg"));
                 },
                 error: function (request, status, error) {
                     console.log(request.responseText);
