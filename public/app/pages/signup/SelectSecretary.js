@@ -61,13 +61,12 @@ class SelectSecretary extends React.Component {
                 success: function (data, text) {
                     if (data.status === 'success') {
                         data.user
+
                         Session.createSession("prg_lg", data.user);
-                        _this.props.onNextStep(data.user);
-                        window.history.pushState('about-you','About You','/about-you');
+                        _this.props.onNextStep();
 
                     }
 
-                    console.log(Session.getSession("prg_lg"));
                 },
                 error: function (request, status, error) {
                     console.log(request.responseText);

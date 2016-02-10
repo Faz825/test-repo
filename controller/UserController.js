@@ -67,12 +67,13 @@ var UserControler ={
         var User = require('mongoose').model('User'),
             Secretary = require('mongoose').model('Secretary');
 
-        var secretary ={
+
+        var secretaryData ={
             secretary:req.body.secretary,
             status:2
         }
-        User.saveUpdates(CurrentSession.id,secretary,function(resultSet){
-            Secretary.getSecretaryById(req.body.secretary,function(resultSet){
+        User.saveUpdates(CurrentSession.id,secretaryData,function(resultSet){
+            Secretary.getSecretaryById(secretaryData.secretary,function(resultSet){
                 var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
                 CurrentSession['secretary_name']        = resultSet.full_name;
                 CurrentSession['secretary_id']          = resultSet.id;
@@ -95,6 +96,40 @@ var UserControler ={
 
         });
 
+    },
+
+	/**
+	 * Save Data fo birth,
+	 * @param req
+	 * @param res
+	 */
+	saveGeneralInfo:function(req,res){
+        var User = require('mongoose').model('User');
+        var generalInfo ={
+            dob:req.body.dob,
+            country:req.body.country,
+            zip:req.body.zip
+        }
+        User.saveUpdates(CurrentSession.id,generalInfo,function(resultSet){
+
+            if(resultSet.status != 200){
+
+                res.status(400).json({
+                    status:"error",
+                    message:Alert.ERROR_ON_GENERAL_INFO_ADDING
+                });
+
+            }
+
+            res.status(200).json({
+                status:"success",
+                message:Alert.ADDED_GENERAL_INFO
+            });
+
+            return 0;
+
+
+        });
     }
 
 };

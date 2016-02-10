@@ -28,6 +28,8 @@ export default class AboutYou extends React.Component{
         this.collectData = this.collectData.bind(this);
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
 
+
+
     }
 
     componentDidMount() {
@@ -69,10 +71,37 @@ export default class AboutYou extends React.Component{
             if(this.allInvalid(this.state.errorData)){
                 this.setState({validateAlert: ""});
 
+                let user = Session.getSession('prg_lg');
+                let _this =  this;
+                $.ajax({
+                    url: '/general-info/save',
+                    method: "POST",
+                    dataType: "JSON",
+                    headers: { 'prg-auth-header':user.token },
+                    data:this.state.formData,
+                    success: function (data, text) {
+                        if (data.status === 'success') {
+                            data.user
+                            _this.props.onNextStep(user);
+                        }
+
+
+                    },
+                    error: function (request, status, error) {
+                        console.log(request.responseText);
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
                 console.log(this.state.formData);
             }
         }
 
+    }
+
+    onBack(){
+        console.log("asdsads");
+        this.props.onPreviousStep()
     }
 
 	render(){
@@ -108,7 +137,7 @@ export default class AboutYou extends React.Component{
 	                                        {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
 
 	                                        <div className="row">
-		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
+		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel pgs-sign-submit-back" value="back" onButtonClick = {this.onBack.bind(this)}/>
 		                                        <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
 		                                    </div>
                                         </form>    

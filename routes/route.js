@@ -27,7 +27,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
  * this URL can be accessed through web browser without login
  */
 GLOBAL.AccessAllow = [
-    '/','/signup','/choose-secretary','/doSignup','/secretaries','/about-you'
+    '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections'
 ];
 
 
@@ -48,4 +48,5 @@ router.all('/*',oAuth.Authentication);
  */
 
 router.post('/secretary/save',UserControler.saveSecretary);
+router.post('/general-info/save',UserControler.saveGeneralInfo);
 module.exports = router;

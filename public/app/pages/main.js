@@ -13,7 +13,6 @@ class Main extends React.Component {
 	}
     layoutSelector() {
 
-        console.log(Session.getSession('prg_lg'))
         if (Session.isSessionSet('prg_lg')) {
             return (
                 <div className="row row-clr pg-full-wrapper">

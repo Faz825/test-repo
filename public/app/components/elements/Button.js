@@ -1,11 +1,18 @@
 //Button
 import React from 'react';
 
-const Button = (props)=>{
-    let size = "button col-xs-" + props.size;
+const Button = ({size,type,classes,value,onButtonClick})=>{
+    let _size = 'button col-xs-size-'+size;
+    if(typeof onButtonClick == 'undefined'){
+        return(
+            <div className={_size}>
+                <input type={type} className={classes} value={value} />
+            </div>
+        );
+    }
     return(
-        <div className={size}>
-            <input type={props.type} className={props.classes} value={props.value} />
+        <div className={_size}>
+            <input type={type} className={classes} value={value} onClick={event=>onButtonClick(event)}/>
         </div>
     )
 }

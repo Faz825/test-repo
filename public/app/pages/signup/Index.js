@@ -12,56 +12,55 @@ class Index extends React.Component {
 		this.state={
 			step:1,
             userData:{},
-            signupURL:"/doSignup"
+            serviceURLs:{
+                1:'sign-up',
+                2:'choose-secretary',
+                3:'about-you',
+                4:'establish-connections'
+            }
 		};
+
+
 		this.onNextStep = this.onNextStep.bind(this);
 		this.onPreviousStep = this.onPreviousStep.bind(this);
 
 
 	}
 	componentDidMount() {
+        let _step = this.loadNextStep();
+        this.setState({step: _step}, function () {
+            this.loadRoute();
+        });
 
-		if(Session.isSessionSet('prg_lg')){
-            let ses_user = Session.getSession('prg_lg')
-            this.setState({userData: ses_user}, function () {
-                this.loadNextStep()
-            });
-		}
 	}
-	onNextStep(data){
-        let _data = this.state.userData;
-        let _frmData = Object.assign(_data,data);
-		this.setState({userData: _frmData}, function () {
-		    this.loadNextStep();
-
-
-
+	onNextStep(){
+        let _step = this.loadNextStep();
+		this.setState({step: _step}, function () {
+            this.loadRoute();
 		});
 	}
 	onPreviousStep(){
-		this.loadPreviousStep()
+        let _step =  this.state.step-1;
+        this.setState({step: _step}, function () {
+            this.loadRoute();
+        });
 	}
 
 	loadNextStep(){
-		let _sesUser = this.state.userData;
-        let _step =  _sesUser.status+1;
-
-        this.setState({step:_step});
+        if(Session.isSessionSet('prg_lg')) {
+            let ses_user = Session.getSession('prg_lg')
+           return ses_user.status+1;
+        }
+        return 1;
 	}
 
-	loadPreviousStep(){
-		let _frmData = this.state.signupFormData;
-			_frmData.status = _frmData.status-1;
-		this.setState({_frmData: _frmData})
+	loadRoute(){
+        if(this.state.step >1){
+            let _urls = this.state.serviceURLs[this.state.step];
+            window.history.pushState('Sign up','User Sign up','/'+_urls);
+        }
+
 	}
-
-    saveFormData(){
-        console.log(this.state.userData);
-
-
-
-    }
-
 
 	showSteps(){
 
@@ -76,11 +75,8 @@ class Index extends React.Component {
 				return (<Signup onNextStep ={this.onNextStep}/>);
 		}
 	}
-
 	render() {
-		
 		return this.showSteps()
-	    
 	}
 
 		
