@@ -14,9 +14,10 @@ import SelectSecretary  from './pages/signup/SelectSecretary';
 
 let rootRoute =(
 	<Route name="main" path="/" component={Main} state="1">
-		<Route name="signupIndex" path="/signup" component={SignupIndex}/>
-		<Route name="aboutyou" path="/choose-secretary" component={SignupIndex}/>
-        <Route name="aboutyou" path="/about-you" component={SignupIndex}/>
+		<Route name="signupIndex" path="/sign-up" component={SignupIndex}/>
+		<Route name="choose-secretary" path="/choose-secretary" component={SignupIndex}/>
+        <Route name="about-you" path="/about-you" component={SignupIndex}/>
+        <Route name="establish-connections" path="/establish-connections" component={SignupIndex}/>
 	</Route>
 );
 

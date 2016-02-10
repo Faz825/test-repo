@@ -167,7 +167,6 @@ UserSchema.statics.addSecretary =function(userId,secretaryId,callBack){
  * @param callBack
  */
 UserSchema.statics.saveUpdates=function(userId,data,callBack){
-    console.log(data)
     var _this = this;
     _this.update({_id:userId},
         {$set:data},function(err,resultSet){

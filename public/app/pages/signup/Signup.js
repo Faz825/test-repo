@@ -75,8 +75,7 @@ class Signup extends React.Component {
 
                             if (data.status === 'success') {
                                 Session.createSession("prg_lg", data.user);
-                                _this.props.onNextStep(data.user);
-                                window.history.pushState('choose-secretary','Choose Secretary','/choose-secretary');
+                                _this.props.onNextStep();
                             }
 
                         },
