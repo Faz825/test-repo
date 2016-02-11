@@ -1,4 +1,3 @@
-//LinkButton
 import React from 'react';
 
 export default class LinkButton extends React.Component{
