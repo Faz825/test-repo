@@ -15,6 +15,11 @@ body {
 	width: 960px;
 }
 
+a,
+a:focus{
+	outline: 0;
+}
+
 /*top-wrapper*/
 
 .pgs-top-navigation {
@@ -247,7 +252,14 @@ body {
 
 /*News read page*/
 
-.pgs-news-read-box {width:110px;float:left;margin-right:14px !important;margin-bottom:20px;margin-top:10px;}
+.pgs-news-read-box {
+	float: left;
+	margin-bottom: 10px;
+	margin-left: 10px !important;
+	margin-right: 10px !important;
+	margin-top: 10px;
+	width: 110px;
+}
 
 .pgs-news-read-box:after {
 	visibility: hidden;
@@ -288,19 +300,19 @@ body {
 .pgs-news-read-select label {font: 14px 'montserratsemi_bold';color:#5f5f5f;margin-bottom:0px;}
 
 .pgs-news-read-select input[type="checkbox"] + label:before {
-  border: 1px solid #fff;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  content: "";
-  display: inline-block;
-  font: 12px 'montserratbold';color:#5f5f5f;
-  height: 15px;
-  width: 15px;
-  margin: 2px 15px 0 0;
-  padding: 0;
-  vertical-align: top;
-
+	border: 1px solid #fff;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	content: "";
+	display: inline-block;
+	font: 12px 'montserratbold';color:#5f5f5f;
+	height: 15px;
+	width: 15px;
+	margin: 2px 15px 0 0;
+	padding: 0;
+	vertical-align: top;
+	cursor: pointer;
 }
 
 .pgs-news-read-select input[type="checkbox"]:checked + label:before {
@@ -319,7 +331,17 @@ body {
 
 .current-check {box-shadow:0px 0px 12px 0px #020202;}
 
-.pgs-news-read-cover {padding-bottom:30px;}
+.pgs-news-read-cover {
+	margin-bottom: 30px;
+	overflow: auto;
+	width: 605px;
+}
+
+.pgs-news-read-cover .pgs-news-read-cover-inner{
+	min-width: 650px;
+	overflow: hidden;
+	width: auto;
+}
 
 .pgs-news-read-cover .mCSB_scrollTools .mCSB_draggerContainer {
     top: 15px;

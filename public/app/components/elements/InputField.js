@@ -36,10 +36,14 @@ export default class InputField extends React.Component{
 	handleBlur(e){
 		let value = e.target.value;
 
+		console.log(value)
+
 		if(value.length > 0){
 
 			if(this.props.type == "text"){
-				
+				if(value.length > 0){
+					this.setState({validate: ""});
+				}
 			}
 
 			if(this.props.type == "password"){
@@ -61,7 +65,12 @@ export default class InputField extends React.Component{
 			}
 
 		}else{
-			this.setState({validate: ""});
+
+			if(this.props.required){
+				this.setState({validate: Alert.FILL_EMPTY_REQUIRED_FIELDS});
+			}else{
+				this.setState({validate: ""});
+			}
 		}
 
 	}
@@ -69,9 +78,14 @@ export default class InputField extends React.Component{
 	render() {
 		let size = "input-field col-xs-" + this.props.size;
 
+		let opts = {};
+        if (this.state.validate) {
+            opts['style'] = {"borderColor" : "#ed0909"};
+        }
+
 		return (
 			<div className={size}>
-				<p>{this.props.label}</p>
+				<p>{this.props.label} {this.props.required ? <span style={{"color": "#ed0909"}}>*</span> : ""} </p>
 
 				<input type={this.props.type} 
 					name={this.props.name} 
@@ -79,7 +93,8 @@ export default class InputField extends React.Component{
 					placeholder={this.props.placeholder} 
 					className={this.props.classes} 
 					onChange={this.handleChange.bind(this)}
-					onBlur={this.handleBlur.bind(this)} />
+					onBlur={this.handleBlur.bind(this)}
+					{...opts}  />
 
 				{this.state.validate ? <span className="invalid-msg" style={errorStyles}>{this.state.validate}</span> : null}
 

@@ -28,7 +28,7 @@ export default class CountryList extends React.Component{
 	render(){
 		return(
 			<div className="col-xs-5">
-	            <p>Country</p>
+	            <p>Country {this.props.required ? <span style={{"color": "#ed0909"}}>*</span> : ""}</p>
 	            <select name="country" className="pgs-sign-select" onChange={this.selectChange.bind(this)}>
 	            	{Countries.map(function(country, i){
 						return <option value={country.key} key={i}>{country.name}</option>;

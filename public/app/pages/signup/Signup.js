@@ -125,17 +125,17 @@ class Signup extends React.Component {
                                 <form method="get" onSubmit={this.validateForm.bind(this)} onReset={this.clearValidations.bind(this)} >
 
                                     <div className="row">
-                                        <InputField type="text" name="fName" size="6" label="First Name" placeholder="Soham" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
-                                        <InputField type="text" name="lName" size="6" label="Last Name" placeholder="Khaitan" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
+                                        <InputField type="text" name="fName" size="6" label="First Name" placeholder="Soham" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
+                                        <InputField type="text" name="lName" size="6" label="Last Name" placeholder="Khaitan" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
                                     </div>
 
                                     <div className="row">
-                                        <InputField type="email" name="email" size="12" label="Your email address" placeholder="sohamkhaitan@gmail.com" classes="pgs-sign-inputs" textChange={this.elementChangeHandler}/>
+                                        <InputField type="email" name="email" size="12" label="Your email address" placeholder="sohamkhaitan@gmail.com" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
                                     </div>
 
                                     <div className="row">
-                                        <InputField type="password" name="password" size="6" label="Password" placeholder="••••••••••" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
-                                        <InputField type="password" name="confPassword" size="6" label="Confirm Password" placeholder="••••••••••" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
+                                        <InputField type="password" name="password" size="6" label="Password" placeholder="••••••••••" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
+                                        <InputField type="password" name="confPassword" size="6" label="Confirm Password" placeholder="••••••••••" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
                                     </div>
 
                                     {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
