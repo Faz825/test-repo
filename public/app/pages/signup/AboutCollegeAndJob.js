@@ -4,6 +4,8 @@ import SelectDateDropdown from '../../components/elements/SelectDateDropdown'
 import CountryList from '../../components/elements/CountryList'
 import Button from '../../components/elements/Button'
 import {Alert} from '../../config/Alert'
+import Session  from '../../middleware/Session';
+import SecretaryThumbnail from '../../components/elements/SecretaryThumbnail'
 
 let errorStyles = {
     color         : "#ed0909",
@@ -17,6 +19,7 @@ export default class AboutCollegeAndJob extends React.Component{
 	constructor(props) {
         super(props);
         this.state= {
+            sesData:{},
             formData:{},
             errorData:{},
             validateAlert: ""
@@ -25,6 +28,12 @@ export default class AboutCollegeAndJob extends React.Component{
         this.collectData = this.collectData.bind(this);
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
         
+    }
+
+    componentDidMount() {
+
+        let _sesData = Session.getSession('prg_lg')
+        this.setState({sesData:_sesData});
     }
 
     allInvalid(elements) {
@@ -65,6 +74,8 @@ export default class AboutCollegeAndJob extends React.Component{
     }
 
 	render() {
+        let _secretary_image = this.state.sesData.secretary_image_url;
+
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
             	<div className="container">
@@ -73,9 +84,7 @@ export default class AboutCollegeAndJob extends React.Component{
                     
                     	<div className="row">
                         
-                        	<div className="col-xs-2 pgs-secratery-img">
-                                <img src="images/secretary-pic.png" alt="" className="img-responsive"/>
-                        	</div>
+                        	<SecretaryThumbnail url={_secretary_image} />
                             
                             <div className="col-xs-10">
                                 <div className="row row-clr pgs-middle-sign-wrapper-inner-cover pgs-middle-sign-wrapper-inner-cover-secretary pgs-middle-sign-wrapper-about">
@@ -93,9 +102,9 @@ export default class AboutCollegeAndJob extends React.Component{
                                         <form method="post" onSubmit={this.collectData.bind(this)}>
                                         
                                         <div className="row pgs-middle-about-inputs">
-                                        	<InputField type="text" name="schoolName" size="7" label="School Name" placeholder="University of California, Berkeley" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
+                                        	<InputField type="text" name="schoolName" size="7" label="School Name" placeholder="University of California, Berkeley" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
 
-                                        	<SelectDateDropdown title="Graduation Date" dateFormat="mm-dd-yyyy" optChange={this.elementChangeHandler} required="true"/>
+                                        	<SelectDateDropdown title="Graduation Date" dateFormat="mm-dd-yyyy" optChange={this.elementChangeHandler}/>
                                             
                                         </div>
                                         

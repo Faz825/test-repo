@@ -44,7 +44,7 @@ export default class SelectDateDropdown extends React.Component{
 
 		return(
 			<div className="col-xs-5">
-            	<p>{this.props.title}</p>
+            	<p>{this.props.title} {this.props.required ? <span style={{"color": "#ed0909"}}>*</span> : ""} </p>
                 <div className="row row-clr">
                     <Dropdown fieldName={dateFormat[0]} dateChange={this.dateUpdate.bind(this)} />
                     <Dropdown fieldName={dateFormat[1]} dateChange={this.dateUpdate.bind(this)} />
