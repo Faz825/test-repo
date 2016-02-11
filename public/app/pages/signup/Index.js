@@ -3,7 +3,7 @@ import Session  from '../../middleware/Session';
 import Signup from './Signup';
 import SelectSecretary from './SelectSecretary';
 import AboutYou from './AboutYou';
-
+import EstablishConnections from './EstablishConnections';
 class Index extends React.Component {
 
 	constructor(props) {
@@ -16,7 +16,8 @@ class Index extends React.Component {
                 1:'sign-up',
                 2:'choose-secretary',
                 3:'about-you',
-                4:'establish-connections'
+                4:'establish-connections',
+                5:'establish-connections'
             }
 		};
 
@@ -48,22 +49,22 @@ class Index extends React.Component {
 
 	loadNextStep(){
         if(Session.isSessionSet('prg_lg')) {
-            let ses_user = Session.getSession('prg_lg')
-           return ses_user.status+1;
+            let ses_user = Session.getSession('prg_lg');
+            return ses_user.status+1;
         }
         return 1;
 	}
 
 	loadRoute(){
-        if(this.state.step >1){
-            let _urls = this.state.serviceURLs[this.state.step];
-            window.history.pushState('Sign up','User Sign up','/'+_urls);
-        }
+
+        let _urls = this.state.serviceURLs[this.state.step];
+        window.history.pushState('Sign up','User Sign up','/'+_urls);
+
 
 	}
 
 	showSteps(){
-
+console.log(this.state.step)
 		switch(this.state.step){
             case 1:
                 return (<Signup onNextStep ={this.onNextStep}/>);
@@ -71,6 +72,10 @@ class Index extends React.Component {
 				return (<SelectSecretary onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
 			case 3:
 				return  (<AboutYou onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+            case 4:
+                return  (<EstablishConnections onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+            case 5:
+                return (<EstablishConnections onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
 			default:
 				return (<Signup onNextStep ={this.onNextStep}/>);
 		}

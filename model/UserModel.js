@@ -30,7 +30,7 @@ var UserSchema = new Schema({
 	},
 	status:{
 		type:Number,
-		default:1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETED CHOOSE YOUR SECRETARY
+		default:1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETED CHOOSE YOUR SECRETARY | 3 - COMPLETED GENERAL INFORMATION
 	},
 	secretary:{
 		 type: Schema.ObjectId, 
@@ -55,7 +55,7 @@ var UserSchema = new Schema({
 	created_at:{
 		type:Date
 	},
-	upadted_at:{
+	updated_at:{
 		type:Date
 	}
 
@@ -179,5 +179,51 @@ UserSchema.statics.saveUpdates=function(userId,data,callBack){
                 callBack({status:400,error:err});
             }
         });
+}
+
+/**
+ * Get Connection Users based on the logged user
+ * @param userId
+ * @param criteria
+ * @param callBack
+ */
+UserSchema.statics.getConnectionUsers=function(criteria,callBack){
+    var _this = this;
+
+   _this.count({country:criteria.country},function(err,count){
+console.log(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
+       _this.find({country:criteria.country})
+           .limit(Config.CONNECTION_RESULT_PER_PAGE)
+           .skip(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
+           .sort({
+               country:'asc'
+           })
+           .exec(function(err,resultSet){
+               if(!err){
+
+                   callBack({
+                       status:200,
+                       totla_result:count,
+                       users:_this.formatConnectionUserDataSet(resultSet)
+                   })
+
+               }else{
+                   console.log("Server Error --------");
+                   console.log(err);
+                   callBack({status:400,error:err});
+               }
+
+           });
+
+   });
+
+}
+/**
+ * Format Connection users data
+ * @param resultSet
+ * @returns {*}
+ */
+UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
+    return resultSet;
 }
 mongoose.model('User',UserSchema);

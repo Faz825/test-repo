@@ -11,8 +11,6 @@ class SelectSecretary extends React.Component {
          }
          this.onNextStep = this.onNextStep.bind(this);
 
-
-
     }
 
     componentDidMount() {
