@@ -121,7 +121,7 @@ export default class AboutYou extends React.Component{
                                 <div className="row row-clr pgs-middle-sign-wrapper-inner-cover pgs-middle-sign-wrapper-inner-cover-secretary pgs-middle-sign-wrapper-about">
                                 <img src="images/sign-left-arrow-1.png" alt="" className="img-responsive pgs-sign-left-arrow" />
 
-                                    <AboutInner secretary_name ={this.state.sesData.secretary_name}/>
+                                    <AboutInner />
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form">
                                     
                                     	<h6>First, Let me know a little more about you...</h6>
@@ -131,7 +131,7 @@ export default class AboutYou extends React.Component{
 
 	                                            <CountryList optChange={this.elementChangeHandler} required="true"/>
 
-	                                            <InputField type="text" name="zip" size="2" label="Zip Code" placeholder="98252" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
+	                                            <InputField type="text" name="zip" size="2" label="Zip Code" placeholder="98252" classes="pgs-sign-inputs" textChange={this.elementChangeHandler}  />
 	                                        </div>
 
 	                                        {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
