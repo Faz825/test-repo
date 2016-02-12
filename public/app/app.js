@@ -20,6 +20,7 @@ let rootRoute =(
         <Route name="establish-connections" path="/establish-connections" component={SignupIndex}/>
         <Route name="news-categories" path="/news-categories" component={SignupIndex}/>
 
+        <Route name="done" path="/done" component={SignupIndex}/>
 	</Route>
 );
 
