@@ -80,12 +80,10 @@ export default class AboutYou extends React.Component{
                     headers: { 'prg-auth-header':user.token },
                     data:this.state.formData,
                     success: function (data, text) {
-                        if (data.status === 'success') {
-                            data.user
-                            _this.props.onNextStep(user);
+                        if (data.status.code == 200) {
+                            Session.createSession("prg_lg", data.user);
+                            _this.props.onNextStep();
                         }
-
-
                     },
                     error: function (request, status, error) {
                         console.log(request.responseText);
@@ -100,7 +98,7 @@ export default class AboutYou extends React.Component{
     }
 
     onBack(){
-        console.log("asdsads");
+
         this.props.onPreviousStep()
     }
 

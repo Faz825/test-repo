@@ -108,9 +108,11 @@ var UserControler ={
         var generalInfo ={
             dob:req.body.dob,
             country:req.body.country,
-            zip:req.body.zip
+            zip:req.body.zip,
+            status:3
         }
         User.saveUpdates(CurrentSession.id,generalInfo,function(resultSet){
+
 
             if(resultSet.status != 200){
 
@@ -120,19 +122,180 @@ var UserControler ={
                 });
 
             }
+            var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
+            CurrentSession['status']    = 3;
+            CurrentSession['country']   = req.body.country;
+            CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+                var  _out_put = {}
+                _out_put = {
+                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.INFO),
+                    user:CurrentSession
+                }
+                if(!cacheData){
+                    _out_put['extra']=Alert.CACHE_CREATION_ERROR
+                }
 
-            res.status(200).json({
-                status:"success",
-                message:Alert.ADDED_GENERAL_INFO
+                res.status(200).json(_out_put);
             });
+
 
             return 0;
 
 
         });
+    },
+    /**
+     * Load Connections
+     * @param req
+     * @param res
+     */
+    getConnections:function(req,res){
+        var User = require('mongoose').model('User');
+        var criteria ={
+            pg:0,
+            country:CurrentSession.country
+        };
+
+        if(typeof req.query.pg  != 'undefined' &&
+            req.query.pg != "" && req.query.pg > 1){
+            criteria['pg'] = req.query.pg -1;
+        }
+
+        
+        User.getConnectionUsers(criteria,function(resultSet){
+
+
+
+            if(resultSet.status !== 400){
+                var outPut	={};
+                outPut['status'] = ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS);
+                outPut['header'] ={
+                    total_result:resultSet.totla_result,
+                    result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
+                    current_page:req.query.pg,
+                    total_pages:Math.ceil(resultSet.totla_result/Config.CONNECTION_RESULT_PER_PAGE)
+                };
+
+                outPut['connections'] = resultSet.users
+
+                res.status(200).send(outPut);
+            }else{
+                outPut['status'] = ApiHelper.getMessage(400,Alert.CONNECTION_USERS_EMPTY,Alert.ERROR);
+
+                res.status(400).send(outPut);
+            }
+
+        });
+
+    },
+
+    /**
+     * Connect Peoples
+     * Even though connected_users object empty nothing but user hit skip button, Current session should be set to 4.
+     * @param req
+     * @param res
+     */
+    connect:function(req,res){
+        var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
+        CurrentSession['status']    = 4;
+        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+            var outPut ={};
+                outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user']=CurrentSession;
+
+            var req_connected_users = JSON.parse(req.body.connected_users);
+
+            if(req_connected_users.length >= 1 ) {
+
+                var connected_users = [],
+                    now = new Date(),
+                    Connection = require('mongoose').model('Connection');
+
+
+                for (var i = 0; req_connected_users.length > i; i++) {
+                    connected_users.push({
+                        user_id: CurrentSession.id,
+                        connected_with: req_connected_users[i],
+                        created_at: now
+                    });
+                }
+
+                Connection.connect(connected_users, function (resultSet) {
+
+                    if (resultSet.status !== 200) {
+                        outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
+                        res.status(400).send(outPut);
+                        return 0;
+                    }
+
+                    if (!cacheData) {
+                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                    }
+
+                    res.status(200).json(outPut);
+                    return 0;
+                });
+            }else{
+                res.status(200).json(outPut);
+                return 0;
+            }
+
+        });
+    },
+
+    /**
+     * Add new category to the user
+     * @param req
+     * @param res
+     */
+    addNewsCategory:function(req,res){
+        var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
+        CurrentSession['status']    = 5;
+        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+            var outPut ={};
+            outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['user']=CurrentSession;
+
+            var req_news_categories = JSON.parse(req.body.news_categories);
+
+            if(req_news_categories.length >= 1 ) {
+
+                var news_categories = [],
+                    now = new Date(),
+                    FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+                for (var i = 0; req_news_categories.length > i; i++) {
+                    news_categories.push({
+                        user_id: CurrentSession.id,
+                        connected_with: req_news_categories[i],
+                        created_at: now
+                    });
+                }
+
+                FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
+
+                    if (resultSet.status !== 200) {
+                        outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                        res.status(400).send(outPut);
+                        return 0;
+                    }
+                    if (!cacheData) {
+                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                    }
+
+                    res.status(200).json(outPut);
+                    return 0;
+                });
+
+            }else{
+                res.status(200).json(outPut);
+                return 0;
+            }
+        });
     }
 
 };
+
+
 
 
 

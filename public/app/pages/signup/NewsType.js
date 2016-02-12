@@ -1,8 +1,53 @@
 import React from 'react'
 import Button from '../../components/elements/Button'
-import NewsCategoryList from '../../components/elements/NewsCategoryList'  
-
+import NewsCategoryList from '../../components/elements/NewsCategoryList'
+import Session  from '../../middleware/Session';
 export default class NewsType extends React.Component{
+    constructor(props){
+        super(props);
+
+        this.state = {selected : "" ,categories : "",status:false,btn_name:"Skip"};
+
+        this.selectedNewsCategories =[];
+    }
+
+    onCategorySelect(categories){
+        this.selectedNewsCategories = categories;
+        console.log(this.selectedNewsCategories)
+        if(this.selectedNewsCategories.length >=1){
+            this.setState({"btn_name":"Next"});
+        }else{
+            this.setState({"btn_name":"Skip"});
+        }
+    }
+    onNextStep(){
+        let user = Session.getSession('prg_lg');
+        let _this =  this;
+        $.ajax({
+            url: '/addNewsCategory',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':user.token },
+            data:{ news_categories: JSON.stringify(this.selectedNewsCategories)},
+            success: function (data, text) {
+                if (data.status.code == 200) {
+                    Session.createSession("prg_lg", data.user);
+                    _this.props.onNextStep();
+                }
+            },
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    }
+
+
+    onCancel(){
+        this.onNextStep();
+    }
+
 	render() {
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
@@ -29,11 +74,19 @@ export default class NewsType extends React.Component{
                                     
                                     	<h6>Tell me about what type of news you would like to read</h6>
                                         
-                                        <NewsCategoryList />
+                                        <NewsCategoryList onCategorySelect={(categories)=>this.onCategorySelect(categories)}/>
                                         
                                             <div className="row">
-		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
-		                                        <Button type="button" size="6" classes="pgs-sign-submit" value="skip" />
+		                                        <Button type="button"
+                                                        size="6"
+                                                        classes="pgs-sign-submit-cancel"
+                                                        value="cancel"
+                                                        onButtonClick = {()=>this.onCancel()}/>
+		                                        <Button type="button"
+                                                        size="6"
+                                                        classes="pgs-sign-submit"
+                                                        value={this.state.btn_name}
+                                                        onButtonClick ={()=>this.onNextStep()}  />
 		                                    </div>  
                                     </div>
                                     

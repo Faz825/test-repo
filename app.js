@@ -11,7 +11,8 @@ var bodyParser = require('body-parser');
 GLOBAL.Config = require('./config/app.config');
 GLOBAL.CurrentSession = {};
 require('./config/alert.message');
-
+GLOBAL.ApiHelper = require('./middleware/ApiHelper');
+GLOBAL.DateTime  = require('./lib/DateTime');
 //Define Clusters 
 var Clusters = require('./config/clusters');
 Clusters.init();

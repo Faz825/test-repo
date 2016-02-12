@@ -10,6 +10,9 @@ var  mongoose = require('mongoose'),
 
 
 
+/**
+ * User Basic information
+ */
 var UserSchema = new Schema({
 	first_name:{ 
 		type:String, 
@@ -30,7 +33,7 @@ var UserSchema = new Schema({
 	},
 	status:{
 		type:Number,
-		default:1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETED CHOOSE YOUR SECRETARY
+		default:1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETED CHOOSE YOUR SECRETARY | 3 - COMPLETED GENERAL INFORMATION
 	},
 	secretary:{
 		 type: Schema.ObjectId, 
@@ -47,19 +50,24 @@ var UserSchema = new Schema({
 		trim:true,
 		default:null
 	},
-	zipcode:{
+	zip_code:{
 		type:String,
 		trim:true,
 		default:null
 	},
+
 	created_at:{
 		type:Date
 	},
-	upadted_at:{
+	updated_at:{
 		type:Date
 	}
 
 },{collection:"users"});
+
+
+
+
 
 var createHash = function(password){
  return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
@@ -87,7 +95,7 @@ UserSchema.statics.create = function(UserData,callBack){
 	newUser.password	= createHash(UserData.password);
 	newUser.status		= UserData.status;
 	newUser.secretary	= UserData.secretary;
-	newUser.save(newUser,function(err,resultSet){
+	newUser.save(function(err,resultSet){
 
 		if(!err){
 			callBack({
@@ -179,5 +187,55 @@ UserSchema.statics.saveUpdates=function(userId,data,callBack){
                 callBack({status:400,error:err});
             }
         });
+}
+
+/**
+ * Get Connection Users based on the logged user
+ * @param userId
+ * @param criteria
+ * @param callBack
+ */
+UserSchema.statics.getConnectionUsers=function(criteria,callBack){
+    var _this = this;
+
+   _this.count({country:criteria.country},function(err,count){
+
+       _this.find({country:criteria.country})
+           .limit(Config.CONNECTION_RESULT_PER_PAGE)
+           .skip(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
+           .sort({
+               country:'asc'
+           })
+           .exec(function(err,resultSet){
+               if(!err){
+
+                   callBack({
+                       status:200,
+                       total_result:count,
+                       users:_this.formatConnectionUserDataSet(resultSet)
+                   })
+
+               }else{
+                   console.log("Server Error --------");
+                   console.log(err);
+                   callBack({status:400,error:err});
+               }
+
+           });
+
+   });
+
+}
+
+
+
+
+/**
+ * Format Connection users data
+ * @param resultSet
+ * @returns {*}
+ */
+UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
+    return resultSet;
 }
 mongoose.model('User',UserSchema);

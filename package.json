@@ -16,6 +16,7 @@
     "express": "~4.13.1",
     "express-session": "1.13.0",
     "jsonwebtoken": "^5.4.0",
+    "lodash": "^4.3.0",
     "memcached": "^2.2.1",
     "mongoose": "^4.4.1",
     "mongoose-schema-extend": "0.2.0",

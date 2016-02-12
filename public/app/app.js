@@ -18,6 +18,8 @@ let rootRoute =(
 		<Route name="choose-secretary" path="/choose-secretary" component={SignupIndex}/>
         <Route name="about-you" path="/about-you" component={SignupIndex}/>
         <Route name="establish-connections" path="/establish-connections" component={SignupIndex}/>
+        <Route name="news-categories" path="/news-categories" component={SignupIndex}/>
+
 	</Route>
 );
 

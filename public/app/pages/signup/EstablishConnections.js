@@ -6,25 +6,126 @@ import CountryList from '../../components/elements/CountryList'
 import Button from '../../components/elements/Button'
 import {Alert} from '../../config/Alert'
 import EstablishConnectionBlock from '../../components/elements/EstablishConnectionBlock'
+import Session  from '../../middleware/Session';
+export default class EstablishConnections extends React.Component{
+    constructor(props) {
+        super(props);
 
-export default class EstablishConnections extends React.Component{ 
+        this.state = {
+            connections: [],
+            resultHeader:[]
+
+
+        }
+        this.onNextStep = this.onNextStep.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
+        this.elementsList = [];
+        this.currentPage = 1;
+        this.connectedUsers =[];
+        this.btn_text="Skip"
+    }
+	componentDidMount() {
+        this.loadData(this.currentPage);
+	}
+
+    loadData(page){
+        let user = Session.getSession('prg_lg');
+        let _this =  this;
+        $.ajax({
+            url: '/connections',
+            method: "GET",
+            dataType: "JSON",
+            data:{pg:page},
+            headers: { 'prg-auth-header':user.token },
+            success: function (data, text) {
+                if(data.status.code == 200){
+
+                    this.setState({connections:data.connections,resultHeader:data.header})
+                    //this.currentPage = data.header.current_page;
+                }
+
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }.bind(this)
+        });
+    }
+
 	handleScroll(event, values) {
-	    console.log("top "+values.top);
-	    /*
-	    {
-	        left: 0,
-	        top: 0.21513353115727002
-	        clientWidth: 952
-	        clientHeight: 300
-	        scrollWidth: 952
-	        scrollHeight: 1648
-	        scrollLeft: 0
-	        scrollTop: 290
-	    }
-	    */
-	  }
 
+        if  (values.scrollTop == (values.scrollHeight - values.clientHeight) - 4){
+
+            if (this.currentPage > this.state.resultHeader.total_pages){
+                //return false;
+            }else{
+                console.log(this.currentPage)
+                this.loadData(this.currentPage)
+            }
+            this.currentPage = this.currentPage+1;
+            console.log(this.currentPage)
+        }
+
+
+
+    }
+    onNextStep(){
+        let user = Session.getSession('prg_lg');
+        let _this = this;
+        $.ajax({
+            url: '/connect-people',
+            method: "POST",
+            dataType: "JSON",
+            data:{ connected_users: JSON.stringify(this.connectedUsers)},
+            headers: { 'prg-auth-header':user.token },
+            success: function (data, text) {
+                if(data.status.code == 200){
+                    Session.createSession("prg_lg", data.user);
+                    _this.props.onNextStep();
+                }
+
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }.bind(this)
+        });
+    }
+
+    onConnectionSelect(connection,isConnected){
+        if(isConnected){
+            this.connectedUsers.push(connection._id);
+        }else{
+            let index = this.connectedUsers.indexOf(connection._id,1)
+            this.connectedUsers.splice(index);
+        }
+
+        if(this.connectedUsers.length >=1){
+            this.btn_text = "Next";
+        }else{
+            this.btn_text = "Skip";
+        }
+
+
+    }
+
+    onCancel(){
+        this.onNextStep();
+    }
 	render() {
+        let connection_list = [];
+
+
+
+        if(this.state.connections.length > 0){
+            connection_list = this.state.connections.map((connection)=>{
+                return <EstablishConnectionBlock key={connection._id} connection={connection} onConnectionSelect={(connection,isConnected)=>this.onConnectionSelect(connection,isConnected)}/>
+            });
+        }
+        this.elementsList.push(connection_list);
+
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
             	<div className="container">
@@ -53,52 +154,17 @@ export default class EstablishConnections extends React.Component{
                                         <div className="row row-clr pgs-establish-connection-cover"> 
                                         
                                         	<div className="row row-clr pgs-establish-connection-cover-inner">
-                                        	<Scrollbars style={{ height: 310 }} onScroll={this.handleScroll}>
-                                            
-                                            	<EstablishConnectionBlock name="Leonard Green" imgLink="images/est-conn-1.png" university="University of California, Berkeley" connectLink="#" />
 
-                                            	<EstablishConnectionBlock name="Saad El Yamani" imgLink="images/est-conn-2.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Gerald Edwards" imgLink="images/est-conn-3.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Saad El Yamani" imgLink="images/est-conn-2.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Gerald Edwards" imgLink="images/est-conn-1.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Saad El Yamani" imgLink="images/est-conn-2.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Gerald Edwards" imgLink="images/est-conn-3.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Saad El Yamani" imgLink="images/est-conn-2.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Gerald Edwards" imgLink="images/est-conn-1.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Leonard Green" imgLink="images/est-conn-1.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Saad El Yamani" imgLink="images/est-conn-2.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Gerald Edwards" imgLink="images/est-conn-3.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Saad El Yamani" imgLink="images/est-conn-2.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Gerald Edwards" imgLink="images/est-conn-1.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Saad El Yamani" imgLink="images/est-conn-2.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Gerald Edwards" imgLink="images/est-conn-3.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Saad El Yamani" imgLink="images/est-conn-2.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            	<EstablishConnectionBlock name="Gerald Edwards" imgLink="images/est-conn-1.png" university="University of California, Berkeley" connectLink="#" />
-
-                                            </Scrollbars>
+                                                <Scrollbars style={{ height: 310 }} onScroll={this.handleScroll}>
+                                                    {this.elementsList}
+                                                </Scrollbars>
                                             </div>
                                             
                                         </div> 
                                         
                                         <div className="row">
-	                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
-	                                        <Button type="button" size="6" classes="pgs-sign-submit" value="next" />
+                                            <Button type="button" size="6" classes="pgs-sign-submit-cancel pgs-sign-submit-back" value="Cancel" onButtonClick = {this.onCancel.bind(this)}/>
+                                            <input type="button" className="pgs-sign-submit" value="Next" onClick={this.onNextStep}/>
 	                                    </div>
                                     </div>
                                     

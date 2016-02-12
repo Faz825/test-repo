@@ -8,10 +8,12 @@ var oAuth = require('../middleware/Authentication');
  */
 require('../model/UserModel');
 require('../model/SecretaryModel');
+require('../model/ConnectionModel');
+require('../model/FavouriteNewsCategory');
 /** Load  Controllers
  */
-var DefualtController = require('../controller/DefualtController'),
-	UserControler = require('../controller/UserController'),
+var DefaultController   = require('../controller/DefaultController'),
+	UserController       = require('../controller/UserController'),
 	SecretaryController = require('../controller/SecretaryController');
 
 /**
@@ -27,14 +29,14 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
  * this URL can be accessed through web browser without login
  */
 GLOBAL.AccessAllow = [
-    '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections'
+    '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories'
 ];
 
 
 /** 
  * Actual Routes Implementation without Authentication
  */
-router.post('/doSignup',UserControler.doSignup);
+router.post('/doSignup',UserController.doSignup);
 router.get('/secretaries',SecretaryController.getSeretaries);
 
 
@@ -47,6 +49,11 @@ router.all('/*',oAuth.Authentication);
  * Implement Actual Routes that need to Authenticate
  */
 
-router.post('/secretary/save',UserControler.saveSecretary);
-router.post('/general-info/save',UserControler.saveGeneralInfo);
+router.post('/secretary/save',UserController.saveSecretary);
+router.post('/general-info/save',UserController.saveGeneralInfo);
+router.get('/connections',UserController.getConnections);
+router.post('/connect-people',UserController.connect);
+router.post('/addNewsCategory',UserController.addNewsCategory);
+//
+
 module.exports = router;
