@@ -1,4 +1,3 @@
-//CountryList
 import React from 'react'
 import {Countries} from '../../service/Countries'
 
@@ -9,7 +8,6 @@ export default class CountryList extends React.Component{
     }
 
     selectChange(e){
-
 
     	if(this.props.required){ 
 			if(e.target.value.length != 0 ){

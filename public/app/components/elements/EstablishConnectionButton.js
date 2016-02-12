@@ -1,11 +1,9 @@
-//EstablishConnectionButton
 import React from 'react';
 
 export default class EstablishConnectionButton extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {clicked: false, value: this.props.value};
-
 
 	}
 
@@ -19,8 +17,6 @@ export default class EstablishConnectionButton extends React.Component{
             this.props.click(true);
             this.setState({clicked:true});
         }
-
-
 
 	}
 

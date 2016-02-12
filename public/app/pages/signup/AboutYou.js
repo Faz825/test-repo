@@ -28,8 +28,6 @@ export default class AboutYou extends React.Component{
         this.collectData = this.collectData.bind(this);
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
 
-
-
     }
 
     componentDidMount() {
@@ -91,64 +89,47 @@ export default class AboutYou extends React.Component{
                         console.log(error);
                     }
                 });
-                console.log(this.state.formData);
             }
         }
 
     }
 
     onBack(){
-
         this.props.onPreviousStep()
     }
 
 	render(){
         let _secretary_image = this.state.sesData.secretary_image_url;
 
-
         return(
 			<div className="row row-clr pgs-middle-sign-wrapper">
             	<div className="container">
-                
                     <div className="col-xs-10 pgs-middle-sign-wrapper-inner">
-                    
                     	<div className="row">
-
                             <SecretaryThumbnail url={_secretary_image} />
                             <div className="col-xs-10">
                                 <div className="row row-clr pgs-middle-sign-wrapper-inner-cover pgs-middle-sign-wrapper-inner-cover-secretary pgs-middle-sign-wrapper-about">
                                 <img src="images/sign-left-arrow-1.png" alt="" className="img-responsive pgs-sign-left-arrow" />
-
                                     <AboutInner />
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form">
-                                    
                                     	<h6>First, Let me know a little more about you...</h6>
                                         <form method="post" onSubmit={this.collectData.bind(this)}>
 	                                        <div className="row pgs-middle-about-inputs">
 	                                        	<SelectDateDropdown title="Date of Birth" dateFormat="dd-mm-yyyy" optChange={this.elementChangeHandler} required="true"/>
-
 	                                            <CountryList optChange={this.elementChangeHandler} required="true"/>
-
-	                                            <InputField type="text" name="zip" size="2" label="Zip Code" placeholder="98252" classes="pgs-sign-inputs" textChange={this.elementChangeHandler}  />
+	                                            <InputField type="text" name="zip" size="2" label="Zip Code" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler}  />
 	                                        </div>
-
 	                                        {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
-
 	                                        <div className="row">
 		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel pgs-sign-submit-back" value="back" onButtonClick = {this.onBack.bind(this)}/>
 		                                        <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
 		                                    </div>
                                         </form>    
                                     </div>
-                                    
                                 </div>
                         	</div>
-                            
                         </div>
-                        
-                        
                     </div>
-                    
                 </div>
             </div>
 		);

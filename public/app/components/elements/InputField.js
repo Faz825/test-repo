@@ -1,4 +1,3 @@
-//InputField
 import React from 'react';
 import {Alert} from '../../config/Alert';
 
@@ -35,8 +34,6 @@ export default class InputField extends React.Component{
 
 	handleBlur(e){
 		let value = e.target.value;
-
-		console.log(value)
 
 		if(value.length > 0){
 

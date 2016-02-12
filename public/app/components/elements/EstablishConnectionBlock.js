@@ -1,10 +1,7 @@
-//establishConnectionBlock
 import React from 'react'
 import EstablishConnectionButton from './EstablishConnectionButton'
 
-
 const EstablishConnectionBlock = ({connection,onConnectionSelect})=>{
-
 
     let _full_name = connection.first_name +" "+connection.last_name;
     let _image_name= (connection.imgLink)?connection.imgLink:"/images/secretary-pic.png"

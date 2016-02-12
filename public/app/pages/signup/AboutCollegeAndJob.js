@@ -75,63 +75,44 @@ export default class AboutCollegeAndJob extends React.Component{
 
 	render() {
         let _secretary_image = this.state.sesData.secretary_image_url;
+        let session = Session.getSession('prg_lg');
 
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
             	<div className="container">
-                
                     <div className="col-xs-10 pgs-middle-sign-wrapper-inner">
-                    
                     	<div className="row">
-                        
                         	<SecretaryThumbnail url={_secretary_image} />
-                            
                             <div className="col-xs-10">
                                 <div className="row row-clr pgs-middle-sign-wrapper-inner-cover pgs-middle-sign-wrapper-inner-cover-secretary pgs-middle-sign-wrapper-about">
                                 <img src="images/sign-left-arrow-1.png" alt="" className="img-responsive pgs-sign-left-arrow"/>
-                                	
                                     <div className="row row-clr pgs-middle-sign-wrapper-about-inner">
-                                        <h1>Hello Soham,</h1>
+                                        <h1>Hello {session.first_name},</h1>
                                         <h2>Welcome to Proglobe</h2>
                                         <h5>I, Donna, will now be your very own personal assistant and will be making your life easier.<br/>We are bonded forever now. Yay!</h5>
                                     </div>
-                                    
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form">
-                                    
                                     	<h6>About your college / job</h6>
                                         <form method="post" onSubmit={this.collectData.bind(this)}>
-                                        
                                         <div className="row pgs-middle-about-inputs">
                                         	<InputField type="text" name="schoolName" size="7" label="School Name" placeholder="University of California, Berkeley" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
-
                                         	<SelectDateDropdown title="Graduation Date" dateFormat="mm-dd-yyyy" optChange={this.elementChangeHandler}/>
-                                            
                                         </div>
-                                        
                                         <div className="row pgs-middle-about-inputs">
-
                                             <InputField type="text" name="job" size="7" label="Current Job" placeholder="Front-end Developer" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
                                             <InputField type="text" name="company" size="5" label="Company" placeholder="Facebook Inc." classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
-                                            
                                         </div>
-
                                         {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
-                                        
 	                                        <div className="row">
 		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
 		                                        <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
 		                                    </div>
                                         </form>    
                                     </div>
-                                    
                                 </div>
                         	</div>
-                            
                         </div>
-                        
-                        
                     </div>
-                    
                 </div>
             </div>
 		);

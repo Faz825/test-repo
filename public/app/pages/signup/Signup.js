@@ -2,9 +2,7 @@ import React from 'react'
 import InputField from '../../components/elements/InputField'
 import Button from '../../components/elements/Button'
 import {Alert} from '../../config/Alert';
-
 import Session  from '../../middleware/Session';
-
 
 let errorStyles = {
     color         : "#ed0909",
@@ -17,8 +15,6 @@ let errorStyles = {
  * TODO :: Set formData objects for each element as defualt value when plugin load
  */
 class Signup extends React.Component {
-
-
 
     constructor(props) {
         super(props);
@@ -61,8 +57,6 @@ class Signup extends React.Component {
                     this.setState({validateAlert: ""});
 
                     this.state.formData['status'] = 1;
-
-
 
                     let _this = this;
                     $.ajax({
@@ -112,9 +106,7 @@ class Signup extends React.Component {
         this.setState({validateAlert: ""});
     }
 
-
 	render(){
-
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper">
             	<div className="container">
@@ -123,28 +115,22 @@ class Signup extends React.Component {
                         	<h2>Let’s create your account</h2>
                             <div className="row row-clr pgs-middle-sign-wrapper-inner-form">
                                 <form method="get" onSubmit={this.validateForm.bind(this)} onReset={this.clearValidations.bind(this)} >
-
                                     <div className="row">
                                         <InputField type="text" name="fName" size="6" label="First Name" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
                                         <InputField type="text" name="lName" size="6" label="Last Name" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
                                     </div>
-
                                     <div className="row">
                                         <InputField type="email" name="email" size="12" label="Your email address" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
                                     </div>
-
                                     <div className="row">
                                         <InputField type="password" name="password" size="6" label="Password" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
                                         <InputField type="password" name="confPassword" size="6" label="Confirm Password" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
                                     </div>
-
                                     {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
-
                                     <div className="row">
                                         <Button type="reset" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
                                         <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
                                     </div>
-
                                 </form>    
                             </div>
                         </div>
@@ -153,8 +139,6 @@ class Signup extends React.Component {
             </div>
 		)
 	}
-
-
 }
 
 
