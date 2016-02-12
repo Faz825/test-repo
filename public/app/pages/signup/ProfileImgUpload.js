@@ -2,7 +2,7 @@
 import React from 'react'
 import Button from '../../components/elements/Button'
 import ImgUploader from '../../components/elements/ImgUploader'
-
+import Session  from '../../middleware/Session';
 export default class ProfileImgUpload extends React.Component{
 
 	constructor(props){
@@ -18,12 +18,35 @@ export default class ProfileImgUpload extends React.Component{
 	}
 
 	uploadImg(){
-		console.log("bla");
-		console.log(this.state.profileImg);
+
+        let user = Session.getSession('prg_lg');
+        let _this =  this;
+        $.ajax({
+            url: '/upload/profile-image',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':user.token },
+            data:{profileImg:this.state.profileImg,extension:'png'},
+            cache: false,
+            contentType:"application/x-www-form-urlencoded",
+            success: function (data, text) {
+                if (data.status.code == 200) {
+                    Session.createSession("prg_lg", data.user);
+                    _this.props.onNextStep();
+                }
+            },
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
 	}
 
 	render() {
+        let user = Session.getSession('prg_lg');
 		return (
+
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
             	<div className="container">
                 
@@ -40,7 +63,7 @@ export default class ProfileImgUpload extends React.Component{
                                 <img src="images/sign-left-arrow-1.png" alt="" className="img-responsive pgs-sign-left-arrow"/>
                                 	
                                     <div className="row row-clr pgs-middle-sign-wrapper-about-inner pgs-middle-sign-wrapper-about-inner-establish-conn">
-                                        <h1>Hello Soham,</h1>
+                                        <h1>Hello {user.full_name},</h1>
                                         <h2>Welcome to Proglobe</h2>
                                     </div>
                                     

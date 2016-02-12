@@ -13,6 +13,7 @@ GLOBAL.CurrentSession = {};
 require('./config/alert.message');
 GLOBAL.ApiHelper = require('./middleware/ApiHelper');
 GLOBAL.DateTime  = require('./lib/DateTime');
+GLOBAL.Util  = require('./lib/Util');
 //Define Clusters 
 var Clusters = require('./config/clusters');
 Clusters.init();
