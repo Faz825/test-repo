@@ -4,6 +4,7 @@ import Signup from './Signup';
 import SelectSecretary from './SelectSecretary';
 import AboutYou from './AboutYou';
 import EstablishConnections from './EstablishConnections';
+import NewsType from './NewsType';
 class Index extends React.Component {
 
 	constructor(props) {
@@ -17,7 +18,7 @@ class Index extends React.Component {
                 2:'choose-secretary',
                 3:'about-you',
                 4:'establish-connections',
-                5:'establish-connections'
+                5:'news-categories'
             }
 		};
 
@@ -64,7 +65,7 @@ class Index extends React.Component {
 	}
 
 	showSteps(){
-console.log(this.state.step)
+
 		switch(this.state.step){
             case 1:
                 return (<Signup onNextStep ={this.onNextStep}/>);
@@ -75,7 +76,7 @@ console.log(this.state.step)
             case 4:
                 return  (<EstablishConnections onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
             case 5:
-                return (<EstablishConnections onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+                return (<NewsType onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
 			default:
 				return (<Signup onNextStep ={this.onNextStep}/>);
 		}

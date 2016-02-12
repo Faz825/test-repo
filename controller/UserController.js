@@ -189,57 +189,107 @@ var UserControler ={
 
     },
 
-
+    /**
+     * Connect Peoples
+     * Even though connected_users object empty nothing but user hit skip button, Current session should be set to 4.
+     * @param req
+     * @param res
+     */
     connect:function(req,res){
-
-        var req_connected_users = JSON.parse(req.body.connected_users);
-        console.log(req_connected_users.length);
-        if(req_connected_users.length <= 0 ){
-            var outPut={
-                status : ApiHelper.getMessage(400,Alert.CONNECTED_USERS_NOT_SELECTED,Alert.ERROR)
-            }
-            res.status(400).send(outPut);
-            return 0;
-        }
-
-
-
-        var connected_users =[],
-            now = new Date(),
-            Connection = require('mongoose').model('Connection');
-
-
-        for(var i =0;req_connected_users.length > i; i++){
-            connected_users.push({
-                user_id:CurrentSession.id,
-                connected_with:req_connected_users[i],
-                created_at:now
-            });
-        }
-
-
-        Connection.connect(connected_users,function(resultSet){
+        var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
+        CurrentSession['status']    = 4;
+        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
             var outPut ={};
-            if(resultSet.status !== 200){
-                outPut['status'] = ApiHelper.getMessage(400,Alert.CONNECT_ERROR,Alert.ERROR);
-                res.status(400).send(outPut);
+                outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user']=CurrentSession;
+
+            var req_connected_users = JSON.parse(req.body.connected_users);
+
+            if(req_connected_users.length >= 1 ) {
+
+                var connected_users = [],
+                    now = new Date(),
+                    Connection = require('mongoose').model('Connection');
+
+
+                for (var i = 0; req_connected_users.length > i; i++) {
+                    connected_users.push({
+                        user_id: CurrentSession.id,
+                        connected_with: req_connected_users[i],
+                        created_at: now
+                    });
+                }
+
+                Connection.connect(connected_users, function (resultSet) {
+
+                    if (resultSet.status !== 200) {
+                        outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
+                        res.status(400).send(outPut);
+                        return 0;
+                    }
+
+                    if (!cacheData) {
+                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                    }
+
+                    res.status(200).json(outPut);
+                    return 0;
+                });
+            }else{
+                res.status(200).json(outPut);
                 return 0;
             }
 
-            var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
-            CurrentSession['status']    = 4;
-            CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
-                var  _out_put = {}
-                _out_put = {
-                    status:ApiHelper.getMessage(200,Alert.CONNECTED,Alert.SUCCESS),
-                    user:CurrentSession
-                }
-                if(!cacheData){
-                    _out_put['extra']=Alert.CACHE_CREATION_ERROR
-                }
-                res.status(200).json(_out_put);
-            });
+        });
+    },
 
+    /**
+     * Add new category to the user
+     * @param req
+     * @param res
+     */
+    addNewsCategory:function(req,res){
+        var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
+        CurrentSession['status']    = 5;
+        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+            var outPut ={};
+            outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['user']=CurrentSession;
+
+            var req_news_categories = JSON.parse(req.body.news_categories);
+
+            if(req_news_categories.length >= 1 ) {
+
+                var news_categories = [],
+                    now = new Date(),
+                    FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+                for (var i = 0; req_news_categories.length > i; i++) {
+                    news_categories.push({
+                        user_id: CurrentSession.id,
+                        connected_with: req_news_categories[i],
+                        created_at: now
+                    });
+                }
+
+                FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
+
+                    if (resultSet.status !== 200) {
+                        outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                        res.status(400).send(outPut);
+                        return 0;
+                    }
+                    if (!cacheData) {
+                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                    }
+
+                    res.status(200).json(outPut);
+                    return 0;
+                });
+
+            }else{
+                res.status(200).json(outPut);
+                return 0;
+            }
         });
     }
 

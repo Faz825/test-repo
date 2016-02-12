@@ -15,12 +15,14 @@ export default class EstablishConnections extends React.Component{
             connections: [],
             resultHeader:[]
 
+
         }
         this.onNextStep = this.onNextStep.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
         this.elementsList = [];
         this.currentPage = 1;
         this.connectedUsers =[];
+        this.btn_text="Skip"
     }
 	componentDidMount() {
         this.loadData(this.currentPage);
@@ -100,9 +102,18 @@ export default class EstablishConnections extends React.Component{
             this.connectedUsers.splice(index);
         }
 
+        if(this.connectedUsers.length >=1){
+            this.btn_text = "Next";
+        }else{
+            this.btn_text = "Skip";
+        }
+
+
     }
 
-
+    onCancel(){
+        this.onNextStep();
+    }
 	render() {
         let connection_list = [];
 
@@ -152,8 +163,8 @@ export default class EstablishConnections extends React.Component{
                                         </div> 
                                         
                                         <div className="row">
-	                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
-                                            <input type="button" className="pgs-sign-submit" value="next" onClick={this.onNextStep}/>
+                                            <Button type="button" size="6" classes="pgs-sign-submit-cancel pgs-sign-submit-back" value="Cancel" onButtonClick = {this.onCancel.bind(this)}/>
+                                            <input type="button" className="pgs-sign-submit" value="Next" onClick={this.onNextStep}/>
 	                                    </div>
                                     </div>
                                     

@@ -1,7 +1,7 @@
-//NewsCategoryList
 import React from 'react'
-import NewsCategoryListItem from './NewsCategoryListItem' 
 
+import NewsCategoryListItem from './NewsCategoryListItem'
+import Session  from '../../middleware/Session';
 let data = {
 	catName: "Business",
 	fields:{
@@ -14,26 +14,28 @@ export default class NewsCategoryList extends React.Component{
 	constructor(props){
 		super(props);
 		
-		this.state = {selected : "" ,categories : []};
+		this.state = {selected : "" ,categories : "",status:false};
 		this.categoryIsSelected = this.categoryIsSelected.bind(this);
-		this.selectedNewsIds =[];
+		this.selectedNewsCategories =[];
 	}
 
 	categoryIsSelected(category,status){
-		
-		if(status){
-			this.selectedNewsIds.push(category);
-		}else{
-			let index = this.selectedNewsIds.indexOf(category);
-			 this.selectedNewsIds.splice(index,1);
-		}
-       console.log(this.selectedNewsIds)
-	}
+        if(status){
+            this.selectedNewsCategories.push(category)
+
+        }else{
+            let index = this.selectedNewsCategories.indexOf(category._id,1)
+            this.selectedNewsCategories.splice(index);
+        }
+        this.props.onCategorySelect(this.selectedNewsCategories);
+
+    }
+
 
 	render() {
 
-		
-		return (
+
+        return (
 			<div className="row row-clr pgs-news-read-cover">
             	<div className="row row-clr pgs-news-read-cover-inner">
 

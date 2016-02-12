@@ -10,6 +10,9 @@ var  mongoose = require('mongoose'),
 
 
 
+/**
+ * User Basic information
+ */
 var UserSchema = new Schema({
 	first_name:{ 
 		type:String, 
@@ -47,11 +50,12 @@ var UserSchema = new Schema({
 		trim:true,
 		default:null
 	},
-	zipcode:{
+	zip_code:{
 		type:String,
 		trim:true,
 		default:null
 	},
+
 	created_at:{
 		type:Date
 	},
@@ -60,6 +64,10 @@ var UserSchema = new Schema({
 	}
 
 },{collection:"users"});
+
+
+
+
 
 var createHash = function(password){
  return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
@@ -87,7 +95,7 @@ UserSchema.statics.create = function(UserData,callBack){
 	newUser.password	= createHash(UserData.password);
 	newUser.status		= UserData.status;
 	newUser.secretary	= UserData.secretary;
-	newUser.save(newUser,function(err,resultSet){
+	newUser.save(function(err,resultSet){
 
 		if(!err){
 			callBack({
@@ -191,7 +199,7 @@ UserSchema.statics.getConnectionUsers=function(criteria,callBack){
     var _this = this;
 
    _this.count({country:criteria.country},function(err,count){
-console.log(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
+
        _this.find({country:criteria.country})
            .limit(Config.CONNECTION_RESULT_PER_PAGE)
            .skip(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
@@ -203,7 +211,7 @@ console.log(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
 
                    callBack({
                        status:200,
-                       totla_result:count,
+                       total_result:count,
                        users:_this.formatConnectionUserDataSet(resultSet)
                    })
 
@@ -218,6 +226,10 @@ console.log(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
    });
 
 }
+
+
+
+
 /**
  * Format Connection users data
  * @param resultSet

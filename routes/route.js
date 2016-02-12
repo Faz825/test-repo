@@ -9,6 +9,7 @@ var oAuth = require('../middleware/Authentication');
 require('../model/UserModel');
 require('../model/SecretaryModel');
 require('../model/ConnectionModel');
+require('../model/FavouriteNewsCategory');
 /** Load  Controllers
  */
 var DefaultController   = require('../controller/DefaultController'),
@@ -28,7 +29,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
  * this URL can be accessed through web browser without login
  */
 GLOBAL.AccessAllow = [
-    '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections'
+    '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories'
 ];
 
 
@@ -52,6 +53,7 @@ router.post('/secretary/save',UserController.saveSecretary);
 router.post('/general-info/save',UserController.saveGeneralInfo);
 router.get('/connections',UserController.getConnections);
 router.post('/connect-people',UserController.connect);
+router.post('/addNewsCategory',UserController.addNewsCategory);
 //
 
 module.exports = router;

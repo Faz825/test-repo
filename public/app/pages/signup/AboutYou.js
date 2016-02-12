@@ -98,7 +98,7 @@ export default class AboutYou extends React.Component{
     }
 
     onBack(){
-        console.log("asdsads");
+
         this.props.onPreviousStep()
     }
 
