@@ -159,7 +159,7 @@ a:focus{
 
 /*About You page*/
 
-.pgs-middle-about-wrapper {padding-top:130px;padding-bottom: 50px;position: relative;z-index: 500;background-color: rgba(0,0,0,0.4);}
+.pgs-middle-about-wrapper {padding-top:130px;padding-bottom: 50px;position: relative;z-index: 500;}
 
 .pgs-sign-left-arrow {position:absolute;left:-9px;top:-8px;}
 
@@ -364,7 +364,16 @@ a:focus{
 
 .Profile-pic-display-area {margin-bottom:10px;}
 
-.pgs-sign-submit-capture {
+.Profile-pic-display-area #imgUpload{
+	display: none;
+}
+
+.Profile-pic-display-area #previewProfileImg{
+	width: 100%;
+	height: auto;
+}
+
+.Profile-pic-display-btn-area label {
 	text-decoration: none !important;
     background-color: #a4becd;
     -webkit-border-radius: 3px;
@@ -373,11 +382,12 @@ a:focus{
     font: 10px 'montserratsemi_bold', sans-serif;
     color: #fff;
     text-align: center;
-    padding: 7px 0px;
-    width: 80px;
-    display: block;
+    padding: 7px 20px;
+    width: auto;
+    display: inline-block;
     text-transform: uppercase;
-	float:left;
+	cursor: pointer;
+	margin: 3px 0 0;
 }
 
 .pgs-sign-submit-capture:after {
@@ -405,6 +415,10 @@ a:focus{
 	float:right;
 }
 
+.Profile-pic-display-btn-area{
+	text-align: center;
+}
+
 .pgs-sign-upload:after {
 	visibility: hidden;
 	display: block;
@@ -423,7 +437,7 @@ a:focus{
 	height: 0;
 }
 
-.Profile-pic-display-btn-area a:hover, .Profile-pic-display-btn-area a:focus {color: #fff;}
+.Profile-pic-display-btn-area a, .Profile-pic-display-btn-area a:hover {color: #fff; text-decoration: none;}
 
 
 /*ProGlobe menu addition to signup screens (from 3rd screen)*/
