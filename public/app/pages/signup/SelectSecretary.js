@@ -1,13 +1,24 @@
 import React from 'react';
 import Secretary from '../../components/elements/Secretary';
+import {Alert} from '../../config/Alert'
 import Session  from '../../middleware/Session';
+
+let errorStyles = {
+    color         : "#ed0909",
+    fontSize      : "0.8em",
+    textTransform : "capitalize",
+    margin        : '0 0 15px',
+    display       : "inline-block"
+}
 
 class SelectSecretary extends React.Component {
     constructor(props) {
         super(props);
         this.onPrevious     = this.onPrevious.bind(this);
          this.state={
-            secretaries:[]
+            secretaries:[],
+            selected: "",
+            selectSecretary: ""
          }
          this.onNextStep = this.onNextStep.bind(this);
 
@@ -42,7 +53,12 @@ class SelectSecretary extends React.Component {
             secretary : secretaryId
         }
 
-        this.setState({secretary:secretary});
+        this.setState({
+            secretary:secretary,
+            selected:secretaryId
+        });
+
+        this.setState({selectSecretary: ""});
     }
 
     onNextStep(){
@@ -76,6 +92,7 @@ class SelectSecretary extends React.Component {
             //this.props.onNextStep(this.state.secretary)
         }else{
             console.log("Please Select Secretary");
+            this.setState({selectSecretary: Alert.PLEASE_SELECT_SECRETARY})
         }
 
     }
@@ -98,15 +115,17 @@ class SelectSecretary extends React.Component {
                                 	<div className="row">
                                         {
                                             this.state.secretaries.map((key,i)=>
-
-                                               <Secretary data={key} key={i} onSelectSecratery={this.onSelectSecratery.bind(this)}/>
+                                         
+                                               <Secretary data={key} key={i} selected={(key.id == this.state.selected)?true:false} onSelectSecratery={this.onSelectSecratery.bind(this)}/>
                                             )
                                         }
                                     </div>
+
+                                    {this.state.selectSecretary ? <p className="form-validation-alert" style={errorStyles} >{this.state.selectSecretary}</p> : null}
                                 
                                     <div className="row">
 
-                                        <div className="col-xs-6">
+                                        <div className="col-xs-12">
                                             <input type="button" className="pgs-sign-submit" value="next" onClick={this.onNextStep}/>
                                         </div>
                                     </div>
