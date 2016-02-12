@@ -29,7 +29,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
  * this URL can be accessed through web browser without login
  */
 GLOBAL.AccessAllow = [
-    '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories'
+    '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories','/profile-image'
 ];
 
 
@@ -38,6 +38,8 @@ GLOBAL.AccessAllow = [
  */
 router.post('/doSignup',UserController.doSignup);
 router.get('/secretaries',SecretaryController.getSeretaries);
+
+
 
 
 /**
@@ -54,6 +56,7 @@ router.post('/general-info/save',UserController.saveGeneralInfo);
 router.get('/connections',UserController.getConnections);
 router.post('/connect-people',UserController.connect);
 router.post('/addNewsCategory',UserController.addNewsCategory);
+router.post('/upload/profile-image',UserController.uploadProfileImage);
 //
 
 module.exports = router;

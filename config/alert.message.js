@@ -30,7 +30,9 @@ GLOBAL.Alert={
     CONNECTION_USERS_EMPTY:"Listed connection users are empty",
     CONNECT_ERROR:"Error while connecting with users",
     CONNECTED:"Connected",
-    CONNECTED_USERS_NOT_SELECTED:"Select at lease one user that you want to connect"
+    CONNECTED_USERS_NOT_SELECTED:"Select at lease one user that you want to connect",
+    ADDED_PROFILE_IMAGE:"Profile Image uploaded",
+    ERROR_UPLOADING_IMAGE:"Error wile uploading"
 
 
 }

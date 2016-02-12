@@ -2,7 +2,7 @@
 import React from 'react'
 import Button from '../../components/elements/Button'
 import ImgUploader from '../../components/elements/ImgUploader'
-
+import Session  from '../../middleware/Session';
 export default class ProfileImgUpload extends React.Component{
 
 	constructor(props){
@@ -20,6 +20,29 @@ export default class ProfileImgUpload extends React.Component{
 	uploadImg(){
 		console.log("bla");
 		console.log(this.state.profileImg);
+
+        let user = Session.getSession('prg_lg');
+        let _this =  this;
+        $.ajax({
+            url: '/upload/profile-image',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':user.token },
+            data:{profileImg:this.state.profileImg,extension:'png'},
+            cache: false,
+            contentType:"application/x-www-form-urlencoded",
+            success: function (data, text) {
+                if (data.status.code == 200) {
+                    Session.createSession("prg_lg", data.user);
+                    _this.props.onNextStep();
+                }
+            },
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
 	}
 
 	render() {

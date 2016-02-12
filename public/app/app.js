@@ -19,6 +19,8 @@ let rootRoute =(
         <Route name="about-you" path="/about-you" component={SignupIndex}/>
         <Route name="establish-connections" path="/establish-connections" component={SignupIndex}/>
         <Route name="news-categories" path="/news-categories" component={SignupIndex}/>
+        <Route name="profile-image" path="/profile-image" component={SignupIndex}/>
+
 
 	</Route>
 );
