@@ -6,6 +6,8 @@ import { Link} from 'react-router';
 import Logo from './Logo';
 import ProfileImage from './ProfileImage';
 import GlobalSearch from './GlobalSearch';
+import LogoutButton from '../../components/elements/LogoutButton';
+
 export default class Header extends React.Component {
 
     constructor(props) {
@@ -37,8 +39,7 @@ export default class Header extends React.Component {
                         <div className="col-xs-3 pgs-main-btn-area">
                             <div className="row row-clr pgs-main-btn-area-inner">
 
-                                <Link to="/login" className="pgs-main-btn-login">Login</Link>
-                                <Link to="/signup"  className="pgs-main-btn-sign">Signup</Link>
+                                <LogoutButton value="logout" />
 
                             </div>
                         </div>
