@@ -211,11 +211,15 @@ UserSchema.statics.saveUpdates=function(userId,data,callBack){
  * @param callBack
  */
 UserSchema.statics.getConnectionUsers=function(criteria,callBack){
-    var _this = this;
+    var _this = this,
+        _criteria ={
+            country:criteria.country,
+            _id: { $ne: criteria.user_id }
+        };
 
-   _this.count({country:criteria.country},function(err,count){
+   _this.count(_criteria,function(err,count){
 
-       _this.find({country:criteria.country})
+       _this.find(_criteria)
            .limit(Config.CONNECTION_RESULT_PER_PAGE)
            .skip(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
            .sort({

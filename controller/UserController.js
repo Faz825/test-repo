@@ -153,7 +153,8 @@ var UserControler ={
         var User = require('mongoose').model('User');
         var criteria ={
             pg:0,
-            country:CurrentSession.country
+            country:CurrentSession.country,
+            user_id:CurrentSession.id
         };
 
         if(typeof req.query.pg  != 'undefined' &&
@@ -164,10 +165,10 @@ var UserControler ={
         
         User.getConnectionUsers(criteria,function(resultSet){
 
-
+            var outPut	={};
 
             if(resultSet.status !== 400){
-                var outPut	={};
+
                 outPut['status'] = ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS);
                 outPut['header'] ={
                     total_result:resultSet.totla_result,
@@ -179,10 +180,12 @@ var UserControler ={
                 outPut['connections'] = resultSet.users
 
                 res.status(200).send(outPut);
+                return 0
             }else{
                 outPut['status'] = ApiHelper.getMessage(400,Alert.CONNECTION_USERS_EMPTY,Alert.ERROR);
 
                 res.status(400).send(outPut);
+                return 0;
             }
 
         });
