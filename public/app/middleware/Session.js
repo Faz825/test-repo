@@ -50,8 +50,9 @@
    
 	}
 	destroy(key){
+		
 		this.exdays = -1;
-		this.set(key, "");
+		this.createSession(key, "");
 	}
 
  }

@@ -1,14 +1,6 @@
 import React from 'react'
-
 import NewsCategoryListItem from './NewsCategoryListItem'
 import Session  from '../../middleware/Session';
-let data = {
-	catName: "Business",
-	fields:{
-		backgroundImgCode: "03",
-		catImgCode: "031",
-	}
-}
 
 export default class NewsCategoryList extends React.Component{
 	constructor(props){
@@ -31,10 +23,7 @@ export default class NewsCategoryList extends React.Component{
 
     }
 
-
 	render() {
-
-
         return (
 			<div className="row row-clr pgs-news-read-cover">
             	<div className="row row-clr pgs-news-read-cover-inner">

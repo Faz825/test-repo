@@ -3,10 +3,10 @@ import SignupHeader from '../components/header/SignupHeader'
 import SigninHeader from '../components/header/SigninHeader'
 import SignupIndex from '../pages/signup/Index';
 
-import Session  from '../middleware/Session';
+import Session  from '../middleware/Session'; 
 
 
-class Main extends React.Component {
+class Main extends React.Component { 
 
 	constructor(props) {
 		super(props);

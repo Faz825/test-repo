@@ -1,4 +1,3 @@
-//SelectDateDropdown
 import React from 'react';
 
 export default class SelectDateDropdown extends React.Component{
@@ -88,7 +87,6 @@ class Dropdown extends React.Component{
 		        break;
 
 		} 
-
 
 		for(let i = start; i <= end; i++){
 			i = (i < 10 ? '0'+ i : i);

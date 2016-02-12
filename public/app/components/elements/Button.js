@@ -1,4 +1,3 @@
-//Button
 import React from 'react';
 
 const Button = ({size,type,classes,value,onButtonClick})=>{

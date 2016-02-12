@@ -1,22 +1,20 @@
 import React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars'
-import InputField from '../../components/elements/InputField'
-import SelectDateDropdown from '../../components/elements/SelectDateDropdown'
-import CountryList from '../../components/elements/CountryList'
 import Button from '../../components/elements/Button'
-import {Alert} from '../../config/Alert'
 import EstablishConnectionBlock from '../../components/elements/EstablishConnectionBlock'
+import SecretaryThumbnail from '../../components/elements/SecretaryThumbnail'
 import Session  from '../../middleware/Session';
+
 export default class EstablishConnections extends React.Component{
     constructor(props) {
         super(props);
 
         this.state = {
             connections: [],
+            sesData:{}, 
             resultHeader:[]
-
-
         }
+
         this.onNextStep = this.onNextStep.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
         this.elementsList = [];
@@ -26,6 +24,9 @@ export default class EstablishConnections extends React.Component{
     }
 	componentDidMount() {
         this.loadData(this.currentPage);
+
+        let _sesData = Session.getSession('prg_lg')
+        this.setState({sesData:_sesData});
 	}
 
     loadData(page){
@@ -39,9 +40,7 @@ export default class EstablishConnections extends React.Component{
             headers: { 'prg-auth-header':user.token },
             success: function (data, text) {
                 if(data.status.code == 200){
-
                     this.setState({connections:data.connections,resultHeader:data.header})
-                    //this.currentPage = data.header.current_page;
                 }
 
             }.bind(this),
@@ -54,7 +53,6 @@ export default class EstablishConnections extends React.Component{
     }
 
 	handleScroll(event, values) {
-
         if  (values.scrollTop == (values.scrollHeight - values.clientHeight) - 4){
 
             if (this.currentPage > this.state.resultHeader.total_pages){
@@ -64,12 +62,9 @@ export default class EstablishConnections extends React.Component{
                 this.loadData(this.currentPage)
             }
             this.currentPage = this.currentPage+1;
-            console.log(this.currentPage)
         }
-
-
-
     }
+
     onNextStep(){
         let user = Session.getSession('prg_lg');
         let _this = this;
@@ -107,17 +102,16 @@ export default class EstablishConnections extends React.Component{
         }else{
             this.btn_text = "Skip";
         }
-
-
     }
 
     onCancel(){
         this.onNextStep();
     }
+
 	render() {
         let connection_list = [];
-
-
+        let session = Session.getSession('prg_lg');
+        let _secretary_image = this.state.sesData.secretary_image_url;
 
         if(this.state.connections.length > 0){
             connection_list = this.state.connections.map((connection)=>{
@@ -129,53 +123,34 @@ export default class EstablishConnections extends React.Component{
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
             	<div className="container">
-                
                     <div className="col-xs-10 pgs-middle-sign-wrapper-inner">
-                    
                     	<div className="row">
-                        
-                        	<div className="col-xs-2 pgs-secratery-img">
-                                <img src="images/secretary-pic.png" alt="" className="img-responsive"/>
-                        	</div>
-                            
+                        	<SecretaryThumbnail url={_secretary_image} />
                             <div className="col-xs-10">
                                 <div className="row row-clr pgs-middle-sign-wrapper-inner-cover pgs-middle-sign-wrapper-inner-cover-secretary pgs-middle-sign-wrapper-about">
                                 	<img src="images/sign-left-arrow-1.png" alt="" className="img-responsive pgs-sign-left-arrow"/>
-                                	
                                     <div className="row row-clr pgs-middle-sign-wrapper-about-inner pgs-middle-sign-wrapper-about-inner-establish-conn">
-                                        <h1>Hello Soham,</h1>
+                                        <h1>Hello {session.first_name},</h1>
                                         <h2>Welcome to Proglobe</h2> 
                                     </div>
-                                    
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form">
-                                    
                                     	<h6>Establish your connections</h6>
-                                        
-                                        <div className="row row-clr pgs-establish-connection-cover"> 
-                                        
+                                        <div className="row row-clr pgs-establish-connection-cover">
                                         	<div className="row row-clr pgs-establish-connection-cover-inner">
-
                                                 <Scrollbars style={{ height: 310 }} onScroll={this.handleScroll}>
                                                     {this.elementsList}
                                                 </Scrollbars>
                                             </div>
-                                            
-                                        </div> 
-                                        
+                                        </div>
                                         <div className="row">
                                             <Button type="button" size="6" classes="pgs-sign-submit-cancel pgs-sign-submit-back" value="Cancel" onButtonClick = {this.onCancel.bind(this)}/>
-                                            <input type="button" className="pgs-sign-submit" value="Next" onClick={this.onNextStep}/>
+                                            <Button type="button" size="6" classes="pgs-sign-submit" value="Next" onButtonClick = {this.onNextStep.bind(this)}/>
 	                                    </div>
                                     </div>
-                                    
                                 </div>
                         	</div>
-                            
                         </div>
-                        
-                        
                     </div>
-                    
                 </div>
             </div>
 		);
