@@ -1,9 +1,27 @@
 //ProfileImgUpload
 import React from 'react'
 import Button from '../../components/elements/Button'
-import LinkButton from '../../components/elements/LinkButton'
+import ImgUploader from '../../components/elements/ImgUploader'
 
 export default class ProfileImgUpload extends React.Component{
+
+	constructor(props){
+		super(props);
+
+		this.state = {profileImg : ""};
+
+
+	}
+
+	profileImgUpdated(img){
+		this.setState({profileImg : img});
+	}
+
+	uploadImg(){
+		console.log("bla");
+		console.log(this.state.profileImg);
+	}
+
 	render() {
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
@@ -33,26 +51,13 @@ export default class ProfileImgUpload extends React.Component{
                                         <p>But wait! I don’t even know what you look like.</p>
                                         
                                         <p>Would you like to upload a picture now?</p>
+                                                                              
+                                        <ImgUploader imgUploaded={this.profileImgUpdated.bind(this)} defaultImg="images/default-profile-pic.png" />
                                         
-                                            <div className="Profile-pic-main">
-                                            
-                                            	<div className="Profile-pic-display-area">
-                                                	<img src="images/complete-pro-pic.png" alt="" className="img-responsive Profile-pic-uploaded"/>
-                                                </div>
-                                                
-                                                <div className="Profile-pic-display-btn-area">
-                                                    <LinkButton size="" classes="pgs-sign-submit-capture" value="Capture" link="#" click="" />
-                                                    <LinkButton size="" classes="pgs-sign-upload" value="Upload" link="#" click="" />
-                                                </div>
-                                            
-                                            </div> 
-                                        
-                                        
-                                        
-                                             <div className="row">
-		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="back" />
-		                                        <Button type="button" size="6" classes="pgs-sign-submit" value="finish" />
-		                                    </div> 
+                                         <div className="row">
+	                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="back" />
+	                                        <Button type="button" size="6" classes="pgs-sign-submit" value="finish" onButtonClick={()=>this.uploadImg()} />
+	                                    </div> 
                                     </div>
                                     
                                 </div>
