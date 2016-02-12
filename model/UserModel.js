@@ -8,7 +8,18 @@ var  mongoose = require('mongoose'),
      bCrypt	  = require('bcrypt-nodejs');
 
 
-
+var ImageSchema = new Schema({
+    profile_image_name:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    profile_image_type:{
+        type:String,
+        trim:true,
+        default:null
+    }
+});
 
 /**
  * User Basic information
@@ -16,7 +27,8 @@ var  mongoose = require('mongoose'),
 var UserSchema = new Schema({
 	first_name:{ 
 		type:String, 
-		trim:true 
+		trim:true,
+
 	},
 	last_name:{ 
 		type:String, 
@@ -55,6 +67,8 @@ var UserSchema = new Schema({
 		trim:true,
 		default:null
 	},
+
+    images:[ImageSchema],
 
 	created_at:{
 		type:Date
@@ -176,6 +190,7 @@ UserSchema.statics.addSecretary =function(userId,secretaryId,callBack){
  */
 UserSchema.statics.saveUpdates=function(userId,data,callBack){
     var _this = this;
+
     _this.update({_id:userId},
         {$set:data},function(err,resultSet){
             if(!err){
@@ -196,11 +211,15 @@ UserSchema.statics.saveUpdates=function(userId,data,callBack){
  * @param callBack
  */
 UserSchema.statics.getConnectionUsers=function(criteria,callBack){
-    var _this = this;
+    var _this = this,
+        _criteria ={
+            country:criteria.country,
+            _id: { $ne: criteria.user_id }
+        };
 
-   _this.count({country:criteria.country},function(err,count){
+   _this.count(_criteria,function(err,count){
 
-       _this.find({country:criteria.country})
+       _this.find(_criteria)
            .limit(Config.CONNECTION_RESULT_PER_PAGE)
            .skip(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
            .sort({
@@ -226,8 +245,6 @@ UserSchema.statics.getConnectionUsers=function(criteria,callBack){
    });
 
 }
-
-
 
 
 /**

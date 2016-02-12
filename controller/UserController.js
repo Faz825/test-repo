@@ -153,7 +153,8 @@ var UserControler ={
         var User = require('mongoose').model('User');
         var criteria ={
             pg:0,
-            country:CurrentSession.country
+            country:CurrentSession.country,
+            user_id:CurrentSession.id
         };
 
         if(typeof req.query.pg  != 'undefined' &&
@@ -164,10 +165,10 @@ var UserControler ={
         
         User.getConnectionUsers(criteria,function(resultSet){
 
-
+            var outPut	={};
 
             if(resultSet.status !== 400){
-                var outPut	={};
+
                 outPut['status'] = ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS);
                 outPut['header'] ={
                     total_result:resultSet.totla_result,
@@ -179,10 +180,12 @@ var UserControler ={
                 outPut['connections'] = resultSet.users
 
                 res.status(200).send(outPut);
+                return 0
             }else{
                 outPut['status'] = ApiHelper.getMessage(400,Alert.CONNECTION_USERS_EMPTY,Alert.ERROR);
 
                 res.status(400).send(outPut);
+                return 0;
             }
 
         });
@@ -291,12 +294,72 @@ var UserControler ={
                 return 0;
             }
         });
+    },
+
+    uploadProfileImage:function(req,res){
+
+
+        if(typeof req.body.profileImg == 'undefined' || typeof req.body.profileImg == "") {
+            var outPut={
+                status: ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
+            };
+            res.status(400).send(outPut);
+            return 0;
+        }
+        var AWS = require('aws-sdk'),
+            fs = require('fs'),
+            uuid = require('node-uuid'),
+            User = require('mongoose').model('User');
+
+        AWS.config.update({accessKeyId: Config.AWS_KEY, secretAccessKey: Config.AWS_SECRET});
+        var binaryData = Util.decodeBase64Image(req.body.profileImg);
+        var _new_file_name = uuid.v1() + "." + binaryData.extension;
+
+
+        var s3 = new AWS.S3();
+        s3.putObject({
+            Bucket: Config.CDN_BUCKET_NAME + Config.CDN_UPLOAD_PATH + "profile",
+            Key: _new_file_name,
+            Body: binaryData.data,
+            ACL: 'public-read'
+
+        }, function (err, data) {
+            if (!err) {
+                var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
+                CurrentSession['status'] = 6;
+                CurrentSession['profile_image'] = Config.CDN_URL+Config.CDN_UPLOAD_PATH+"/"+_new_file_name;
+                var _payload = {
+                    images:{
+                        profile_image_name: _new_file_name,
+                        type: binaryData.type
+                    }
+                }
+                User.saveUpdates(CurrentSession.id, _payload, function (resultSet) {
+                    console.log(resultSet)
+                    CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                        var outPut = {
+                            status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                        }
+                        if (!cacheData) {
+                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                        }
+                        outPut['user'] = CurrentSession;
+                        res.status(200).json(outPut);
+                    });
+
+                });
+
+            } else {
+                var outPut={
+                    status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
+                };
+                res.status(400).send(outPut);
+            }
+        });
+
     }
 
 };
-
-
-
 
 
 

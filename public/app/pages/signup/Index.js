@@ -5,6 +5,7 @@ import SelectSecretary from './SelectSecretary';
 import AboutYou from './AboutYou';
 import EstablishConnections from './EstablishConnections';
 import NewsType from './NewsType';
+import ProfileImgUpload from './ProfileImgUpload';
 class Index extends React.Component {
 
 	constructor(props) {
@@ -18,7 +19,9 @@ class Index extends React.Component {
                 2:'choose-secretary',
                 3:'about-you',
                 4:'establish-connections',
-                5:'news-categories'
+                5:'news-categories',
+                6:'profile-image',
+                7:'done'
             }
 		};
 
@@ -77,6 +80,12 @@ class Index extends React.Component {
                 return  (<EstablishConnections onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
             case 5:
                 return (<NewsType onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+            case 6:
+                return (<ProfileImgUpload onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+            case 7:
+                return (
+                    <div> Profile completed </div>
+                );
 			default:
 				return (<Signup onNextStep ={this.onNextStep}/>);
 		}
