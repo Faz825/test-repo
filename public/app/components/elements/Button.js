@@ -1,6 +1,7 @@
 import React from 'react';
 
 const Button = ({size,type,classes,value,onButtonClick})=>{
+
     let _size = 'button col-xs-'+size;
     if(typeof onButtonClick == 'undefined'){
         return(
