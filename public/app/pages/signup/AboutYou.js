@@ -44,7 +44,7 @@ export default class AboutYou extends React.Component{
     }
 
     elementChangeHandler(key,data,status){
-        
+
         let _formData = this.state.formData;
         let _errorData = this.state.errorData;
 
@@ -55,7 +55,7 @@ export default class AboutYou extends React.Component{
             _errorData[key] = {"status": status};
             this.setState({errorData:_errorData});
         }
-    
+
     }
 
     collectData(e){
@@ -102,7 +102,7 @@ export default class AboutYou extends React.Component{
         let _secretary_image = this.state.sesData.secretary_image_url;
 
         return(
-			<div className="row row-clr pgs-middle-sign-wrapper">
+			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
             	<div className="container">
                     <div className="col-xs-10 pgs-middle-sign-wrapper-inner">
                     	<div className="row">
@@ -124,7 +124,7 @@ export default class AboutYou extends React.Component{
 		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel pgs-sign-submit-back" value="back" onButtonClick = {this.onBack.bind(this)}/>
 		                                        <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
 		                                    </div>
-                                        </form>    
+                                        </form>
                                     </div>
                                 </div>
                         	</div>

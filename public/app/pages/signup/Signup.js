@@ -23,15 +23,15 @@ class Signup extends React.Component {
             errorData:{},
             signupURL:'/doSignup',
             validateAlert: ""
-            
+
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this)
         this.clearValidations     = this.clearValidations.bind(this)
-        
+
 
     }
 
-    allInvalid(elements) { 
+    allInvalid(elements) {
             for (var i in elements) {
                 if (elements[i]["status"] == "invalid") return false;
             }
@@ -91,7 +91,7 @@ class Signup extends React.Component {
     }
 
     elementChangeHandler(key,data,status){
-        
+
         let _formData = this.state.formData;
         let _errorData = this.state.errorData;
 
@@ -99,7 +99,7 @@ class Signup extends React.Component {
         _errorData[key] = status;
         this.setState({formData:_formData});
         this.setState({errorData:_errorData});
-    
+
     }
 
     clearValidations(){
@@ -131,7 +131,7 @@ class Signup extends React.Component {
                                         <Button type="reset" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
                                         <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
                                     </div>
-                                </form>    
+                                </form>
                             </div>
                         </div>
                     </div>

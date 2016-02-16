@@ -13,9 +13,9 @@ export default class SidebarNav extends React.Component{
 
 		});
 		return(
-				<div className={"row row-clr pg-"+this.props.side+"-nav-wrapper"} style={{height: "710px"}}>
-					<div className="bx-wrapper" style={{maxWidth: "100%", margin: "0px auto"}}>
-						<div className="bx-viewport" style={{width: "100%", overflow: "hidden", position: "relative"}}>
+				<div className={"row row-clr pg-"+this.props.side+"-nav-wrapper"}>
+					<div className="bx-wrapper">
+						<div className="bx-viewport">
 									{menuItems}
           	</div>
           </div>
