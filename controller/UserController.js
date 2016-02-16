@@ -33,7 +33,7 @@ var UserControler ={
                         return;
                     }
 
-                    var _cache_key = CacheEngine.prepareCaheKey(_ResultSet.user.token);
+                    var _cache_key = CacheEngine.prepareCacheKey(_ResultSet.user.token);
                     CacheEngine.addToCache(_cache_key,_ResultSet.user,function(cacheData){
 
                         var _out_put= {
