@@ -18,7 +18,6 @@
     "express-session": "1.13.0",
     "jsonwebtoken": "^5.4.0",
     "kerberos": "0.0.18",
-    "lodash": "^4.3.0",
     "mandrill-api": "^1.0.45",
     "memcached": "^2.2.1",
     "mongodb": "^2.1.7",
@@ -41,8 +40,7 @@
     "babel-preset-react": "^6.3.13",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
-    "gulp": "^3.9.0",
-    "gulp-util": "^3.0.7",
+    "gulp": "3.9.1",
     "vinyl-source-stream": "^1.1.0"
   }
 }
