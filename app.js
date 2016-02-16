@@ -12,6 +12,8 @@ GLOBAL.Config = require('./config/app.config');
 GLOBAL.CurrentSession = {};
 require('./config/alert.message');
 GLOBAL.ApiHelper = require('./middleware/ApiHelper');
+GLOBAL.ContentUploader = require('./middleware/ContentUploader');
+ContentUploader.init();
 GLOBAL.DateTime  = require('./lib/DateTime');
 GLOBAL.Util  = require('./lib/Util');
 //Define Clusters 

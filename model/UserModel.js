@@ -5,7 +5,8 @@
 'use strict'
 var  mongoose = require('mongoose'),
      Schema   = mongoose.Schema,
-     bCrypt	  = require('bcrypt-nodejs');
+     bCrypt	  = require('bcrypt-nodejs'),
+     uuid = require('node-uuid');
 
 
 var ImageSchema = new Schema({
@@ -116,7 +117,7 @@ UserSchema.statics.create = function(UserData,callBack){
 				status:200,
 				user:{
                     id:resultSet._id,
-                    token:createHash(resultSet._id+"---"+resultSet.email),
+                    token:uuid.v1(),
                     first_name:resultSet.first_name,
                     last_name:resultSet.last_name,
                     email:resultSet.email,

@@ -7,6 +7,7 @@ var UserControler ={
      * @param req
      * @param res
      */
+
     doSignup:function(req,res){
         var User = require('mongoose').model('User');
 
@@ -76,6 +77,7 @@ var UserControler ={
 
     },
 
+
     /**
      * Save Secretary for selected User
      * @param req
@@ -92,7 +94,7 @@ var UserControler ={
         }
         User.saveUpdates(CurrentSession.id,secretaryData,function(resultSet){
             Secretary.getSecretaryById(secretaryData.secretary,function(resultSet){
-                var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
+                var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
                 CurrentSession['secretary_name']        = resultSet.full_name;
                 CurrentSession['secretary_id']          = resultSet.id;
                 CurrentSession['secretary_image_url']   = resultSet.image_name;
@@ -140,7 +142,7 @@ var UserControler ={
                 });
 
             }
-            var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
+            var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
             CurrentSession['status']    = 3;
             CurrentSession['country']   = req.body.country;
             CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
@@ -217,7 +219,7 @@ var UserControler ={
      * @param res
      */
     connect:function(req,res){
-        var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
+        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
         CurrentSession['status']    = 4;
         CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
             var outPut ={};
@@ -270,7 +272,7 @@ var UserControler ={
      * @param res
      */
     addNewsCategory:function(req,res){
-        var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
+        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
         CurrentSession['status']    = 5;
         CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
             var outPut ={};
@@ -324,47 +326,31 @@ var UserControler ={
             res.status(400).send(outPut);
             return 0;
         }
-        var AWS = require('aws-sdk'),
-            fs = require('fs'),
-            uuid = require('node-uuid'),
-            User = require('mongoose').model('User');
+        var User = require('mongoose').model('User');
+        var data ={
+            content_title:"Profile Image",
+            file_name:req.body.profileImg,
+            is_default:1,
+            entity_id:CurrentSession.id,
+            entity_tag:UploadMeta.PROFILE_IMAGE
+        }
+        ContentUploader.uploadFile(data,function (payLoad) {
 
-        AWS.config.update({accessKeyId: Config.AWS_KEY, secretAccessKey: Config.AWS_SECRET});
-        var binaryData = Util.decodeBase64Image(req.body.profileImg);
-        var _new_file_name = uuid.v1() + "." + binaryData.extension;
-
-
-        var s3 = new AWS.S3();
-        s3.putObject({
-            Bucket: Config.CDN_BUCKET_NAME + Config.CDN_UPLOAD_PATH + "profile",
-            Key: _new_file_name,
-            Body: binaryData.data,
-            ACL: 'public-read'
-
-        }, function (err, data) {
-            if (!err) {
-                var _cache_key = CacheEngine.prepareCaheKey(CurrentSession.token);
+            if (payLoad.status != 400) {
+                var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
                 CurrentSession['status'] = 6;
-                CurrentSession['profile_image'] = Config.CDN_URL+Config.CDN_UPLOAD_PATH+"/"+_new_file_name;
-                var _payload = {
-                    images:{
-                        profile_image_name: _new_file_name,
-                        type: binaryData.type
-                    }
-                }
-                User.saveUpdates(CurrentSession.id, _payload, function (resultSet) {
-                    console.log(resultSet)
-                    CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
-                        var outPut = {
-                            status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
-                        }
-                        if (!cacheData) {
-                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                        }
-                        outPut['user'] = CurrentSession;
-                        res.status(200).json(outPut);
-                    });
+                CurrentSession['profile_image'] = payLoad.http_url;
+                console.log(CurrentSession);
 
+                CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                    var outPut = {
+                        status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                    }
+                    if (!cacheData) {
+                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                    }
+                    outPut['user'] = CurrentSession;
+                    res.status(200).json(outPut);
                 });
 
             } else {

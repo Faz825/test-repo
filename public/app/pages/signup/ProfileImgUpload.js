@@ -32,7 +32,7 @@ export default class ProfileImgUpload extends React.Component{
             success: function (data, text) {
                 if (data.status.code == 200) {
                     Session.createSession("prg_lg", data.user);
-                    _this.props.onNextStep();
+
                 }
             },
             error: function (request, status, error) {
@@ -63,7 +63,7 @@ export default class ProfileImgUpload extends React.Component{
                                 <img src="images/sign-left-arrow-1.png" alt="" className="img-responsive pgs-sign-left-arrow"/>
                                 	
                                     <div className="row row-clr pgs-middle-sign-wrapper-about-inner pgs-middle-sign-wrapper-about-inner-establish-conn">
-                                        <h1>Hello {user.full_name},</h1>
+                                        <h1>Hello {user.first_name},</h1>
                                         <h2>Welcome to Proglobe</h2>
                                     </div>
                                     

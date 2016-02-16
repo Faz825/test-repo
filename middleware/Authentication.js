@@ -30,6 +30,7 @@ exports.Authentication= function(req,res,next){
 
         CacheEngine.getCachedDate(req.headers['prg-auth-header'],function(cachedUser){
 
+
             if(typeof cachedUser == 'undefined'){
                 var _out_put= {
                     status:'success',
@@ -40,6 +41,9 @@ exports.Authentication= function(req,res,next){
             }
 
             CurrentSession = cachedUser;
+
+            console.log("SESSION USER")
+            console.log(cachedUser)
             next();
             return;
         });
