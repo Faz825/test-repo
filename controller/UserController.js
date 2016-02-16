@@ -7,56 +7,76 @@ var UserControler ={
      * @param req
      * @param res
      */
-	doSignup:function(req,res){
-		var User = require('mongoose').model('User');
 
-		var user ={
-			id:req.body._id,
-			first_name:req.body.fName,
-			last_name:req.body.lName,
-			email:req.body.email,
-			password:req.body.password,
-			status:req.body.status,
-			secretary:req.body.secretary
-		}
-		User.findByEmail(user.email,function(ResultSet){
+    doSignup:function(req,res){
+        var User = require('mongoose').model('User');
 
-			if(ResultSet.status == 200 && ResultSet.user == null ){
+        var user ={
+            id:req.body._id,
+            first_name:req.body.fName,
+            last_name:req.body.lName,
+            email:req.body.email,
+            password:req.body.password,
+            status:req.body.status,
+            secretary:req.body.secretary
+        }
+        User.findByEmail(user.email,function(ResultSet){
 
-				User.create(user,function(_ResultSet){
-					if(typeof _ResultSet.status != 'undefined' && _ResultSet.status == 400){
-						res.status(400).json({
-							status:"error",
-							message:Alert.USER_CREATION_ERROR
-						});
-						return;
-					}
+            if(ResultSet.status == 200 && ResultSet.user == null ){
 
-					var _cache_key = CacheEngine.prepareCacheKey(_ResultSet.user.token);
-					CacheEngine.addToCache(_cache_key,_ResultSet.user,function(cacheData){
-						
-						var _out_put= {
-							status:'success',
-							message:Alert.ACCOUNT_CREATION_SUCCESS
-						}
-						if(!cacheData){
-							_out_put['extra']=Alert.CACHE_CREATION_ERROR
-						}
+                User.create(user,function(_ResultSet){
+                    if(typeof _ResultSet.status != 'undefined' && _ResultSet.status == 400){
+                        res.status(400).json({
+                            status:"error",
+                            message:Alert.USER_CREATION_ERROR
+                        });
+                        return;
+                    }
 
-						_out_put['user']=_ResultSet.user
-						res.status(200).json(_out_put);
-					});
-					
-				});
-			}else{
-				res.status(400).json({
-					status:"error",
-					message:Alert.ACCOUNT_EXIST
-				});
-			}
-		});
-		
-	},
+                    var _cache_key = CacheEngine.prepareCacheKey(_ResultSet.user.token);
+                    CacheEngine.addToCache(_cache_key,_ResultSet.user,function(cacheData){
+
+                        var _out_put= {
+                            status:'success',
+                            message:Alert.ACCOUNT_CREATION_SUCCESS
+                        }
+                        if(!cacheData){
+                            _out_put['extra']=Alert.CACHE_CREATION_ERROR
+                        }
+
+                        _out_put['user']=_ResultSet.user;
+
+                        res.render('email-templates/signup', {
+                            name: _ResultSet.user.first_name,
+                        }, function(err, emailHTML) {
+
+                            var sendOptions = {
+                                to: _ResultSet.user.email,
+                                subject: 'Proglobe Signup',
+                                html: emailHTML
+                            };
+                            EmailEngine.sendMail(sendOptions, function(err){
+                                if(!err){
+                                    res.status(200).json(_out_put);
+                                } else{
+                                    console.log(err);
+                                }
+
+                            });
+                        });
+                    });
+
+                });
+            }else{
+                res.status(400).json({
+                    status:"error",
+                    message:Alert.ACCOUNT_EXIST
+                });
+            }
+        });
+
+    },
+
 
     /**
      * Save Secretary for selected User
@@ -98,12 +118,12 @@ var UserControler ={
 
     },
 
-	/**
-	 * Save Data fo birth,
-	 * @param req
-	 * @param res
-	 */
-	saveGeneralInfo:function(req,res){
+    /**
+     * Save Data fo birth,
+     * @param req
+     * @param res
+     */
+    saveGeneralInfo:function(req,res){
         var User = require('mongoose').model('User');
         var generalInfo ={
             dob:req.body.dob,
@@ -162,7 +182,7 @@ var UserControler ={
             criteria['pg'] = req.query.pg -1;
         }
 
-        
+
         User.getConnectionUsers(criteria,function(resultSet){
 
             var outPut	={};
@@ -203,8 +223,8 @@ var UserControler ={
         CurrentSession['status']    = 4;
         CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
             var outPut ={};
-                outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['user']=CurrentSession;
+            outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['user']=CurrentSession;
 
             var req_connected_users = JSON.parse(req.body.connected_users);
 
