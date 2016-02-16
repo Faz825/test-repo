@@ -22,6 +22,44 @@ var ImageSchema = new Schema({
     }
 });
 
+var EducationSchema = new Schema({
+    school:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    date_attended_from:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    date_attended_to:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    degree:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    grade:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    activities_societies:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    description:{
+        type:String,
+        trim:true,
+        default:null
+    }
+});
+
 /**
  * User Basic information
  */
@@ -70,6 +108,8 @@ var UserSchema = new Schema({
 	},
 
     images:[ImageSchema],
+
+    education_details:[EducationSchema],
 
 	created_at:{
 		type:Date
@@ -255,5 +295,135 @@ UserSchema.statics.getConnectionUsers=function(criteria,callBack){
  */
 UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
     return resultSet;
-}
+};
+
+
+/**
+ * Add Education Details to a user
+ * @param userId
+ * @param educationDetails
+ * @param callBack
+ */
+UserSchema.statics.addEducationDetail = function(userId, educationDetails, callBack){
+
+    var _this = this;
+
+    var _educationDetails = {
+        school:educationDetails.school,
+        date_attended_from:educationDetails.date_attended_from,
+        date_attended_to:educationDetails.date_attended_to,
+        degree:educationDetails.degree,
+        grade:educationDetails.grade,
+        activities_societies:educationDetails.activities_societies,
+        description:educationDetails.description
+    }
+
+
+    var now = new Date();
+    this.updated_at = now;
+    if ( !this.created_at ) {
+        this.created_at = now;
+    }
+
+    _this.update(
+        {_id:userId},
+        {
+            $set:{
+                created_at:this.created_at,
+                updated_at:this.updated_at
+            },
+            $push:{
+                education_details:_educationDetails
+            }
+        },function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
+
+/**
+ * retrieve particular educational detail of a user
+ * @param userId
+ * @param _education_id
+ * @param callBack
+ */
+UserSchema.statics.retrieveEducationDetail = function(userId, _education_id, callBack){
+
+    var _this = this;
+
+    _this.find({_id: userId},{education_details: { $elemMatch: { _id: _education_id } }}, function(error, resultSet){
+        console.log(resultSet);
+        if(!error){
+            callBack({
+                status:200,
+                resultSet:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            callBack({status:400,error:err});
+        }
+    })
+
+};
+
+
+/**
+ * update particular educational detail of a user
+ * @param userId
+ * @param educationDetails
+ * @param callBack
+ */
+UserSchema.statics.updateEducationDetail = function(userId, educationDetails, callBack){
+
+    var _this = this;
+
+    _this.update({_id:userId,"education_details._id":educationDetails._id},
+        {$set:{
+            "education_details.$.school":educationDetails.school,
+            "education_details.$.date_attended_from":educationDetails.date_attended_from,
+            "education_details.$.date_attended_to":educationDetails.date_attended_to,
+            "education_details.$.degree":educationDetails.degree,
+            "education_details.$.grade":educationDetails.grade,
+            "education_details.$.activities_societies":educationDetails.activities_societies,
+            "education_details.$.description":educationDetails.description,
+        }},function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
+UserSchema.statics.deleteEducationDetail = function(userId, educationId, callBack){
+
+    var _this = this;
+
+    _this.update({_id:userId},
+        { $pull: { education_details: { _id: educationId } } },function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
+
 mongoose.model('User',UserSchema);

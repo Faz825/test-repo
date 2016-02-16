@@ -50,6 +50,13 @@ router.get('/cache-check/:key',SecretaryController.cacheCheck);
 
 router.get('/upload-test',TestController.uploadTest);
 router.get('/get-image',TestController.getImageTest);
+
+//need to be under authentication section. testing purpose have it here. For testing purpose all are set as get request
+router.get('/education-info/save', UserController.addEducationDetail);
+router.get('/education-info/retrieve', UserController.retrieveEducationDetail);
+router.get('/education-info/update', UserController.updateEducationDetail);
+router.get('/education-info/delete', UserController.deleteEducationDetail);
+
 /**
  * Push All Rqurst through oAuth
  */
@@ -66,6 +73,8 @@ router.post('/connect-people',UserController.connect);
 router.post('/addNewsCategory',UserController.addNewsCategory);
 router.post('/upload/profile-image',UserController.uploadProfileImage);
 router.get('/connections',UserController.getConnections);
+
+
 //
 
 module.exports = router;
