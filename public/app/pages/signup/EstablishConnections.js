@@ -104,8 +104,8 @@ export default class EstablishConnections extends React.Component{
         }
     }
 
-    onCancel(){
-        this.onNextStep();
+    onBack(){
+        this.props.onPreviousStep()
     }
 
 	render() {
@@ -143,7 +143,7 @@ export default class EstablishConnections extends React.Component{
                                             </div>
                                         </div>
                                         <div className="row">
-                                            <Button type="button" size="6" classes="pgs-sign-submit-cancel pgs-sign-submit-back" value="Cancel" onButtonClick = {this.onCancel.bind(this)}/>
+                                            <Button type="button" size="6" classes="pgs-sign-submit-cancel pgs-sign-submit-back" value="Back" onButtonClick = {this.onBack.bind(this)}/>
                                             <Button type="button" size="6" classes="pgs-sign-submit" value="Next" onButtonClick = {this.onNextStep.bind(this)}/>
 	                                    </div>
                                     </div>

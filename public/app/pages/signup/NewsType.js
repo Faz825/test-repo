@@ -58,8 +58,8 @@ export default class NewsType extends React.Component{
         });
     }
 
-    onCancel(){
-        this.onNextStep();
+    onBack(){
+        this.props.onPreviousStep()
     }
 
 	render() {
@@ -86,8 +86,8 @@ export default class NewsType extends React.Component{
 		                                        <Button type="button"
                                                         size="6"
                                                         classes="pgs-sign-submit-cancel"
-                                                        value="cancel"
-                                                        onButtonClick = {()=>this.onCancel()}/>
+                                                        value="Back"
+                                                        onButtonClick = {()=>this.onBack()}/>
 		                                        <Button type="button"
                                                         size="6"
                                                         classes="pgs-sign-submit"

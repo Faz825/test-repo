@@ -32,7 +32,7 @@ export default class ProfileImgUpload extends React.Component{
             success: function (data, text) {
                 if (data.status.code == 200) {
                     Session.createSession("prg_lg", data.user);
-                    _this.props.onNextStep();
+
                 }
             },
             error: function (request, status, error) {
