@@ -1,7 +1,8 @@
 import React from 'react'
 import SignupIndex from '../signup/Index';
 import SigninHeader from '../../components/header/SigninHeader'
-import SidebarNav from '../../components/sidebarNav/SidebarNav';
+import SidebarNav from '../../components/sidebarNav/SidebarNav'
+import FooterHolder from '../../components/footer/FooterHolder'
 
 const DefaultLayout = (props) =>{
   return(
@@ -26,6 +27,7 @@ const DefaultLayout = (props) =>{
         }}/>
 
         {props.children}
+        <FooterHolder />
     </div>
   );
 }

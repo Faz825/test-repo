@@ -3,10 +3,13 @@ import React from 'react';
 export default class SelectDateDropdown extends React.Component{
 	constructor(props) {
         super(props);
+				let defaultOption = (this.props.defaultOpt) ? this.props.defaultOpt : "";
+
         this.state = {
-			date:{}
+						date:{},
+						defaultDateOpt : defaultOption
         };
-        
+
         this.dateUpdate = this.dateUpdate.bind(this);
     }
 
@@ -21,8 +24,8 @@ export default class SelectDateDropdown extends React.Component{
 
 		let _date = this.state.date;
 
-        _date[key] = value;
-        this.setState({date:_date});
+    _date[key] = value;
+    this.setState({date:_date});
 
 		if(Object.keys(this.state.date).length == 3){
 			let _fData = this.state.date[dateFormat[0]]+"-"+this.state.date[dateFormat[1]]+"-"+this.state.date[dateFormat[2]];
@@ -35,19 +38,20 @@ export default class SelectDateDropdown extends React.Component{
 
 			this.props.optChange("dob", _fData, status);
 		}
- 		
+
 	}
 
 	render(){
 		let dateFormat = this.getDateFormat();
+		let defaultDate = this.state.defaultDateOpt.split("-");
 
 		return(
 			<div className="col-xs-5">
             	<p>{this.props.title} {this.props.required ? <span style={{"color": "#ed0909"}}>*</span> : ""} </p>
                 <div className="row row-clr">
-                    <Dropdown fieldName={dateFormat[0]} dateChange={this.dateUpdate.bind(this)} />
-                    <Dropdown fieldName={dateFormat[1]} dateChange={this.dateUpdate.bind(this)} />
-                    <Dropdown fieldName={dateFormat[2]} dateChange={this.dateUpdate.bind(this)} />
+                    <Dropdown fieldName={dateFormat[0]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[0]} />
+                    <Dropdown fieldName={dateFormat[1]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[1]} />
+                    <Dropdown fieldName={dateFormat[2]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[2]} />
                 </div>
             </div>
 		);
@@ -58,13 +62,26 @@ class Dropdown extends React.Component{
 	constructor(props) {
         super(props);
 
+				let defaultOption = (this.props.defaultVal) ? this.props.defaultVal : "";
+
+				this.state = {
+					defaultOpt : defaultOption
+				}
+
         this.selectChange = this.selectChange.bind(this);
     }
 
     selectChange(e){
-		this.props.dateChange(this.props.fieldName,e.target.value);
+			this.setState({defaultOpt : e.target.value});
+			this.props.dateChange(this.props.fieldName,e.target.value);
     }
-    
+
+		componentDidMount(){
+			if(this.state.defaultOpt){
+				this.props.dateChange(this.props.fieldName,this.state.defaultOpt);
+			}
+		}
+
 	render(){
 		let start;
         let end;
@@ -86,7 +103,7 @@ class Dropdown extends React.Component{
 		        end = "2016";
 		        break;
 
-		} 
+		}
 
 		for(let i = start; i <= end; i++){
 			i = (i < 10 ? '0'+ i : i);
@@ -95,7 +112,7 @@ class Dropdown extends React.Component{
 
 		return(
 			<div className="pgs-sign-select-about-col">
-                <select name={this.props.fieldName} className="pgs-sign-select" onChange={this.selectChange.bind(this)}>
+                <select name={this.props.fieldName} className="pgs-sign-select" value={this.state.defaultOpt} onChange={this.selectChange.bind(this)}>
                     {options.map(function(opt, i){
 				        return <option value={opt} key={i}>{opt}</option>;
 				    })}

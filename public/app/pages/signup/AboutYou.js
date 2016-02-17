@@ -23,11 +23,11 @@ export default class AboutYou extends React.Component{
             sesData:{},
             formData:{},
             errorData:{},
-            validateAlert: ""
+            validateAlert: "",
+            defaultValue : Session.getSession('prg_lg')
         };
         this.collectData = this.collectData.bind(this);
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
-
     }
 
     componentDidMount() {
@@ -100,6 +100,9 @@ export default class AboutYou extends React.Component{
 
 	render(){
         let _secretary_image = this.state.sesData.secretary_image_url;
+        let defaultVals = this.state.defaultValue;
+
+        console.log(defaultVals)
 
         return(
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
@@ -115,8 +118,8 @@ export default class AboutYou extends React.Component{
                                     	<h6>First, Let me know a little more about you...</h6>
                                         <form method="post" onSubmit={this.collectData.bind(this)}>
 	                                        <div className="row pgs-middle-about-inputs">
-	                                        	<SelectDateDropdown title="Date of Birth" dateFormat="dd-mm-yyyy" optChange={this.elementChangeHandler} required="true"/>
-	                                            <CountryList optChange={this.elementChangeHandler} required="true"/>
+	                                        	<SelectDateDropdown title="Date of Birth" dateFormat="dd-mm-yyyy" defaultOpt="18-07-1991" optChange={this.elementChangeHandler} required="true"/>
+	                                            <CountryList optChange={this.elementChangeHandler} defaultOpt={defaultVals.country} required="true"/>
 	                                            <InputField type="text" name="zip" size="2" label="Zip Code" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler}  />
 	                                        </div>
 	                                        {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}

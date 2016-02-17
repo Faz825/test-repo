@@ -62,6 +62,8 @@ var UserControler ={
                                     console.log(err);
                                 }
 
+                                res.status(200).json(_out_put)
+
                             });
                         });
                     });
@@ -477,4 +479,4 @@ var UserControler ={
 
 
 
-module.exports = UserControler; 
+module.exports = UserControler;

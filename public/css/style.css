@@ -583,6 +583,7 @@ a:focus{
 	background-color: #eceef1;
 	/*box-shadow: 2px 1px 3px #000;*/
 	box-shadow: 2px 1px 8px -2px #000;
+	height: 110px;
 }
 .pg-footer-left-options-panel {
 	width: 110px;
@@ -590,6 +591,16 @@ a:focus{
 	background-color: #fff;
 	position: absolute;
 	left: 0;
+}
+.pg-footer-left-options-panel .pgs-secratery-img{
+	float: none;
+	height: 110px;
+	padding: 0;
+	width: 80px;
+}
+.pg-footer-left-options-panel .pgs-secratery-img img{
+	height: 100%;
+	width: 100%;
 }
 .pg-footer-left-options {
 	background-color: #59afe1;

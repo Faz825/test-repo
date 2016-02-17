@@ -81,7 +81,7 @@ class SelectSecretary extends React.Component {
 
                         Session.createSession("prg_lg", data.user);
                         _this.props.onNextStep();
-
+                        location.reload();
                     }
 
                 },
