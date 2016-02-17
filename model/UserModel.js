@@ -9,19 +9,9 @@ var  mongoose = require('mongoose'),
      uuid = require('node-uuid');
 
 
-var ImageSchema = new Schema({
-    profile_image_name:{
-        type:String,
-        trim:true,
-        default:null
-    },
-    profile_image_type:{
-        type:String,
-        trim:true,
-        default:null
-    }
-});
-
+/**
+ * Education information
+ */
 var EducationSchema = new Schema({
     school:{
         type:String,
@@ -57,6 +47,47 @@ var EducationSchema = new Schema({
         type:String,
         trim:true,
         default:null
+    }
+});
+
+/**
+ * WorkingExperience Schema
+ */
+var WorkingExperienceSchema = new Schema({
+    company_name:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    title:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    location:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    start_date:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    end_date:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    description:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    is_current_work_place:{
+        type:Boolean,
+        trim:true,
+        default:true,
     }
 });
 
@@ -110,6 +141,8 @@ var UserSchema = new Schema({
     images:[ImageSchema],
 
     education_details:[EducationSchema],
+
+    working_experiences:[WorkingExperienceSchema],
 
 	created_at:{
 		type:Date
@@ -426,4 +459,107 @@ UserSchema.statics.deleteEducationDetail = function(userId, educationId, callBac
 };
 
 
+/**
+ * Add Working Experience Details
+ * @param userId
+ * @param workingExperienceDetails
+ * @param callBack
+ */
+UserSchema.statics.addWorkingExperience =function(userId,workingExperienceDetails,callBack){
+
+    var _this = this;
+
+    var _workingExperienceDetails = {
+        company_name:workingExperienceDetails.company_name,
+        title:workingExperienceDetails.title,
+        location:workingExperienceDetails.location,
+        start_date:workingExperienceDetails.start_date,
+        end_date:workingExperienceDetails.end_date,
+        is_current_work_place:workingExperienceDetails.is_current_work_place,
+        description:workingExperienceDetails.description
+    }
+
+
+    var now = new Date();
+    this.updated_at = now;
+    if ( !this.created_at ) {
+        this.created_at = now;
+    }
+
+    _this.update(
+        {_id:userId},
+        {
+            $set:{
+                created_at:this.created_at,
+                updated_at:this.updated_at
+            },
+            $push:{
+                working_experiences:_workingExperienceDetails
+            }
+        },function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+}
+
+/**
+ * Update Working Experience
+ * @param userId
+ * @param workingExperienceDetails
+ * @param callBack
+ */
+UserSchema.statics.updateWorkingExperience =function(userId, workingExperienceDetails, callBack){
+    var _this = this;
+
+    _this.update({_id:userId,"working_experiences._id":workingExperienceDetails._id},
+        {$set:{
+            "working_experiences.$.company_name":workingExperienceDetails.company_name,
+            "working_experiences.$.title":workingExperienceDetails.title,
+            "working_experiences.$.location":workingExperienceDetails.location,
+            "working_experiences.$.start_date":workingExperienceDetails.start_date,
+            "working_experiences.$.end_date":workingExperienceDetails.end_date,
+            "working_experiences.$.is_current_work_place":workingExperienceDetails.is_current_work_place,
+            "working_experiences.$.description":workingExperienceDetails.description,
+        }},function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+}
+
+/**
+ * Delete Working Experience
+ * @param userId
+ * @param workingExperienceId
+ * @param callBack
+ */
+UserSchema.statics.deleteWorkingExperience = function(userId, workingExperienceId, callBack){
+
+    var _this = this;
+
+    _this.update({_id:userId},
+        { $pull: { working_experiences: { _id: workingExperienceId } } },function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+};
 mongoose.model('User',UserSchema);

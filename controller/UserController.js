@@ -221,7 +221,7 @@ var UserControler ={
      */
     connect:function(req,res){
         var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-        CurrentSession['status']    = 4;
+        CurrentSession['status']    = 5;
         CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
             var outPut ={};
             outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -274,7 +274,7 @@ var UserControler ={
      */
     addNewsCategory:function(req,res){
         var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-        CurrentSession['status']    = 5;
+        CurrentSession['status']    = 6;
         CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
             var outPut ={};
             outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -339,7 +339,7 @@ var UserControler ={
 
             if (payLoad.status != 400) {
                 var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-                CurrentSession['status'] = 6;
+                CurrentSession['status'] = 7;
                 CurrentSession['profile_image'] = payLoad.http_url;
                 console.log(CurrentSession);
 
@@ -467,8 +467,23 @@ var UserControler ={
             res.status(200).json(resultSet);
 
 
+
         });
 
+    },
+    addCollageAndJob:function(req,res){
+        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+        CurrentSession['status']    = 4;
+        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+            var outPut ={};
+            outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['user']=CurrentSession;
+
+
+
+
+
+        });
     }
 
 

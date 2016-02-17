@@ -28,7 +28,7 @@ export default class CountryList extends React.Component{
 
 	render(){
 
-        console.log(this.state.selectedValue)
+
 		return(
 			<div className="col-xs-5">
 	            <p>Country {this.props.required ? <span style={{"color": "#ed0909"}}>*</span> : ""}</p>

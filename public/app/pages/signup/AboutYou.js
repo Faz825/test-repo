@@ -65,7 +65,6 @@ export default class AboutYou extends React.Component{
         if(Object.keys(this.state.errorData).length != 2){
             this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
         }else{
-            this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
 
             if(this.allInvalid(this.state.errorData)){
                 this.setState({validateAlert: ""});
@@ -116,7 +115,12 @@ console.log(this.loggedUser)
                                     	<h6>First, Let me know a little more about you...</h6>
                                         <form method="post" onSubmit={this.collectData.bind(this)}>
 	                                        <div className="row pgs-middle-about-inputs">
-	                                        	<SelectDateDropdown title="Date of Birth" dateFormat="dd-mm-yyyy" optChange={this.elementChangeHandler} required="true"/>
+	                                        	<SelectDateDropdown
+                                                    title="Date of Birth"
+                                                    dateFormat="dd-mm-yyyy"
+                                                    optChange={this.elementChangeHandler}
+                                                    required="true"
+                                                    dateType="dob"/>
 	                                            <CountryList
                                                     optChange={this.elementChangeHandler}
                                                     required="true"

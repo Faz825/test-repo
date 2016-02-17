@@ -6,6 +6,7 @@ import AboutYou from './AboutYou';
 import EstablishConnections from './EstablishConnections';
 import NewsType from './NewsType';
 import ProfileImgUpload from './ProfileImgUpload';
+import AboutCollegeAndJob from './AboutCollegeAndJob';
 class Index extends React.Component {
 
 	constructor(props) {
@@ -18,10 +19,11 @@ class Index extends React.Component {
                 1:'sign-up',
                 2:'choose-secretary',
                 3:'about-you',
-                4:'establish-connections',
-                5:'news-categories',
-                6:'profile-image',
-                7:'done'
+                4:'collage-and-job',
+                5:'establish-connections',
+                6:'news-categories',
+                7:'profile-image',
+
             }
 		};
 
@@ -77,15 +79,15 @@ class Index extends React.Component {
 			case 3:
 				return  (<AboutYou onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
             case 4:
-                return  (<EstablishConnections onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+                return (<AboutCollegeAndJob onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
             case 5:
-                return (<NewsType onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+                return  (<EstablishConnections onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
             case 6:
-                return (<ProfileImgUpload onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+                return (<NewsType onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
             case 7:
-                return (
-                    <div> Profile completed </div>
-                );
+                return (<ProfileImgUpload onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+            case 8:
+                return (<AboutCollegeAndJob onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
 			default:
 				return (<Signup onNextStep ={this.onNextStep}/>);
 		}

@@ -34,7 +34,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
 GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
-    '/profile-image','/done','/cache-check'
+    '/profile-image','/done','/cache-check','/collage-and-job'
 
 ];
 
@@ -56,6 +56,8 @@ router.get('/education-info/save', UserController.addEducationDetail);
 router.get('/education-info/retrieve', UserController.retrieveEducationDetail);
 router.get('/education-info/update', UserController.updateEducationDetail);
 router.get('/education-info/delete', UserController.deleteEducationDetail);
+
+router.post('/collage-and-job/save',UserController.addCollageAndJob);
 
 /**
  * Push All Rqurst through oAuth

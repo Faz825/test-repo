@@ -33,7 +33,7 @@ export default class SelectDateDropdown extends React.Component{
 				status = "";
 			}
 
-			this.props.optChange("dob", _fData, status);
+			this.props.optChange(this.props.dateType, _fData, status);
 		}
  		
 	}
