@@ -62,7 +62,9 @@ var UserControler ={
                                     console.log("EMAIL Sending Error");
                                     console.log(err);
                                 }
-                                res.status(200).json(_out_put)
+
+                                res.status(200).json(_out_put);
+
                             });
                         });
                     });
@@ -478,4 +480,4 @@ var UserControler ={
 
 
 
-module.exports = UserControler; 
+module.exports = UserControler;

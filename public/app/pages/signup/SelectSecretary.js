@@ -86,7 +86,7 @@ class SelectSecretary extends React.Component {
 
                         Session.createSession("prg_lg", data.user);
                         _this.props.onNextStep();
-
+                        location.reload();
                     }
 
                 },
@@ -105,7 +105,7 @@ class SelectSecretary extends React.Component {
 
 	render(){
 		return (
-			<div className="row row-clr pgs-middle-sign-wrapper">
+			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
             	<div className="container">
                     <div className="col-xs-8 pgs-middle-sign-wrapper-inner">
                         <div className="row row-clr pgs-middle-sign-wrapper-inner-cover pgs-middle-sign-wrapper-inner-cover-secretary">
@@ -115,18 +115,18 @@ class SelectSecretary extends React.Component {
                             	<div className="row">
                                     {
                                         this.state.secretaries.map((key,i)=>
-                                     
+
                                            <Secretary data={key} key={i} selected={(key.id == this.state.selected)?true:false} onSelectSecratery={this.onSelectSecratery.bind(this)}/>
                                         )
                                     }
                                 </div>
 
                                 {this.state.selectSecretary ? <p className="form-validation-alert" style={errorStyles} >{this.state.selectSecretary}</p> : null}
-                            
+
                                 <div className="row">
                                     <Button type="button" size="12" classes="pgs-sign-submit" value="next" onButtonClick={()=>this.onNextStep()} />
                                 </div>
-                            </div>                            
+                            </div>
                         </div>
                     </div>
                 </div>

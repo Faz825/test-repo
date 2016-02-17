@@ -13,11 +13,14 @@ export default class InputField extends React.Component{
 
 	constructor(props) {
 		super(props);
-		this.state = {valueTxt: "", validate: ""};
+		let defaultText = (this.props.value) ? this.props.value : "";
+		this.state = {valueTxt: defaultText};
 	}
 
 	handleChange(e) {
 		let status;
+
+		this.setState({valueTxt: e.target.value});
 
 		if(this.props.required){
 			if(e.target.value.length != 0 ){
@@ -53,7 +56,7 @@ export default class InputField extends React.Component{
 
 			if(this.props.type == "email"){
 				var regx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-				
+
 				if(!regx.test(value)){
 					this.setState({validate: Alert.INVALID_EMAIL});
 				}else{
@@ -84,11 +87,11 @@ export default class InputField extends React.Component{
 			<div className={size}>
 				<p>{this.props.label} {this.props.required ? <span style={{"color": "#ed0909"}}>*</span> : ""} </p>
 
-				<input type={this.props.type} 
-					name={this.props.name} 
-					value={this.props.valueTxt} 
-					placeholder={this.props.placeholder} 
-					className={this.props.classes} 
+				<input type={this.props.type}
+					name={this.props.name}
+					value={this.state.valueTxt}
+					placeholder={this.props.placeholder}
+					className={this.props.classes}
 					onChange={this.handleChange.bind(this)}
 					onBlur={this.handleBlur.bind(this)}
 					{...opts}  />
