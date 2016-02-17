@@ -363,6 +363,12 @@ var UserControler ={
 
     },
 
+
+    /**
+     * Add educational details to a user
+     * @param req
+     * @param res
+     */
     addEducationDetail:function(req, res){
 
         var User = require('mongoose').model('User');
@@ -402,6 +408,11 @@ var UserControler ={
 
     },
 
+    /**
+     * Retrieve particular educational detail of a user
+     * @param req
+     * @param res
+     */
     retrieveEducationDetail:function(req, res){
 
         var User = require('mongoose').model('User');
@@ -421,6 +432,11 @@ var UserControler ={
 
     },
 
+    /**
+     * Update particular educational detail of a user
+     * @param req
+     * @param res
+     */
     updateEducationDetail:function(req, res){
 
         var User = require('mongoose').model('User');
@@ -451,6 +467,11 @@ var UserControler ={
 
     },
 
+    /**
+     * delete particular educational detail of a user
+     * @param req
+     * @param res
+     */
     deleteEducationDetail:function(req, res){
 
         var User = require('mongoose').model('User');
@@ -468,13 +489,65 @@ var UserControler ={
 
         });
 
+    },
+
+
+    saveSkillInfo:function(req,res,next){
+
+        var async = require('async'),
+            User = require('mongoose').model('User');
+
+        // Need to COMMENT these
+
+        var userId = "56c2d6038c920a41750ac4db";
+        //var req_skills = ["PHP"]; // skills that are newly added by the user, but which are not in skill collection
+        //"56c43351f468ba8913f3d129", "56c44e88d7ffcaa91867862e", "56c44e88d7ffcaa91867862f"
+        var existing_skills = ["56c43351f468ba8913f3d12a", "56c44ddefd4ec41e18ab4e6d", "56c44ddefd4ec41e18ab4e6e"]; // skills that are newly added by the user, but which are available in skill collection
+        var deleted_skills = ["56c44e88d7ffcaa91867862e", "56c44e88d7ffcaa91867862f"]; // skills that are deleted by the user
+
+        // Need to UNCOMMENT these
+        //var userId = req.body.userId;
+        //var req_skills = req.body.new_skills; // skills that are newly added by the user, but which are not in skill collection
+        //var existing_skills = req.body.existing_skills; // skills that are newly added by the user, but which are available in skill collection
+        //var deleted_skills = req.body.deleted_skills; // skills that are deleted by the user
+
+        //TODO : If user added new skills that are not in Skill Collection
+
+        async.parallel([
+
+            function(callback){
+
+                if(existing_skills.length > 0){
+                    User.addSkills(userId, existing_skills, function(resultSet){
+                        callback(null);
+                    })
+                } else{
+                    callback(null);
+                }
+
+            },
+            function(callback){
+
+                if(deleted_skills.length > 0){
+                    User.deleteSkills(userId, deleted_skills, function(resultSet){
+                        callback(null);
+                    })
+                } else{
+                    callback(null);
+                }
+            }
+
+        ], function(err){
+            if (!err){
+                res.status(200).send({status:"success"});
+            }else{
+                res.status(400).send(err);
+            };
+        })
+
     }
 
 
-
 };
-
-
-
 
 module.exports = UserControler; 

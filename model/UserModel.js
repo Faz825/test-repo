@@ -60,6 +60,14 @@ var EducationSchema = new Schema({
     }
 });
 
+//var SkillSchema = new Schema({
+//    skill_id:{
+//        type: Schema.ObjectId,
+//        ref: 'Skill',
+//        default:null
+//    }
+//});
+
 /**
  * User Basic information
  */
@@ -110,6 +118,14 @@ var UserSchema = new Schema({
     images:[ImageSchema],
 
     education_details:[EducationSchema],
+
+    //skills:[SkillSchema],
+
+    skills:[{
+        type: Schema.ObjectId,
+        ref: 'Skill',
+        default:null
+    }],
 
 	created_at:{
 		type:Date
@@ -407,6 +423,13 @@ UserSchema.statics.updateEducationDetail = function(userId, educationDetails, ca
 
 };
 
+
+/**
+ * delete particular educational detail of a user
+ * @param userId
+ * @param educationId
+ * @param callBack
+ */
 UserSchema.statics.deleteEducationDetail = function(userId, educationId, callBack){
 
     var _this = this;
@@ -422,6 +445,72 @@ UserSchema.statics.deleteEducationDetail = function(userId, educationId, callBac
                 callBack({status:400,error:err});
             }
         });
+
+};
+
+
+/**
+ * Add skills to a user
+ * @param userId
+ * @param skills
+ * @param callBack
+ */
+UserSchema.statics.addSkills = function(userId, skills, callBack){
+
+    var _this = this;
+
+    var now = new Date();
+    this.updated_at = now;
+    if ( !this.created_at ) {
+        this.created_at = now;
+    }
+
+    _this.update(
+        {_id:userId},
+        {
+            $set:{
+                created_at:this.created_at,
+                updated_at:this.updated_at
+            },
+            $push:{
+                skills:{$each:skills}
+            }
+        },function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------", err);
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
+
+/**
+ * delete skills from a user
+ * @param userId
+ * @param skills
+ * @param callBack
+ */
+UserSchema.statics.deleteSkills = function(userId, skills, callBack){
+
+    var _this = this;
+
+    _this.update({_id:userId},
+        { $pull: { skills: {$in:skills} } },function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
 
 };
 

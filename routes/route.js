@@ -11,13 +11,15 @@ require('../model/SecretaryModel');
 require('../model/ConnectionModel');
 require('../model/FavouriteNewsCategory');
 require('../model/UploadModel');
+require('../model/SkillModel');
 
 /** Load  Controllers
  */
 var DefaultController   = require('../controller/DefaultController'),
 	UserController      = require('../controller/UserController'),
 	SecretaryController = require('../controller/SecretaryController'),
-    TestController      = require('../controller/TestController');
+    TestController      = require('../controller/TestController'),
+    SkillController      = require('../controller/SkillController');
 
 /**
  * Define Public URLs
@@ -56,6 +58,18 @@ router.get('/education-info/save', UserController.addEducationDetail);
 router.get('/education-info/retrieve', UserController.retrieveEducationDetail);
 router.get('/education-info/update', UserController.updateEducationDetail);
 router.get('/education-info/delete', UserController.deleteEducationDetail);
+
+// Skills CRUD
+router.get('/skills/save', SkillController.addSkills);
+router.get('/skills', SkillController.getSkills);
+router.get('/skill/:id', SkillController.getSkillById);
+router.get('/skills/update', SkillController.updateSkill);
+router.get('/skills/delete', SkillController.deleteSkill);
+
+
+//User's skill add / delete
+router.get('/skill-info/save', UserController.saveSkillInfo);
+
 
 /**
  * Push All Rqurst through oAuth
