@@ -57,7 +57,9 @@ export default class AboutCollegeAndJob extends React.Component{
         }
 
     }
-
+    onBack(){
+        this.props.onPreviousStep()
+    }
     collectData(e){
     	e.preventDefault();
         console.log(this.state.errorData)
@@ -115,7 +117,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                         <form method="post" onSubmit={this.collectData.bind(this)}>
                                         <div className="row pgs-middle-about-inputs">
                                         	<InputField type="text"
-                                                        name="schoolName"
+                                                        name="school"
                                                         size="7"
                                                         label="School Name"
                                                         placeholder=""
@@ -129,14 +131,14 @@ export default class AboutCollegeAndJob extends React.Component{
                                         </div>
                                         <div className="row pgs-middle-about-inputs">
                                             <InputField type="text"
-                                                        name="job"
+                                                        name="job_title"
                                                         size="7"
                                                         label="Current Job"
                                                         placeholder=""
                                                         classes="pgs-sign-inputs" textChange={this.elementChangeHandler}
                                                         required="true"/>
                                             <InputField type="text"
-                                                        name="company"
+                                                        name="company_name"
                                                         size="5"
                                                         label="Company"
                                                         placeholder=""
@@ -146,7 +148,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                         </div>
                                         {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
 	                                        <div className="row">
-		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
+		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="Back" onButtonClick = {this.onBack.bind(this)} />
 		                                        <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
 		                                    </div>
                                         </form>

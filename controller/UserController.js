@@ -62,7 +62,9 @@ var UserControler ={
                                     console.log("EMAIL Sending Error");
                                     console.log(err);
                                 }
-                                res.status(200).json(_out_put)
+
+                                res.status(200).json(_out_put);
+
                             });
                         });
                     });
@@ -473,15 +475,41 @@ var UserControler ={
     },
     addCollageAndJob:function(req,res){
         var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-        CurrentSession['status']    = 4;
+        CurrentSession['status']        = 4;
+        CurrentSession['school']        = (req.body.school)?req.body.school:null;
+        CurrentSession['grad_date']     = (req.body.grad_date)?req.body.grad_date:null;
+        CurrentSession['job_title']     = (req.body.job_title)?req.body.job_title:null;
+        CurrentSession['company_name']  = (req.body.company)?req.body.company_name:null;
+
         CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
-            var outPut ={};
-            outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['user']=CurrentSession;
+
+            var User = require('mongoose').model('User'),
+                _collageAndJob={
+                    school:req.body.school,
+                    grad_date:req.body.grad_date,
+                    job_title:req.body.job_title,
+                    company_name:req.body.company_name,
+                };
+
+            User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
+                var outPut ={};
+
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
+                    res.status(200).json(outPut);
+                    return 0;
+                }
+                if(!cacheData){
+                    outPut['extra']=Alert.CACHE_CREATION_ERROR
+                }
+                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user']      = CurrentSession;
+                res.status(200).json(outPut);
 
 
 
 
+            });
 
         });
     }
@@ -493,4 +521,4 @@ var UserControler ={
 
 
 
-module.exports = UserControler; 
+module.exports = UserControler;

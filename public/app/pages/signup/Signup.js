@@ -23,15 +23,15 @@ class Signup extends React.Component {
             errorData:{},
             signupURL:'/doSignup',
             validateAlert: ""
-            
+
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this)
         this.clearValidations     = this.clearValidations.bind(this)
-        
+
 
     }
 
-    allInvalid(elements) { 
+    allInvalid(elements) {
             for (var i in elements) {
                 if (elements[i]["status"] == "invalid") return false;
             }
@@ -91,7 +91,7 @@ class Signup extends React.Component {
     }
 
     elementChangeHandler(key,data,status){
-        
+
         let _formData = this.state.formData;
         let _errorData = this.state.errorData;
 
@@ -99,7 +99,7 @@ class Signup extends React.Component {
         _errorData[key] = status;
         this.setState({formData:_formData});
         this.setState({errorData:_errorData});
-    
+
     }
 
     clearValidations(){
@@ -116,22 +116,60 @@ class Signup extends React.Component {
                             <div className="row row-clr pgs-middle-sign-wrapper-inner-form">
                                 <form method="get" onSubmit={this.validateForm.bind(this)} onReset={this.clearValidations.bind(this)} >
                                     <div className="row">
-                                        <InputField type="text" name="fName" size="6" label="First Name" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
-                                        <InputField type="text" name="lName" size="6" label="Last Name" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
+                                        <InputField type="text"
+                                                    name="fName"
+                                                    size="6"
+                                                    value=""
+                                                    label="First Name"
+                                                    placeholder=""
+                                                    classes="pgs-sign-inputs"
+                                                    textChange={this.elementChangeHandler}
+                                                    required="true" />
+                                        <InputField type="text"
+                                                    name="lName"
+                                                    size="6"
+                                                    value=""
+                                                    label="Last Name"
+                                                    placeholder=""
+                                                    classes="pgs-sign-inputs"
+                                                    textChange={this.elementChangeHandler}
+                                                    required="true" />
                                     </div>
                                     <div className="row">
-                                        <InputField type="email" name="email" size="12" label="Your email address" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
+                                        <InputField type="email"
+                                                    name="email"
+                                                    size="12"
+                                                    value=""
+                                                    label="Your email address"
+                                                    placeholder=""
+                                                    classes="pgs-sign-inputs"
+                                                    textChange={this.elementChangeHandler}
+                                                    required="true" />
                                     </div>
                                     <div className="row">
-                                        <InputField type="password" name="password" size="6" label="Password" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
-                                        <InputField type="password" name="confPassword" size="6" label="Confirm Password" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} required="true" />
+                                        <InputField type="password"
+                                                    name="password"
+                                                    size="6" value=""
+                                                    label="Password"
+                                                    placeholder=""
+                                                    classes="pgs-sign-inputs"
+                                                    textChange={this.elementChangeHandler}
+                                                    required="true" />
+                                        <InputField type="password"
+                                                    name="confPassword"
+                                                    size="6" value=""
+                                                    label="Confirm Password"
+                                                    placeholder=""
+                                                    classes="pgs-sign-inputs"
+                                                    textChange={this.elementChangeHandler}
+                                                    required="true" />
                                     </div>
                                     {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
                                     <div className="row">
                                         <Button type="reset" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
                                         <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
                                     </div>
-                                </form>    
+                                </form>
                             </div>
                         </div>
                     </div>

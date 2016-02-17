@@ -11,7 +11,7 @@ class Index extends React.Component {
 
 	constructor(props) {
 		super(props);
-		
+
 		this.state={
 			step:1,
             userData:{},
@@ -96,7 +96,7 @@ class Index extends React.Component {
 		return this.showSteps()
 	}
 
-		
+
 
 }
 

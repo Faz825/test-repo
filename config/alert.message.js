@@ -32,7 +32,8 @@ GLOBAL.Alert={
     CONNECTED:"Connected",
     CONNECTED_USERS_NOT_SELECTED:"Select at lease one user that you want to connect",
     ADDED_PROFILE_IMAGE:"Profile Image uploaded",
-    ERROR_UPLOADING_IMAGE:"Error wile uploading"
+    ERROR_UPLOADING_IMAGE:"Error wile uploading",
+    FAILED_TO_ADD_JOB_AND_COLLAGE: "Failed to add Collage and Job information"
 
 
 }

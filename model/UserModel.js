@@ -138,8 +138,6 @@ var UserSchema = new Schema({
 		default:null
 	},
 
-    images:[ImageSchema],
-
     education_details:[EducationSchema],
 
     working_experiences:[WorkingExperienceSchema],
@@ -562,4 +560,57 @@ UserSchema.statics.deleteWorkingExperience = function(userId, workingExperienceI
             }
         });
 };
+
+/**
+ * Add Collage and Nob detail summery
+ * This function is only for add genral information about Job and Collage information.
+ * Other fields are in set to null
+ * @param userId
+ * @param data
+ * @param callBack
+ */
+UserSchema.statics.addCollageAndJob = function(userId,data,callBack) {
+    var _this = this;
+
+    var now = new Date();
+    this.updated_at = now;
+    if ( !this.created_at ) {
+        this.created_at = now;
+    }
+
+
+    var _educationDetails = {
+        school:data.school,
+        date_attended_to:data.grad_date,
+    }
+
+    var _workingExperienceDetails = {
+        company_name:data.company_name,
+        title:data.job_title,
+
+    }
+
+    _this.update(
+        {_id:userId},
+        {
+            $set:{
+                created_at:this.created_at,
+                updated_at:this.updated_at
+            },
+            $push:{
+                education_details:_educationDetails,
+                working_experiences:_workingExperienceDetails
+            }
+        },function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+}
 mongoose.model('User',UserSchema);

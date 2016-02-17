@@ -6,7 +6,8 @@ const Alert = {
 	"PASSWORD_MISMATCH"          : "Please confirm the password",
 	"FILL_EMPTY_FIELDS"          : "Please fill the empty fields",
 	"FILL_EMPTY_REQUIRED_FIELDS" : "Please fill the empty required fields",
-	"PLEASE_SELECT_SECRETARY"    : "Please Select a Secretary before moving forward"
+	"PLEASE_SELECT_SECRETARY"    : "Please Select a Secretary before moving forward",
+
 }
 
 
