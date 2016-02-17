@@ -5,6 +5,9 @@ export default class CountryList extends React.Component{
 	constructor(props) {
         super(props);
         this.selectChange = this.selectChange.bind(this);
+        this.state={
+            defaultValue:this.props.defaultValue
+        }
     }
 
     selectChange(e){
@@ -18,18 +21,27 @@ export default class CountryList extends React.Component{
 		}else{
 			status = "";
 		}
-
+        this.setState({defaultValue:e.target.value,status});
 		this.props.optChange("country",e.target.value,status);
 
     }
 
 	render(){
+
+        console.log(this.state.selectedValue)
 		return(
 			<div className="col-xs-5">
 	            <p>Country {this.props.required ? <span style={{"color": "#ed0909"}}>*</span> : ""}</p>
-	            <select name="country" className="pgs-sign-select" onChange={this.selectChange.bind(this)}>
+	            <select name="country"
+                        className="pgs-sign-select"
+                        onChange={this.selectChange.bind(this)}
+                        value={this.state.defaultValue}>
+					<option/>
 	            	{Countries.map(function(country, i){
-						return <option value={country.key} key={i}>{country.name}</option>;
+						return <option value={country.key}
+                                       key={i}
+                                         >
+                            {country.name}</option>;
 	            	})}
 	            </select>
             </div>

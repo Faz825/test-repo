@@ -27,6 +27,7 @@ export default class AboutYou extends React.Component{
         };
         this.collectData = this.collectData.bind(this);
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
+        this.loggedUser = Session.getSession('prg_lg')
 
     }
 
@@ -75,7 +76,7 @@ export default class AboutYou extends React.Component{
                     url: '/general-info/save',
                     method: "POST",
                     dataType: "JSON",
-                    headers: { 'prg-auth-header':user.token },
+                    headers: { 'prg-auth-header':this.loggedUser.token },
                     data:this.state.formData,
                     success: function (data, text) {
                         if (data.status.code == 200) {
@@ -100,7 +101,7 @@ export default class AboutYou extends React.Component{
 
 	render(){
         let _secretary_image = this.state.sesData.secretary_image_url;
-
+console.log(this.loggedUser)
         return(
 			<div className="row row-clr pgs-middle-sign-wrapper">
             	<div className="container">
@@ -116,7 +117,10 @@ export default class AboutYou extends React.Component{
                                         <form method="post" onSubmit={this.collectData.bind(this)}>
 	                                        <div className="row pgs-middle-about-inputs">
 	                                        	<SelectDateDropdown title="Date of Birth" dateFormat="dd-mm-yyyy" optChange={this.elementChangeHandler} required="true"/>
-	                                            <CountryList optChange={this.elementChangeHandler} required="true"/>
+	                                            <CountryList
+                                                    optChange={this.elementChangeHandler}
+                                                    required="true"
+                                                    defaultValue = {this.loggedUser.country}/>
 	                                            <InputField type="text" name="zip" size="2" label="Zip Code" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler}  />
 	                                        </div>
 	                                        {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}

@@ -95,7 +95,11 @@ class Dropdown extends React.Component{
 
 		return(
 			<div className="pgs-sign-select-about-col">
-                <select name={this.props.fieldName} className="pgs-sign-select" onChange={this.selectChange.bind(this)}>
+                <select name={this.props.fieldName}
+						className="pgs-sign-select"
+						onChange={this.selectChange.bind(this)}
+						>
+                   <option/>
                     {options.map(function(opt, i){
 				        return <option value={opt} key={i}>{opt}</option>;
 				    })}

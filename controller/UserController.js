@@ -57,11 +57,12 @@ var UserControler ={
                             };
                             EmailEngine.sendMail(sendOptions, function(err){
                                 if(!err){
-                                    res.status(200).json(_out_put);
+                                    console.log("Email Send")
                                 } else{
+                                    console.log("EMAIL Sending Error");
                                     console.log(err);
                                 }
-
+                                res.status(200).json(_out_put)
                             });
                         });
                     });

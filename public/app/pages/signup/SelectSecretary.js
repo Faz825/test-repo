@@ -22,6 +22,8 @@ class SelectSecretary extends React.Component {
             selectSecretary: ""
          }
          this.onNextStep = this.onNextStep.bind(this);
+        this.loggedUser = Session.getSession('prg_lg')
+
 
     }
 
@@ -39,6 +41,9 @@ class SelectSecretary extends React.Component {
                 console.log(error);
             }.bind(this)
         });
+
+
+        this.setState({selected:this.loggedUser.secretary_id});
     }
 
 
@@ -67,13 +72,13 @@ class SelectSecretary extends React.Component {
     onNextStep(){
         if(this.state.secretary){
 
-            let user = Session.getSession('prg_lg');
+
             let _this =  this;
             $.ajax({
                 url: '/secretary/save',
                 method: "POST",
                 dataType: "JSON",
-                headers: { 'prg-auth-header':user.token },
+                headers: { 'prg-auth-header':this.loggedUser.token },
                 data:this.state.secretary,
                 success: function (data, text) {
                     if (data.status === 'success') {
