@@ -361,7 +361,116 @@ var UserControler ={
             }
         });
 
+    },
+
+    addEducationDetail:function(req, res){
+
+        var User = require('mongoose').model('User');
+
+        //var educationDetails = req.body.educationDetails;
+
+        //var _educationDetails = {
+        //    school:"Westminster",
+        //    date_attended_from:"2012",
+        //    date_attended_to:"2015",
+        //    degree:"MSc in Advanced Software Engineering",
+        //    grade:"Merit",
+        //    activities_societies:"Debate Team",
+        //    description:"It was wonderful"
+        //};
+
+        var _educationDetails = {
+            school:"Middlesex",
+            date_attended_from:"2007",
+            date_attended_to:"2010",
+            degree:"BSc in IT",
+            grade:"Merit",
+            activities_societies:"Debate Team",
+            description:"It was wonderful"
+        };
+
+        //var _userId = CurrentSession.id;
+
+        var _userId = "56c2d6038c920a41750ac4db";
+
+        User.addEducationDetail(_userId,_educationDetails,function(resultSet){
+
+            res.status(200).json(resultSet);
+
+
+        });
+
+    },
+
+    retrieveEducationDetail:function(req, res){
+
+        var User = require('mongoose').model('User');
+
+        //var _userId = CurrentSession.id;
+
+        var _userId = "56c2d6038c920a41750ac4db";
+
+        var _education_id = "56c321a42ab09c7b09034e85";
+
+        User.retrieveEducationDetail(_userId,_education_id,function(resultSet){
+
+            res.status(200).json(resultSet);
+
+
+        });
+
+    },
+
+    updateEducationDetail:function(req, res){
+
+        var User = require('mongoose').model('User');
+
+        //var _userId = CurrentSession.id;
+
+        var _userId = "56c2d6038c920a41750ac4db";
+
+        var _education_id = "56c321a42ab09c7b09034e85";
+
+        var _educationDetails = {
+            _id:_education_id,
+            school:"Hindu Ladies College",
+            date_attended_from:"1996",
+            date_attended_to:"2014",
+            degree:"G.C.E.A/L",
+            grade:"Merit",
+            activities_societies:"Played Tennis",
+            description:"It was wonderful"
+        };
+
+        User.updateEducationDetail(_userId,_educationDetails,function(resultSet){
+
+            res.status(200).json(resultSet);
+
+
+        });
+
+    },
+
+    deleteEducationDetail:function(req, res){
+
+        var User = require('mongoose').model('User');
+
+        //var _userId = CurrentSession.id;
+
+        var _userId = "56c2d6038c920a41750ac4db";
+
+        var _education_id = "56c321a42ab09c7b09034e85";
+
+        User.deleteEducationDetail(_userId,_education_id,function(resultSet){
+
+            res.status(200).json(resultSet);
+
+
+        });
+
     }
+
+
 
 };
 
