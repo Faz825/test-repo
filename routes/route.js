@@ -36,7 +36,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
 GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
-    '/profile-image','/done','/cache-check'
+    '/profile-image','/done','/cache-check','/collage-and-job'
 
 ];
 
@@ -69,6 +69,8 @@ router.get('/skills/delete', SkillController.deleteSkill);
 
 //User's skill add / delete
 router.get('/skill-info/save', UserController.saveSkillInfo);
+
+router.post('/collage-and-job/save',UserController.addCollageAndJob);
 
 
 /**

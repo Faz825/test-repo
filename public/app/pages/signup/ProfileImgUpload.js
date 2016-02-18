@@ -7,8 +7,14 @@ export default class ProfileImgUpload extends React.Component{
 
 	constructor(props){
 		super(props);
+        this.loggedUser = Session.getSession('prg_lg');
 
-		this.state = {profileImg : ""};
+		this.state = {
+            profileImg : "",
+            defaultImage:(typeof  this.loggedUser.profile_image != "undefined")?this.loggedUser.profile_image:"images/default-profile-pic.png"
+        };
+
+
 
 
 	}
@@ -19,13 +25,13 @@ export default class ProfileImgUpload extends React.Component{
 
 	uploadImg(){
 
-        let user = Session.getSession('prg_lg');
+
         let _this =  this;
         $.ajax({
             url: '/upload/profile-image',
             method: "POST",
             dataType: "JSON",
-            headers: { 'prg-auth-header':user.token },
+            headers: { 'prg-auth-header':this.loggedUser.token },
             data:{profileImg:this.state.profileImg,extension:'png'},
             cache: false,
             contentType:"application/x-www-form-urlencoded",
@@ -75,7 +81,7 @@ export default class ProfileImgUpload extends React.Component{
                                         
                                         <p>Would you like to upload a picture now?</p>
                                                                               
-                                        <ImgUploader imgUploaded={this.profileImgUpdated.bind(this)} defaultImg="images/default-profile-pic.png" />
+                                        <ImgUploader imgUploaded={this.profileImgUpdated.bind(this)} defaultImg={this.state.defaultImage} />
                                         
                                          <div className="row">
 	                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="back" />

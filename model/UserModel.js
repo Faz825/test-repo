@@ -9,19 +9,9 @@ var  mongoose = require('mongoose'),
      uuid = require('node-uuid');
 
 
-var ImageSchema = new Schema({
-    profile_image_name:{
-        type:String,
-        trim:true,
-        default:null
-    },
-    profile_image_type:{
-        type:String,
-        trim:true,
-        default:null
-    }
-});
-
+/**
+ * Education information
+ */
 var EducationSchema = new Schema({
     school:{
         type:String,
@@ -60,13 +50,46 @@ var EducationSchema = new Schema({
     }
 });
 
-//var SkillSchema = new Schema({
-//    skill_id:{
-//        type: Schema.ObjectId,
-//        ref: 'Skill',
-//        default:null
-//    }
-//});
+/**
+ * WorkingExperience Schema
+ */
+var WorkingExperienceSchema = new Schema({
+    company_name:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    title:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    location:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    start_date:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    end_date:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    description:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    is_current_work_place:{
+        type:Boolean,
+        trim:true,
+        default:true,
+    }
+});
 
 /**
  * User Basic information
@@ -115,17 +138,15 @@ var UserSchema = new Schema({
 		default:null
 	},
 
-    images:[ImageSchema],
-
     education_details:[EducationSchema],
-
-    //skills:[SkillSchema],
 
     skills:[{
         type: Schema.ObjectId,
         ref: 'Skill',
         default:null
     }],
+
+    working_experiences:[WorkingExperienceSchema],
 
 	created_at:{
 		type:Date
@@ -142,7 +163,7 @@ var UserSchema = new Schema({
 
 var createHash = function(password){
  return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
-}
+};
 
 UserSchema.pre('save', function(next){
   var now = new Date();
@@ -189,7 +210,7 @@ UserSchema.statics.create = function(UserData,callBack){
 
 	});
 	
-}
+};
 
 /**
  * Get User By Email ID
@@ -213,7 +234,7 @@ UserSchema.statics.findByEmail = function(email,callBack){
 	});
 
 
-}
+};
 
 /**
  * Add Secretary for the user
@@ -237,7 +258,7 @@ UserSchema.statics.addSecretary =function(userId,secretaryId,callBack){
             }
         });
 
-}
+};
 
 /**
  * Update User profile based on the criterais
@@ -259,7 +280,7 @@ UserSchema.statics.saveUpdates=function(userId,data,callBack){
                 callBack({status:400,error:err});
             }
         });
-}
+};
 
 /**
  * Get Connection Users based on the logged user
@@ -301,7 +322,7 @@ UserSchema.statics.getConnectionUsers=function(criteria,callBack){
 
    });
 
-}
+};
 
 
 /**
@@ -332,8 +353,7 @@ UserSchema.statics.addEducationDetail = function(userId, educationDetails, callB
         grade:educationDetails.grade,
         activities_societies:educationDetails.activities_societies,
         description:educationDetails.description
-    }
-
+    };
 
     var now = new Date();
     this.updated_at = now;
@@ -450,6 +470,164 @@ UserSchema.statics.deleteEducationDetail = function(userId, educationId, callBac
 
 
 /**
+ * Add Working Experience Details
+ * @param userId
+ * @param workingExperienceDetails
+ * @param callBack
+ */
+UserSchema.statics.addWorkingExperience =function(userId,workingExperienceDetails,callBack){
+
+    var _this = this;
+
+    var _workingExperienceDetails = {
+        company_name:workingExperienceDetails.company_name,
+        title:workingExperienceDetails.title,
+        location:workingExperienceDetails.location,
+        start_date:workingExperienceDetails.start_date,
+        end_date:workingExperienceDetails.end_date,
+        is_current_work_place:workingExperienceDetails.is_current_work_place,
+        description:workingExperienceDetails.description
+    }
+
+
+    var now = new Date();
+    this.updated_at = now;
+    if ( !this.created_at ) {
+        this.created_at = now;
+    }
+
+    _this.update(
+        {_id:userId},
+        {
+            $set:{
+                created_at:this.created_at,
+                updated_at:this.updated_at
+            },
+            $push:{
+                working_experiences:_workingExperienceDetails
+            }
+        },function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+}
+
+/**
+ * Update Working Experience
+ * @param userId
+ * @param workingExperienceDetails
+ * @param callBack
+ */
+UserSchema.statics.updateWorkingExperience =function(userId, workingExperienceDetails, callBack){
+    var _this = this;
+
+    _this.update({_id:userId,"working_experiences._id":workingExperienceDetails._id},
+        {$set:{
+            "working_experiences.$.company_name":workingExperienceDetails.company_name,
+            "working_experiences.$.title":workingExperienceDetails.title,
+            "working_experiences.$.location":workingExperienceDetails.location,
+            "working_experiences.$.start_date":workingExperienceDetails.start_date,
+            "working_experiences.$.end_date":workingExperienceDetails.end_date,
+            "working_experiences.$.is_current_work_place":workingExperienceDetails.is_current_work_place,
+            "working_experiences.$.description":workingExperienceDetails.description,
+        }},function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+}
+
+/**
+ * Delete Working Experience
+ * @param userId
+ * @param workingExperienceId
+ * @param callBack
+ */
+UserSchema.statics.deleteWorkingExperience = function(userId, workingExperienceId, callBack){
+
+    var _this = this;
+
+    _this.update({_id:userId},
+        { $pull: { working_experiences: { _id: workingExperienceId } } },function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+};
+
+/**
+ * Add Collage and Nob detail summery
+ * This function is only for add genral information about Job and Collage information.
+ * Other fields are in set to null
+ * @param userId
+ * @param data
+ * @param callBack
+ */
+UserSchema.statics.addCollageAndJob = function(userId,data,callBack) {
+    var _this = this;
+
+    var now = new Date();
+    this.updated_at = now;
+    if ( !this.created_at ) {
+        this.created_at = now;
+    }
+
+
+    var _educationDetails = {
+        school:data.school,
+        date_attended_to:data.grad_date,
+    }
+
+    var _workingExperienceDetails = {
+        company_name:data.company_name,
+        title:data.job_title,
+
+    }
+
+    _this.update(
+        {_id:userId},
+        {
+            $set:{
+                created_at:this.created_at,
+                updated_at:this.updated_at
+            },
+            $push:{
+                education_details:_educationDetails,
+                working_experiences:_workingExperienceDetails
+            }
+        },function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
+
+/**
  * Add skills to a user
  * @param userId
  * @param skills
@@ -513,6 +691,8 @@ UserSchema.statics.deleteSkills = function(userId, skills, callBack){
 
 
 };
+
+
 
 
 mongoose.model('User',UserSchema);

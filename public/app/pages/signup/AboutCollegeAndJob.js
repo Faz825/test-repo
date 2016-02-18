@@ -27,7 +27,7 @@ export default class AboutCollegeAndJob extends React.Component{
         };
         this.collectData = this.collectData.bind(this);
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
-        
+        this.loggedUser = Session.getSession('prg_lg')
     }
 
     componentDidMount() {
@@ -44,7 +44,7 @@ export default class AboutCollegeAndJob extends React.Component{
     }
 
     elementChangeHandler(key,data,status){
-        
+
         let _formData = this.state.formData;
         let _errorData = this.state.errorData;
 
@@ -55,19 +55,40 @@ export default class AboutCollegeAndJob extends React.Component{
         	_errorData[key] = {"status": status};
         	this.setState({errorData:_errorData});
         }
-    
-    }
 
+    }
+    onBack(){
+        this.props.onPreviousStep()
+    }
     collectData(e){
     	e.preventDefault();
-
-    	if(Object.keys(this.state.errorData).length != 2){
+        console.log(this.state.errorData)
+    	if(Object.keys(this.state.errorData).length != 3){
     		this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
     	}else{
-    		this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
 
     		if(this.allInvalid(this.state.errorData)){
     			this.setState({validateAlert: ""});
+
+                let _this =  this;
+                $.ajax({
+                    url: '/collage-and-job/save',
+                    method: "POST",
+                    dataType: "JSON",
+                    headers: { 'prg-auth-header':this.loggedUser.token },
+                    data:this.state.formData,
+                    success: function (data, text) {
+                        if (data.status.code == 200) {
+                            Session.createSession("prg_lg", data.user);
+                            _this.props.onNextStep();
+                        }
+                    },
+                    error: function (request, status, error) {
+                        console.log(request.responseText);
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
 	    	}
     	}
 
@@ -95,19 +116,42 @@ export default class AboutCollegeAndJob extends React.Component{
                                     	<h6>About your college / job</h6>
                                         <form method="post" onSubmit={this.collectData.bind(this)}>
                                         <div className="row pgs-middle-about-inputs">
-                                        	<InputField type="text" name="schoolName" size="7" label="School Name" placeholder="University of California, Berkeley" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
-                                        	<SelectDateDropdown title="Graduation Date" dateFormat="mm-dd-yyyy" optChange={this.elementChangeHandler}/>
+                                        	<InputField type="text"
+                                                        name="school"
+                                                        size="7"
+                                                        label="School Name"
+                                                        placeholder=""
+                                                        classes="pgs-sign-inputs"
+                                                        textChange={this.elementChangeHandler}
+                                                        required="true"/>
+                                        	<SelectDateDropdown title="Graduation Date"
+                                                                dateFormat="mm-dd-yyyy"
+                                                                optChange={this.elementChangeHandler}
+                                                                dateType="grad_date"/>
                                         </div>
                                         <div className="row pgs-middle-about-inputs">
-                                            <InputField type="text" name="job" size="7" label="Current Job" placeholder="Front-end Developer" classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
-                                            <InputField type="text" name="company" size="5" label="Company" placeholder="Facebook Inc." classes="pgs-sign-inputs" textChange={this.elementChangeHandler} />
+                                            <InputField type="text"
+                                                        name="job_title"
+                                                        size="7"
+                                                        label="Current Job"
+                                                        placeholder=""
+                                                        classes="pgs-sign-inputs" textChange={this.elementChangeHandler}
+                                                        required="true"/>
+                                            <InputField type="text"
+                                                        name="company_name"
+                                                        size="5"
+                                                        label="Company"
+                                                        placeholder=""
+                                                        classes="pgs-sign-inputs"
+                                                        textChange={this.elementChangeHandler}
+                                                        required="true"/>
                                         </div>
                                         {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
 	                                        <div className="row">
-		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
+		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="Back" onButtonClick = {this.onBack.bind(this)} />
 		                                        <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
 		                                    </div>
-                                        </form>    
+                                        </form>
                                     </div>
                                 </div>
                         	</div>

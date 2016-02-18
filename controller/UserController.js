@@ -57,10 +57,13 @@ var UserControler ={
                             };
                             EmailEngine.sendMail(sendOptions, function(err){
                                 if(!err){
-                                    res.status(200).json(_out_put);
+                                    console.log("Email Send")
                                 } else{
+                                    console.log("EMAIL Sending Error");
                                     console.log(err);
                                 }
+
+                                res.status(200).json(_out_put);
 
                             });
                         });
@@ -220,7 +223,7 @@ var UserControler ={
      */
     connect:function(req,res){
         var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-        CurrentSession['status']    = 4;
+        CurrentSession['status']    = 5;
         CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
             var outPut ={};
             outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -273,7 +276,7 @@ var UserControler ={
      */
     addNewsCategory:function(req,res){
         var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-        CurrentSession['status']    = 5;
+        CurrentSession['status']    = 6;
         CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
             var outPut ={};
             outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -338,7 +341,7 @@ var UserControler ={
 
             if (payLoad.status != 400) {
                 var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-                CurrentSession['status'] = 6;
+                CurrentSession['status'] = 7;
                 CurrentSession['profile_image'] = payLoad.http_url;
                 console.log(CurrentSession);
 
@@ -487,10 +490,51 @@ var UserControler ={
             res.status(200).json(resultSet);
 
 
+
         });
 
     },
 
+    addCollageAndJob:function(req,res){
+        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+        CurrentSession['status']        = 4;
+        CurrentSession['school']        = (req.body.school)?req.body.school:null;
+        CurrentSession['grad_date']     = (req.body.grad_date)?req.body.grad_date:null;
+        CurrentSession['job_title']     = (req.body.job_title)?req.body.job_title:null;
+        CurrentSession['company_name']  = (req.body.company)?req.body.company_name:null;
+
+        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+
+            var User = require('mongoose').model('User'),
+                _collageAndJob={
+                    school:req.body.school,
+                    grad_date:req.body.grad_date,
+                    job_title:req.body.job_title,
+                    company_name:req.body.company_name,
+                };
+
+            User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
+                var outPut ={};
+
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
+                    res.status(200).json(outPut);
+                    return 0;
+                }
+                if(!cacheData){
+                    outPut['extra']=Alert.CACHE_CREATION_ERROR
+                }
+                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user']      = CurrentSession;
+                res.status(200).json(outPut);
+
+
+
+
+            });
+
+        });
+    },
 
     saveSkillInfo:function(req,res,next){
 
@@ -550,4 +594,4 @@ var UserControler ={
 
 };
 
-module.exports = UserControler; 
+module.exports = UserControler;

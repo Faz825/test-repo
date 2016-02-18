@@ -23,11 +23,11 @@ export default class AboutYou extends React.Component{
             sesData:{},
             formData:{},
             errorData:{},
-            validateAlert: ""
+            validateAlert: "",
+            loggedUser : Session.getSession('prg_lg')
         };
         this.collectData = this.collectData.bind(this);
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
-
     }
 
     componentDidMount() {
@@ -44,7 +44,7 @@ export default class AboutYou extends React.Component{
     }
 
     elementChangeHandler(key,data,status){
-        
+
         let _formData = this.state.formData;
         let _errorData = this.state.errorData;
 
@@ -55,7 +55,7 @@ export default class AboutYou extends React.Component{
             _errorData[key] = {"status": status};
             this.setState({errorData:_errorData});
         }
-    
+
     }
 
     collectData(e){
@@ -64,18 +64,17 @@ export default class AboutYou extends React.Component{
         if(Object.keys(this.state.errorData).length != 2){
             this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
         }else{
-            this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
 
             if(this.allInvalid(this.state.errorData)){
                 this.setState({validateAlert: ""});
 
-                let user = Session.getSession('prg_lg');
+
                 let _this =  this;
                 $.ajax({
                     url: '/general-info/save',
                     method: "POST",
                     dataType: "JSON",
-                    headers: { 'prg-auth-header':user.token },
+                    headers: { 'prg-auth-header':this.state.loggedUser.token },
                     data:this.state.formData,
                     success: function (data, text) {
                         if (data.status.code == 200) {
@@ -100,9 +99,10 @@ export default class AboutYou extends React.Component{
 
 	render(){
         let _secretary_image = this.state.sesData.secretary_image_url;
+        let defaultVals = this.state.loggedUser;
 
         return(
-			<div className="row row-clr pgs-middle-sign-wrapper">
+			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
             	<div className="container">
                     <div className="col-xs-10 pgs-middle-sign-wrapper-inner">
                     	<div className="row">
@@ -115,16 +115,29 @@ export default class AboutYou extends React.Component{
                                     	<h6>First, Let me know a little more about you...</h6>
                                         <form method="post" onSubmit={this.collectData.bind(this)}>
 	                                        <div className="row pgs-middle-about-inputs">
-	                                        	<SelectDateDropdown title="Date of Birth" dateFormat="dd-mm-yyyy" optChange={this.elementChangeHandler} required="true"/>
-	                                            <CountryList optChange={this.elementChangeHandler} required="true"/>
-	                                            <InputField type="text" name="zip" size="2" label="Zip Code" placeholder="" classes="pgs-sign-inputs" textChange={this.elementChangeHandler}  />
+
+	                                        	<SelectDateDropdown
+                                                    title="Date of Birth"
+                                                    dateFormat="dd-mm-yyyy" defaultOpt="18-07-1991"
+                                                    optChange={this.elementChangeHandler}
+                                                    required="true"/>
+	                                            <CountryList optChange={this.elementChangeHandler}
+                                                             defaultOpt={defaultVals.country}
+                                                             required="true"/>
+
+	                                            <InputField type="text"
+                                                            name="zip"
+                                                            size="2" label="Zip Code"
+                                                            placeholder=""
+                                                            classes="pgs-sign-inputs"
+                                                            textChange={this.elementChangeHandler}  />
 	                                        </div>
 	                                        {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
 	                                        <div className="row">
 		                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel pgs-sign-submit-back" value="back" onButtonClick = {this.onBack.bind(this)}/>
 		                                        <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
 		                                    </div>
-                                        </form>    
+                                        </form>
                                     </div>
                                 </div>
                         	</div>

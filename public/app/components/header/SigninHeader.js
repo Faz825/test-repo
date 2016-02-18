@@ -20,29 +20,36 @@ export default class Header extends React.Component {
         return(
             <div className="row row-clr pgs-top-navigation">
 
+              <Logo url ="images/logo.png" />
+
                 <div className="container">
-
                     <div className="row">
-
-                        <Logo url ="images/logo.png" />
-                        <div className="col-xs-6 pgs-main-nav-area">
-                            <div className="row row-clr pgs-main-nav-area-inner">
-                                <ul>
-                                    <li><Link to="/about">About Proglobe</Link></li>
-                                    <li><Link to="/how-it-works">How it works</Link></li>
-                                    <li><Link to="/the-team">The Team</Link></li>
-                                    <li><Link to="/contact-us">Contact us</Link></li>
-
-                                </ul>
-                            </div>
+                      <span className="col-xs-2"></span>
+                      <div className="col-xs-7">
+                        <div className="row row-clr pg-header-search">
+                          <input type="text" placeholder="Search..." />
+                          <a href="#">
+                            <img className="img-responsive" alt="search" src="images/pg-home-v6_17.png" />
+                          </a>
                         </div>
-                        <div className="col-xs-3 pgs-main-btn-area">
-                            <div className="row row-clr pgs-main-btn-area-inner">
-
-                                <LogoutButton value="logout" />
-
-                            </div>
-                        </div>
+                      </div>
+                      <span className="col-xs-1"></span>
+                      <div className="col-xs-2 pg-header-options">
+                        <a href="newsfeed.html">
+                          <img className="img-responsive pg-top-defalt-ico" alt="" src="images/pg-home-v6_09.png" />
+                          <img className="img-responsive pg-top-hover-ico" alt="" src="images/pg-newsfeed_03.png" />
+                        </a>
+                        <a>
+                          <span className="pg-drop-down">
+                            <img className="img-responsive pg-top-defalt-ico" alt="" src="images/pg-home-v6_11.png" />
+                            <img className="img-responsive pg-top-hover-ico" alt="" src="images/pg-newsfeed_033.png" />
+                          </span>
+                        </a>
+                        <a href="#">
+                          <img className="img-responsive pg-top-defalt-ico" alt="" src="images/pg-home-v6_13.png" />
+                          <img className="img-responsive pg-top-hover-ico" alt="" src="images/pg-newsfeed_05.png" />
+                        </a>
+                      </div>
                     </div>
                 </div>
             </div>

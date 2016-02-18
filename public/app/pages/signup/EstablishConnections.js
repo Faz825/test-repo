@@ -11,7 +11,7 @@ export default class EstablishConnections extends React.Component{
 
         this.state = {
             connections: [],
-            sesData:{}, 
+            sesData:{},
             resultHeader:[]
         }
 
@@ -131,7 +131,7 @@ export default class EstablishConnections extends React.Component{
                                 	<img src="images/sign-left-arrow-1.png" alt="" className="img-responsive pgs-sign-left-arrow"/>
                                     <div className="row row-clr pgs-middle-sign-wrapper-about-inner pgs-middle-sign-wrapper-about-inner-establish-conn">
                                         <h1>Hello {session.first_name},</h1>
-                                        <h2>Welcome to Proglobe</h2> 
+                                        <h2>Welcome to Proglobe</h2>
                                     </div>
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form">
                                     	<h6>Establish your connections</h6>
