@@ -42,8 +42,8 @@ exports.Authentication= function(req,res,next){
 
             CurrentSession = cachedUser;
 
-            console.log("SESSION USER")
-            console.log(cachedUser)
+            //console.log("SESSION USER")
+            //console.log(cachedUser)
             next();
             return;
         });

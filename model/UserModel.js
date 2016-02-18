@@ -289,38 +289,94 @@ UserSchema.statics.saveUpdates=function(userId,data,callBack){
  * @param callBack
  */
 UserSchema.statics.getConnectionUsers=function(criteria,callBack){
-    var _this = this,
-        _criteria ={
-            country:criteria.country,
-            _id: { $ne: criteria.user_id }
-        };
 
-   _this.count(_criteria,function(err,count){
+    var _async = require('async'),
+        Connection = require('mongoose').model('Connection'),
+        _this = this;
 
-       _this.find(_criteria)
-           .limit(Config.CONNECTION_RESULT_PER_PAGE)
-           .skip(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
-           .sort({
-               country:'asc'
-           })
-           .exec(function(err,resultSet){
-               if(!err){
+    _async.waterfall([
+        function getUsersConnections(callBack){
+            Connection.getConnectedUserIds(criteria.user_id,function(usersConnection){
 
-                   callBack({
-                       status:200,
-                       total_result:count,
-                       users:_this.formatConnectionUserDataSet(resultSet)
-                   })
+                if(usersConnection.status == 200){
+                    callBack(null,usersConnection.connected_user_ids)
+                }
+            });
+        },
+        function getAllUsers(connectedUserIds,callBack){
 
-               }else{
-                   console.log("Server Error --------");
-                   console.log(err);
-                   callBack({status:400,error:err});
-               }
 
-           });
+            var _criteria ={
+                country:criteria.country,
+                _id: { $ne: criteria.user_id }
+            };
 
-   });
+            _this.count(_criteria,function(err,count){
+
+                _this.find(_criteria)
+                    .limit(Config.CONNECTION_RESULT_PER_PAGE)
+                    .skip(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
+                    .sort({
+                        country:'asc'
+                    })
+                    .exec(function(err,resultSet){
+                        if(!err){
+
+
+                            callBack(null,{
+                                total_result:count,
+                                users:_this.formatConnectionUserDataSet(resultSet),
+                                connected_user_ids:connectedUserIds
+                            })
+
+                        }else{
+                            console.log("Server Error --------");
+                            console.log(err);
+                            callBack({status:400,error:err});
+                        }
+
+                    });
+            });
+        },
+        function mergeConnection(connections,callBack){
+            var _connected_user_ids =connections. connected_user_ids,
+                _formattedConnection =[],
+                _connectedUsers = connections.users;
+
+
+
+            for(var i =0;i<_connectedUsers.length;i++){
+                var _c_users ={};
+                _c_users = _connectedUsers[i];
+                _connectedUsers[i]['is_connected'] = 0;
+
+
+                if(_connected_user_ids.indexOf(_c_users.user_id.toString()) != -1){
+                    _connectedUsers[i]['is_connected'] = 1;
+
+
+                }
+
+                _formattedConnection.push(_connectedUsers[i]);
+
+            }
+            callBack(null,{
+                total_result: connections.total_result,
+                users:_formattedConnection
+            })
+        }
+
+
+    ],function(err,resultSet){
+
+        if(!err){
+            callBack(resultSet)
+        }else{
+            console.log("LOOP ERROR")
+            console.log(err)
+        }
+
+    });
 
 };
 
@@ -331,7 +387,19 @@ UserSchema.statics.getConnectionUsers=function(criteria,callBack){
  * @returns {*}
  */
 UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
-    return resultSet;
+    var _tmp_object =[];
+    for(var i=0;i<resultSet.length;i++){
+        _tmp_object.push({
+            user_id: resultSet[i]._id,
+            email: resultSet[i].email,
+            first_name: resultSet[i].first_name,
+            last_name: resultSet[i].last_name,
+            zip_code: resultSet[i].zip_code,
+            dob: resultSet[i].dob,
+            country:resultSet[i].country
+        });
+    }
+    return _tmp_object;
 };
 
 

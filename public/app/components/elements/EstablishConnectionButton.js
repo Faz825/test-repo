@@ -3,7 +3,7 @@ import React from 'react';
 export default class EstablishConnectionButton extends React.Component{
 	constructor(props){
 		super(props);
-		this.state = {clicked: false, value: this.props.value};
+		this.state = {clicked: this.props.clicked, value: this.props.value};
 
 	}
 

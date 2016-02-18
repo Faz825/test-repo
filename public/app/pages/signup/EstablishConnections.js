@@ -20,6 +20,7 @@ export default class EstablishConnections extends React.Component{
         this.elementsList = [];
         this.currentPage = 1;
         this.connectedUsers =[];
+        this.unConnectedUsers =[];
         this.btn_text="Skip"
     }
 	componentDidMount() {
@@ -72,7 +73,7 @@ export default class EstablishConnections extends React.Component{
             url: '/connect-people',
             method: "POST",
             dataType: "JSON",
-            data:{ connected_users: JSON.stringify(this.connectedUsers)},
+            data:{ connected_users: JSON.stringify(this.connectedUsers),unconnected_users:JSON.stringify(this.unConnectedUsers)},
             headers: { 'prg-auth-header':user.token },
             success: function (data, text) {
                 if(data.status.code == 200){
@@ -90,13 +91,19 @@ export default class EstablishConnections extends React.Component{
     }
 
     onConnectionSelect(connection,isConnected){
+
         if(isConnected){
-            this.connectedUsers.push(connection._id);
+            this.connectedUsers.push(connection.user_id);
+            let _index = this.unConnectedUsers.indexOf(connection.user_id,1)
+            this.unConnectedUsers.splice(_index);
         }else{
-            let index = this.connectedUsers.indexOf(connection._id,1)
+            let index = this.connectedUsers.indexOf(connection.user_id,1)
             this.connectedUsers.splice(index);
+            this.unConnectedUsers.push(connection.user_id)
         }
 
+        console.log(this.unConnectedUsers);
+        console.log(this.connectedUsers);
         if(this.connectedUsers.length >=1){
             this.btn_text = "Next";
         }else{
@@ -115,9 +122,11 @@ export default class EstablishConnections extends React.Component{
 
         if(this.state.connections.length > 0){
             connection_list = this.state.connections.map((connection)=>{
+
                 return <EstablishConnectionBlock key={connection._id} connection={connection} onConnectionSelect={(connection,isConnected)=>this.onConnectionSelect(connection,isConnected)}/>
             });
         }
+
         this.elementsList.push(connection_list);
 
 		return (
