@@ -102,8 +102,7 @@ export default class EstablishConnections extends React.Component{
             this.unConnectedUsers.push(connection.user_id)
         }
 
-        console.log(this.unConnectedUsers);
-        console.log(this.connectedUsers);
+
         if(this.connectedUsers.length >=1){
             this.btn_text = "Next";
         }else{

@@ -18,7 +18,7 @@ export default class ProfileImg extends React.Component{
   }
 
   render() {
-    console.log(Session.getSession('prg_lg'))
+
     return (
       <div className="pg-top-profile-pic-box">
         <div className="proImgholder">

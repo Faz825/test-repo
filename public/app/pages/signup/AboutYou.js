@@ -23,18 +23,13 @@ export default class AboutYou extends React.Component{
             sesData:{},
             formData:{},
             errorData:{},
-            validateAlert: "",
-            loggedUser : Session.getSession('prg_lg')
+            validateAlert: ""
         };
         this.collectData = this.collectData.bind(this);
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
+        this.loggedUser = Session.getSession('prg_lg');
     }
 
-    componentDidMount() {
-
-        let _sesData = Session.getSession('prg_lg')
-        this.setState({sesData:_sesData});
-    }
 
     allInvalid(elements) {
         for (var i in elements) {
@@ -74,7 +69,7 @@ export default class AboutYou extends React.Component{
                     url: '/general-info/save',
                     method: "POST",
                     dataType: "JSON",
-                    headers: { 'prg-auth-header':this.state.loggedUser.token },
+                    headers: { 'prg-auth-header':_this.loggedUser.token },
                     data:this.state.formData,
                     success: function (data, text) {
                         if (data.status.code == 200) {
@@ -98,8 +93,8 @@ export default class AboutYou extends React.Component{
     }
 
 	render(){
-        let _secretary_image = this.state.sesData.secretary_image_url;
-        let defaultVals = this.state.loggedUser;
+        let _secretary_image =this.loggedUser.secretary_image_url;
+
 
         return(
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
@@ -119,13 +114,13 @@ export default class AboutYou extends React.Component{
 	                                        	<SelectDateDropdown
                                                     title="Date of Birth"
                                                     dateFormat="mm-dd-yyyy"
-                                                    defaultOpt=""
+                                                    defaultOpt={this.loggedUser.dob}
                                                     optChange={this.elementChangeHandler}
                                                     required="true"
                                                     dateType="dob"/>
 
 	                                            <CountryList optChange={this.elementChangeHandler}
-                                                             defaultOpt={defaultVals.country}
+                                                             defaultOpt={this.loggedUser.country}
                                                              required="true"/>
 
 	                                            <InputField type="text"
