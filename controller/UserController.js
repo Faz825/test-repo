@@ -536,7 +536,13 @@ var UserControler ={
         });
     },
 
-    saveSkillInfo:function(req,res,next){
+    /**
+     * add / delete skills of a user
+     * @param req
+     * @param res
+     * @param next
+     */
+    saveSkillInfo:function(req,res){
 
         var async = require('async'),
             User = require('mongoose').model('User');
@@ -588,6 +594,173 @@ var UserControler ={
                 res.status(400).send(err);
             };
         })
+
+    },
+
+    forgotPassword:function(req,res){
+
+        var async = require('async'),
+            crypto = require('crypto'),
+            User = require('mongoose').model('User');
+
+        async.waterfall([
+            // Generate random token
+            function(done) {
+                crypto.randomBytes(20, function(err, buffer) {
+                    var token = buffer.toString('hex');
+                    done(null, token);
+                });
+            },
+            // Lookup user by username
+            function(token, done) {
+                //if (req.body.email) {
+                if (req.params.email) {
+                    //var email = req.body.email;
+                    var email = req.params.email;
+
+                    User.findByEmail(email,function(ResultSet) {
+
+                        if (ResultSet.status == 200 && ResultSet.user != null) {
+
+                            var generalInfo ={
+                                resetPasswordToken:token,
+                                resetPasswordExpires:Date.now() + 3600000  // 1 hour from requested time
+                            }
+                            User.saveUpdates(ResultSet.user._id,generalInfo,function(resultSet){
+                                done(null, token, ResultSet.user);
+                            });
+
+                        } else{
+
+                            res.status(400).json({
+                                status:"error",
+                                message:Alert.NO_ACCOUNT_FOUND
+                            });
+                        }
+                    });
+
+                } else {
+                    res.status(400).json({
+                        status:"error",
+                        message:Alert.EMAIL_EMPTY
+                    });
+                }
+            },
+            function(token, user, done) {
+
+                console.log(user.first_name);
+                console.log(user.email);
+
+                res.render('email-templates/resetPassword', {
+                    name: user.first_name,
+                    url: 'http://'+req.headers.host + '/forgot-password/reset/' + token
+                }, function(err, emailHTML) {
+                    done(null, emailHTML, user);
+                });
+
+            },
+            // If valid email, send reset email using service
+            function(emailHTML, user) {
+
+                var sendOptions = {
+                    to: user.email,
+                    subject: 'Password Reset',
+                    html: emailHTML
+                };
+                EmailEngine.sendMail(sendOptions, function(err){
+                    if(!err){
+                        res.status(200).json({
+                            status:"error",
+                            message:Alert.FORGOT_PASSWORD_EMAIL_SENT
+                        });
+                    } else{
+                        res.status(400).json({
+                            status:"error",
+                            message:Alert.FAILED_TO_SEND_EMAIL
+                        });
+                    }
+                });
+
+            }
+        ], function(err) {
+            if (err) return next(err);
+        });
+
+    },
+
+    validateToken:function(req,res){
+
+        var User = require('mongoose').model('User');
+
+        User.findByCriteria({
+            resetPasswordToken: req.params.token,
+            resetPasswordExpires: {
+                $gt: Date.now()
+            }
+        }, function(ResultSet) {
+
+                if (ResultSet.status == 200 && ResultSet.user != null) {
+                    res.status(200).json({
+                        status:"success",
+                        message:"valid token. need to redirect to password reset page"
+                    });
+                    //res.redirect('/#!/password/reset/' + req.params.token);
+                } else{
+                    res.status(400).json({
+                        status:"error",
+                        message:"Invalid token. need to redirect to invalid page"
+                    });
+                    //res.redirect('/#!/password/reset/invalid');
+                }
+
+        });
+
+    },
+
+    resetPassword:function(req,res){
+
+        var User = require('mongoose').model('User');
+
+        console.log(req.params.token);
+        //var password = req.body.password;
+        var password = "abcdefg";
+        User.findByCriteria({
+            resetPasswordToken: req.params.token,
+            resetPasswordExpires: {
+                $gt: Date.now()
+            }
+        }, function(ResultSet) {
+
+            if (ResultSet.status == 200 && ResultSet.user != null) {
+
+
+                User.updatePassword(ResultSet.user._id,password,function(resultSet){
+
+                    if(resultSet.status ==200){
+                        res.status(200).json({
+                            status:"error",
+                            message:Alert.RESET_PASSWORD_SUCCESS
+                        });
+
+                    } else{
+                        res.status(400).json({
+                            status:"error",
+                            message:Alert.RESET_PASSWORD_FAIL
+                        });
+                    }
+
+                });
+
+
+            } else{
+                res.status(400).json({
+                    status:"error",
+                    message:"Invalid token. need to redirect to invalid page"
+                });
+                //res.redirect('/#!/password/reset/invalid');
+            }
+
+        });
 
     }
 
