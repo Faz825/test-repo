@@ -6,6 +6,7 @@ import { Link} from 'react-router';
 import Logo from './Logo';
 import ProfileImage from './ProfileImage';
 import GlobalSearch from './GlobalSearch';
+import ProfileImg from './ProfileImg';
 import LogoutButton from '../../components/elements/LogoutButton';
 
 export default class Header extends React.Component {
@@ -52,6 +53,7 @@ export default class Header extends React.Component {
                       </div>
                     </div>
                 </div>
+                <ProfileImg />
             </div>
         );
     }

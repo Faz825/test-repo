@@ -118,9 +118,12 @@ export default class AboutYou extends React.Component{
 
 	                                        	<SelectDateDropdown
                                                     title="Date of Birth"
-                                                    dateFormat="dd-mm-yyyy" defaultOpt="18-07-1991"
+                                                    dateFormat="mm-dd-yyyy"
+                                                    defaultOpt=""
                                                     optChange={this.elementChangeHandler}
-                                                    required="true"/>
+                                                    required="true"
+                                                    dateType="dob"/>
+
 	                                            <CountryList optChange={this.elementChangeHandler}
                                                              defaultOpt={defaultVals.country}
                                                              required="true"/>
