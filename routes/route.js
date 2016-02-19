@@ -80,6 +80,11 @@ router.get('/skill-info/save', UserController.saveSkillInfo);
 
 router.post('/collage-and-job/save',UserController.addCollageAndJob);
 
+//For testing purpose all are set as get request
+router.get('/forgot-password/request/:email', UserController.forgotPassword);
+router.get('/forgot-password/validate/:token', UserController.validateToken);
+router.get('/forgot-password/reset/:token', UserController.resetPassword);
+
 
 /**
  * Push All Rqurst through oAuth

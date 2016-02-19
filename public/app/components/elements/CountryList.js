@@ -8,9 +8,6 @@ export default class CountryList extends React.Component{
 
 				this.state = {defaultOpt: defaultOption}
         this.selectChange = this.selectChange.bind(this);
-        this.state={
-            defaultValue:this.props.defaultValue
-        }
     }
 
     selectChange(e){
@@ -47,7 +44,7 @@ export default class CountryList extends React.Component{
                         className="pgs-sign-select"
                         value={this.state.defaultOpt}
                         onChange={this.selectChange.bind(this)}>
-
+													<option/>
 	            	{Countries.map(function(country, i){
 						return <option value={country.key}
                                        key={i}

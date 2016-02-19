@@ -102,8 +102,7 @@ export default class EstablishConnections extends React.Component{
             this.unConnectedUsers.push(connection.user_id)
         }
 
-        console.log(this.unConnectedUsers);
-        console.log(this.connectedUsers);
+
         if(this.connectedUsers.length >=1){
             this.btn_text = "Next";
         }else{
@@ -132,7 +131,7 @@ export default class EstablishConnections extends React.Component{
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
             	<div className="container">
-                    <div className="col-xs-10 pgs-middle-sign-wrapper-inner">
+                    <div className="col-xs-8 pgs-middle-sign-wrapper-inner">
                     	<div className="row">
                         	<SecretaryThumbnail url={_secretary_image} />
                             <div className="col-xs-10">

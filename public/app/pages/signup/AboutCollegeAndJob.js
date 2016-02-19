@@ -98,10 +98,12 @@ export default class AboutCollegeAndJob extends React.Component{
         let _secretary_image = this.state.sesData.secretary_image_url;
         let session = Session.getSession('prg_lg');
 
+        let defaultVals = this.loggedUser;
+
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
             	<div className="container">
-                    <div className="col-xs-10 pgs-middle-sign-wrapper-inner">
+                    <div className="col-xs-8 pgs-middle-sign-wrapper-inner">
                     	<div className="row">
                         	<SecretaryThumbnail url={_secretary_image} />
                             <div className="col-xs-10">
@@ -119,6 +121,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                         	<InputField type="text"
                                                         name="school"
                                                         size="7"
+                                                        defaultVal={defaultVals.school}
                                                         label="School Name"
                                                         placeholder=""
                                                         classes="pgs-sign-inputs"
@@ -126,6 +129,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                                         required="true"/>
                                         	<SelectDateDropdown title="Graduation Date"
                                                                 dateFormat="mm-dd-yyyy"
+                                                                defaultOpt={defaultVals.grad_date}
                                                                 optChange={this.elementChangeHandler}
                                                                 dateType="grad_date"/>
                                         </div>
@@ -133,6 +137,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                             <InputField type="text"
                                                         name="job_title"
                                                         size="7"
+                                                        defaultVal={defaultVals.job_title}
                                                         label="Current Job"
                                                         placeholder=""
                                                         classes="pgs-sign-inputs" textChange={this.elementChangeHandler}
@@ -140,6 +145,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                             <InputField type="text"
                                                         name="company_name"
                                                         size="5"
+                                                        defaultVal={defaultVals.company_name}
                                                         label="Company"
                                                         placeholder=""
                                                         classes="pgs-sign-inputs"
