@@ -310,6 +310,7 @@ var UserControler ={
 
     uploadProfileImage:function(req,res){
 
+        console.log(req.body.profileImg);
 
         if(typeof req.body.profileImg == 'undefined' || typeof req.body.profileImg == "") {
             var outPut={
@@ -392,10 +393,7 @@ var UserControler ={
         var _userId = "56c2d6038c920a41750ac4db";
 
         User.addEducationDetail(_userId,_educationDetails,function(resultSet){
-
             res.status(200).json(resultSet);
-
-
         });
 
     },
@@ -416,10 +414,7 @@ var UserControler ={
         var _education_id = "56c321a42ab09c7b09034e85";
 
         User.retrieveEducationDetail(_userId,_education_id,function(resultSet){
-
             res.status(200).json(resultSet);
-
-
         });
 
     },
@@ -451,10 +446,7 @@ var UserControler ={
         };
 
         User.updateEducationDetail(_userId,_educationDetails,function(resultSet){
-
             res.status(200).json(resultSet);
-
-
         });
 
     },
@@ -475,11 +467,7 @@ var UserControler ={
         var _education_id = "56c321a42ab09c7b09034e85";
 
         User.deleteEducationDetail(_userId,_education_id,function(resultSet){
-
             res.status(200).json(resultSet);
-
-
-
         });
 
     },
@@ -578,9 +566,9 @@ var UserControler ={
 
         ], function(err){
             if (!err){
-                res.status(200).send({status:"success"});
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SKILL_SAVED, Alert.SUCCESS));
             }else{
-                res.status(400).send(err);
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
             };
         })
 
@@ -620,25 +608,15 @@ var UserControler ={
                             });
 
                         } else{
-
-                            res.status(400).json({
-                                status:"error",
-                                message:Alert.NO_ACCOUNT_FOUND
-                            });
+                            res.status(400).json(ApiHelper.getMessage(400, Alert.NO_ACCOUNT_FOUND, Alert.ERROR));
                         }
                     });
 
                 } else {
-                    res.status(400).json({
-                        status:"error",
-                        message:Alert.EMAIL_EMPTY
-                    });
+                    res.status(400).json(ApiHelper.getMessage(400, Alert.EMAIL_EMPTY, Alert.ERROR));
                 }
             },
             function(token, user, done) {
-
-                console.log(user.first_name);
-                console.log(user.email);
 
                 res.render('email-templates/resetPassword', {
                     name: user.first_name,
@@ -658,15 +636,9 @@ var UserControler ={
                 };
                 EmailEngine.sendMail(sendOptions, function(err){
                     if(!err){
-                        res.status(200).json({
-                            status:"error",
-                            message:Alert.FORGOT_PASSWORD_EMAIL_SENT
-                        });
+                        res.status(200).json(ApiHelper.getMessage(200, Alert.FORGOT_PASSWORD_EMAIL_SENT, Alert.SUCCESS));
                     } else{
-                        res.status(400).json({
-                            status:"error",
-                            message:Alert.FAILED_TO_SEND_EMAIL
-                        });
+                        res.status(400).json(ApiHelper.getMessage(400, Alert.FAILED_TO_SEND_EMAIL, Alert.ERROR));
                     }
                 });
 
@@ -689,16 +661,12 @@ var UserControler ={
         }, function(ResultSet) {
 
                 if (ResultSet.status == 200 && ResultSet.user != null) {
-                    res.status(200).json({
-                        status:"success",
-                        message:"valid token. need to redirect to password reset page"
-                    });
+                    //Don't need to send any response. need to do redirection
+                    res.status(200).json(ApiHelper.getMessage(200, Alert.VALID_TOKEN, Alert.SUCCESS));
                     //res.redirect('/#!/password/reset/' + req.params.token);
                 } else{
-                    res.status(400).json({
-                        status:"error",
-                        message:"Invalid token. need to redirect to invalid page"
-                    });
+                    //Don't need to send any response. need to do redirection
+                    res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
                     //res.redirect('/#!/password/reset/invalid');
                 }
 
@@ -710,7 +678,6 @@ var UserControler ={
 
         var User = require('mongoose').model('User');
 
-        console.log(req.params.token);
         //var password = req.body.password;
         var password = "abcdefg";
         User.findByCriteria({
@@ -722,30 +689,19 @@ var UserControler ={
 
             if (ResultSet.status == 200 && ResultSet.user != null) {
 
-
                 User.updatePassword(ResultSet.user._id,password,function(resultSet){
 
                     if(resultSet.status ==200){
-                        res.status(200).json({
-                            status:"error",
-                            message:Alert.RESET_PASSWORD_SUCCESS
-                        });
-
+                        res.status(200).json(ApiHelper.getMessage(200, Alert.RESET_PASSWORD_SUCCESS, Alert.SUCCESS));
                     } else{
-                        res.status(400).json({
-                            status:"error",
-                            message:Alert.RESET_PASSWORD_FAIL
-                        });
+                        res.status(400).json(ApiHelper.getMessage(400, Alert.RESET_PASSWORD_FAIL, Alert.ERROR));
                     }
 
                 });
 
-
             } else{
-                res.status(400).json({
-                    status:"error",
-                    message:"Invalid token. need to redirect to invalid page"
-                });
+                //Don't need to send any response. need to do redirection
+                res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
                 //res.redirect('/#!/password/reset/invalid');
             }
 

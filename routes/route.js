@@ -12,6 +12,7 @@ require('../model/ConnectionModel');
 require('../model/FavouriteNewsCategory');
 require('../model/UploadModel');
 require('../model/SkillModel');
+require('../model/NewsModel');
 
 /** Load  Controllers
  */
@@ -19,7 +20,8 @@ var DefaultController   = require('../controller/DefaultController'),
 	UserController      = require('../controller/UserController'),
 	SecretaryController = require('../controller/SecretaryController'),
     TestController      = require('../controller/TestController'),
-    SkillController      = require('../controller/SkillController');
+    SkillController      = require('../controller/SkillController'),
+    NewsController      = require('../controller/NewsController');
 
 /**
  * Define Public URLs
@@ -85,6 +87,19 @@ router.get('/forgot-password/request/:email', UserController.forgotPassword);
 router.get('/forgot-password/validate/:token', UserController.validateToken);
 router.get('/forgot-password/reset/:token', UserController.resetPassword);
 
+
+//News Category / Channel & News Add / Get All & Delete
+router.get('/news/add-category', NewsController.addNewsCategory);
+router.get('/news/get-categories', NewsController.getNewsCategories);
+router.get('/news/delete-category', NewsController.deleteNewsCategory);
+
+router.get('/news/add-channel', NewsController.addNewsChannel);
+router.get('/news/get-channels/:category', NewsController.getNewsChannels);
+router.get('/news/delete-channel', NewsController.deleteNewsChannel);
+
+router.get('/news/add-news', NewsController.addNews);
+router.get('/news/get-news/:category/:channel', NewsController.getNews);
+router.get('/news/delete-news', NewsController.deleteNews);
 
 /**
  * Push All Rqurst through oAuth

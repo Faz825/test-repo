@@ -39,10 +39,14 @@ GLOBAL.Alert={
     NO_ACCOUNT_FOUND:'No account with that email has been found',
     FORGOT_PASSWORD_EMAIL_SENT: 'An email with a link to reset your password has been sent to your email address',
     FAILED_TO_SEND_EMAIL: 'Issue in sending email',
+    VALID_TOKEN: 'Valid Token',
 
     RESET_PASSWORD_SUCCESS:'Successfully reset the password',
-    RESET_PASSWORD_FAIL:'Failed to reset password'
+    RESET_PASSWORD_FAIL:'Failed to reset password',
 
+    //Education Info
+
+    SKILL_SAVED: 'Skill info saved successfully'
 
 
 }
