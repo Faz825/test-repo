@@ -3,8 +3,10 @@ import SignupIndex from '../signup/Index';
 import SigninHeader from '../../components/header/SigninHeader'
 import SidebarNav from '../../components/sidebarNav/SidebarNav'
 import FooterHolder from '../../components/footer/FooterHolder'
-
+import Session  from '../../middleware/Session';
+import Dashboard  from '../dashboard/Dashboard';
 const DefaultLayout = (props) =>{
+
   return(
     <div className="row row-clr pg-full-wrapper">
         <SigninHeader />
@@ -26,7 +28,7 @@ const DefaultLayout = (props) =>{
           ]
         }}/>
 
-        {props.children}
+        {props.children || <Dashboard />}
         <FooterHolder />
     </div>
   );
