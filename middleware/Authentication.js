@@ -22,6 +22,13 @@ exports.Authentication= function(req,res,next){
     }
 
 
+    /*if(String(req.originalUrl).indexOf('test') != -1){
+        next();
+        return ;
+    }*/
+
+
+
     /**
      * Handle Logged User sessions
      */

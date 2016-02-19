@@ -23,7 +23,7 @@ let rootRoute =(
         <Route name="collage-and-job" path="/collage-and-job" component={SignupIndex}/>
 
 
-        <Route name="done" path="/done" component={SignupIndex}/>
+
 	</Route>
 );
 

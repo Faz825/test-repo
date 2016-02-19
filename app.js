@@ -38,12 +38,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
+
 require('./core/model');
 var routes = require('./routes/route');
-
-
-
 app.use('/', routes);
+
+
 
 
 // catch 404 and forward to error handler

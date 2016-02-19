@@ -8,21 +8,23 @@ class Main extends React.Component {
 	constructor(props) {
 		super(props);
 
+
 	}
     layoutSelector() {
 
+
         if (Session.isSessionSet('prg_lg')) {
             return (
-							<DefaultLayout>
-								{this.props.children}
-							</DefaultLayout>
+                    <DefaultLayout>
+                        {this.props.children}
+                    </DefaultLayout>
             )
 
         }else{
             return (
-							<SignupLayout>
-								{this.props.children}
-							</SignupLayout>
+                    <SignupLayout>
+                        {this.props.children}
+                    </SignupLayout>
 
             )
         }
