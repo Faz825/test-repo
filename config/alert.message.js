@@ -33,7 +33,16 @@ GLOBAL.Alert={
     CONNECTED_USERS_NOT_SELECTED:"Select at lease one user that you want to connect",
     ADDED_PROFILE_IMAGE:"Profile Image uploaded",
     ERROR_UPLOADING_IMAGE:"Error wile uploading",
-    FAILED_TO_ADD_JOB_AND_COLLAGE: "Failed to add Collage and Job information"
+    FAILED_TO_ADD_JOB_AND_COLLAGE: "Failed to add Collage and Job information",
+
+    //Forgot Password
+    NO_ACCOUNT_FOUND:'No account with that email has been found',
+    FORGOT_PASSWORD_EMAIL_SENT: 'An email with a link to reset your password has been sent to your email address',
+    FAILED_TO_SEND_EMAIL: 'Issue in sending email',
+
+    RESET_PASSWORD_SUCCESS:'Successfully reset the password',
+    RESET_PASSWORD_FAIL:'Failed to reset password'
+
 
 
 }

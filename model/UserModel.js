@@ -148,6 +148,17 @@ var UserSchema = new Schema({
 
     working_experiences:[WorkingExperienceSchema],
 
+    /* For reset password */
+    resetPasswordToken: {
+        type:String,
+        trim:true,
+        default:null
+    },
+    resetPasswordExpires: {
+        type: Date,
+        default:null
+    },
+
 	created_at:{
 		type:Date
 	},
@@ -464,7 +475,6 @@ UserSchema.statics.retrieveEducationDetail = function(userId, _education_id, cal
     var _this = this;
 
     _this.find({_id: userId},{education_details: { $elemMatch: { _id: _education_id } }}, function(error, resultSet){
-        console.log(resultSet);
         if(!error){
             callBack({
                 status:200,
@@ -758,6 +768,59 @@ UserSchema.statics.deleteSkills = function(userId, skills, callBack){
         });
 
 
+};
+
+
+/**
+ * Get User By Search Criteria
+ */
+UserSchema.statics.findByCriteria = function(criteria,callBack){
+    var _this = this;
+
+    _this.findOne(criteria,function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                user:resultSet
+
+            });
+        }else{
+            console.log("Server Error --------")
+            callBack({status:400,error:err});
+        }
+    });
+
+};
+
+
+
+/**
+ * Update User profile based on the criterais
+ * @param userId
+ * @param data
+ * @param callBack
+ */
+UserSchema.statics.updatePassword=function(userId,password,callBack){
+    var _this = this;
+
+    var info = {
+        password:createHash(password),
+        resetPasswordToken:null,
+        resetPasswordExpires:null
+    }
+
+    _this.update({_id:userId},
+        {$set:info},function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
 };
 
 

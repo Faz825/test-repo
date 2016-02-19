@@ -46,6 +46,29 @@ var TestController ={
             res.status(200).json(dataSet);
             return 0;
         });
+    },
+    sendMailTest:function(req,res){
+        res.render('email-templates/signup', {
+            name: "piusha@eigth25media.com",
+        }, function(err, emailHTML) {
+
+            var sendOptions = {
+                to: "piusha@eigth25media.com",
+                subject: 'Proglobe Signup',
+                html: emailHTML
+            };
+            EmailEngine.sendMail(sendOptions, function(err){
+                if(!err){
+                    res.status(200).json("EMAIL SENT");
+                    return 0
+                } else{
+                    console.log("EMAIL Sending Error");
+                    res.status(200).json(err);
+                    return 0
+                }
+            });
+
+        });
     }
 }
 

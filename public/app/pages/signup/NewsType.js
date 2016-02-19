@@ -9,10 +9,10 @@ export default class NewsType extends React.Component{
         super(props);
 
         this.state = {
-            sesData:{}, 
-            selected : "" , 
-            categories : "", 
-            status:false, 
+            sesData:{},
+            selected : "" ,
+            categories : "",
+            status:false,
             btn_name:"Skip"
         };
 
@@ -69,7 +69,7 @@ export default class NewsType extends React.Component{
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
             	<div className="container">
-                    <div className="col-xs-11 pgs-middle-sign-wrapper-inner">
+                    <div className="col-xs-8 pgs-middle-sign-wrapper-inner">
                     	<div className="row">
                         	<SecretaryThumbnail url={_secretary_image} />
                             <div className="col-xs-10">
@@ -93,7 +93,7 @@ export default class NewsType extends React.Component{
                                                         classes="pgs-sign-submit"
                                                         value={this.state.btn_name}
                                                         onButtonClick ={()=>this.onNextStep()}  />
-		                                    </div>  
+		                                    </div>
                                     </div>
                                 </div>
                         	</div>

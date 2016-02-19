@@ -51,8 +51,15 @@ router.get('/cache-check/:key',SecretaryController.cacheCheck);
 
 
 
-router.get('/upload-test',TestController.uploadTest);
-router.get('/get-image',TestController.getImageTest);
+
+/**
+ * Implement All Test Routs from there
+ */
+
+router.get('/test/uploads', TestController.uploadTest);
+router.get('/test/get-uploaded-images', TestController.getImageTest);
+router.get('/test/send-mail', TestController.sendMailTest);
+
 
 //need to be under authentication section. testing purpose have it here. For testing purpose all are set as get request
 router.get('/education-info/save', UserController.addEducationDetail);
@@ -72,6 +79,11 @@ router.get('/skills/delete', SkillController.deleteSkill);
 router.get('/skill-info/save', UserController.saveSkillInfo);
 
 router.post('/collage-and-job/save',UserController.addCollageAndJob);
+
+//For testing purpose all are set as get request
+router.get('/forgot-password/request/:email', UserController.forgotPassword);
+router.get('/forgot-password/validate/:token', UserController.validateToken);
+router.get('/forgot-password/reset/:token', UserController.resetPassword);
 
 
 /**
