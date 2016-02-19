@@ -68,6 +68,8 @@ class Signup extends React.Component {
                         success: function (data, text) {
 
                             if (data.status === 'success') {
+                                _this.setState({validateAlert: ""});
+
                                 Session.createSession("prg_lg", data.user);
                                 location.reload();
                             }
@@ -78,6 +80,8 @@ class Signup extends React.Component {
                             console.log(request.responseText);
                             console.log(status);
                             console.log(error);
+
+                            _this.setState({validateAlert: Alert.EMAIL_ID_ALREADY_EXIST});
                         }
                     });
 

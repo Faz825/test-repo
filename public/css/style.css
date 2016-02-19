@@ -101,6 +101,38 @@ a:focus{
   position: relative;
 }
 
+.pg-top-profile-pic-box {
+	height: 70px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 110px;
+}
+
+.pg-top-profile-pic-box .proImgholder{
+	height: 70px;
+	width: 110px;
+}
+
+.pg-top-profile-pic-box .proImgholder img{
+	height: 100%;
+	width: 100%;
+}
+
+.pg-top-profile-pic-options {
+  background-color: rgba(0, 0, 0, 0.3);
+  height: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: absolute;
+  top: 0;
+}
+
+.pg-top-profile-pic-options a {
+  display: block;
+  margin-top: 13px;
+}
+
 .pgs-main-nav-area ul li a {font: 13px 'montserratregular', sans-serif;color: #7795a8;text-decoration:none;text-transform:uppercase;margin-left:15px;}
 
 .pgs-main-btn-sign {background-color: #61b3de;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;font: 13px 'montserratregular', sans-serif;color: #fff;text-decoration:none !important;text-align:center;padding:12px 0px;width:88px;display:inline-block;vertical-align:top;text-transform:uppercase;margin-right:8px;float:right;margin-top:8px;}
@@ -247,7 +279,7 @@ a:focus{
 
 .pgs-middle-about-inputs .pgs-sign-inputs {background-color: #f8fbfc;padding:9px 13px;}
 
-.pgs-sign-select {width: 100%;-webkit-appearance: none;-moz-appearance: none;background: url(../images/select-arrow.png) no-repeat 92% center;font: 12px 'montserratregular', sans-serif;color: #2d5164;border: none;background-color: #f8fbfc;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;border:1px solid #d7e2ea;padding:9px 13px;margin-bottom:25px;}
+.pgs-sign-select {width: 100%;-webkit-appearance: none;-moz-appearance: none;background: url(../images/select-arrow.png) no-repeat 92% center;font: 12px 'montserratregular', sans-serif;color: #2d5164;border: none;background-color: #f8fbfc;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;border:1px solid #d7e2ea;padding:9px 10px;margin-bottom:25px;}
 
 .pgs-sign-select-about-col {float:left;margin-right:15px;}
 

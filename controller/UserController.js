@@ -62,10 +62,9 @@ var UserControler ={
                                     console.log("EMAIL Sending Error");
                                     console.log(err);
                                 }
-
-                                res.status(200).json(_out_put);
-
                             });
+                            res.status(200).json(_out_put);
+                            return 0
                         });
                     });
 
@@ -146,8 +145,12 @@ var UserControler ={
 
             }
             var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-            CurrentSession['status']    = 3;
-            CurrentSession['country']   = req.body.country;
+            CurrentSession['status']        = 3;
+            CurrentSession['country']       = req.body.country;
+            CurrentSession['dob']           = req.body.dob;
+            CurrentSession['zip']           = req.body.zip;
+
+
             CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
                 var  _out_put = {}
                 _out_put = {
@@ -194,10 +197,10 @@ var UserControler ={
 
                 outPut['status'] = ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS);
                 outPut['header'] ={
-                    total_result:resultSet.totla_result,
+                    total_result:resultSet.total_result,
                     result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
                     current_page:req.query.pg,
-                    total_pages:Math.ceil(resultSet.totla_result/Config.CONNECTION_RESULT_PER_PAGE)
+                    total_pages:Math.ceil(resultSet.total_result/Config.CONNECTION_RESULT_PER_PAGE)
                 };
 
                 outPut['connections'] = resultSet.users
@@ -230,41 +233,27 @@ var UserControler ={
             outPut['user']=CurrentSession;
 
             var req_connected_users = JSON.parse(req.body.connected_users);
-
-            if(req_connected_users.length >= 1 ) {
-
-                var connected_users = [],
-                    now = new Date(),
-                    Connection = require('mongoose').model('Connection');
+            var req_unconnected_users = JSON.parse(req.body.unconnected_users);
 
 
-                for (var i = 0; req_connected_users.length > i; i++) {
-                    connected_users.push({
-                        user_id: CurrentSession.id,
-                        connected_with: req_connected_users[i],
-                        created_at: now
-                    });
+
+            var Connection = require('mongoose').model('Connection');
+
+            Connection.connect(req_connected_users,req_unconnected_users, function (resultSet) {
+
+                if (resultSet.status !== 200) {
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
+                    res.status(400).send(outPut);
+                    return 0;
                 }
 
-                Connection.connect(connected_users, function (resultSet) {
+                if (!cacheData) {
+                    outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                }
 
-                    if (resultSet.status !== 200) {
-                        outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
-                        res.status(400).send(outPut);
-                        return 0;
-                    }
-
-                    if (!cacheData) {
-                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                    }
-
-                    res.status(200).json(outPut);
-                    return 0;
-                });
-            }else{
                 res.status(200).json(outPut);
                 return 0;
-            }
+            });
 
         });
     },
@@ -501,7 +490,7 @@ var UserControler ={
         CurrentSession['school']        = (req.body.school)?req.body.school:null;
         CurrentSession['grad_date']     = (req.body.grad_date)?req.body.grad_date:null;
         CurrentSession['job_title']     = (req.body.job_title)?req.body.job_title:null;
-        CurrentSession['company_name']  = (req.body.company)?req.body.company_name:null;
+        CurrentSession['company_name']  = (req.body.company_name)?req.body.company_name:null;
 
         CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
 
