@@ -7,7 +7,7 @@ import SignupIndex from './pages/signup/Index';
 import SelectSecretary  from './pages/signup/SelectSecretary';
 
 
-import ProfileIndex  from './pages/profile/index';
+import ProfileIndex  from './pages/profile/Index';
 
 
 
