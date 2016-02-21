@@ -138,6 +138,7 @@ UploadSchema.statics.saveOnDb= function(payLoad,callBack){
  * @param callBack
  */
 UploadSchema.statics.getProfileImage=function(userId,callBack){
+    console.log(userId)
 
     this.aggregate([
         {$match:
@@ -162,7 +163,8 @@ UploadSchema.statics.getProfileImage=function(userId,callBack){
         if(!err && resultSet.length > 0){
             var _image ={};
             for(var i=0;i<resultSet.length;i++){
-                var _tmp_rs = resultSet[i];
+                var _tmp_rs = resultSet[i],
+                    _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+userId+"/"+_tmp_rs.contents.file_name;
                 _image[_tmp_rs['entity_tag']] ={
                     entity_id:_tmp_rs._id,
                     file_name:_tmp_rs.contents.file_name,

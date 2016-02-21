@@ -7,6 +7,7 @@ import SignupIndex from './pages/signup/Index';
 import SelectSecretary  from './pages/signup/SelectSecretary';
 
 
+import ProfileIndex  from './pages/profile/index';
 
 
 
@@ -22,7 +23,10 @@ let rootRoute =(
         <Route name="profile-image" path="/profile-image" component={SignupIndex}/>
         <Route name="collage-and-job" path="/collage-and-job" component={SignupIndex}/>
 
-
+        /**
+         * Profile Route
+         */
+        <Route name="profile" path="/profile/:uname" component={ProfileIndex}/>
 
 	</Route>
 );

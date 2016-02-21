@@ -13,7 +13,7 @@ const EstablishConnectionBlock = ({connection,onConnectionSelect})=>{
                 </div>
                 <div className="col-xs-6 pgs-establish-pro-detail">
                     <h3>{_full_name}</h3>
-                    <p>{connection.country}</p>
+                    <p>{connection.cur_designation} at {connection.cur_working_at}</p>
                 </div>
                 <EstablishConnectionButton size="4" classes="pgs-establish-pro-button" clicked= {connection.is_connected} value="Connect" click={(isConnected) => onConnectionSelect(connection,isConnected)} />
             </div>
