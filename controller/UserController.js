@@ -18,7 +18,8 @@ var UserControler ={
             email:req.body.email,
             password:req.body.password,
             status:req.body.status,
-            secretary:req.body.secretary
+            secretary:req.body.secretary,
+            user_name:req.body.email.replace(/@.*$/,"")
         }
         User.findByEmail(user.email,function(ResultSet){
 
@@ -266,6 +267,7 @@ var UserControler ={
     addNewsCategory:function(req,res){
         var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
         CurrentSession['status']    = 6;
+
         CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
             var outPut ={};
             outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -710,7 +712,6 @@ var UserControler ={
 
         var User = require('mongoose').model('User');
 
-        console.log(req.params.token);
         //var password = req.body.password;
         var password = "abcdefg";
         User.findByCriteria({
@@ -751,7 +752,103 @@ var UserControler ={
 
         });
 
+    },
+    /**
+     * Get Connection count
+     * @param req
+     * @param res
+     */
+    connectionCount:function(req,res){
+        var Connection = require('mongoose').model('Connection');
+
+
+        Connection.getConnectionCount(CurrentSession.id,function(connectionCount){
+            var outPut = {};
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['connection_count'] = connectionCount;
+            res.status(200).send(outPut);
+            return 0;
+        });
+
+    },
+    /**
+     * Get Profile
+     * @param req
+     * @param res
+     */
+    getProfile:function(req,res){
+        var _async = require('async'),
+            Connection = require('mongoose').model('Connection'),
+            User = require('mongoose').model('User'),
+            Upload = require('mongoose').model('Upload') ;
+
+        if(typeof req.params['uname'] == 'undefined'){
+            var outPut ={};
+            outPut['status']    = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
+            res.status(400).send(outPut);
+        }
+
+
+        var _uname =req.params['uname'];
+        _async.waterfall([
+            function getUserById(callBack){
+                var _search_param = {
+                    user_name:_uname
+                }
+                User.getUser(_search_param,function(resultSet){
+                    if(resultSet.status ==200 ){
+                        callBack(null,resultSet.user)
+                    }
+                })
+            },
+            function getConnectionCount(profileData,callBack){
+
+                if( profileData!= null){
+                    Connection.getConnectionCount(profileData.user_id,function(connectionCount){
+                        profileData['connection_count'] = connectionCount;
+                        callBack(null,profileData);
+                        return 0
+                    });
+                }else{
+                    callBack(null,null)
+                }
+
+
+
+            },
+            function getProfileImage(profileData,callBack){
+
+                if(profileData != null){
+                    Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
+                        profileData['images'] = profileImageData.image;
+                        callBack(null,profileData)
+                        return 0;
+                    });
+                }else{
+                    callBack(null,null)
+                }
+
+
+            }
+
+
+
+        ],function(err,profileData){
+            var outPut ={};
+            if(!err){
+
+                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['profile_data']      = profileData;
+                res.status(200).send(outPut);
+            }else{
+                outPut['status']    = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                res.status(200).send(outPut);
+            }
+        })
+
+
     }
+
 
 
 };

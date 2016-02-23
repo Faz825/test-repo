@@ -16,16 +16,12 @@ exports.Authentication= function(req,res,next){
     }
 
 	var origURL =  String(req.originalUrl).split('?')[0];
+    console.log(origURL)
     if (AccessAllow.indexOf(origURL) >= 0) {
         res.render('index');
         return;
     }
 
-
-    /*if(String(req.originalUrl).indexOf('test') != -1){
-        next();
-        return ;
-    }*/
 
 
 
@@ -34,13 +30,37 @@ exports.Authentication= function(req,res,next){
      */
     if(typeof req.headers['prg-auth-header'] != 'undefined'){
 
+        //Handle Logout
+        if(String(req.originalUrl).indexOf('logout') != -1){
+
+            CacheEngine.deleteCache(req.headers['prg-auth-header'],function(cachedUser){
+                var _out_put={};
+
+                if(typeof cachedUser == 'undefined'){
+
+                    _out_put={
+                        status:ApiHelper.getMessage(401,Alert.INVALID_TOKEN,Alert.SUCCESS),
+                    }
+                    res.status(401).json(_out_put);
+                    return ;
+                }
+
+                _out_put={
+                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                }
+                res.status(200).json(_out_put);
+                return;
+            });
+            return ;
+        }
+
 
         CacheEngine.getCachedDate(req.headers['prg-auth-header'],function(cachedUser){
 
 
             if(typeof cachedUser == 'undefined'){
                 var _out_put= {
-                    status:'success',
+                    status:'error',
                     message:Alert.INVALID_TOKEN
                 }
                 res.status(401).json(_out_put);
@@ -48,14 +68,13 @@ exports.Authentication= function(req,res,next){
             }
 
             CurrentSession = cachedUser;
-
-            //console.log("SESSION USER")
-            //console.log(cachedUser)
             next();
             return;
         });
 
     }else{
+        next();
+        return;
         var _out_put= {
             status:'success',
             message:Alert.INVALID_TOKEN

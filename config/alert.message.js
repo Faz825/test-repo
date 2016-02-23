@@ -14,13 +14,14 @@ GLOBAL.Alert={
     INVALID_TOKEN:'Invalid request token',
     AUTHENTICATION_FAILED:'Invalid Email Id or Password',
 
+
     //USER
     USER_CREATION_ERROR:'Error While creating a new User',
     NAME_EMPTY:'First name or Last name cannot be blank',
     EMAIL_EMPTY:'Email cannot be blank',
     PASSWORD_EMPTY:'Password cannot be blank',
     ACCOUNT_EXIST:'Account email ID is already exist in the system',
-
+    CANNOT_FIND_PROFILE:'Oops! cannot find any profile',
     //CACHE
     CACHE_CREATION_ERROR:'Oops There is an error while creating cache ',
 

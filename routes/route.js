@@ -19,7 +19,8 @@ var DefaultController   = require('../controller/DefaultController'),
 	UserController      = require('../controller/UserController'),
 	SecretaryController = require('../controller/SecretaryController'),
     TestController      = require('../controller/TestController'),
-    SkillController      = require('../controller/SkillController');
+    SkillController     = require('../controller/SkillController');
+    DefaultController   = require('../controller/DefaultController');
 
 /**
  * Define Public URLs
@@ -27,7 +28,7 @@ var DefaultController   = require('../controller/DefaultController'),
  * Basically those URLs will be site assets.
  * This URL can be image, Stylesheet, Javascript file
  */
-GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
+GLOBAL.publicURLs = ['/images','/css','/web','/fonts','/js'];
 
 /**
  *This URLs will be normal URL that execute out side the authentication component.
@@ -36,7 +37,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
 GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
-    '/profile-image','/done','/cache-check','/collage-and-job'
+    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id'
 
 ];
 
@@ -59,6 +60,10 @@ router.get('/cache-check/:key',SecretaryController.cacheCheck);
 router.get('/test/uploads', TestController.uploadTest);
 router.get('/test/get-uploaded-images', TestController.getImageTest);
 router.get('/test/send-mail', TestController.sendMailTest);
+router.get('/test/get-profile/:email', TestController.getProfile);
+
+
+
 
 
 //need to be under authentication section. testing purpose have it here. For testing purpose all are set as get request
@@ -75,6 +80,7 @@ router.get('/skills/update', SkillController.updateSkill);
 router.get('/skills/delete', SkillController.deleteSkill);
 
 
+
 //User's skill add / delete
 router.get('/skill-info/save', UserController.saveSkillInfo);
 
@@ -86,10 +92,14 @@ router.get('/forgot-password/validate/:token', UserController.validateToken);
 router.get('/forgot-password/reset/:token', UserController.resetPassword);
 
 
+router.get('/profile/:name', DefaultController.index);
+
+router.get('/get-profile/:uname',UserController.getProfile)
 /**
  * Push All Rqurst through oAuth
  */
 router.all('/*',oAuth.Authentication);
+
 
 /** 
  * Implement Actual Routes that need to Authenticate
@@ -102,8 +112,8 @@ router.post('/connect-people',UserController.connect);
 router.post('/addNewsCategory',UserController.addNewsCategory);
 router.post('/upload/profile-image',UserController.uploadProfileImage);
 router.get('/connections',UserController.getConnections);
+router.get('/connection/count',UserController.connectionCount);
 
 
-//
 
 module.exports = router;

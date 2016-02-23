@@ -109,6 +109,11 @@ var UserSchema = new Schema({
 		unique:"Email should be unique",
 		trim:true
 	},
+    user_name:{
+        type:String,
+        unique:"Username should be unique",
+        trim:true
+    },
 	password:{
 		type:String,
 		trim:true
@@ -198,6 +203,7 @@ UserSchema.statics.create = function(UserData,callBack){
 	newUser.password	= createHash(UserData.password);
 	newUser.status		= UserData.status;
 	newUser.secretary	= UserData.secretary;
+    newUser.user_name	= UserData.user_name;
 	newUser.save(function(err,resultSet){
 
 		if(!err){
@@ -209,7 +215,8 @@ UserSchema.statics.create = function(UserData,callBack){
                     first_name:resultSet.first_name,
                     last_name:resultSet.last_name,
                     email:resultSet.email,
-                    status:resultSet.status
+                    status:resultSet.status,
+                    user_name:resultSet.user_name
                 }
 
 			});
@@ -400,15 +407,8 @@ UserSchema.statics.getConnectionUsers=function(criteria,callBack){
 UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
     var _tmp_object =[];
     for(var i=0;i<resultSet.length;i++){
-        _tmp_object.push({
-            user_id: resultSet[i]._id,
-            email: resultSet[i].email,
-            first_name: resultSet[i].first_name,
-            last_name: resultSet[i].last_name,
-            zip_code: resultSet[i].zip_code,
-            dob: resultSet[i].dob,
-            country:resultSet[i].country
-        });
+
+        _tmp_object.push(this.formatUser(resultSet[i]));
     }
     return _tmp_object;
 };
@@ -823,7 +823,57 @@ UserSchema.statics.updatePassword=function(userId,password,callBack){
         });
 };
 
+/**
+ * Get user Based on User Id
+ * @param userId
+ * @param callBack
+ */
+UserSchema.statics.getUser=function(criteria,callBack){
+    var _this = this;
 
+    _this.findOne(criteria)
+        .exec(function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200,
+                    user:_this.formatUser(resultSet)
 
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+    });
+}
+/**
+ * Format User object
+ * @param userObject
+ * @returns {*}
+ */
+UserSchema.statics.formatUser=function(userObject){
+
+    if(userObject){
+        var _temp_user = {
+            user_id: userObject._id.toString(),
+            email: userObject.email,
+            first_name: userObject.first_name,
+            last_name: userObject.last_name,
+            zip_code: userObject.zip_code,
+            dob: userObject.dob,
+            country:userObject.country
+        };
+
+        for(var i=0;i<userObject.working_experiences.length;i++){
+            if(userObject.working_experiences[i].is_current_work_place){
+                _temp_user['cur_working_at']=userObject.working_experiences[i].company_name;
+                _temp_user['cur_designation']=userObject.working_experiences[i].title;
+                break;
+            }
+        }
+        return _temp_user
+    }
+
+    return null;
+}
 
 mongoose.model('User',UserSchema);
