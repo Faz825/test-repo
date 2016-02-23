@@ -1020,9 +1020,6 @@ a:focus{
     display: block;
 }
 /** education form **/
-#education-form{
-    display: none;
-}
 .form-area{
     background: #f4f4f4;
     padding: 10px;
