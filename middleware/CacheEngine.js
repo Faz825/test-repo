@@ -66,11 +66,6 @@ var CacheEngine ={
      */
     updateCache:function(cacheKey,data,callBack){
         var _this = this;
-        /*this._cacheClient.replace(cacheKey,data,Config.CACHE_TTL,function(err){
-            _this.getCachedDate(cacheKey,function(cachedData){
-                callBack(cachedData);
-            })
-        });*/
 
         _this.addToCache(cacheKey,data,function(err){
             _this.getCachedDate(cacheKey,function(cachedData){
@@ -86,7 +81,7 @@ var CacheEngine ={
      */
     deleteCache:function(key,callBack){
 
-        this._cacheClient.delete(key, function(err, result){
+        this._cacheClient.del(key, function(err, result){
 
             if( err ){
                 console.log(err);

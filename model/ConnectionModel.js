@@ -120,6 +120,20 @@ ConnectionSchema.statics.formatConnectedUsers = function(connectedUsers,getIdOnl
 
 
 }
+
+/**
+ * Get Connected User count
+ * @param userId
+ * @param callBack
+ */
+ConnectionSchema.statics.getConnectionCount = function(userId,callBack){
+    this.getConnectedUserIds(userId,function(resultSet){
+        callBack(resultSet.connected_user_ids.length)
+    });
+}
+
+
+
 function onInsert(err,resultSet,callBack){
 
     callBack(resultSet)

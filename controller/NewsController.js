@@ -11,13 +11,14 @@ var NewsController ={
 
         var News = require('mongoose').model('News');
 
-        //var categoryImage = req.body.categoryImg;
-        //var _categoryName = req.body.categoryName;
+        var categoryImage = req.body.categoryImg;
+        var categoryName = req.body.categoryName;
+
         //TODO: Category Image Upload part
 
         var _category = {
-            name:"Business",
-            image:"images/pg-signup-6_03.png"
+            name:categoryName,
+            image:categoryImage
         };
 
         News.addNewsCategory(_category,function(resultSet){
@@ -41,9 +42,8 @@ var NewsController ={
 
         var criteria = {
             search:{},
-            return_fields:{category:1, categoryImage:1} // for now only getting _id, category, categoryImage only
+            return_fields:{category:1, categoryImage:1} // for now only getting _id, category, categoryImage
         };
-
 
         News.findNews(criteria,function(resultSet){
             res.status(200).json(resultSet);
@@ -60,8 +60,7 @@ var NewsController ={
 
         var News = require('mongoose').model('News');
 
-        //var _categoryId = req.body.categoryId;
-        var _categoryId = "56c704bc6a1888efb2d86549";
+        var _categoryId = req.body.categoryId;
 
         //TODO: Category Image Delete from folder part
 
@@ -79,15 +78,10 @@ var NewsController ={
 
         var News = require('mongoose').model('News');
 
-        //var categoryId = req.body.categoryId;
-        //var channelName = req.body.channelName;
-        //var channelUrl = req.body.channelUrl;
-        //var channelImage = req.body.channelImage;
-
-        var categoryId = "56c6ff13719ba417200e8671";
-        var channelName = "Entrepreneur";
-        var channelUrl = "http://www.entrepreneur.com/";
-        var channelImage = "images/pg-signup-6_03.png";
+        var categoryId = req.body.categoryId;
+        var channelName = req.body.channelName;
+        var channelUrl = req.body.channelUrl;
+        var channelImage = req.body.channelImage;
 
         //TODO: Channel Image Upload part
 
@@ -97,7 +91,7 @@ var NewsController ={
             url:channelUrl
         };
 
-        News.addRecordToSubDocument(categoryId,{channels:channel},function(resultSet){
+        News.addRecordToSubDocument({_id:categoryId},{channels:channel},function(resultSet){
             if(resultSet.status == 200){
                 res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
             }else{
@@ -113,13 +107,10 @@ var NewsController ={
 
         var categoryId = req.params.category;
 
-        //var categoryId = "56c6ff13719ba417200e8671";
-
         var criteria = {
             search:{_id:categoryId},
-            return_fields:{channels:1} // for now only getting _id, category, categoryImage only
+            return_fields:{channels:1} // for now only getting channels
         };
-
 
         News.findNews(criteria,function(resultSet){
             res.status(200).json(resultSet);
@@ -129,17 +120,115 @@ var NewsController ={
 
     deleteNewsChannel:function(req,res){
 
+        var News = require('mongoose').model('News');
+
+        var _categoryId = req.body.categoryId;
+        var _channelId = req.body.channelId;
+
+        //TODO: Channel Image Delete from folder part
+
+        var criteria = {
+            _id:_categoryId
+        };
+
+        var pullData = {
+            channels:{_id:_channelId}
+        };
+
+        News.removeRecordFromSubDocument(criteria, pullData,function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
+
     },
 
     addNews:function(req,res){
+
+        var News = require('mongoose').model('News');
+
+        var categoryId = req.body.categoryId;
+        var channelId = req.body.channelId;
+        var articleHeading = req.body.articleHeading;
+        var articleContent = req.body.articleContent;
+        var articleImage = req.body.articleImage;
+
+        //TODO: Article Image Upload part
+
+        var article = {
+            heading:articleHeading,
+            article_image:articleImage,
+            content:articleContent
+        };
+
+        var criteria = {
+            "_id":categoryId,
+            "channels._id": channelId
+        }
+        News.addRecordToSubDocument(criteria,{"channels.$.articles":article},function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
 
     },
 
     getNews:function(req,res){
 
+        var News = require('mongoose').model('News');
+
+        var categoryId = req.params.category;
+        var channelId = req.params.channel;
+
+        var criteria = {
+            search:{
+                _id:categoryId,
+                channels: { $elemMatch: { _id: channelId }}
+            },
+            return_fields:{"channels.$.articles":1} // for now only getting channels
+        };
+
+
+        News.findNews(criteria,function(resultSet){
+            res.status(200).json(resultSet);
+        });
+
     },
 
     deleteNews:function(req,res){
+
+        var News = require('mongoose').model('News');
+
+        //var _categoryId = req.body.categoryId;
+        //var _channelId = req.body.channelId;
+        //var _articleId = req.body.articleId;
+
+        var _categoryId = "56cbeb3d703431a80ab2e1c4";
+        var _channelId = "56cbf9643f65367f0e8f19f2";
+        var _articleId = "56cc2e8fbefd3610158776eb";
+
+        //TODO: Article Image Delete from folder part
+
+        var criteria = {
+            _id:_categoryId,
+            "channels._id": _channelId
+        };
+
+        var pullData = {
+            "channels.$.articles":{_id:_articleId}
+        };
+
+        News.removeRecordFromSubDocument(criteria, pullData,function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
 
     }
 

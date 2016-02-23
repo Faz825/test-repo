@@ -7,7 +7,7 @@ export default class SidebarManuItem extends React.Component{
 		return(
 			<div className="row row-clr pg-nav-item-wrapper">
                 <a href={item.link}>
-                    <img className="img-responsive" alt="navigation links" src={"images/" + item.imgName + ".png"} />
+                    <img className="img-responsive" alt="navigation links" src={"/images/" + item.imgName + ".png"} />
                     <p>{item.name}</p>
                 </a>
             </div>

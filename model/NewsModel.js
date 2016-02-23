@@ -137,15 +137,47 @@ NewsSchema.statics.deleteNewsCategory=function(categoryId, callBack){
 };
 
 
-
-
+/**
+ * Add record to sub document such as Channel / Articles
+ * @param criteria
+ * @param data
+ * @param callBack
+ */
 NewsSchema.statics.addRecordToSubDocument = function(criteria, data, callBack){
+
+    console.log(criteria)
 
     var _this = this;
 
     _this.update(
         criteria,
         {$push:data},function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                console.log(err)
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
+
+/**
+ * Remove record from sub document such as Channel / Articles
+ * @param criteria
+ * @param pullData
+ * @param callBack
+ */
+NewsSchema.statics.removeRecordFromSubDocument = function(criteria, pullData, callBack){
+
+    var _this = this;
+
+    _this.update(criteria,
+        { $pull: pullData},function(err,resultSet){
             if(!err){
                 callBack({
                     status:200
@@ -163,3 +195,5 @@ NewsSchema.statics.addRecordToSubDocument = function(criteria, data, callBack){
 
 
 mongoose.model('News',NewsSchema);
+mongoose.model('Channels', ChannelSchema);
+mongoose.model('Articles', ArticleSchema);

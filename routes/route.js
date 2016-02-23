@@ -23,13 +23,14 @@ var DefaultController   = require('../controller/DefaultController'),
     SkillController      = require('../controller/SkillController'),
     NewsController      = require('../controller/NewsController');
 
+
 /**
  * Define Public URLs
  * this public urls will load without authentication component.
  * Basically those URLs will be site assets.
  * This URL can be image, Stylesheet, Javascript file
  */
-GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
+GLOBAL.publicURLs = ['/images','/css','/web','/fonts','/js'];
 
 /**
  *This URLs will be normal URL that execute out side the authentication component.
@@ -38,7 +39,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts'];
 GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
-    '/profile-image','/done','/cache-check','/collage-and-job'
+    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id'
 
 ];
 
@@ -61,6 +62,10 @@ router.get('/cache-check/:key',SecretaryController.cacheCheck);
 router.get('/test/uploads', TestController.uploadTest);
 router.get('/test/get-uploaded-images', TestController.getImageTest);
 router.get('/test/send-mail', TestController.sendMailTest);
+router.get('/test/get-profile/:email', TestController.getProfile);
+
+
+
 
 
 //need to be under authentication section. testing purpose have it here. For testing purpose all are set as get request
@@ -75,6 +80,7 @@ router.get('/skills', SkillController.getSkills);
 router.get('/skill/:id', SkillController.getSkillById);
 router.get('/skills/update', SkillController.updateSkill);
 router.get('/skills/delete', SkillController.deleteSkill);
+
 
 
 //User's skill add / delete
@@ -101,10 +107,23 @@ router.get('/news/add-news', NewsController.addNews);
 router.get('/news/get-news/:category/:channel', NewsController.getNews);
 router.get('/news/delete-news', NewsController.deleteNews);
 
+
+router.get('/profile/:name', DefaultController.index);
+
+router.get('/get-profile/:uname',UserController.getProfile);
+
+router.get('/news-info/get-categories', UserController.getNewsCategories);
+router.get('/news-info/delete-category', UserController.deleteNewsCategory);
+
+router.get('/news-info/add-channel', UserController.addNewsChannel);
+router.get('/news-info/get-channels/:category', UserController.getNewsChannels);
+router.get('/news-info/delete-channel', UserController.deleteNewsChannel);
+
 /**
  * Push All Rqurst through oAuth
  */
 router.all('/*',oAuth.Authentication);
+
 
 /** 
  * Implement Actual Routes that need to Authenticate
@@ -117,8 +136,8 @@ router.post('/connect-people',UserController.connect);
 router.post('/addNewsCategory',UserController.addNewsCategory);
 router.post('/upload/profile-image',UserController.uploadProfileImage);
 router.get('/connections',UserController.getConnections);
+router.get('/connection/count',UserController.connectionCount);
 
 
-//
 
 module.exports = router;

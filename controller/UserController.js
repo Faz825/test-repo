@@ -18,7 +18,8 @@ var UserControler ={
             email:req.body.email,
             password:req.body.password,
             status:req.body.status,
-            secretary:req.body.secretary
+            secretary:req.body.secretary,
+            user_name:req.body.email.replace(/@.*$/,"")
         }
         User.findByEmail(user.email,function(ResultSet){
 
@@ -266,6 +267,7 @@ var UserControler ={
     addNewsCategory:function(req,res){
         var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
         CurrentSession['status']    = 6;
+
         CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
             var outPut ={};
             outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -707,7 +709,182 @@ var UserControler ={
 
         });
 
+    },
+    /**
+     * Get Connection count
+     * @param req
+     * @param res
+     */
+    connectionCount:function(req,res){
+        var Connection = require('mongoose').model('Connection');
+
+
+        Connection.getConnectionCount(CurrentSession.id,function(connectionCount){
+            var outPut = {};
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['connection_count'] = connectionCount;
+            res.status(200).send(outPut);
+            return 0;
+        });
+
+    },
+    /**
+     * Get Profile
+     * @param req
+     * @param res
+     */
+    getProfile:function(req,res){
+        var _async = require('async'),
+            Connection = require('mongoose').model('Connection'),
+            User = require('mongoose').model('User'),
+            Upload = require('mongoose').model('Upload') ;
+
+        if(typeof req.params['uname'] == 'undefined'){
+            var outPut ={};
+            outPut['status']    = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
+            res.status(400).send(outPut);
+        }
+
+
+        var _uname =req.params['uname'];
+        _async.waterfall([
+            function getUserById(callBack){
+                var _search_param = {
+                    user_name:_uname
+                }
+                User.getUser(_search_param,function(resultSet){
+                    if(resultSet.status ==200 ){
+                        callBack(null,resultSet.user)
+                    }
+                })
+            },
+            function getConnectionCount(profileData,callBack){
+
+                if( profileData!= null){
+                    Connection.getConnectionCount(profileData.user_id,function(connectionCount){
+                        profileData['connection_count'] = connectionCount;
+                        callBack(null,profileData);
+                        return 0
+                    });
+                }else{
+                    callBack(null,null)
+                }
+
+
+
+            },
+            function getProfileImage(profileData,callBack){
+
+                if(profileData != null){
+                    Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
+                        profileData['images'] = profileImageData.image;
+                        callBack(null,profileData)
+                        return 0;
+                    });
+                }else{
+                    callBack(null,null)
+                }
+
+
+            }
+
+
+
+        ],function(err,profileData){
+            var outPut ={};
+            if(!err){
+
+                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['profile_data']      = profileData;
+                res.status(200).send(outPut);
+            }else{
+                outPut['status']    = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                res.status(200).send(outPut);
+            }
+        })
+
+
+    },
+
+    /**
+     * Get news categories of a user
+     * @param req
+     * @param res
+     */
+    getNewsCategories:function(req,res){
+
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+
+        var user_id = "56c2d6038c920a41750ac4db";
+        //var user_id = req.body.user_id;
+
+        var criteria = {
+            search:{user_id:user_id},
+            return_fields:{connected_with:1}
+        };
+
+        FavouriteNewsCategory.findFavouriteNewsCategory(criteria,function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).json(resultSet);
+            } else{
+                res.status(200).json(resultSet);
+            }
+
+        });
+
+    },
+
+    deleteNewsCategory:function(req,res){
+
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+
+        var user_id = "56c2d6038c920a41750ac4db";
+        //var user_id = req.body.user_id;
+
+        var categoryId = "56cbeb3d703431a80ab2e1c4";
+        //var categoryId = req.body.categoryId;
+
+        var criteria = {
+            user_id:user_id,
+            connected_with:categoryId
+        };
+
+        FavouriteNewsCategory.deleteNewsCategory(criteria,function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
+
+    },
+
+    addNewsChannel:function(req,res){
+
+        //var category_id = "56cbeae0e975b0070ad200f8"; //Business
+        //var channel_id = "56cbf55f09e38d870d1df691"; //Fortune
+        //"56cbf541a5a22e790dcac546" - Entrepreneur
+
+        //var category_id = "56cbeb3d703431a80ab2e1c4"; //Technology
+        //var channel_id = "56cbf98378bf9a900e3d40fb"; //Mashable
+        //"56cbf541a5a22e790dcac546" - Entrepreneur
+
+
+        //var category_id = "56cbeae0e975b0070ad200f8"; //Business
+        //var channel_id = "56cbf55f09e38d870d1df691"; //Fortune
+        //"56cbf9643f65367f0e8f19f2" - Tech Crunch
+        //"56cc2e6ebefd3610158776ea" - article
+
+    },
+
+    getNewsChannels:function(req,res){
+
+    },
+
+    deleteNewsChannel:function(req,res){
+
     }
+
 
 
 };

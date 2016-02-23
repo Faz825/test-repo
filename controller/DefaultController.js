@@ -1,7 +1,7 @@
 
 'use strict'
 
-var DefualtController ={
+var DefaultController ={
 
 	index:function(req,res){
 		res.render('index');
@@ -9,4 +9,4 @@ var DefualtController ={
 }
 
 
-module.exports = DefualtController; 
+module.exports = DefaultController;
