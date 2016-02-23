@@ -3,6 +3,7 @@
  */
 import React from 'react'
 import Header from './Header';
+import EducationalInfo from './EducationalInfo'
 export default class Index extends React.Component{
 
 
@@ -19,7 +20,12 @@ export default class Index extends React.Component{
     }
 
     render(){
-        return (<Header uname={this.state.uname}/> )
+        return (
+            <div id="pg-profile-page" className="pg-page">
+                <Header uname={this.state.uname}/>
+                <EducationalInfo uname={this.state.uname} />
+            </div>
+        )
     }
 
 }
