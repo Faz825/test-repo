@@ -1,7 +1,8 @@
 /**
  * Handle Favourite news Categories
  */
-'use strict'
+'use strict';
+
 var  mongoose = require('mongoose'),
     Schema   = mongoose.Schema;
 
@@ -13,15 +14,16 @@ var FavouriteNewsCategorySchema = new Schema({
         ref: 'User',
         default:null
     },
-    //category:{
-    //    type: String,
-    //    default:null
-    //},
     category:{
         type: Schema.ObjectId,
         ref: 'News',
         default:null
     },
+    channels:[{
+        type: Schema.ObjectId,
+        ref: 'News',
+        default:null
+    }],
     created_at:{
         type:Date
     },
@@ -47,8 +49,20 @@ FavouriteNewsCategorySchema.pre('save', function(next){
  * @param criteria
  * @param callBack
  */
-FavouriteNewsCategorySchema.statics.addUserNewsCategory =function(data,callBack){
-    this.collection.insert(data,function(err,resultSet){
+FavouriteNewsCategorySchema.statics.addUserNewsCategory =function(req_news_categories,callBack){
+
+    var news_categories = [],
+        now = new Date();
+
+    for (var i = 0; req_news_categories.length > i; i++) {
+        news_categories.push({
+            user_id: CurrentSession.id.toObjectId(),
+            category: req_news_categories[i].toObjectId(),
+            created_at: now
+        });
+    }
+
+    this.collection.insert(news_categories,function(err,resultSet){
         if(! err){
             callBack({status:200,
                 connected:resultSet.result.ok});
@@ -68,17 +82,10 @@ FavouriteNewsCategorySchema.statics.addUserNewsCategory =function(data,callBack)
  * @param callBack
  */
 FavouriteNewsCategorySchema.statics.findFavouriteNewsCategory = function(criteria,callBack){
+
     var _this = this;
 
-
-
-    var user_id = "56c2d6038c920a41750ac4db";console.log(user_id)
-
-    _this.find({user_id:user_id.toObjectId()}, function(err,resultSet){
-
-        console.log(err)
-
-        console.log(resultSet)
+    _this.find(criteria.search).populate(criteria.populate, criteria.populate_field).exec(function(err,resultSet){
 
         if(!err){
             callBack({
@@ -91,7 +98,6 @@ FavouriteNewsCategorySchema.statics.findFavouriteNewsCategory = function(criteri
             callBack({status:400,error:err});
         }
     });
-
 };
 
 
@@ -108,7 +114,7 @@ FavouriteNewsCategorySchema.statics.deleteNewsCategory=function(criteria, callBa
         if(!err){
             callBack({status:200});
         }else{
-            console.log("Server Error --------")
+            console.log("Server Error --------");
             callBack({status:400,error:err});
         }
     });
@@ -123,4 +129,4 @@ String.prototype.toObjectId = function() {
 
 
 
-mongoose.model('FavouriteNewsCategory',FavouriteNewsCategorySchema)
+mongoose.model('FavouriteNewsCategory',FavouriteNewsCategorySchema);

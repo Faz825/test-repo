@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var NewsController ={
 
@@ -166,7 +166,7 @@ var NewsController ={
         var criteria = {
             "_id":categoryId,
             "channels._id": channelId
-        }
+        };
         News.addRecordToSubDocument(criteria,{"channels.$.articles":article},function(resultSet){
             if(resultSet.status == 200){
                 res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));

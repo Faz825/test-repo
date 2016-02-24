@@ -277,18 +277,9 @@ var UserControler ={
 
             if(req_news_categories.length >= 1 ) {
 
-                var news_categories = [],
-                    now = new Date(),
-                    FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
-                for (var i = 0; req_news_categories.length > i; i++) {
-                    news_categories.push({
-                        user_id: CurrentSession.id,
-                        connected_with: req_news_categories[i],
-                        created_at: now
-                    });
-                }
+                var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
-                FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
+                FavouriteNewsCategory.addUserNewsCategory(req_news_categories,function(resultSet){
 
                     if (resultSet.status !== 200) {
                         outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
@@ -816,11 +807,12 @@ var UserControler ={
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
         var user_id = "56c2d6038c920a41750ac4db";
-        //var user_id = req.body.user_id;
+        //var user_id = CurrentSession.id;
 
         var criteria = {
-            search:{user_id:user_id},
-            return_fields:{connected_with:1}
+            search:{user_id:user_id.toObjectId()},
+            populate:'category',
+            populate_field:'category'
         };
 
         FavouriteNewsCategory.findFavouriteNewsCategory(criteria,function(resultSet){
@@ -839,14 +831,14 @@ var UserControler ={
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
         var user_id = "56c2d6038c920a41750ac4db";
-        //var user_id = req.body.user_id;
+        //var user_id = CurrentSession.id;
 
-        var categoryId = "56cbeb3d703431a80ab2e1c4";
+        var categoryId = "56cbeae0e975b0070ad200f8";
         //var categoryId = req.body.categoryId;
 
         var criteria = {
-            user_id:user_id,
-            connected_with:categoryId
+            user_id:user_id.toObjectId(),
+            category:categoryId.toObjectId()
         };
 
         FavouriteNewsCategory.deleteNewsCategory(criteria,function(resultSet){
@@ -860,6 +852,14 @@ var UserControler ={
     },
 
     addNewsChannel:function(req,res){
+
+        var user_id = "56c2d6038c920a41750ac4db";
+        //var user_id = CurrentSession.id;
+
+        var categoryId = "56cbeae0e975b0070ad200f8";
+        //var categoryId = req.body.categoryId;
+
+        var channel_id = "56cbf55f09e38d870d1df691";
 
         //var category_id = "56cbeae0e975b0070ad200f8"; //Business
         //var channel_id = "56cbf55f09e38d870d1df691"; //Fortune
