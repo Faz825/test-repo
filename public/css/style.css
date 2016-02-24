@@ -1002,7 +1002,7 @@ a:focus{
 .pg-edit-field:hover{
     color: #61b3de;
 }
-.pg-empty-fields-area button{
+button.addEduInfo{
     text-indent: 0;
     width: auto;
     font-size: 13px;
