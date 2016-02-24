@@ -72,25 +72,7 @@ export default class EducationalInfo extends React.Component{
 
 
         return (
-            <div className="row row-clr">
-                <div className="container-fluid">
-                    <div className="col-xs-10 col-xs-offset-1" id="middle-content-wrapper">
-                        <div className="col-xs-6" id="profile-middle-container-left-col">
-                            <div id="pg-profile-middle-container-left-col-details">
-                                <div className="row row-clr pg-profile-heading">
-                                    <h1>{profileName + "'s"} Resume</h1>
-
-                                    <Education readOnly={read_only} data={data}/>
-                                </div>
-
-
-                            </div>
-                        </div>
-                        <div className="col-xs-6"></div>
-                    </div>
-                </div>
-            </div>
-
+            <Education readOnly={read_only} data={data}/>
         );
     }
 }
