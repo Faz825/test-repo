@@ -23,7 +23,21 @@ export default class Index extends React.Component{
         return (
             <div id="pg-profile-page" className="pg-page">
                 <Header uname={this.state.uname}/>
-                <EducationalInfo uname={this.state.uname} />
+                <div className="row row-clr">
+                    <div className="container-fluid">
+                        <div className="col-xs-10 col-xs-offset-1" id="middle-content-wrapper">
+                            <div className="col-xs-6" id="profile-middle-container-left-col">
+                                <div id="pg-profile-middle-container-left-col-details">
+                                    <div className="row row-clr pg-profile-heading">
+                                        <h1>{this.state.uname + "'s"} Resume</h1>
+                                        <EducationalInfo uname={this.state.uname} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-xs-6"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
