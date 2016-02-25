@@ -22,11 +22,7 @@ class Signup extends React.Component {
         super(props);
         this.state= {
             formData:{},
-            errorData:{
-                fName:false,
-                lName:"",
-                email:"",
-                password:""},
+            error:{},
             signupURL:'/doSignup',
             validateAlert: "",
             invalidElements :{}
@@ -35,55 +31,105 @@ class Signup extends React.Component {
         this.elementChangeHandler = this.elementChangeHandler.bind(this)
         this.clearValidations     = this.clearValidations.bind(this)
         this.validateSchema = {
-                fName: {req: true, message: Alert.EMPTY_FIRST_NAME, value: "", valid: false},
-                lName: {req: true, message: Alert.EMPTY_LAST_NAME, value: "", valid: false},
-                email: {req: true, message: Alert.INVALID_EMAIL, value: "", valid: false},
-                password: {req: true, message: [Alert.PASSWORD_LENGTH_ERROR,Alert.PASSWORD_MISMATCH], value: "", valid: false},
-                confPassword:{req: true, message: [Alert.PASSWORD_LENGTH_ERROR,Alert.PASSWORD_MISMATCH], value: "", valid: false}
-            };
+                fName: "",
+                lName: "",
+                email: "",
+                password: "",
+                confPassword:""
+        };
+        this.isValid = true;
+        this.formData = {};
+    };
 
+
+    submitData(e){
+        e.preventDefault();
+        let _this = this;
+        let _invalid_frm = this.formData;
+        for (let err_elm in this.validateSchema){
+            if(!this.formData.hasOwnProperty(err_elm))
+                this.formData[err_elm] = this.validateSchema[err_elm];
         }
 
+        let er = this.traversObject();
+        this.setState({error:er})
 
-    validateForm(){
+        if(Object.keys(er).length == 0){
+            this.formData['status'] = 1;
+            $.ajax({
+                url: this.state.signupURL,
+                method: "POST",
+                data: this.formData,
+                dataType: "JSON",
 
-        let canSubmit = false;
-        let _validateSchema = this.validateSchema;
-        let _invalidElements = {};
-        for(let element in _validateSchema){
+                success: function (data, text) {
 
-           if( !_invalidElements.hasOwnProperty(element) && _validateSchema[element].valid == false){
-               _invalidElements[element] = _validateSchema[element];
-           }
+                    if (data.status === 'success') {
+                        _this.setState({validateAlert: ""});
+                        console.log(data)
+                        Session.createSession("prg_lg", data.user);
+                        location.reload();
+                    }
+
+                },
+                error: function (request, status, error) {
+
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+
+                    _this.setState({validateAlert: Alert.EMAIL_ID_ALREADY_EXIST});
+                }
+            });
         }
-
-        this.setState({invalidElements:_invalidElements});
 
 
     }
-    submitData(e){
-        e.preventDefault();
-        this.validateForm();
+    isValidEmail(email){
+        var regx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return regx.test(email);
+    }
+    traversObject(){
+        let _error = {};
+        for(let elm in this.formData){
 
+            if(elm == "fName" && this.formData[elm]==""){
+                _error[elm] = Alert.EMPTY_FIRST_NAME;
+            }
 
+            if(elm == "lName" && this.formData[elm] == ""){
+                _error[elm] = Alert.EMPTY_LAST_NAME;
+            }
+
+            if(elm == "email" && this.formData[elm] == "" ){
+                _error[elm] = Alert.EMPTY_EMAIL_ID;
+            }
+
+            if(elm == "email" &&  !this.isValidEmail(this.formData[elm])){
+                _error[elm] = Alert.INVALID_EMAIL;
+            }
+
+            if(elm == "password" && this.formData[elm].length < 6){
+                _error[elm] = Alert.PASSWORD_LENGTH_ERROR;
+            }
+            if(elm == 'confPassword' && this.formData[elm].length < 6){
+                _error[elm] = Alert.PASSWORD_LENGTH_ERROR;
+            }
+
+            if(elm == 'confPassword' && this.formData[elm] != this.formData['password']){
+                _error[elm] = Alert.PASSWORD_MISMATCH;
+            }
+        }
+       return _error;
     }
 
 
     elementChangeHandler(key,data,status){
 
-        let _formData = this.state.formData;
-        let _invalidElements = this.state.invalidElements;
+        this.formData[key] = data;
 
-        this.validateSchema[key].valid = status;
-        _invalidElements[key] = this.validateSchema[key];
-        if(status){
-            delete _invalidElements[key];
-
-        }
-
-        _formData[key] = data;
-        this.setState({formData:_formData});
-        this.setState({invalidElements:_invalidElements});
+        let er = this.traversObject();
+        this.setState({error:er})
 
     }
 
@@ -110,7 +156,8 @@ class Signup extends React.Component {
                                                     classes="pgs-sign-inputs"
                                                     onInputChange={this.elementChangeHandler}
                                                     required={true}
-                                                    validate={this.state.invalidElements.fName} />
+                                                    validate={this.state.invalidElements.fName}
+                                                    error_message={this.state.error.fName}/>
                                         <TextField  name="lName"
                                                     size="6"
                                                     value=""
@@ -119,7 +166,8 @@ class Signup extends React.Component {
                                                     classes="pgs-sign-inputs"
                                                     required={true}
                                                     onInputChange={this.elementChangeHandler}
-                                                    validate={this.state.invalidElements.lName} />
+                                                    validate={this.state.invalidElements.lName}
+                                                    error_message={this.state.error.lName}/>
                                     </div>
                                     <div className="row">
                                         <EmailField name="email"
@@ -130,7 +178,8 @@ class Signup extends React.Component {
                                                     classes="pgs-sign-inputs"
                                                     onInputChange={this.elementChangeHandler}
                                                     required={true}
-                                                    validate={this.state.invalidElements.email} />
+                                                    validate={this.state.invalidElements.email}
+                                                    error_message={this.state.error.email}/>
                                     </div>
                                     <div className="row">
                                         <PasswordField name="password"
@@ -142,7 +191,8 @@ class Signup extends React.Component {
                                                        required={true}
                                                        onInputChange={this.elementChangeHandler}
                                                        validate={this.state.invalidElements.password}
-                                                       compareWith={this.state.formData.confPassword}/>
+                                                       compareWith={this.state.formData.confPassword}
+                                                       error_message={this.state.error.password}/>
                                         <PasswordField name="confPassword"
                                                        size="6"
                                                        value=""
@@ -152,7 +202,8 @@ class Signup extends React.Component {
                                                        required={true}
                                                        onInputChange={this.elementChangeHandler}
                                                        validate={this.state.invalidElements.confPassword}
-                                                       compareWith={this.state.formData.password}/>
+                                                       compareWith={this.state.formData.password}
+                                                       error_message={this.state.error.confPassword}/>
                                     </div>
                                     {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
                                     <div className="row">

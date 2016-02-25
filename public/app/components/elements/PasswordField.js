@@ -21,12 +21,8 @@ export default class  PasswordField extends React.Component{
     }
     elementChangeHandler(event){
         this.setState({valueTxt:event.target.value});
+        this.props.onInputChange(this.props.name,event.target.value,true)
 
-        if(event.target.value != ""){
-            this.props.onInputChange(this.props.name,event.target.value,true)
-        }else{
-            this.props.onInputChange(this.props.name,event.target.value,false)
-        }
     }
 
     render(){
@@ -44,7 +40,7 @@ export default class  PasswordField extends React.Component{
         }
         let opts = {};
 
-        if (!isValid) {
+        if (this.props.error_message) {
             opts['style'] = {"borderColor" : "#ed0909"};
         }
         return (
@@ -60,7 +56,7 @@ export default class  PasswordField extends React.Component{
                        onChange={(event)=>{ this.elementChangeHandler(event)}}
                        onBlur={(event)=>{ this.elementChangeHandler(event)}}
                     {...opts}  />
-                {(!isValid)? <span className="invalid-msg" style={errorStyles}>{message}</span> : null}
+                {(this.props.error_message)? <span className="invalid-msg" style={errorStyles}>{this.props.error_message}</span> : null}
             </div>
         );
     }
