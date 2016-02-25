@@ -4,6 +4,7 @@
 import React from 'react'
 import Header from './Header';
 import EducationalInfo from './EducationalInfo'
+import WorkExperience from './WorkExperience'
 export default class Index extends React.Component{
 
 
@@ -28,9 +29,10 @@ export default class Index extends React.Component{
                         <div className="col-xs-10 col-xs-offset-1" id="middle-content-wrapper">
                             <div className="col-xs-6" id="profile-middle-container-left-col">
                                 <div id="pg-profile-middle-container-left-col-details">
-
+                                    <div className="row row-clr pg-profile-content">
                                         <EducationalInfo uname={this.state.uname} />
-
+                                        <WorkExperience uname={this.state.uname} />
+                                    </div>
                                 </div>
                             </div>
                             <div className="col-xs-6"></div>

@@ -62,11 +62,11 @@ export default class ProfileImgUpload extends React.Component{
 
                     <div className="col-xs-8 pgs-middle-sign-wrapper-inner">
 
-                    	<div className="row">
+                    	<div className="row signupContentHolder">
 
                         	<SecretaryThumbnail url={_secretary_image} />
 
-                            <div className="col-xs-10">
+                            <div className="col-xs-12">
                                 <div className="row row-clr pgs-middle-sign-wrapper-inner-cover pgs-middle-sign-wrapper-inner-cover-secretary pgs-middle-sign-wrapper-about">
                                 <img src="images/sign-left-arrow-1.png" alt="" className="img-responsive pgs-sign-left-arrow"/>
 

@@ -26,6 +26,12 @@ a:focus{
     width: 100%;
     z-index: 400;
 }
+.pg-top-navigation .pg-custom-container{
+    padding: 0;
+	margin: 0 auto;
+    width: calc(100% - 220px);
+}
+
 .pg-logo-wrapper {
     /*left: 115px;*/
     /*position: absolute;*/
@@ -169,7 +175,9 @@ a:focus{
 
 .pgs-middle-sign-wrapper-inner-form .input-field {margin:0 0 25px;}
 
-.pgs-sign-inputs {width: 100%;font: 12px 'montserratregular', sans-serif;color: #2d5164;border: none;background-color: #fff;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;border:1px solid #d7e2ea;padding:10px 14px;}
+.pgs-sign-inputs {width: 100%;font: 12px 'montserratregular', sans-serif;color: #2d5164;border: none;background-color: #fff;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;border:1px solid #d7e2ea; padding: 5px 14px;
+    height: 36px;
+    line-height: 1;}
 
 .pgs-sign-inputs:focus {
 	outline: 0;
@@ -185,6 +193,12 @@ a:focus{
 }
 .pgs-sign-inputs:-ms-input-placeholder {
  color: #2d5164;
+}
+
+#pg-profile-page{
+	margin: 0 auto 140px;
+	padding: 70px 0 0;
+	width: calc(100% - 220px);
 }
 
 .pgs-custom-container {
@@ -243,6 +257,15 @@ a:focus{
     color: #fff;
     margin-bottom: 0px;
     text-transform: uppercase;
+}
+.signupContentHolder{
+	position: relative;
+}
+
+.signupContentHolder .pgs-secratery-img{
+	left: -130px;
+	position: absolute;
+	top: 0;
 }
 /*Choose secratery page*/
 
@@ -621,14 +644,6 @@ a:focus{
     /*background-color: rgba(255, 255, 255, 0.6);*/
 }
 /** middle wrapper **/
-.pg-middle-sign-wrapper{
-    padding-top: 70px;
-}
-.pg-custom-container{
-    padding: 0;
-		margin: 0 auto;
-    width: calc(100% - 220px);
-}
 .row-rel{
     position: relative;
 }
@@ -787,10 +802,11 @@ a:focus{
     color: #2d5164;
     margin: 0 0px;
 }
-#pg-pro-share-btn p span {
-    font: 15px 'montserratregular', sans-serif;
-    color: #2d5164;
-    margin: 0 0px;
+#pg-pro-share-btn .pg-pro-share-btn-txt {
+  color: #2d5164;
+  font: 15px "montserratregular",sans-serif;
+  margin: 0;
+  display: block;
 }
 #pg-profile-pic-detail-wrapper {
     bottom: 15px;
@@ -1050,4 +1066,105 @@ textarea{
     padding: 4px 12px;
     border-radius: 0px;
     font: 13px 'montserratregular', sans-serif;
+}
+
+/** skills and interests **/
+#skills-form{
+    display: none;
+}
+.pg-section-container{
+    border-bottom: 1px solid #dee6eb;
+}
+#pg-edit-skills-btn{
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    z-index: 10;
+}
+.skills-view-section{
+    list-style: none;
+    padding: 0;
+}
+.pg-edit-action-area{
+    display: table;
+}
+.pg-header-sub-title{
+    font: 14px 'montserratregular', sans-serif;
+    color: #2d5164;
+    margin: 0 0 15px;
+}
+.pg-endrose-item{
+    font: 10px 'montserratregular', sans-serif;
+    color: #61b3de;
+    margin: 0px 0;
+    display: inline-block;
+    vertical-align: middle;
+    background: #f4f8f8;
+    padding: 5px;
+    border: 1px solid #d9e6e6;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.pg-itel-lbl{
+    display: block;
+}
+.pg-inline-item-txt{
+    width: 70%;
+    float: left;
+}
+.pg-inline-item-btn{
+    margin-left: 5px;
+}
+.pg-inline-item-btn{
+    height: 23px;
+    padding: 0 5px;
+    font-size: 12px;
+}
+.skills-edit-section{
+    list-style: none;
+    padding: 0;
+}
+.pg-endrose-item-edit{
+    font: 10px 'montserratregular', sans-serif;
+    color: #61b3de;
+    margin: 0px 0;
+    display: inline-block;
+    vertical-align: middle;
+    background: #f4f8f8;
+    padding: 5px;
+    border: 1px solid #d9e6e6;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+.pg-skill-delete-icon{
+    margin-left: 10px;
+}
+
+/** experience **/
+.pg-experience-year{
+    width: 20%;
+    display: inline;
+}
+.pg-experience-current-option{
+    margin: 1px -20px !important;
+}
+.non-resize{
+    resize: vertical;
+}
+
+/* Small desktop */
+@media (max-width: 1024px){
+	.pg-top-navigation .pg-custom-container .col-xs-1{
+		display: none;
+	}
+
+	.pg-logo-wrapper > img{
+		height: auto;
+		width: 100%;
+	}
+
+	.pg-header-options a{
+		margin-right: 2px;
+	}
 }
