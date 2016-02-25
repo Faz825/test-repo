@@ -21,7 +21,7 @@ var FavouriteNewsCategorySchema = new Schema({
     },
     channels:[{
         type: Schema.ObjectId,
-        ref: 'News',
+        ref: 'Channels',
         default:null
     }],
     created_at:{
