@@ -411,15 +411,27 @@ var UserControler ={
 
         var User = require('mongoose').model('User');
 
-        //var _userId = CurrentSession.id;
+        if(typeof req.params['uname'] == 'undefined'){
+            var outPut ={};
+            outPut['status']    = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
+            res.status(400).send(outPut);
+        }
 
-        var _userId = "56c2d6038c920a41750ac4db";
 
-        var _education_id = "56c321a42ab09c7b09034e85";
 
-        User.retrieveEducationDetail(_userId,_education_id,function(resultSet){
+        var criteria = {user_name:req.params['uname']};
+        User.retrieveEducationDetail(criteria,function(resultSet){
+            var outPut ={};
+            if(resultSet.status != 200){
+                outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                res.status(400).json(outPut);
+                return 0;
+            }
 
-            res.status(200).json(resultSet);
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['user'] =resultSet.user;
+            res.status(200).send(outPut);
+
 
 
         });
@@ -437,27 +449,53 @@ var UserControler ={
 
         //var _userId = CurrentSession.id;
 
-        var _userId = "56c2d6038c920a41750ac4db";
-
-        var _education_id = "56c321a42ab09c7b09034e85";
+        var _userId = CurrentSession.id;
+        console.log(CurrentSession)
 
         var _educationDetails = {
-            _id:_education_id,
-            school:"Hindu Ladies College",
-            date_attended_from:"1996",
-            date_attended_to:"2014",
-            degree:"G.C.E.A/L",
-            grade:"Merit",
-            activities_societies:"Played Tennis",
-            description:"It was wonderful"
+            school:req.body.school,
+            date_attended_from:req.body.date_attended_from,
+            date_attended_to:req.body.date_attended_to,
+            degree:req.body.degree,
+            grade:req.body.grade,
+            activities_societies:req.body.activities_societies,
+            description:req.body.description
         };
+        if(req.body.edu_id){
+            _educationDetails['_id'] = req.body.edu_id;
+            User.updateEducationDetail(_userId,_educationDetails,function(resultSet){
 
-        User.updateEducationDetail(_userId,_educationDetails,function(resultSet){
+                var outPut ={};
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_UPDATE_ERROR, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                }
 
-            res.status(200).json(resultSet);
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user'] =resultSet.user;
+                res.status(200).send(outPut);
 
 
-        });
+            });
+        }else{
+            User.addEducationDetail(_userId,_educationDetails,function(resultSet){
+
+                var outPut ={};
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_INSERT_ERROR, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                }
+
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user'] =resultSet.user;
+                res.status(200).send(outPut);
+
+
+            });
+        }
+
 
     },
 

@@ -399,20 +399,6 @@ UserSchema.statics.getConnectionUsers=function(criteria,callBack){
 };
 
 
-/**
- * Format Connection users data
- * @param resultSet
- * @returns {*}
- */
-UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
-    var _tmp_object =[];
-    for(var i=0;i<resultSet.length;i++){
-
-        _tmp_object.push(this.formatUser(resultSet[i]));
-    }
-    return _tmp_object;
-};
-
 
 /**
  * Add Education Details to a user
@@ -470,21 +456,24 @@ UserSchema.statics.addEducationDetail = function(userId, educationDetails, callB
  * @param _education_id
  * @param callBack
  */
-UserSchema.statics.retrieveEducationDetail = function(userId, _education_id, callBack){
+UserSchema.statics.retrieveEducationDetail = function(criteria, callBack){
 
     var _this = this;
+    _this.findOne(criteria)
+        .exec(function(err,resultSet){
+            var ue = _this.formatEducation(resultSet);
+            if(!err){
+                callBack({
+                    status:200,
+                    user:ue
 
-    _this.find({_id: userId},{education_details: { $elemMatch: { _id: _education_id } }}, function(error, resultSet){
-        if(!error){
-            callBack({
-                status:200,
-                resultSet:resultSet
-            });
-        }else{
-            console.log("Server Error --------")
-            callBack({status:400,error:err});
-        }
-    })
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
 
 };
 
@@ -498,7 +487,6 @@ UserSchema.statics.retrieveEducationDetail = function(userId, _education_id, cal
 UserSchema.statics.updateEducationDetail = function(userId, educationDetails, callBack){
 
     var _this = this;
-
     _this.update({_id:userId,"education_details._id":educationDetails._id},
         {$set:{
             "education_details.$.school":educationDetails.school,
@@ -515,6 +503,7 @@ UserSchema.statics.updateEducationDetail = function(userId, educationDetails, ca
                 });
             }else{
                 console.log("Server Error --------")
+                console.log(err)
                 callBack({status:400,error:err});
             }
         });
@@ -845,6 +834,14 @@ UserSchema.statics.getUser=function(criteria,callBack){
             }
     });
 }
+
+/**
+ * DATA FORMATTER HELPER FUNCTION WILL DEFINE HERE
+ */
+
+
+
+
 /**
  * Format User object
  * @param userObject
@@ -870,10 +867,57 @@ UserSchema.statics.formatUser=function(userObject){
                 break;
             }
         }
+
+
         return _temp_user
     }
 
     return null;
 }
+
+/**
+ * Format Education Detail
+ * @param userObject
+ */
+UserSchema.statics.formatEducation = function(userObject){
+
+
+    if(userObject){
+        var _temp_user = this.formatUser(userObject);
+
+        _temp_user['education_details'] = [];
+        for(var i=0;i<userObject.education_details.length;i++){
+            _temp_user['education_details'].push({
+                "edu_id" :userObject.education_details[i]._id,
+                "description" : userObject.education_details[i].description,
+                "activities_societies" : userObject.education_details[i].activities_societies,
+                "grade" : userObject.education_details[i].grade,
+                "degree" : userObject.education_details[i].degree,
+                "date_attended_to" : userObject.education_details[i].date_attended_to,
+                "date_attended_from" : userObject.education_details[i].date_attended_from,
+                "school" :userObject.education_details[i].school
+            });
+        }
+        return _temp_user;
+    }
+
+}
+
+
+
+/**
+ * Format Connection users data
+ * @param resultSet
+ * @returns {*}
+ */
+UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
+    var _tmp_object =[];
+    for(var i=0;i<resultSet.length;i++){
+
+        _tmp_object.push(this.formatUser(resultSet[i]));
+    }
+    return _tmp_object;
+};
+
 
 mongoose.model('User',UserSchema);

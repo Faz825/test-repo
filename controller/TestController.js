@@ -142,6 +142,22 @@ var TestController ={
         })
 
 
+    },
+    retrieveEducationDetail:function(req,res){
+        var User = require('mongoose').model('User');
+
+        //var _userId = CurrentSession.id;
+
+        var criteria = {user_name:req.params['uname']};
+
+        var _education_id = "56c321a42ab09c7b09034e85";
+
+        User.retrieveEducationDetail(criteria,function(resultSet){
+
+            res.status(200).send(resultSet);
+
+
+        });
     }
 
 
