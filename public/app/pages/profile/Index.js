@@ -4,6 +4,7 @@
 import React from 'react'
 import Header from './Header';
 import EducationalInfo from './EducationalInfo'
+import WorkExperience from './WorkExperience'
 export default class Index extends React.Component{
 
 
@@ -30,7 +31,10 @@ export default class Index extends React.Component{
                                 <div id="pg-profile-middle-container-left-col-details">
                                     <div className="row row-clr pg-profile-heading">
                                         <h1>{this.state.uname + "'s"} Resume</h1>
+                                    </div>
+                                    <div className="row row-clr pg-profile-content">
                                         <EducationalInfo uname={this.state.uname} />
+                                        <WorkExperience uname={this.state.uname} />
                                     </div>
                                 </div>
                             </div>

@@ -96,7 +96,6 @@ class Education extends React.Component{
     }
 
     editForm(data){
-        console.log(data);
         let visibility = this.state.editFormVisible;
 
         this.setState({editFormVisible : !visibility, formData : data});
@@ -112,37 +111,35 @@ class Education extends React.Component{
         let _this = this;
 
         return (
-            <div className="row row-clr pg-profile-content">
-                <div id="background-education-container" className="pg-section-container">
-                    <div className="pg-section">
-                         <div className="pg-header">
-                            <h3>Education</h3>
-                            {
-                                (!readOnly)?
-                                <div className="pg-edit-tools">
-                                    <button className="pg-edit-btn"  onClick={this.editForm}>
-                                        <i className="fa fa-plus edit-add"></i> Add education
-                                    </button>
-                                </div>
-                                : null
-                            }
-                         </div>
-                        <div className="pg-body-item">
-                            {
-                                (this.state.editFormVisible)?
-                                <EducationForm data={this.state.formData} onSubmit={this.formUpdate} onCancel={this.editForm} />
-                                : null
-                            }
-
-                        </div>
-
-                        {this.props.data.map(function(data,id){
-                            return(
-                                <University readOnly={readOnly} onEdit={_this.editForm} data={data} key={id}/>
-                            )
-                        })}
+            <div id="background-education-container" className="pg-section-container">
+                <div className="pg-section">
+                     <div className="pg-header">
+                        <h3>Education</h3>
+                        {
+                            (!readOnly)?
+                            <div className="pg-edit-tools">
+                                <button className="pg-edit-btn"  onClick={this.editForm}>
+                                    <i className="fa fa-plus edit-add"></i> Add education
+                                </button>
+                            </div>
+                            : null
+                        }
+                     </div>
+                    <div className="pg-body-item">
+                        {
+                            (this.state.editFormVisible)?
+                            <EducationForm data={this.state.formData} onSubmit={this.formUpdate} onCancel={this.editForm} />
+                            : null
+                        }
 
                     </div>
+
+                    {this.props.data.map(function(data,id){
+                        return(
+                            <University readOnly={readOnly} onEdit={_this.editForm} data={data} key={id}/>
+                        )
+                    })}
+
                 </div>
             </div>
         );
