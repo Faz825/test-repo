@@ -85,7 +85,7 @@ const ConnectionIndicator =(props)=> {
         <div id="pg-pro-share-btn" style={_style}>
             <img src="/images/Share-copy.png" alt="" />
                 <p>
-                    <span>{props.dt.connection_count}</span><br/>
+                    <span className="pg-pro-share-btn-txt">{props.dt.connection_count}</span>
                     Connections
                 </p>
             </div>
