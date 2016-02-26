@@ -121,6 +121,13 @@ FavouriteNewsCategorySchema.statics.deleteNewsCategory=function(criteria, callBa
 
 };
 
+
+/**
+ * Add user's favourite News Channel for Category
+ * @param criteria
+ * @param data
+ * @param callBack
+ */
 FavouriteNewsCategorySchema.statics.addUserNewsChannel =function(criteria, data, callBack){
 
     var _this = this;
@@ -138,6 +145,86 @@ FavouriteNewsCategorySchema.statics.addUserNewsChannel =function(criteria, data,
                 callBack({status:400,error:err});
             }
         });
+};
+
+
+/**
+ * Get requested fields By Search Criteria
+ * @param criteria
+ * @param callBack
+ */
+FavouriteNewsCategorySchema.statics.findFavouriteNewsChannel = function(criteria,callBack){
+
+    var _this = this;
+
+    _this.findOne(criteria.search).populate(criteria.populate, criteria.populate_field).exec(function(err,resultSet){
+
+        if(!err){
+            var newsChannel = _this.formatFavouriteNewsChannel(resultSet);
+            callBack({
+                status:200,
+                news:newsChannel
+
+            });
+        }else{
+            console.log("Server Error --------")
+            callBack({status:400,error:err});
+        }
+    });
+};
+
+
+/**
+ * delete User's news channel of a News Category
+ * @param categoryId
+ * @param callBack
+ */
+FavouriteNewsCategorySchema.statics.deleteNewsChannel = function(criteria, pullData, callBack){
+
+    var _this = this;
+
+    _this.update(criteria,
+        { $pull: pullData},function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
+
+/**
+ * Format Channel Detail
+ * @param userObject
+ */
+FavouriteNewsCategorySchema.statics.formatFavouriteNewsChannel = function(newsObject){
+
+    if(newsObject){
+
+        var selectedChannels = newsObject.channels;
+        var allChannels = newsObject.category.channels;
+
+        var _channels = [];
+
+        for(var i = 0; i < allChannels.length; i++){
+            var j = selectedChannels.indexOf(allChannels[i]._id);
+            if(j != -1){
+                var channel = {
+                    channel_id:allChannels[i]._id,
+                    channel_name:allChannels[i].name
+                }
+                _channels.push(channel);
+            }
+        }
+
+        return _channels;
+    }
+
 };
 
 

@@ -400,14 +400,25 @@ var UserControler ={
 
         var User = require('mongoose').model('User');
 
-        //var _userId = CurrentSession.id;
+        if(typeof req.params['uname'] == 'undefined'){
+            var outPut ={};
+            outPut['status']    = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
+            res.status(400).send(outPut);
+        }
 
-        var _userId = "56c2d6038c920a41750ac4db";
+        var criteria = {user_name:req.params['uname']};
+        User.retrieveEducationDetail(criteria,function(resultSet){
+            var outPut ={};
+            if(resultSet.status != 200){
+                outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                res.status(400).json(outPut);
+                return 0;
+            }
 
-        var _education_id = "56c321a42ab09c7b09034e85";
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['user'] =resultSet.user;
+            res.status(200).send(outPut);
 
-        User.retrieveEducationDetail(_userId,_education_id,function(resultSet){
-            res.status(200).json(resultSet);
         });
 
     },
@@ -423,24 +434,54 @@ var UserControler ={
 
         //var _userId = CurrentSession.id;
 
-        var _userId = "56c2d6038c920a41750ac4db";
-
-        var _education_id = "56c321a42ab09c7b09034e85";
+        var _userId = CurrentSession.id;
+        console.log(CurrentSession)
 
         var _educationDetails = {
-            _id:_education_id,
-            school:"Hindu Ladies College",
-            date_attended_from:"1996",
-            date_attended_to:"2014",
-            degree:"G.C.E.A/L",
-            grade:"Merit",
-            activities_societies:"Played Tennis",
-            description:"It was wonderful"
+            school:req.body.school,
+            date_attended_from:req.body.date_attended_from,
+            date_attended_to:req.body.date_attended_to,
+            degree:req.body.degree,
+            grade:req.body.grade,
+            activities_societies:req.body.activities_societies,
+            description:req.body.description
         };
+        if(req.body.edu_id){
+            _educationDetails['_id'] = req.body.edu_id;
+            User.updateEducationDetail(_userId,_educationDetails,function(resultSet){
 
-        User.updateEducationDetail(_userId,_educationDetails,function(resultSet){
-            res.status(200).json(resultSet);
-        });
+                var outPut ={};
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_UPDATE_ERROR, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                }
+
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user'] =resultSet.user;
+                res.status(200).send(outPut);
+
+
+            });
+        }else{
+            User.addEducationDetail(_userId,_educationDetails,function(resultSet){
+
+                var outPut ={};
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_INSERT_ERROR, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                }
+
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user'] =resultSet.user;
+                res.status(200).send(outPut);
+
+
+            });
+        }
+
+
 
     },
 
@@ -816,16 +857,16 @@ var UserControler ={
         };
 
         FavouriteNewsCategory.findFavouriteNewsCategory(criteria,function(resultSet){
-            if(resultSet.status == 200){
-                res.status(200).json(resultSet);
-            } else{
-                res.status(200).json(resultSet);
-            }
-
+            res.status(resultSet.status).json(resultSet);
         });
 
     },
 
+    /**
+     * Delete a news category of a user
+     * @param req
+     * @param res
+     */
     deleteNewsCategory:function(req,res){
 
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
@@ -851,18 +892,115 @@ var UserControler ={
 
     },
 
+    /**
+     * Add user's channel for a category
+     * @param req
+     * @param res
+     */
     addNewsChannel:function(req,res){
 
-        var user_id = "56c2d6038c920a41750ac4db";
+        var user_id = "56c6aeaa6e1ac13e18b2400d";
         //var user_id = CurrentSession.id;
 
         var categoryId = "56cbeae0e975b0070ad200f8";
         //var categoryId = req.body.categoryId;
 
-        var channel_id = "56cbf55f09e38d870d1df691";
+        //var channels = req.body.channels;
+        var channels = ["56cbf55f09e38d870d1df691".toObjectId()];
 
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
+        var criteria = {
+            user_id:user_id.toObjectId(),
+            category:categoryId.toObjectId()
+        };
+
+        var data = {
+            channels:{$each:channels}
+        };
+
+        FavouriteNewsCategory.addUserNewsChannel(criteria, data, function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
+
+    },
+
+    /**
+     * Get user's channels for a category
+     * @param req
+     * @param res
+     */
+    getNewsChannels:function(req,res){
+
+        var user_id = "56c6aeaa6e1ac13e18b2400d";
+        //var user_id = CurrentSession.id;
+
+        //var categoryId = "56cbeae0e975b0070ad200f8";
+        var categoryId = req.params.category;
+
+        var criteria = {
+            search:{user_id:user_id.toObjectId(), category:categoryId.toObjectId()},
+            populate:'category',
+            populate_field:'channels'
+        };
+
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+
+        FavouriteNewsCategory.findFavouriteNewsChannel(criteria,function(resultSet){
+                res.status(resultSet.status).json(resultSet);
+        });
+
+    },
+
+    /**
+     * Delete user's news channel for a category
+     * @param req
+     * @param res
+     */
+
+    deleteNewsChannel:function(req,res){
+
+        var user_id = "56c6aeaa6e1ac13e18b2400d";
+        //var user_id = CurrentSession.id;
+
+        //var categoryId = req.body.categoryId;
+        var categoryId = "56cbeae0e975b0070ad200f8";
+
+        //var channelId = req.body.channelId;
+        //var channelId = "56cbf4ed221d355c0d063183";
+        var channels = ["56cbf4ed221d355c0d063183".toObjectId()];
+
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+
+        var criteria = {
+            user_id:user_id.toObjectId(),
+            category:categoryId.toObjectId()
+        };
+
+        var pullData = {
+            channels: {$in:channels}
+        };
+
+        FavouriteNewsCategory.deleteNewsChannel(criteria, pullData,function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
+
+    },
+
+    /**
+     * save an article to a user
+     * @param req
+     * @param res
+     */
+    saveArticle:function(req,res){
 
         //var category_id = "56cbeae0e975b0070ad200f8"; //Business
         //var channel_id = "56cbf55f09e38d870d1df691"; //Fortune
@@ -880,11 +1018,21 @@ var UserControler ={
 
     },
 
-    getNewsChannels:function(req,res){
+    /**
+     * get all saved articles of a user
+     * @param req
+     * @param res
+     */
+    getSavedArticles:function(req,res){
 
     },
 
-    deleteNewsChannel:function(req,res){
+    /**
+     * delete a saved article of a user
+     * @param req
+     * @param res
+     */
+    deleteSavedArticle:function(req,res){
 
     }
 

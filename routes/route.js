@@ -13,6 +13,7 @@ require('../model/FavouriteNewsCategory');
 require('../model/UploadModel');
 require('../model/SkillModel');
 require('../model/NewsModel');
+require('../model/SavedArticleModel');
 
 /** Load  Controllers
  */
@@ -64,14 +65,14 @@ router.get('/test/get-uploaded-images', TestController.getImageTest);
 router.get('/test/send-mail', TestController.sendMailTest);
 router.get('/test/get-profile/:email', TestController.getProfile);
 
-
+router.get('/test/get-education/:uname', TestController.retrieveEducationDetail);
 
 
 
 //need to be under authentication section. testing purpose have it here. For testing purpose all are set as get request
 router.get('/education-info/save', UserController.addEducationDetail);
-router.get('/education-info/retrieve', UserController.retrieveEducationDetail);
-router.get('/education-info/update', UserController.updateEducationDetail);
+router.get('/get-education/:uname',UserController.retrieveEducationDetail);
+
 router.get('/education-info/delete', UserController.deleteEducationDetail);
 
 // Skills CRUD
@@ -109,8 +110,10 @@ router.get('/news/delete-news', NewsController.deleteNews);
 
 
 router.get('/profile/:name', DefaultController.index);
-
 router.get('/get-profile/:uname',UserController.getProfile);
+
+
+
 
 router.get('/news-info/get-categories', UserController.getNewsCategories);
 router.get('/news-info/delete-category', UserController.deleteNewsCategory);
@@ -118,6 +121,11 @@ router.get('/news-info/delete-category', UserController.deleteNewsCategory);
 router.get('/news-info/add-channel', UserController.addNewsChannel);
 router.get('/news-info/get-channels/:category', UserController.getNewsChannels);
 router.get('/news-info/delete-channel', UserController.deleteNewsChannel);
+
+
+router.get('/news-info/save-article', UserController.saveArticle);
+router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
+router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle);
 
 /**
  * Push All Rqurst through oAuth
@@ -138,6 +146,6 @@ router.post('/upload/profile-image',UserController.uploadProfileImage);
 router.get('/connections',UserController.getConnections);
 router.get('/connection/count',UserController.connectionCount);
 
-
+router.post('/education-info/update', UserController.updateEducationDetail);
 
 module.exports = router;

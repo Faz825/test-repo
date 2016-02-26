@@ -47,7 +47,11 @@ GLOBAL.Alert={
 
     //Education Info
 
-    SKILL_SAVED: 'Skill info saved successfully'
+    SKILL_SAVED: 'Skill info saved successfully',
+
+    DATA_INSERT_ERROR:'Error while adding data',
+    DATA_UPDATE_ERROR:'Error while updating data'
+
 
 
 }

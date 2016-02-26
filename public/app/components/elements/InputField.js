@@ -75,7 +75,7 @@ export default class InputField extends React.Component{
 			}
 
 		}else{
-			console.log("emoty")
+
 			if(this.props.required){
 
 				if(field.type == "text"){

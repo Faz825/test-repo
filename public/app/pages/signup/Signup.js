@@ -1,8 +1,10 @@
 import React from 'react'
-import InputField from '../../components/elements/InputField'
+import EmailField from '../../components/elements/EmailField'
 import Button from '../../components/elements/Button'
 import {Alert} from '../../config/Alert';
 import Session  from '../../middleware/Session';
+import TextField from '../../components/elements/TextField'
+import PasswordField from '../../components/elements/PasswordField'
 
 let errorStyles = {
     color         : "#ed0909",
@@ -20,97 +22,123 @@ class Signup extends React.Component {
         super(props);
         this.state= {
             formData:{},
-            errorData:{},
+            error:{},
             signupURL:'/doSignup',
-            validateAlert: ""
+            validateAlert: "",
+            invalidElements :{}
 
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this)
         this.clearValidations     = this.clearValidations.bind(this)
+        this.validateSchema = {
+                fName: "",
+                lName: "",
+                email: "",
+                password: "",
+                confPassword:""
+        };
+        this.isValid = true;
+        this.formData = {};
+    };
 
 
-    }
-
-    allInvalid(elements) {
-            for (var i in elements) {
-                if (elements[i]["status"] == "invalid") return false;
-            }
-            return true;
-    }
-
-    validateForm(e){
+    submitData(e){
         e.preventDefault();
-
-
-        if(Object.keys(this.state.errorData).length != 5 ){
-            this.setState({validateAlert: Alert.FILL_EMPTY_FIELDS});
-        }else{
-
-            if(this.allInvalid(this.state.formData)){
-
-                let pass = this.state.formData.password;
-                let confpass = this.state.formData.confPassword;
-
-                if(pass != confpass){
-                    this.setState({validateAlert: Alert.PASSWORD_MISMATCH});
-                }else{
-                    this.setState({validateAlert: ""});
-
-                    this.state.formData['status'] = 1;
-
-                    let _this = this;
-                    $.ajax({
-                        url: this.state.signupURL,
-                        method: "POST",
-                        data: this.state.formData,
-                        dataType: "JSON",
-
-                        success: function (data, text) {
-
-                            if (data.status === 'success') {
-                                _this.setState({validateAlert: ""});
-
-                                Session.createSession("prg_lg", data.user);
-                                location.reload();
-                            }
-
-                        },
-                        error: function (request, status, error) {
-
-                            console.log(request.responseText);
-                            console.log(status);
-                            console.log(error);
-
-                            _this.setState({validateAlert: Alert.EMAIL_ID_ALREADY_EXIST});
-                        }
-                    });
-
-                }
-
-            }else{
-                this.setState({validateAlert: Alert.FILL_EMPTY_FIELDS});
-            }
+        let _this = this;
+        let _invalid_frm = this.formData;
+        for (let err_elm in this.validateSchema){
+            if(!this.formData.hasOwnProperty(err_elm))
+                this.formData[err_elm] = this.validateSchema[err_elm];
         }
 
+        let er = this.traversObject();
+        this.setState({error:er})
+
+        if(Object.keys(er).length == 0){
+            this.formData['status'] = 1;
+            $.ajax({
+                url: this.state.signupURL,
+                method: "POST",
+                data: this.formData,
+                dataType: "JSON",
+
+                success: function (data, text) {
+
+                    if (data.status === 'success') {
+                        _this.setState({validateAlert: ""});
+                        console.log(data)
+                        Session.createSession("prg_lg", data.user);
+                        location.reload();
+                    }
+
+                },
+                error: function (request, status, error) {
+
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+
+                    _this.setState({validateAlert: Alert.EMAIL_ID_ALREADY_EXIST});
+                }
+            });
+        }
+
+
     }
+    isValidEmail(email){
+        var regx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return regx.test(email);
+    }
+    traversObject(){
+        let _error = {};
+        for(let elm in this.formData){
+
+            if(elm == "fName" && this.formData[elm]==""){
+                _error[elm] = Alert.EMPTY_FIRST_NAME;
+            }
+
+            if(elm == "lName" && this.formData[elm] == ""){
+                _error[elm] = Alert.EMPTY_LAST_NAME;
+            }
+
+            if(elm == "email" && this.formData[elm] == "" ){
+                _error[elm] = Alert.EMPTY_EMAIL_ID;
+            }
+
+            if(elm == "email" &&  !this.isValidEmail(this.formData[elm])){
+                _error[elm] = Alert.INVALID_EMAIL;
+            }
+
+            if(elm == "password" && this.formData[elm].length < 6){
+                _error[elm] = Alert.PASSWORD_LENGTH_ERROR;
+            }
+            if(elm == 'confPassword' && this.formData[elm].length < 6){
+                _error[elm] = Alert.PASSWORD_LENGTH_ERROR;
+            }
+
+            if(elm == 'confPassword' && this.formData[elm] != this.formData['password']){
+                _error[elm] = Alert.PASSWORD_MISMATCH;
+            }
+        }
+       return _error;
+    }
+
 
     elementChangeHandler(key,data,status){
 
-        let _formData = this.state.formData;
-        let _errorData = this.state.errorData;
+        this.formData[key] = data;
 
-        _formData[key] = data;
-        _errorData[key] = status;
-        this.setState({formData:_formData});
-        this.setState({errorData:_errorData});
+        let er = this.traversObject();
+        this.setState({error:er})
 
     }
 
     clearValidations(){
-        this.setState({validateAlert: ""});
+        this.setState({invalidElements:{}});
     }
 
 	render(){
+
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper">
             	<div className="container">
@@ -118,55 +146,64 @@ class Signup extends React.Component {
                         <div className="row row-clr pgs-middle-sign-wrapper-inner-cover">
                         	<h2>Let’s create your account</h2>
                             <div className="row row-clr pgs-middle-sign-wrapper-inner-form">
-                                <form method="get" onSubmit={this.validateForm.bind(this)} onReset={this.clearValidations.bind(this)} >
+                                <form method="get" onSubmit={this.submitData.bind(this)} onReset={this.clearValidations.bind(this)} >
                                     <div className="row">
-                                        <InputField type="text"
-                                                    name="fName"
+                                        <TextField  name="fName"
                                                     size="6"
                                                     value=""
                                                     label="First Name"
                                                     placeholder=""
                                                     classes="pgs-sign-inputs"
-                                                    textChange={this.elementChangeHandler}
-                                                    required="true" />
-                                        <InputField type="text"
-                                                    name="lName"
+                                                    onInputChange={this.elementChangeHandler}
+                                                    required={true}
+                                                    validate={this.state.invalidElements.fName}
+                                                    error_message={this.state.error.fName}/>
+                                        <TextField  name="lName"
                                                     size="6"
                                                     value=""
                                                     label="Last Name"
                                                     placeholder=""
                                                     classes="pgs-sign-inputs"
-                                                    textChange={this.elementChangeHandler}
-                                                    required="true" />
+                                                    required={true}
+                                                    onInputChange={this.elementChangeHandler}
+                                                    validate={this.state.invalidElements.lName}
+                                                    error_message={this.state.error.lName}/>
                                     </div>
                                     <div className="row">
-                                        <InputField type="email"
-                                                    name="email"
+                                        <EmailField name="email"
                                                     size="12"
                                                     value=""
                                                     label="Your email address"
                                                     placeholder=""
                                                     classes="pgs-sign-inputs"
-                                                    textChange={this.elementChangeHandler}
-                                                    required="true" />
+                                                    onInputChange={this.elementChangeHandler}
+                                                    required={true}
+                                                    validate={this.state.invalidElements.email}
+                                                    error_message={this.state.error.email}/>
                                     </div>
                                     <div className="row">
-                                        <InputField type="password"
-                                                    name="password"
-                                                    size="6" value=""
-                                                    label="Password"
-                                                    placeholder=""
-                                                    classes="pgs-sign-inputs"
-                                                    textChange={this.elementChangeHandler}
-                                                    required="true" />
-                                        <InputField type="password"
-                                                    name="confPassword"
-                                                    size="6" value=""
-                                                    label="Confirm Password"
-                                                    placeholder=""
-                                                    classes="pgs-sign-inputs"
-                                                    textChange={this.elementChangeHandler}
-                                                    required="true" />
+                                        <PasswordField name="password"
+                                                       size="6"
+                                                       value=""
+                                                       label="Password"
+                                                       placeholder=""
+                                                       classes="pgs-sign-inputs"
+                                                       required={true}
+                                                       onInputChange={this.elementChangeHandler}
+                                                       validate={this.state.invalidElements.password}
+                                                       compareWith={this.state.formData.confPassword}
+                                                       error_message={this.state.error.password}/>
+                                        <PasswordField name="confPassword"
+                                                       size="6"
+                                                       value=""
+                                                       label="Confirm Password"
+                                                       placeholder=""
+                                                       classes="pgs-sign-inputs"
+                                                       required={true}
+                                                       onInputChange={this.elementChangeHandler}
+                                                       validate={this.state.invalidElements.confPassword}
+                                                       compareWith={this.state.formData.password}
+                                                       error_message={this.state.error.confPassword}/>
                                     </div>
                                     {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
                                     <div className="row">
