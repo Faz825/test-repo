@@ -853,8 +853,6 @@ var UserControler ={
 
     addNewsChannel:function(req,res){
 
-        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
-
         var user_id = "56c2d6038c920a41750ac4db";
         //var user_id = CurrentSession.id;
 
@@ -863,6 +861,7 @@ var UserControler ={
 
         var channel_id = "56cbf55f09e38d870d1df691";
 
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
 
         //var category_id = "56cbeae0e975b0070ad200f8"; //Business

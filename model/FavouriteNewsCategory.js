@@ -121,6 +121,25 @@ FavouriteNewsCategorySchema.statics.deleteNewsCategory=function(criteria, callBa
 
 };
 
+FavouriteNewsCategorySchema.statics.addUserNewsChannel =function(criteria, data, callBack){
+
+    var _this = this;
+
+    _this.update(
+        criteria,
+        {$push:data},function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                console.log(err)
+                callBack({status:400,error:err});
+            }
+        });
+};
+
 
 String.prototype.toObjectId = function() {
     var ObjectId = (require('mongoose').Types.ObjectId);

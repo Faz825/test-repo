@@ -145,8 +145,6 @@ NewsSchema.statics.deleteNewsCategory=function(categoryId, callBack){
  */
 NewsSchema.statics.addRecordToSubDocument = function(criteria, data, callBack){
 
-    console.log(criteria)
-
     var _this = this;
 
     _this.update(
