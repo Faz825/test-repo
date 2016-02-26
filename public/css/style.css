@@ -197,8 +197,12 @@ a:focus{
 
 #pg-profile-page{
 	margin: 0 auto 140px;
-	padding: 70px 0 0;
+	padding: 0;
 	width: calc(100% - 220px);
+}
+
+.pg-middle-sign-wrapper > .pg-custom-container{
+	padding-top: 70px;
 }
 
 .pgs-custom-container {
@@ -1151,6 +1155,33 @@ textarea{
 }
 .non-resize{
     resize: vertical;
+}
+
+/* ====================================================== dashboard page /index ==========================================*/
+#pg-dashboard-page{
+	margin: 80px 0;	
+}
+
+#pg-dashboard-banner-area{
+    padding-top: 100px;
+}
+#pg-dashboard-banner-area-logo-img{
+    margin-bottom: 50px;
+}
+#pg-dashboard-banner-area-title-wish{
+    font: 30px 'montserratlight', sans-serif;
+    color: #2d5164;
+    margin: 0px;
+    text-transform: uppercase;
+    text-align: center;
+    padding-bottom: 15px;
+}
+#pg-dashboard-banner-area-title-what-to-do{
+    font: 44px 'montserratregular', sans-serif;
+    color: #59afe1;
+    margin: 0px;
+    text-transform: uppercase;
+    text-align: center;
 }
 
 /* Small desktop */
