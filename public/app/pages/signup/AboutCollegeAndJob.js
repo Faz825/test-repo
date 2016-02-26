@@ -50,44 +50,37 @@ export default class AboutCollegeAndJob extends React.Component{
         this.props.onPreviousStep()
     }
 
-    submitData(e){
-        e.preventDefault();
-        let _this = this;
-        let _invalid_frm = this.formData;
-        for (let err_elm in this.validateSchema){
-            if(!this.formData.hasOwnProperty(err_elm))
-                this.formData[err_elm] = this.validateSchema[err_elm];
-        }
+    collectData(e){
+    	e.preventDefault();
+    	if(Object.keys(this.state.errorData).length != 3){
+    		this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
+    	}else{
 
-        let er = this.traversObject();
-        this.setState({error:er})
+    		if(this.allInvalid(this.state.errorData)){
+    			this.setState({validateAlert: ""});
 
-        if(Object.keys(er).length == 0){
-            this.formData['status'] = 1;
-            $.ajax({
-                url: "/collage-and-job/save",
-                method: "POST",
-                data: this.formData,
-                dataType: "JSON",
-
-                success: function (data, text) {
-
-                    if (data.status.code == 200) {
-                        Session.createSession("prg_lg", data.user);
-                        _this.props.onNextStep();
+                let _this =  this;
+                $.ajax({
+                    url: '/collage-and-job/save',
+                    method: "POST",
+                    dataType: "JSON",
+                    headers: { 'prg-auth-header':this.loggedUser.token },
+                    data:this.state.formData,
+                    success: function (data, text) {
+                        if (data.status.code == 200) {
+                            Session.createSession("prg_lg", data.user);
+                            _this.props.onNextStep();
+                        }
+                    },
+                    error: function (request, status, error) {
+                        console.log(request.responseText);
+                        console.log(status);
+                        console.log(error);
                     }
+                });
+	    	}
+    	}
 
-                },
-                error: function (request, status, error) {
-                    console.log(request.responseText);
-                    console.log(status);
-                    console.log(error);
-                }
-            });
-        }
-
-
-    }
 
     traversObject(){
         let _error = {};
