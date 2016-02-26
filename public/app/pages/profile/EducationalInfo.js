@@ -2,6 +2,7 @@
  * This component is to store education information
  */
 import React from 'react';
+import SelectDateDropdown from '../../components/elements/SelectDateDropdown'
 import Session  from '../../middleware/Session';
 
 
@@ -133,7 +134,7 @@ class Education extends React.Component{
                             : null
                         }
                      </div>
-                    <div className="pg-body-item">
+                    <div className="form-holder">
                         {
                             (this.state.editFormVisible)?
                             <EducationForm data={this.state.formData} onSubmit={this.formUpdate} onCancel={this.editForm} />
@@ -237,7 +238,8 @@ export class University extends React.Component{
                         (data.date_attended_to)?
                         <div className="pg-date-area pg-field">
                             <span className="pg-field-text">
-                                <time>{_date_attended_from.year} - {_date_attended_to.year} </time>
+                                {/*<time>{_date_attended_from.year} - {_date_attended_to.year} </time>*/}
+                                <time>{_date_attended_to.year} </time>
                             </span>
                             {
                                 (!readOnly)?
@@ -317,6 +319,7 @@ export class EducationForm extends React.Component{
         }
 
         this.fieldChangeHandler = this.fieldChangeHandler.bind(this);
+        this.timePeriodUpdate = this.timePeriodUpdate.bind(this);
     }
 
     fieldChangeHandler(e){
@@ -325,6 +328,13 @@ export class EducationForm extends React.Component{
         let _edu_data = this.state.formData;
 
         _edu_data[fieldName] = _fieldValue;
+        this.setState({formData:_edu_data});
+    }
+
+    timePeriodUpdate(name,date){
+        let _edu_data = this.state.formData;
+
+        _edu_data[name] = date;
         this.setState({formData:_edu_data});
     }
 
@@ -337,6 +347,8 @@ export class EducationForm extends React.Component{
     render() {
         let formData = this.state.formData;
         let yearList = [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020];
+
+        console.log(formData.date_attended_to);
         return (
             <div className="form-area" id="education-form">
                 <form onSubmit={this.formSave.bind(this)}>
@@ -344,7 +356,7 @@ export class EducationForm extends React.Component{
                         <label>School</label>
                         <input type="text" value={formData.school} className="form-control pg-custom-input" name="school" id="pg-form-school" placeholder="" onChange={this.fieldChangeHandler} />
                     </div>
-                    <div className="form-group">
+                    {/*<div className="form-group">
                         <label className="display-block">Dates Attend</label>
                         <select className="form-control pg-custom-input pg-dropdown" value={formData.date_attended_from} name="date_attended_from" onChange={this.fieldChangeHandler} >
                             {yearList.map(function(year, i){
@@ -357,6 +369,15 @@ export class EducationForm extends React.Component{
                                 return <option value={year} key={i} > {year}</option>
                             })}
                         </select>
+                    </div>*/}
+                    <div className="form-group datePicker">
+                        <SelectDateDropdown
+                            title="Dates Attend"
+                            dateFormat="mm-dd-yyyy"
+                            defaultOpt={formData.date_attended_to}
+                            optChange={this.timePeriodUpdate}
+                            required=""
+                            dateType="date_attended_to"/>
                     </div>
                     <div className="form-group">
                         <label>Degree</label>

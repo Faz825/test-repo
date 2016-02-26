@@ -25,8 +25,8 @@ class Signup extends React.Component {
             error:{},
             signupURL:'/doSignup',
             validateAlert: "",
-            invalidElements :{}
-
+            invalidElements :{},
+            fieldValue : ""
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this)
         this.clearValidations     = this.clearValidations.bind(this)
@@ -134,11 +134,11 @@ class Signup extends React.Component {
     }
 
     clearValidations(){
-        this.setState({invalidElements:{}});
+        this.formData = {};
+        this.setState({invalidElements:{}, fieldValue : ""});
     }
 
 	render(){
-
 		return (
 			<div className="row row-clr pgs-middle-sign-wrapper">
             	<div className="container">
@@ -150,7 +150,7 @@ class Signup extends React.Component {
                                     <div className="row">
                                         <TextField  name="fName"
                                                     size="6"
-                                                    value=""
+                                                    value={this.formData.fName}
                                                     label="First Name"
                                                     placeholder=""
                                                     classes="pgs-sign-inputs"
@@ -160,7 +160,7 @@ class Signup extends React.Component {
                                                     error_message={this.state.error.fName}/>
                                         <TextField  name="lName"
                                                     size="6"
-                                                    value=""
+                                                    value={this.formData.lName}
                                                     label="Last Name"
                                                     placeholder=""
                                                     classes="pgs-sign-inputs"
@@ -172,7 +172,7 @@ class Signup extends React.Component {
                                     <div className="row">
                                         <EmailField name="email"
                                                     size="12"
-                                                    value=""
+                                                    value={this.formData.email}
                                                     label="Your email address"
                                                     placeholder=""
                                                     classes="pgs-sign-inputs"
@@ -184,7 +184,7 @@ class Signup extends React.Component {
                                     <div className="row">
                                         <PasswordField name="password"
                                                        size="6"
-                                                       value=""
+                                                       value={this.formData.password}
                                                        label="Password"
                                                        placeholder=""
                                                        classes="pgs-sign-inputs"
@@ -195,7 +195,7 @@ class Signup extends React.Component {
                                                        error_message={this.state.error.password}/>
                                         <PasswordField name="confPassword"
                                                        size="6"
-                                                       value=""
+                                                       value={this.formData.confPassword}
                                                        label="Confirm Password"
                                                        placeholder=""
                                                        classes="pgs-sign-inputs"

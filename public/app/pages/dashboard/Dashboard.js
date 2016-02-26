@@ -20,7 +20,7 @@ class Dashboard extends React.Component {
 		}
 
 		return (
-			<div className="pg-page" id="pg-dashboard-page">
+			<div className="loggedUserView pg-page" id="pg-dashboard-page">
                 <div className="row row-clr" id="pg-dashboard-banner-area">
                     <img src="images/logo-large-middle.png" className="img-responsive center-block" id="pg-dashboard-banner-area-logo-img" />
                     <h2 id="pg-dashboard-banner-area-title-wish">{greating}, {session.first_name + " " + session.last_name}</h2>

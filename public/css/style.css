@@ -197,11 +197,11 @@ a:focus{
 
 #pg-profile-page{
 	margin: 0 auto 140px;
-	padding: 0;
+	padding: 70px 0 0;
 	width: calc(100% - 220px);
 }
 
-.pg-middle-sign-wrapper > .pg-custom-container{
+.pg-middle-sign-wrapper .loggedUserView{
 	padding-top: 70px;
 }
 
@@ -858,8 +858,16 @@ a:focus{
     padding: 10px 15px;
 }
 .pg-body-item{
-    position: relative;
-    padding-bottom: 20px;
+	border-bottom: 1px dashed #e9f0f4;
+	padding-bottom: 10px;
+	position: relative;
+	margin-bottom: 15px;
+}
+.pg-section .pg-body-item:last-child{
+	border: none;
+}
+.form-holder{
+	position: relative;
 }
 .pg-profile-heading {
     border-bottom: 1px solid #dee6eb;
@@ -877,6 +885,9 @@ a:focus{
     line-height: 17px;
     color: #333;
     font-weight: normal;
+}
+#pg-profile-middle-container-left-col-details .pg-section-container .pg-section{
+	padding-bottom: 0;
 }
 .pg-section-container .pg-header{
      position: relative;
@@ -1047,8 +1058,18 @@ button.addEduInfo{
     z-index: 10;
     width: 100%;
 }
-.form-area label{
+.form-area label,
+.datePicker .col-xs-5 p{
     font: 11px 'montserratsemi_bold', sans-serif;
+}
+.form-area .datePicker .col-xs-5{
+	padding: 0;
+	float: none;
+	width: 100%;
+}
+.datePicker .col-xs-5 .pgs-sign-select{
+	margin: 0;
+	background-color: #fff;
 }
 .pg-custom-input{
     font: 11px 'montserratsemi_bold', sans-serif;
@@ -1159,7 +1180,7 @@ textarea{
 
 /* ====================================================== dashboard page /index ==========================================*/
 #pg-dashboard-page{
-	margin: 80px 0;	
+	margin: 60px 0;
 }
 
 #pg-dashboard-banner-area{
