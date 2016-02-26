@@ -1054,9 +1054,13 @@ button.addEduInfo{
 .form-area{
     background: #f4f4f4;
     padding: 10px;
-    position: absolute;
-    z-index: 10;
+    position: relative;;
+    z-index: 100;
     width: 100%;
+}
+.workPeriodSelect{
+	display: inline-block;
+	width: 36%;
 }
 .form-area label,
 .datePicker .col-xs-5 p{
@@ -1078,8 +1082,23 @@ button.addEduInfo{
     border-radius: 0px;
 }
 .pg-dropdown{
-    width: 25%;
-    display: inline;
+	width: 45%;
+	display: inline;
+}
+.workPeriodSelect{
+	overflow: hidden;
+}
+.workPeriodSelect .pg-dropdown{
+	float: left;
+}
+.workPeriodSelect .pg-dropdown:last-child{
+	float: right;
+}
+.form-group span.to{
+	display: inline-block;
+	margin: 0 15px 0 11px;
+	width: 12px;
+	line-height: 0.6;
 }
 .display-block{
     display: block;

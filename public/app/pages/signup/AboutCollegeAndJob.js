@@ -31,11 +31,10 @@ export default class AboutCollegeAndJob extends React.Component{
         this.validateSchema = {
                 school: "",
                 job_title: "",
-                company_name: "",
-                password: ""
+                company_name: ""
         };
         this.isValid = true;
-        this.formData = Session.getSession('prg_lg');
+        this.formData = this.loggedUser;
     }
 
     elementChangeHandler(key,data,status){
@@ -52,34 +51,38 @@ export default class AboutCollegeAndJob extends React.Component{
 
     collectData(e){
     	e.preventDefault();
-    	if(Object.keys(this.state.errorData).length != 3){
-    		this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
-    	}else{
+        let _this = this;
+        let _invalid_frm = this.formData;
+        for (let err_elm in this.validateSchema){
+            if(!this.formData.hasOwnProperty(err_elm))
+                this.formData[err_elm] = this.validateSchema[err_elm];
+        }
 
-    		if(this.allInvalid(this.state.errorData)){
-    			this.setState({validateAlert: ""});
+        let er = this.traversObject();
+        this.setState({error:er})
 
-                let _this =  this;
-                $.ajax({
-                    url: '/collage-and-job/save',
-                    method: "POST",
-                    dataType: "JSON",
-                    headers: { 'prg-auth-header':this.loggedUser.token },
-                    data:this.state.formData,
-                    success: function (data, text) {
-                        if (data.status.code == 200) {
-                            Session.createSession("prg_lg", data.user);
-                            _this.props.onNextStep();
-                        }
-                    },
-                    error: function (request, status, error) {
-                        console.log(request.responseText);
-                        console.log(status);
-                        console.log(error);
+        if(Object.keys(er).length == 0){
+            let _this =  this;
+            $.ajax({
+                url: '/collage-and-job/save',
+                method: "POST",
+                dataType: "JSON",
+                headers: { 'prg-auth-header':this.loggedUser.token },
+                data:this.formData,
+                success: function (data, text) {
+                    if (data.status.code == 200) {
+                        Session.createSession("prg_lg", data.user);
+                        _this.props.onNextStep();
                     }
-                });
-	    	}
+                },
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }
+            });
     	}
+    }
 
 
     traversObject(){
@@ -123,7 +126,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                     </div>
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form">
                                     	<h6>About your college / job</h6>
-                                        <form method="post" onSubmit={this.submitData.bind(this)}>
+                                        <form method="post" onSubmit={this.collectData.bind(this)}>
                                         <div className="row pgs-middle-about-inputs">
                                         	<TextField  name="school"
                                                         size="7"

@@ -24,7 +24,9 @@ export default class Header extends React.Component {
                   <div className="container-fluid pg-custom-container">
                     <div className="row">
                       <div className="col-xs-2">
-                           <Logo url ="/images/logo.png" />
+                        <a href="/">
+                            <Logo url ="/images/logo.png" />
+                        </a>
                       </div>
                       <div className="col-xs-7">
                         <div className="row row-clr pg-header-search">

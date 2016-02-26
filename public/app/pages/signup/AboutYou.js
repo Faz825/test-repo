@@ -34,7 +34,7 @@ export default class AboutYou extends React.Component{
                 country: ""
         };
         this.isValid = true;
-        this.formData = Session.getSession('prg_lg');
+        this.formData = this.loggedUser;
     }
 
     submitData(e){
@@ -56,9 +56,8 @@ export default class AboutYou extends React.Component{
                 method: "POST",
                 data: this.formData,
                 dataType: "JSON",
-
-                success: function (data, text
-                ) {
+                headers: { 'prg-auth-header':this.loggedUser.token },
+                success: function (data, text) {
                     if (data.status.code == 200) {
                         Session.createSession("prg_lg", data.user);
                         _this.props.onNextStep();
