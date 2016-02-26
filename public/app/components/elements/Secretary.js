@@ -9,13 +9,13 @@ export default class Secretary extends React.Component{
 
 	onSelectSecratery(id){
         this.props.onSelectSecratery(id);
-		
+
 	}
 	render(){
 
 		let _image_name = this.props.data.full_name.toLowerCase();
         let _active = (this.props.selected)?"pgs-middle-sign-wrapper-secratery-box-active":"";
-   
+
 		return(
                 <div className="col-xs-6">
                 	<div className={'row row-clr pgs-middle-sign-wrapper-secratery-box ' +_active}>
@@ -29,7 +29,7 @@ export default class Secretary extends React.Component{
                                 </div>
                                 <div className="col-xs-6 pgs-secratery-content-box">
                                 	<h3>{this.props.data.full_name}</h3>
-                                    {(this.props.selected) ? <h6 className="pbs-active-text">Yey</h6> : <h6 className="pbs-default-text">Choose {this.props.data.full_name}</h6>}
+                                    {(this.props.selected) ? <h6 className="pbs-active-text">Yay</h6> : <h6 className="pbs-default-text">Choose {this.props.data.full_name}</h6>}
                                 </div>
                             </div>
                         </a>

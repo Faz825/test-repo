@@ -42,8 +42,9 @@ GLOBAL.Alert={
     FAILED_TO_SEND_EMAIL: 'Issue in sending email',
 
     RESET_PASSWORD_SUCCESS:'Successfully reset the password',
-    RESET_PASSWORD_FAIL:'Failed to reset password'
-
+    RESET_PASSWORD_FAIL:'Failed to reset password',
+    DATA_INSERT_ERROR:'Error while adding data',
+    DATA_UPDATE_ERROR:'Error while updating data'
 
 
 }

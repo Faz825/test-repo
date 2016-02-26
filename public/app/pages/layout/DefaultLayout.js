@@ -32,7 +32,7 @@ const DefaultLayout = (props) =>{
                     {props.children || <Dashboard />}
               </div>
             </div>
-            <FooterHolder />
+
       </div>
   );
 }

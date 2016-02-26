@@ -62,14 +62,14 @@ router.get('/test/get-uploaded-images', TestController.getImageTest);
 router.get('/test/send-mail', TestController.sendMailTest);
 router.get('/test/get-profile/:email', TestController.getProfile);
 
-
+router.get('/test/get-education/:uname', TestController.retrieveEducationDetail);
 
 
 
 //need to be under authentication section. testing purpose have it here. For testing purpose all are set as get request
 router.get('/education-info/save', UserController.addEducationDetail);
-router.get('/education-info/retrieve', UserController.retrieveEducationDetail);
-router.get('/education-info/update', UserController.updateEducationDetail);
+router.get('/get-education/:uname',UserController.retrieveEducationDetail);
+
 router.get('/education-info/delete', UserController.deleteEducationDetail);
 
 // Skills CRUD
@@ -93,8 +93,9 @@ router.get('/forgot-password/reset/:token', UserController.resetPassword);
 
 
 router.get('/profile/:name', DefaultController.index);
+router.get('/get-profile/:uname',UserController.getProfile);
 
-router.get('/get-profile/:uname',UserController.getProfile)
+
 /**
  * Push All Rqurst through oAuth
  */
@@ -114,6 +115,6 @@ router.post('/upload/profile-image',UserController.uploadProfileImage);
 router.get('/connections',UserController.getConnections);
 router.get('/connection/count',UserController.connectionCount);
 
-
+router.post('/education-info/update', UserController.updateEducationDetail);
 
 module.exports = router;

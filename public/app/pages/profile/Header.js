@@ -44,12 +44,10 @@ export default class Header extends Component {
 
         let read_only = (this.state.loggedUser.id == this.state.user.user_id)?false:true;
         return (
-            <div id="pg-profile-page" className="pg-page">
-                <div className="row row-clr" id="pg-profile-banner-area">
-                    <CoverImage dt={this.state.user.images} readOnly={read_only}/>
-                    <ConnectionIndicator dt ={this.state.user}  readOnly={read_only}/>
-                    <ProfileInfo dt={this.state.user} readOnly={read_only} />
-                </div>
+            <div className="row row-clr" id="pg-profile-banner-area">
+                <CoverImage dt={this.state.user.images} readOnly={read_only}/>
+                <ConnectionIndicator dt ={this.state.user}  readOnly={read_only}/>
+                <ProfileInfo dt={this.state.user} readOnly={read_only} />
             </div>
         )
 
@@ -87,7 +85,7 @@ const ConnectionIndicator =(props)=> {
         <div id="pg-pro-share-btn" style={_style}>
             <img src="/images/Share-copy.png" alt="" />
                 <p>
-                    <span>{props.dt.connection_count}</span><br/>
+                    <span className="pg-pro-share-btn-txt">{props.dt.connection_count}</span>
                     Connections
                 </p>
             </div>
