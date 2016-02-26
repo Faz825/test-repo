@@ -22,7 +22,7 @@ export default class EducationalInfo extends React.Component{
         let loggedUser = Session.getSession('prg_lg');
 
         $.ajax({
-            url: '/education-info/update',
+            url: '/education/update',
             method: "POST",
             dataType: "JSON",
             data:eduData,
@@ -43,9 +43,10 @@ export default class EducationalInfo extends React.Component{
     };
     loadEducation(){
         $.ajax({
-            url: '/get-education/'+this.props.uname,
+            url: '/educations/'+this.props.uname,
             method: "GET",
             dataType: "JSON",
+            data:{uname:this.props.uname},
             success: function (data, text) {
 
                 if (data.status.code == 200) {

@@ -16,7 +16,6 @@ exports.Authentication= function(req,res,next){
     }
 
 	var origURL =  String(req.originalUrl).split('?')[0];
-    console.log(origURL)
     if (AccessAllow.indexOf(origURL) >= 0) {
         res.render('index');
         return;
@@ -24,7 +23,7 @@ exports.Authentication= function(req,res,next){
 
 
 
-
+    console.log(req.headers['prg-auth-header'])
     /**
      * Handle Logged User sessions
      */
@@ -73,8 +72,7 @@ exports.Authentication= function(req,res,next){
         });
 
     }else{
-        next();
-        return;
+
         var _out_put= {
             status:'success',
             message:Alert.INVALID_TOKEN

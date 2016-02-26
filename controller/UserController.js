@@ -419,8 +419,12 @@ var UserControler ={
 
 
 
-        var criteria = {user_name:req.params['uname']};
-        User.retrieveEducationDetail(criteria,function(resultSet){
+        var criteria = {user_name:req.params['uname']},
+            showOptions ={
+                w_exp:true,
+                edu:true
+            };
+        User.getUser(criteria,showOptions,function(resultSet){
             var outPut ={};
             if(resultSet.status != 200){
                 outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
@@ -450,7 +454,6 @@ var UserControler ={
         //var _userId = CurrentSession.id;
 
         var _userId = CurrentSession.id;
-        console.log(CurrentSession)
 
         var _educationDetails = {
             school:req.body.school,
@@ -832,8 +835,12 @@ var UserControler ={
             function getUserById(callBack){
                 var _search_param = {
                     user_name:_uname
-                }
-                User.getUser(_search_param,function(resultSet){
+                },
+                    showOptions ={
+                        w_exp:false,
+                        edu:false
+                    };
+                User.getUser(_search_param,showOptions,function(resultSet){
                     if(resultSet.status ==200 ){
                         callBack(null,resultSet.user)
                     }
@@ -884,6 +891,105 @@ var UserControler ={
             }
         })
 
+
+    },
+
+    /**
+     * Get WOrk Experinces
+     * @param req
+     * @param res
+     */
+    retrieveWorkExperience:function(req,res){
+        var User = require('mongoose').model('User');
+
+        if(typeof req.params['uname'] == 'undefined'){
+            var outPut ={};
+            outPut['status']    = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
+            res.status(400).send(outPut);
+        }
+
+        var criteria = {user_name:req.params['uname']},
+            showOptions ={
+                w_exp:true,
+                edu:false
+            };
+        User.getUser(criteria,showOptions,function(resultSet){
+            var outPut ={};
+            if(resultSet.status != 200){
+                outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                res.status(400).json(outPut);
+                return 0;
+            }
+
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['user'] =resultSet.user;
+            res.status(200).send(outPut);
+        })
+    },
+
+    /**
+     * Update Working Experinces
+     * @param req
+     * @param res
+     */
+    updateWorkExperience:function(req,res){
+        var User = require('mongoose').model('User');
+
+        //var _userId = CurrentSession.id;
+
+        var _userId = CurrentSession.id;
+
+        var _weDetails = {
+            company_name:req.body.company,
+            title:req.body.title,
+            left_date:{
+                year:(req.body.toYear != null && !req.body.currentPlc)?req.body.toYear:0,
+                month:(req.body.toMonth != null && !req.body.currentPlc)?req.body.toMonth:0,
+            },
+            start_date:{
+                year:(req.body.fromYear != null)?req.body.fromYear:0,
+                month:(req.body.fromMonth != null)?req.body.fromMonth:0,
+            },
+            description:req.body.description,
+            location:req.body.location,
+            is_current_work_place:req.body.currentPlc
+        };
+
+
+        if(req.body.exp_id){
+            _weDetails['_id'] = req.body.exp_id
+            User.updateWorkingExperience(_userId,_weDetails,function(resultSet){
+
+                var outPut ={};
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_UPDATE_ERROR, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                }
+
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user'] =resultSet.user;
+                res.status(200).send(outPut);
+
+
+            });
+        }else{
+            User.addWorkingExperience(_userId,_weDetails,function(resultSet){
+
+                var outPut ={};
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_INSERT_ERROR, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                }
+
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user'] =resultSet.user;
+                res.status(200).send(outPut);
+
+
+            });
+        }
 
     }
 
