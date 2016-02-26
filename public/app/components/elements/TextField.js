@@ -6,8 +6,7 @@ export default class  TextField extends React.Component{
     constructor(props) {
         super(props);
 
-        let defaultText = (this.props.defaultVal) ? this.props.defaultVal : "";
-        this.state = {valueTxt: defaultText};
+        this.state = {};
 
 
     }
@@ -15,13 +14,12 @@ export default class  TextField extends React.Component{
 
     }
     elementChangeHandler(event){
-        this.setState({valueTxt:event.target.value});
+
         this.props.onInputChange(this.props.name,event.target.value)
 
     }
 
     render(){
-
         let size = "input-field col-xs-" + this.props.size;
         let isValid = (typeof this.props.validate == 'undefined')?true:false;
         let errorStyles = {
@@ -36,6 +34,7 @@ export default class  TextField extends React.Component{
         if (this.props.error_message) {
             opts['style'] = {"borderColor" : "#ed0909"};
         }
+
         return (
             <div className={size}>
 
@@ -43,7 +42,7 @@ export default class  TextField extends React.Component{
 
                 <input type="text"
                    name={this.props.name}
-                   value={this.state.valueTxt}
+                   value={this.props.value}
                    placeholder={this.props.placeholder}
                    className={this.props.classes}
                    onChange={(event)=>{ this.elementChangeHandler(event)}}

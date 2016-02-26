@@ -24,8 +24,8 @@ export default class SelectDateDropdown extends React.Component{
 
 		let _date = this.state.date;
 
-    _date[key] = value;
-    this.setState({date:_date});
+	    _date[key] = value;
+	    this.setState({date:_date});
 
 		if(Object.keys(this.state.date).length == 3){
 			let _fData = this.state.date[dateFormat[0]]+"-"+this.state.date[dateFormat[1]]+"-"+this.state.date[dateFormat[2]];
@@ -45,13 +45,22 @@ export default class SelectDateDropdown extends React.Component{
 		let dateFormat = this.getDateFormat();
 		let defaultDate = this.state.defaultDateOpt.split("-");
 
+		let errorStyles = {
+            color         : "#ed0909",
+            fontSize      : "0.8em",
+            textTransform : "capitalize",
+            margin        : '10px 0 0',
+            display       : "inline-block"
+        }
+
 		return(
 			<div className="col-xs-5">
             	<p>{this.props.title} {this.props.required ? <span style={{"color": "#ed0909"}}>*</span> : ""} </p>
                 <div className="row row-clr">
-                    <Dropdown fieldName={dateFormat[0]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[0]} />
-                    <Dropdown fieldName={dateFormat[1]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[1]} />
-                    <Dropdown fieldName={dateFormat[2]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[2]} />
+                    <Dropdown fieldName={dateFormat[0]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[0]} errorMsg={this.props.error_message} />
+                    <Dropdown fieldName={dateFormat[1]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[1]} errorMsg={this.props.error_message} />
+                    <Dropdown fieldName={dateFormat[2]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[2]} errorMsg={this.props.error_message} />
+					{(this.props.error_message)? <span className="invalid-msg" style={errorStyles}>{this.props.error_message}</span> : null}
                 </div>
             </div>
 		);
@@ -110,12 +119,18 @@ class Dropdown extends React.Component{
 			options.push(i);
 		}
 
+		let opts = {};
+
+		if (this.props.errorMsg) {
+            opts['style'] = {"borderColor" : "#ed0909"};
+        }
+
 		return(
 			<div className="pgs-sign-select-about-col">
                 <select name={this.props.fieldName}
                         className="pgs-sign-select"
                         value={this.state.defaultOpt}
-                        onChange={this.selectChange.bind(this)}>
+                        onChange={this.selectChange.bind(this)} {...opts}>
                     <option value="">{this.props.fieldName}</option>
                     {options.map(function(opt, i){
 								        return <option value={opt} key={i}>{opt}</option>;

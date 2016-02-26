@@ -8,14 +8,12 @@ export default class  EmailField extends React.Component{
     constructor(props) {
         super(props);
 
-        let defaultText = (this.props.defaultVal) ? this.props.defaultVal : "";
-        this.state = {valueTxt: defaultText,email_error_msg:""};
+        this.state = {email_error_msg:""};
 
 
     }
 
     elementChangeHandler(event){
-        this.setState({valueTxt:event.target.value});
         this.props.onInputChange(this.props.name,event.target.value,true)
 
 
@@ -44,7 +42,7 @@ export default class  EmailField extends React.Component{
 
                 <input type="email"
                        name={this.props.name}
-                       value={this.state.valueTxt}
+                       value={this.props.value}
                        placeholder={this.props.placeholder}
                        className={this.props.classes}
                        onChange={(event)=>{ this.elementChangeHandler(event)}}

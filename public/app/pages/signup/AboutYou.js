@@ -1,5 +1,5 @@
 import React from 'react'
-import InputField from '../../components/elements/InputField'
+import TextField from '../../components/elements/TextField'
 import SelectDateDropdown from '../../components/elements/SelectDateDropdown'
 import CountryList from '../../components/elements/CountryList'
 import Button from '../../components/elements/Button'
@@ -22,69 +22,55 @@ export default class AboutYou extends React.Component{
         this.state= {
             sesData:{},
             formData:{},
-            errorData:{},
+            error:{},
+            invalidElements :{},
             validateAlert: ""
         };
-        this.collectData = this.collectData.bind(this);
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
         this.loggedUser = Session.getSession('prg_lg');
+
+        this.validateSchema = {
+                dob: "",
+                country: ""
+        };
+        this.isValid = true;
+        this.formData = this.loggedUser;
     }
 
-
-    allInvalid(elements) {
-        for (var i in elements) {
-            if (elements[i]["status"] == "invalid") return false;
-        }
-        return true;
-    }
-
-    elementChangeHandler(key,data,status){
-
-        let _formData = this.state.formData;
-        let _errorData = this.state.errorData;
-
-        _formData[key] = data;
-        this.setState({formData:_formData});
-
-        if(status != ""){
-            _errorData[key] = {"status": status};
-            this.setState({errorData:_errorData});
-        }
-
-    }
-
-    collectData(e){
+    submitData(e){
         e.preventDefault();
-
-        if(Object.keys(this.state.errorData).length != 2){
-            this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
-        }else{
-
-            if(this.allInvalid(this.state.errorData)){
-                this.setState({validateAlert: ""});
-
-
-                let _this =  this;
-                $.ajax({
-                    url: '/general-info/save',
-                    method: "POST",
-                    dataType: "JSON",
-                    headers: { 'prg-auth-header':_this.loggedUser.token },
-                    data:this.state.formData,
-                    success: function (data, text) {
-                        if (data.status.code == 200) {
-                            Session.createSession("prg_lg", data.user);
-                            _this.props.onNextStep();
-                        }
-                    },
-                    error: function (request, status, error) {
-                        console.log(request.responseText);
-                        console.log(status);
-                        console.log(error);
-                    }
-                });
-            }
+        let _this = this;
+        let _invalid_frm = this.formData;
+        for (let err_elm in this.validateSchema){
+            if(!this.formData.hasOwnProperty(err_elm))
+                this.formData[err_elm] = this.validateSchema[err_elm];
         }
+
+        let er = this.traversObject();
+        this.setState({error:er})
+
+        if(Object.keys(er).length == 0){
+            this.formData['status'] = 1;
+            $.ajax({
+                url: "/general-info/save",
+                method: "POST",
+                data: this.formData,
+                dataType: "JSON",
+                headers: { 'prg-auth-header':this.loggedUser.token },
+                success: function (data, text) {
+                    if (data.status.code == 200) {
+                        Session.createSession("prg_lg", data.user);
+                        _this.props.onNextStep();
+                    }
+                },
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }
+            });
+        }
+
 
     }
 
@@ -92,9 +78,30 @@ export default class AboutYou extends React.Component{
         this.props.onPreviousStep()
     }
 
+    traversObject(){
+        let _error = {};
+        for(let elm in this.formData){
+            if(elm == "dob" && this.formData[elm]==""){
+                _error[elm] = Alert.ENTER_DOB;
+            }
+
+            if(elm == "country" && this.formData[elm] == ""){
+                _error[elm] = Alert.ENTER_COUNTRY;
+            }
+        }
+       return _error;
+    }
+
+    elementChangeHandler(key,data,status){
+        this.formData[key] = data;
+
+        let er = this.traversObject();
+        this.setState({error:er})
+
+    }
+
 	render(){
         let _secretary_image =this.loggedUser.secretary_image_url;
-
 
         return(
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
@@ -108,27 +115,33 @@ export default class AboutYou extends React.Component{
                                     <AboutInner />
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form">
                                     	<h6>First, Let me know a little more about you...</h6>
-                                        <form method="post" onSubmit={this.collectData.bind(this)}>
+                                        <form method="post" onSubmit={this.submitData.bind(this)}>
 	                                        <div className="row pgs-middle-about-inputs">
 
 	                                        	<SelectDateDropdown
                                                     title="Date of Birth"
                                                     dateFormat="mm-dd-yyyy"
-                                                    defaultOpt={this.loggedUser.dob}
+                                                    defaultOpt={(this.formData.dob)? this.formData.dob : "" }
                                                     optChange={this.elementChangeHandler}
                                                     required="true"
-                                                    dateType="dob"/>
+                                                    dateType="dob"
+                                                    error_message={this.state.error.dob}/>
 
 	                                            <CountryList optChange={this.elementChangeHandler}
-                                                             defaultOpt={this.loggedUser.country}
-                                                             required="true"/>
+                                                             defaultOpt={(this.formData.country)? this.formData.country : "United States"}
+                                                             required={true}
+                                                             error_message={this.state.error.country} />
 
-	                                            <InputField type="text"
-                                                            name="zip"
-                                                            size="2" label="Zip Code"
+                                                <TextField  name="zip"
+                                                            size="2"
+                                                            value={this.formData.zip}
+                                                            label="Zip Code"
                                                             placeholder=""
                                                             classes="pgs-sign-inputs"
-                                                            textChange={this.elementChangeHandler}  />
+                                                            onInputChange={this.elementChangeHandler}
+                                                            required={false}
+                                                            validate={this.state.invalidElements.zip}
+                                                            error_message={this.state.error.zip}/>
 	                                        </div>
 	                                        {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
 	                                        <div className="row">

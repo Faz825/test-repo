@@ -201,6 +201,10 @@ a:focus{
 	width: calc(100% - 220px);
 }
 
+.pg-middle-sign-wrapper .loggedUserView{
+	padding-top: 70px;
+}
+
 .pgs-custom-container {
   padding: 0;
   width: calc(100% - 220px);
@@ -854,8 +858,16 @@ a:focus{
     padding: 10px 15px;
 }
 .pg-body-item{
-    position: relative;
-    padding-bottom: 20px;
+	border-bottom: 1px dashed #e9f0f4;
+	padding-bottom: 10px;
+	position: relative;
+	margin-bottom: 15px;
+}
+.pg-section .pg-body-item:last-child{
+	border: none;
+}
+.form-holder{
+	position: relative;
 }
 .pg-profile-heading {
     border-bottom: 1px solid #dee6eb;
@@ -873,6 +885,9 @@ a:focus{
     line-height: 17px;
     color: #333;
     font-weight: normal;
+}
+#pg-profile-middle-container-left-col-details .pg-section-container .pg-section{
+	padding-bottom: 0;
 }
 .pg-section-container .pg-header{
      position: relative;
@@ -1039,12 +1054,26 @@ button.addEduInfo{
 .form-area{
     background: #f4f4f4;
     padding: 10px;
-    position: absolute;
-    z-index: 10;
+    position: relative;;
+    z-index: 100;
     width: 100%;
 }
-.form-area label{
+.workPeriodSelect{
+	display: inline-block;
+	width: 36%;
+}
+.form-area label,
+.datePicker .col-xs-5 p{
     font: 11px 'montserratsemi_bold', sans-serif;
+}
+.form-area .datePicker .col-xs-5{
+	padding: 0;
+	float: none;
+	width: 100%;
+}
+.datePicker .col-xs-5 .pgs-sign-select{
+	margin: 0;
+	background-color: #fff;
 }
 .pg-custom-input{
     font: 11px 'montserratsemi_bold', sans-serif;
@@ -1053,8 +1082,23 @@ button.addEduInfo{
     border-radius: 0px;
 }
 .pg-dropdown{
-    width: 25%;
-    display: inline;
+	width: 45%;
+	display: inline;
+}
+.workPeriodSelect{
+	overflow: hidden;
+}
+.workPeriodSelect .pg-dropdown{
+	float: left;
+}
+.workPeriodSelect .pg-dropdown:last-child{
+	float: right;
+}
+.form-group span.to{
+	display: inline-block;
+	margin: 0 15px 0 11px;
+	width: 12px;
+	line-height: 0.6;
 }
 .display-block{
     display: block;
@@ -1151,6 +1195,33 @@ textarea{
 }
 .non-resize{
     resize: vertical;
+}
+
+/* ====================================================== dashboard page /index ==========================================*/
+#pg-dashboard-page{
+	margin: 60px 0;
+}
+
+#pg-dashboard-banner-area{
+    padding-top: 100px;
+}
+#pg-dashboard-banner-area-logo-img{
+    margin-bottom: 50px;
+}
+#pg-dashboard-banner-area-title-wish{
+    font: 30px 'montserratlight', sans-serif;
+    color: #2d5164;
+    margin: 0px;
+    text-transform: uppercase;
+    text-align: center;
+    padding-bottom: 15px;
+}
+#pg-dashboard-banner-area-title-what-to-do{
+    font: 44px 'montserratregular', sans-serif;
+    color: #59afe1;
+    margin: 0px;
+    text-transform: uppercase;
+    text-align: center;
 }
 
 /* Small desktop */

@@ -35,15 +35,26 @@ export default class CountryList extends React.Component{
 		}
 
 	render(){
+		let errorStyles = {
+            color         : "#ed0909",
+            fontSize      : "0.8em",
+            textTransform : "capitalize",
+            margin        : '10px 0 0',
+            display       : "inline-block"
+        }
+		let opts = {};
 
+		if (this.props.error_message) {
+            opts['style'] = {"borderColor" : "#ed0909"};
+        }
 
 		return(
 			<div className="col-xs-5">
 	            <p>Country {this.props.required ? <span style={{"color": "#ed0909"}}>*</span> : ""}</p>
 	            <select name="country"
                         className="pgs-sign-select"
-                        value={this.state.defaultOpt}
-                        onChange={this.selectChange.bind(this)}>
+                        value={this.props.defaultOpt}
+                        onChange={this.selectChange.bind(this)} {...opts}>
 													<option/>
 	            	{Countries.map(function(country, i){
 						return <option value={country.key}
@@ -52,6 +63,7 @@ export default class CountryList extends React.Component{
                             {country.name}</option>;
 	            	})}
 	            </select>
+				{(this.props.error_message)? <span className="invalid-msg" style={errorStyles}>{this.props.error_message}</span> : null}
             </div>
 		);
 	}

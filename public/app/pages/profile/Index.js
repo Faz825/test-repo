@@ -13,7 +13,6 @@ export default class Index extends React.Component{
         this.state={
             uname:this.getUrl()
         }
-        console.log()
     }
 
     getUrl(){
@@ -22,7 +21,7 @@ export default class Index extends React.Component{
 
     render(){
         return (
-            <div id="pg-profile-page" className="pg-page">
+            <div id="pg-profile-page" className="loggedUserView pg-page">
                 <Header uname={this.state.uname}/>
                 <div className="row row-clr">
                     <div className="container-fluid">

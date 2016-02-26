@@ -258,7 +258,6 @@ export class WorkPlaceForm extends React.Component{
         let _workData = this.state.formData;
 
         if(_fieldName == "currentPlc"){
-            console.log(_workData.currentPlc);
             _fieldValue = (_workData.currentPlc)? "" : "yes";
         }
 
@@ -273,7 +272,6 @@ export class WorkPlaceForm extends React.Component{
 
     render() {
         let data = this.state.formData;
-        console.log(data)
         let yearList = [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020];
         let monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -295,39 +293,54 @@ export class WorkPlaceForm extends React.Component{
                     </div>
                     <div className="form-group">
                         <label className="display-block">Time Period</label>
-                        <select className="form-control pg-custom-input pg-dropdown" name="fromMonth" onChange={this.onFieldChange} value={data.fromMonth}>
-                            <option value="">Choose</option>
-                            {
-                                monthList.map(function(month,index){
-                                    return <option value={index+1} key={index}>{month}</option>
-                                })
-                            }
-                        </select>
-                        <select className="form-control pg-custom-input pg-dropdown" name="fromYear" onChange={this.onFieldChange} value={data.fromYear}>
-                            <option value="">Choose</option>
-                            {
-                                yearList.map(function(year,index){
-                                    return <option value={year} key={index}>{year}</option>
-                                })
-                            }
-                        </select>
-                        <span className="to">&nbsp;–&nbsp;</span>
-                        <select className="form-control pg-custom-input pg-dropdown" name="toMonth" onChange={this.onFieldChange} value={data.toMonth}>
-                            <option value="">Choose</option>
-                            {
-                                monthList.map(function(month,index){
-                                    return <option value={index+1} key={index}>{month}</option>
-                                })
-                            }
-                        </select>
-                        <select className="form-control pg-custom-input pg-dropdown" name="toYear" onChange={this.onFieldChange} value={data.toYear}>
-                            <option value="">Choose</option>
-                            {
-                                yearList.map(function(year,index){
-                                    return <option value={year} key={index}>{year}</option>
-                                })
-                            }
-                        </select>
+                        <div className="workPeriodSelect">
+                            <select className="form-control pg-custom-input pg-dropdown" name="fromMonth" onChange={this.onFieldChange} value={data.fromMonth}>
+                                <option value="">Choose</option>
+                                {
+                                    monthList.map(function(month,index){
+                                        return <option value={index+1} key={index}>{month}</option>
+                                    })
+                                }
+                            </select>
+                            <select className="form-control pg-custom-input pg-dropdown" name="fromYear" onChange={this.onFieldChange} value={data.fromYear}>
+                                <option value="">Choose</option>
+                                {
+                                    yearList.map(function(year,index){
+                                        return <option value={year} key={index}>{year}</option>
+                                    })
+                                }
+                            </select>
+                        </div>
+                        {
+                            (data.currentPlc)?
+                            <span className="to">&nbsp;–&nbsp;</span>
+                            : null
+                        }
+                        {
+                            (data.currentPlc)?
+                            <div className="workPeriodSelect">
+                                <select className="form-control pg-custom-input pg-dropdown" name="toMonth" onChange={this.onFieldChange} value={data.toMonth}>
+                                    <option value="">Choose</option>
+                                    {
+                                        monthList.map(function(month,index){
+                                            return <option value={index+1} key={index}>{month}</option>
+                                        })
+                                    }
+                                </select>
+                                <select className="form-control pg-custom-input pg-dropdown" name="toYear" onChange={this.onFieldChange} value={data.toYear}>
+                                    <option value="">Choose</option>
+                                    {
+                                        yearList.map(function(year,index){
+                                            return <option value={year} key={index}>{year}</option>
+                                        })
+                                    }
+                                </select>
+                            </div>
+                            :null
+                        }
+
+
+
                         <div className="checkbox">
                             <label>
                                 <input className="pg-experience-current-option" type="checkbox" name="currentPlc" checked={data.currentPlc} onChange={this.onFieldChange} />I currently work here
