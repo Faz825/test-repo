@@ -312,12 +312,12 @@ export class WorkPlaceForm extends React.Component{
                             </select>
                         </div>
                         {
-                            (data.currentPlc)?
+                            (!data.currentPlc)?
                             <span className="to">&nbsp;–&nbsp;</span>
                             : null
                         }
                         {
-                            (data.currentPlc)?
+                            (!data.currentPlc)?
                             <div className="workPeriodSelect">
                                 <select className="form-control pg-custom-input pg-dropdown" name="toMonth" onChange={this.onFieldChange} value={data.toMonth}>
                                     <option value="">Choose</option>
