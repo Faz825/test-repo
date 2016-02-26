@@ -62,7 +62,6 @@ export default class AboutCollegeAndJob extends React.Component{
     }
     collectData(e){
     	e.preventDefault();
-        console.log(this.state.errorData)
     	if(Object.keys(this.state.errorData).length != 3){
     		this.setState({validateAlert: Alert.FILL_EMPTY_REQUIRED_FIELDS});
     	}else{
