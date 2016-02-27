@@ -51,7 +51,9 @@ function bundleApp(isProduction) {
 	// If it's not for production, a separate vendors.js file will be created
 	// the first time gulp is run so that we don't have to rebundle things like
 	// react everytime there's a change in the js file
+
   	if (!isProduction && scriptsCount === 1){
+
   		// create vendors.js for dev environment.
   		browserify({
 			require: dependencies,
@@ -72,12 +74,24 @@ function bundleApp(isProduction) {
   		})
   	}
 
-  	appBundler
-  		// transform ES6 and JSX to ES5 with babelify
-	  	.transform("babelify", {presets: ["es2015", "react"]})
-	    .bundle()
-	    .on('error',gutil.log)
-	    .pipe(source('bundle.js'))
-        .pipe(streamify(uglify()))
+    if(isProduction){
+        console.log("Production Deploy.......");
+        appBundler
+            // transform ES6 and JSX to ES5 with babelify
+            .transform("babelify", {presets: ["es2015", "react"]})
+            .bundle()
+            .on('error',gutil.log)
+            .pipe(source('bundle.js'))
+            .pipe(streamify(uglify()))
+            .pipe(gulp.dest('./public/web/js/'));
+        return 0;
+    }
+    console.log("Dev Deploy.......");
+    appBundler
+        // transform ES6 and JSX to ES5 with babelify
+        .transform("babelify", {presets: ["es2015", "react"]})
+        .bundle()
+        .on('error',gutil.log)
+        .pipe(source('bundle.js'))
         .pipe(gulp.dest('./public/web/js/'));
 }

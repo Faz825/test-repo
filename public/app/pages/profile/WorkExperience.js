@@ -179,7 +179,7 @@ export class WorkPlaces extends React.Component{
                                 }
                             </div>
                         </h4>
-                        : <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Title</button>
+                        : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Title</button>:null
                     }
                     {
                         (data.company_name)?
@@ -199,7 +199,7 @@ export class WorkPlaces extends React.Component{
                                  }
                             </div>
                         </h5>
-                        : <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Company Details</button>
+                        : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Company Details</button>:null
                     }
 
                 </header>
@@ -217,7 +217,7 @@ export class WorkPlaces extends React.Component{
                              : null
                          }
                     </p>
-                    : <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Title Description</button>
+                    : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Title Description</button>:null
                 }
             </div>
         );

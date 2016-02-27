@@ -29,7 +29,7 @@ export default class EducationalInfo extends React.Component{
             data:eduData,
             headers: { 'prg-auth-header':loggedUser.token },
             success: function (data, text) {
-                if(data.status.code == 200){
+                if(data.status.code == 200 ){
                     this.loadEducation()
                 }
 
@@ -50,10 +50,8 @@ export default class EducationalInfo extends React.Component{
             data:{uname:this.props.uname},
             success: function (data, text) {
 
-                if (data.status.code == 200) {
-
+                if (data.status.code == 200 && data.user !=null) {
                     this.setState({data:data.user});
-
                 }
             }.bind(this),
             error: function (request, status, error) {
@@ -231,7 +229,7 @@ export class University extends React.Component{
                                 }
                             </div>
                         </h5>
-                        : <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Degree</button>
+                        : (!readOnly)? <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Degree</button> :null
                     }
                 </header>
                 <div className="pg-empty-fields-area">
@@ -251,7 +249,7 @@ export class University extends React.Component{
 
                             }
                         </div>
-                        : <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Duration</button>
+                        : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Duration</button>:null
                     }
 
                     {
@@ -269,7 +267,9 @@ export class University extends React.Component{
 
                              }
                         </p>
-                        : <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Description</button>
+                        : (!readOnly)?
+                            <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Description</button>
+                            :null
                     }
 
                     {
@@ -289,7 +289,9 @@ export class University extends React.Component{
                                 }
                             </span>
                         </p>
-                        : <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Activities</button>
+                        : (!readOnly)?
+                            <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Activities</button>
+                            :null
                     }
 
 
