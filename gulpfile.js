@@ -3,7 +3,8 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var gutil = require('gulp-util');
 var babelify = require('babelify');
-
+var uglify = require('gulp-uglify');
+var streamify = require('gulp-streamify')
 var dependencies = [
 	'react',
   	'react-dom',
@@ -59,7 +60,8 @@ function bundleApp(isProduction) {
 			.bundle()
 			.on('error', gutil.log)
 			.pipe(source('vendors.js'))
-			.pipe(gulp.dest('./public/web/js/'));
+            .pipe(streamify(uglify()))
+            .pipe(gulp.dest('./public/web/js/'));
   	}
   	if (!isProduction){
   		// make the dependencies external so they dont get bundled by the 
@@ -76,5 +78,6 @@ function bundleApp(isProduction) {
 	    .bundle()
 	    .on('error',gutil.log)
 	    .pipe(source('bundle.js'))
-	    .pipe(gulp.dest('./public/web/js/'));
+        .pipe(streamify(uglify()))
+        .pipe(gulp.dest('./public/web/js/'));
 }

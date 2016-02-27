@@ -78,6 +78,8 @@ export default class AboutYou extends React.Component{
         this.props.onPreviousStep()
     }
 
+
+
     traversObject(){
         let _error = {};
         for(let elm in this.formData){
