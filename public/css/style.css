@@ -1075,7 +1075,8 @@ button.addEduInfo{
 	margin: 0;
 	background-color: #fff;
 }
-.pg-custom-input{
+.pg-custom-input,
+.react-autosuggest__container .react-autosuggest__input{
     font: 11px 'montserratsemi_bold', sans-serif;
     height: 23px;
     padding: 0px 6px;
@@ -1113,9 +1114,6 @@ textarea{
 }
 
 /** skills and interests **/
-#skills-form{
-    display: none;
-}
 .pg-section-container{
     border-bottom: 1px solid #dee6eb;
 }
@@ -1153,9 +1151,31 @@ textarea{
 .pg-itel-lbl{
     display: block;
 }
-.pg-inline-item-txt{
+.react-autosuggest__container .react-autosuggest__input{
     width: 70%;
-    float: left;
+}
+#skills-form .inline-content{
+	position: relative;;
+}
+#react-whatever-1{
+	position: absolute;
+	width: 70%;
+	top : 45px;
+	left: 0;
+	margin: 0;
+	padding: 0;
+}
+#react-whatever-1 li{
+	list-style-type: none;
+	padding: 8px 5px;
+	border-bottom: 1px solid #dee6eb;
+	cursor: pointer;
+	background: #fff;
+}
+#react-whatever-1 li:hover,
+#react-whatever-1 .react-autosuggest__suggestion--focused{
+	color: #fff;
+	background: #61b3de;
 }
 .pg-inline-item-btn{
     margin-left: 5px;
