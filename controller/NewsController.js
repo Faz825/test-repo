@@ -149,11 +149,23 @@ var NewsController ={
 
         var News = require('mongoose').model('News');
 
-        var categoryId = req.body.categoryId;
-        var channelId = req.body.channelId;
-        var articleHeading = req.body.articleHeading;
-        var articleContent = req.body.articleContent;
-        var articleImage = req.body.articleImage;
+        //var categoryId = req.body.categoryId;
+        //var channelId = req.body.channelId;
+        //var articleHeading = req.body.articleHeading;
+        //var articleContent = req.body.articleContent;
+        //var articleImage = req.body.articleImage;
+
+        //var categoryId = "56cbeae0e975b0070ad200f8";
+        //var channelId = "56cbf541a5a22e790dcac546";
+        //var articleHeading = "First Heading Business";
+        //var articleContent = "First Content Business";
+        //var articleImage = "images/pg-signup-6_03.png";
+
+        var categoryId = "56cbeae0e975b0070ad200f8";
+        var channelId = "56cbf541a5a22e790dcac546";
+        var articleHeading = "Third Heading Sports";
+        var articleContent = "Third Content Sports";
+        var articleImage = "images/pg-signup-6_03.png";
 
         //TODO: Article Image Upload part
 

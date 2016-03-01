@@ -939,13 +939,10 @@ var UserControler ={
         var user_id = "56c6aeaa6e1ac13e18b2400d";
         //var user_id = CurrentSession.id;
 
-        //var categoryId = "56cbeae0e975b0070ad200f8";
         var categoryId = req.params.category;
 
         var criteria = {
             search:{user_id:user_id.toObjectId(), category:categoryId.toObjectId()},
-            populate:'category',
-            populate_field:'channels'
         };
 
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
@@ -1002,19 +999,17 @@ var UserControler ={
      */
     saveArticle:function(req,res){
 
-        //var category_id = "56cbeae0e975b0070ad200f8"; //Business
-        //var channel_id = "56cbf55f09e38d870d1df691"; //Fortune
-        //"56cbf541a5a22e790dcac546" - Entrepreneur
+        var req_saved_articles = JSON.parse(req.body.saved_articles);
 
-        //var category_id = "56cbeb3d703431a80ab2e1c4"; //Technology
-        //var channel_id = "56cbf98378bf9a900e3d40fb"; //Mashable
-        //"56cbf541a5a22e790dcac546" - Entrepreneur
+        var SavedArticle = require('mongoose').model('SavedArticle');
 
-
-        //var category_id = "56cbeae0e975b0070ad200f8"; //Business
-        //var channel_id = "56cbf55f09e38d870d1df691"; //Fortune
-        //"56cbf9643f65367f0e8f19f2" - Tech Crunch
-        //"56cc2e6ebefd3610158776ea" - article
+        SavedArticle.saveArticle(req_saved_articles, function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
 
     },
 
@@ -1025,6 +1020,19 @@ var UserControler ={
      */
     getSavedArticles:function(req,res){
 
+        var user_id = "56c6aeaa6e1ac13e18b2400d";
+        //var user_id = CurrentSession.id;
+
+        var criteria = {
+            search:{user_id:user_id.toObjectId()},
+        };
+
+        var SavedArticle = require('mongoose').model('SavedArticle');
+
+        SavedArticle.findSavedArticle(criteria,function(resultSet){
+            res.status(resultSet.status).json(resultSet);
+        });
+
     },
 
     /**
@@ -1033,6 +1041,25 @@ var UserControler ={
      * @param res
      */
     deleteSavedArticle:function(req,res){
+
+        var SavedArticle = require('mongoose').model('SavedArticle');
+
+        var _id = "56d5216ea2d6542b334da0b8";
+        //var _id = req.body.id;
+
+        var criteria = {
+            _id:_id.toObjectId()
+        };
+
+        SavedArticle.deleteSavedArticle(criteria,function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
+
+
 
     }
 

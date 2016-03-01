@@ -188,10 +188,4 @@ NewsSchema.statics.removeRecordFromSubDocument = function(criteria, pullData, ca
 
 };
 
-
-
-
-
 mongoose.model('News',NewsSchema);
-mongoose.model('Channels', ChannelSchema);
-mongoose.model('Articles', ArticleSchema);

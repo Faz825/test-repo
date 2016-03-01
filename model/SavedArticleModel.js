@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var  mongoose = require('mongoose'),
+var mongoose = require('mongoose'),
     Schema   = mongoose.Schema;
 
 
@@ -21,12 +21,10 @@ var SavedArticleSchema = new Schema({
     },
     channel:{
         type: Schema.ObjectId,
-        ref: 'Channels',
         default:null
     },
     article:{
         type: Schema.ObjectId,
-        ref: 'Articles',
         default:null
     },
     created_at:{
@@ -49,25 +47,28 @@ SavedArticleSchema.pre('save', function(next){
 });
 
 /**
- * Add news category
+ * Save article to a user
  * @param userId
  * @param criteria
  * @param callBack
  */
-SavedArticleSchema.statics.saveArticle =function(req_news_categories,callBack){
+SavedArticleSchema.statics.saveArticle =function(req_saved_articles,callBack){
 
-    var news_categories = [],
-        now = new Date();
+    var articles = [],
+        now = new Date(),
+        user = "56c6aeaa6e1ac13e18b2400d";
 
-    for (var i = 0; req_news_categories.length > i; i++) {
-        news_categories.push({
-            user_id: CurrentSession.id.toObjectId(),
-            category: req_news_categories[i].toObjectId(),
+    for (var i = 0; req_saved_articles.length > i; i++) {
+        articles.push({
+            user_id:user.toObjectId(),
+            category:req_saved_articles[i].category.toObjectId(),
+            channel:req_saved_articles[i].channel.toObjectId(),
+            article:req_saved_articles[i].article.toObjectId(),
             created_at: now
         });
     }
 
-    this.collection.insert(news_categories,function(err,resultSet){
+    this.collection.insert(articles,function(err,resultSet){
         if(! err){
             callBack({status:200,
                 connected:resultSet.result.ok});
@@ -82,7 +83,7 @@ SavedArticleSchema.statics.saveArticle =function(req_news_categories,callBack){
 
 
 /**
- * Get requested fields By Search Criteria
+ * Get saved articles to a user
  * @param criteria
  * @param callBack
  */
@@ -90,19 +91,47 @@ SavedArticleSchema.statics.findSavedArticle = function(criteria,callBack){
 
     var _this = this;
 
-    _this.find(criteria.search).populate(criteria.populate, criteria.populate_field).exec(function(err,resultSet){
-
+    _this.aggregate([
+        { $match:criteria.search },
+        {
+            $lookup:{
+                from:"news",
+                localField:"category",
+                foreignField:"_id",
+                as:"channelsData"
+            }
+        },
+        { $unwind: '$channelsData'},
+        { $unwind: '$channelsData.channels'},
+        { $unwind: '$channelsData.channels.articles'},
+        {
+            $project: {
+                _id:1,
+                user_id:1,
+                category_id:"$category",
+                category:"$channelsData.category",
+                channel_id:"$channel",
+                channel_name:"$channelsData.channels.name",
+                article_id:"$article",
+                article_heading:"$channelsData.channels.articles.heading",
+                isEqual: {$eq:["$article", "$channelsData.channels.articles._id"]}
+            }
+        },
+        { $match:{ "isEqual":true}}
+    ], function(err, resultSet){
         if(!err){
+
             callBack({
                 status:200,
-                news:resultSet
+                articles:resultSet
 
             });
-        }else{
+        }else {
             console.log("Server Error --------")
-            callBack({status:400,error:err});
+            callBack({status: 400, error: err});
         }
     });
+
 };
 
 
@@ -124,6 +153,11 @@ SavedArticleSchema.statics.deleteSavedArticle=function(criteria, callBack){
         }
     });
 
+};
+
+String.prototype.toObjectId = function() {
+    var ObjectId = (require('mongoose').Types.ObjectId);
+    return new ObjectId(this.toString());
 };
 
 

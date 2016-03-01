@@ -21,7 +21,6 @@ var FavouriteNewsCategorySchema = new Schema({
     },
     channels:[{
         type: Schema.ObjectId,
-        ref: 'Channels',
         default:null
     }],
     created_at:{
@@ -90,7 +89,7 @@ FavouriteNewsCategorySchema.statics.findFavouriteNewsCategory = function(criteri
         if(!err){
             callBack({
                 status:200,
-                news:resultSet
+                categories:resultSet
 
             });
         }else{
@@ -157,18 +156,42 @@ FavouriteNewsCategorySchema.statics.findFavouriteNewsChannel = function(criteria
 
     var _this = this;
 
-    _this.findOne(criteria.search).populate(criteria.populate, criteria.populate_field).exec(function(err,resultSet){
-
+    _this.aggregate([
+        { $match:criteria.search},
+        { $unwind: '$channels'},
+        {
+            $lookup:{
+                from:"news",
+                localField:"category",
+                foreignField:"_id",
+                as:"channelsData"
+            }
+        },
+        { $unwind: '$channelsData'},
+        { $unwind: '$channelsData.channels'},
+        {
+            $project: {
+                _id:1,
+                user_id:1,
+                category_id:"$category",
+                category:"$channelsData.category",
+                channel_id:"$channelsData.channels._id",
+                channel_name:"$channelsData.channels.name",
+                isEqual: {$eq:["$channels", "$channelsData.channels._id"]}
+            }
+        },
+        { $match:{ "isEqual":true}}
+    ], function(err, resultSet){
         if(!err){
-            var newsChannel = _this.formatFavouriteNewsChannel(resultSet);
+
             callBack({
                 status:200,
-                news:newsChannel
+                channels:resultSet
 
             });
-        }else{
+        }else {
             console.log("Server Error --------")
-            callBack({status:400,error:err});
+            callBack({status: 400, error: err});
         }
     });
 };
