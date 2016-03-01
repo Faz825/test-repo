@@ -9,8 +9,7 @@ export default class  PasswordField extends React.Component{
     constructor(props) {
         super(props);
 
-        let defaultText = (this.props.defaultVal) ? this.props.defaultVal : "";
-        this.state = {valueTxt: defaultText};
+        this.state = {};
         this.is_length_matched=false;
         this.is_confirm_password_matched = false;
 
@@ -20,7 +19,6 @@ export default class  PasswordField extends React.Component{
 
     }
     elementChangeHandler(event){
-        this.setState({valueTxt:event.target.value});
         this.props.onInputChange(this.props.name,event.target.value,true)
 
     }
@@ -50,7 +48,7 @@ export default class  PasswordField extends React.Component{
 
                 <input type="password"
                        name={this.props.name}
-                       value={this.state.valueTxt}
+                       value={this.props.value}
                        placeholder={this.props.placeholder}
                        className={this.props.classes}
                        onChange={(event)=>{ this.elementChangeHandler(event)}}

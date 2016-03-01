@@ -64,16 +64,16 @@ router.get('/test/uploads', TestController.uploadTest);
 router.get('/test/get-uploaded-images', TestController.getImageTest);
 router.get('/test/send-mail', TestController.sendMailTest);
 router.get('/test/get-profile/:email', TestController.getProfile);
-
 router.get('/test/get-education/:uname', TestController.retrieveEducationDetail);
+router.get('/test/get-workexp/:uname', TestController.retrieveWorkExperience);
 
 
-
-//need to be under authentication section. testing purpose have it here. For testing purpose all are set as get request
 router.get('/education-info/save', UserController.addEducationDetail);
-router.get('/get-education/:uname',UserController.retrieveEducationDetail);
-
+router.get('/educations/:uname',UserController.retrieveEducationDetail);
 router.get('/education-info/delete', UserController.deleteEducationDetail);
+
+
+router.get('/work-experiences/:uname', UserController.retrieveWorkExperience);
 
 // Skills CRUD
 router.get('/skills/save', SkillController.addSkills);
@@ -146,6 +146,8 @@ router.post('/upload/profile-image',UserController.uploadProfileImage);
 router.get('/connections',UserController.getConnections);
 router.get('/connection/count',UserController.connectionCount);
 
-router.post('/education-info/update', UserController.updateEducationDetail);
+router.post('/education/update', UserController.updateEducationDetail);
 
+
+router.post('/work-experience/update', UserController.updateWorkExperience);
 module.exports = router;
