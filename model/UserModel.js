@@ -8,7 +8,26 @@ var  mongoose = require('mongoose'),
      bCrypt	  = require('bcrypt-nodejs'),
      uuid = require('node-uuid');
 
-
+/**
+ * Date Schema
+ */
+var DateObject ={
+    year:{
+        type:Number,
+        trim:true,
+        default:0
+    },
+    month:{
+        type:Number,
+        trim:true,
+        default:0
+    },
+    date:{
+        type:Number,
+        trim:true,
+        default:0
+    }
+}
 /**
  * Education information
  */
@@ -69,16 +88,8 @@ var WorkingExperienceSchema = new Schema({
         trim:true,
         default:null
     },
-    start_date:{
-        type:String,
-        trim:true,
-        default:null
-    },
-    end_date:{
-        type:String,
-        trim:true,
-        default:null
-    },
+    start_date:DateObject,
+    left_date:DateObject,
     description:{
         type:String,
         trim:true,
@@ -537,6 +548,11 @@ UserSchema.statics.deleteEducationDetail = function(userId, educationId, callBac
 
 
 /**
+ * WORKING EXPERIENCE SECTION
+ */
+
+
+/**
  * Add Working Experience Details
  * @param userId
  * @param workingExperienceDetails
@@ -556,7 +572,7 @@ UserSchema.statics.addWorkingExperience =function(userId,workingExperienceDetail
         description:workingExperienceDetails.description
     }
 
-
+console.log(_workingExperienceDetails);
     var now = new Date();
     this.updated_at = now;
     if ( !this.created_at ) {
@@ -580,6 +596,7 @@ UserSchema.statics.addWorkingExperience =function(userId,workingExperienceDetail
                 });
             }else{
                 console.log("Server Error --------")
+                console.log(err)
                 callBack({status:400,error:err});
             }
         });
@@ -594,14 +611,13 @@ UserSchema.statics.addWorkingExperience =function(userId,workingExperienceDetail
  */
 UserSchema.statics.updateWorkingExperience =function(userId, workingExperienceDetails, callBack){
     var _this = this;
-
     _this.update({_id:userId,"working_experiences._id":workingExperienceDetails._id},
         {$set:{
             "working_experiences.$.company_name":workingExperienceDetails.company_name,
             "working_experiences.$.title":workingExperienceDetails.title,
             "working_experiences.$.location":workingExperienceDetails.location,
             "working_experiences.$.start_date":workingExperienceDetails.start_date,
-            "working_experiences.$.end_date":workingExperienceDetails.end_date,
+            "working_experiences.$.left_date":workingExperienceDetails.left_date,
             "working_experiences.$.is_current_work_place":workingExperienceDetails.is_current_work_place,
             "working_experiences.$.description":workingExperienceDetails.description,
         }},function(err,resultSet){
@@ -668,28 +684,43 @@ UserSchema.statics.addCollageAndJob = function(userId,data,callBack) {
         title:data.job_title,
 
     }
+    _this.update({_id:userId},
+        {$unset:{
+            "education_details":[],
+            "working_experiences":[]}},{multi:true},
+        function(err,resultSet) {
 
-    _this.update(
-        {_id:userId},
-        {
-            $set:{
-                created_at:this.created_at,
-                updated_at:this.updated_at
-            },
-            $push:{
-                education_details:_educationDetails,
-                working_experiences:_workingExperienceDetails
-            }
-        },function(err,resultSet){
-            if(!err){
-                callBack({
-                    status:200
-                });
-            }else{
+
+            if (!err) {
+                _this.update(
+                    {_id: userId},
+                    {
+                        $set: {
+                            created_at: _this.created_at,
+                            updated_at: _this.updated_at
+                        },
+                        $push: {
+                            education_details: _educationDetails,
+                            working_experiences: _workingExperienceDetails
+                        }
+                    }, function (err, resultSet) {
+                        console.log(resultSet)
+                        if (!err) {
+                            callBack({
+                                status: 200
+                            });
+                        } else {
+                            console.log("Server Error --------")
+                            callBack({status: 400, error: err});
+                        }
+                    });
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                console.log(err)
+                callBack({status: 400, error: err});
             }
         });
+
 
 };
 
@@ -785,7 +816,7 @@ UserSchema.statics.findByCriteria = function(criteria,callBack){
 
 
 /**
- * Update User profile based on the criterais
+ * Update User profile based on the criteria
  * @param userId
  * @param data
  * @param callBack
@@ -817,7 +848,7 @@ UserSchema.statics.updatePassword=function(userId,password,callBack){
  * @param userId
  * @param callBack
  */
-UserSchema.statics.getUser=function(criteria,callBack){
+UserSchema.statics.getUser=function(criteria,showOptions,callBack){
     var _this = this;
 
     _this.findOne(criteria)
@@ -825,7 +856,7 @@ UserSchema.statics.getUser=function(criteria,callBack){
             if(!err){
                 callBack({
                     status:200,
-                    user:_this.formatUser(resultSet)
+                    user:_this.formatUser(resultSet,showOptions)
 
                 });
             }else{
@@ -847,7 +878,7 @@ UserSchema.statics.getUser=function(criteria,callBack){
  * @param userObject
  * @returns {*}
  */
-UserSchema.statics.formatUser=function(userObject){
+UserSchema.statics.formatUser=function(userObject,showOptions){
 
     if(userObject){
         var _temp_user = {
@@ -859,13 +890,20 @@ UserSchema.statics.formatUser=function(userObject){
             dob: userObject.dob,
             country:userObject.country
         };
-
         for(var i=0;i<userObject.working_experiences.length;i++){
             if(userObject.working_experiences[i].is_current_work_place){
                 _temp_user['cur_working_at']=userObject.working_experiences[i].company_name;
                 _temp_user['cur_designation']=userObject.working_experiences[i].title;
-                break;
             }
+
+        }
+        if(typeof showOptions != 'undefined' && showOptions.w_exp){
+            _temp_user['working_experiences'] = [];
+            _temp_user['working_experiences'] = this.formatWorkingExperiences(userObject);
+        }
+        if(typeof showOptions != 'undefined' && showOptions.edu){
+            _temp_user['education_details'] =[];
+            _temp_user['education_details'] = this.formatEducation(userObject);
         }
 
 
@@ -880,14 +918,9 @@ UserSchema.statics.formatUser=function(userObject){
  * @param userObject
  */
 UserSchema.statics.formatEducation = function(userObject){
-
-
-    if(userObject){
-        var _temp_user = this.formatUser(userObject);
-
-        _temp_user['education_details'] = [];
+        var _temp_user = []
         for(var i=0;i<userObject.education_details.length;i++){
-            _temp_user['education_details'].push({
+            _temp_user.push({
                 "edu_id" :userObject.education_details[i]._id,
                 "description" : userObject.education_details[i].description,
                 "activities_societies" : userObject.education_details[i].activities_societies,
@@ -899,12 +932,68 @@ UserSchema.statics.formatEducation = function(userObject){
             });
         }
         return _temp_user;
-    }
 
 }
 
 
+UserSchema.statics.formatWorkingExperiences = function(userObject){
+    var _temp_we = [],
+        _tmp_start_years=[],
 
+        _tmp_we_by_year ={};
+    for(var i=0;i<userObject.working_experiences.length;i++){
+
+
+        if(userObject.working_experiences[i].is_current_work_place){
+            _temp_we.push({
+                "exp_id" :userObject.working_experiences[i]._id,
+                "company_name" : userObject.working_experiences[i].company_name,
+                "title" : userObject.working_experiences[i].title,
+                "location" : userObject.working_experiences[i].location,
+                "start_date" : userObject.working_experiences[i].start_date,
+                "left_date" : userObject.working_experiences[i].left_date,
+                "description" : userObject.working_experiences[i].description,
+                "is_current_work_place" :userObject.working_experiences[i].is_current_work_place
+            });
+        }else{
+            var _strt_year = userObject.working_experiences[i].start_date.year;
+            if(_tmp_start_years.indexOf(Number(_strt_year)) == -1)
+                _tmp_start_years.push(Number(_strt_year));
+
+            if( typeof _tmp_we_by_year[_strt_year] == 'undefined' )
+                _tmp_we_by_year[_strt_year] =[];
+            _tmp_we_by_year[_strt_year].push({
+                "exp_id" :userObject.working_experiences[i]._id,
+                "company_name" : userObject.working_experiences[i].company_name,
+                "title" : userObject.working_experiences[i].title,
+                "location" : userObject.working_experiences[i].location,
+                "start_date" : userObject.working_experiences[i].start_date,
+                "left_date" : userObject.working_experiences[i].left_date,
+                "description" : userObject.working_experiences[i].description,
+                "is_current_work_place" :userObject.working_experiences[i].is_current_work_place
+            });
+        }
+
+    }
+
+    _tmp_start_years.sort(function(a,b){
+        return b - a;
+    });
+    for(var i = 0 ; i< _tmp_start_years.length;i++){
+        var _year = _tmp_start_years[i];
+        for(var a = 0 ; a< _tmp_we_by_year[_year].length;a++){
+            _temp_we.push(_tmp_we_by_year[_year][a]);
+        }
+
+
+    }
+
+
+
+
+    return _temp_we;
+
+}
 /**
  * Format Connection users data
  * @param resultSet
