@@ -15,7 +15,6 @@ let errorStyles = {
 class SelectSecretary extends React.Component {
     constructor(props) {
         super(props);
-        this.onPrevious     = this.onPrevious.bind(this);
          this.state={
             secretaries:[],
             selected: "",
@@ -23,8 +22,10 @@ class SelectSecretary extends React.Component {
          }
          this.onNextStep = this.onNextStep.bind(this);
         this.loggedUser = Session.getSession('prg_lg')
+        this.onPrevious     = this.onPrevious.bind(this);
 
-
+        console.log("lol");
+        console.log(this.loggedUser.secretary_id);
     }
 
     componentDidMount() {
