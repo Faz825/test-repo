@@ -22,9 +22,7 @@ export default class SkillsAndInterests extends React.Component{
                 {skillID: 3, skill: "JS"},
                 {skillID: 4, skill: "HTML"},
                 {skillID: 5, skill: "jQuery"},
-                {skillID: 6, skill: "React"},
-                {skillID: 7, skill: "Angular"},
-                {skillID: 8, skill: "nodeJs"}
+                {skillID: 6, skill: "React"}
             ],
             experienced:[
                 {skillID: 1, skill: "CSS"},
@@ -124,13 +122,10 @@ function escapeRegexCharacters(str) {
 
 function getSuggestions(value) {
   const escapedValue = escapeRegexCharacters(value.trim());
-
   if (escapedValue === '') {
     return [];
   }
-
   const regex = new RegExp('^' + escapedValue, 'i');
-
   return skills.filter(skills => regex.test(skills.skill));
 }
 
@@ -140,7 +135,7 @@ function getSuggestionValue(suggestion) {
 
 function renderSuggestion(suggestion) {
   return (
-    <span>{suggestion.skill}</span>
+    <span id={suggestion.skillId}>{suggestion.skill}</span>
   );
 }
 
@@ -153,10 +148,11 @@ export class SkillsForm extends React.Component{
             updatedData : "",
             value: '',
             suggestions: getSuggestions(''),
-            checked : false
+            checked : false,
+            suggestionsList : {}
         };
 
-        this.skills = {
+        this.modifiedSkillsList = {
             day_to_day_comforts:{
                 add : [],
                 remove : []
@@ -174,76 +170,68 @@ export class SkillsForm extends React.Component{
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
     }
 
-    removeSkill(id,type){
+    removeSkill(skill,id,type){
         let skillData = this.state.formData;
-        let removeData = this.skills;
+        let skillsObj = this.modifiedSkillsList;
 
-        removeData[type].remove.push(id);
-        this.skills = removeData;
+        skillsObj[type].remove.push(id);
+        this.modifiedSkillsList = skillsObj;
 
         for (var key in skillData[type]) {
             if (skillData[type][key].skillID == id) delete skillData[type][key];
         }
 
-        this.setState({formData : skillData, updatedData : removeData});
+        this.setState({formData : skillData});
     }
 
     onFormSave(e){
         e.preventDefault();
-        this.props.onFormSave(this.state.updatedData);
+        this.props.onFormSave(this.modifiedSkillsList);
     }
 
     onChange(event, { newValue }) {
-        this.setState({
-          value: newValue
-        });
+        this.setState({ value: newValue });
     }
 
     onSuggestionsUpdateRequested({ value }) {
         this.setState({
-          suggestions: getSuggestions(value)
+          suggestions: getSuggestions(value),
+          suggestionsList : getSuggestions(value)
         });
     }
 
     onSkillAdd(){
         let skillName = this.state.value;
-        let addData = this.skills;
-        let formSkillData = this.state.formData;
-
+        let skillsObj = this.modifiedSkillsList;
+        let skillData = this.state.formData;
+        let suggestionsList = this.state.suggestionsList;
         let typeSelected = (this.state.checked)? 'day_to_day_comforts' : 'experienced';
 
-        for (var key in skills) {
-            if(skills[key].skill == skillName){
-                let id = skills[key].skillID;
-                addData[typeSelected].add.push(id)
+        for (var key in suggestionsList) {
+            if(suggestionsList[key].skill == skillName){
+                skillsObj[typeSelected].add.push(suggestionsList[key].skillID);
+            }
+            if(suggestionsList[key].skill == skillName){
+                skillData[typeSelected].push({skillID : suggestionsList[key].skillID, skill : skillName})
             }
         }
 
-        for (var key in formSkillData[typeSelected]) {
-            formSkillData[typeSelected][{
-                "skill": skillName
-            }]
-        }
-
-        this.skills = addData;
-
-        this.setState({formData : formSkillData});
+        this.modifiedSkillsList = skillsObj;
+        this.setState({formData : skillData, value : "", checked : false});
     }
 
     onCheck(){
         let checked = this.state.checked;
-
         this.setState({checked : !checked});
     }
 
     render() {
-        const { value, suggestions } = this.state;
+        const { value, suggestions, suggestionsList } = this.state;
         const inputProps = {
           placeholder: 'What are your areas of expertise?',
           value,
           onChange: this.onChange
         };
-        console.log(this.state.formData);
         return (
             <div className="form-area" id="skills-form">
                 <div className="form-group inline-content">
@@ -282,17 +270,15 @@ export class SkillsForm extends React.Component{
 }
 
 const SkillTagList = ({skills,editable,type,removeSkill}) => {
-
     let _this = this;
-
     return (
         <ul className="skills-edit-section">
             {
                 skills.map(function(skill,index){
                     return(
                         <li className="pg-endrose-item" key={index}>
-                            <span className="pg-endorse-item-name" >{skill.skill}</span>
-                            {(editable)? <i className="fa fa-times pg-skill-delete-icon" onClick={(event)=>removeSkill(skill.skillID, type)}/> : null}
+                            <span className="pg-endorse-item-name" data-skillid={skill.skillID} >{skill.skill}</span>
+                            {(editable)? <i className="fa fa-times pg-skill-delete-icon" onClick={(event)=>removeSkill(skill.skill, skill.skillID, type)}/> : null}
                         </li>
                     )
                 })
