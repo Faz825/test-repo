@@ -14,6 +14,8 @@ require('../model/UploadModel');
 require('../model/SkillModel');
 require('../model/NewsModel');
 require('../model/SavedArticleModel');
+require('../model/NotificationModel');
+require('../model/NotificationRecipientModel');
 
 /** Load  Controllers
  */
@@ -66,6 +68,10 @@ router.get('/test/send-mail', TestController.sendMailTest);
 router.get('/test/get-profile/:email', TestController.getProfile);
 router.get('/test/get-education/:uname', TestController.retrieveEducationDetail);
 router.get('/test/get-workexp/:uname', TestController.retrieveWorkExperience);
+
+router.get('/test/save-notification', TestController.saveNotification);
+router.get('/test/get-notifications', TestController.getNotifications);
+router.get('/test/update-notification', TestController.updateNotification);
 
 
 router.get('/education-info/save', UserController.addEducationDetail);
@@ -126,6 +132,8 @@ router.get('/news-info/delete-channel', UserController.deleteNewsChannel);
 router.get('/news-info/save-article', UserController.saveArticle);
 router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
 router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle);
+
+
 
 /**
  * Push All Rqurst through oAuth
