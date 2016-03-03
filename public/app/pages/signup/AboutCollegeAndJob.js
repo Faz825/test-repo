@@ -10,7 +10,6 @@ import SecretaryThumbnail from '../../components/elements/SecretaryThumbnail'
 let errorStyles = {
     color         : "#ed0909",
     fontSize      : "0.8em",
-    textTransform : "capitalize",
     margin        : '0 0 15px',
     display       : "inline-block"
 }
