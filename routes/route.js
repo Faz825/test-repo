@@ -58,11 +58,15 @@ router.get('/cache-check/:key',SecretaryController.cacheCheck);
  */
 
 router.get('/test/uploads', TestController.uploadTest);
-router.get('/test/get-uploaded-images', TestController.getImageTest);
+router.get('/test/get-uploaded-images/:id', TestController.getImageTest);
 router.get('/test/send-mail', TestController.sendMailTest);
-router.get('/test/get-profile/:email', TestController.getProfile);
+router.get('/test/get-profile/:id', TestController.getProfile);
 router.get('/test/get-education/:uname', TestController.retrieveEducationDetail);
 router.get('/test/get-workexp/:uname', TestController.retrieveWorkExperience);
+
+router.get('/test/es/create-index/:id', TestController.esCreateIndex);
+router.get('/test/es/search', TestController.esSearch);
+
 
 
 router.get('/education-info/save', UserController.addEducationDetail);

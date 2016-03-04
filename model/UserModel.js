@@ -572,7 +572,6 @@ UserSchema.statics.addWorkingExperience =function(userId,workingExperienceDetail
         description:workingExperienceDetails.description
     }
 
-console.log(_workingExperienceDetails);
     var now = new Date();
     this.updated_at = now;
     if ( !this.created_at ) {
@@ -850,7 +849,6 @@ UserSchema.statics.updatePassword=function(userId,password,callBack){
  */
 UserSchema.statics.getUser=function(criteria,showOptions,callBack){
     var _this = this;
-
     _this.findOne(criteria)
         .exec(function(err,resultSet){
             if(!err){
@@ -975,7 +973,6 @@ UserSchema.statics.formatWorkingExperiences = function(userObject){
         }
 
     }
-
     _tmp_start_years.sort(function(a,b){
         return b - a;
     });
@@ -984,15 +981,8 @@ UserSchema.statics.formatWorkingExperiences = function(userObject){
         for(var a = 0 ; a< _tmp_we_by_year[_year].length;a++){
             _temp_we.push(_tmp_we_by_year[_year][a]);
         }
-
-
     }
-
-
-
-
     return _temp_we;
-
 }
 /**
  * Format Connection users data
@@ -1007,6 +997,12 @@ UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
     }
     return _tmp_object;
 };
+
+
+/**
+ * CACHE IMPLEMENTATION
+ */
+
 
 
 mongoose.model('User',UserSchema);
