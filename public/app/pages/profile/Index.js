@@ -5,7 +5,11 @@ import React from 'react'
 import Header from './Header';
 import EducationalInfo from './EducationalInfo'
 import WorkExperience from './WorkExperience'
+<<<<<<< HEAD
 import SkillsAndInterests from './SkillsAndInterests'
+=======
+
+>>>>>>> 3c8352dbf44d2254fb3a924d9dbae8bacb09009e
 export default class Index extends React.Component{
 
 
@@ -33,6 +37,8 @@ export default class Index extends React.Component{
                                         <EducationalInfo uname={this.state.uname} />
                                         <SkillsAndInterests uname={this.state.uname} />
                                         <WorkExperience uname={this.state.uname} />
+
+
                                     </div>
                                 </div>
                             </div>

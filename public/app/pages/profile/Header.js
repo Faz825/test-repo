@@ -5,7 +5,7 @@
  */
 import React,{Component} from 'react';
 import Session  from '../../middleware/Session';
-
+import CoverImageUploader from '../../components/elements/CoverImageUploader'
 export default class Header extends Component {
 
     constructor(props) {
@@ -48,6 +48,7 @@ export default class Header extends Component {
                 <CoverImage dt={this.state.user.images} readOnly={read_only}/>
                 <ConnectionIndicator dt ={this.state.user}  readOnly={read_only}/>
                 <ProfileInfo dt={this.state.user} readOnly={read_only} />
+
             </div>
         )
 
@@ -68,7 +69,12 @@ const CoverImage = (props)=>{
         height:"230px",
         display:"block"
     }
-    return (<img src={cover_image} alt="" className="img-responsive pg-profile-cover-banner" style={style}/>);
+    return (
+        <div className="cover-image-wrapper">
+            <img src={cover_image} alt="" className="img-responsive pg-profile-cover-banner" style={style}/>
+            <CoverImageUploader />
+        </div>
+        );
 };
 
 
@@ -113,6 +119,7 @@ const ProfileInfo = (props) =>{
                                 <img src={ props.dt.images.profile_image.http_url}
                                      alt={full_name}
                                      className="img-responsive center-block pg-profile-detail-img"/>
+
                                 </div>
                             </div>
                             <div className="col-xs-5 pg-profile-detail-live">
@@ -124,3 +131,5 @@ const ProfileInfo = (props) =>{
             </div>
     );
 };
+
+
