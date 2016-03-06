@@ -48,6 +48,94 @@ a:focus{
 	clear: left;
 	height: 0;
 }
+.pgs-login-area{
+	margin-top: 12px;
+}
+.pgs-login-area .inputWrapper{
+	padding: 0;
+	margin: 0 10px 0 0;
+}
+.pgs-login-area .inputWrapper:last-child{
+	margin: 0;
+}
+.pgs-login-area .inputWrapper .form-control{
+	font-size: 9px;
+	height: 27px;
+	background: #f6fafc;
+}
+.pgs-login-area .inputWrapper .form-control::-moz-placeholder {
+	color: #b5c9d6;
+}
+.pgs-login-area .btnHolder{
+	margin: 0;
+}
+.pgs-login-area .btnHolder .pgs-sign-submit{
+	height: 29px;
+	padding: 0;
+	font-size: 11px;
+}
+.pgs-login-area .passwordHolder{
+	text-align: right;
+}
+.pgs-login-area .passwordHolder a{
+	text-decoration: none;
+	color: #61b3de;
+	font-size: 10px;
+	text-align: right;
+}
+.pgs-login-area .userNameHolder .checkbox{
+	margin: 0;
+	padding: 0;
+}
+.pgs-login-area .userNameHolder .checkbox label{
+	text-transform: capitalize;
+	font-size: 10px;
+	color: #7795a8;
+	padding-left: 16px;
+	position: relative;
+}
+/*** custom checkboxes ***/
+.pgs-login-area .userNameHolder input[type=checkbox] { display:none; } /* to hide the checkbox itself */
+.pgs-login-area .userNameHolder input[type=checkbox] + label:before {
+	content: "";
+	font-family: FontAwesome;
+	position: absolute;
+	left: 0;
+	top: -1px;
+	display: inline-block;
+	width: 13px;
+	height: 13px;
+	background: url(../images/forgot-pwd-bg.png) no-repeat 0 0;
+	padding: 0 0 0 1px;
+}
+.pgs-login-area .userNameHolder input[type=checkbox] + label:before { letter-spacing: 5px; } /* space between checkbox and label */
+.pgs-login-area .userNameHolder input[type=checkbox]:checked + label:before { content: "\f00c"; color: #66b5df; font-size: 9px;} /* checked icon */
+.pgs-login-area .userNameHolder input[type=checkbox]:checked + label:before { letter-spacing: 5px; } /* allow space for check mark */
+.pgs-middle-sign-wrapper.forgotPassword h2{
+	padding-bottom: 20px;
+}
+.pgs-middle-sign-wrapper.forgotPassword .introWrapper,
+.pgs-middle-sign-wrapper.changedPassword .introWrapper{
+	text-align: center;
+	margin-bottom: 20px;
+}
+.forgotPassword .introWrapper p{
+	margin: 0;
+}
+.pgs-middle-sign-wrapper.changedPassword .pgs-sign-submit-cancel{
+	margin: 0 auto;
+	background: #61b3de;
+	padding: 10px 0;
+}
+.pgs-middle-sign-wrapper.changedPassword .welcomeUser{
+	color: #61b3de;
+}
+.pgs-middle-sign-wrapper.changedPassword h2{
+	padding: 0;
+}
+.pgs-middle-sign-wrapper.changedPassword .introWrapper{
+	margin: 15px 0;
+}
 @media all and (max-width: 768px) {
     .pg-logo-wrapper {
         padding-top: 14px;
@@ -164,6 +252,11 @@ a:focus{
 	height: 0;
 }
 .pgs-middle-sign-wrapper {padding-top:95px;}
+.pgs-middle-sign-wrapper.changePassword,
+.pgs-middle-sign-wrapper.changedPassword,
+.pgs-middle-sign-wrapper.forgotPassword {
+	padding-top:13%;
+}
 
 .pgs-middle-sign-wrapper-inner {float:none;margin:0 auto;}
 
@@ -653,13 +746,19 @@ a:focus{
 }
 .pg-footer-left-options-panel .pgs-secratery-img{
 	float: none;
-	height: 110px;
-	padding: 0;
-	width: 80px;
+    position: relative;
+    height: 110px;
+    padding: 0;
+    width: 80px;
+	background: #ECF6FC;
 }
 .pg-footer-left-options-panel .pgs-secratery-img img{
-	height: 100%;
-	width: 100%;
+	height: auto;
+    width: 100%;
+    box-shadow: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
 }
 .pg-footer-left-options {
 	background-color: #59afe1;
@@ -983,7 +1082,7 @@ a:focus{
     padding-left: 0px;
     padding-right: 0px;
     margin-left: 8px;
-    height: 19px;
+    height: 16px;
     width: 19px;
     line-height: 15px;
     border: 0;
@@ -1036,7 +1135,7 @@ a:focus{
 button.addEduInfo{
     text-indent: 0;
     width: auto;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 17px;
     color: #333;
     font-weight: normal;
@@ -1075,7 +1174,8 @@ button.addEduInfo{
 	margin: 0;
 	background-color: #fff;
 }
-.pg-custom-input{
+.pg-custom-input,
+.react-autosuggest__container .react-autosuggest__input{
     font: 11px 'montserratsemi_bold', sans-serif;
     height: 23px;
     padding: 0px 6px;
@@ -1113,9 +1213,6 @@ textarea{
 }
 
 /** skills and interests **/
-#skills-form{
-    display: none;
-}
 .pg-section-container{
     border-bottom: 1px solid #dee6eb;
 }
@@ -1153,9 +1250,31 @@ textarea{
 .pg-itel-lbl{
     display: block;
 }
-.pg-inline-item-txt{
+.react-autosuggest__container .react-autosuggest__input{
     width: 70%;
-    float: left;
+}
+#skills-form .inline-content{
+	position: relative;;
+}
+#react-whatever-1{
+	position: absolute;
+	width: 70%;
+	top : 45px;
+	left: 0;
+	margin: 0;
+	padding: 0;
+}
+#react-whatever-1 li{
+	list-style-type: none;
+	padding: 8px 5px;
+	border-bottom: 1px solid #dee6eb;
+	cursor: pointer;
+	background: #fff;
+}
+#react-whatever-1 li:hover,
+#react-whatever-1 .react-autosuggest__suggestion--focused{
+	color: #fff;
+	background: #61b3de;
 }
 .pg-inline-item-btn{
     margin-left: 5px;
@@ -1230,6 +1349,11 @@ textarea{
 		display: none;
 	}
 
+	.logoHolder{
+		width: 140px;
+		margin: 4px 0 0;
+	}
+
 	.pg-logo-wrapper > img{
 		height: auto;
 		width: 100%;
@@ -1238,4 +1362,24 @@ textarea{
 	.pg-header-options a{
 		margin-right: 2px;
 	}
+
+	.pgs-main-nav-area{
+		padding: 0;
+	}
+
+	.pgs-main-nav-area ul li a {
+		font: 10px "montserratregular",sans-serif;
+		margin-left: 12px;
+	}
+
+	.pgs-login-area .btnHolder .pgs-sign-submit{
+		font-size: 10px;
+		width: 50px;
+	}
+
+	.pgs-login-area .userNameHolder .checkbox label,
+	.pgs-login-area .passwordHolder a{
+		font-size: 9px;
+	}
+
 }

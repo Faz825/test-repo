@@ -11,6 +11,7 @@ var bodyParser = require('body-parser');
 GLOBAL.Config = require('./config/app.config');
 GLOBAL.CurrentSession = {};
 require('./config/alert.message');
+require('./config/notification');
 GLOBAL.ApiHelper = require('./middleware/ApiHelper');
 GLOBAL.ContentUploader = require('./middleware/ContentUploader');
 ContentUploader.init();
