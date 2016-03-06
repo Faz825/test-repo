@@ -7,7 +7,6 @@ import Session  from '../../middleware/Session';
 let errorStyles = {
     color         : "#ed0909",
     fontSize      : "0.8em",
-    textTransform : "capitalize",
     margin        : '0 0 15px',
     display       : "inline-block"
 }
@@ -15,16 +14,15 @@ let errorStyles = {
 class SelectSecretary extends React.Component {
     constructor(props) {
         super(props);
-        this.onPrevious     = this.onPrevious.bind(this);
          this.state={
             secretaries:[],
             selected: "",
-            selectSecretary: ""
+            selectSecretary: "",
+            secretary : ""
          }
-         this.onNextStep = this.onNextStep.bind(this);
+        this.onNextStep = this.onNextStep.bind(this);
         this.loggedUser = Session.getSession('prg_lg')
-
-
+        this.onPrevious = this.onPrevious.bind(this);
     }
 
     componentDidMount() {
@@ -42,8 +40,11 @@ class SelectSecretary extends React.Component {
             }.bind(this)
         });
 
+        let secretary ={
+            secretary : this.loggedUser.secretary_id
+        }
 
-        this.setState({selected:this.loggedUser.secretary_id});
+        this.setState({selected:this.loggedUser.secretary_id, secretary: (this.loggedUser.secretary_id)? secretary : ""});
     }
 
 
@@ -71,14 +72,12 @@ class SelectSecretary extends React.Component {
 
     onNextStep(){
         if(this.state.secretary){
-
-
             let _this =  this;
             $.ajax({
                 url: '/secretary/save',
                 method: "POST",
                 dataType: "JSON",
-                headers: { 'prg-auth-header':this.loggedUser.token },
+                headers: { 'prg-auth-header':this.loggedUser.token},
                 data:this.state.secretary,
                 success: function (data, text) {
                     if (data.status === 'success') {

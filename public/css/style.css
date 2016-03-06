@@ -746,13 +746,19 @@ a:focus{
 }
 .pg-footer-left-options-panel .pgs-secratery-img{
 	float: none;
-	height: 110px;
-	padding: 0;
-	width: 80px;
+    position: relative;
+    height: 110px;
+    padding: 0;
+    width: 80px;
+	background: #ECF6FC;
 }
 .pg-footer-left-options-panel .pgs-secratery-img img{
-	height: 100%;
-	width: 100%;
+	height: auto;
+    width: 100%;
+    box-shadow: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
 }
 .pg-footer-left-options {
 	background-color: #59afe1;
@@ -1076,7 +1082,7 @@ a:focus{
     padding-left: 0px;
     padding-right: 0px;
     margin-left: 8px;
-    height: 19px;
+    height: 16px;
     width: 19px;
     line-height: 15px;
     border: 0;
@@ -1129,7 +1135,7 @@ a:focus{
 button.addEduInfo{
     text-indent: 0;
     width: auto;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 17px;
     color: #333;
     font-weight: normal;
