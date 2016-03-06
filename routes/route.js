@@ -12,6 +12,8 @@ require('../model/ConnectionModel');
 require('../model/FavouriteNewsCategory');
 require('../model/UploadModel');
 require('../model/SkillModel');
+require('../model/NewsModel');
+require('../model/SavedArticleModel');
 
 /** Load  Controllers
  */
@@ -19,8 +21,9 @@ var DefaultController   = require('../controller/DefaultController'),
 	UserController      = require('../controller/UserController'),
 	SecretaryController = require('../controller/SecretaryController'),
     TestController      = require('../controller/TestController'),
-    SkillController     = require('../controller/SkillController');
-    DefaultController   = require('../controller/DefaultController');
+    SkillController      = require('../controller/SkillController'),
+    NewsController      = require('../controller/NewsController');
+
 
 /**
  * Define Public URLs
@@ -96,9 +99,37 @@ router.get('/forgot-password/validate/:token', UserController.validateToken);
 router.get('/forgot-password/reset/:token', UserController.resetPassword);
 
 
+//News Category / Channel & News Add / Get All & Delete
+router.get('/news/add-category', NewsController.addNewsCategory);
+router.get('/news/get-categories', NewsController.getNewsCategories);
+router.get('/news/delete-category', NewsController.deleteNewsCategory);
+
+router.get('/news/add-channel', NewsController.addNewsChannel);
+router.get('/news/get-channels/:category', NewsController.getNewsChannels);
+router.get('/news/delete-channel', NewsController.deleteNewsChannel);
+
+router.get('/news/add-news', NewsController.addNews);
+router.get('/news/get-news/:category/:channel', NewsController.getNews);
+router.get('/news/delete-news', NewsController.deleteNews);
+
+
 router.get('/profile/:name', DefaultController.index);
 router.get('/get-profile/:uname',UserController.getProfile);
 
+
+
+
+router.get('/news-info/get-categories', UserController.getNewsCategories);
+router.get('/news-info/delete-category', UserController.deleteNewsCategory);
+
+router.get('/news-info/add-channel', UserController.addNewsChannel);
+router.get('/news-info/get-channels/:category', UserController.getNewsChannels);
+router.get('/news-info/delete-channel', UserController.deleteNewsChannel);
+
+
+router.get('/news-info/save-article', UserController.saveArticle);
+router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
+router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle);
 
 /**
  * Push All Rqurst through oAuth
