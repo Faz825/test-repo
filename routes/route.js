@@ -12,7 +12,7 @@ require('../model/ConnectionModel');
 require('../model/FavouriteNewsCategory');
 require('../model/UploadModel');
 require('../model/SkillModel');
-
+require('../model/PostModel');
 /** Load  Controllers
  */
 var DefaultController   = require('../controller/DefaultController'),
@@ -22,6 +22,8 @@ var DefaultController   = require('../controller/DefaultController'),
     SkillController     = require('../controller/SkillController');
     DefaultController   = require('../controller/DefaultController');
 
+
+var TestPostController  = require('../test/TestPostController');
 /**
  * Define Public URLs
  * this public urls will load without authentication component.
@@ -64,9 +66,15 @@ router.get('/test/get-profile/:id', TestController.getProfile);
 router.get('/test/get-education/:uname', TestController.retrieveEducationDetail);
 router.get('/test/get-workexp/:uname', TestController.retrieveWorkExperience);
 
+router.post('/test/add-post/:id', TestPostController.addPost);
+router.get('/test/get-post/:id/:page', TestPostController.getPost);
+
+
+
 router.get('/test/es/create-index/:id', TestController.esCreateIndex);
 router.get('/test/es/search', TestController.esSearch);
 
+router.get('/test/my-connections/:id',TestController.myConnections);
 
 
 router.get('/education-info/save', UserController.addEducationDetail);

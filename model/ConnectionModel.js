@@ -5,6 +5,20 @@
 'use strict'
 var  mongoose = require('mongoose'),
     Schema   = mongoose.Schema;
+/**
+ * Define Connection Status
+ */
+GLOBAL.ConnectionStatus ={
+    REQUEST_PENDING:0,
+    REQUEST_ACCEPTED:1,
+    RESPONSE_DECLINED:2,
+    REQUEST_BLOCKED:3
+
+};
+
+GLOBAL.ConnectionConfig ={
+    CACHE_NAME:"connections:"
+}
 
 var ConnectionSchema = new Schema({
     user_id:{
@@ -12,6 +26,15 @@ var ConnectionSchema = new Schema({
         default:null
     },
     connected_with:{
+        type: Schema.ObjectId,
+        ref: 'User',
+        default:null
+    },
+    status:{
+        type:Number,
+        default:0
+    },
+    action_user_id:{
         type: Schema.ObjectId,
         ref: 'User',
         default:null
@@ -27,35 +50,28 @@ var ConnectionSchema = new Schema({
 
 ConnectionSchema.statics.connect=function(connected_users,unconnected_users,callBack){
     var _connected_users =[],now = new Date();
-
     //REMOVE UNSELECTED CONNECTIONS
     if(unconnected_users.length > 0){
         var _formatted_unconnected_ids = [];
         for(var a=0;a<unconnected_users.length;a++){
-           // _formatted_unconnected_ids.push(unconnected_users[a].toObjectId());
             this.remove({connected_with:unconnected_users[a].toObjectId()},function(err){
                 console.log(err);
             })
         }
-
     }
     if(connected_users.length >0){
         for (var i = 0; connected_users.length > i; i++) {
             _connected_users.push({
                 user_id: CurrentSession.id.toObjectId(),
                 connected_with: connected_users[i].toObjectId(),
-                created_at: now
+                created_at: now,
+                action_user_id:CurrentSession.id.toObjectId(),
+                status:ConnectionStatus.REQUEST_PENDING
             });
         }
-
-        this.collection.insert(_connected_users,function(err,resultSet){
-
-        });
+        this.collection.insert(_connected_users,function(err,resultSet){});
     }
-
-
-    callBack({status:200,
-        connected:"ok"});
+    callBack({status:200,connected:"ok"});
 
 }
 
@@ -64,39 +80,57 @@ ConnectionSchema.statics.connect=function(connected_users,unconnected_users,call
  * @param userId
  * @param callBack
  */
-ConnectionSchema.statics.getConnectedUsers = function(userId,callBack){
-    var _this = this;
-
-    _this.find({user_id:userId}).exec(function(err,resultSet){
-        if(!err){
-            callBack({
-                status:200,
-                connections:resultSet
-
-            });
-        }else{
-            console.log("Server Error --------")
-            callBack({status:400,error:err});
-        }
-    });
-
-}
-
-/**
- * Get All Connected User ids as an array
- * @param userId
- * @param callBack
- */
 ConnectionSchema.statics.getConnectedUserIds = function(userId,callBack){
-    var _this = this;
-    _this.getConnectedUsers(userId,function(resultSet){
+    var _this = this,_async = require('async'),
+        _connectedUserIds=[];
+
+    _async.waterfall([
+        function getMyRequestAcceptedUsers(callBack){
+            _this.find({user_id:userId,status:ConnectionStatus.REQUEST_ACCEPTED})
+                .exec(function(err,resultSet){
+                if(!err){
+                    for(var a = 0;a<resultSet.length;a++){
+                        var usr_id= resultSet[a].connected_with.toString();
+                        if(_connectedUserIds.indexOf(usr_id) == -1)
+                            _connectedUserIds.push(resultSet[a].connected_with.toString());
+                    }
+                    callBack(null)
+                }else{
+                    console.log("Server Error --------");
+                    console.log(err);
+                    callBack(null);
+                }
+            });
+        },
+        function getIAcceptedRequest(callBack){
+            _this.find({connected_with:userId,status:ConnectionStatus.REQUEST_ACCEPTED})
+                .exec(function(err,resultSet){
+                if(!err){
+                    for(var a = 0;a<resultSet.length;a++){
+                        var usr_id= resultSet[a].user_id.toString();
+                        if(_connectedUserIds.indexOf(usr_id) == -1)
+                            _connectedUserIds.push(resultSet[a].user_id.toString());
+                    }
+                    callBack(null,_connectedUserIds)
+                }else{
+                    console.log("Server Error --------");
+                    console.log(err);
+                    callBack(null);
+                }
+            });
+        }
+    ],function(err,_connectedUserIds){
 
         callBack({
-            status:resultSet.status,
-            connected_user_ids:_this.formatConnectedUsers(resultSet.connections,true)
+            connected_user_ids:_connectedUserIds
         })
     });
+
+
+
+
 }
+
 
 /**
  * Format Users object
@@ -128,7 +162,7 @@ ConnectionSchema.statics.formatConnectedUsers = function(connectedUsers,getIdOnl
  */
 ConnectionSchema.statics.getConnectionCount = function(userId,callBack){
     this.getConnectedUserIds(userId,function(resultSet){
-        callBack(resultSet.connected_user_ids.length)
+        callBack(0)
     });
 }
 

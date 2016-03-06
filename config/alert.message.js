@@ -44,7 +44,9 @@ GLOBAL.Alert={
     RESET_PASSWORD_SUCCESS:'Successfully reset the password',
     RESET_PASSWORD_FAIL:'Failed to reset password',
     DATA_INSERT_ERROR:'Error while adding data',
-    DATA_UPDATE_ERROR:'Error while updating data'
+    DATA_UPDATE_ERROR:'Error while updating data',
+
+    POST_CONTENT_EMPTY:'Content cannot be blank'
 
 
 }

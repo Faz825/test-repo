@@ -8,12 +8,6 @@ var TestController ={
 
         var fs = require('fs');
 
-        /*var Upload = require('mongoose').model('Upload');
-
-        Upload.saveOnDb(data,function(dataSet){
-            res.status(200).json(dataSet);
-            return 0;
-        });*/
         var attachment = "/web/ProGlob/Docs/ProGlobe-Main/2015-12-30/images/pg-professional-networks_08.png";
 
         fs.readFile(attachment, function(err, data) {
@@ -286,6 +280,16 @@ var TestController ={
             res.status(200).send(resultSet);
             return 0;
         });
+    },
+
+    myConnections:function(req,res){
+        var Connection = require('mongoose').model('Connection');
+        var _id =req.params['id'];
+        Connection.getConnectedUsers(_id,function(resultSet){
+            res.status(200).send(resultSet);
+            return 0;
+        });
+
     }
 
 
