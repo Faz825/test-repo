@@ -185,6 +185,7 @@ var TestController ={
             res.status(200).send(resultSet);
         })
     },
+
     esCreateIndex:function(req,res){
 
         var _async = require('async'),
@@ -286,9 +287,125 @@ var TestController ={
             res.status(200).send(resultSet);
             return 0;
         });
+    },
+    /**
+     * Save notification & add recipients for that notifications
+     * @param req
+     * @param res
+     */
+    saveNotification:function(req,res){
+
+        var notification = JSON.parse(req.body.notification);
+        var notification_recipients = JSON.parse(req.body.recipients);
+
+        var outPut = {};
+
+        if(notification_recipients.length < 1){
+            outPut['status'] = ApiHelper.getMessage(400, Alert.NO_RECIPIENTS, Alert.ERROR);
+            res.status(400).send(outPut);
+        }
+
+        var _async = require('async'),
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient');
+
+        _async.waterfall([
+            function saveNotification(callback){
+
+                Notification.saveNotification(notification, function(resultSet){
+                    if(resultSet.status == 200){
+                        callback(null,resultSet.result._id);
+                    }else{
+                        outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_INSERT_ERROR, Alert.ERROR);
+                        res.status(400).send(outPut);
+                    }
+                });
+            },
+            function saveRecipients(notification_id, callback){
+                var data = {
+                    notification_id:notification_id,
+                    recipients:notification_recipients
+                };
+                NotificationRecipient.saveRecipients(data, function(resultSet){
+                    if(resultSet.status == 200){
+                        callback(null)
+                    }else{
+                        outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_INSERT_ERROR, Alert.ERROR);
+                        res.status(400).send(outPut);
+                    }
+                });
+            }
+
+        ], function(err){
+            var outPut ={};
+            if(!err){
+                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                res.status(200).send(outPut);
+            }else{
+                outPut['status']    = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                res.status(200).send(outPut);
+            }
+
+        })
+
+    },
+
+    /**
+     * Get notifications of a user
+     * @param req
+     * @param res
+     */
+    getNotifications:function(req,res){
+
+        //var criteria = JSON.parse(req.body.criteria);
+
+        var criteria = {
+            recipient:"56c2d6038c920a41750ac4db".toObjectId()
+        };
+
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient');
+
+        NotificationRecipient.getRecipientNotifications(criteria, function(resultSet){
+            res.status(resultSet.status).json(resultSet);
+        });
+
+    },
+
+    /**
+     * update read_status
+     * @param req
+     * @param res
+     */
+    updateNotification:function(req,res){
+
+        // Update a notification's read status
+        // Mark all as read
+
+        var criteria = JSON.parse(req.body.criteria);
+
+        //var criteria = {
+        //    _id:"56d807f84dad67e51a56af5b".toObjectId() // update specific notification of a user
+        //};
+
+        //var criteria = {
+        //    recipient:"56c3fba9d8fb77690c16b27e".toObjectId() // update all notifications of a user
+        //};
+
+        var data = {
+            read_status:true
+        };
+
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient');
+
+        NotificationRecipient.updateRecipientNotification(criteria, data, function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
+
     }
-
-
 
 }
 
