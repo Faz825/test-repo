@@ -61,21 +61,32 @@ export default class Header extends Component {
  * Show cover image
  * @param props
  */
-const CoverImage = (props)=>{
+export class CoverImage extends React.Component{
+    constructor(props){
+        super(props);
 
-    let cover_image = (typeof props.dt.cover_image !='undefined')?props.dt.cover_image:"/images/cover_images/default_cover_1.jpg";
+        let coverImg = (props.dt.cover_image)? props.dt.cover_image : "/images/cover_images/default_cover_1.jpg";
 
-    let style ={
-        height:"230px",
-        display:"block"
+        this.state = {
+            coverimgSrc : coverImg
+        }
+
+        this.coverImgUpdate = this.coverImgUpdate.bind(this);
     }
-    return (
-        <div className="cover-image-wrapper">
-            <img src={cover_image} alt="" className="img-responsive pg-profile-cover-banner" style={style}/>
-            <CoverImageUploader />
-        </div>
+
+    coverImgUpdate(data){
+        this.setState({coverimgSrc : data});
+    }
+
+    render() {
+        return (
+            <div className="cover-image-wrapper">
+                <img src={this.state.coverimgSrc} alt="" className="img-responsive pg-profile-cover-banner" />
+                {(this.props.readOnly)? null : <CoverImageUploader coverImg={this.state.coverimgSrc} imgUpdated={this.coverImgUpdate} /> }
+            </div>
         );
-};
+    }
+}
 
 
 /**
@@ -131,5 +142,3 @@ const ProfileInfo = (props) =>{
             </div>
     );
 };
-
-

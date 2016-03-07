@@ -1,5 +1,5 @@
 /**
- * THis is Image Uploader Component
+ * This is Image Uploader Component
  */
 'use strict';
 import React from 'react';
@@ -9,71 +9,84 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 export default class CoverImageUploader extends React.Component{
     constructor(props){
         super(props);
-        this.state={src:"",isShowingModal: false};
-
-
+        this.state={
+            src : this.props.coverImg,
+            isShowingModal : false,
+            cropResult : null
+        };
     }
+
     cropImage(){
-        this.setState({src:this.cropper.getCroppedCanvas().toDataURL()});
+        let imgSrc = this.refs.cropper.getCroppedCanvas().toDataURL();
+        this.props.imgUpdated(imgSrc);
+        this.setState({src: imgSrc});
+        this.handleClose();
+    }
+
+    onChange(e){
+        e.preventDefault();
+        let files;
+        if (e.dataTransfer) {
+            files = e.dataTransfer.files;
+        } else if (e.target) {
+            files = e.target.files;
+        }
+        let reader = new FileReader();
+        reader.onload = () => {
+            this.setState({src: reader.result});
+        };
+        reader.readAsDataURL(files[0]);
     }
 
     getCropper(){
-        return (<div>
-            <Cropper
-                ref={(ref) => this.cropper = ref}
-                src='http://fengyuanchen.github.io/cropper/img/picture.jpg'
-                style={{height: 400, width: '100%'}}
-                aspectRatio={16 / 9}
-                guides={true}
-
-                preview = ".preView"
-                />
-            <img src = {this.state.src} className="preView"/>
-        </div>)
+        return (
+            <div>
+                <Cropper
+                    ref='cropper'
+                    src={this.state.src}
+                    style={{height: '450px', width: '100%'}}
+                    guides={true}
+                    crop={this.cropImage}
+                    />
+                <div className="imgUploadBtnHolder">
+                    <label for="newCoverImg" className="coverImgUpload pgs-sign-submit" >
+                        Upload File
+                        <input type='file' onChange={this.onChange.bind(this)} id="newCoverImg" />
+                    </label>
+                    <button onClick={this.cropImage.bind(this)} style={{float: 'right'}} className="pgs-sign-submit" >Crop Image</button>
+                </div>
+            </div>
+        )
     }
 
     handleClick() {
         this.setState({isShowingModal: true})
     }
+
     handleClose() {
         this.setState({isShowingModal: false})
     }
 
     getPopup(){
-        const customStyles = {
-            content : {
-                top                   : '50%',
-                left                  : '50%',
-                right                 : 'auto',
-                bottom                : 'auto',
-                marginRight           : '-50%',
-                transform             : 'translate(-50%, -50%)'
-            }
-        };
-
-
         return(
-
-                <div onClick={this.handleClick}>
-                    {
-                        this.state.isShowingModal &&
-                        <ModalContainer onClose={this.handleClose.bind(this)} style={customStyles}>
-                            <ModalDialog onClose={this.handleClose.bind(this)}>
-                                <h1>Image Cropper</h1>
-                                {this.getCropper()}
-                            </ModalDialog>
-                        </ModalContainer>
-                    }
-                </div>
-
+            <div onClick={this.handleClick}>
+                {this.state.isShowingModal &&
+                    <ModalContainer onClose={this.handleClose.bind(this)} zIndex="9999">
+                        <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
+                            <h3>Image Cropper</h3>
+                            {this.getCropper()}
+                        </ModalDialog>
+                    </ModalContainer>
+                }
+            </div>
         )
     }
+
     render(){
         return (
             <div className="imageSelector">
-                <a onClick={(event)=>{this.handleClick()}}>Edit Profile Image </a>
+                <a onClick={(event)=>{this.handleClick()}} title="Edit Cover Photo"></a>
                 {this.getPopup()}
             </div>)
     }
 }
-
