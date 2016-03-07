@@ -1,12 +1,12 @@
 /**
- * This is Image Uploader Component
+ * This is Profile Image Uploader Component
  */
 'use strict';
 import React from 'react';
 import Cropper from 'react-cropper';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 
-export default class CoverImageUploader extends React.Component{
+export default class ProfileImageUploader extends React.Component{
     constructor(props){
         super(props);
         this.state={
@@ -46,6 +46,7 @@ export default class CoverImageUploader extends React.Component{
                     src={this.state.src}
                     style={{height: '450px', width: '100%'}}
                     guides={true}
+                    aspectRatio={4/4}
                     crop={this.cropImage}
                     />
                 <div className="imgUploadBtnHolder">
@@ -85,7 +86,7 @@ export default class CoverImageUploader extends React.Component{
     render(){
         return (
             <div className="imageSelector">
-                <a onClick={(event)=>{this.handleClick()}} title="Edit Cover Photo"></a>
+                <a onClick={(event)=>{this.handleClick()}} title="Edit Profile Image"></a>
                 {this.getPopup()}
             </div>)
     }
