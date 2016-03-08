@@ -21,7 +21,7 @@ var CacheEngine ={
 		
 	},
 	/**
-	 * Get chache Data based on the cache key
+	 * Get cache Data based on the cache key
 	 * @param cacheKey 
 	 * return callBack
 	 */
@@ -95,11 +95,11 @@ var CacheEngine ={
         });
     },
     /**
-     * Add Data to the List
+     * Add Data to the Top of the List
      * @param key
      * @param data
      */
-    addToList:function(key,data,callBack){
+    addTopToList:function(key,data,callBack){
         var _data = JSON.stringify(data);
         this._cacheClient.lpush(key,_data,function(err, result){
             if( err ){
@@ -123,8 +123,6 @@ var CacheEngine ={
                 console.log(err);
                 callBack(err);
             }else{
-                console.log("Result Length");
-                console.log(result)
                 callBack(result);
             }
 
@@ -152,6 +150,47 @@ var CacheEngine ={
             })
 
         })
+    },
+    /**
+     * Add Data to Bottom of the list
+     * @param key
+     * @param data
+     * @param callBack
+     */
+    addBottomToList:function(key,data,callBack){
+        var _data = JSON.stringify(data);
+        this._cacheClient.rpush(key,_data,function(err, result){
+            if( err ){
+                console.log(err);
+                callBack(err);
+            }else{
+                console.log("ADD TO LIST");
+                callBack(result);
+            }
+
+        });
+    },
+
+    /**
+     * Add data to Zadd
+     * @param key
+     * @param index
+     * @param data
+     * @param callBack
+     */
+    zAdd:function(key,index,data,callBack){
+        var _data = JSON.stringify(data);
+        var timestamp = new Date().getUTCMilliseconds();
+        this._cacheClient.zadd(key,timestamp,_data,function(err, result){
+            if( err ){
+                console.log(err);
+                callBack(err);
+            }else{
+                console.log("ADD TO LIST");
+                callBack(result);
+            }
+
+        });
     }
 };
 

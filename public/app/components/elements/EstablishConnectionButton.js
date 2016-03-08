@@ -28,16 +28,13 @@ export default class EstablishConnectionButton extends React.Component{
             text = this.state.value ;
         if (this.state.clicked) {
             opts['style'] = {"background" : "#73ad21"};
-            text = "Connected" ;
         }else{
             opts['style'] = {"background" : "#61b3de"};
-            text = this.state.value ;
-            text = "Connect" ;
 		}
 
 		return (
 			<div className={classes}>
-            	<a href={this.props.link} className={this.props.extraClasses} onClick={(event) => this.respond(event)} {...opts} >{text}</a>
+            	<a href={this.props.link} className={this.props.extraClasses} onClick={(event) => this.respond(event)} {...opts} >{this.props.value}</a>
             </div>
 		);
 	}

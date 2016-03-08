@@ -1,11 +1,11 @@
 /**
- * This is Test Script for Post controller
+ * Post controller is use for handle all the post related actions
  */
 
-var TestPostController ={
+var PostController ={
 
     /**
-     * Add New Post
+     * Add New post to the system
      * @param req
      * @param res
      * @returns {number}
@@ -13,8 +13,7 @@ var TestPostController ={
     addPost:function(req,res){
 
         var outPut ={};
-        if(typeof req.body.content == 'undefined' || typeof req.body.content == ""){
-
+        if(typeof req.body.__content == 'undefined' || typeof req.body.__content == ""){
             outPut['status']    = ApiHelper.getMessage(400, Alert.POST_CONTENT_EMPTY, Alert.ERROR);
             res.status(400).send(outPut);
             return 0;
@@ -22,11 +21,10 @@ var TestPostController ={
 
 
         var Post = require('mongoose').model('Post');
-        var _id =req.params['id'];
         var data ={
             has_attachment:req.body.has_attachment,
-            content:req.body.content,
-            created_by:_id,
+            content:req.body.__content,
+            created_by:CurrentSession.id,
             page_link:req.body.page_link,
             post_visible_mode:PostVisibleMode.PUBLIC,
             post_mode:PostConfig.NORMAL_POST
@@ -39,10 +37,14 @@ var TestPostController ={
             return 0;
         });
     },
-
+    /**
+     * Get Posts
+     * @param req
+     * @param res
+     */
     ch_getPost:function(req,res){
-        var _id =req.params['id'];
-        var _page = req.params['page'];
+        var _id     = CurrentSession.id;
+        var _page   = req.query.__pg;
 
         var Post = require('mongoose').model('Post'),
             payLoad ={
@@ -57,10 +59,10 @@ var TestPostController ={
             res.status(200).send(outPut);
             return 0;
         });
-
     }
+
+
 
 }
 
-
-module.exports = TestPostController;
+module.exports = PostController

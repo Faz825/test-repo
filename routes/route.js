@@ -18,19 +18,23 @@ require('../model/NewsModel');
 require('../model/SavedArticleModel');
 require('../model/NotificationModel');
 require('../model/NotificationRecipientModel');
-
+require('../model/CommentModel');
 /** Load  Controllers
  */
 var DefaultController   = require('../controller/DefaultController'),
 	UserController      = require('../controller/UserController'),
 	SecretaryController = require('../controller/SecretaryController'),
     TestController      = require('../controller/TestController'),
-    SkillController      = require('../controller/SkillController'),
-    NewsController      = require('../controller/NewsController');
+    SkillController     = require('../controller/SkillController'),
+    NewsController      = require('../controller/NewsController'),
+    PostController      = require('../controller/PostController'),
+    CommentController   = require('../controller/CommentController') ;
 
 
 
-var TestPostController  = require('../test/TestPostController');
+var TestPostController          = require('../test/TestPostController'),
+    TestConnectionController    = require('../test/TestConnectionController'),
+    TestCommentController    = require('../test/TestCommentController');
 /**
  * Define Public URLs
  * this public urls will load without authentication component.
@@ -74,16 +78,24 @@ router.get('/test/get-education/:uname', TestController.retrieveEducationDetail)
 router.get('/test/get-workexp/:uname', TestController.retrieveWorkExperience);
 
 router.post('/test/add-post/:id', TestPostController.addPost);
-router.get('/test/get-post/:id/:page', TestPostController.getPost);
+router.get('/test/get-post/:id/:page', TestPostController.ch_getPost);
 
 router.get('/test/es/create-index/:id', TestController.esCreateIndex);
 router.get('/test/es/search', TestController.esSearch);
 
-router.get('/test/my-connections/:id',TestController.myConnections);
+router.get('/test/get-connections/:id', TestConnectionController.getConnection);
+
+
+
+router.get('/test/my-connections/:id',TestConnectionController.myConnections);
 
 router.get('/test/save-notification', TestController.saveNotification);
 router.get('/test/get-notifications', TestController.getNotifications);
 router.get('/test/update-notification', TestController.updateNotification);
+
+
+router.post('/test/comment/add/:id', TestCommentController.addComment);
+router.get('/test/comment/get/:id', TestCommentController.getComment);
 
 router.get('/education-info/save', UserController.addEducationDetail);
 router.get('/educations/:uname',UserController.retrieveEducationDetail);
@@ -169,4 +181,14 @@ router.post('/education/update', UserController.updateEducationDetail);
 
 
 router.post('/work-experience/update', UserController.updateWorkExperience);
+
+
+router.post('/post/composer', PostController.addPost);
+router.get('/pull/posts', PostController.ch_getPost);
+
+
+router.post('/comment/composer', CommentController.addComment);
+router.get('/pull/comments', CommentController.getComment);
+
+
 module.exports = router;

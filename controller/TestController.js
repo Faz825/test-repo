@@ -184,90 +184,10 @@ var TestController ={
 
         var _async = require('async'),
             Connection = require('mongoose').model('Connection'),
-            User = require('mongoose').model('User'),
-            Upload = require('mongoose').model('Upload') ;
+            User = require('mongoose').model('User');
 
-        if(typeof req.params['id'] == 'undefined'){
-            var outPut ={};
-            outPut['status']    = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
-            res.status(400).send(outPut);
-            return 0;
-        }
-
-
-        var _id =req.params['id'];
-        _async.waterfall([
-            function getUserById(callBack){
-                var _search_param = {
-                        _id:Util.toObjectId(_id),
-                    },
-                    showOptions ={
-                        w_exp:false,
-                        edu:false
-                    };
-
-                User.getUser(_search_param,showOptions,function(resultSet){
-                    if(resultSet.status ==200 ){
-                        callBack(null,resultSet.user)
-                    }
-                })
-            },
-            function getConnectionCount(profileData,callBack){
-
-                if( profileData!= null){
-                    Connection.getConnectionCount(profileData.user_id,function(connectionCount){
-                        profileData['connection_count'] = connectionCount;
-                        callBack(null,profileData);
-                        return 0
-                    });
-                }else{
-                    callBack(null,null)
-                }
-
-
-
-            },
-            function getProfileImage(profileData,callBack){
-
-                if(profileData != null){
-                    Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
-                        profileData['images'] = profileImageData.image;
-                        callBack(null,profileData)
-                        return 0;
-                    });
-                }else{
-                    callBack(null,null)
-                }
-
-
-            }
-
-
-
-        ],function(err,profileData){
-            var outPut ={};
-            if(!err){
-
-                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['profile_data']      = profileData;
-
-                var payLoad={
-                    index:"idx_usr",
-                    id:profileData.user_id,
-                    type: 'user',
-                    data:profileData,
-                    tag_fields:['first_name','last_name','email','user_name','country']
-                }
-                ES.createIndex(payLoad,function(resultSet){
-                    res.status(200).send(resultSet);
-                    return 0;
-                });
-
-            }else{
-                outPut['status']    = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
-                res.status(200).send(outPut);
-                return 0;
-            }
+        User.addUserToCache(req.params['id'],function(resultSet){
+            res.status(200).send(resultSet);
         })
 
     },
@@ -283,15 +203,7 @@ var TestController ={
         });
     },
 
-    myConnections:function(req,res){
-        var Connection = require('mongoose').model('Connection');
-        var _id =req.params['id'];
-        Connection.getConnectedUsers(_id,function(resultSet){
-            res.status(200).send(resultSet);
-            return 0;
-        });
 
-    },
 
     /**
      * Save notification & add recipients for that notifications
