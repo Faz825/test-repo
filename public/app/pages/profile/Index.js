@@ -22,7 +22,7 @@ export default class Index extends React.Component{
 
     render(){
         return (
-            <div id="pg-profile-page" className="loggedUserView pg-page"> 
+            <div id="pg-profile-page" className="loggedUserView pg-page">
                 <Header uname={this.state.uname}/>
                 <div className="row row-clr">
                     <div className="container-fluid">
@@ -33,6 +33,8 @@ export default class Index extends React.Component{
                                         <EducationalInfo uname={this.state.uname} />
                                         <SkillsAndInterests uname={this.state.uname} />
                                         <WorkExperience uname={this.state.uname} />
+
+
                                     </div>
                                 </div>
                             </div>
