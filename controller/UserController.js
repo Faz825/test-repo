@@ -277,18 +277,9 @@ var UserControler ={
 
             if(req_news_categories.length >= 1 ) {
 
-                var news_categories = [],
-                    now = new Date(),
-                    FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
-                for (var i = 0; req_news_categories.length > i; i++) {
-                    news_categories.push({
-                        user_id: CurrentSession.id,
-                        connected_with: req_news_categories[i],
-                        created_at: now
-                    });
-                }
+                var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
-                FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
+                FavouriteNewsCategory.addUserNewsCategory(req_news_categories,function(resultSet){
 
                     if (resultSet.status !== 200) {
                         outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
@@ -312,6 +303,7 @@ var UserControler ={
 
     uploadProfileImage:function(req,res){
 
+        console.log(req.body.profileImg);
 
         if(typeof req.body.profileImg == 'undefined' || typeof req.body.profileImg == "") {
             var outPut={
@@ -394,10 +386,7 @@ var UserControler ={
         var _userId = "56c2d6038c920a41750ac4db";
 
         User.addEducationDetail(_userId,_educationDetails,function(resultSet){
-
             res.status(200).json(resultSet);
-
-
         });
 
     },
@@ -500,6 +489,7 @@ var UserControler ={
         }
 
 
+
     },
 
     /**
@@ -518,11 +508,7 @@ var UserControler ={
         var _education_id = "56c321a42ab09c7b09034e85";
 
         User.deleteEducationDetail(_userId,_education_id,function(resultSet){
-
             res.status(200).json(resultSet);
-
-
-
         });
 
     },
@@ -621,9 +607,9 @@ var UserControler ={
 
         ], function(err){
             if (!err){
-                res.status(200).send({status:"success"});
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SKILL_SAVED, Alert.SUCCESS));
             }else{
-                res.status(400).send(err);
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
             };
         })
 
@@ -663,25 +649,15 @@ var UserControler ={
                             });
 
                         } else{
-
-                            res.status(400).json({
-                                status:"error",
-                                message:Alert.NO_ACCOUNT_FOUND
-                            });
+                            res.status(400).json(ApiHelper.getMessage(400, Alert.NO_ACCOUNT_FOUND, Alert.ERROR));
                         }
                     });
 
                 } else {
-                    res.status(400).json({
-                        status:"error",
-                        message:Alert.EMAIL_EMPTY
-                    });
+                    res.status(400).json(ApiHelper.getMessage(400, Alert.EMAIL_EMPTY, Alert.ERROR));
                 }
             },
             function(token, user, done) {
-
-                console.log(user.first_name);
-                console.log(user.email);
 
                 res.render('email-templates/resetPassword', {
                     name: user.first_name,
@@ -701,15 +677,9 @@ var UserControler ={
                 };
                 EmailEngine.sendMail(sendOptions, function(err){
                     if(!err){
-                        res.status(200).json({
-                            status:"error",
-                            message:Alert.FORGOT_PASSWORD_EMAIL_SENT
-                        });
+                        res.status(200).json(ApiHelper.getMessage(200, Alert.FORGOT_PASSWORD_EMAIL_SENT, Alert.SUCCESS));
                     } else{
-                        res.status(400).json({
-                            status:"error",
-                            message:Alert.FAILED_TO_SEND_EMAIL
-                        });
+                        res.status(400).json(ApiHelper.getMessage(400, Alert.FAILED_TO_SEND_EMAIL, Alert.ERROR));
                     }
                 });
 
@@ -720,6 +690,11 @@ var UserControler ={
 
     },
 
+    /**
+     * to test valid reset password request
+     * @param req
+     * @param res
+     */
     validateToken:function(req,res){
 
         var User = require('mongoose').model('User');
@@ -732,16 +707,12 @@ var UserControler ={
         }, function(ResultSet) {
 
                 if (ResultSet.status == 200 && ResultSet.user != null) {
-                    res.status(200).json({
-                        status:"success",
-                        message:"valid token. need to redirect to password reset page"
-                    });
+                    //Don't need to send any response. need to do redirection
+                    res.status(200).json(ApiHelper.getMessage(200, Alert.VALID_TOKEN, Alert.SUCCESS));
                     //res.redirect('/#!/password/reset/' + req.params.token);
                 } else{
-                    res.status(400).json({
-                        status:"error",
-                        message:"Invalid token. need to redirect to invalid page"
-                    });
+                    //Don't need to send any response. need to do redirection
+                    res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
                     //res.redirect('/#!/password/reset/invalid');
                 }
 
@@ -764,30 +735,19 @@ var UserControler ={
 
             if (ResultSet.status == 200 && ResultSet.user != null) {
 
-
                 User.updatePassword(ResultSet.user._id,password,function(resultSet){
 
                     if(resultSet.status ==200){
-                        res.status(200).json({
-                            status:"error",
-                            message:Alert.RESET_PASSWORD_SUCCESS
-                        });
-
+                        res.status(200).json(ApiHelper.getMessage(200, Alert.RESET_PASSWORD_SUCCESS, Alert.SUCCESS));
                     } else{
-                        res.status(400).json({
-                            status:"error",
-                            message:Alert.RESET_PASSWORD_FAIL
-                        });
+                        res.status(400).json(ApiHelper.getMessage(400, Alert.RESET_PASSWORD_FAIL, Alert.ERROR));
                     }
 
                 });
 
-
             } else{
-                res.status(400).json({
-                    status:"error",
-                    message:"Invalid token. need to redirect to invalid page"
-                });
+                //Don't need to send any response. need to do redirection
+                res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
                 //res.redirect('/#!/password/reset/invalid');
             }
 
@@ -893,6 +853,229 @@ var UserControler ={
 
 
     },
+
+    /**
+     * Get news categories of a user
+     * @param req
+     * @param res
+     */
+    getNewsCategories:function(req,res){
+
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+
+        var user_id = "56c2d6038c920a41750ac4db";
+        //var user_id = CurrentSession.id;
+
+        var criteria = {
+            search:{user_id:user_id.toObjectId()},
+            populate:'category',
+            populate_field:'category'
+        };
+
+        FavouriteNewsCategory.findFavouriteNewsCategory(criteria,function(resultSet){
+            res.status(resultSet.status).json(resultSet);
+        });
+
+    },
+
+    /**
+     * Delete a news category of a user
+     * @param req
+     * @param res
+     */
+    deleteNewsCategory:function(req,res){
+
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+
+        var user_id = "56c2d6038c920a41750ac4db";
+        //var user_id = CurrentSession.id;
+
+        var categoryId = "56cbeae0e975b0070ad200f8";
+        //var categoryId = req.body.categoryId;
+
+        var criteria = {
+            user_id:user_id.toObjectId(),
+            category:categoryId.toObjectId()
+        };
+
+        FavouriteNewsCategory.deleteNewsCategory(criteria,function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
+
+    },
+
+    /**
+     * Add user's channel for a category
+     * @param req
+     * @param res
+     */
+    addNewsChannel:function(req,res){
+
+        var user_id = "56c6aeaa6e1ac13e18b2400d";
+        //var user_id = CurrentSession.id;
+
+        var categoryId = "56cbeae0e975b0070ad200f8";
+        //var categoryId = req.body.categoryId;
+
+        //var channels = req.body.channels;
+        var channels = ["56cbf55f09e38d870d1df691".toObjectId()];
+
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+
+        var criteria = {
+            user_id:user_id.toObjectId(),
+            category:categoryId.toObjectId()
+        };
+
+        var data = {
+            channels:{$each:channels}
+        };
+
+        FavouriteNewsCategory.addUserNewsChannel(criteria, data, function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
+
+    },
+
+    /**
+     * Get user's channels for a category
+     * @param req
+     * @param res
+     */
+    getNewsChannels:function(req,res){
+
+        var user_id = "56c6aeaa6e1ac13e18b2400d";
+        //var user_id = CurrentSession.id;
+
+        var categoryId = req.params.category;
+
+        var criteria = {
+            search:{user_id:user_id.toObjectId(), category:categoryId.toObjectId()},
+        };
+
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+
+        FavouriteNewsCategory.findFavouriteNewsChannel(criteria,function(resultSet){
+                res.status(resultSet.status).json(resultSet);
+        });
+
+    },
+
+    /**
+     * Delete user's news channel for a category
+     * @param req
+     * @param res
+     */
+
+    deleteNewsChannel:function(req,res){
+
+        var user_id = "56c6aeaa6e1ac13e18b2400d";
+        //var user_id = CurrentSession.id;
+
+        //var categoryId = req.body.categoryId;
+        var categoryId = "56cbeae0e975b0070ad200f8";
+
+        //var channelId = req.body.channelId;
+        //var channelId = "56cbf4ed221d355c0d063183";
+        var channels = ["56cbf4ed221d355c0d063183".toObjectId()];
+
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+
+        var criteria = {
+            user_id:user_id.toObjectId(),
+            category:categoryId.toObjectId()
+        };
+
+        var pullData = {
+            channels: {$in:channels}
+        };
+
+        FavouriteNewsCategory.deleteNewsChannel(criteria, pullData,function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
+
+    },
+
+    /**
+     * save an article to a user
+     * @param req
+     * @param res
+     */
+    saveArticle:function(req,res){
+
+        var req_saved_articles = JSON.parse(req.body.saved_articles);
+
+        var SavedArticle = require('mongoose').model('SavedArticle');
+
+        SavedArticle.saveArticle(req_saved_articles, function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
+
+    },
+
+    /**
+     * get all saved articles of a user
+     * @param req
+     * @param res
+     */
+    getSavedArticles:function(req,res){
+
+        var user_id = "56c6aeaa6e1ac13e18b2400d";
+        //var user_id = CurrentSession.id;
+
+        var criteria = {
+            search:{user_id:user_id.toObjectId()},
+        };
+
+        var SavedArticle = require('mongoose').model('SavedArticle');
+
+        SavedArticle.findSavedArticle(criteria,function(resultSet){
+            res.status(resultSet.status).json(resultSet);
+        });
+
+    },
+
+    /**
+     * delete a saved article of a user
+     * @param req
+     * @param res
+     */
+    deleteSavedArticle:function(req,res) {
+
+        var SavedArticle = require('mongoose').model('SavedArticle');
+
+        var _id = "56d5216ea2d6542b334da0b8";
+        //var _id = req.body.id;
+
+        var criteria = {
+            _id: _id.toObjectId()
+        };
+
+        SavedArticle.deleteSavedArticle(criteria, function (resultSet) {
+            if (resultSet.status == 200) {
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            } else {
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
+    },
+
 
     /**
      * Get WOrk Experinces
