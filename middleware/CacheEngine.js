@@ -1,3 +1,4 @@
+
 var CacheEngine ={
 	
 	_cacheClient:null,
@@ -20,7 +21,7 @@ var CacheEngine ={
 		
 	},
 	/**
-	 * Get chache Data based on the cache key
+	 * Get cache Data based on the cache key
 	 * @param cacheKey 
 	 * return callBack
 	 */
@@ -88,6 +89,104 @@ var CacheEngine ={
                 callBack(err);
             }else{
                 console.log("DELETE FROM THE CACHE -- SUCESS");
+                callBack(result);
+            }
+
+        });
+    },
+    /**
+     * Add Data to the Top of the List
+     * @param key
+     * @param data
+     */
+    addTopToList:function(key,data,callBack){
+        var _data = JSON.stringify(data);
+        this._cacheClient.lpush(key,_data,function(err, result){
+            if( err ){
+                console.log(err);
+                callBack(err);
+            }else{
+                console.log("ADD TO LIST");
+                callBack(result);
+            }
+
+        });
+    },
+    /**
+     * Get Cache List Count
+     * @param key
+     * @param callBack
+     */
+    getListCount:function(key,callBack){
+        this._cacheClient.llen(key,function(err, result){
+            if( err ){
+                console.log(err);
+                callBack(err);
+            }else{
+                callBack(result);
+            }
+
+        });
+    },
+    getList:function(key,page,index,callBack){
+        var _this = this;
+        _this.getListCount(key,function(length){
+            var _out_put = {
+                result_count:Number(length)
+            };
+
+            _this._cacheClient.lrange(key,page,index,function(err,result){
+                if( err ){
+                    console.log(err);
+                    callBack(err);
+                }else{
+                    _out_put['result'] = [];
+                    for(var a =0;a<result.length;a++){
+                        _out_put['result'].push(JSON.parse(result[a]));
+                    }
+
+                    callBack(_out_put);
+                }
+            })
+
+        })
+    },
+    /**
+     * Add Data to Bottom of the list
+     * @param key
+     * @param data
+     * @param callBack
+     */
+    addBottomToList:function(key,data,callBack){
+        var _data = JSON.stringify(data);
+        this._cacheClient.rpush(key,_data,function(err, result){
+            if( err ){
+                console.log(err);
+                callBack(err);
+            }else{
+                console.log("ADD TO LIST");
+                callBack(result);
+            }
+
+        });
+    },
+
+    /**
+     * Add data to Zadd
+     * @param key
+     * @param index
+     * @param data
+     * @param callBack
+     */
+    zAdd:function(key,index,data,callBack){
+        var _data = JSON.stringify(data);
+        var timestamp = new Date().getUTCMilliseconds();
+        this._cacheClient.zadd(key,timestamp,_data,function(err, result){
+            if( err ){
+                console.log(err);
+                callBack(err);
+            }else{
+                console.log("ADD TO LIST");
                 callBack(result);
             }
 

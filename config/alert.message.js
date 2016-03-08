@@ -52,7 +52,11 @@ GLOBAL.Alert={
     DATA_INSERT_ERROR:'Error while adding data',
     DATA_UPDATE_ERROR:'Error while updating data',
 
-    NO_RECIPIENTS:'No Recipient'
+    POST_CONTENT_EMPTY:'Content cannot be blank',
+    NO_RECIPIENTS:'No Recipient',
+
+    COMMENT_CONTENT_EMPTY:"Comment text cannot be blank",
+    COMMENT_POST_ID_EMPTY:"Post Id cannot be blank"
 
 
 
