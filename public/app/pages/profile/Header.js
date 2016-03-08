@@ -13,7 +13,8 @@ export default class Header extends Component {
         super(props);
         this.state={
             loggedUser:Session.getSession('prg_lg'),
-            user:{}
+            user:{},
+            ProgressBarIsVisible : false
         };
 
         let _this = this;
@@ -123,7 +124,6 @@ export class ProfileInfo extends React.Component{
         let designation = (this.props.dt.cur_designation)? this.props.dt.cur_designation:"";
         let full_name =  this.props.dt.first_name + " " +   this.props.dt.last_name;
 
-        console.log(this.state.profileImgSrc);
         return (
             <div className="row row-clr row-rel">
                 <div id="pg-profile-pic-detail-wrapper">
@@ -139,7 +139,7 @@ export class ProfileInfo extends React.Component{
                                         <img src={this.state.profileImgSrc}
                                             alt={full_name}
                                             className="img-responsive center-block pg-profile-detail-img"/>
-                                        {(this.props.readOnly)? null : <ProfileImageUploader imgUpdated={this.profileImgUpdated} /> }
+                                        {(this.props.readOnly)? null : <ProfileImageUploader profileImgSrc={this.state.profileImgSrc} imgUpdated={this.profileImgUpdated} /> }
                                     </div>
                                     </div>
                                 </div>

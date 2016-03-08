@@ -5,7 +5,7 @@
     ""
   ],
   "dependencies": {
-    "bootstrap": "~3.0.0",
+    "bootstrap": "~3.2.0",
     "jquery": "~2.0.3",
     "underscore": "~1.5.2",
     "bxslider-4":"4.2.5",
