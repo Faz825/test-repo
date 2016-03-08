@@ -16,7 +16,7 @@ GLOBAL.ContentUploader = require('./middleware/ContentUploader');
 ContentUploader.init();
 GLOBAL.DateTime  = require('./lib/DateTime');
 GLOBAL.Util  = require('./lib/Util');
-//Define Clusters 
+//Define Clusters
 var Clusters = require('./config/clusters');
 Clusters.init();
 
@@ -30,8 +30,8 @@ app.set('view engine', 'ejs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit:'50M'}));
+app.use(bodyParser.urlencoded({ extended: false ,limit:'50M'}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -79,5 +79,3 @@ app.use(function(err, req, res, next) {
 
 
 module.exports = app;
-
-

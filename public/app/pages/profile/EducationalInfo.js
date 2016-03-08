@@ -5,7 +5,6 @@ import React from 'react';
 import SelectDateDropdown from '../../components/elements/SelectDateDropdown'
 import Session  from '../../middleware/Session';
 
-
 export default class EducationalInfo extends React.Component{
     constructor(props) {
         super(props);
