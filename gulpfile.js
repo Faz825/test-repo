@@ -4,7 +4,8 @@ var source = require('vinyl-source-stream');
 var gutil = require('gulp-util');
 var babelify = require('babelify');
 var uglify = require('gulp-uglify');
-var streamify = require('gulp-streamify')
+var streamify = require('gulp-streamify');
+var browserifycss = require('browserify-css');
 var dependencies = [
 	'react',
   	'react-dom',
@@ -86,10 +87,10 @@ function bundleApp(isProduction) {
             .pipe(gulp.dest('./public/web/js/'));
         return 0;
     }
-    console.log("Dev Deploy.......");
     appBundler
         // transform ES6 and JSX to ES5 with babelify
         .transform("babelify", {presets: ["es2015", "react"]})
+        .transform(browserifycss, {global: true})
         .bundle()
         .on('error',gutil.log)
         .pipe(source('bundle.js'))

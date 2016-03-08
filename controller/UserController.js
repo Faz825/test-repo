@@ -181,13 +181,9 @@ var UserControler ={
         var criteria ={
             pg:0,
             country:CurrentSession.country,
-            user_id:CurrentSession.id
+            user_id:CurrentSession.id,
+            status: [ConnectionStatus.REQUEST_ACCEPTED, ConnectionStatus.REQUEST_SENT]
         };
-
-        if(typeof req.query.pg  != 'undefined' &&
-            req.query.pg != "" && req.query.pg > 1){
-            criteria['pg'] = req.query.pg -1;
-        }
 
 
         User.getConnectionUsers(criteria,function(resultSet){
@@ -200,11 +196,10 @@ var UserControler ={
                 outPut['header'] ={
                     total_result:resultSet.total_result,
                     result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
-                    current_page:req.query.pg,
                     total_pages:Math.ceil(resultSet.total_result/Config.CONNECTION_RESULT_PER_PAGE)
                 };
 
-                outPut['connections'] = resultSet.users
+                outPut['connections'] = resultSet.friends
 
                 res.status(200).send(outPut);
                 return 0
@@ -240,7 +235,7 @@ var UserControler ={
 
             var Connection = require('mongoose').model('Connection');
 
-            Connection.connect(req_connected_users,req_unconnected_users, function (resultSet) {
+            Connection.sendConnectionRequest(req_connected_users,req_unconnected_users, function (resultSet) {
 
                 if (resultSet.status !== 200) {
                     outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
@@ -278,8 +273,19 @@ var UserControler ={
             if(req_news_categories.length >= 1 ) {
 
                 var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+                var news_categories = [],
+                    now = new Date();
 
-                FavouriteNewsCategory.addUserNewsCategory(req_news_categories,function(resultSet){
+                for (var i = 0; req_news_categories.length > i; i++) {
+                    news_categories.push({
+                        user_id: CurrentSession.id.toObjectId(),
+                        category: null,
+                        created_at: now
+                    });
+                }
+
+
+                FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
 
                     if (resultSet.status !== 200) {
                         outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
@@ -303,7 +309,6 @@ var UserControler ={
 
     uploadProfileImage:function(req,res){
 
-        console.log(req.body.profileImg);
 
         if(typeof req.body.profileImg == 'undefined' || typeof req.body.profileImg == "") {
             var outPut={
@@ -336,8 +341,15 @@ var UserControler ={
                         outPut['extra'] = Alert.CACHE_CREATION_ERROR
                     }
                     outPut['user'] = CurrentSession;
+                    //ADD TO CACHE
+                    User.addUserToCache(CurrentSession.id,function(csResult){console.log(csResult)});
+
+
                     res.status(200).json(outPut);
                 });
+
+
+
 
             } else {
                 var outPut={
@@ -809,7 +821,7 @@ var UserControler ={
             function getConnectionCount(profileData,callBack){
 
                 if( profileData!= null){
-                    Connection.getConnectionCount(profileData.user_id,function(connectionCount){
+                    Connection.getFriendsCount(profileData.user_id,function(connectionCount){
                         profileData['connection_count'] = connectionCount;
                         callBack(null,profileData);
                         return 0

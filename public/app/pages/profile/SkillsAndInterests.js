@@ -235,7 +235,7 @@ export class SkillsForm extends React.Component{
         return (
             <div className="form-area" id="skills-form">
                 <div className="form-group inline-content">
-                    <label className="pg-itel-lbl">Add Skills & interests</label>
+                    <label className="pg-itel-lbl">Add Skills &amp; interests</label>
                     <Autosuggest suggestions={suggestions}
                         onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                         getSuggestionValue={getSuggestionValue}
