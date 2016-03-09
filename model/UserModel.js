@@ -129,6 +129,9 @@ var UserSchema = new Schema({
 		type:String,
 		trim:true
 	},
+    salt:{
+        type:String
+    },
 	status:{
 		type:Number,
 		default:1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETED CHOOSE YOUR SECRETARY | 3 - COMPLETED GENERAL INFORMATION
@@ -187,9 +190,12 @@ var UserSchema = new Schema({
 
 
 
+var createSalt = function(){
+    return bCrypt.genSaltSync(10);
+};
 
-var createHash = function(password){
- return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
+var createHash = function(salt, password){
+ return bCrypt.hashSync(password, salt, null);
 };
 
 UserSchema.pre('save', function(next){
@@ -211,7 +217,8 @@ UserSchema.statics.create = function(UserData,callBack){
 	newUser.first_name 	= UserData.first_name;
 	newUser.last_name  	= UserData.last_name;
 	newUser.email		= UserData.email;
-	newUser.password	= createHash(UserData.password);
+    newUser.salt = createSalt();
+	newUser.password	= createHash(newUser.salt, UserData.password);
 	newUser.status		= UserData.status;
 	newUser.secretary	= UserData.secretary;
     newUser.user_name	= UserData.user_name;
@@ -1098,6 +1105,30 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
         }
     })
 }
+
+/**
+ * authenticating user
+ */
+UserSchema.statics.authenticate = function(data, callback) {
+    var _this = this;
+    var criteria = {user_name:data.user_name}
+    _this.findOne(criteria,function(err,resultSet){
+
+        if(!err){
+            if(resultSet == null){
+                callback({status:200,error:Alert.USER_NOT_FOUND});
+            } else if(resultSet.password != createHash(resultSet.salt, data.password)){
+                callback({status:200,error:Alert.INVALID_PASSWORD});
+            } else{
+                callback({status:200,user:resultSet});
+            }
+        }else{
+            console.log("Server Error --------")
+            callback({status:400,error:err});
+        }
+    });
+
+};
 
 
 

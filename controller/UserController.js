@@ -1186,6 +1186,45 @@ var UserControler ={
             });
         }
 
+    },
+
+    doSignin:function(req,res){
+
+        var outPut ={};
+
+        if(typeof req.params.username != 'undefined' && typeof req.params.password != 'undefined'){
+
+            var User = require('mongoose').model('User');
+
+            var data = {
+                user_name:req.params.username,
+                password:req.params.password
+            };
+            User.authenticate(data,function(resultSet){
+
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                } else if(resultSet.status == 200 && resultSet.error != null){
+                    outPut['status'] = ApiHelper.getMessage(400, resultSet.error, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                }
+
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user'] =resultSet.user;
+                res.status(200).send(outPut);
+
+            });
+
+        } else{
+            outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+            res.status(400).json(outPut);
+            return 0;
+
+        }
+
     }
 
 
