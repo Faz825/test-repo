@@ -11,13 +11,13 @@ export default class CommentElement extends React.Component{
             postId:this.props.postId,
             loggedUser : Session.getSession('prg_lg')
         };
-
+        console.log(this.props.postId)
     }
     onCommentAdd(comment_text){
-
+        console.log(this.state.postId)
         if(comment_text != ""){
             let commentData ={
-                __post_id:this.state.postId,
+                __post_id:this.props.postId,
                 __content:comment_text
             }
             $.ajax({
@@ -30,7 +30,7 @@ export default class CommentElement extends React.Component{
                     if (data.status.code == 200) {
                         this.setState({text:""});
                         document.getElementById('comment_input').innerHTML = "";
-                        this.props.onCommentAddSuccess(data);
+                        this.props.onCommentAddSuccess(this.state.postId);
                     }
                 }.bind(this),
                 error: function (request, status, error) {

@@ -127,7 +127,6 @@ PostSchema.statics.create = function(post,callBack){
 
         function savePost(callBack){
             _post.save(function(err,postData){
-console.log(postData.content)
                 if(!err){
                     var _postData = {
                         post_id:postData._id.toString(),
@@ -138,7 +137,8 @@ console.log(postData.content)
                         post_visible_mode : postData.post_visible_mode,
                         comment_count :postData.comment_count,
                         lik_count:postData.like_count,
-                        created_by:postData.created_by
+                        created_by:postData.created_by,
+                        post_mode:postData.post_mode
 
                     };
 
