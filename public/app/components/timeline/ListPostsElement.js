@@ -7,11 +7,11 @@ import InfiniteScroll from  'react-infinite-scroll';
 import Session  from '../../middleware/Session';
 import Lib    from '../../middleware/Lib';
 import CommentElement from './CommentElement';
-
+import ProgressBar from '../elements/ProgressBar'
 const ListPostsElement  = ({posts})=>{
 
         if(posts.length <= 0){
-            return (<div>Loading ..... </div>)
+            return (<ProgressBar />)
         }
 
         let _postElement = posts.map((post,key)=>{
@@ -62,15 +62,14 @@ class SinglePost extends React.Component{
         }
 
     }
-    loadComment(){
+    loadComment(postId){
         let user = Session.getSession('prg_lg');
         let _this =  this;
-
         $.ajax({
             url: '/pull/comments',
             method: "GET",
             dataType: "JSON",
-            data:{__pg:0,__post_id:this.state.postItem.post_id},
+            data:{__pg:0,__post_id:this.props.postItem.post_id},
             headers: { 'prg-auth-header':user.token },
             success: function (data, text) {
                 if(data.status.code == 200){
