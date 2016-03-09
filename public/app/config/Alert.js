@@ -17,7 +17,8 @@ const Alert = {
 	"ENTER_COMPANY"              : "Please enter your 'Company'",
 	"ENTER_GRAD_DATE"            : "Please select your 'Graduation Date'",
 	"ENTER_COUNTRY"              : "Please select your 'Country'",
-	"ENTER_DOB"                  : "Please select your 'Date of Birth'"
+	"ENTER_DOB"                  : "Please select your 'Date of Birth'",
+	"EMPTY_USER_NAME"            : "Please enter your 'User Name'"
 }
 
 
