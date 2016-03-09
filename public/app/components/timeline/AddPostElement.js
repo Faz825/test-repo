@@ -167,7 +167,6 @@ export class PostHeader extends React.Component{
     }
 
     render() {
-        console.log(this.state.imgList);
         return (
             <div className="row row-clr" id="pg-newsfeed-post-section-header">
                 <ul>
