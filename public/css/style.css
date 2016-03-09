@@ -58,7 +58,7 @@ a:focus{
 .pgs-login-area .inputWrapper:last-child{
 	margin: 0;
 }
-.pgs-login-area .inputWrapper .form-control{
+.pgs-login-area .inputWrapper .pgs-sign-inputs{
 	font-size: 9px;
 	height: 27px;
 	background: #f6fafc;
@@ -86,6 +86,7 @@ a:focus{
 .pgs-login-area .userNameHolder .checkbox{
 	margin: 0;
 	padding: 0;
+    float: left;
 }
 .pgs-login-area .userNameHolder .checkbox label{
 	text-transform: capitalize;
@@ -93,6 +94,13 @@ a:focus{
 	color: #7795a8;
 	padding-left: 16px;
 	position: relative;
+}
+.pgs-login-area .input-field{
+	padding: 0;
+}
+.pgs-login-area .form-group p,
+.pgs-login-area .form-group .invalid-msg{
+	display: none !important;
 }
 /*** custom checkboxes ***/
 .pgs-login-area .userNameHolder input[type=checkbox] { display:none; } /* to hide the checkbox itself */
@@ -746,13 +754,19 @@ a:focus{
 }
 .pg-footer-left-options-panel .pgs-secratery-img{
 	float: none;
-	height: 110px;
-	padding: 0;
-	width: 80px;
+    position: relative;
+    height: 110px;
+    padding: 0;
+    width: 80px;
+	background: #ECF6FC;
 }
 .pg-footer-left-options-panel .pgs-secratery-img img{
-	height: 100%;
-	width: 100%;
+	height: auto;
+    width: 100%;
+    box-shadow: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
 }
 .pg-footer-left-options {
 	background-color: #59afe1;
@@ -1076,7 +1090,7 @@ a:focus{
     padding-left: 0px;
     padding-right: 0px;
     margin-left: 8px;
-    height: 19px;
+    height: 16px;
     width: 19px;
     line-height: 15px;
     border: 0;
@@ -1129,7 +1143,7 @@ a:focus{
 button.addEduInfo{
     text-indent: 0;
     width: auto;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 17px;
     color: #333;
     font-weight: normal;
@@ -1376,4 +1390,11 @@ textarea{
 		font-size: 9px;
 	}
 
+}
+
+@media (min-width: 1024px) and (max-width: 1280px){
+	.pgs-login-area .btnHolder .pgs-sign-submit{
+		font-size: 10px;
+		width: 68px;
+	}
 }

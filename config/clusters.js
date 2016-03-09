@@ -2,20 +2,23 @@
  * Clusters file willbe use to define all Third party server clustors configurations and initilaizations
  */
 
- var Clusters ={
+var Clusters ={
 
- 	 init:function(){
+    init:function(){
 
- 	 	/**
- 	 	 * Initilizec Cache Engine
- 	 	 */
-		GLOBAL.CacheEngine = require('../middleware/CacheEngine');
-		CacheEngine.init();
+        /**
+        * Initilizec Cache Engine
+        */
+        GLOBAL.CacheEngine = require('../middleware/CacheEngine');
+        CacheEngine.init();
 
-		 GLOBAL.EmailEngine = require('../middleware/EmailEngine');
-		 EmailEngine.init();
- 	 }
+        GLOBAL.EmailEngine = require('../middleware/EmailEngine');
+        EmailEngine.init();
 
- }
+        GLOBAL.ES = require('../middleware/ES');
+        ES.init();
+    }
+
+}
 
 module.exports = Clusters;

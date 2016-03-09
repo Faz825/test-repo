@@ -78,6 +78,7 @@ class Dropdown extends React.Component{
 				}
 
         this.selectChange = this.selectChange.bind(this);
+		this.currYear = new Date().getFullYear();
     }
 
     selectChange(e){
@@ -97,7 +98,6 @@ class Dropdown extends React.Component{
 		let options = [];
 		let fieldName = this.props.fieldName;
 
-
 		switch(fieldName) {
 		    case "mm":
 		        start = "1";
@@ -108,8 +108,8 @@ class Dropdown extends React.Component{
 		        end = "31";
 		        break;
 		    case "yyyy":
-		        start = "1991";
-		        end = "2016";
+		        start = "1960";
+		        end = this.currYear;
 		        break;
 
 		}
