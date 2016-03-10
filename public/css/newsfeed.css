@@ -38,6 +38,9 @@
 #pg-newsfeed-post-section-header{
     border-bottom: 1px solid #dee6eb;
 }
+#pg-newsfeed-post-section-header input[type=file]{
+    display: none;
+}
 #pg-newsfeed-post-section-header ul {
     padding-left: 0px;
     margin-bottom: 0px;
@@ -56,7 +59,7 @@
     clear: left;
     height: 0;
 }
-#pg-newsfeed-post-section-header ul li a {
+#pg-newsfeed-post-section-header ul li .tabmenu {
     text-decoration: none;
     font: 10px 'montserratregular', sans-serif;
     color: #2d5164;
@@ -64,12 +67,12 @@
     display: inline-block;
     cursor: pointer;
 }
-#pg-newsfeed-post-section-header ul li a img {
+#pg-newsfeed-post-section-header ul li .tabmenu img {
     float: left;
     margin-top: -3px;
     margin-right: 5px;
 }
-#pg-newsfeed-post-section-header ul li a img:after {
+#pg-newsfeed-post-section-header ul li .tabmenu img:after {
     visibility: hidden;
     display: block;
     font-size: 0;
@@ -80,14 +83,14 @@
 .pg-hover-status-icon {
     display: none;
 }
-#pg-newsfeed-post-section-header ul li a:hover {
+#pg-newsfeed-post-section-header ul li .tabmenu:hover {
     color: #59afe1 !important;
     border-bottom: 2px solid #59afe1;
 }
-#pg-newsfeed-post-section-header ul li a:hover .pg-hover-status-icon {
+#pg-newsfeed-post-section-header ul li .tabmenu:hover .pg-hover-status-icon {
     display: block;
 }
-#pg-newsfeed-post-section-header ul li a:hover .pg-default-status-icon {
+#pg-newsfeed-post-section-header ul li .tabmenu:hover .pg-default-status-icon {
     display: none;
 }
 .selected-tab a {
@@ -139,7 +142,7 @@
     display: inline-block;
     vertical-align: top;
     margin-right: 12px;
-    width: 15%;
+    width: 10%;
     float:left;
 }
 #pg-newsfeed-post-active-footer{

@@ -17,11 +17,11 @@ export default class AddPostElement extends React.Component{
         console.log(tab_id,tab_container_id);
 
     }
+
     afterPostSubmit(data){
-
       this.props.onPostSubmitSuccess(data);
-
     }
+
     render(){
         return (
             <div className="pg-timeline-white-box pg-round-border pg-box-shadow">
@@ -34,12 +34,6 @@ export default class AddPostElement extends React.Component{
     }
 
 }
-
-
-
-
-
-
 
 export class TextPostElement extends React.Component{
     constructor(props){
@@ -133,46 +127,83 @@ export class TextPostElement extends React.Component{
  * @returns {XML}
  * @constructor
  */
-const PostHeader =({onClickTab})=>{
+export class PostHeader extends React.Component{
+    constructor(props){
+        super(props)
+        this.state={
+            imgList : []
+        }
 
-    return (
-        <div className="row row-clr" id="pg-newsfeed-post-section-header">
-            <ul>
-                <li className="tabmenu selected-tab">
-                    <a href="javascript:void(0);" className="tabmenu" id="pg_tb_1"
-                       onClick={(event)=>onClickTab('pg_tb_1', 'pg_content_1')}>
-                        <img src="/images/pg-newsfeed-share-default.png" alt="" className="img-responsive pg-default-status-icon"/>
-                        <img src="/images/pg-newsfeed-share-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
-                        Share Update
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);" className="tabmenu" id="pg_tb_2"
-                       onClick={(event)=>onClickTab('pg_tb_2', 'pg_content_2')}>
-                        <img src="/images/pg-newsfeed-image-default.png" alt="" className="img-responsive pg-default-status-icon"/>
-                        <img src="/images/pg-newsfeed-image-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
-                        Photo/Video
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);" className="tabmenu" id="pg_tb_3"
-                       onClick={(event)=>onClickTab('pg_tb_3', 'pg_content_3')}>
-                        <img src="/images/pg-newsfeed-life-event-default.png" alt="" className="img-responsive pg-default-status-icon"/>
-                        <img src="/images/pg-newsfeed-life-event-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
-                        Life Event
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);"  className="tabmenu" id="pg_tb_4"
-                       onClick={(event)=>onClickTab('pg_tb_4', 'pg_content_4')}>
-                        <img src="/images/pg-newsfeed-location-default.png" alt="" className="img-responsive pg-default-status-icon"/>
-                        <img src="/images/pg-newsfeed-location-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
-                        Current Location
-                    </a>
-                </li>
-            </ul>
-        </div>
-    )
-};
+        this.onClickTab = this.onClickTab.bind(this);
+        this.previewImages = this.previewImages.bind(this);
+    }
 
+    onClickTab(ele){
+        console.log(ele);
+    }
 
+    previewImages(e){
+	    let imgSrc;
+        let data = this.state.imgList;
+
+        for(var i = 0; i< e.target.files.length; i++){
+            _readImage(e.target.files[i]);
+        }
+
+        function _readImage(file){
+            var reader = new FileReader();
+    	    reader.onload = (function(dataArr,context) {
+
+    	    	return function(e) {
+        	    	imgSrc = e.target.result;
+                    dataArr.push(imgSrc);
+        	    };
+
+    	    })(data,this);
+
+            reader.readAsDataURL(file);
+        }
+
+    }
+
+    render() {
+        return (
+            <div className="row row-clr" id="pg-newsfeed-post-section-header">
+                <ul>
+                    <li className="tabmenu selected-tab">
+                        <a href="javascript:void(0);" className="tabmenu" id="pg_tb_1"
+                           onClick={(event)=>{this.onClickTab("bla1")}}>
+                            <img src="/images/pg-newsfeed-share-default.png" alt="" className="img-responsive pg-default-status-icon"/>
+                            <img src="/images/pg-newsfeed-share-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
+                            Share Update
+                        </a>
+                    </li>
+                    <li>
+                        <label htmlFor="imgUpload" className="tabmenu" id="pg_tb_2">
+                            <img src="/images/pg-newsfeed-image-default.png" alt="" className="img-responsive pg-default-status-icon"/>
+                            <img src="/images/pg-newsfeed-image-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
+                            Photo/Video
+                        </label>
+                        <input type='file' id="imgUpload" onChange={this.previewImages} multiple="multiple" />
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" className="tabmenu" id="pg_tb_3"
+                           onClick={(event)=>{this.onClickTab("bla3")}}>
+                            <img src="/images/pg-newsfeed-life-event-default.png" alt="" className="img-responsive pg-default-status-icon"/>
+                            <img src="/images/pg-newsfeed-life-event-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
+                            Life Event
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);"  className="tabmenu" id="pg_tb_4"
+                           onClick={(event)=>{this.onClickTab("bla4")}}>
+                            <img src="/images/pg-newsfeed-location-default.png" alt="" className="img-responsive pg-default-status-icon"/>
+                            <img src="/images/pg-newsfeed-location-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
+                            Current Location
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        );
+    }
+}

@@ -14,8 +14,8 @@ export default class CoverImageUploader extends React.Component{
             src : "",
             isShowingModal : false,
             cropResult : null,
-            progressbarIsVisible : false,
-            cropBtnIsVisible : false
+            cropperVisible : false,
+            progressbarIsVisible : false
         };
     }
 
@@ -28,7 +28,7 @@ export default class CoverImageUploader extends React.Component{
 
     onChange(e){
         e.preventDefault();
-        this.setState({progressbarIsVisible: true, cropBtnIsVisible : true});
+        this.setState({progressbarIsVisible: true, cropperVisible : true});
         let files;
         if (e.dataTransfer) {
             files = e.dataTransfer.files;
@@ -45,22 +45,29 @@ export default class CoverImageUploader extends React.Component{
     getCropper(){
         return (
             <div>
-                <Cropper
-                    ref='cropper'
-                    src={this.state.src}
-                    style={{height: '450px', width: '100%'}}
-                    guides={true}
-                    crop={this.cropImage}
-                    aspectRatio={1600/230}
-                    checkCrossOrigin={false}
-                    />
+                {
+                    (this.state.cropperVisible)?
+                    <Cropper
+                        ref='cropper'
+                        src={this.state.src}
+                        style={{height: '450px', width: '100%'}}
+                        guides={true}
+                        crop={this.cropImage}
+                        aspectRatio={1600/230}
+                        checkCrossOrigin={false}
+                        />
+                    :
+                    <div className="noImage">
+                        <img src="/images/no_image.png" />
+                    </div>
+                }
                 {(this.state.progressbarIsVisible)? <div className="progressBarHolder"><ProgressBar /></div> : null}
                 <div className="imgUploadBtnHolder">
                     <label htmlFor="newCoverImg" className="coverImgUpload pgs-sign-submit" >
                         Upload File
                         <input type='file' onChange={this.onChange.bind(this)} id="newCoverImg" />
                     </label>
-                    {(this.state.cropBtnIsVisible)? <button onClick={this.cropImage.bind(this)} style={{float: 'right'}} className="pgs-sign-submit" >Crop Image</button> : null }
+                    {(this.state.cropperVisible)? <button onClick={this.cropImage.bind(this)} style={{float: 'right'}} className="pgs-sign-submit" >Crop Image</button> : null }
                 </div>
             </div>
         )
