@@ -1200,6 +1200,7 @@ var UserControler ={
                 user_name:req.params.username,
                 password:req.params.password
             };
+
             User.authenticate(data,function(resultSet){
 
                 if(resultSet.status != 200){
@@ -1212,9 +1213,19 @@ var UserControler ={
                     return 0;
                 }
 
-                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['user'] =resultSet.user;
-                res.status(200).send(outPut);
+                var _cache_key = CacheEngine.prepareCacheKey(resultSet.user.token);
+                CacheEngine.addToCache(_cache_key,resultSet.user,function(cacheData){
+
+                    outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+
+                    if(!cacheData){
+                        outPut['extra']=Alert.CACHE_CREATION_ERROR
+                    }
+
+                    outPut['user']=resultSet.user;
+                    res.status(200).send(outPut);
+
+                });
 
             });
 

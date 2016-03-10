@@ -1120,7 +1120,34 @@ UserSchema.statics.authenticate = function(data, callback) {
             } else if(resultSet.password != createHash(resultSet.salt, data.password)){
                 callback({status:200,error:Alert.INVALID_PASSWORD});
             } else{
-                callback({status:200,user:resultSet});
+                var _profileData = {
+                    id:resultSet._id,
+                    token:uuid.v1(),
+                    first_name:resultSet.first_name,
+                    last_name:resultSet.last_name,
+                    email:resultSet.email,
+                    status:resultSet.status,
+                    user_name:resultSet.user_name,
+                    country:resultSet.country,
+                    dob:resultSet.dob
+                };
+
+                for(var i=0;i<resultSet.working_experiences.length;i++){
+                    if(resultSet.working_experiences[i].is_current_work_place){
+                        _profileData['company_name']=resultSet.working_experiences[i].company_name;
+                        _profileData['job_title']=resultSet.working_experiences[i].title;
+                    }
+                }
+
+                if(resultSet.education_details.length > 0){
+                    _profileData['school']=resultSet.education_details[0].school;
+                    _profileData['grad_date']=resultSet.education_details[0].date_attended_to;
+                }
+
+
+
+                callback({status:200,user:_profileData});
+
             }
         }else{
             console.log("Server Error --------")
