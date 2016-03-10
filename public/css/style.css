@@ -1386,12 +1386,16 @@ textarea{
     width: 70%;
 }
 #skills-form .inline-content{
-	position: relative;;
+	position: relative;
+}
+#skills-form .react-autosuggest__container{
+	position: relative;
+	z-index: 1;
 }
 #react-whatever-1{
 	position: absolute;
 	width: 70%;
-	top : 45px;
+	top : 23px;
 	left: 0;
 	margin: 0;
 	padding: 0;

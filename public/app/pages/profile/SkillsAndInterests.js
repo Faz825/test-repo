@@ -17,19 +17,14 @@ export default class SkillsAndInterests extends React.Component{
 
         this.tempdata = {
             day_to_day_comforts:[
-                {skillID: 1, skill: "CSS"},
-                {skillID: 2, skill: "JSON"},
-                {skillID: 3, skill: "JS"},
-                {skillID: 4, skill: "HTML"},
-                {skillID: 5, skill: "jQuery"},
-                {skillID: 6, skill: "React"}
+                {id: "56e117d32762306307c36707", name: "CSS"},
+                {is: "56e117d32762306307c36708", name: "Javascript"},
+                {id: "56e117d32762306307c36706", name: "HTML"}
             ],
             experienced:[
-                {skillID: 1, skill: "CSS"},
-                {skillID: 2, skill: "JSON"},
-                {skillID: 3, skill: "JS"},
-                {skillID: 4, skill: "jQuery"},
-                {skillID: 5, skill: "HTML"}
+                {id: "56e117d32762306307c36707", name: "CSS"},
+                {is: "56e117d32762306307c36708", name: "Javascript"},
+                {id: "56e117d32762306307c36706", name: "HTML"}
             ]
         }
 
@@ -105,37 +100,26 @@ export default class SkillsAndInterests extends React.Component{
     }
 }
 
-const skills = [
-    {skillID: 1, skill: "CSS"},
-    {skillID: 2, skill: "JSON"},
-    {skillID: 3, skill: "JS"},
-    {skillID: 4, skill: "HTML"},
-    {skillID: 5, skill: "jQuery"},
-    {skillID: 6, skill: "React"},
-    {skillID: 7, skill: "Angular"},
-    {skillID: 8, skill: "nodeJs"}
-];
-
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function getSuggestions(value) {
+function getSuggestions(value, data) {
   const escapedValue = escapeRegexCharacters(value.trim());
   if (escapedValue === '') {
     return [];
   }
   const regex = new RegExp('^' + escapedValue, 'i');
-  return skills.filter(skills => regex.test(skills.skill));
+  return data.filter(data => regex.test(data.name));
 }
 
 function getSuggestionValue(suggestion) {
-  return suggestion.skill;
+  return suggestion.name;
 }
 
 function renderSuggestion(suggestion) {
   return (
-    <span id={suggestion.skillId}>{suggestion.skill}</span>
+    <span id={suggestion.id}>{suggestion.name}</span>
   );
 }
 
@@ -149,7 +133,8 @@ export class SkillsForm extends React.Component{
             value: '',
             suggestions: getSuggestions(''),
             checked : false,
-            suggestionsList : {}
+            suggestionsList : {},
+            loggedUser:Session.getSession('prg_lg')
         };
 
         this.modifiedSkillsList = {
@@ -162,6 +147,23 @@ export class SkillsForm extends React.Component{
                 remove : []
             }
         }
+
+        this.skills;
+        $.ajax({
+            url: '/skills',
+            method: "GET",
+            dataType: "JSON",
+            success: function (data, text) {
+                if(data.status.code == 200){
+                    this.skills = data.skills;
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }.bind(this)
+        });
 
         this.skillId = [];
         this.removeSkill = this.removeSkill.bind(this);
@@ -178,15 +180,32 @@ export class SkillsForm extends React.Component{
         this.modifiedSkillsList = skillsObj;
 
         for (var key in skillData[type]) {
-            if (skillData[type][key].skillID == id) delete skillData[type][key];
+            if (skillData[type][key].id == id) delete skillData[type][key];
         }
 
         this.setState({formData : skillData});
     }
 
     onFormSave(e){
+        console.log(this.modifiedSkillsList);
         e.preventDefault();
         this.props.onFormSave(this.modifiedSkillsList);
+
+        $.ajax({
+            url: '/skill-info/save',
+            method: "POST",
+            dataType: "JSON",
+            data: {skill_set:JSON.stringify(this.modifiedSkillsList)},
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            success: function (data, text) {
+
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }.bind(this)
+        });
     }
 
     onChange(event, { newValue }) {
@@ -195,8 +214,8 @@ export class SkillsForm extends React.Component{
 
     onSuggestionsUpdateRequested({ value }) {
         this.setState({
-          suggestions: getSuggestions(value),
-          suggestionsList : getSuggestions(value)
+          suggestions: getSuggestions(value, this.skills),
+          suggestionsList : getSuggestions(value, this.skills)
         });
     }
 
@@ -208,16 +227,15 @@ export class SkillsForm extends React.Component{
         let typeSelected = (this.state.checked)? 'day_to_day_comforts' : 'experienced';
 
         for (var key in suggestionsList) {
-            if(suggestionsList[key].skill == skillName){
-                skillsObj[typeSelected].add.push(suggestionsList[key].skillID);
-            }
-            if(suggestionsList[key].skill == skillName){
-                skillData[typeSelected].push({skillID : suggestionsList[key].skillID, skill : skillName})
+            if(suggestionsList[key].name == skillName){
+                skillsObj[typeSelected].add.push(suggestionsList[key].id);
+                skillData[typeSelected].push({id : suggestionsList[key].id, name : skillName})
             }
         }
 
         this.modifiedSkillsList = skillsObj;
         this.setState({formData : skillData, value : "", checked : false});
+
     }
 
     onCheck(){
@@ -277,8 +295,8 @@ const SkillTagList = ({skills,editable,type,removeSkill}) => {
                 skills.map(function(skill,index){
                     return(
                         <li className="pg-endrose-item" key={index}>
-                            <span className="pg-endorse-item-name" data-skillid={skill.skillID} >{skill.skill}</span>
-                            {(editable)? <i className="fa fa-times pg-skill-delete-icon" onClick={(event)=>removeSkill(skill.skill, skill.skillID, type)}/> : null}
+                            <span className="pg-endorse-item-name" data-skillid={skill.id} >{skill.name}</span>
+                            {(editable)? <i className="fa fa-times pg-skill-delete-icon" onClick={(event)=>removeSkill(skill.name, skill.id, type)}/> : null}
                         </li>
                     )
                 })

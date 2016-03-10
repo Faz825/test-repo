@@ -55,7 +55,7 @@ GLOBAL.AccessAllow = [
 ];
 
 
-/** 
+/**
  * Actual Routes Implementation without Authentication
  */
 router.post('/doSignup',UserController.doSignup);
@@ -114,8 +114,6 @@ router.get('/skills/delete', SkillController.deleteSkill);
 
 
 //User's skill add / delete
-router.get('/skill-info/save', UserController.saveSkillInfo);
-
 router.post('/collage-and-job/save',UserController.addCollageAndJob);
 
 //For testing purpose all are set as get request
@@ -164,7 +162,7 @@ router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle
 router.all('/*',oAuth.Authentication);
 
 
-/** 
+/**
  * Implement Actual Routes that need to Authenticate
  */
 
@@ -190,5 +188,6 @@ router.get('/pull/posts', PostController.ch_getPost);
 router.post('/comment/composer', CommentController.addComment);
 router.get('/pull/comments', CommentController.getComment);
 
+router.post('/skill-info/save', UserController.saveSkillInfo);
 
 module.exports = router;

@@ -326,7 +326,7 @@ var UserControler ={
             entity_tag:UploadMeta.PROFILE_IMAGE
         }
         ContentUploader.uploadFile(data,function (payLoad) {
-            
+
             if (payLoad.status != 400) {
                 var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
                 CurrentSession['status'] = 7;
