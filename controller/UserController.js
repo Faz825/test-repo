@@ -633,6 +633,8 @@ var UserControler ={
             crypto = require('crypto'),
             User = require('mongoose').model('User');
 
+        var outPut ={};
+
         async.waterfall([
             // Generate random token
             function(done) {
@@ -644,9 +646,9 @@ var UserControler ={
             // Lookup user by username
             function(token, done) {
                 //if (req.body.email) {
-                if (req.params.email) {
+                if (req.body.email) {
                     //var email = req.body.email;
-                    var email = req.params.email;
+                    var email = req.body.email;
 
                     User.findByEmail(email,function(ResultSet) {
 
@@ -661,12 +663,14 @@ var UserControler ={
                             });
 
                         } else{
-                            res.status(400).json(ApiHelper.getMessage(400, Alert.NO_ACCOUNT_FOUND, Alert.ERROR));
+                            outPut['status'] = ApiHelper.getMessage(400, Alert.NO_ACCOUNT_FOUND, Alert.ERROR);
+                             res.status(400).json(outPut);
                         }
                     });
 
                 } else {
-                    res.status(400).json(ApiHelper.getMessage(400, Alert.EMAIL_EMPTY, Alert.ERROR));
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.EMAIL_EMPTY, Alert.ERROR);
+                    res.status(400).json(outPut);
                 }
             },
             function(token, user, done) {
@@ -689,9 +693,11 @@ var UserControler ={
                 };
                 EmailEngine.sendMail(sendOptions, function(err){
                     if(!err){
-                        res.status(200).json(ApiHelper.getMessage(200, Alert.FORGOT_PASSWORD_EMAIL_SENT, Alert.SUCCESS));
+                        outPut['status'] = ApiHelper.getMessage(200, Alert.FORGOT_PASSWORD_EMAIL_SENT, Alert.SUCCESS);
+                        res.status(200).json(outPut);
                     } else{
-                        res.status(400).json(ApiHelper.getMessage(400, Alert.FAILED_TO_SEND_EMAIL, Alert.ERROR));
+                        outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_SEND_EMAIL, Alert.ERROR);
+                        res.status(400).json(outPut);
                     }
                 });
 

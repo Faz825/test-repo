@@ -89,6 +89,7 @@ export default class Header extends React.Component {
                 success: function (data, text) {
 
                     if (data.status.code === 200) {
+                        _this.setState({validateAlert: ""});
                         Session.createSession("prg_lg", data.user);
                         location.reload();
                     }
@@ -166,7 +167,7 @@ export default class Header extends React.Component {
                                                 required={true}
                                                 validate={this.state.invalidElements.password}
                                                 error_message={this.state.error.password}/>
-                                    <a href="#">Forgot Password?</a>
+                                    <a href="/forgot-password">Forgot Password?</a>
                                 </div>
                                 <div className="form-group btnHolder col-sm-3">
                                     <button type="submit" size="6" className="pgs-sign-submit">Login</button>

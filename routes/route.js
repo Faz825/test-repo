@@ -50,7 +50,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts','/js'];
 GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
-    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id'
+    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password'
 
 ];
 
@@ -64,6 +64,10 @@ router.get('/secretaries',SecretaryController.getSeretaries);
 router.get('/cache-check/:key',SecretaryController.cacheCheck);
 
 router.post('/doSignin', UserController.doSignin);
+//For testing purpose all are set as get request
+router.post('/forgot-password/request/', UserController.forgotPassword);
+//router.post('/forgot-password/validate/:token', UserController.validateToken);
+//router.post('/forgot-password/reset/:token', UserController.resetPassword);
 
 
 
@@ -119,11 +123,6 @@ router.get('/skills/delete', SkillController.deleteSkill);
 router.get('/skill-info/save', UserController.saveSkillInfo);
 
 router.post('/collage-and-job/save',UserController.addCollageAndJob);
-
-//For testing purpose all are set as get request
-router.get('/forgot-password/request/:email', UserController.forgotPassword);
-router.get('/forgot-password/validate/:token', UserController.validateToken);
-router.get('/forgot-password/reset/:token', UserController.resetPassword);
 
 
 //News Category / Channel & News Add / Get All & Delete
@@ -191,6 +190,8 @@ router.get('/pull/posts', PostController.ch_getPost);
 
 router.post('/comment/composer', CommentController.addComment);
 router.get('/pull/comments', CommentController.getComment);
+
+
 
 
 module.exports = router;

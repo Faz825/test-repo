@@ -9,6 +9,8 @@ import SelectSecretary  from './pages/signup/SelectSecretary';
 
 import ProfileIndex  from './pages/profile/Index';
 
+import ForgotPassword from './pages/signup/ForgotPassword'
+
 
 
 
@@ -27,6 +29,9 @@ let rootRoute =(
          * Profile Route
          */
         <Route name="profile" path="/profile/:uname" component={ProfileIndex}/>
+
+            <Route name="forgot-password" path="/forgot-password" component={ForgotPassword}/>
+
 
 	</Route>
 );
