@@ -28,7 +28,8 @@ var DefaultController   = require('../controller/DefaultController'),
     SkillController     = require('../controller/SkillController'),
     NewsController      = require('../controller/NewsController'),
     PostController      = require('../controller/PostController'),
-    CommentController   = require('../controller/CommentController') ;
+    CommentController   = require('../controller/CommentController'),
+    UploadController    = require('../controller/UploadController');
 
 
 
@@ -158,6 +159,7 @@ router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle
 
 
 
+
 /**
  * Push All Rqurst through oAuth
  */
@@ -189,6 +191,11 @@ router.get('/pull/posts', PostController.ch_getPost);
 
 router.post('/comment/composer', CommentController.addComment);
 router.get('/pull/comments', CommentController.getComment);
+
+
+
+router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
+
 
 
 module.exports = router;

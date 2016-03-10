@@ -96,6 +96,19 @@ class SinglePost extends React.Component{
         let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
             _profile.images.profile_image.http_url:"";
 
+
+
+
+        var uploaded_files = _post.upload.map((upload,key)=>{
+            return (
+                <div className="pg-newsfeed-post-upload-image" key={key}>
+                    {
+                        <img src = {upload.http_url}/>
+
+                    }
+                </div>
+            )
+        })
         return (
             <div className="pg-timeline-white-box pg-top-round-border pg-add-margin-top">
                 <div className="row row-clr pg-newsfeed-section-common-content-inner pg-rm-padding-bottom">
@@ -109,6 +122,12 @@ class SinglePost extends React.Component{
                         </div>
                         <div className="row row-clr pg-newsfeed-common-content-post-content">
                             <p className="pg-newsfeed-post-description">{_post.content}</p>
+                        </div>
+
+                        <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
+
+                            {uploaded_files}
+
                         </div>
                         <PostActionBar comment_count={_post.comment_count}
                                        onLikeClick = {event=>this.onLikeClick()}

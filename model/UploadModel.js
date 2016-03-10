@@ -94,7 +94,6 @@ UploadSchema.statics.saveOnDb= function(payLoad,callBack){
 
 
 
-
     content.file_name    = payLoad.file_name;
     content.file_type    = payLoad.file_type;
     content.is_default      = payLoad.is_default;
@@ -138,7 +137,7 @@ UploadSchema.statics.saveOnDb= function(payLoad,callBack){
  * @param callBack
  */
 UploadSchema.statics.getProfileImage=function(userId,callBack){
-    console.log(userId)
+
 
     this.aggregate([
         {$match:
@@ -183,9 +182,6 @@ UploadSchema.statics.getProfileImage=function(userId,callBack){
         }
     });
 }
-
-
-
 
 
 

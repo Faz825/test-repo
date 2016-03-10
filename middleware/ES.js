@@ -71,7 +71,9 @@ var ES = {
         this.esClient.search(search_param).then(function (resp) {
             callBack(_this.formatSearchResult(resp));
         }, function (err) {
+
             console.trace(err.message);
+            callBack(null)
         });
 
     },
