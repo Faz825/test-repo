@@ -1120,33 +1120,101 @@ UserSchema.statics.authenticate = function(data, callback) {
             } else if(resultSet.password != createHash(resultSet.salt, data.password)){
                 callback({status:200,error:Alert.INVALID_PASSWORD});
             } else{
-                var _profileData = {
-                    id:resultSet._id,
-                    token:uuid.v1(),
-                    first_name:resultSet.first_name,
-                    last_name:resultSet.last_name,
-                    email:resultSet.email,
-                    status:resultSet.status,
-                    user_name:resultSet.user_name,
-                    country:resultSet.country,
-                    dob:resultSet.dob
-                };
+                var _async = require('async'),
+                    Secretary = require('mongoose').model('Secretary'),
+                    Upload = require('mongoose').model('Upload');
 
-                for(var i=0;i<resultSet.working_experiences.length;i++){
-                    if(resultSet.working_experiences[i].is_current_work_place){
-                        _profileData['company_name']=resultSet.working_experiences[i].company_name;
-                        _profileData['job_title']=resultSet.working_experiences[i].title;
+                _async.waterfall([
+                    function formatUserData(callBack){
+
+                        var _profileData = {
+                            id:resultSet._id,
+                            token:uuid.v1(),
+                            first_name:resultSet.first_name,
+                            last_name:resultSet.last_name,
+                            email:resultSet.email,
+                            status:resultSet.status,
+                            user_name:resultSet.user_name,
+                            country:resultSet.country,
+                            dob:resultSet.dob,
+                            secretary_id:resultSet.secretary
+                        };
+
+                        for(var i=0;i<resultSet.working_experiences.length;i++){
+                            if(resultSet.working_experiences[i].is_current_work_place){
+                                _profileData['company_name']=resultSet.working_experiences[i].company_name;
+                                _profileData['job_title']=resultSet.working_experiences[i].title;
+                            }
+                        }
+
+                        if(resultSet.education_details.length > 0){
+                            _profileData['school']=resultSet.education_details[0].school;
+                            _profileData['grad_date']=resultSet.education_details[0].date_attended_to;
+                        }
+
+                        callBack(null, _profileData);
+
+                    },
+                    function getSecretary(profileData,callBack){
+
+                        console.log(profileData);
+
+                        if( profileData.secretary_id != null){
+                            Secretary.getSecretaryById(profileData.secretary_id,function(secretary){
+                                profileData['secretary_image_url'] = secretary.image_name;
+                                profileData['secretary_name'] = secretary.full_name;
+                                callBack(null,profileData);
+                                return 0
+                            });
+                        }else{
+                            callBack(null,profileData)
+                        }
+                    },
+                    function getProfileImage(profileData,callBack){
+                        console.log(profileData)
+
+                        if(profileData != null){
+                            Upload.getProfileImage(profileData.id.toString(),function(profileImageData){
+                                profileData['images'] = profileImageData.image;
+                                callBack(null,profileData)
+                                return 0;
+                            });
+                        }else{
+                            callBack(null,null)
+                        }
                     }
-                }
-
-                if(resultSet.education_details.length > 0){
-                    _profileData['school']=resultSet.education_details[0].school;
-                    _profileData['grad_date']=resultSet.education_details[0].date_attended_to;
-                }
 
 
 
-                callback({status:200,user:_profileData});
+                ],function(err,profileData) {
+                    var outPut = {};
+                    if (!err) {
+
+                        callback({status:200,user:profileData});
+                        //outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                        //outPut['profile_data'] = profileData;
+                        //
+                        //var payLoad = {
+                        //    index: "idx_usr",
+                        //    id: profileData.user_id,
+                        //    type: 'user',
+                        //    data: profileData,
+                        //    tag_fields: ['first_name', 'last_name', 'email', 'user_name', 'country']
+                        //}
+                        //ES.createIndex(payLoad, function (resultSet) {
+                        //    callBack(resultSet)
+                        //    return 0;
+                        //});
+
+                    } else {
+                        callback(err)
+                        return 0;
+                    }
+                })
+
+
+
+
 
             }
         }else{

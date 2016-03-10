@@ -1192,13 +1192,13 @@ var UserControler ={
 
         var outPut ={};
 
-        if(typeof req.params.username != 'undefined' && typeof req.params.password != 'undefined'){
+        if(typeof req.body.uname != 'undefined' && typeof req.body.password != 'undefined'){
 
             var User = require('mongoose').model('User');
 
             var data = {
-                user_name:req.params.username,
-                password:req.params.password
+                user_name:req.body.uname,
+                password:req.body.password
             };
 
             User.authenticate(data,function(resultSet){

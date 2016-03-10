@@ -63,7 +63,7 @@ router.get('/secretaries',SecretaryController.getSeretaries);
 
 router.get('/cache-check/:key',SecretaryController.cacheCheck);
 
-router.get('/doSignin/:username/:password', UserController.doSignin);
+router.post('/doSignin', UserController.doSignin);
 
 
 
