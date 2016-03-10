@@ -6,7 +6,11 @@ const ProgressBar = (props) => {
     if(props.progressType == "bar"){
         return(
             <div className="progress">
-                <div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow={percentage} aria-valuemin={0} aria-valuemax={100} style={{width: percentage + '%'}}></div>
+                <div className="progress-bar progress-bar-striped active"
+                     role="progressbar"
+                     aria-valuenow={percentage}
+                     aria-valuemin={0}
+                     aria-valuemax={100} style={{width: percentage + '%'}}></div>
             </div>
         )
     }else{

@@ -71,6 +71,7 @@ function bundleApp(isProduction) {
 		// app bundler. Dependencies are already bundled in vendor.js for
 		// development environments.
   		dependencies.forEach(function(dep){
+
   			appBundler.external(dep);
   		})
   	}
@@ -80,6 +81,7 @@ function bundleApp(isProduction) {
         appBundler
             // transform ES6 and JSX to ES5 with babelify
             .transform("babelify", {presets: ["es2015", "react"]})
+            .transform(browserifycss, {global: true})
             .bundle()
             .on('error',gutil.log)
             .pipe(source('bundle.js'))
