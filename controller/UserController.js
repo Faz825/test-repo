@@ -326,7 +326,7 @@ var UserControler ={
             entity_tag:UploadMeta.PROFILE_IMAGE
         }
         ContentUploader.uploadFile(data,function (payLoad) {
-            
+
             if (payLoad.status != 400) {
                 var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
                 CurrentSession['status'] = 7;
@@ -341,8 +341,9 @@ var UserControler ={
                         outPut['extra'] = Alert.CACHE_CREATION_ERROR
                     }
                     outPut['user'] = CurrentSession;
+
                     //ADD TO CACHE
-                    User.addUserToCache(CurrentSession.id,function(csResult){console.log(csResult)});
+                    User.addUserToCache(CurrentSession.id,function(csResult){});
 
 
                     res.status(200).json(outPut);

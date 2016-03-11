@@ -23,25 +23,6 @@ var  mongoose = require('mongoose'),
 
 
 
-
-var ContentSchema = Schema({
-    file_name:{
-        type:String,//physical file name
-        trim:true
-    },
-    file_type:{
-        type:String,//image/jpg,image/png
-        trim:true,
-        default:null
-    },
-    is_default:{
-        type:Number,
-        default:0
-    }
-});
-
-
-
 var UploadSchema = new Schema({
     entity_id:{
         type: Schema.ObjectId, //Exact document id
@@ -61,11 +42,22 @@ var UploadSchema = new Schema({
     updated_at:{
         type:Date
     },
-    contents:[ContentSchema],
+    file_name:{
+        type:String,//physical file name
+        trim:true
+    },
+    file_type:{
+        type:String,//image/jpg,image/png
+        trim:true,
+        default:null
+    },
+    is_default:{
+        type:Number,
+        default:0
+    }
+
 },{collection:"uploads"});
 
-
-var Content = mongoose.model('Content',ContentSchema);
 
 UploadSchema.pre('update', function(next){
 
@@ -74,7 +66,6 @@ UploadSchema.pre('update', function(next){
     if ( !this.created_at ) {
         this.created_at = now;
     }
-
 
     next();
 });
@@ -88,90 +79,92 @@ UploadSchema.pre('update', function(next){
  * @param data
  * @param callBack
  */
-UploadSchema.statics.saveOnDb= function(payLoad,callBack){
+
+UploadSchema.statics.saveOnDb = function(payLoad,callBack){
     var _upload = this,
-        content = new Content();
-
-
+        content = new this();
 
 
     content.file_name    = payLoad.file_name;
     content.file_type    = payLoad.file_type;
-    content.is_default      = payLoad.is_default;
-    var now = new Date();
-    this.updated_at = now;
-    if ( !this.created_at ) {
-        this.created_at = now;
-    }
+    content.is_default   = payLoad.is_default;
+    content.entity_id    = payLoad.entity_id;
+    content.entity_tag   = payLoad.entity_tag;
+    content.title        = payLoad.content_title;
+    content.created_at   = this.created_at;
+    content.updated_at   = this.updated_at;
+
+
     _upload.update({
-            entity_id:payLoad.entity_id,
-            entity_tag:payLoad.entity_tag
+        entity_id:payLoad.entity_id,
+        entity_tag:payLoad.entity_tag
         },
         {
             $set:{
-                title:payLoad.content_title,
-                created_at:this.created_at,
-                updated_at:this.updated_at
-            },
-            $push : {
-                "contents":content
+
+                is_default:0
+
             }
-        },
-        {multi:false,upsert:true},function(err,resultSet){
+        },{multi:false},function(err,update){
+
             if(!err){
-                callBack({
-                    status:200,
-                    image:resultSet
+                content.save(function(err,resultSet){
+                    if(!err){
+                        callBack({
+                            status:200,
+                            image:resultSet
+                        });
+                    }else{
+                        console.log("Server Error --------")
+                        console.log(err)
+                        callBack({status:400,error:err});
+                    }
 
                 });
+
             }else{
                 console.log("Server Error --------")
+                console.log(err)
                 callBack({status:400,error:err});
             }
 
         });
 
+
+
+
 }
+
+
+
 /**
  * Get Profile image and Cover image
  * @param userId
  * @param callBack
  */
-UploadSchema.statics.getProfileImage=function(userId,callBack){
-    console.log(userId)
 
-    this.aggregate([
-        {$match:
-            {
-                entity_id:userId.toObjectId(),
-                entity_tag:{ $in: [UploadMeta.COVER_IMAGE,UploadMeta.PROFILE_IMAGE]}
-            }
-        },
-        {$unwind:"$contents"},
-        {$match:
-            {"contents.is_default":1}}  ,
-            {$project:{
-                    "entity_id" :1,"entity_tag":1,"contents":1}},
-        {
-            $group:{
-                _id:"$_id",
-                entity_tag:{"$first":"$entity_tag"},
-                contents:{"$first":"$contents"}
-            }
-        }
-    ],function(err,resultSet){
+UploadSchema.statics.getProfileImage=function(userId,callBack){
+
+    var _this = this;
+
+    _this.find({
+        entity_id:Util.toObjectId(userId),
+        entity_tag:{$in:['profile_image','cover_image']},
+        is_default:1
+    }).exec(function(err,resultSet){
         if(!err && resultSet.length > 0){
             var _image ={};
             for(var i=0;i<resultSet.length;i++){
                 var _tmp_rs = resultSet[i],
-                    _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+userId+"/"+_tmp_rs.contents.file_name;
+                    _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+userId+"/"+_tmp_rs.file_name;
                 _image[_tmp_rs['entity_tag']] ={
-                    entity_id:_tmp_rs._id,
-                    file_name:_tmp_rs.contents.file_name,
-                    file_type:_tmp_rs.contents.file_type,
+                    id:_tmp_rs._id,
+                    file_name:_tmp_rs.file_name,
+                    file_type:_tmp_rs.file_type,
                     http_url:_http_url
                 }
             }
+
             callBack({
                 status:200,
                 image:_image
@@ -181,11 +174,12 @@ UploadSchema.statics.getProfileImage=function(userId,callBack){
             console.log("Server Error --------")
             callBack({status:400,error:err});
         }
+
     });
+
+
+
 }
-
-
-
 
 
 
