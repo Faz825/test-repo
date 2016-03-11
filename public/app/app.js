@@ -10,7 +10,9 @@ import SelectSecretary  from './pages/signup/SelectSecretary';
 import ProfileIndex  from './pages/profile/Index';
 
 import ForgotPassword from './pages/signup/ForgotPassword'
-
+import ChangePassword from './pages/signup/ChangePassword'
+import ChangePasswordInvalid from './pages/signup/ChangePasswordInvalid'
+import ChangedPassword from './pages/signup/ChangedPassword'
 
 
 
@@ -31,6 +33,10 @@ let rootRoute =(
         <Route name="profile" path="/profile/:uname" component={ProfileIndex}/>
 
             <Route name="forgot-password" path="/forgot-password" component={ForgotPassword}/>
+            <Route name="change-password" path="/change-password/:token" component={ChangePassword}/>
+        <Route name="change-password-invalid" path="/change-password-invalid" component={ChangePasswordInvalid}/>
+        <Route name="changed-password" path="/changed-password" component={ChangedPassword}/>
+
 
 
 	</Route>

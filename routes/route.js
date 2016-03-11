@@ -50,7 +50,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts','/js'];
 GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
-    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password'
+    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password'
 
 ];
 
@@ -64,10 +64,13 @@ router.get('/secretaries',SecretaryController.getSeretaries);
 router.get('/cache-check/:key',SecretaryController.cacheCheck);
 
 router.post('/doSignin', UserController.doSignin);
-//For testing purpose all are set as get request
+
 router.post('/forgot-password/request/', UserController.forgotPassword);
-//router.post('/forgot-password/validate/:token', UserController.validateToken);
-//router.post('/forgot-password/reset/:token', UserController.resetPassword);
+router.get('/forgot-password/reset/:token', UserController.validateToken);
+router.get('/change-password/:token', DefaultController.index);
+router.post('/change-password/:token', UserController.resetPassword);
+router.get('/changed-password', DefaultController.index);
+
 
 
 

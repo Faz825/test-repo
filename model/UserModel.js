@@ -803,8 +803,10 @@ UserSchema.statics.findByCriteria = function(criteria,callBack){
 UserSchema.statics.updatePassword=function(userId,password,callBack){
     var _this = this;
 
+    var _salt = createSalt();
+
     var info = {
-        password:createHash(password),
+        password:createHash(_salt,password),
         resetPasswordToken:null,
         resetPasswordExpires:null
     }

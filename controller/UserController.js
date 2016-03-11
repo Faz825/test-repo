@@ -726,12 +726,12 @@ var UserControler ={
 
                 if (ResultSet.status == 200 && ResultSet.user != null) {
                     //Don't need to send any response. need to do redirection
-                    res.status(200).json(ApiHelper.getMessage(200, Alert.VALID_TOKEN, Alert.SUCCESS));
-                    //res.redirect('/#!/password/reset/' + req.params.token);
+                    //res.status(200).json(ApiHelper.getMessage(200, Alert.VALID_TOKEN, Alert.SUCCESS));
+                    res.redirect('/change-password/' + req.params.token);
                 } else{
                     //Don't need to send any response. need to do redirection
-                    res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
-                    //res.redirect('/#!/password/reset/invalid');
+                    //res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
+                    res.redirect('/change-password-invalid' );
                 }
 
         });
@@ -743,7 +743,7 @@ var UserControler ={
         var User = require('mongoose').model('User');
 
         //var password = req.body.password;
-        var password = "abcdefg";
+        var password = req.body.password;
         User.findByCriteria({
             resetPasswordToken: req.params.token,
             resetPasswordExpires: {
@@ -751,22 +751,29 @@ var UserControler ={
             }
         }, function(ResultSet) {
 
+            var outPut ={};
+
             if (ResultSet.status == 200 && ResultSet.user != null) {
 
                 User.updatePassword(ResultSet.user._id,password,function(resultSet){
 
                     if(resultSet.status ==200){
-                        res.status(200).json(ApiHelper.getMessage(200, Alert.RESET_PASSWORD_SUCCESS, Alert.SUCCESS));
+                        //res.status(200).json(ApiHelper.getMessage(200, Alert.RESET_PASSWORD_SUCCESS, Alert.SUCCESS));
+                        res.redirect('/changed-password' );
                     } else{
-                        res.status(400).json(ApiHelper.getMessage(400, Alert.RESET_PASSWORD_FAIL, Alert.ERROR));
+
+                        outPut['status'] = ApiHelper.getMessage(400, Alert.RESET_PASSWORD_FAIL, Alert.ERROR);
+                        res.status(400).json(outPut);
                     }
 
                 });
 
             } else{
                 //Don't need to send any response. need to do redirection
-                res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
+                //res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
                 //res.redirect('/#!/password/reset/invalid');
+                outPut['status'] = ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR);
+                res.status(400).json(outPut);
             }
 
         });

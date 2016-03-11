@@ -1,7 +1,6 @@
 import React from 'react';
 import Button from '../../components/elements/Button';
 import {Alert} from '../../config/Alert';
-import Session  from '../../middleware/Session';
 import EmailField from '../../components/elements/EmailField';
 
 let errorStyles = {
@@ -61,22 +60,14 @@ export default class ForgotPassword extends React.Component{
                 dataType: "JSON",
 
                 success: function (data, text) {
-                    console.log(data)
                     if (data.status.code === 200) {
                         _this.setState({validateAlert: ""});
                         _this.setState({successAlert: data.status.message});
-                        //Session.createSession("prg_lg", data.user);
-                        location.reload();
                     }
 
                 },
                 error: function (request, status, error) {
-
-                    console.log(request);
-                    console.log(status);
-                    console.log(error);
-
-                    _this.setState({validateAlert: request.responseJSON.message});
+                    _this.setState({validateAlert: request.responseJSON.status.message});
                 }
             });
         }

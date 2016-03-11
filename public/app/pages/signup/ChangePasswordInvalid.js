@@ -16,10 +16,10 @@ export default class ChangedPassword extends React.Component{
                         <div className="col-xs-6 pgs-middle-sign-wrapper-inner">
                             <div className="row row-clr pgs-middle-sign-wrapper-inner-cover">
                                 <div className="introWrapper">
-                                    <p>You have successfully changed your password</p>
+                                    <p>Password reset token is invalid</p>
                                 </div>
                                 <div className="row row-clr pgs-middle-sign-wrapper-inner-form">
-                                    <Button type="button" size="12" classes="pgs-sign-submit-cancel" value="ok" />
+                                    <Button type="button" size="12" classes="pgs-sign-submit-cancel" value="ok"/>
                                 </div>
                             </div>
                         </div>
