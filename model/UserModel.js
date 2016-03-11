@@ -1010,16 +1010,9 @@ UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
 };
 
 
-
-
-
-
-
 /**
  * CACHE IMPLEMENTATION
  */
-
-
 UserSchema.statics.addUserToCache = function(userId, callBack){
     var _async = require('async'),
         Connection = require('mongoose').model('Connection'),
@@ -1052,9 +1045,6 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
             }else{
                 callBack(null,null)
             }
-
-
-
         },
         function getProfileImage(profileData,callBack){
 
@@ -1067,11 +1057,7 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
             }else{
                 callBack(null,null)
             }
-
-
         }
-
-
 
     ],function(err,profileData){
         var outPut ={};
@@ -1087,6 +1073,8 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
                 data:profileData,
                 tag_fields:['first_name','last_name','email','user_name','country']
             }
+
+            console.log(profileData)
             ES.createIndex(payLoad,function(resultSet){
                 callBack(resultSet)
                 return 0;

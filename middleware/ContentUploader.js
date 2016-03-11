@@ -133,10 +133,45 @@ var ContentUploader ={
      * @param source
      * @param callBack
      */
-    uploadProfileImage:function(source,section,callBack){
-        this.uploadImage(source,section,function(payLoad){
-            callBack(payLoad);
+    uploadProfileImage:function(payLoad,callBack){
+        var _async = require('async'),
+            Upload = require('mongoose').model('Upload'),
+            _this = this;
+
+        _async.waterfall([
+            function uploadFile(callBack){
+
+                _this.uploadToCDN(payLoad,function(cdnReturn){
+                    if(cdnReturn.status == 200){
+                        callBack(null,cdnReturn);
+                    }else{
+                        callBack(null,null);
+                    }
+
+                });
+            },
+            function saveOnDbWithDefaultContent(cdnReturn,callBack){
+                if(cdnReturn != null && cdnReturn.status == 200){
+                    Upload.saveOnDbWithDefaultContent(cdnReturn.upload_meta,function(dbResultSet){
+
+                        callBack(null,cdnReturn.upload_meta);
+                    });
+                }else{
+                    callBack(null,null);
+                }
+
+            }
+        ],function(err,resultSet){
+
+            if(resultSet != null){
+                console.log(resultSet)
+                callBack(resultSet)
+            }else{
+                callBack(resultSet)
+            }
+
         });
+
 
     },
 

@@ -70,6 +70,7 @@ export class CoverImage extends React.Component{
     }
 
     coverImgUpdate(data){
+
         this.setState({coverimgSrc : data});
     }
 
@@ -110,13 +111,41 @@ export class ProfileInfo extends React.Component{
         super(props);
         let profileImg = (this.props.dt.images.profile_image.http_url)? this.props.dt.images.profile_image.http_url : "";
         this.state = {
-            profileImgSrc : profileImg
+            profileImgSrc : profileImg,
+
         }
         this.profileImgUpdated = this.profileImgUpdated.bind(this);
+        this.loggedUser = Session.getSession('prg_lg');
     }
 
     profileImgUpdated(data){
-        this.setState({profileImgSrc : data});
+        this.setState({loadingBarIsVisible : true});
+
+        let _this =  this;
+
+        $.ajax({
+            url: '/upload/profile-image',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':_this.loggedUser.token },
+            data:{profileImg:data,extension:'png'},
+            cache: false,
+            contentType:"application/x-www-form-urlencoded",
+            success: function (data, text) {
+                if (data.status.code == 200) {
+
+                    _this.setState({loadingBarIsVisible : false,profileImgSrc : data.user.profile_image});
+                    Session.createSession("prg_lg", data.user);
+                    document.location.reload(true)
+                }
+            },
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+
     }
 
     render() {

@@ -45,6 +45,7 @@ var PostController ={
      * @param res
      */
     ch_getPost:function(req,res){
+        console.log(CurrentSession)
         var _id     = CurrentSession.id;
         var _page   = req.query.__pg;
 
