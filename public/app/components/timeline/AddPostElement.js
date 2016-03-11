@@ -65,15 +65,15 @@ export class TextPostElement extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            showFooterPanel:false,
+            focusedOnInitialText : false,
             text:"",
             uploadedFiles:[],
             fileIds:[],
             inProgressUploads :{},
             post_type:"NP",
-            btnEnabled :true
-
-
+            btnEnabled :true,
+            iniTextisVisible : true,
+            emptyPostWarningIsVisible : false
         }
         this.loggedUser = Session.getSession('prg_lg');
         this.submitPost = this.submitPost.bind(this);
@@ -82,8 +82,11 @@ export class TextPostElement extends React.Component{
     }
     submitPost(event){
         let _this = this;
-        if(this.state.text != ""){
+        let warnState = (this.state.text)? false : true;
 
+        this.setState({emptyPostWarningIsVisible : warnState});
+
+        if(this.state.text != ""){
             var _pay_load ={
                 __content:this.state.text,
                 __post_type:this.state.post_type
@@ -102,6 +105,8 @@ export class TextPostElement extends React.Component{
                 cache: false,
 
             }).done(this.handleAjaxSuccess);
+
+            this.setState({iniTextisVisible: true});
         }
     }
     handleAjaxSuccess(data){
@@ -123,16 +128,18 @@ export class TextPostElement extends React.Component{
         }
     }
 
-
     showPostFooterPanel(){
-        this.setState({showFooterPanel:true})
+        let visibilityStat = (this.state.text)? false : true;
+        this.setState({focusedOnInitialText: true, iniTextisVisible: visibilityStat})
     }
     hidePostFooterPanel(){
-        this.setState({showFooterPanel:false})
+        let visibilityStat = (this.state.text)? false : true;
+        this.setState({focusedOnInitialText: false, iniTextisVisible: visibilityStat})
     }
     onContentAdd(event){
         let _text  = Lib.sanitize(event.target.innerHTML)
-        this.setState({text:_text});
+        let visibilityStat = (_text)? false : true;
+        this.setState({text:_text, iniTextisVisible: visibilityStat, emptyPostWarningIsVisible : false});
 
     }
     onTabSelect(tabId){
@@ -143,7 +150,6 @@ export class TextPostElement extends React.Component{
         let _this = this;
         let imgSrc;
         let data = this.state.imgList;
-
 
         for(var i = 0; i< e.target.files.length; i++){
             _readImage(e.target.files[i],'file_'+i);
@@ -167,15 +173,12 @@ export class TextPostElement extends React.Component{
 
             })(data,_this);
 
-
             reader.readAsDataURL(file);
         }
     }
     uploadHandler(uploadContent){
         let loggedUser = Session.getSession('prg_lg'),
             uploadedFiles = this.state.uploadedFiles;
-
-
 
         var _image_file ={
             show_loader:true,
@@ -208,7 +211,7 @@ export class TextPostElement extends React.Component{
                 }
 
                 let file_ids = this.state.fileIds;
-                file_ids.push(data.upload.file_id)
+                file_ids.push(data.upload.file_id);
                 this.setState({uploadedFiles:uploadedFiles,file_ids:file_ids,post_type:"AP",btnEnabled:true});
 
             }
@@ -245,21 +248,30 @@ export class TextPostElement extends React.Component{
                     <div className="pg-user-pro-pic">
                         <img src={this.loggedUser.profile_image} alt={full_name} className="img-responsive" />
                     </div>
-                    <div id="input" contentEditable={true}
-                         value="What’s on your mind?"
-                         onFocus={this.showPostFooterPanel.bind(this)}
-                         onBlur={this.hidePostFooterPanel.bind(this)}
-                         className="containable-div"
-                         onInput={(event)=>{this.onContentAdd(event)}} ></div>
+                    <div className="editerHolder">
+                        <div id="input" contentEditable={true}
+                             onFocus={this.showPostFooterPanel.bind(this)}
+                             onBlur={this.hidePostFooterPanel.bind(this)}
+                             className="containable-div"
+                             onInput={(event)=>{this.onContentAdd(event)}}></div>
+                         {
+                             (this.state.iniTextisVisible)?
+                             <span className={(this.state.focusedOnInitialText)? "statusIniText onFocus" : "statusIniText"}>What’s on your mind?</span>
+                             : null
+                         }
+                    </div>
                 </div>
                 <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
-
                     {uploaded_files}
-
                 </div>
+                {
+                    (this.state.emptyPostWarningIsVisible)?
+                    <p className="emptyPost">This status update appears to be blank. Please write something or a photo to update your status.</p>
+                    : null
+                }
                 <div className="row" id="pg-newsfeed-post-active-footer" {...opt}>
                     <div className="col-xs-6">
-                        
+
                     </div>
                     <div className="col-xs-6">
                         {
