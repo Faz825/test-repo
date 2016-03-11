@@ -407,3 +407,20 @@
     min-height: 47px;
 
 }
+
+
+
+.pg-newsfeed-post-uploads-images{
+
+}
+
+.pg-newsfeed-post-upload-image{
+    float: left;
+    width: 30%;
+    margin: 0;
+    padding: 0;
+}
+
+.pg-newsfeed-post-upload-image img{
+    width: 60%;
+}
