@@ -259,7 +259,7 @@ export class TextPostElement extends React.Component{
                 </div>
                 <div className="row" id="pg-newsfeed-post-active-footer" {...opt}>
                     <div className="col-xs-6">
-                        
+
                     </div>
                     <div className="col-xs-6">
                         {

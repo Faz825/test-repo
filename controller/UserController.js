@@ -341,8 +341,9 @@ var UserControler ={
                         outPut['extra'] = Alert.CACHE_CREATION_ERROR
                     }
                     outPut['user'] = CurrentSession;
+
                     //ADD TO CACHE
-                    User.addUserToCache(CurrentSession.id,function(csResult){console.log(csResult)});
+                    User.addUserToCache(CurrentSession.id,function(csResult){});
 
 
                     res.status(200).json(outPut);
