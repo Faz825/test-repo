@@ -1185,7 +1185,7 @@ UserSchema.statics.authenticate = function(data, callback) {
                     },
                     function getSecretary(profileData,callBack){
 
-                        console.log(profileData);
+
 
                         if( profileData.secretary_id != null){
                             Secretary.getSecretaryById(profileData.secretary_id,function(secretary){
@@ -1199,11 +1199,11 @@ UserSchema.statics.authenticate = function(data, callback) {
                         }
                     },
                     function getProfileImage(profileData,callBack){
-                        console.log(profileData)
+
 
                         if(profileData != null){
                             Upload.getProfileImage(profileData.id.toString(),function(profileImageData){
-                                profileData['images'] = profileImageData.image;
+                                profileData['profile_image'] = profileImageData.image.profile_image.http_url;
                                 callBack(null,profileData)
                                 return 0;
                             });
