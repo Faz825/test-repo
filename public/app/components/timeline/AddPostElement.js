@@ -7,6 +7,7 @@ import Session  from '../../middleware/Session';
 import Lib    from '../../middleware/Lib';
 import ListPostsElement from './ListPostsElement';
 import ProgressBar from '../elements/ProgressBar';
+import {Alert} from '../../config/Alert';
 import Geosuggest from 'react-geosuggest';
 
 export default class AddPostElement extends React.Component{
@@ -130,7 +131,8 @@ export class TextPostElement extends React.Component{
                 fileIds:[],
                 inProgressUploads:{},
                 post_type:"NP",
-                iniTextisVisible: true
+                iniTextisVisible: true,
+                isLocationPanelOpen: false
             });
 
             document.getElementById('input').innerHTML = "";
@@ -153,10 +155,10 @@ export class TextPostElement extends React.Component{
 
     }
     onTabSelect(tabId){
-
+        let panelOpen = this.state.isLocationPanelOpen;
         switch(tabId){
             case "bla4":
-                this.setState({isLocationPanelOpen:true});
+                this.setState({isLocationPanelOpen: !panelOpen});
                 break;
             case "bla3":
                 console.log(tabId)
@@ -255,8 +257,17 @@ export class TextPostElement extends React.Component{
         });
     }
     onGeoSuggestSelect(suggest){
-        console.log(suggest)
-        this.setState({location:suggest.label})
+        let addressList = suggest,
+            address = [];
+
+        let ObjLen = addressList.gmaps.address_components.length;
+        if(ObjLen > 2){
+            for(let i = ObjLen - 2; i < ObjLen; i++ ){
+                address.push(addressList.gmaps.address_components[i].long_name);
+            }
+        }
+
+        this.setState({location: address.join()})
 
     }
     render(){
@@ -303,14 +314,15 @@ export class TextPostElement extends React.Component{
                 </div>
                 {
                     (this.state.emptyPostWarningIsVisible)?
-                    <p className="emptyPost">This status update appears to be blank. Please write something or a photo to update your status.</p>
+                    <p className="emptyPost">{Alert.EMPTY_STATUS_UPDATE}</p>
                     : null
                 }
                 <div className="row" id="pg-newsfeed-post-active-footer" {...opt}>
-                    <div className="col-xs-6">
+                    <div className="col-xs-8 locationSuggestHolder">
                         {
                             (this.state.isLocationPanelOpen)?
-                                <div> at -
+                                <div>
+                                    <p className="locationSuggestTxt">At -</p>
                                     <Geosuggest placeholder="Start typing!"
                                             onSuggestSelect={this.onGeoSuggestSelect.bind(this)}
                                             location={new google.maps.LatLng(53.558572, 9.9278215)}
@@ -319,7 +331,7 @@ export class TextPostElement extends React.Component{
                                 :null
                         }
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-xs-4">
                         {
                             (this.state.btnEnabled)?
                                 <a href="javascript:void(0)" onClick={(event)=>this.submitPost(event)} className="pg-status-post-btn">post</a>
@@ -374,4 +386,3 @@ const PostOptionMenu = ({onTabClick,selectImage})=>{
         </div>
     );
 };
-
