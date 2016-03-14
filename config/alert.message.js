@@ -57,7 +57,10 @@ GLOBAL.Alert={
     NO_RECIPIENTS:'No Recipient',
 
     COMMENT_CONTENT_EMPTY:"Comment text cannot be blank",
-    COMMENT_POST_ID_EMPTY:"Post Id cannot be blank"
+    COMMENT_POST_ID_EMPTY:"Post Id cannot be blank",
+
+    USER_NOT_FOUND:"Invalid Username",
+    INVALID_PASSWORD:"Invalid Password"
 
 
 

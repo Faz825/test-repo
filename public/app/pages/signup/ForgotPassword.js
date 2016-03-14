@@ -1,11 +1,18 @@
 import React from 'react';
 import Button from '../../components/elements/Button';
 import {Alert} from '../../config/Alert';
-import Session  from '../../middleware/Session';
 import EmailField from '../../components/elements/EmailField';
 
 let errorStyles = {
     color         : "#ed0909",
+    fontSize      : "0.8em",
+    textTransform : "capitalize",
+    margin        : '0 0 15px',
+    display       : "inline-block"
+}
+
+let successStyles = {
+    color         : "#3C763D",
     fontSize      : "0.8em",
     textTransform : "capitalize",
     margin        : '0 0 15px',
@@ -18,10 +25,11 @@ export default class ForgotPassword extends React.Component{
         this.state= {
             formData:{},
             error:{},
-            signupURL:'/doSignup',
+            forgotPasswordURL:'/forgot-password/request/',
             validateAlert: "",
             invalidElements :{},
-            fieldValue : ""
+            fieldValue : "",
+            successAlert: ""
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this)
         this.validateSchema = {
@@ -46,28 +54,20 @@ export default class ForgotPassword extends React.Component{
         if(Object.keys(er).length == 0){
             this.formData['status'] = 1;
             $.ajax({
-                url: this.state.signupURL,
+                url: this.state.forgotPasswordURL,
                 method: "POST",
                 data: this.formData,
                 dataType: "JSON",
 
                 success: function (data, text) {
-
-                    if (data.status === 'success') {
+                    if (data.status.code === 200) {
                         _this.setState({validateAlert: ""});
-                        console.log(data)
-                        Session.createSession("prg_lg", data.user);
-                        location.reload();
+                        _this.setState({successAlert: data.status.message});
                     }
 
                 },
                 error: function (request, status, error) {
-
-                    console.log(request.responseText);
-                    console.log(status);
-                    console.log(error);
-
-                    _this.setState({validateAlert: Alert.EMAIL_ID_ALREADY_EXIST});
+                    _this.setState({validateAlert: request.responseJSON.status.message});
                 }
             });
         }
@@ -123,6 +123,7 @@ export default class ForgotPassword extends React.Component{
                                                         error_message={this.state.error.email}/>
                                         </div>
                                         {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
+                                        {this.state.successAlert ? <p className="form-validation-alert" style={successStyles} >{this.state.successAlert}</p> : null}
                                         <div className="row">
                                             <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
                                             <Button type="submit" size="6" classes="pgs-sign-submit" value="send email" />

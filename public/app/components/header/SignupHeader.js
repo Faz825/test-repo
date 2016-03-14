@@ -8,15 +8,30 @@ import { Link} from 'react-router'
 import Logo from './Logo'
 import {Alert} from '../../config/Alert';
 import TextField from '../../components/elements/TextField'
+import PasswordField from '../../components/elements/PasswordField'
+import Session  from '../../middleware/Session';
+
+let errorStyles = {
+    color         : "#ed0909",
+    fontSize      : "0.8em",
+    margin        : '0 0 15px',
+    display       : "inline-block"
+}
+
 export default class Header extends React.Component {
 
     constructor(props) {
+
         super(props);
 
         this.state = {
+            formData:{},
+            error:{},
+            signinURL:'/doSignin',
+            validateAlert: "",
             invalidElements :{},
-            error : {}
-        }
+            fieldValue : ""
+        };
 
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
         this.validateSchema = {
@@ -53,7 +68,6 @@ export default class Header extends React.Component {
 
     submitData(e){
         e.preventDefault();
-        console.log(this.state.error);
         let _this = this;
         let _invalid_frm = this.formData;
         for (let err_elm in this.validateSchema){
@@ -67,24 +81,27 @@ export default class Header extends React.Component {
         if(Object.keys(er).length == 0){
             this.formData['status'] = 1;
             $.ajax({
-                url: this.state.signupURL,
+                url: this.state.signinURL,
                 method: "POST",
                 data: this.formData,
                 dataType: "JSON",
 
                 success: function (data, text) {
 
-                    if (data.status === 'success') {
-                        console.log(data)
+                    if (data.status.code === 200) {
+                        _this.setState({validateAlert: ""});
                         Session.createSession("prg_lg", data.user);
-                        location.reload();
+                        if(data.user.status == 7){
+                            location.href = "/";
+                        }else{
+                            location.reload();
+                        }
+
                     }
 
                 },
                 error: function (request, status, error) {
-                    console.log(request.responseText);
-                    console.log(status);
-                    console.log(error);
+                    _this.setState({validateAlert: request.responseJSON.status.message});
                 }
             });
         }
@@ -133,7 +150,7 @@ export default class Header extends React.Component {
                                                 size="12"
                                                 value={this.formData.uname}
                                                 label=""
-                                                placeholder="USERNAME"
+                                                placeholder="EMAIL"
                                                 classes="pgs-sign-inputs"
                                                 onInputChange={this.elementChangeHandler}
                                                 required={true}
@@ -145,7 +162,7 @@ export default class Header extends React.Component {
                                     </div>
                                 </div>
                                 <div className="form-group passwordHolder inputWrapper col-sm-4">
-                                    <TextField  name="password"
+                                    <PasswordField  name="password"
                                                 size="12"
                                                 value={this.formData.password}
                                                 label=""
@@ -155,11 +172,12 @@ export default class Header extends React.Component {
                                                 required={true}
                                                 validate={this.state.invalidElements.password}
                                                 error_message={this.state.error.password}/>
-                                    <a href="#">Forgot Password?</a>
+                                    <a href="/forgot-password">Forgot Password?</a>
                                 </div>
                                 <div className="form-group btnHolder col-sm-3">
                                     <button type="submit" size="6" className="pgs-sign-submit">Login</button>
                                 </div>
+                                {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
                             </form>
                         </div>
                     </div>

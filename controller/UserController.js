@@ -172,6 +172,53 @@ var UserControler ={
         });
     },
     /**
+     * Add Collage and Job information in signup process
+     * @param req
+     * @param res
+     */
+    addCollageAndJob:function(req,res){
+        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+        CurrentSession['status']        = 4;
+        CurrentSession['school']        = (req.body.school)?req.body.school:null;
+        CurrentSession['grad_date']     = (req.body.grad_date)?req.body.grad_date:null;
+        CurrentSession['job_title']     = (req.body.job_title)?req.body.job_title:null;
+        CurrentSession['company_name']  = (req.body.company_name)?req.body.company_name:null;
+
+        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+
+            var User = require('mongoose').model('User'),
+                _collageAndJob={
+                    school:req.body.school,
+                    grad_date:req.body.grad_date,
+                    job_title:req.body.job_title,
+                    company_name:req.body.company_name,
+                    status:4
+                };
+
+            User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
+                var outPut ={};
+
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
+                    res.status(200).json(outPut);
+                    return 0;
+                }
+                if(!cacheData){
+                    outPut['extra']=Alert.CACHE_CREATION_ERROR
+                }
+                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user']      = CurrentSession;
+                res.status(200).json(outPut);
+
+
+
+
+            });
+
+        });
+    },
+
+    /**
      * Load Connections
      * @param req
      * @param res
@@ -233,29 +280,34 @@ var UserControler ={
 
 
 
-            var Connection = require('mongoose').model('Connection');
+            var Connection = require('mongoose').model('Connection'),
+                User       = require('mongoose').model('User');
 
-            Connection.sendConnectionRequest(req_connected_users,req_unconnected_users, function (resultSet) {
 
-                if (resultSet.status !== 200) {
-                    outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
-                    res.status(400).send(outPut);
-                    return 0;
-                }
+                User.saveUpdates(CurrentSession.id,{status:5},function(updateDataSet){
+                    Connection.sendConnectionRequest(req_connected_users,req_unconnected_users, function (resultSet) {
 
-                if (!cacheData) {
-                    outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                }
+                        if (resultSet.status !== 200) {
+                            outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
+                            res.status(400).send(outPut);
+                            return 0;
+                        }
 
-                res.status(200).json(outPut);
-                return 0;
-            });
+                        if (!cacheData) {
+                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                        }
+
+                        res.status(200).json(outPut);
+                        return 0;
+                    });
+                });
+
 
         });
     },
 
     /**
-     * Add new category to the user
+     * Add new category to the user in Sign up process
      * @param req
      * @param res
      */
@@ -272,33 +324,36 @@ var UserControler ={
 
             if(req_news_categories.length >= 1 ) {
 
-                var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+                var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
+                    User                  = require('mongoose').model('User');
                 var news_categories = [],
                     now = new Date();
 
-                for (var i = 0; req_news_categories.length > i; i++) {
-                    news_categories.push({
-                        user_id: CurrentSession.id.toObjectId(),
-                        category: null,
-                        created_at: now
-                    });
-                }
+                User.saveUpdates(CurrentSession.id,{status:6},function(updateDataSet){
 
+                    for (var i = 0; req_news_categories.length > i; i++) {
+                        news_categories.push({
+                            user_id: Util.toObjectId(CurrentSession.id),
+                            category: null,
+                            created_at: now
+                        });
+                    }
+                    FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
 
-                FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
+                        if (resultSet.status !== 200) {
+                            outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                            res.status(400).send(outPut);
+                            return 0;
+                        }
+                        if (!cacheData) {
+                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                        }
 
-                    if (resultSet.status !== 200) {
-                        outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
-                        res.status(400).send(outPut);
+                        res.status(200).json(outPut);
                         return 0;
-                    }
-                    if (!cacheData) {
-                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                    }
+                    });
+                })
 
-                    res.status(200).json(outPut);
-                    return 0;
-                });
 
             }else{
                 res.status(200).json(outPut);
@@ -307,6 +362,12 @@ var UserControler ={
         });
     },
 
+    /**
+     * Upload Profile Image in Sign up process
+     * @param req
+     * @param res
+     * @returns {number}
+     */
     uploadProfileImage:function(req,res){
 
 
@@ -323,42 +384,43 @@ var UserControler ={
             file_name:req.body.profileImg,
             is_default:1,
             entity_id:CurrentSession.id,
-            entity_tag:UploadMeta.PROFILE_IMAGE
+            entity_tag:UploadMeta.PROFILE_IMAGE,
+            status:7
         }
-        ContentUploader.uploadFile(data,function (payLoad) {
 
-            if (payLoad.status != 400) {
-                var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-                CurrentSession['status'] = 7;
-                CurrentSession['profile_image'] = payLoad.http_url;
+        User.saveUpdates(CurrentSession.id,{status:7},function(updateDataSet){
+            ContentUploader.uploadFile(data,function (payLoad) {
 
-
-                CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
-                    var outPut = {
-                        status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
-                    }
-                    if (!cacheData) {
-                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                    }
-                    outPut['user'] = CurrentSession;
-
-                    //ADD TO CACHE
-                    User.addUserToCache(CurrentSession.id,function(csResult){});
+                if (payLoad.status != 400) {
+                    var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+                    CurrentSession['status'] = 7;
+                    CurrentSession['profile_image'] = payLoad.http_url;
 
 
-                    res.status(200).json(outPut);
-                });
+                    CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                        var outPut = {
+                            status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                        }
+                        if (!cacheData) {
+                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                        }
+                        outPut['user'] = CurrentSession;
+                        //ADD TO CACHE
+                        User.addUserToCache(CurrentSession.id,function(csResult){});
+                        res.status(200).json(outPut);
+                    });
+
+                } else {
+                    var outPut={
+                        status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
+                    };
+                    res.status(400).send(outPut);
+                }
+            });
 
 
-
-
-            } else {
-                var outPut={
-                    status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
-                };
-                res.status(400).send(outPut);
-            }
         });
+
 
     },
 
@@ -585,46 +647,6 @@ var UserControler ={
 
     },
 
-    addCollageAndJob:function(req,res){
-        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-        CurrentSession['status']        = 4;
-        CurrentSession['school']        = (req.body.school)?req.body.school:null;
-        CurrentSession['grad_date']     = (req.body.grad_date)?req.body.grad_date:null;
-        CurrentSession['job_title']     = (req.body.job_title)?req.body.job_title:null;
-        CurrentSession['company_name']  = (req.body.company_name)?req.body.company_name:null;
-
-        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
-
-            var User = require('mongoose').model('User'),
-                _collageAndJob={
-                    school:req.body.school,
-                    grad_date:req.body.grad_date,
-                    job_title:req.body.job_title,
-                    company_name:req.body.company_name,
-                };
-
-            User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
-                var outPut ={};
-
-                if(resultSet.status != 200){
-                    outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
-                    res.status(200).json(outPut);
-                    return 0;
-                }
-                if(!cacheData){
-                    outPut['extra']=Alert.CACHE_CREATION_ERROR
-                }
-                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['user']      = CurrentSession;
-                res.status(200).json(outPut);
-
-
-
-
-            });
-
-        });
-    },
 
     /**
      * add / delete skills of a user
@@ -744,6 +766,8 @@ var UserControler ={
             crypto = require('crypto'),
             User = require('mongoose').model('User');
 
+        var outPut ={};
+
         async.waterfall([
             // Generate random token
             function(done) {
@@ -754,10 +778,8 @@ var UserControler ={
             },
             // Lookup user by username
             function(token, done) {
-                //if (req.body.email) {
-                if (req.params.email) {
-                    //var email = req.body.email;
-                    var email = req.params.email;
+                if (req.body.email) {
+                    var email = req.body.email;
 
                     User.findByEmail(email,function(ResultSet) {
 
@@ -772,12 +794,14 @@ var UserControler ={
                             });
 
                         } else{
-                            res.status(400).json(ApiHelper.getMessage(400, Alert.NO_ACCOUNT_FOUND, Alert.ERROR));
+                            outPut['status'] = ApiHelper.getMessage(400, Alert.NO_ACCOUNT_FOUND, Alert.ERROR);
+                             res.status(400).json(outPut);
                         }
                     });
 
                 } else {
-                    res.status(400).json(ApiHelper.getMessage(400, Alert.EMAIL_EMPTY, Alert.ERROR));
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.EMAIL_EMPTY, Alert.ERROR);
+                    res.status(400).json(outPut);
                 }
             },
             function(token, user, done) {
@@ -800,9 +824,11 @@ var UserControler ={
                 };
                 EmailEngine.sendMail(sendOptions, function(err){
                     if(!err){
-                        res.status(200).json(ApiHelper.getMessage(200, Alert.FORGOT_PASSWORD_EMAIL_SENT, Alert.SUCCESS));
+                        outPut['status'] = ApiHelper.getMessage(200, Alert.FORGOT_PASSWORD_EMAIL_SENT, Alert.SUCCESS);
+                        res.status(200).json(outPut);
                     } else{
-                        res.status(400).json(ApiHelper.getMessage(400, Alert.FAILED_TO_SEND_EMAIL, Alert.ERROR));
+                        outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_SEND_EMAIL, Alert.ERROR);
+                        res.status(400).json(outPut);
                     }
                 });
 
@@ -830,13 +856,9 @@ var UserControler ={
         }, function(ResultSet) {
 
                 if (ResultSet.status == 200 && ResultSet.user != null) {
-                    //Don't need to send any response. need to do redirection
-                    res.status(200).json(ApiHelper.getMessage(200, Alert.VALID_TOKEN, Alert.SUCCESS));
-                    //res.redirect('/#!/password/reset/' + req.params.token);
+                    res.redirect('/change-password/' + req.params.token);
                 } else{
-                    //Don't need to send any response. need to do redirection
-                    res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
-                    //res.redirect('/#!/password/reset/invalid');
+                    res.redirect('/change-password-invalid' );
                 }
 
         });
@@ -847,8 +869,7 @@ var UserControler ={
 
         var User = require('mongoose').model('User');
 
-        //var password = req.body.password;
-        var password = "abcdefg";
+        var password = req.body.password;
         User.findByCriteria({
             resetPasswordToken: req.params.token,
             resetPasswordExpires: {
@@ -856,22 +877,25 @@ var UserControler ={
             }
         }, function(ResultSet) {
 
+            var outPut ={};
+
             if (ResultSet.status == 200 && ResultSet.user != null) {
 
                 User.updatePassword(ResultSet.user._id,password,function(resultSet){
 
                     if(resultSet.status ==200){
-                        res.status(200).json(ApiHelper.getMessage(200, Alert.RESET_PASSWORD_SUCCESS, Alert.SUCCESS));
+                        outPut['status'] = ApiHelper.getMessage(200, Alert.RESET_PASSWORD_SUCCESS, Alert.SUCCESS);
+                        res.status(200).json(outPut);
                     } else{
-                        res.status(400).json(ApiHelper.getMessage(400, Alert.RESET_PASSWORD_FAIL, Alert.ERROR));
+                        outPut['status'] = ApiHelper.getMessage(400, Alert.RESET_PASSWORD_FAIL, Alert.ERROR);
+                        res.status(400).json(outPut);
                     }
 
                 });
 
             } else{
-                //Don't need to send any response. need to do redirection
-                res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
-                //res.redirect('/#!/password/reset/invalid');
+                outPut['status'] = ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR);
+                res.status(400).json(outPut);
             }
 
         });
@@ -1295,6 +1319,56 @@ var UserControler ={
 
 
             });
+        }
+
+    },
+
+    doSignin:function(req,res){
+
+        var outPut ={};
+
+        if(typeof req.body.uname != 'undefined' && typeof req.body.password != 'undefined'){
+
+            var User = require('mongoose').model('User');
+
+            var data = {
+                user_name:req.body.uname,
+                password:req.body.password
+            };
+
+            User.authenticate(data,function(resultSet){
+
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                } else if(resultSet.status == 200 && resultSet.error != null){
+                    outPut['status'] = ApiHelper.getMessage(400, resultSet.error, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                }
+
+                var _cache_key = CacheEngine.prepareCacheKey(resultSet.user.token);
+                CacheEngine.addToCache(_cache_key,resultSet.user,function(cacheData){
+
+                    outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+
+                    if(!cacheData){
+                        outPut['extra']=Alert.CACHE_CREATION_ERROR
+                    }
+
+                    outPut['user']=resultSet.user;
+                    res.status(200).send(outPut);
+
+                });
+
+            });
+
+        } else{
+            outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+            res.status(400).json(outPut);
+            return 0;
+
         }
 
     }

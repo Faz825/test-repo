@@ -1,7 +1,6 @@
 import React from 'react'
 import Button from '../../components/elements/Button'
 import {Alert} from '../../config/Alert';
-import Session  from '../../middleware/Session';
 import PasswordField from '../../components/elements/PasswordField'
 
 let errorStyles = {
@@ -16,9 +15,10 @@ export default class ChangePassword extends React.Component{
     constructor(props) {
         super(props);
         this.state= {
+            token:this.getUrl(),
             formData:{},
             error:{},
-            signupURL:'/doSignup',
+            submitURL:'/change-password/',
             validateAlert: "",
             invalidElements :{},
             fieldValue : ""
@@ -31,6 +31,10 @@ export default class ChangePassword extends React.Component{
         this.isValid = true;
         this.formData = {};
     };
+
+    getUrl(){
+        return  this.props.params.token;
+    }
 
     submitData(e){
         e.preventDefault();
@@ -47,29 +51,23 @@ export default class ChangePassword extends React.Component{
         if(Object.keys(er).length == 0){
             this.formData['status'] = 1;
             $.ajax({
-                url: this.state.signupURL,
+                url: this.state.submitURL+this.state.token,
                 method: "POST",
                 data: this.formData,
                 dataType: "JSON",
 
                 success: function (data, text) {
-
-                    if (data.status === 'success') {
+                    console.log(data.status.message)
+                    if (data.status.code === 200) {
                         _this.setState({validateAlert: ""});
-                        console.log(data)
-                        Session.createSession("prg_lg", data.user);
-                        location.reload();
+                        window.location.href ='/changed-password';
                     }
 
                 },
                 error: function (request, status, error) {
-
-                    console.log(request.responseText);
-                    console.log(status);
-                    console.log(error);
-
-                    _this.setState({validateAlert: Alert.EMAIL_ID_ALREADY_EXIST});
+                    _this.setState({validateAlert: request.responseJSON.status.message});
                 }
+
             });
         }
     }

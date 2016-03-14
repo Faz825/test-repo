@@ -129,6 +129,9 @@ var UserSchema = new Schema({
 		type:String,
 		trim:true
 	},
+    salt:{
+        type:String
+    },
 	status:{
 		type:Number,
 		default:1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETED CHOOSE YOUR SECRETARY | 3 - COMPLETED GENERAL INFORMATION
@@ -190,9 +193,12 @@ var UserSchema = new Schema({
 
 
 
+var createSalt = function(){
+    return bCrypt.genSaltSync(10);
+};
 
-var createHash = function(password){
- return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
+var createHash = function(salt, password){
+ return bCrypt.hashSync(password, salt, null);
 };
 
 UserSchema.pre('save', function(next){
@@ -214,7 +220,8 @@ UserSchema.statics.create = function(UserData,callBack){
 	newUser.first_name 	= UserData.first_name;
 	newUser.last_name  	= UserData.last_name;
 	newUser.email		= UserData.email;
-	newUser.password	= createHash(UserData.password);
+    newUser.salt = createSalt();
+	newUser.password	= createHash(newUser.salt, UserData.password);
 	newUser.status		= UserData.status;
 	newUser.secretary	= UserData.secretary;
     newUser.user_name	= UserData.user_name;
@@ -672,7 +679,9 @@ UserSchema.statics.addCollageAndJob = function(userId,data,callBack) {
                     {
                         $set: {
                             created_at: _this.created_at,
-                            updated_at: _this.updated_at
+                            updated_at: _this.updated_at,
+                            status:data.status
+
                         },
                         $push: {
                             education_details: _educationDetails,
@@ -799,8 +808,11 @@ UserSchema.statics.findByCriteria = function(criteria,callBack){
 UserSchema.statics.updatePassword=function(userId,password,callBack){
     var _this = this;
 
+    var _salt = createSalt();
+
     var info = {
-        password:createHash(password),
+        salt:_salt,
+        password:createHash(_salt,password),
         resetPasswordToken:null,
         resetPasswordExpires:null
     }
@@ -1121,6 +1133,125 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
         }
     })
 }
+
+/**
+ * authenticating user
+ */
+UserSchema.statics.authenticate = function(data, callback) {
+    var _this = this;
+    var criteria = {email:data.user_name}
+    _this.findOne(criteria,function(err,resultSet){
+
+        if(!err){
+            if(resultSet == null){
+                callback({status:200,error:Alert.USER_NOT_FOUND});
+            } else if(resultSet.password != createHash(resultSet.salt, data.password)){
+                callback({status:200,error:Alert.INVALID_PASSWORD});
+            } else{
+                var _async = require('async'),
+                    Secretary = require('mongoose').model('Secretary'),
+                    Upload = require('mongoose').model('Upload');
+
+                _async.waterfall([
+                    function formatUserData(callBack){
+
+                        var _profileData = {
+                            id:resultSet._id,
+                            token:uuid.v1(),
+                            first_name:resultSet.first_name,
+                            last_name:resultSet.last_name,
+                            email:resultSet.email,
+                            status:resultSet.status,
+                            user_name:resultSet.user_name,
+                            country:resultSet.country,
+                            dob:resultSet.dob,
+                            secretary_id:resultSet.secretary
+                        };
+
+                        for(var i=0;i<resultSet.working_experiences.length;i++){
+                            if(resultSet.working_experiences[i].is_current_work_place){
+                                _profileData['company_name']=resultSet.working_experiences[i].company_name;
+                                _profileData['job_title']=resultSet.working_experiences[i].title;
+                            }
+                        }
+
+                        if(resultSet.education_details.length > 0){
+                            _profileData['school']=resultSet.education_details[0].school;
+                            _profileData['grad_date']=resultSet.education_details[0].date_attended_to;
+                        }
+
+                        callBack(null, _profileData);
+
+                    },
+                    function getSecretary(profileData,callBack){
+
+
+
+                        if( profileData.secretary_id != null){
+                            Secretary.getSecretaryById(profileData.secretary_id,function(secretary){
+                                profileData['secretary_image_url'] = secretary.image_name;
+                                profileData['secretary_name'] = secretary.full_name;
+                                callBack(null,profileData);
+                                return 0
+                            });
+                        }else{
+                            callBack(null,profileData)
+                        }
+                    },
+                    function getProfileImage(profileData,callBack){
+
+
+                        if(profileData != null){
+                            Upload.getProfileImage(profileData.id.toString(),function(profileImageData){
+                                profileData['profile_image'] = profileImageData.image.profile_image.http_url;
+                                callBack(null,profileData)
+                                return 0;
+                            });
+                        }else{
+                            callBack(null,null)
+                        }
+                    }
+
+
+
+                ],function(err,profileData) {
+                    var outPut = {};
+                    if (!err) {
+
+                        callback({status:200,user:profileData});
+                        //outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                        //outPut['profile_data'] = profileData;
+                        //
+                        //var payLoad = {
+                        //    index: "idx_usr",
+                        //    id: profileData.user_id,
+                        //    type: 'user',
+                        //    data: profileData,
+                        //    tag_fields: ['first_name', 'last_name', 'email', 'user_name', 'country']
+                        //}
+                        //ES.createIndex(payLoad, function (resultSet) {
+                        //    callBack(resultSet)
+                        //    return 0;
+                        //});
+
+                    } else {
+                        callback(err)
+                        return 0;
+                    }
+                })
+
+
+
+
+
+            }
+        }else{
+            console.log("Server Error --------")
+            callback({status:400,error:err});
+        }
+    });
+
+};
 
 
 

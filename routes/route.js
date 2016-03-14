@@ -51,7 +51,7 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts','/js'];
 GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
-    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id'
+    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password'
 
 ];
 
@@ -63,6 +63,14 @@ router.post('/doSignup',UserController.doSignup);
 router.get('/secretaries',SecretaryController.getSeretaries);
 
 router.get('/cache-check/:key',SecretaryController.cacheCheck);
+
+router.post('/doSignin', UserController.doSignin);
+
+router.post('/forgot-password/request/', UserController.forgotPassword);
+router.get('/forgot-password/reset/:token', UserController.validateToken);
+router.get('/change-password/:token', DefaultController.index);
+router.post('/change-password/:token', UserController.resetPassword);
+
 
 
 
@@ -117,11 +125,6 @@ router.get('/skills/delete', SkillController.deleteSkill);
 
 //User's skill add / delete
 router.post('/collage-and-job/save',UserController.addCollageAndJob);
-
-//For testing purpose all are set as get request
-router.get('/forgot-password/request/:email', UserController.forgotPassword);
-router.get('/forgot-password/validate/:token', UserController.validateToken);
-router.get('/forgot-password/reset/:token', UserController.resetPassword);
 
 
 //News Category / Channel & News Add / Get All & Delete
@@ -200,4 +203,8 @@ router.post('/skill-info/save', UserController.saveSkillInfo);
 
 router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
 
+
+
+
 module.exports = router;
+

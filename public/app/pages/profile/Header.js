@@ -136,7 +136,7 @@ const ConnectionIndicator =(props)=> {
 export class ProfileInfo extends React.Component{
     constructor(props){
         super(props);
-        let profileImg = (this.props.dt.images.profile_image.http_url)? this.props.dt.images.profile_image.http_url : "";
+        let profileImg = (typeof  this.props.dt.images.profile_image != 'undefined')? this.props.dt.images.profile_image.http_url : "";
         this.state = {
             profileImgSrc : profileImg,
 
