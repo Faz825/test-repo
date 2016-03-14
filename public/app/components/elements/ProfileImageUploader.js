@@ -86,7 +86,7 @@ export default class ProfileImageUploader extends React.Component{
             <div onClick={this.handleClick}>
                 {this.state.isShowingModal &&
                     <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                        <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
+                        <ModalDialog onClose={this.handleClose.bind(this)} width="50%" style={{marginTop : "-100px"}}>
                             <h3>Image Cropper</h3>
                             {this.getCropper()}
                         </ModalDialog>

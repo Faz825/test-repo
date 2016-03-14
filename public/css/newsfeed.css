@@ -252,11 +252,10 @@
 .pg-post-img-hover p {
     font: 22px 'montserratlight', sans-serif;
     color: #fff;
-    margin: 0;
+    margin: 40% 0 0;
     text-align: center;
-    padding-top: 20px;
 }
-.pg-newsfeed-common-content-post-images:hover .pg-post-img-hover {
+.pg-newsfeed-post-upload-image:hover .pg-post-img-hover{
     display: block;
 }
 
@@ -458,15 +457,21 @@
 }
 
 .pg-newsfeed-post-uploads-images{
-    padding: 0 15px;
+    padding: 0;
     margin: 0 0 5px;
+}
+
+.pg-newsfeed-post-uploads-images #loadFacebookG {
+    padding: 15px 0 0;
 }
 
 .pg-newsfeed-post-upload-image{
     float: left;
-    width: 30%;
-    margin: 0 5px 0 0;
+    width: 23.5%;
+    margin: 0 5px 5px 0;
     padding: 0;
+    position: relative;
+    overflow: hidden;
 }
 
 .pg-newsfeed-post-upload-image img {

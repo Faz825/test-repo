@@ -93,21 +93,19 @@ class SinglePost extends React.Component{
     render(){
         let _post = this.props.postItem;
         let _profile = _post.created_by;
+        let postImgLength = _post.upload.length;
         let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
             _profile.images.profile_image.http_url:"";
 
-
-
-
         var uploaded_files = _post.upload.map((upload,key)=>{
-            return (
-                <div className="pg-newsfeed-post-upload-image" key={key}>
-                    {
+            if(key <= 3){
+                return (
+                    <div className="pg-newsfeed-post-upload-image" key={key}>
                         <img src = {upload.http_url}/>
-
-                    }
-                </div>
-            )
+                        {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
+                    </div>
+                )
+            }
         })
         return (
             <div className="pg-timeline-white-box pg-top-round-border pg-add-margin-top">
@@ -211,5 +209,3 @@ const LikeSummery=({likes,visibility}) =>{
         </div>
     )
 }
-
-

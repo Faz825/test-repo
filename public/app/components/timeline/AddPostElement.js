@@ -4,8 +4,9 @@
 
 import React from 'react';
 import Session  from '../../middleware/Session';
-import Lib    from '../../middleware/Lib'
+import Lib    from '../../middleware/Lib';
 import ListPostsElement from './ListPostsElement';
+import ProgressBar from '../elements/ProgressBar';
 export default class AddPostElement extends React.Component{
 
     constructor(props){
@@ -73,10 +74,12 @@ export class TextPostElement extends React.Component{
             post_type:"NP",
             btnEnabled :true,
             iniTextisVisible : true,
-            emptyPostWarningIsVisible : false
+            emptyPostWarningIsVisible : false,
+            imgUploadInstID : 0
         }
         this.loggedUser = Session.getSession('prg_lg');
         this.submitPost = this.submitPost.bind(this);
+        this.selectImage = this.selectImage.bind(this);
         this.handleAjaxSuccess = this.handleAjaxSuccess.bind(this);
 
     }
@@ -105,8 +108,6 @@ export class TextPostElement extends React.Component{
                 cache: false,
 
             }).done(this.handleAjaxSuccess);
-
-            this.setState({iniTextisVisible: true});
         }
     }
     handleAjaxSuccess(data){
@@ -120,7 +121,8 @@ export class TextPostElement extends React.Component{
                 uploadedFiles:[],
                 fileIds:[],
                 inProgressUploads:{},
-                post_type:"NP"
+                post_type:"NP",
+                iniTextisVisible: true
             });
 
             document.getElementById('input').innerHTML = "";
@@ -150,6 +152,7 @@ export class TextPostElement extends React.Component{
         let _this = this;
         let imgSrc;
         let data = this.state.imgList;
+        let imgUploadInst = this.state.imgUploadInstID;
 
         for(var i = 0; i< e.target.files.length; i++){
             _readImage(e.target.files[i],'file_'+i);
@@ -167,24 +170,32 @@ export class TextPostElement extends React.Component{
                         upload_id:context.props.uuid,
                         upload_index:upload_index
                     }
-                    context.uploadHandler(payLoad)
-
+                    context.uploadHandler(payLoad, imgUploadInst);
                 };
 
             })(data,_this);
 
             reader.readAsDataURL(file);
         }
+
+        this.setState({imgUploadInstID : ++imgUploadInst});
     }
     uploadHandler(uploadContent){
         let loggedUser = Session.getSession('prg_lg'),
-            uploadedFiles = this.state.uploadedFiles;
+            uploadedFiles = this.state.uploadedFiles,
+            instID = this.state.imgUploadInstID;
 
         var _image_file ={
             show_loader:true,
-            http_url:null,
-            upload_index:uploadContent.upload_index
+            http_url:null
         }
+
+        _image_file['upload_img'] = {};
+        _image_file['upload_img']['id'] = instID;
+        _image_file['upload_img'][instID]={
+            'imgID':uploadContent.upload_index
+        };
+
 
         uploadedFiles.push(_image_file);
         this.setState({uploadedFiles:uploadedFiles,btnEnabled:false});
@@ -194,24 +205,27 @@ export class TextPostElement extends React.Component{
             method: "POST",
             dataType: "JSON",
             headers: { 'prg-auth-header':loggedUser.token },
-            data:uploadContent,
+            data:uploadContent
 
         }).done(function (data, text) {
             if (data.status.code == 200) {
                 for(var a=0;a<uploadedFiles.length;a++){
-                    if(uploadedFiles[a].upload_index == data.upload.upload_index){
-                        var _image_file ={
-                            show_loader:false,
-                            http_url:data.upload.http_url
+                    if(uploadedFiles[a].upload_img.id == instID){
+                        if(uploadedFiles[a].upload_img[instID].imgID == data.upload.upload_index){
+                            var _image_file ={
+                                show_loader:false,
+                                http_url:data.upload.http_url
+                            }
+
+                            uploadedFiles[a].show_loader = false;
+                            uploadedFiles[a].http_url = data.upload.http_url;
+
                         }
-
-                        uploadedFiles.push(_image_file)
-
                     }
                 }
 
                 let file_ids = this.state.fileIds;
-                file_ids.push(data.upload.file_id);
+                file_ids.push(data.upload.file_id)
                 this.setState({uploadedFiles:uploadedFiles,file_ids:file_ids,post_type:"AP",btnEnabled:true});
 
             }
@@ -231,7 +245,7 @@ export class TextPostElement extends React.Component{
                 <div className="pg-newsfeed-post-upload-image" key={key}>
                     {
                         (file.show_loader)?
-                            <p> Loading ... </p>
+                            <ProgressBar />
                             :<img src = {file.http_url}/>
 
                     }
