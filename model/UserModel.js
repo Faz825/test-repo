@@ -806,6 +806,7 @@ UserSchema.statics.updatePassword=function(userId,password,callBack){
     var _salt = createSalt();
 
     var info = {
+        salt:_salt,
         password:createHash(_salt,password),
         resetPasswordToken:null,
         resetPasswordExpires:null
