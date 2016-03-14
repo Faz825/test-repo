@@ -645,9 +645,7 @@ var UserControler ={
             },
             // Lookup user by username
             function(token, done) {
-                //if (req.body.email) {
                 if (req.body.email) {
-                    //var email = req.body.email;
                     var email = req.body.email;
 
                     User.findByEmail(email,function(ResultSet) {
@@ -725,12 +723,8 @@ var UserControler ={
         }, function(ResultSet) {
 
                 if (ResultSet.status == 200 && ResultSet.user != null) {
-                    //Don't need to send any response. need to do redirection
-                    //res.status(200).json(ApiHelper.getMessage(200, Alert.VALID_TOKEN, Alert.SUCCESS));
                     res.redirect('/change-password/' + req.params.token);
                 } else{
-                    //Don't need to send any response. need to do redirection
-                    //res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
                     res.redirect('/change-password-invalid' );
                 }
 
@@ -742,7 +736,6 @@ var UserControler ={
 
         var User = require('mongoose').model('User');
 
-        //var password = req.body.password;
         var password = req.body.password;
         User.findByCriteria({
             resetPasswordToken: req.params.token,
@@ -758,10 +751,9 @@ var UserControler ={
                 User.updatePassword(ResultSet.user._id,password,function(resultSet){
 
                     if(resultSet.status ==200){
-                        //res.status(200).json(ApiHelper.getMessage(200, Alert.RESET_PASSWORD_SUCCESS, Alert.SUCCESS));
-                        res.redirect('/changed-password' );
+                        outPut['status'] = ApiHelper.getMessage(200, Alert.RESET_PASSWORD_SUCCESS, Alert.SUCCESS);
+                        res.status(200).json(outPut);
                     } else{
-
                         outPut['status'] = ApiHelper.getMessage(400, Alert.RESET_PASSWORD_FAIL, Alert.ERROR);
                         res.status(400).json(outPut);
                     }
@@ -769,9 +761,6 @@ var UserControler ={
                 });
 
             } else{
-                //Don't need to send any response. need to do redirection
-                //res.status(400).json(ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR));
-                //res.redirect('/#!/password/reset/invalid');
                 outPut['status'] = ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR);
                 res.status(400).json(outPut);
             }

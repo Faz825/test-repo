@@ -69,7 +69,6 @@ router.post('/forgot-password/request/', UserController.forgotPassword);
 router.get('/forgot-password/reset/:token', UserController.validateToken);
 router.get('/change-password/:token', DefaultController.index);
 router.post('/change-password/:token', UserController.resetPassword);
-router.get('/changed-password', DefaultController.index);
 
 
 

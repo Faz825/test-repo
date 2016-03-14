@@ -60,7 +60,7 @@ export default class ChangePassword extends React.Component{
                     console.log(data.status.message)
                     if (data.status.code === 200) {
                         _this.setState({validateAlert: ""});
-                        _this.setState({successAlert: data.status.message});
+                        window.history.pushState('Change Password','User Changed Password','/changed-password');
                         location.reload();
                     }
 
@@ -69,24 +69,6 @@ export default class ChangePassword extends React.Component{
                     _this.setState({validateAlert: request.responseJSON.status.message});
                 }
 
-                //success: function (data, text) {
-                //
-                //    if (data.status === 'success') {
-                //        _this.setState({validateAlert: ""});
-                //        console.log(data)
-                //        Session.createSession("prg_lg", data.user);
-                //        location.reload();
-                //    }
-                //
-                //},
-                //error: function (request, status, error) {
-                //
-                //    console.log(request.responseText);
-                //    console.log(status);
-                //    console.log(error);
-                //
-                //    _this.setState({validateAlert: Alert.EMAIL_ID_ALREADY_EXIST});
-                //}
             });
         }
     }
