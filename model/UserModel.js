@@ -1203,7 +1203,7 @@ UserSchema.statics.authenticate = function(data, callback) {
 
                         if(profileData != null){
                             Upload.getProfileImage(profileData.id.toString(),function(profileImageData){
-                                profileData['profile_image'] = profileImageData.image.profile_image.http_url;
+                                profileData['profile_image'] = (typeof profileImageData.image.profile_image != 'undefined')?profileImageData.image.profile_image.http_url:"";
                                 callBack(null,profileData)
                                 return 0;
                             });
