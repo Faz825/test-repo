@@ -92,7 +92,7 @@ SkillSchema.statics.getSkillById=function(skillId,callBack){
                     id:resultSet._id,
                     name:resultSet.name
                 };
-                callBack({status:200,result:skill});
+                callBack({status:200,skill:skill});
             }else{
                 console.log(err)
                 callBack({status:400,error:err})

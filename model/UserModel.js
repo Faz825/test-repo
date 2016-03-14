@@ -157,9 +157,12 @@ var UserSchema = new Schema({
     education_details:[EducationSchema],
 
     skills:[{
-        type: Schema.ObjectId,
-        ref: 'Skill',
-        default:null
+        skill_id:{
+            type: Schema.ObjectId,
+            ref: 'Skill',
+            default:null,
+        },
+        is_day_to_day_comfort:0
     }],
 
     working_experiences:[WorkingExperienceSchema],
@@ -325,73 +328,46 @@ UserSchema.statics.getConnectionUsers=function(criteria,callBack){
 
     _async.waterfall([
         function getUsersConnections(callBack){
-            Connection.getConnectedUserIds(criteria.user_id,function(usersConnection){
 
-                if(usersConnection.status == 200){
-                    callBack(null,usersConnection.connected_user_ids)
-                }
+            Connection.getFriends(criteria.user_id,criteria.status,function(myFriends){
+
+                callBack(null,myFriends.friends)
+
             });
         },
-        function getAllUsers(connectedUserIds,callBack){
+        function getAllUsers(myFriends,callBack){
 
 
-            var _criteria ={
-                country:criteria.country,
-                _id: { $ne: criteria.user_id }
-            };
 
-            _this.count(_criteria,function(err,count){
-
-                _this.find(_criteria)
-                    .limit(Config.CONNECTION_RESULT_PER_PAGE)
-                    .skip(Config.CONNECTION_RESULT_PER_PAGE * criteria.pg)
-                    .sort({
-                        country:'asc'
-                    })
-                    .exec(function(err,resultSet){
-                        if(!err){
-
-
-                            callBack(null,{
-                                total_result:count,
-                                users:_this.formatConnectionUserDataSet(resultSet),
-                                connected_user_ids:connectedUserIds
-                            })
-
-                        }else{
-                            console.log("Server Error --------");
-                            console.log(err);
-                            callBack({status:400,error:err});
-                        }
-
-                    });
-            });
+            _this.getAllUsers(criteria.country,criteria.user_id,function(resultSet){
+                callBack(null,{
+                    total_result:resultSet.total_result,
+                    users:resultSet.users,
+                    my_friends:myFriends
+                })
+            })
         },
         function mergeConnection(connections,callBack){
-            var _connected_user_ids =connections. connected_user_ids,
-                _formattedConnection =[],
-                _connectedUsers = connections.users;
+            var _my_friends =connections.my_friends,
+                _formattedFriendList =[],
+                _allUsers = connections.users;
 
 
+            for(var i =0;i<_allUsers.length;i++){
+                var _c_users ={},
+                _my_friend = _my_friends[_allUsers[i].user_id.toString()];
+                _allUsers[i].connection_status = 0
 
-            for(var i =0;i<_connectedUsers.length;i++){
-                var _c_users ={};
-                _c_users = _connectedUsers[i];
-                _connectedUsers[i]['is_connected'] = 0;
-
-
-                if(_connected_user_ids.indexOf(_c_users.user_id.toString()) != -1){
-                    _connectedUsers[i]['is_connected'] = 1;
-
-
+                if(typeof _my_friend != 'undefined'){
+                    _allUsers[i].connection_status = _my_friend.status;
                 }
 
-                _formattedConnection.push(_connectedUsers[i]);
 
+                _formattedFriendList.push(_allUsers[i]);
             }
             callBack(null,{
                 total_result: connections.total_result,
-                users:_formattedConnection
+                friends:_formattedFriendList
             })
         }
 
@@ -864,11 +840,34 @@ UserSchema.statics.getUser=function(criteria,showOptions,callBack){
     });
 }
 
+
+/**
+ * Get All registered users
+ * Users are taking from elastic search
+ * @param callBack
+ */
+UserSchema.statics.getAllUsers=function(q,userId,callBack){
+
+    var query={
+        q:q,
+        index:'idx_usr'
+    };
+    ES.search(query,function(esResultSet){
+        var tmp_arr = [];
+        for(var a=0;a <esResultSet.result.length;a++){
+            if(typeof userId != 'undefined' && esResultSet.result[a] != userId){
+                tmp_arr.push(esResultSet.result[a])
+            }
+        }
+        callBack({total_result:esResultSet.result_count,users:tmp_arr});
+        return 0
+    });
+}
+
+
 /**
  * DATA FORMATTER HELPER FUNCTION WILL DEFINE HERE
  */
-
-
 
 
 /**
@@ -886,24 +885,29 @@ UserSchema.statics.formatUser=function(userObject,showOptions){
             last_name: userObject.last_name,
             zip_code: userObject.zip_code,
             dob: userObject.dob,
-            country:userObject.country
+            country:userObject.country,
+            user_name:userObject.user_name
         };
         for(var i=0;i<userObject.working_experiences.length;i++){
             if(userObject.working_experiences[i].is_current_work_place){
                 _temp_user['cur_working_at']=userObject.working_experiences[i].company_name;
                 _temp_user['cur_designation']=userObject.working_experiences[i].title;
             }
-
         }
-        if(typeof showOptions != 'undefined' && showOptions.w_exp){
+        if(typeof showOptions.w_exp != 'undefined' && showOptions.w_exp){
             _temp_user['working_experiences'] = [];
             _temp_user['working_experiences'] = this.formatWorkingExperiences(userObject);
         }
-        if(typeof showOptions != 'undefined' && showOptions.edu){
+        if(typeof showOptions.edu != 'undefined' && showOptions.edu){
             _temp_user['education_details'] =[];
             _temp_user['education_details'] = this.formatEducation(userObject);
         }
 
+        if(typeof showOptions.skill != 'undefined' && showOptions.skill){
+            _temp_user['skills'] =[];
+            _temp_user['skills'] = userObject.skills
+
+        }
 
         return _temp_user
     }
@@ -984,6 +988,49 @@ UserSchema.statics.formatWorkingExperiences = function(userObject){
     }
     return _temp_we;
 }
+
+
+UserSchema.statics.formatSkills=function(userObject,callBack){
+    var Skill =  require('mongoose').model('Skill'),
+        _async = require('async'),
+        _tmp_out = {
+            'day_to_day_comforts':[],
+            'experienced':[]
+        };
+    _async.each(userObject.skills,
+    function(skill,callBack){
+
+
+        Skill.getSkillById(Util.toObjectId(skill.skill_id),function(resultSet){
+
+
+            if(skill.is_day_to_day_comfort === 1){
+                _tmp_out['day_to_day_comforts'].push({
+                    id:resultSet.skill.id,
+                    name:resultSet.skill.name
+                });
+                callBack();
+
+            }else{
+            //if(skill.is_day_to_day_comfort === 0){
+                _tmp_out['experienced'].push({
+                    id:resultSet.skill.id,
+                    name:resultSet.skill.name
+                });
+                callBack();
+            }
+
+        });
+
+    },
+    function(err){
+
+        callBack(_tmp_out);
+    });
+
+
+
+}
 /**
  * Format Connection users data
  * @param resultSet
@@ -1002,6 +1049,78 @@ UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
 /**
  * CACHE IMPLEMENTATION
  */
+UserSchema.statics.addUserToCache = function(userId, callBack){
+    var _async = require('async'),
+        Connection = require('mongoose').model('Connection'),
+        Upload = require('mongoose').model('Upload'),
+        _this = this;
+    _async.waterfall([
+        function getUserById(callBack){
+            var _search_param = {
+                    _id:Util.toObjectId(userId),
+                },
+                showOptions ={
+                    w_exp:false,
+                    edu:false
+                };
+
+            _this.getUser(_search_param,showOptions,function(resultSet){
+                if(resultSet.status ==200 ){
+                    callBack(null,resultSet.user)
+                }
+            })
+        },
+        function getConnectionCount(profileData,callBack){
+
+            if( profileData!= null){
+                Connection.getFriendsCount(profileData.user_id,function(connectionCount){
+                    profileData['connection_count'] = connectionCount;
+                    callBack(null,profileData);
+                    return 0
+                });
+            }else{
+                callBack(null,null)
+            }
+        },
+        function getProfileImage(profileData,callBack){
+
+            if(profileData != null){
+                Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
+                    profileData['images'] = profileImageData.image;
+                    callBack(null,profileData)
+                    return 0;
+                });
+            }else{
+                callBack(null,null)
+            }
+        }
+
+    ],function(err,profileData){
+        var outPut ={};
+        if(!err){
+
+            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['profile_data']      = profileData;
+
+            var payLoad={
+                index:"idx_usr",
+                id:profileData.user_id,
+                type: 'user',
+                data:profileData,
+                tag_fields:['first_name','last_name','email','user_name','country']
+            }
+
+            ES.createIndex(payLoad,function(resultSet){
+                callBack(resultSet)
+                return 0;
+            });
+
+        }else{
+            callBack(err)
+            return 0;
+        }
+    })
+}
 
 
 

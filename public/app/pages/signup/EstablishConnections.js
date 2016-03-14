@@ -59,8 +59,8 @@ export default class EstablishConnections extends React.Component{
             if (this.currentPage > this.state.resultHeader.total_pages){
                 //return false;
             }else{
-                console.log(this.currentPage)
-                this.loadData(this.currentPage)
+               // console.log(this.currentPage)
+                //this.loadData(this.currentPage)
             }
             this.currentPage = this.currentPage+1;
         }

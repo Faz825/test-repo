@@ -59,7 +59,8 @@ var ES = {
      */
     search:function(payLoad,callBack){
         var search_param ={
-                q:payLoad.q
+                q:payLoad.q,
+                size:1000
             },
             _this = this;
 
@@ -70,7 +71,9 @@ var ES = {
         this.esClient.search(search_param).then(function (resp) {
             callBack(_this.formatSearchResult(resp));
         }, function (err) {
+
             console.trace(err.message);
+            callBack(null)
         });
 
     },

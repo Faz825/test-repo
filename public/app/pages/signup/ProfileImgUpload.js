@@ -1,19 +1,20 @@
 //ProfileImgUpload
 import React from 'react'
 import Button from '../../components/elements/Button'
-import ImgUploader from '../../components/elements/ImgUploader'
 import Session  from '../../middleware/Session';
 import SecretaryThumbnail from '../../components/elements/SecretaryThumbnail'
+import ProfileImageUploader from '../../components/elements/ProfileImageUploader'
+import ProgressBar from '../../components/elements/ProgressBar'
 
 export default class ProfileImgUpload extends React.Component{
 
 	constructor(props){
 		super(props);
-      this.loggedUser = Session.getSession('prg_lg');
+      	this.loggedUser = Session.getSession('prg_lg');
 
-			this.state = {
-	        profileImg : "",
-	        defaultImage:(typeof  this.loggedUser.profile_image != "undefined")?this.loggedUser.profile_image:"images/default-profile-pic.png"
+		this.state = {
+	        profileImg : (typeof  this.loggedUser.profile_image != "undefined")?this.loggedUser.profile_image:"images/default-profile-pic.png",
+			loadingBarIsVisible : false
 	    };
 
 	}
@@ -27,8 +28,7 @@ export default class ProfileImgUpload extends React.Component{
 	}
 
 	uploadImg(){
-
-
+		this.setState({loadingBarIsVisible : true});
         let _this =  this;
         $.ajax({
             url: '/upload/profile-image',
@@ -40,6 +40,7 @@ export default class ProfileImgUpload extends React.Component{
             contentType:"application/x-www-form-urlencoded",
             success: function (data, text) {
                 if (data.status.code == 200) {
+					_this.setState({loadingBarIsVisible : false});
                     Session.createSession("prg_lg", data.user);
                     location.href ="/";
                 }
@@ -54,7 +55,7 @@ export default class ProfileImgUpload extends React.Component{
 
 	render() {
         let user = Session.getSession('prg_lg');
-				let _secretary_image = user.secretary_image_url;
+		let _secretary_image = user.secretary_image_url;
 		return (
 
 			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
@@ -83,7 +84,10 @@ export default class ProfileImgUpload extends React.Component{
 
                                         <p>Would you like to upload a picture now?</p>
 
-                                        <ImgUploader imgUploaded={this.profileImgUpdated.bind(this)} defaultImg={this.state.defaultImage} />
+										<div className="Profile-pic-main proImgHolder">
+											<img src={this.state.profileImg} alt="Default user profile image" id="previewProfileImg" className="img-responsive Profile-pic-uploaded"/>
+											<ProfileImageUploader profileImgSrc={this.state.profileImg} imgUpdated={this.profileImgUpdated.bind(this)} />
+										</div>
 
                                          <div className="row">
 	                                        <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="back" onButtonClick = {this.onBack.bind(this)} />
@@ -101,6 +105,7 @@ export default class ProfileImgUpload extends React.Component{
                     </div>
 
                 </div>
+				{(this.state.loadingBarIsVisible)? <div className="ProgressBarHolder"><ProgressBar /></div> : null}
             </div>
 		);
 	}

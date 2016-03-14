@@ -17,19 +17,14 @@ export default class SkillsAndInterests extends React.Component{
 
         this.tempdata = {
             day_to_day_comforts:[
-                {skillID: 1, skill: "CSS"},
-                {skillID: 2, skill: "JSON"},
-                {skillID: 3, skill: "JS"},
-                {skillID: 4, skill: "HTML"},
-                {skillID: 5, skill: "jQuery"},
-                {skillID: 6, skill: "React"}
+                {id: "56e117d32762306307c36707", name: "CSS"},
+                {is: "56e117d32762306307c36708", name: "Javascript"},
+                {id: "56e117d32762306307c36706", name: "HTML"}
             ],
             experienced:[
-                {skillID: 1, skill: "CSS"},
-                {skillID: 2, skill: "JSON"},
-                {skillID: 3, skill: "JS"},
-                {skillID: 4, skill: "jQuery"},
-                {skillID: 5, skill: "HTML"}
+                {id: "56e117d32762306307c36707", name: "CSS"},
+                {is: "56e117d32762306307c36708", name: "Javascript"},
+                {id: "56e117d32762306307c36706", name: "HTML"}
             ]
         }
 
@@ -37,7 +32,7 @@ export default class SkillsAndInterests extends React.Component{
 
     loadSkills(){
         $.ajax({
-            url: '/work-experiences/'+this.props.uname,
+            url: '/user/skills/'+this.props.uname,
             method: "GET",
             dataType: "JSON",
             data:{uname:this.props.uname},
@@ -61,7 +56,7 @@ export default class SkillsAndInterests extends React.Component{
         let formIsVisible = this.state.editFormVisible;
         this.setState({editFormVisible : !formIsVisible});
 
-        console.log(data);
+
     }
 
     closeForm(){
@@ -71,6 +66,9 @@ export default class SkillsAndInterests extends React.Component{
 
     render() {
         let read_only = (this.state.loggedUser.id == this.state.data.user_id)?false:true;
+        if(Object.keys(this.state.data).length == 0){
+            return (<div> Loading </div>);
+        }
         return (
             <div id="background-skills-container" className="pg-section-container">
                 <div className="pg-section" id="skill-interest">
@@ -86,16 +84,19 @@ export default class SkillsAndInterests extends React.Component{
                             : null
                         }
                     </div>
-                    {this.state.editFormVisible? <SkillsForm data={this.tempdata} onFormSave={this.editForm} onFormClose={this.closeForm} /> : null}
+                    {this.state.editFormVisible?
+                        <SkillsForm  data={this.state.data.skills}
+                                     onFormSave={this.editForm}
+                                     onFormClose={this.closeForm} /> : null}
                     <div className="pg-body-item pg-entity">
                         <div className="pg-edit-action-area">
                             <div className="row-clr col-xs-6 row-clr-pad">
                                 <h3 className="pg-header-sub-title">Day-to-day comforts</h3>
-                                <SkillTagList skills={this.tempdata.day_to_day_comforts} editable=""/>
+                                <SkillTagList skills={this.state.data.skills.day_to_day_comforts} editable=""/>
                             </div>
                             <div className="row-clr col-xs-6">
                                 <h3 className="pg-header-sub-title">Experience with</h3>
-                                <SkillTagList skills={this.tempdata.experienced} editable=""/>
+                                <SkillTagList skills={this.state.data.skills.experienced} editable=""/>
                             </div>
                         </div>
                     </div>
@@ -105,37 +106,26 @@ export default class SkillsAndInterests extends React.Component{
     }
 }
 
-const skills = [
-    {skillID: 1, skill: "CSS"},
-    {skillID: 2, skill: "JSON"},
-    {skillID: 3, skill: "JS"},
-    {skillID: 4, skill: "HTML"},
-    {skillID: 5, skill: "jQuery"},
-    {skillID: 6, skill: "React"},
-    {skillID: 7, skill: "Angular"},
-    {skillID: 8, skill: "nodeJs"}
-];
-
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function getSuggestions(value) {
+function getSuggestions(value, data) {
   const escapedValue = escapeRegexCharacters(value.trim());
   if (escapedValue === '') {
     return [];
   }
   const regex = new RegExp('^' + escapedValue, 'i');
-  return skills.filter(skills => regex.test(skills.skill));
+  return data.filter(data => regex.test(data.name));
 }
 
 function getSuggestionValue(suggestion) {
-  return suggestion.skill;
+  return suggestion.name;
 }
 
 function renderSuggestion(suggestion) {
   return (
-    <span id={suggestion.skillId}>{suggestion.skill}</span>
+    <span id={suggestion.id}>{suggestion.name}</span>
   );
 }
 
@@ -149,7 +139,8 @@ export class SkillsForm extends React.Component{
             value: '',
             suggestions: getSuggestions(''),
             checked : false,
-            suggestionsList : {}
+            suggestionsList : {},
+            loggedUser:Session.getSession('prg_lg')
         };
 
         this.modifiedSkillsList = {
@@ -163,11 +154,30 @@ export class SkillsForm extends React.Component{
             }
         }
 
+        this.skills;
+        $.ajax({
+            url: '/skills',
+            method: "GET",
+            dataType: "JSON",
+            success: function (data, text) {
+                if(data.status.code == 200){
+                    this.skills = data.skills;
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }.bind(this)
+        });
+
         this.skillId = [];
         this.removeSkill = this.removeSkill.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSkillAdd = this.onSkillAdd.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
+
+
     }
 
     removeSkill(skill,id,type){
@@ -178,7 +188,7 @@ export class SkillsForm extends React.Component{
         this.modifiedSkillsList = skillsObj;
 
         for (var key in skillData[type]) {
-            if (skillData[type][key].skillID == id) delete skillData[type][key];
+            if (skillData[type][key].id == id) delete skillData[type][key];
         }
 
         this.setState({formData : skillData});
@@ -187,6 +197,22 @@ export class SkillsForm extends React.Component{
     onFormSave(e){
         e.preventDefault();
         this.props.onFormSave(this.modifiedSkillsList);
+
+        $.ajax({
+            url: '/skill-info/save',
+            method: "POST",
+            dataType: "JSON",
+            data: {skill_set:JSON.stringify(this.modifiedSkillsList)},
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            success: function (data, text) {
+
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }.bind(this)
+        });
     }
 
     onChange(event, { newValue }) {
@@ -195,8 +221,8 @@ export class SkillsForm extends React.Component{
 
     onSuggestionsUpdateRequested({ value }) {
         this.setState({
-          suggestions: getSuggestions(value),
-          suggestionsList : getSuggestions(value)
+          suggestions: getSuggestions(value, this.skills),
+          suggestionsList : getSuggestions(value, this.skills)
         });
     }
 
@@ -208,16 +234,14 @@ export class SkillsForm extends React.Component{
         let typeSelected = (this.state.checked)? 'day_to_day_comforts' : 'experienced';
 
         for (var key in suggestionsList) {
-            if(suggestionsList[key].skill == skillName){
-                skillsObj[typeSelected].add.push(suggestionsList[key].skillID);
-            }
-            if(suggestionsList[key].skill == skillName){
-                skillData[typeSelected].push({skillID : suggestionsList[key].skillID, skill : skillName})
+            if(suggestionsList[key].name == skillName){
+                skillsObj[typeSelected].add.push(suggestionsList[key].id);
+                skillData[typeSelected].push({id : suggestionsList[key].id, name : skillName})
             }
         }
-
         this.modifiedSkillsList = skillsObj;
         this.setState({formData : skillData, value : "", checked : false});
+
     }
 
     onCheck(){
@@ -232,10 +256,11 @@ export class SkillsForm extends React.Component{
           value,
           onChange: this.onChange
         };
+
         return (
             <div className="form-area" id="skills-form">
                 <div className="form-group inline-content">
-                    <label className="pg-itel-lbl">Add Skills & interests</label>
+                    <label className="pg-itel-lbl">Add Skills &amp; interests</label>
                     <Autosuggest suggestions={suggestions}
                         onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                         getSuggestionValue={getSuggestionValue}
@@ -252,13 +277,20 @@ export class SkillsForm extends React.Component{
                     <div className="form-group">
                         <label>Day-to-day comforts</label>
                         <div className="pg-edit-skills-area">
-                            <SkillTagList skills={this.state.formData.day_to_day_comforts} type="day_to_day_comforts" editable="true" removeSkill={this.removeSkill} />
+                            <SkillTagList skills={this.state.formData.day_to_day_comforts}
+                                          type="day_to_day_comforts"
+                                          editable="true"
+                                          removeSkill={this.removeSkill} />
                         </div>
                     </div>
                     <div className="form-group">
                         <label>Experience with</label>
                         <div className="pg-edit-skills-area">
-                            <SkillTagList skills={this.state.formData.experienced} type="experienced" editable="true" removeSkill={this.removeSkill} />
+                            <SkillTagList
+                                skills={this.state.formData.experienced}
+                                type="experienced"
+                                editable="true"
+                                removeSkill={this.removeSkill} />
                         </div>
                     </div>
                     <button type="submit" className="btn btn-primary pg-btn-custom">Save</button>
@@ -271,14 +303,15 @@ export class SkillsForm extends React.Component{
 
 const SkillTagList = ({skills,editable,type,removeSkill}) => {
     let _this = this;
+    let _skills =(typeof  skills != 'undefined')?skills:[];
     return (
         <ul className="skills-edit-section">
             {
-                skills.map(function(skill,index){
+                _skills.map(function(skill,index){
                     return(
                         <li className="pg-endrose-item" key={index}>
-                            <span className="pg-endorse-item-name" data-skillid={skill.skillID} >{skill.skill}</span>
-                            {(editable)? <i className="fa fa-times pg-skill-delete-icon" onClick={(event)=>removeSkill(skill.skill, skill.skillID, type)}/> : null}
+                            <span className="pg-endorse-item-name" data-skillid={skill.id} >{skill.name}</span>
+                            {(editable)? <i className="fa fa-times pg-skill-delete-icon" onClick={(event)=>removeSkill(skill.name, skill.id, type)}/> : null}
                         </li>
                     )
                 })

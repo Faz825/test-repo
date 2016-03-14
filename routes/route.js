@@ -12,19 +12,30 @@ require('../model/ConnectionModel');
 require('../model/FavouriteNewsCategory');
 require('../model/UploadModel');
 require('../model/SkillModel');
+
+require('../model/PostModel');
 require('../model/NewsModel');
 require('../model/SavedArticleModel');
-
+require('../model/NotificationModel');
+require('../model/NotificationRecipientModel');
+require('../model/CommentModel');
 /** Load  Controllers
  */
 var DefaultController   = require('../controller/DefaultController'),
 	UserController      = require('../controller/UserController'),
 	SecretaryController = require('../controller/SecretaryController'),
     TestController      = require('../controller/TestController'),
-    SkillController      = require('../controller/SkillController'),
-    NewsController      = require('../controller/NewsController');
+    SkillController     = require('../controller/SkillController'),
+    NewsController      = require('../controller/NewsController'),
+    PostController      = require('../controller/PostController'),
+    CommentController   = require('../controller/CommentController'),
+    UploadController    = require('../controller/UploadController');
 
 
+
+var TestPostController          = require('../test/TestPostController'),
+    TestConnectionController    = require('../test/TestConnectionController'),
+    TestCommentController    = require('../test/TestCommentController');
 /**
  * Define Public URLs
  * this public urls will load without authentication component.
@@ -45,7 +56,7 @@ GLOBAL.AccessAllow = [
 ];
 
 
-/** 
+/**
  * Actual Routes Implementation without Authentication
  */
 router.post('/doSignup',UserController.doSignup);
@@ -67,10 +78,25 @@ router.get('/test/get-profile/:id', TestController.getProfile);
 router.get('/test/get-education/:uname', TestController.retrieveEducationDetail);
 router.get('/test/get-workexp/:uname', TestController.retrieveWorkExperience);
 
+router.post('/test/add-post/:id', TestPostController.addPost);
+router.get('/test/get-post/:id/:page', TestPostController.ch_getPost);
+
 router.get('/test/es/create-index/:id', TestController.esCreateIndex);
 router.get('/test/es/search', TestController.esSearch);
 
+router.get('/test/get-connections/:id', TestConnectionController.getConnection);
 
+
+
+router.get('/test/my-connections/:id',TestConnectionController.myConnections);
+
+router.get('/test/save-notification', TestController.saveNotification);
+router.get('/test/get-notifications', TestController.getNotifications);
+router.get('/test/update-notification', TestController.updateNotification);
+
+
+router.post('/test/comment/add/:id', TestCommentController.addComment);
+router.get('/test/comment/get/:id', TestCommentController.getComment);
 
 router.get('/education-info/save', UserController.addEducationDetail);
 router.get('/educations/:uname',UserController.retrieveEducationDetail);
@@ -79,6 +105,7 @@ router.get('/education-info/delete', UserController.deleteEducationDetail);
 
 router.get('/work-experiences/:uname', UserController.retrieveWorkExperience);
 
+router.get('/user/skills/:uname', UserController.getSkills);
 // Skills CRUD
 router.get('/skills/save', SkillController.addSkills);
 router.get('/skills', SkillController.getSkills);
@@ -89,8 +116,6 @@ router.get('/skills/delete', SkillController.deleteSkill);
 
 
 //User's skill add / delete
-router.get('/skill-info/save', UserController.saveSkillInfo);
-
 router.post('/collage-and-job/save',UserController.addCollageAndJob);
 
 //For testing purpose all are set as get request
@@ -131,13 +156,16 @@ router.get('/news-info/save-article', UserController.saveArticle);
 router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
 router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle);
 
+
+
+
 /**
  * Push All Rqurst through oAuth
  */
 router.all('/*',oAuth.Authentication);
 
 
-/** 
+/**
  * Implement Actual Routes that need to Authenticate
  */
 
@@ -149,9 +177,27 @@ router.post('/addNewsCategory',UserController.addNewsCategory);
 router.post('/upload/profile-image',UserController.uploadProfileImage);
 router.get('/connections',UserController.getConnections);
 router.get('/connection/count',UserController.connectionCount);
+router.post('/upload/cover-image',UserController.uploadCoverImage);
+
+
+
+
 
 router.post('/education/update', UserController.updateEducationDetail);
 
 
 router.post('/work-experience/update', UserController.updateWorkExperience);
+
+
+router.post('/post/composer', PostController.addPost);
+router.get('/pull/posts', PostController.getPost);
+
+
+router.post('/comment/composer', CommentController.addComment);
+router.get('/pull/comments', CommentController.getComment);
+
+router.post('/skill-info/save', UserController.saveSkillInfo);
+
+router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
+
 module.exports = router;

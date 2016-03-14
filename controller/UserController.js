@@ -181,13 +181,9 @@ var UserControler ={
         var criteria ={
             pg:0,
             country:CurrentSession.country,
-            user_id:CurrentSession.id
+            user_id:CurrentSession.id,
+            status: [ConnectionStatus.REQUEST_ACCEPTED, ConnectionStatus.REQUEST_SENT]
         };
-
-        if(typeof req.query.pg  != 'undefined' &&
-            req.query.pg != "" && req.query.pg > 1){
-            criteria['pg'] = req.query.pg -1;
-        }
 
 
         User.getConnectionUsers(criteria,function(resultSet){
@@ -200,11 +196,10 @@ var UserControler ={
                 outPut['header'] ={
                     total_result:resultSet.total_result,
                     result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
-                    current_page:req.query.pg,
                     total_pages:Math.ceil(resultSet.total_result/Config.CONNECTION_RESULT_PER_PAGE)
                 };
 
-                outPut['connections'] = resultSet.users
+                outPut['connections'] = resultSet.friends
 
                 res.status(200).send(outPut);
                 return 0
@@ -240,7 +235,7 @@ var UserControler ={
 
             var Connection = require('mongoose').model('Connection');
 
-            Connection.connect(req_connected_users,req_unconnected_users, function (resultSet) {
+            Connection.sendConnectionRequest(req_connected_users,req_unconnected_users, function (resultSet) {
 
                 if (resultSet.status !== 200) {
                     outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
@@ -278,8 +273,19 @@ var UserControler ={
             if(req_news_categories.length >= 1 ) {
 
                 var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+                var news_categories = [],
+                    now = new Date();
 
-                FavouriteNewsCategory.addUserNewsCategory(req_news_categories,function(resultSet){
+                for (var i = 0; req_news_categories.length > i; i++) {
+                    news_categories.push({
+                        user_id: CurrentSession.id.toObjectId(),
+                        category: null,
+                        created_at: now
+                    });
+                }
+
+
+                FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
 
                     if (resultSet.status !== 200) {
                         outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
@@ -303,7 +309,6 @@ var UserControler ={
 
     uploadProfileImage:function(req,res){
 
-        console.log(req.body.profileImg);
 
         if(typeof req.body.profileImg == 'undefined' || typeof req.body.profileImg == "") {
             var outPut={
@@ -326,7 +331,7 @@ var UserControler ={
                 var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
                 CurrentSession['status'] = 7;
                 CurrentSession['profile_image'] = payLoad.http_url;
-                console.log(CurrentSession);
+
 
                 CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
                     var outPut = {
@@ -336,8 +341,16 @@ var UserControler ={
                         outPut['extra'] = Alert.CACHE_CREATION_ERROR
                     }
                     outPut['user'] = CurrentSession;
+
+                    //ADD TO CACHE
+                    User.addUserToCache(CurrentSession.id,function(csResult){});
+
+
                     res.status(200).json(outPut);
                 });
+
+
+
 
             } else {
                 var outPut={
@@ -349,6 +362,64 @@ var UserControler ={
 
     },
 
+    /**
+     * Upload cover image
+     * @param req
+     * @param res
+     */
+    uploadCoverImage:function(req,res){
+        if(typeof req.body.cover_img == 'undefined' || typeof req.body.cover_img == "") {
+            var outPut={
+                status: ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
+            };
+            res.status(400).send(outPut);
+            return 0;
+        }
+
+        var User = require('mongoose').model('User');
+        var data ={
+            content_title:"Cover Image",
+            file_name:req.body.cover_img,
+            is_default:1,
+            entity_id:CurrentSession.id,
+            entity_tag:UploadMeta.COVER_IMAGE
+        }
+        ContentUploader.uploadFile(data,function (payLoad) {
+
+            if (payLoad.status != 400) {
+                var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+                CurrentSession['cover_image'] = payLoad.http_url;
+
+
+                CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                    var outPut = {
+                        status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                    }
+                    if (!cacheData) {
+                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                    }
+                    outPut['user'] = CurrentSession;
+
+                    //ADD TO CACHE
+                    User.addUserToCache(CurrentSession.id,function(csResult){});
+
+                    res.status(200).json(outPut);
+                });
+
+
+
+
+            } else {
+                var outPut={
+                    status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
+                };
+                res.status(400).send(outPut);
+            }
+        });
+
+
+
+    },
 
     /**
      * Add educational details to a user
@@ -411,7 +482,8 @@ var UserControler ={
         var criteria = {user_name:req.params['uname']},
             showOptions ={
                 w_exp:true,
-                edu:true
+                edu:true,
+                skill:false
             };
         User.getUser(criteria,showOptions,function(resultSet){
             var outPut ={};
@@ -567,19 +639,38 @@ var UserControler ={
 
         // Need to COMMENT these
 
-        var userId = "56c2d6038c920a41750ac4db";
-        //var req_skills = ["PHP"]; // skills that are newly added by the user, but which are not in skill collection
-        //"56c43351f468ba8913f3d129", "56c44e88d7ffcaa91867862e", "56c44e88d7ffcaa91867862f"
-        var existing_skills = ["56c43351f468ba8913f3d12a", "56c44ddefd4ec41e18ab4e6d", "56c44ddefd4ec41e18ab4e6e"]; // skills that are newly added by the user, but which are available in skill collection
-        var deleted_skills = ["56c44e88d7ffcaa91867862e", "56c44e88d7ffcaa91867862f"]; // skills that are deleted by the user
+        var skill_sets = JSON.parse(req.body.skill_set);
 
-        // Need to UNCOMMENT these
-        //var userId = req.body.userId;
-        //var req_skills = req.body.new_skills; // skills that are newly added by the user, but which are not in skill collection
-        //var existing_skills = req.body.existing_skills; // skills that are newly added by the user, but which are available in skill collection
-        //var deleted_skills = req.body.deleted_skills; // skills that are deleted by the user
+        //GET EXPERIENCED SKILLS
+        var existing_skills =[],deleted_skills=[];
+
+
+        for(var a =0;a<skill_sets.experienced.add.length;a++){
+            existing_skills.push({
+                skill_id:skill_sets.experienced.add[a],
+                is_day_to_day_comfort:0
+
+            })
+        }
+
+
+        for(var a =0;a<skill_sets.day_to_day_comforts.add.length;a++){
+            existing_skills.push({
+                skill_id:skill_sets.day_to_day_comforts.add[a],
+                is_day_to_day_comfort:1
+            })
+        }
+        for(var a =0;a<skill_sets.experienced.remove.length;a++){
+            deleted_skills.push(skill_sets.experienced.remove[a])
+        }
+        for(var a =0;a<skill_sets.day_to_day_comforts.remove.length;a++){
+            deleted_skills.push(skill_sets.day_to_day_comforts.remove[a])
+        }
+        var userId = CurrentSession.id;
 
         //TODO : If user added new skills that are not in Skill Collection
+
+
 
         async.parallel([
 
@@ -615,6 +706,38 @@ var UserControler ={
 
     },
 
+    /**
+     * Get Skills
+     * @param req
+     * @param ress
+     */
+    getSkills:function(req,res){
+        var User = require('mongoose').model('User');
+
+        var criteria = {user_name:req.params['uname']},
+            showOptions ={
+                skill:true
+            };
+        User.getUser(criteria,showOptions,function(resultSet) {
+            var outPut = {};
+            if (resultSet.status != 200) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                res.status(400).json(outPut);
+                return 0;
+            }
+
+
+            User.formatSkills(resultSet.user,function(skillsData){
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user'] = resultSet.user;
+                outPut['user']['skills'] = skillsData;
+
+                res.status(200).send(outPut);
+            })
+
+        })
+
+    },
     forgotPassword:function(req,res){
 
         var async = require('async'),
@@ -809,7 +932,7 @@ var UserControler ={
             function getConnectionCount(profileData,callBack){
 
                 if( profileData!= null){
-                    Connection.getConnectionCount(profileData.user_id,function(connectionCount){
+                    Connection.getFriendsCount(profileData.user_id,function(connectionCount){
                         profileData['connection_count'] = connectionCount;
                         callBack(null,profileData);
                         return 0

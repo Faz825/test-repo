@@ -48,12 +48,15 @@ var SkillController ={
         var Skill = require('mongoose').model('Skill');
 
         Skill.getSkills(function(dataSet){
+            var outPut = {};
 
             if(dataSet.status !== 400){
-                res.status(200).send(dataSet.result);
-                return 0;
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['skills'] = dataSet.result;
+                res.status(200).send(outPut);
             }else{
-                res.status(400).send(dataSet);
+                outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                res.status(400).json(outPut);
                 return 0;
             }
 
