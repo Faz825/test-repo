@@ -66,7 +66,7 @@ var ContentUploader ={
         ],function(err,resultSet){
 
             if(resultSet != null){
-                console.log(resultSet)
+
                 callBack(resultSet)
             }else{
                 callBack(resultSet)
@@ -164,7 +164,7 @@ var ContentUploader ={
         ],function(err,resultSet){
 
             if(resultSet != null){
-                console.log(resultSet)
+
                 callBack(resultSet)
             }else{
                 callBack(resultSet)

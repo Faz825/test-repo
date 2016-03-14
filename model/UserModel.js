@@ -157,9 +157,12 @@ var UserSchema = new Schema({
     education_details:[EducationSchema],
 
     skills:[{
-        type: Schema.ObjectId,
-        ref: 'Skill',
-        default:null
+        skill_id:{
+            type: Schema.ObjectId,
+            ref: 'Skill',
+            default:null,
+        },
+        is_day_to_day_comfort:0
     }],
 
     working_experiences:[WorkingExperienceSchema],
@@ -862,21 +865,6 @@ UserSchema.statics.getAllUsers=function(q,userId,callBack){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * DATA FORMATTER HELPER FUNCTION WILL DEFINE HERE
  */
@@ -906,15 +894,20 @@ UserSchema.statics.formatUser=function(userObject,showOptions){
                 _temp_user['cur_designation']=userObject.working_experiences[i].title;
             }
         }
-        if(typeof showOptions != 'undefined' && showOptions.w_exp){
+        if(typeof showOptions.w_exp != 'undefined' && showOptions.w_exp){
             _temp_user['working_experiences'] = [];
             _temp_user['working_experiences'] = this.formatWorkingExperiences(userObject);
         }
-        if(typeof showOptions != 'undefined' && showOptions.edu){
+        if(typeof showOptions.edu != 'undefined' && showOptions.edu){
             _temp_user['education_details'] =[];
             _temp_user['education_details'] = this.formatEducation(userObject);
         }
 
+        if(typeof showOptions.skill != 'undefined' && showOptions.skill){
+            _temp_user['skills'] =[];
+            _temp_user['skills'] = userObject.skills
+
+        }
 
         return _temp_user
     }
@@ -995,6 +988,49 @@ UserSchema.statics.formatWorkingExperiences = function(userObject){
     }
     return _temp_we;
 }
+
+
+UserSchema.statics.formatSkills=function(userObject,callBack){
+    var Skill =  require('mongoose').model('Skill'),
+        _async = require('async'),
+        _tmp_out = {
+            'day_to_day_comforts':[],
+            'experienced':[]
+        };
+    _async.each(userObject.skills,
+    function(skill,callBack){
+
+
+        Skill.getSkillById(Util.toObjectId(skill.skill_id),function(resultSet){
+
+
+            if(skill.is_day_to_day_comfort === 1){
+                _tmp_out['day_to_day_comforts'].push({
+                    id:resultSet.skill.id,
+                    name:resultSet.skill.name
+                });
+                callBack();
+
+            }else{
+            //if(skill.is_day_to_day_comfort === 0){
+                _tmp_out['experienced'].push({
+                    id:resultSet.skill.id,
+                    name:resultSet.skill.name
+                });
+                callBack();
+            }
+
+        });
+
+    },
+    function(err){
+
+        callBack(_tmp_out);
+    });
+
+
+
+}
 /**
  * Format Connection users data
  * @param resultSet
@@ -1074,7 +1110,6 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
                 tag_fields:['first_name','last_name','email','user_name','country']
             }
 
-            console.log(profileData)
             ES.createIndex(payLoad,function(resultSet){
                 callBack(resultSet)
                 return 0;

@@ -7,6 +7,7 @@ GLOBAL.Alert={
     SUCCESS:"Success",
     DATAFOUND:"Data Found",
     INFO:"Info",
+    LIST_EMPTY:"List empty",
 
 
     ACCOUNT_CREATION_SUCCESS:'Congratulation your Account has been created',
