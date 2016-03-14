@@ -11,7 +11,7 @@ import ProgressBar from '../elements/ProgressBar'
 const ListPostsElement  = ({posts})=>{
 
         if(posts.length <= 0){
-            return (<ProgressBar />)
+            return (<div />)
         }
 
         let _postElement = posts.map((post,key)=>{
@@ -93,9 +93,20 @@ class SinglePost extends React.Component{
     render(){
         let _post = this.props.postItem;
         let _profile = _post.created_by;
+        let postImgLength = _post.upload.length;
         let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
             _profile.images.profile_image.http_url:"";
 
+        var uploaded_files = _post.upload.map((upload,key)=>{
+            if(key <= 3){
+                return (
+                    <div className="pg-newsfeed-post-upload-image" key={key}>
+                        <img src = {upload.http_url}/>
+                        {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
+                    </div>
+                )
+            }
+        })
         return (
             <div className="pg-timeline-white-box pg-top-round-border pg-add-margin-top">
                 <div className="row row-clr pg-newsfeed-section-common-content-inner pg-rm-padding-bottom">
@@ -106,9 +117,20 @@ class SinglePost extends React.Component{
                         <div className="pg-user-pro-info">
                             <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}</h5>
                             <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>
+                            {
+                                (typeof _post.location != 'undefined' && _post.location != "")?
+                                    <p className="location_text">at - {_post.location} </p>:
+                                    null
+                            }
                         </div>
                         <div className="row row-clr pg-newsfeed-common-content-post-content">
                             <p className="pg-newsfeed-post-description">{_post.content}</p>
+                        </div>
+
+                        <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
+
+                            {uploaded_files}
+
                         </div>
                         <PostActionBar comment_count={_post.comment_count}
                                        onLikeClick = {event=>this.onLikeClick()}
@@ -192,5 +214,3 @@ const LikeSummery=({likes,visibility}) =>{
         </div>
     )
 }
-
-
