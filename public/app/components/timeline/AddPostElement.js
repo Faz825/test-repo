@@ -335,7 +335,7 @@ export class TextPostElement extends React.Component{
                         {
                             (this.state.btnEnabled)?
                                 <a href="javascript:void(0)" onClick={(event)=>this.submitPost(event)} className="pg-status-post-btn">post</a>
-                                : <a href="javascript:void(0)"  className="pg-status-post-btn">disable post</a>
+                                : <a href="javascript:void(0)"  className="pg-status-post-btn disabledPost">post</a>
                         }
 
                     </div>
