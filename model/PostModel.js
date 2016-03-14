@@ -60,6 +60,11 @@ var PostSchema = new Schema({
         type:Number,
         default:0
     },
+    location:{
+        type:String,
+        trim:true,
+        default:null
+    },
     created_at:{
         type:Date
     },
@@ -96,6 +101,7 @@ PostSchema.statics.addNew = function(post,callBack){
     _post.post_visible_mode = post.post_visible_mode;
     _post.visible_users = [];
     _post.post_mode = post.post_mode
+    _post.location = post.location
     _post.save(function(err,postData){
 
         if(!err){
@@ -111,65 +117,6 @@ PostSchema.statics.addNew = function(post,callBack){
 
     });
 
-/*
-
-
-
-    var _async = require('async');
-    _async.waterfall([
-
-
-
-        function savePost(callBack){
-            _post.save(function(err,postData){
-                if(!err){
-                    var _postData = {
-                        post_id:postData._id.toString(),
-                        has_attachment :postData.has_attachment,
-                        content : postData.content,
-                        created_at:postData.created_at,
-                        page_link : postData.page_link,
-                        post_visible_mode : postData.post_visible_mode,
-                        comment_count :postData.comment_count,
-                        lik_count:postData.like_count,
-                        created_by:postData.created_by,
-                        post_mode:postData.post_mode
-
-                    };
-
-                    //TODO:: Handle attachment post later
-                    _this.addToCache(_post.visible_users,_postData,function(){
-
-                    });
-
-                    var query={
-                        q:_postData.created_by.toString(),
-                        index:'idx_usr'
-                    };
-                    //Find User from Elastic search
-                    ES.search(query,function(csResultSet){
-                        _postData['created_by'] = csResultSet.result[0];
-                        _postData['date'] = DateTime.explainDate(postData.created_at);
-                        callBack(null,_postData);
-
-                    });
-
-
-                    return 0;
-                }else{
-                    console.log("Server Error --------");
-                    console.log(err);
-                    callBack(null,err);
-                }
-
-            });
-        }
-
-
-    ],function(err,resultSet){
-
-        callBack(resultSet)
-    });*/
 }
 
 /**
@@ -218,116 +165,19 @@ PostSchema.statics.ch_getPost= function(userId,payload,callBack){
 
     //Find User from Elastic search
     ES.search(query,function(csResultSet){
-        _this.postList(csResultSet.result,function(lpData){
-            callBack(lpData);
-        });
-    });
-
-}
-
-
-/**
- * Update Post User data
- * this user data contain Liked users,Commented Users, sheared Users
- * @param postId
- * @param payLoad
- * @param callBack
- */
-PostSchema.statics.updatePostData = function (payLoad,callBack){
-
-    var _this = this,
-        _async = require('async');
-
-    _async.waterfall([
-
-        function updatePost(callBack){
-            var _update_param = {};
-
-            if(payLoad.is_commented_user){
-                _update_param= {
-                    $set:{
-                        comment_count:payLoad.comment_count
-                    }
-                }
-            }else if( payLoad.is_liked_users){
-                _update_param= {
-                    $set:{
-                        like_count:payLoad.like_count
-                    }
-                }
-            }
-
-            _this.update({_id:Util.toObjectId(payLoad.post_id)},_update_param,function(err,resultSet){
-                if(!err){
-                    callBack({
-                        status:200
-                    });
-                }else{
-                    console.log("Server Error --------", err);
-                    callBack({status:400,error:err});
-                }
+        if(csResultSet == null){
+            callBack(null);
+        }else{
+            _this.postList(csResultSet.result,function(lpData){
+                callBack(lpData);
             });
-
-
-        },
-        function getUserFromCache(callBack){
-            var query={
-                q:payLoad.user_id,
-                index:'idx_usr'
-            };
-            ES.search(query,function(csResultSet){
-                var formattedUser ={
-                    user_id:csResultSet.result[0].user_id,
-                    first_name:csResultSet.result[0].first_name,
-                    last_name:csResultSet.result[0].last_name,
-
-                }
-                console.log(csResultSet.result[0])
-                callBack(null,formattedUser)
-            });
-
-        },
-        function updateCache(callBack){
-
         }
 
-    ],function(err,dataSet){
-
     });
 
-
-
-
-
-
-
-
-    //THIS IS NEEDED FOR UPDATE LATEST CHANGES IN POST
-   /* _this.db_getPost({_id:Util.toObjectId(postId)},function(postData){
-
-            if(postData.status == 200){
-
-
-                if(typeof payLoad.commented_users != 'undefined' && payLoad.commented_users.length >0){
-
-                }
-
-                if(typeof payLoad.liked_users != 'undefined' && payLoad.liked_users.length > 0){
-
-                }
-
-
-
-
-
-
-
-
-
-            }
-
-    })*/
 }
+
+
 
 /**
  * Get Single Post from Database
@@ -345,7 +195,7 @@ PostSchema.statics.db_getPost = function(criteria,callBack){
                     index:'idx_usr'
                 };
 
-                //Find User from Elastisearch
+                //Find User from ElasticSearch
                 ES.search(query,function(csResultSet){
 
                     var _postData = {
@@ -355,6 +205,7 @@ PostSchema.statics.db_getPost = function(criteria,callBack){
                         created_at:postData.created_at,
                         page_link : postData.page_link,
                         post_visible_mode : postData.post_visible_mode,
+                        location:postData.location,
                         created_by : csResultSet.result[0],
                     };
                     callBack({status:200,post:_postData});
@@ -415,6 +266,7 @@ PostSchema.statics.postList=function(posts,callBack){
                 };
                 //Find User from Elastic search
                 ES.search(query,function(csResultSet){
+
                     _post['created_by'] = csResultSet.result[0];
                     data_by_date[_created_date].push(_post) ;
                     callBack()
@@ -461,6 +313,7 @@ PostSchema.statics.formatPost=function(postDate){
         created_by:postDate.created_by,
         post_visible_mode:postDate.post_visible_mode,
         date:DateTime.explainDate(postDate.created_at),
+        location:postDate.location,
         upload:(postDate.has_attachment)?postDate.upload:[]
 
     }

@@ -11,7 +11,7 @@ import ProgressBar from '../elements/ProgressBar'
 const ListPostsElement  = ({posts})=>{
 
         if(posts.length <= 0){
-            return (<ProgressBar />)
+            return (<div />)
         }
 
         let _postElement = posts.map((post,key)=>{
@@ -117,6 +117,11 @@ class SinglePost extends React.Component{
                         <div className="pg-user-pro-info">
                             <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}</h5>
                             <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>
+                            {
+                                (typeof _post.location != 'undefined' && _post.location != "")?
+                                    <p className="location_text">at - {_post.location} </p>:
+                                    null
+                            }
                         </div>
                         <div className="row row-clr pg-newsfeed-common-content-post-content">
                             <p className="pg-newsfeed-post-description">{_post.content}</p>

@@ -7,6 +7,8 @@ import Session  from '../../middleware/Session';
 import Lib    from '../../middleware/Lib';
 import ListPostsElement from './ListPostsElement';
 import ProgressBar from '../elements/ProgressBar';
+import Geosuggest from 'react-geosuggest';
+
 export default class AddPostElement extends React.Component{
 
     constructor(props){
@@ -66,16 +68,20 @@ export class TextPostElement extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            focusedOnInitialText : false,
-            text:"",
-            uploadedFiles:[],
-            fileIds:[],
-            inProgressUploads :{},
-            post_type:"NP",
-            btnEnabled :true,
-            iniTextisVisible : true,
+
+            focusedOnInitialText    : false,
+            text                    :"",
+            uploadedFiles           :[],
+            fileIds                 :[],
+            inProgressUploads       :{},
+            post_type               :"NP",
+            btnEnabled              :true,
+            iniTextisVisible        : true,
             emptyPostWarningIsVisible : false,
+            isLocationPanelOpen     :false,
+            location                :"",
             imgUploadInstID : 0
+
         }
         this.loggedUser = Session.getSession('prg_lg');
         this.submitPost = this.submitPost.bind(this);
@@ -92,13 +98,15 @@ export class TextPostElement extends React.Component{
         if(this.state.text != ""){
             var _pay_load ={
                 __content:this.state.text,
-                __post_type:this.state.post_type
+                __post_type:this.state.post_type,
+                __lct:this.state.location
             }
             if(this.state.fileIds.length>0){
                 _pay_load['__file_content']  = JSON.stringify(this.state.fileIds);
                 _pay_load['__hs_attachment'] =true;
                 _pay_load['__uuid'] =this.props.uuid;
             }
+
             $.ajax({
                 url: '/post/composer',
                 method: "POST",
@@ -145,8 +153,18 @@ export class TextPostElement extends React.Component{
 
     }
     onTabSelect(tabId){
-        console.log(tabId);
+
+        switch(tabId){
+            case "bla4":
+                this.setState({isLocationPanelOpen:true});
+                break;
+            case "bla3":
+                console.log(tabId)
+                break;
+        }
     }
+
+
 
     selectImage(e){
         let _this = this;
@@ -236,6 +254,11 @@ export class TextPostElement extends React.Component{
             console.log(error);
         });
     }
+    onGeoSuggestSelect(suggest){
+        console.log(suggest)
+        this.setState({location:suggest.label})
+
+    }
     render(){
         let full_name = this.loggedUser.first_name +" "+ this.loggedUser.last_name;
         let opt = {
@@ -255,7 +278,7 @@ export class TextPostElement extends React.Component{
         return (
             <div>
                 <PostOptionMenu
-                    onClickTab ={tabId => this.onTabSelect(tabId)}
+                    onTabClick ={tabId => this.onTabSelect(tabId)}
                     selectImage={event => this.selectImage(event)}
                     />
                 <div id="pg_content_1" className="row row_clr pg-newsfeed-post-content tab_info clearfix">
@@ -285,7 +308,16 @@ export class TextPostElement extends React.Component{
                 }
                 <div className="row" id="pg-newsfeed-post-active-footer" {...opt}>
                     <div className="col-xs-6">
-
+                        {
+                            (this.state.isLocationPanelOpen)?
+                                <div> at -
+                                    <Geosuggest placeholder="Start typing!"
+                                            onSuggestSelect={this.onGeoSuggestSelect.bind(this)}
+                                            location={new google.maps.LatLng(53.558572, 9.9278215)}
+                                            radius="20" />
+                                </div>
+                                :null
+                        }
                     </div>
                     <div className="col-xs-6">
                         {
@@ -308,7 +340,7 @@ const PostOptionMenu = ({onTabClick,selectImage})=>{
             <ul>
                 <li className="tabmenu selected-tab">
                     <a href="javascript:void(0);" className="tabmenu" id="pg_tb_1"
-                       onClick={()=>{onTabClick("bla1")}}>
+                       onClick={(event)=>{onTabClick("bla1")}}>
                         <img src="/images/pg-newsfeed-share-default.png" alt="" className="img-responsive pg-default-status-icon"/>
                         <img src="/images/pg-newsfeed-share-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
                         Share Update
@@ -324,7 +356,7 @@ const PostOptionMenu = ({onTabClick,selectImage})=>{
                 </li>
                 <li>
                     <a href="javascript:void(0);" className="tabmenu" id="pg_tb_3"
-                       onClick={()=>{onTabClick("bla3")}}>
+                       onClick={(event)=>{onTabClick("bla3")}}>
                         <img src="/images/pg-newsfeed-life-event-default.png" alt="" className="img-responsive pg-default-status-icon"/>
                         <img src="/images/pg-newsfeed-life-event-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
                         Life Event
@@ -332,7 +364,7 @@ const PostOptionMenu = ({onTabClick,selectImage})=>{
                 </li>
                 <li>
                     <a href="javascript:void(0);"  className="tabmenu" id="pg_tb_4"
-                       onClick={()=>{onTabClick("bla4")}}>
+                       onClick={(event)=>{onTabClick("bla4")}}>
                         <img src="/images/pg-newsfeed-location-default.png" alt="" className="img-responsive pg-default-status-icon"/>
                         <img src="/images/pg-newsfeed-location-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
                         Current Location
@@ -342,3 +374,4 @@ const PostOptionMenu = ({onTabClick,selectImage})=>{
         </div>
     );
 };
+

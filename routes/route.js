@@ -105,6 +105,7 @@ router.get('/education-info/delete', UserController.deleteEducationDetail);
 
 router.get('/work-experiences/:uname', UserController.retrieveWorkExperience);
 
+router.get('/user/skills/:uname', UserController.getSkills);
 // Skills CRUD
 router.get('/skills/save', SkillController.addSkills);
 router.get('/skills', SkillController.getSkills);
@@ -176,6 +177,11 @@ router.post('/addNewsCategory',UserController.addNewsCategory);
 router.post('/upload/profile-image',UserController.uploadProfileImage);
 router.get('/connections',UserController.getConnections);
 router.get('/connection/count',UserController.connectionCount);
+router.post('/upload/cover-image',UserController.uploadCoverImage);
+
+
+
+
 
 router.post('/education/update', UserController.updateEducationDetail);
 
@@ -184,7 +190,7 @@ router.post('/work-experience/update', UserController.updateWorkExperience);
 
 
 router.post('/post/composer', PostController.addPost);
-router.get('/pull/posts', PostController.ch_getPost);
+router.get('/pull/posts', PostController.getPost);
 
 
 router.post('/comment/composer', CommentController.addComment);
