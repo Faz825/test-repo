@@ -679,7 +679,9 @@ UserSchema.statics.addCollageAndJob = function(userId,data,callBack) {
                     {
                         $set: {
                             created_at: _this.created_at,
-                            updated_at: _this.updated_at
+                            updated_at: _this.updated_at,
+                            status:data.status
+
                         },
                         $push: {
                             education_details: _educationDetails,
@@ -1137,7 +1139,7 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
  */
 UserSchema.statics.authenticate = function(data, callback) {
     var _this = this;
-    var criteria = {user_name:data.user_name}
+    var criteria = {email:data.user_name}
     _this.findOne(criteria,function(err,resultSet){
 
         if(!err){

@@ -172,6 +172,53 @@ var UserControler ={
         });
     },
     /**
+     * Add Collage and Job information in signup process
+     * @param req
+     * @param res
+     */
+    addCollageAndJob:function(req,res){
+        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+        CurrentSession['status']        = 4;
+        CurrentSession['school']        = (req.body.school)?req.body.school:null;
+        CurrentSession['grad_date']     = (req.body.grad_date)?req.body.grad_date:null;
+        CurrentSession['job_title']     = (req.body.job_title)?req.body.job_title:null;
+        CurrentSession['company_name']  = (req.body.company_name)?req.body.company_name:null;
+
+        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+
+            var User = require('mongoose').model('User'),
+                _collageAndJob={
+                    school:req.body.school,
+                    grad_date:req.body.grad_date,
+                    job_title:req.body.job_title,
+                    company_name:req.body.company_name,
+                    status:4
+                };
+
+            User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
+                var outPut ={};
+
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
+                    res.status(200).json(outPut);
+                    return 0;
+                }
+                if(!cacheData){
+                    outPut['extra']=Alert.CACHE_CREATION_ERROR
+                }
+                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user']      = CurrentSession;
+                res.status(200).json(outPut);
+
+
+
+
+            });
+
+        });
+    },
+
+    /**
      * Load Connections
      * @param req
      * @param res
@@ -233,29 +280,34 @@ var UserControler ={
 
 
 
-            var Connection = require('mongoose').model('Connection');
+            var Connection = require('mongoose').model('Connection'),
+                User       = require('mongoose').model('User');
 
-            Connection.sendConnectionRequest(req_connected_users,req_unconnected_users, function (resultSet) {
 
-                if (resultSet.status !== 200) {
-                    outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
-                    res.status(400).send(outPut);
-                    return 0;
-                }
+                User.saveUpdates(CurrentSession.id,{status:5},function(updateDataSet){
+                    Connection.sendConnectionRequest(req_connected_users,req_unconnected_users, function (resultSet) {
 
-                if (!cacheData) {
-                    outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                }
+                        if (resultSet.status !== 200) {
+                            outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
+                            res.status(400).send(outPut);
+                            return 0;
+                        }
 
-                res.status(200).json(outPut);
-                return 0;
-            });
+                        if (!cacheData) {
+                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                        }
+
+                        res.status(200).json(outPut);
+                        return 0;
+                    });
+                });
+
 
         });
     },
 
     /**
-     * Add new category to the user
+     * Add new category to the user in Sign up process
      * @param req
      * @param res
      */
@@ -272,33 +324,36 @@ var UserControler ={
 
             if(req_news_categories.length >= 1 ) {
 
-                var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+                var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
+                    User                  = require('mongoose').model('User');
                 var news_categories = [],
                     now = new Date();
 
-                for (var i = 0; req_news_categories.length > i; i++) {
-                    news_categories.push({
-                        user_id: CurrentSession.id.toObjectId(),
-                        category: null,
-                        created_at: now
-                    });
-                }
+                User.saveUpdates(CurrentSession.id,{status:6},function(updateDataSet){
 
+                    for (var i = 0; req_news_categories.length > i; i++) {
+                        news_categories.push({
+                            user_id: Util.toObjectId(CurrentSession.id),
+                            category: null,
+                            created_at: now
+                        });
+                    }
+                    FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
 
-                FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
+                        if (resultSet.status !== 200) {
+                            outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                            res.status(400).send(outPut);
+                            return 0;
+                        }
+                        if (!cacheData) {
+                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                        }
 
-                    if (resultSet.status !== 200) {
-                        outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
-                        res.status(400).send(outPut);
+                        res.status(200).json(outPut);
                         return 0;
-                    }
-                    if (!cacheData) {
-                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                    }
+                    });
+                })
 
-                    res.status(200).json(outPut);
-                    return 0;
-                });
 
             }else{
                 res.status(200).json(outPut);
@@ -307,6 +362,12 @@ var UserControler ={
         });
     },
 
+    /**
+     * Upload Profile Image in Sign up process
+     * @param req
+     * @param res
+     * @returns {number}
+     */
     uploadProfileImage:function(req,res){
 
 
@@ -323,42 +384,43 @@ var UserControler ={
             file_name:req.body.profileImg,
             is_default:1,
             entity_id:CurrentSession.id,
-            entity_tag:UploadMeta.PROFILE_IMAGE
+            entity_tag:UploadMeta.PROFILE_IMAGE,
+            status:7
         }
-        ContentUploader.uploadFile(data,function (payLoad) {
 
-            if (payLoad.status != 400) {
-                var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-                CurrentSession['status'] = 7;
-                CurrentSession['profile_image'] = payLoad.http_url;
+        User.saveUpdates(CurrentSession.id,{status:7},function(updateDataSet){
+            ContentUploader.uploadFile(data,function (payLoad) {
 
-
-                CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
-                    var outPut = {
-                        status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
-                    }
-                    if (!cacheData) {
-                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                    }
-                    outPut['user'] = CurrentSession;
-
-                    //ADD TO CACHE
-                    User.addUserToCache(CurrentSession.id,function(csResult){});
+                if (payLoad.status != 400) {
+                    var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+                    CurrentSession['status'] = 7;
+                    CurrentSession['profile_image'] = payLoad.http_url;
 
 
-                    res.status(200).json(outPut);
-                });
+                    CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                        var outPut = {
+                            status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                        }
+                        if (!cacheData) {
+                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                        }
+                        outPut['user'] = CurrentSession;
+                        //ADD TO CACHE
+                        User.addUserToCache(CurrentSession.id,function(csResult){});
+                        res.status(200).json(outPut);
+                    });
+
+                } else {
+                    var outPut={
+                        status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
+                    };
+                    res.status(400).send(outPut);
+                }
+            });
 
 
-
-
-            } else {
-                var outPut={
-                    status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
-                };
-                res.status(400).send(outPut);
-            }
         });
+
 
     },
 
@@ -585,46 +647,6 @@ var UserControler ={
 
     },
 
-    addCollageAndJob:function(req,res){
-        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-        CurrentSession['status']        = 4;
-        CurrentSession['school']        = (req.body.school)?req.body.school:null;
-        CurrentSession['grad_date']     = (req.body.grad_date)?req.body.grad_date:null;
-        CurrentSession['job_title']     = (req.body.job_title)?req.body.job_title:null;
-        CurrentSession['company_name']  = (req.body.company_name)?req.body.company_name:null;
-
-        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
-
-            var User = require('mongoose').model('User'),
-                _collageAndJob={
-                    school:req.body.school,
-                    grad_date:req.body.grad_date,
-                    job_title:req.body.job_title,
-                    company_name:req.body.company_name,
-                };
-
-            User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
-                var outPut ={};
-
-                if(resultSet.status != 200){
-                    outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
-                    res.status(200).json(outPut);
-                    return 0;
-                }
-                if(!cacheData){
-                    outPut['extra']=Alert.CACHE_CREATION_ERROR
-                }
-                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['user']      = CurrentSession;
-                res.status(200).json(outPut);
-
-
-
-
-            });
-
-        });
-    },
 
     /**
      * add / delete skills of a user

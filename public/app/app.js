@@ -31,9 +31,8 @@ let rootRoute =(
          * Profile Route
          */
         <Route name="profile" path="/profile/:uname" component={ProfileIndex}/>
-
-            <Route name="forgot-password" path="/forgot-password" component={ForgotPassword}/>
-            <Route name="change-password" path="/change-password/:token" component={ChangePassword}/>
+        <Route name="forgot-password" path="/forgot-password" component={ForgotPassword}/>
+        <Route name="change-password" path="/change-password/:token" component={ChangePassword}/>
         <Route name="change-password-invalid" path="/change-password-invalid" component={ChangePasswordInvalid}/>
         <Route name="changed-password" path="/changed-password" component={ChangedPassword}/>
 

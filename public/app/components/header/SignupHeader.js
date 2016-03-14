@@ -91,7 +91,12 @@ export default class Header extends React.Component {
                     if (data.status.code === 200) {
                         _this.setState({validateAlert: ""});
                         Session.createSession("prg_lg", data.user);
-                        location.reload();
+                        if(data.user.status == 7){
+                            location.href = "/";
+                        }else{
+                            location.reload();
+                        }
+
                     }
 
                 },
@@ -145,7 +150,7 @@ export default class Header extends React.Component {
                                                 size="12"
                                                 value={this.formData.uname}
                                                 label=""
-                                                placeholder="USERNAME"
+                                                placeholder="EMAIL"
                                                 classes="pgs-sign-inputs"
                                                 onInputChange={this.elementChangeHandler}
                                                 required={true}
