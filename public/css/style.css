@@ -1368,7 +1368,7 @@ textarea{
     padding: 0;
 }
 .pg-edit-action-area{
-    display: table;
+    overflow: hidden;
 }
 .pg-header-sub-title{
     font: 14px 'montserratregular', sans-serif;
