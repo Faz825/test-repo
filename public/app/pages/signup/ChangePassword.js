@@ -60,8 +60,7 @@ export default class ChangePassword extends React.Component{
                     console.log(data.status.message)
                     if (data.status.code === 200) {
                         _this.setState({validateAlert: ""});
-                        window.history.pushState('Change Password','User Changed Password','/changed-password');
-                        location.reload();
+                        window.location.href ='/changed-password';
                     }
 
                 },

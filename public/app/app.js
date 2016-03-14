@@ -14,6 +14,8 @@ import ChangePassword from './pages/signup/ChangePassword'
 import ChangePasswordInvalid from './pages/signup/ChangePasswordInvalid'
 import ChangedPassword from './pages/signup/ChangedPassword'
 
+import ChatIndex from './pages/chat/Index'
+
 
 
 
@@ -32,10 +34,12 @@ let rootRoute =(
          */
         <Route name="profile" path="/profile/:uname" component={ProfileIndex}/>
 
-            <Route name="forgot-password" path="/forgot-password" component={ForgotPassword}/>
+    <Route name="forgot-password" path="/forgot-password" component={ForgotPassword}/>
             <Route name="change-password" path="/change-password/:token" component={ChangePassword}/>
         <Route name="change-password-invalid" path="/change-password-invalid" component={ChangePasswordInvalid}/>
         <Route name="changed-password" path="/changed-password" component={ChangedPassword}/>
+
+            <Route name="chats-video" path="/chat" component={ChatIndex}/>
 
 
 

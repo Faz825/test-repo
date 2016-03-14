@@ -2,7 +2,7 @@ import React from 'react'
 
 export default class SidebarManuItem extends React.Component{
 	onLinkClick(e){
-		e.preventDefault();
+		//e.preventDefault();
 	}
 	render(){
 		let item = this.props.item;
