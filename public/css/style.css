@@ -62,7 +62,7 @@ a:focus{
 .pgs-login-area .inputWrapper:last-child{
 	margin: 0;
 }
-.pgs-login-area .inputWrapper .form-control{
+.pgs-login-area .inputWrapper .pgs-sign-inputs{
 	font-size: 9px;
 	height: 27px;
 	background: #f6fafc;
@@ -90,6 +90,7 @@ a:focus{
 .pgs-login-area .userNameHolder .checkbox{
 	margin: 0;
 	padding: 0;
+    float: left;
 }
 .pgs-login-area .userNameHolder .checkbox label{
 	text-transform: capitalize;
@@ -97,6 +98,13 @@ a:focus{
 	color: #7795a8;
 	padding-left: 16px;
 	position: relative;
+}
+.pgs-login-area .input-field{
+	padding: 0;
+}
+.pgs-login-area .form-group p,
+.pgs-login-area .form-group .invalid-msg{
+	display: none !important;
 }
 /*** custom checkboxes ***/
 .pgs-login-area .userNameHolder input[type=checkbox] { display:none; } /* to hide the checkbox itself */
@@ -1648,4 +1656,11 @@ textarea{
 		font-size: 9px;
 	}
 
+}
+
+@media (min-width: 1024px) and (max-width: 1280px){
+	.pgs-login-area .btnHolder .pgs-sign-submit{
+		font-size: 10px;
+		width: 68px;
+	}
 }
