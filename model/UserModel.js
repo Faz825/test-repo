@@ -276,6 +276,29 @@ UserSchema.statics.findByEmail = function(email,callBack){
 };
 
 /**
+ * Find User according to the criteria
+ * @param criteria
+ * @param callBack
+ */
+UserSchema.statics.findUser = function(criteria,callBack){
+    var _this = this;
+
+    _this.findOne(criteria,function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200,
+                user:resultSet
+
+            });
+        }else{
+            console.log("Server Error --------")
+            callBack({status:400,error:err});
+        }
+    });
+
+
+};
+/**
  * Add Secretary for the user
  */
 UserSchema.statics.addSecretary =function(userId,secretaryId,callBack){
@@ -1219,20 +1242,7 @@ UserSchema.statics.authenticate = function(data, callback) {
                     if (!err) {
 
                         callback({status:200,user:profileData});
-                        //outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                        //outPut['profile_data'] = profileData;
-                        //
-                        //var payLoad = {
-                        //    index: "idx_usr",
-                        //    id: profileData.user_id,
-                        //    type: 'user',
-                        //    data: profileData,
-                        //    tag_fields: ['first_name', 'last_name', 'email', 'user_name', 'country']
-                        //}
-                        //ES.createIndex(payLoad, function (resultSet) {
-                        //    callBack(resultSet)
-                        //    return 0;
-                        //});
+
 
                     } else {
                         callback(err)

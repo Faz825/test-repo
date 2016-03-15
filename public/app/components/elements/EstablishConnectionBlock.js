@@ -35,7 +35,9 @@ const EstablishConnectionBlock = ({connection,onConnectionSelect})=>{
                                            classes="pgs-establish-pro-button"
                                            clicked= {is_clicked}
                                            value={value}
-                                           click={(isConnected) => onConnectionSelect(connection,isConnected)} />
+                                           click={(isConnected) => {
+                                                    onConnectionSelect(connection,isConnected);
+                                           }} />
             </div>
         </div>
     );

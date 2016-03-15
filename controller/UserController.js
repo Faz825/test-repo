@@ -10,6 +10,7 @@ var UserControler ={
 
     doSignup:function(req,res){
         var User = require('mongoose').model('User');
+            ;
 
         var user ={
             id:req.body._id,
@@ -19,12 +20,14 @@ var UserControler ={
             password:req.body.password,
             status:req.body.status,
             secretary:req.body.secretary,
-            user_name:req.body.email.replace(/@.*$/,"")
         }
+
+
         User.findByEmail(user.email,function(ResultSet){
 
             if(ResultSet.status == 200 && ResultSet.user == null ){
 
+                user['user_name'] =  Util.getUniqueUserName(user);
                 User.create(user,function(_ResultSet){
                     if(typeof _ResultSet.status != 'undefined' && _ResultSet.status == 400){
                         res.status(400).json({

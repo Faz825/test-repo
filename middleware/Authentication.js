@@ -66,6 +66,7 @@ exports.Authentication= function(req,res,next){
             }
 
             CurrentSession = cachedUser;
+
             next();
             return;
         });
