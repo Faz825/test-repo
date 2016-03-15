@@ -293,33 +293,9 @@ export class WorkPlaceForm extends React.Component{
                     </div>
                     <div className="form-group">
                         <label className="display-block">Time Period</label>
-                        <div className="workPeriodSelect">
-                            <select className="form-control pg-custom-input pg-dropdown" name="fromMonth" onChange={this.onFieldChange} value={data.fromMonth}>
-                                <option value="">Choose</option>
-                                {
-                                    monthList.map(function(month,index){
-                                        return <option value={index+1} key={index}>{month}</option>
-                                    })
-                                }
-                            </select>
-                            <select className="form-control pg-custom-input pg-dropdown" name="fromYear" onChange={this.onFieldChange} value={data.fromYear}>
-                                <option value="">Choose</option>
-                                {
-                                    yearList.map(function(year,index){
-                                        return <option value={year} key={index}>{year}</option>
-                                    })
-                                }
-                            </select>
-                        </div>
-                        {
-                            (!data.currentPlc)?
-                            <span className="to">&nbsp;–&nbsp;</span>
-                            : null
-                        }
-                        {
-                            (!data.currentPlc)?
+                        <div className="yearDropDownHolder">
                             <div className="workPeriodSelect">
-                                <select className="form-control pg-custom-input pg-dropdown" name="toMonth" onChange={this.onFieldChange} value={data.toMonth}>
+                                <select className="form-control pg-custom-input pg-dropdown" name="fromMonth" onChange={this.onFieldChange} value={data.fromMonth}>
                                     <option value="">Choose</option>
                                     {
                                         monthList.map(function(month,index){
@@ -327,7 +303,7 @@ export class WorkPlaceForm extends React.Component{
                                         })
                                     }
                                 </select>
-                                <select className="form-control pg-custom-input pg-dropdown" name="toYear" onChange={this.onFieldChange} value={data.toYear}>
+                                <select className="form-control pg-custom-input pg-dropdown" name="fromYear" onChange={this.onFieldChange} value={data.fromYear}>
                                     <option value="">Choose</option>
                                     {
                                         yearList.map(function(year,index){
@@ -336,10 +312,34 @@ export class WorkPlaceForm extends React.Component{
                                     }
                                 </select>
                             </div>
-                            :null
-                        }
-
-
+                            {
+                                (!data.currentPlc)?
+                                <span className="to">&nbsp;–&nbsp;</span>
+                                : null
+                            }
+                            {
+                                (!data.currentPlc)?
+                                <div className="workPeriodSelect lastDrpDwn">
+                                    <select className="form-control pg-custom-input pg-dropdown" name="toMonth" onChange={this.onFieldChange} value={data.toMonth}>
+                                        <option value="">Choose</option>
+                                        {
+                                            monthList.map(function(month,index){
+                                                return <option value={index+1} key={index}>{month}</option>
+                                            })
+                                        }
+                                    </select>
+                                    <select className="form-control pg-custom-input pg-dropdown" name="toYear" onChange={this.onFieldChange} value={data.toYear}>
+                                        <option value="">Choose</option>
+                                        {
+                                            yearList.map(function(year,index){
+                                                return <option value={year} key={index}>{year}</option>
+                                            })
+                                        }
+                                    </select>
+                                </div>
+                                :null
+                            }
+                        </div>
 
                         <div className="checkbox">
                             <label>

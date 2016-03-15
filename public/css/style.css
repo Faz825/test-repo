@@ -1298,9 +1298,16 @@ button.addEduInfo{
     z-index: 100;
     width: 100%;
 }
+.yearDropDownHolder{
+	overflow: hidden;
+	position: relative;
+}
 .workPeriodSelect{
 	display: inline-block;
-	width: 36%;
+	width: 47%;
+}
+.workPeriodSelect.lastDrpDwn{
+	float: right;
 }
 .form-area label,
 .datePicker .col-xs-5 p{
@@ -1323,7 +1330,7 @@ button.addEduInfo{
     border-radius: 0px;
 }
 .pg-dropdown{
-	width: 45%;
+	width: 48%;
 	display: inline;
 }
 .workPeriodSelect{
@@ -1336,10 +1343,14 @@ button.addEduInfo{
 	float: right;
 }
 .form-group span.to{
-	display: inline-block;
-	margin: 0 15px 0 11px;
-	width: 12px;
+	display: block;
+	width: 15px;
 	line-height: 0.6;
+	position: absolute;
+	top: 25%;
+	left: 0;
+	right: 0;
+	margin: auto;
 }
 .display-block{
     display: block;
@@ -1662,5 +1673,12 @@ textarea{
 	.pgs-login-area .btnHolder .pgs-sign-submit{
 		font-size: 10px;
 		width: 68px;
+	}
+}
+
+@media (max-width: 1200px){
+	.pg-dropdown {
+	    width: 100%;
+		margin-bottom: 5px;
 	}
 }
