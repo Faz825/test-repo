@@ -28,7 +28,8 @@ var DefaultController   = require('../controller/DefaultController'),
     SkillController     = require('../controller/SkillController'),
     NewsController      = require('../controller/NewsController'),
     PostController      = require('../controller/PostController'),
-    CommentController   = require('../controller/CommentController') ;
+    CommentController   = require('../controller/CommentController'),
+    ChatController      = require('../controller/ChatController');
 
 
 
@@ -69,8 +70,6 @@ router.post('/forgot-password/request/', UserController.forgotPassword);
 router.get('/forgot-password/reset/:token', UserController.validateToken);
 router.get('/change-password/:token', DefaultController.index);
 router.post('/change-password/:token', UserController.resetPassword);
-
-
 
 
 
@@ -192,6 +191,8 @@ router.get('/pull/posts', PostController.ch_getPost);
 
 router.post('/comment/composer', CommentController.addComment);
 router.get('/pull/comments', CommentController.getComment);
+
+router.post('/chat/send', ChatController.sendMessage);
 
 
 

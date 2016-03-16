@@ -6,8 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 
-
-
 GLOBAL.Config = require('./config/app.config');
 GLOBAL.CurrentSession = {};
 require('./config/alert.message');
