@@ -65,12 +65,17 @@ var PostSchema = new Schema({
         trim:true,
         default:null
     },
+    life_event:{
+        type: String,
+        trim:true
+    },
     created_at:{
         type:Date
     },
     updated_at:{
         type:Date
     }
+
 },{collection:'posts'});
 
 
@@ -100,8 +105,9 @@ PostSchema.statics.addNew = function(post,callBack){
     _post.page_link = post.page_link;
     _post.post_visible_mode = post.post_visible_mode;
     _post.visible_users = [];
-    _post.post_mode = post.post_mode
-    _post.location = post.location
+    _post.post_mode = post.post_mode;
+    _post.location = post.location;
+    _post.life_event = post.life_event;
     _post.save(function(err,postData){
 
         if(!err){
@@ -206,6 +212,8 @@ PostSchema.statics.db_getPost = function(criteria,callBack){
                         page_link : postData.page_link,
                         post_visible_mode : postData.post_visible_mode,
                         location:postData.location,
+                        post_mode:postData.post_mode,
+                        life_event:postData.life_event,
                         created_by : csResultSet.result[0],
                     };
                     callBack({status:200,post:_postData});
@@ -247,7 +255,6 @@ PostSchema.statics.postList=function(posts,callBack){
         function(post,callBack){
             var _post = _this.formatPost(post),
             _created_date = _post.date.time_stamp;
-
 
             if(_tmp_created_date.indexOf(_created_date) == -1)
                 _tmp_created_date.push(_created_date);
@@ -301,20 +308,21 @@ PostSchema.statics.postList=function(posts,callBack){
 
 /**
  * Format Post object
- * @param postDate
+ * @param postData
  */
-PostSchema.statics.formatPost=function(postDate){
+PostSchema.statics.formatPost=function(postData){
 
     var outPut = {
-        post_id:postDate.post_id,
-        has_attachment:postDate.has_attachment,
-        post_mode:postDate.post_mode,
-        content:postDate.content,
-        created_by:postDate.created_by,
-        post_visible_mode:postDate.post_visible_mode,
-        date:DateTime.explainDate(postDate.created_at),
-        location:postDate.location,
-        upload:(postDate.has_attachment)?postDate.upload:[]
+        post_id:postData.post_id,
+        has_attachment:postData.has_attachment,
+        post_mode:postData.post_mode,
+        content:postData.content,
+        created_by:postData.created_by,
+        post_visible_mode:postData.post_visible_mode,
+        date:DateTime.explainDate(postData.created_at),
+        location:postData.location,
+        life_event:postData.life_event,
+        upload:(postData.has_attachment)?postData.upload:[]
 
     }
 

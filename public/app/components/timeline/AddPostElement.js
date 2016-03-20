@@ -9,7 +9,7 @@ import ListPostsElement from './ListPostsElement';
 import ProgressBar from '../elements/ProgressBar';
 import {Alert} from '../../config/Alert';
 import Geosuggest from 'react-geosuggest';
-
+import Autosuggest from 'react-autosuggest';
 export default class AddPostElement extends React.Component{
 
     constructor(props){
@@ -81,10 +81,12 @@ export class TextPostElement extends React.Component{
             emptyPostWarningIsVisible : false,
             isLocationPanelOpen     :false,
             location                :"",
-            imgUploadInstID : 0
+            imgUploadInstID         : 0,
+            lifeEventId             :""
 
         }
         this.loggedUser = Session.getSession('prg_lg');
+        this.isValidToSubmit = false;
         this.submitPost = this.submitPost.bind(this);
         this.selectImage = this.selectImage.bind(this);
         this.handleAjaxSuccess = this.handleAjaxSuccess.bind(this);
@@ -92,21 +94,33 @@ export class TextPostElement extends React.Component{
     }
     submitPost(event){
         let _this = this;
-        let warnState = (this.state.text)? false : true;
 
-        this.setState({emptyPostWarningIsVisible : warnState});
-
+        this.setState({emptyPostWarningIsVisible : false});
+        var _pay_load = {};
         if(this.state.text != ""){
-            var _pay_load ={
-                __content:this.state.text,
-                __post_type:this.state.post_type,
-                __lct:this.state.location
-            }
-            if(this.state.fileIds.length>0){
-                _pay_load['__file_content']  = JSON.stringify(this.state.fileIds);
-                _pay_load['__hs_attachment'] =true;
-                _pay_load['__uuid'] =this.props.uuid;
-            }
+            this.isValidToSubmit = true;
+            _pay_load['__content'] = this.state.text;
+            _pay_load['__post_type'] = this.state.post_type;
+        }
+
+        if(this.state.location != ""){
+            this.isValidToSubmit = true;
+            _pay_load['__lct'] = this.state.location;
+            _pay_load['__post_type'] = "LP";
+
+        }else if(this.state.fileIds.length>0){
+            this.isValidToSubmit = true;
+            _pay_load['__file_content']  = JSON.stringify(this.state.fileIds);
+            _pay_load['__hs_attachment'] =true;
+            _pay_load['__uuid'] =this.props.uuid;
+            _pay_load['__post_type'] = "AP";
+        }else if(this.state.lifeEventId  != ""){
+            this.isValidToSubmit = true;
+            _pay_load['__lf_evt'] =this.state.lifeEventId;
+            _pay_load['__post_type'] ="LE";
+        }
+
+        if(this.isValidToSubmit){
 
             $.ajax({
                 url: '/post/composer',
@@ -117,6 +131,8 @@ export class TextPostElement extends React.Component{
                 cache: false,
 
             }).done(this.handleAjaxSuccess);
+        }else{
+            this.setState({emptyPostWarningIsVisible : true});
         }
     }
     handleAjaxSuccess(data){
@@ -132,7 +148,9 @@ export class TextPostElement extends React.Component{
                 inProgressUploads:{},
                 post_type:"NP",
                 iniTextisVisible: true,
-                isLocationPanelOpen: false
+                isLocationPanelOpen: false,
+                isLifeEventPanelOpen:false,
+
             });
 
             document.getElementById('input').innerHTML = "";
@@ -149,19 +167,33 @@ export class TextPostElement extends React.Component{
         this.setState({focusedOnInitialText: false, iniTextisVisible: visibilityStat})
     }
     onContentAdd(event){
-        let _text  = Lib.sanitize(event.target.innerHTML)
+        let _text  = Lib.sanitize(event.target.innerHTML);
         let visibilityStat = (_text)? false : true;
         this.setState({text:_text, iniTextisVisible: visibilityStat, emptyPostWarningIsVisible : false});
 
     }
     onTabSelect(tabId){
-        let panelOpen = this.state.isLocationPanelOpen;
+
+
         switch(tabId){
             case "bla4":
-                this.setState({isLocationPanelOpen: !panelOpen});
+                this.setState({
+                    isLocationPanelOpen: true,
+                    isLifeEventPanelOpen:false
+                });
                 break;
             case "bla3":
-                console.log(tabId)
+                this.setState({
+                    isLocationPanelOpen: false,
+                    isLifeEventPanelOpen:true
+                });
+
+                break;
+            default:
+                this.setState({
+                    isLocationPanelOpen: false,
+                    isLifeEventPanelOpen:false
+                });
                 break;
         }
     }
@@ -270,6 +302,11 @@ export class TextPostElement extends React.Component{
         this.setState({location: address.join()})
 
     }
+    onLifeEventSelect(selectedLifeEvent){
+
+        this.setState({lifeEventId:selectedLifeEvent})
+
+    }
     render(){
         let full_name = this.loggedUser.first_name +" "+ this.loggedUser.last_name;
         let opt = {
@@ -296,18 +333,26 @@ export class TextPostElement extends React.Component{
                     <div className="pg-user-pro-pic">
                         <img src={this.loggedUser.profile_image} alt={full_name} className="img-responsive" />
                     </div>
-                    <div className="editerHolder">
-                        <div id="input" contentEditable={true}
-                             onFocus={this.showPostFooterPanel.bind(this)}
-                             onBlur={this.hidePostFooterPanel.bind(this)}
-                             className="containable-div"
-                             onInput={(event)=>{this.onContentAdd(event)}}></div>
-                         {
-                             (this.state.iniTextisVisible)?
-                             <span className={(this.state.focusedOnInitialText)? "statusIniText onFocus" : "statusIniText"}>What’s on your mind?</span>
-                             : null
-                         }
-                    </div>
+
+                    {
+                        (this.state.isLifeEventPanelOpen) ?
+                            <LifeEventSelector onLifeEventSelect={this.onLifeEventSelect.bind(this)}/>
+                            :
+
+                            <div className="editerHolder">
+                                <div id="input" contentEditable={true}
+                                     onFocus={this.showPostFooterPanel.bind(this)}
+                                     onBlur={this.hidePostFooterPanel.bind(this)}
+                                     className="containable-div"
+                                     onInput={(event)=>{this.onContentAdd(event)}}></div>
+                                {
+                                    (this.state.iniTextisVisible) ?
+                                        <span
+                                            className={(this.state.focusedOnInitialText)? "statusIniText onFocus" : "statusIniText"}>What’s on your mind?</span>
+                                        : null
+                                }
+                            </div>
+                    }
                 </div>
                 <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
                     {uploaded_files}
@@ -386,3 +431,59 @@ const PostOptionMenu = ({onTabClick,selectImage})=>{
         </div>
     );
 };
+
+
+export class LifeEventSelector extends React.Component{
+
+    constructor(props){
+        super(props);
+        this.state={
+            life_events :[]
+        }
+        this.loadLifeEvents();
+    }
+    loadLifeEvents(){
+        $.ajax({
+            url: '/life-events',
+            method: "GET",
+            dataType: "JSON",
+            cache: false,
+
+        }).done(function(data){
+            if(data.status.code == 200){
+
+                this.setState({
+                    life_events:data.life_events
+                });
+            }
+        }.bind(this));
+    }
+
+    selectChange(e){
+
+        this.props.onLifeEventSelect( e.target.value)
+    }
+
+    render(){
+        const {life_events} = this.state;
+
+
+        return (
+            <div>
+                <select name="life_events"
+                        className="pgs-life-event-select"
+                        value={this.props.defaultOpt}
+                        onChange={this.selectChange.bind(this)} >
+                    <option/>
+                    {life_events.map(function(lifeEvent, i){
+                        return <option value={lifeEvent.name}
+                                       key={i}
+                            >
+                            {lifeEvent.name}</option>;
+                    })}
+                </select>
+            </div>
+        );
+    }
+
+}

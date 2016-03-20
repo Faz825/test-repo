@@ -91,11 +91,22 @@ class SinglePost extends React.Component{
         this.loadComment();
     }
     render(){
-        let _post = this.props.postItem;
+        const _post = this.props.postItem;
+
+        let post_content = "";
+
+        if (_post.post_mode == "NP" ){
+
+            post_content = _post.content;
+        }else if(_post.post_mode == "LE"){
+            post_content = _post.life_event;
+        }
+
         let _profile = _post.created_by;
         let postImgLength = _post.upload.length;
         let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
             _profile.images.profile_image.http_url:"";
+
 
         var uploaded_files = _post.upload.map((upload,key)=>{
             if(key <= 3){
@@ -107,7 +118,14 @@ class SinglePost extends React.Component{
                 )
             }
         })
+
+
+
         return (
+
+
+
+
             <div className="pg-timeline-white-box pg-top-round-border pg-add-margin-top">
                 <div className="row row-clr pg-newsfeed-section-common-content-inner pg-rm-padding-bottom">
                     <div className="row row-clr pg-newsfeed-section-common-content-post-info">
@@ -118,13 +136,14 @@ class SinglePost extends React.Component{
                             <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}</h5>
                             <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>
                             {
-                                (typeof _post.location != 'undefined' && _post.location != "")?
+                                (typeof _post.location != 'undefined' && _post.location != null)?
                                     <p className="location_text">at - {_post.location} </p>:
                                     null
                             }
                         </div>
                         <div className="row row-clr pg-newsfeed-common-content-post-content">
-                            <p className="pg-newsfeed-post-description">{_post.content}</p>
+
+                            <p className="pg-newsfeed-post-description">{post_content}</p>
                         </div>
 
                         <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">

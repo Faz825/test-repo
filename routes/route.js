@@ -19,6 +19,8 @@ require('../model/SavedArticleModel');
 require('../model/NotificationModel');
 require('../model/NotificationRecipientModel');
 require('../model/CommentModel');
+require('../model/LifeEventModel');
+require('../model/LifeEventCategoryModel');
 /** Load  Controllers
  */
 var DefaultController   = require('../controller/DefaultController'),
@@ -29,7 +31,8 @@ var DefaultController   = require('../controller/DefaultController'),
     NewsController      = require('../controller/NewsController'),
     PostController      = require('../controller/PostController'),
     CommentController   = require('../controller/CommentController'),
-    UploadController    = require('../controller/UploadController');
+    UploadController    = require('../controller/UploadController'),
+    LifeEventController = require('../controller/LifeEventController');
 
 
 
@@ -71,6 +74,10 @@ router.get('/forgot-password/reset/:token', UserController.validateToken);
 router.get('/change-password/:token', DefaultController.index);
 router.post('/change-password/:token', UserController.resetPassword);
 
+
+
+router.get('/life-event/categories', LifeEventController.getLifeEventCategories);
+router.get('/life-events', LifeEventController.getLifeEvents);
 
 
 

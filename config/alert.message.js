@@ -60,7 +60,9 @@ GLOBAL.Alert={
     COMMENT_POST_ID_EMPTY:"Post Id cannot be blank",
 
     USER_NOT_FOUND:"Invalid Username",
-    INVALID_PASSWORD:"Invalid Password"
+    INVALID_PASSWORD:"Invalid Password",
+
+    CATEGORY_ID_EMPTY:"Category id empty"
 
 
 

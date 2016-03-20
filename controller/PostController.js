@@ -13,11 +13,6 @@ var PostController ={
     addPost:function(req,res){
 
         var outPut ={};
-        if(typeof req.body.__content == 'undefined' || typeof req.body.__content == ""){
-            outPut['status']    = ApiHelper.getMessage(400, Alert.POST_CONTENT_EMPTY, Alert.ERROR);
-            res.status(400).send(outPut);
-            return 0;
-        }
 
         var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
         var data ={
@@ -30,6 +25,7 @@ var PostController ={
             file_content:(typeof req.body.__file_content != 'undefined')?req.body.__file_content:"",
             upload_id:(typeof req.body.__uuid  != 'undefined')? req.body.__uuid:"",
             location:(typeof req.body.__lct  != 'undefined')?req.body.__lct:null,
+            life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:null
         }
 
         TimeLinePostHandler.addNewPost(data,function(resultSet){
