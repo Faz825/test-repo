@@ -14,8 +14,7 @@ import ChangePassword from './pages/signup/ChangePassword'
 import ChangePasswordInvalid from './pages/signup/ChangePasswordInvalid'
 import ChangedPassword from './pages/signup/ChangedPassword'
 
-
-
+import NewsIndex from './pages/news/Index';
 
 let rootRoute =(
 	<Route name="main" path="/" component={Main} state="1">
@@ -37,7 +36,11 @@ let rootRoute =(
         <Route name="changed-password" path="/changed-password" component={ChangedPassword}/>
 
 
+		/**
+		 * News
+		 */
 
+		 <Route name="news" path="/news" component={NewsIndex}/>
 	</Route>
 );
 
