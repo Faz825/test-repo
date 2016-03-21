@@ -71,6 +71,8 @@ router.get('/forgot-password/reset/:token', UserController.validateToken);
 router.get('/change-password/:token', DefaultController.index);
 router.post('/change-password/:token', UserController.resetPassword);
 
+router.get('/chat/new-message/:chatWith', DefaultController.index);
+
 
 
 /**
@@ -192,7 +194,9 @@ router.get('/pull/posts', PostController.ch_getPost);
 router.post('/comment/composer', CommentController.addComment);
 router.get('/pull/comments', CommentController.getComment);
 
-router.post('/chat/send', ChatController.sendMessage);
+router.post('/chat/auth', ChatController.chatAuth);
+router.post('/chat/send/:chatWith', ChatController.sendMessage);
+router.post('/chat/startOneToOneChat', ChatController.startOneToOneChat);
 
 
 

@@ -20,7 +20,7 @@ import ChatIndex from './pages/chat/Index'
 
 
 let rootRoute =(
-	<Route name="main" path="/" component={Main} state="1">
+    <Route name="main" path="/" component={Main} state="1">
 		<Route name="signupIndex" path="/sign-up" component={SignupIndex}/>
 		<Route name="choose-secretary" path="/choose-secretary" component={SignupIndex}/>
         <Route name="about-you" path="/about-you" component={SignupIndex}/>
@@ -34,12 +34,14 @@ let rootRoute =(
          */
         <Route name="profile" path="/profile/:uname" component={ProfileIndex}/>
 
-    <Route name="forgot-password" path="/forgot-password" component={ForgotPassword}/>
-            <Route name="change-password" path="/change-password/:token" component={ChangePassword}/>
+        <Route name="forgot-password" path="/forgot-password" component={ForgotPassword}/>
+        <Route name="change-password" path="/change-password/:token" component={ChangePassword}/>
         <Route name="change-password-invalid" path="/change-password-invalid" component={ChangePasswordInvalid}/>
         <Route name="changed-password" path="/changed-password" component={ChangedPassword}/>
 
-            <Route name="chats-video" path="/chat" component={ChatIndex}/>
+        <Route name="chats-video" path="/chat" component={ChatIndex}/>
+        <Route name="new-chat" path="/chat/new-message/:chatWith" component={ChatIndex}/>
+
 
 
 
