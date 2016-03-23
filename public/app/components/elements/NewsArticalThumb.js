@@ -14,7 +14,7 @@ const NewsArticalThumb = ({articals,onNewsThumbClick,isHiddenBlockVisible,type})
     let thumbBlock = _articals.map(function(artical,index){
         if(index <= 4){
             return(
-                <div className="col-xs-2 pg-col-20 pg-news-item" onClick={(event)=>onNewsThumbClick(artical.id,type)} key={index}>
+                <div className="col-xs-2 pg-col-20 pg-news-item" onClick={(event)=>onNewsThumbClick(artical.id, type)} key={index}>
                     <div className="row row-clr pg-news-inner-full various">
                         <p className="pg-pg-news-inner-time">{artical.timeDuration + " hrs ago..."}</p>
                         <img src={artical.imgLink} alt="" className="img-responsive pg-pg-news-inner-img" />
@@ -30,7 +30,7 @@ const NewsArticalThumb = ({articals,onNewsThumbClick,isHiddenBlockVisible,type})
     let hiddenthumbBlock = _articals.map(function(artical,index){
         if(index > 4){
             return(
-                <div className="col-xs-2 pg-col-20 pg-news-item" onClick={(event)=>onNewsThumbClick(artical.id)} key={index}>
+                <div className="col-xs-2 pg-col-20 pg-news-item" onClick={(event)=>onNewsThumbClick(artical.id, type)} key={index}>
                     <div className="row row-clr pg-news-inner-full various">
                         <p className="pg-pg-news-inner-time">{artical.timeDuration + " hrs ago..."}</p>
                         <img src={artical.imgLink} alt="" className="img-responsive pg-pg-news-inner-img" />
