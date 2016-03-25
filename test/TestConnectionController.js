@@ -47,10 +47,51 @@ console.log(resultSet)
     },
     myConnections:function(req,res){
         var Connection = require('mongoose').model('Connection');
-        var _id =req.params['id'];
+        var criteria = {
+            user_id :req.params['id'],
+            q:req.params['q']
+        }
+
+
+        Connection.getMyConnection(criteria,function(resultSet){
+            res.status(200).send(resultSet);
+            return 0
+        })
 
 
     },
+
+    getFriendRequests:function(req,res){
+        var Connection =require('mongoose').model('Connection');
+
+        var criteria ={
+            user_id:req.params['id'],
+            pg:0,
+            result_per_page:3
+
+        }
+        Connection.getConnectionRequests(criteria,function(resultSet){
+            res.status(200).send(resultSet);
+            return 0
+        });
+    },
+
+    acceptFriendRequest:function(req,res){
+
+
+        var Connection =require('mongoose').model('Connection');
+
+        var criteria ={
+            sender_id  :req.body.sender_id,
+            user_id:req.params['id']
+        }
+
+        Connection.acceptConnectionRequest(criteria,function(resultSet){
+            res.status(200).send(resultSet);
+            return 0
+        });
+
+    }
 }
 
 

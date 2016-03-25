@@ -34,7 +34,7 @@ export default class EstablishConnections extends React.Component{
         let user = Session.getSession('prg_lg');
         let _this =  this;
         $.ajax({
-            url: '/connections',
+            url: '/connections/get',
             method: "GET",
             dataType: "JSON",
             data:{pg:page},

@@ -1,5 +1,5 @@
 import React from "react"
-import SidebarManuItem from "../elements/SidebarManuItem"
+import SidebarMenuItem from "../elements/SidebarMenuItem"
 
 export default class SidebarNav extends React.Component{
 	constructor(props){
@@ -9,7 +9,7 @@ export default class SidebarNav extends React.Component{
 	render(){
 		let menuItemList = this.props.menuItems;
 		let menuItems = menuItemList.items.map((menuobject,key)=>{
-				return (	<SidebarManuItem item={menuobject} key={key} />)
+				return (	<SidebarMenuItem item={menuobject} key={key} />)
 
 		});
 		return(

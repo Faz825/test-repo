@@ -41,8 +41,7 @@ export default class Index extends React.Component{
             url: '/pull/posts',
             method: "GET",
             dataType: "JSON",
-            data:{__pg:page},
-            headers: { 'prg-auth-header':user.token },
+            data:{__pg:page,uname:_this.state.uname},
             success: function (data, text) {
                 if(data.status.code == 200){
 
@@ -77,8 +76,10 @@ export default class Index extends React.Component{
                             </div>
 
                             <div className="col-xs-6" id="newsfeed-middle-container-right-col">
-                                <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)} />
-                                <ListPostsElement posts={this.state.posts}/>
+                                <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                                uname = {this.state.uname}/>
+                                <ListPostsElement posts={this.state.posts}
+                                                  uname = {this.state.uname}/>
                             </div>
                             <div className="col-xs-6"></div>
                         </div>

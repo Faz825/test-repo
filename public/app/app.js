@@ -14,6 +14,7 @@ import ChangePassword from './pages/signup/ChangePassword'
 import ChangePasswordInvalid from './pages/signup/ChangePasswordInvalid'
 import ChangedPassword from './pages/signup/ChangedPassword'
 
+import Connection  from './pages/connection/Index';
 
 
 
@@ -35,6 +36,13 @@ let rootRoute =(
         <Route name="change-password" path="/change-password/:token" component={ChangePassword}/>
         <Route name="change-password-invalid" path="/change-password-invalid" component={ChangePasswordInvalid}/>
         <Route name="changed-password" path="/changed-password" component={ChangedPassword}/>
+
+
+        /**
+         * Connection Route
+         */
+
+        <Route name="connections" path="/connections" component={Connection}/>
 
 
 

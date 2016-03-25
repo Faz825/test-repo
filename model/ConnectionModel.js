@@ -17,7 +17,8 @@ GLOBAL.ConnectionStatus ={
 };
 
 GLOBAL.ConnectionConfig ={
-    CACHE_NAME:"connections:"
+    CACHE_NAME:"connections:",
+    ES_INDEX_NAME:"idx_connections:"
 }
 
 var ConnectionSchema = new Schema({
@@ -220,6 +221,273 @@ ConnectionSchema.pre('save', function(next){
     }
     next();
 });
+
+
+/**
+ * Get Connection requests that received for me
+ * @param userId
+ */
+ConnectionSchema.statics.getConnectionRequests = function(criteria,callBack){
+
+    var _this = this, _async = require('async'),_formatted_connection_requests= [];
+
+    var _query = {
+        connected_with:Util.toObjectId(criteria.user_id),
+        status:ConnectionStatus.REQUEST_SENT
+    }
+    _this.count(_query,function(err,resultCount){
+
+        var random = Math.floor(Math.random() * resultCount);
+        _this.find(_query)
+            .limit(criteria.result_per_page)
+            .skip(random)
+            .exec(function(err,resultSet){
+                if(!err){
+                    _async.each(resultSet,
+                        function(connection,callBack){
+                            var query={
+                                q:connection.user_id.toString(),
+                                index:'idx_usr'
+                            };
+                            ES.search(query,function(esResultSet){
+                                _formatted_connection_requests.push(esResultSet.result[0]);
+                                callBack();
+
+                            });
+
+                        },function(err){
+                            if(err){
+                                console.log("getConnectionRequests \n ")
+                                console.log(err)
+                                callBack({status:400,error:err});
+                            }else{
+                                callBack({status:200,requested_connections:_formatted_connection_requests});
+                            }
+
+                        })
+                }else{
+                    console.log("Server Error --------");
+                    console.log(err);
+                    callBack(null);
+                }
+
+            });
+
+    });
+
+}
+
+/**
+ * Accept connection request
+ * following are the tasks that need to be handle in this function
+ * 1. Change status to 1 in connections document
+ * 2. Update Each users connection index
+ *
+ * @param criteria
+ * @param callBack
+ */
+ConnectionSchema.statics.acceptConnectionRequest = function(criteria,callBack){
+
+    var _this = this, _async = require('async');
+
+    _async.waterfall([
+
+        function changeStatus(callBack){
+            var now = new Date();
+            _this.update({
+                user_id:Util.toObjectId(criteria.sender_id),
+                connected_with:Util.toObjectId(criteria.user_id)
+            },{
+                $set:{
+                    status:ConnectionStatus.REQUEST_ACCEPTED,
+                    updated_at:now,
+                    action_user_id:Util.toObjectId(criteria.user_id)
+                }
+            },{upsert:false,multi:false},function(err,rsUpdate){
+                if(!err){
+                    callBack(null);
+                }else{
+                    console.log("acceptConnectionRequest \n");
+                    console.log(err);
+                }
+            })
+        },
+        function updateIndexConnection(callBack){
+
+            //UPDATE OWN CONNECTION ES
+            var query={
+                q:criteria.sender_id.toString(),
+                index:'idx_usr'
+            };
+
+            ES.search(query,function(esResultSet){
+
+
+                var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString();
+                var payLoad={
+                    index:_cache_key,
+                    id:criteria.sender_id.toString(),
+                    type: 'connections',
+                    data:esResultSet.result[0],
+                    tag_fields:[esResultSet.result[0].first_name,esResultSet.result[0].last_name]
+                }
+
+                ES.createIndex(payLoad,function(resultSet){
+                    //DONE
+                    console.log("createIndex")
+                    console.log(resultSet)
+                });
+
+            });
+
+
+            //UPDATE FRIEND'S CONNECTION ES
+            var query={
+                q:criteria.user_id.toString(),
+                index:'idx_usr'
+            };
+            ES.search(query,function(esResultSet){
+
+                var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.sender_id.toString();
+                var payLoad={
+                    index:_cache_key,
+                    id:criteria.user_id.toString(),
+                    type: 'connections',
+                    data:esResultSet.result[0],
+                    tag_fields:[esResultSet.result[0].first_name,esResultSet.result[0].last_name]
+                }
+
+                ES.createIndex(payLoad,function(resultSet){
+                    console.log("createIndex")
+                    console.log(resultSet)
+                    //DONE
+                });
+
+            });
+            callBack(null)
+        }
+
+    ],function(err,resultSet){
+            callBack({status:200})
+    });
+
+}
+
+/**
+ * Get My Connection
+ * @param criteria
+ * @param callBack
+ */
+ConnectionSchema.statics.getMyConnection = function(criteria,callBack){
+
+    var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString(),
+        _async = require('async');
+
+    var query={
+        q:criteria.q,
+        index:_cache_key
+    },
+    formatted_users = [];
+
+    ES.search(query,function(esResultSet){
+
+        if(esResultSet != null){
+            _async.each(esResultSet.result,
+                function(result,callBack){
+
+                    var query={
+                        q:result.user_id,
+                        index:'idx_usr'
+                    };
+                    ES.search(query,function(sesResultSet){
+                        formatted_users.push(sesResultSet.result[0]);
+                        callBack();
+                    });
+                },
+                function(err){
+
+                    callBack({result_count:formatted_users.length,results:formatted_users})
+
+                });
+
+
+
+        }else{
+            callBack({result_count:0,results:[]})
+        }
+
+    });
+
+}
+
+
+
+ConnectionSchema.statics.getFriendSuggestion = function(criteria,callBack){
+
+    var _async = require('async'),
+        User = require('mongoose').model('User'),
+        _this = this;
+
+    _async.waterfall([
+        function getUsersConnections(callBack){
+
+            _this.getFriends(criteria.user_id,criteria.status,function(myFriends){
+
+                callBack(null,myFriends.friends)
+
+            });
+        },
+        function getAllUsers(myFriends,callBack){
+
+            User.getAllUsers(criteria.country,criteria.user_id,function(resultSet){
+                callBack(null,{
+                    total_result:resultSet.total_result,
+                    users:resultSet.users,
+                    my_friends:myFriends
+                })
+            })
+        },
+        function mergeConnection(connections,callBack){
+            var _my_friends =connections.my_friends,
+                _formattedFriendList =[],
+                _allUsers = connections.users;
+
+
+            for(var i =0;i<_allUsers.length;i++){
+                var _c_users ={},
+                    _my_friend = _my_friends[_allUsers[i].user_id.toString()];
+
+                if(typeof _my_friend == 'undefined' && _allUsers[i].user_id != criteria.user_id){
+                    _allUsers[i].connection_status = 0
+                    _formattedFriendList.push(_allUsers[i]);
+
+                }
+
+
+
+            }
+            callBack(null,{
+                total_result: _formattedFriendList.length,
+                friends:_formattedFriendList
+            })
+        }
+
+
+    ],function(err,resultSet){
+
+        if(!err){
+            callBack(resultSet)
+        }else{
+            console.log("LOOP ERROR")
+            console.log(err)
+        }
+
+    });
+
+
+
+}
+
 
 String.prototype.toObjectId = function() {
     var ObjectId = (require('mongoose').Types.ObjectId);

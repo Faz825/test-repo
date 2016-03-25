@@ -43,29 +43,39 @@ var PostController ={
      */
     getPost:function(req,res){
 
-        var _id     = CurrentSession.id;
-        var _page   = req.query.__pg;
+        var query={
+            q:req.query.uname,
+            index:'idx_usr'
+        };
 
-        var Post = require('mongoose').model('Post'),
-            payLoad ={
-                _page:_page,
-                q:"*",
-            };
+        ES.search(query,function(esResultSet){
 
-        Post.ch_getPost(_id,payLoad,function(resultSet){
-            var outPut ={};
+            var _id     = esResultSet.result[0].user_id;
+            var _page   = req.query.__pg;
 
-            if(resultSet == null){
-                outPut['status']    = ApiHelper.getMessage(200, Alert.LIST_EMPTY, Alert.SUCCESS);
-                outPut['posts']     = [];
+            var Post = require('mongoose').model('Post'),
+                payLoad ={
+                    _page:_page,
+                    q:"created_by:"+esResultSet.result[0].user_id,
+                };
+
+            Post.ch_getPost(_id,payLoad,function(resultSet){
+                var outPut ={};
+
+                if(resultSet == null){
+                    outPut['status']    = ApiHelper.getMessage(200, Alert.LIST_EMPTY, Alert.SUCCESS);
+                    outPut['posts']     = [];
+                    res.status(200).send(outPut);
+                    return 0;
+                }
+                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['posts']      =resultSet;
+
                 res.status(200).send(outPut);
                 return 0;
-            }
-            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['posts']      =resultSet
-            res.status(200).send(outPut);
-            return 0;
+            });
         });
+
     }
 
 

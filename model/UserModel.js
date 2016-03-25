@@ -9,6 +9,13 @@ var  mongoose = require('mongoose'),
      uuid = require('node-uuid');
 
 /**
+ * Global Configuration for the user schema
+ * @type {{ES_INDEX: string}}
+ */
+GLOBAL.UserConfig ={
+    ES_INDEX:"idx_usr"
+}
+/**
  * Date Schema
  */
 var DateObject ={
@@ -366,8 +373,6 @@ UserSchema.statics.getConnectionUsers=function(criteria,callBack){
             });
         },
         function getAllUsers(myFriends,callBack){
-
-
 
             _this.getAllUsers(criteria.country,criteria.user_id,function(resultSet){
                 callBack(null,{

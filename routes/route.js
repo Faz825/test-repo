@@ -32,7 +32,8 @@ var DefaultController   = require('../controller/DefaultController'),
     PostController      = require('../controller/PostController'),
     CommentController   = require('../controller/CommentController'),
     UploadController    = require('../controller/UploadController'),
-    LifeEventController = require('../controller/LifeEventController');
+    LifeEventController = require('../controller/LifeEventController'),
+    ConnectionController = require('../controller/ConnectionController');
 
 
 
@@ -101,9 +102,14 @@ router.get('/test/es/search', TestController.esSearch);
 
 router.get('/test/get-connections/:id', TestConnectionController.getConnection);
 
+router.get('/test/get-friend-requests/:id', TestConnectionController.getFriendRequests);
+
+router.post('/test/accept-friend-requests/:id', TestConnectionController.acceptFriendRequest);
 
 
-router.get('/test/my-connections/:id',TestConnectionController.myConnections);
+
+
+router.get('/test/my-connections/:id/:q',TestConnectionController.myConnections);
 
 router.get('/test/save-notification', TestController.saveNotification);
 router.get('/test/get-notifications', TestController.getNotifications);
@@ -167,6 +173,10 @@ router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
 router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle);
 
 
+//CONNECTIONS
+router.get('/connections', DefaultController.index);
+
+router.get('/pull/posts', PostController.getPost);
 
 
 /**
@@ -185,7 +195,7 @@ router.post('/general-info/save',UserController.saveGeneralInfo);
 router.post('/connect-people',UserController.connect);
 router.post('/addNewsCategory',UserController.addNewsCategory);
 router.post('/upload/profile-image',UserController.uploadProfileImage);
-router.get('/connections',UserController.getConnections);
+router.get('/connections/get',UserController.getConnections);
 router.get('/connection/count',UserController.connectionCount);
 router.post('/upload/cover-image',UserController.uploadCoverImage);
 
@@ -200,7 +210,7 @@ router.post('/work-experience/update', UserController.updateWorkExperience);
 
 
 router.post('/post/composer', PostController.addPost);
-router.get('/pull/posts', PostController.getPost);
+
 
 
 router.post('/comment/composer', CommentController.addComment);
@@ -211,7 +221,13 @@ router.post('/skill-info/save', UserController.saveSkillInfo);
 router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
 
 
+//CONNECTIONS
+router.get('/connection/requests', ConnectionController.getRequestedConnections);
+router.get('/connection/me', ConnectionController.getMyConnections);
+router.post('/connection/accept', ConnectionController.acceptFriendRequest);
 
+router.get('/connection/suggestion', ConnectionController.getFriendSuggestion);
+router.post('/connection/send-request', ConnectionController.sendFriendRequest);
 
 module.exports = router;
 

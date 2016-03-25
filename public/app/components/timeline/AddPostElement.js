@@ -15,7 +15,7 @@ export default class AddPostElement extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            uuid:this.IDGenerator()
+            uuid:this.IDGenerator(),
         }
 
     }
@@ -50,6 +50,11 @@ export default class AddPostElement extends React.Component{
 
 
     render(){
+        let logged_user = Session.getSession('prg_lg');
+        if(this.props.uname != logged_user.user_name){
+            return (<div />)
+        }
+
 
         return (
             <div className="pg-timeline-white-box pg-round-border pg-box-shadow">

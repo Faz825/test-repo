@@ -171,6 +171,7 @@ PostSchema.statics.ch_getPost= function(userId,payload,callBack){
 
     //Find User from Elastic search
     ES.search(query,function(csResultSet){
+
         if(csResultSet == null){
             callBack(null);
         }else{
