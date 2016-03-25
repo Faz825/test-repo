@@ -4,6 +4,7 @@
 import React from 'react';
 import NewsArticalThumb from '../../components/elements/NewsArticalThumb';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import Session  from '../../middleware/Session';
 
 let newsArticals = [{
     type : "business",
@@ -61,6 +62,8 @@ export default class Index extends React.Component{
         super(props);
 
         this.state={
+            loggedUser:Session.getSession('prg_lg'),
+            data: {},
             isShowingModal : false,
             popUpContent : {},
             popup: ""
@@ -68,6 +71,28 @@ export default class Index extends React.Component{
 
         this.articalCats = newsArticals;
         this.onPopUp = this.onPopUp.bind(this);
+
+        this.loadCategories();
+    }
+
+    loadCategories(){
+        $.ajax({
+            url: '/news/news-categories',
+            method: "GET",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            success: function (data, text) {
+
+                if (data.status.code == 200) {
+                    //console.log(data);
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
     }
 
     handleClose() {
