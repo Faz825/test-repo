@@ -13,6 +13,7 @@ export default class ChatHistory extends React.Component{
                 <div className="container">
                     <div className="containerHolder">
                         History
+                        <div class="chats" id="chatList"></div>
                     </div>
                 </div>
             </div>

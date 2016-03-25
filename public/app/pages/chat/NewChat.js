@@ -1,5 +1,6 @@
 import React from 'react';
 import Session  from '../../middleware/Session';
+import Chat  from '../../middleware/Chat';
 import Button from '../../components/elements/Button';
 import TextField from '../../components/elements/TextField';
 import {Alert} from '../../config/Alert';
@@ -24,7 +25,41 @@ export default class NewChat extends React.Component{
         };
         this.isValid = true;
         this.formData = {};
+
+        this.b6 = Chat.b6;
+
+        this.convuser = {};
+
+        this.uri = 'usr:proglobe'+this.state.chatWith;
+        this.b6.addEmptyConversation(this.uri);
+        this.showMessages(this.uri);
+
     };
+
+    showMessages(uri){
+        console.log("showMessages - "+uri)
+        this.conv = this.b6.getConversation(uri);
+        // Mark all messages as read
+        if (this.b6.markConversationAsRead(this.conv) > 0) {
+            // Some messages have been marked as read
+            // update chat list
+        }
+        this.convuser.user_name = this.b6.getNameFromIdentity(this.conv.id);console.log("this.convuser.user_name = "+this.convuser.user_name)
+
+        this.msgsDiv = $(this.msgDomIdForConversation(this.conv));
+        // Show only message container for this conversation
+        // Hide all the other message containers
+        this.msgsDiv.show().siblings().hide();
+
+        // Request focus for the compose message text field
+        $('#msgText').focus();
+    }
+
+    // Get Messages Container jQuery selector for a Conversation
+    msgDomIdForConversation(c) {
+        console.log('#msgs__' + c.domId())
+        return '#msgs__' + c.domId();
+    }
 
     getUrl(){
         return  this.props.chatWith;
@@ -69,21 +104,9 @@ export default class NewChat extends React.Component{
         if(Object.keys(er).length == 0) {
             this.formData['status'] = 1;
 
-            var opts = {
-                'apikey': '18j5x-sRBAbzhTW1ZD',
-                'env':'development'
-            };
-
-            var b6 = new bit6.Client(opts);
-
-
-
-            var dest = 'usr:proglobe_'+this.state.chatWith;
             var msg = this.formData.msg
 
-            console.log(b6);
-
-            b6.compose(dest).text(msg).send(function(err) {
+            this.b6.compose(this.uri).text(msg).send(function(err) {
                 if (err) {
                     console.log('error', err);
                 }
@@ -101,14 +124,16 @@ export default class NewChat extends React.Component{
                     <div className="containerHolder">
 
                             <div id="chat_widget_messages_container">
-                                <div id="chat_widget_messages">
-
+                                <div id="msgListRow">
+                                    <div id="msgList"></div>
+                                    <div class="bg-info" id="msgOtherTyping"></div>
                                 </div>
                             </div>
 
                             <div className="clear"></div>
                             <div id="chat_widget_input_container">
-                                    <TextField  name="msg"
+                                    <TextField  id="msgText"
+                                                name="msg"
                                                 size="6"
                                                 value={this.formData.msg}
                                                 label="Message"
