@@ -16,6 +16,7 @@ import ChangedPassword from './pages/signup/ChangedPassword'
 
 import Connection  from './pages/connection/Index';
 
+import NewsIndex from './pages/news/Index';
 
 
 let rootRoute =(
@@ -38,6 +39,7 @@ let rootRoute =(
         <Route name="changed-password" path="/changed-password" component={ChangedPassword}/>
 
 
+
         /**
          * Connection Route
          */
@@ -46,6 +48,12 @@ let rootRoute =(
 
 
 
+		/**
+		 * News
+		 */
+
+
+		 <Route name="news" path="/news" component={NewsIndex}/>
 	</Route>
 );
 

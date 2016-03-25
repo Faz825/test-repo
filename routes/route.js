@@ -55,7 +55,8 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts','/js'];
 GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
-    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password'
+    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password',
+	'/news'
 
 ];
 
@@ -141,17 +142,18 @@ router.post('/collage-and-job/save',UserController.addCollageAndJob);
 
 
 //News Category / Channel & News Add / Get All & Delete
-router.get('/news/add-category', NewsController.addNewsCategory);
+router.post('/news/add-category', NewsController.addNewsCategory);
 router.get('/news/get-categories', NewsController.getNewsCategories);
 router.get('/news/delete-category', NewsController.deleteNewsCategory);
 
-router.get('/news/add-channel', NewsController.addNewsChannel);
+router.post('/news/add-channel', NewsController.addNewsChannel);
 router.get('/news/get-channels/:category', NewsController.getNewsChannels);
 router.get('/news/delete-channel', NewsController.deleteNewsChannel);
 
-router.get('/news/add-news', NewsController.addNews);
+router.post('/news/add-news', NewsController.addNews);
 router.get('/news/get-news/:category/:channel', NewsController.getNews);
 router.get('/news/delete-news', NewsController.deleteNews);
+router.get('/news/news-categories', NewsController.allNewsCategories);
 
 
 router.get('/profile/:name', DefaultController.index);
@@ -230,4 +232,3 @@ router.get('/connection/suggestion', ConnectionController.getFriendSuggestion);
 router.post('/connection/send-request', ConnectionController.sendFriendRequest);
 
 module.exports = router;
-

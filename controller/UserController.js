@@ -798,7 +798,7 @@ var UserControler ={
 
                         } else{
                             outPut['status'] = ApiHelper.getMessage(400, Alert.NO_ACCOUNT_FOUND, Alert.ERROR);
-                             res.status(400).json(outPut);
+ res.status(400).json(outPut);
                         }
                     });
 
