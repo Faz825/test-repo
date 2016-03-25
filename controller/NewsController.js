@@ -62,7 +62,7 @@ var NewsController ={
 
         var userId = CurrentSession.id;
 
-        
+
     },
 
     /**

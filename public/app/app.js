@@ -16,6 +16,8 @@ import ChangedPassword from './pages/signup/ChangedPassword'
 
 import NewsIndex from './pages/news/Index';
 
+import ChatWindow from './pages/chat/Index';
+
 let rootRoute =(
 	<Route name="main" path="/" component={Main} state="1">
 		<Route name="signupIndex" path="/sign-up" component={SignupIndex}/>
@@ -41,6 +43,12 @@ let rootRoute =(
 		 */
 
 		 <Route name="news" path="/news" component={NewsIndex}/>
+
+		 /**
+		 * chat
+		 */
+
+		 <Route name="chat" path="/chat" component={ChatWindow}/>
 	</Route>
 );
 
