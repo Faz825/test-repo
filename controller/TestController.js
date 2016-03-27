@@ -195,6 +195,7 @@ var TestController ={
         var query={
             q:req.query.q,
             index:'idx_usr'
+
         };
 
         ES.search(query,function(resultSet){

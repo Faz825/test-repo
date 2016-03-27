@@ -239,7 +239,7 @@ UserSchema.statics.create = function(UserData,callBack){
 				status:200,
 				user:{
                     id:resultSet._id,
-                    token:uuid.v1(),
+                    token:uuid.v1()+resultSet._id,
                     first_name:resultSet.first_name,
                     last_name:resultSet.last_name,
                     email:resultSet.email,
@@ -1185,7 +1185,7 @@ UserSchema.statics.authenticate = function(data, callback) {
 
                         var _profileData = {
                             id:resultSet._id,
-                            token:uuid.v1(),
+                            token:uuid.v1()+resultSet._id,
                             first_name:resultSet.first_name,
                             last_name:resultSet.last_name,
                             email:resultSet.email,
