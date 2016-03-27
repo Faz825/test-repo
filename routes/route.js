@@ -230,5 +230,7 @@ router.post('/connection/accept', ConnectionController.acceptFriendRequest);
 
 router.get('/connection/suggestion', ConnectionController.getFriendSuggestion);
 router.post('/connection/send-request', ConnectionController.sendFriendRequest);
+router.post('/connection/skip-request', ConnectionController.getUniqueFriendRequest);
+
 
 module.exports = router;
