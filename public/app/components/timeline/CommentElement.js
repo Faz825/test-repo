@@ -140,14 +140,12 @@ export class  PostCommentAction extends React.Component{
                         <div className="col-xs-10 pg-newsfeed-common-content-post-new-comment-input-area">
                             <div id="comment_input" contentEditable={true}
                                  className="comment-containable-div"
-                                 onInput={this.onContentAdd.bind(this)}
-                                 ></div>
-
+                                 onInput={this.onContentAdd.bind(this)}></div>
                         </div>
                     </div>
                 </div>
                 <div className="col-xs-2 pg-newsfeed-new-comment-icon-wrapper">
-                    <div className="col-xs-6">
+                    <div className="addBtnHolder">
                         <a href="javascript:void(0)"
                            onClick={this.onCommentEnter.bind(this)}
                            className="pg-status-post-btn">Add</a>

@@ -47,7 +47,7 @@ export default class Header extends Component {
         let read_only = (this.state.loggedUser.id == this.state.user.user_id)?false:true;
         return (
             <div className="row row-clr" id="pg-profile-banner-area">
-                <CoverImage dt={this.state.user.images} readOnly={read_only}/>
+                <CoverImage dt={this.state.user} readOnly={read_only}/>
                 <ConnectionIndicator dt ={this.state.user}  readOnly={read_only}/>
                 <ProfileInfo dt={this.state.user} readOnly={read_only} />
             </div>
@@ -62,14 +62,42 @@ export default class Header extends Component {
 export class CoverImage extends React.Component{
     constructor(props){
         super(props);
-        let coverImg = (props.dt.cover_image)? props.dt.cover_image : "/images/cover_images/default_cover_1.jpg";
+        let coverImg = (props.dt.images.cover_image)? props.dt.images.cover_image.http_url : "/images/cover_images/default_cover_1.jpg";
         this.state = {
             coverimgSrc : coverImg
         }
         this.coverImgUpdate = this.coverImgUpdate.bind(this);
+        this.loggedUser = Session.getSession('prg_lg');
     }
 
     coverImgUpdate(data){
+
+        this.setState({loadingBarIsVisible : true});
+        let _this =  this;
+
+        $.ajax({
+            url: '/upload/cover-image',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':_this.loggedUser.token },
+            data:{cover_img:data,extension:'png'},
+            cache: false,
+            contentType:"application/x-www-form-urlencoded",
+            success: function (data, text) {
+                console.log(data)
+                if (data.status.code == 200) {
+
+                    _this.setState({loadingBarIsVisible : false,coverimgSrc : data.user.cover_image});
+                    Session.createSession("prg_lg", data.user);
+                }
+            },
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+
         this.setState({coverimgSrc : data});
     }
 
@@ -108,15 +136,43 @@ const ConnectionIndicator =(props)=> {
 export class ProfileInfo extends React.Component{
     constructor(props){
         super(props);
-        let profileImg = (this.props.dt.images.profile_image.http_url)? this.props.dt.images.profile_image.http_url : "";
+        let profileImg = (typeof  this.props.dt.images.profile_image != 'undefined')? this.props.dt.images.profile_image.http_url : "";
         this.state = {
-            profileImgSrc : profileImg
+            profileImgSrc : profileImg,
+
         }
         this.profileImgUpdated = this.profileImgUpdated.bind(this);
+        this.loggedUser = Session.getSession('prg_lg');
     }
 
     profileImgUpdated(data){
-        this.setState({profileImgSrc : data});
+        this.setState({loadingBarIsVisible : true});
+
+        let _this =  this;
+
+        $.ajax({
+            url: '/upload/profile-image',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':_this.loggedUser.token },
+            data:{profileImg:data,extension:'png'},
+            cache: false,
+            contentType:"application/x-www-form-urlencoded",
+            success: function (data, text) {
+                if (data.status.code == 200) {
+
+                    _this.setState({loadingBarIsVisible : false,profileImgSrc : data.user.profile_image});
+                    Session.createSession("prg_lg", data.user);
+                    document.location.reload(true)
+                }
+            },
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+
     }
 
     render() {

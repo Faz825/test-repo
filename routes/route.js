@@ -30,6 +30,7 @@ var DefaultController   = require('../controller/DefaultController'),
     PostController      = require('../controller/PostController'),
     CommentController   = require('../controller/CommentController'),
     ChatController      = require('../controller/ChatController');
+    UploadController    = require('../controller/UploadController');
 
 
 
@@ -51,12 +52,13 @@ GLOBAL.publicURLs = ['/images','/css','/web','/fonts','/js'];
 GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
-    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password','/chat'
+    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password',
+	'/news','/chat'
 
 ];
 
 
-/** 
+/**
  * Actual Routes Implementation without Authentication
  */
 router.post('/doSignup',UserController.doSignup);
@@ -71,7 +73,8 @@ router.get('/forgot-password/reset/:token', UserController.validateToken);
 router.get('/change-password/:token', DefaultController.index);
 router.post('/change-password/:token', UserController.resetPassword);
 
-router.get('/chat/new-message/:chatWith', DefaultController.index);
+router.get('/chat/:chatWith', DefaultController.index);
+
 
 
 
@@ -113,6 +116,7 @@ router.get('/education-info/delete', UserController.deleteEducationDetail);
 
 router.get('/work-experiences/:uname', UserController.retrieveWorkExperience);
 
+router.get('/user/skills/:uname', UserController.getSkills);
 // Skills CRUD
 router.get('/skills/save', SkillController.addSkills);
 router.get('/skills', SkillController.getSkills);
@@ -123,23 +127,22 @@ router.get('/skills/delete', SkillController.deleteSkill);
 
 
 //User's skill add / delete
-router.get('/skill-info/save', UserController.saveSkillInfo);
-
 router.post('/collage-and-job/save',UserController.addCollageAndJob);
 
 
 //News Category / Channel & News Add / Get All & Delete
-router.get('/news/add-category', NewsController.addNewsCategory);
+router.post('/news/add-category', NewsController.addNewsCategory);
 router.get('/news/get-categories', NewsController.getNewsCategories);
 router.get('/news/delete-category', NewsController.deleteNewsCategory);
 
-router.get('/news/add-channel', NewsController.addNewsChannel);
+router.post('/news/add-channel', NewsController.addNewsChannel);
 router.get('/news/get-channels/:category', NewsController.getNewsChannels);
 router.get('/news/delete-channel', NewsController.deleteNewsChannel);
 
-router.get('/news/add-news', NewsController.addNews);
+router.post('/news/add-news', NewsController.addNews);
 router.get('/news/get-news/:category/:channel', NewsController.getNews);
 router.get('/news/delete-news', NewsController.deleteNews);
+router.get('/news/news-categories', NewsController.allNewsCategories);
 
 
 router.get('/profile/:name', DefaultController.index);
@@ -162,13 +165,14 @@ router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle
 
 
 
+
 /**
  * Push All Rqurst through oAuth
  */
 router.all('/*',oAuth.Authentication);
 
 
-/** 
+/**
  * Implement Actual Routes that need to Authenticate
  */
 
@@ -180,6 +184,11 @@ router.post('/addNewsCategory',UserController.addNewsCategory);
 router.post('/upload/profile-image',UserController.uploadProfileImage);
 router.get('/connections',UserController.getConnections);
 router.get('/connection/count',UserController.connectionCount);
+router.post('/upload/cover-image',UserController.uploadCoverImage);
+
+
+
+
 
 router.post('/education/update', UserController.updateEducationDetail);
 
@@ -188,15 +197,17 @@ router.post('/work-experience/update', UserController.updateWorkExperience);
 
 
 router.post('/post/composer', PostController.addPost);
-router.get('/pull/posts', PostController.ch_getPost);
+router.get('/pull/posts', PostController.getPost);
 
 
 router.post('/comment/composer', CommentController.addComment);
 router.get('/pull/comments', CommentController.getComment);
 
-router.post('/chat/auth', ChatController.chatAuth);
-router.post('/chat/send/:chatWith', ChatController.sendMessage);
-router.post('/chat/startOneToOneChat', ChatController.startOneToOneChat);
+
+router.post('/skill-info/save', UserController.saveSkillInfo);
+
+router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
+
 
 
 

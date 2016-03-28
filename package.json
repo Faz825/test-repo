@@ -36,6 +36,7 @@
     "react-cropper": "^0.6.0",
     "react-custom-scrollbars": "^2.3.0",
     "react-dom": "^0.14.6",
+    "react-geosuggest": "^1.19.0",
     "react-infinite-scroll": "^0.1.5",
     "react-modal-dialog": "^2.0.0",
     "react-router": "^2.0.0-rc5",

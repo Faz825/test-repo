@@ -7,6 +7,7 @@ import EstablishConnections from './EstablishConnections';
 import NewsType from './NewsType';
 import ProfileImgUpload from './ProfileImgUpload';
 import AboutCollegeAndJob from './AboutCollegeAndJob';
+import Main from '../main'
 class Index extends React.Component {
 
 	constructor(props) {
@@ -23,6 +24,7 @@ class Index extends React.Component {
                 5:'establish-connections',
                 6:'news-categories',
                 7:'profile-image',
+                8:'/'
 
             }
 		};
@@ -87,7 +89,7 @@ class Index extends React.Component {
             case 7:
                 return (<ProfileImgUpload onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
             case 8:
-                return (<AboutCollegeAndJob onNextStep ={this.onNextStep} onPreviousStep = {this.onPreviousStep}/>);
+                return(<Main />)
 			default:
 				return (<Signup onNextStep ={this.onNextStep}/>);
 		}

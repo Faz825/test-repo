@@ -19,30 +19,34 @@ var PostController ={
             return 0;
         }
 
-
-        var Post = require('mongoose').model('Post');
+        var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
         var data ={
-            has_attachment:req.body.has_attachment,
+            has_attachment:(typeof req.body.__hs_attachment != 'undefined')?req.body.__hs_attachment:false,
             content:req.body.__content,
             created_by:CurrentSession.id,
-            page_link:req.body.page_link,
+            page_link:(typeof req.body.page_link != 'undefined')?req.body.page_link :"",
             post_visible_mode:PostVisibleMode.PUBLIC,
-            post_mode:PostConfig.NORMAL_POST
+            post_mode:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostConfig.NORMAL_POST,
+            file_content:(typeof req.body.__file_content != 'undefined')?req.body.__file_content:"",
+            upload_id:(typeof req.body.__uuid  != 'undefined')? req.body.__uuid:"",
+            location:(typeof req.body.__lct  != 'undefined')?req.body.__lct:null,
         }
 
-        Post.create(data,function(resultSet){
+        TimeLinePostHandler.addNewPost(data,function(resultSet){
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['post']      = resultSet;
             res.status(200).send(outPut);
             return 0;
         });
+
     },
     /**
      * Get Posts
      * @param req
      * @param res
      */
-    ch_getPost:function(req,res){
+    getPost:function(req,res){
+
         var _id     = CurrentSession.id;
         var _page   = req.query.__pg;
 
@@ -54,6 +58,13 @@ var PostController ={
 
         Post.ch_getPost(_id,payLoad,function(resultSet){
             var outPut ={};
+
+            if(resultSet == null){
+                outPut['status']    = ApiHelper.getMessage(200, Alert.LIST_EMPTY, Alert.SUCCESS);
+                outPut['posts']     = [];
+                res.status(200).send(outPut);
+                return 0;
+            }
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['posts']      =resultSet
             res.status(200).send(outPut);

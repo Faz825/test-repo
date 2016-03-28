@@ -52,6 +52,20 @@ var NewsController ={
     },
 
     /**
+     * Get all news Cats. Including user favourites
+     * @param req
+     * @param res
+     */
+    allNewsCategories:function(req,res){
+        var News = require('mongoose').model('News'),
+            userFavNews = require('mongoose').model('favourite_news_categories');
+
+        var userId = CurrentSession.id;
+
+
+    },
+
+    /**
      * Delete a News Category
      * @param req
      * @param res
@@ -149,11 +163,12 @@ var NewsController ={
 
         var News = require('mongoose').model('News');
 
-        //var categoryId = req.body.categoryId;
-        //var channelId = req.body.channelId;
-        //var articleHeading = req.body.articleHeading;
-        //var articleContent = req.body.articleContent;
-        //var articleImage = req.body.articleImage;
+        var categoryId = req.body.categoryId;
+        var channelId = req.body.channelId;
+        var articleHeading = req.body.articleHeading;
+        var articleContent = req.body.articleContent;
+        var articleImage = req.body.articleImage;
+        var articleDate = req.body.articleDate;
 
         //var categoryId = "56cbeae0e975b0070ad200f8";
         //var channelId = "56cbf541a5a22e790dcac546";
@@ -161,18 +176,19 @@ var NewsController ={
         //var articleContent = "First Content Business";
         //var articleImage = "images/pg-signup-6_03.png";
 
-        var categoryId = "56cbeae0e975b0070ad200f8";
+        /*var categoryId = "56cbeae0e975b0070ad200f8";
         var channelId = "56cbf541a5a22e790dcac546";
         var articleHeading = "Third Heading Sports";
         var articleContent = "Third Content Sports";
-        var articleImage = "images/pg-signup-6_03.png";
+        var articleImage = "images/pg-signup-6_03.png";*/
 
         //TODO: Article Image Upload part
 
         var article = {
             heading:articleHeading,
             article_image:articleImage,
-            content:articleContent
+            content:articleContent,
+            article_date:articleDate
         };
 
         var criteria = {

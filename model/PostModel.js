@@ -60,6 +60,11 @@ var PostSchema = new Schema({
         type:Number,
         default:0
     },
+    location:{
+        type:String,
+        trim:true,
+        default:null
+    },
     created_at:{
         type:Date
     },
@@ -86,7 +91,7 @@ PostSchema.pre('save', function(next){
  * @param post
  * @param callBack
  */
-PostSchema.statics.create = function(post,callBack){
+PostSchema.statics.addNew = function(post,callBack){
     var _this = this;
     var _post = new this();
     _post.has_attachment = post.has_attachment;
@@ -96,84 +101,22 @@ PostSchema.statics.create = function(post,callBack){
     _post.post_visible_mode = post.post_visible_mode;
     _post.visible_users = [];
     _post.post_mode = post.post_mode
-    var _async = require('async');
-    _async.waterfall([
+    _post.location = post.location
+    _post.save(function(err,postData){
 
-        function getPostVisibleUsers(callBack){
-            // Add to Cache when it is public or Friend only
-            // TODO:: think for Friend only algorithm separately
-            if(parseInt(post.post_visible_mode) == PostVisibleMode.PUBLIC ||
-                parseInt(post.post_visible_mode) == PostVisibleMode.FRIEND_ONLY ){
-                var Connection = require('mongoose').model('Connection'),
-                    status =[ConnectionStatus.REQUEST_ACCEPTED];
-                Connection.getFriends(post.created_by,status,function(myFriendIds){
-                    _post.visible_users = myFriendIds.friends_ids;
-                    _post.visible_users.push(post.created_by);
-                    callBack(null)
-                });
-            }
-            //Add to list it is Friend only for me
-            else if(parseInt(post.post_visible_mode) == PostVisibleMode.ONLY_MY){
-                _post.visible_users.push(post.created_by);
-                callBack(null)
-            }
-
-            else if(parseInt(post.post_visible_mode) == PostVisibleMode.SELECTED_USERS){
-                _post.visible_users= post.visible_users;
-                callBack(null)
-            }
-
-        },
-
-        function savePost(callBack){
-            _post.save(function(err,postData){
-                if(!err){
-                    var _postData = {
-                        post_id:postData._id.toString(),
-                        has_attachment :postData.has_attachment,
-                        content : postData.content,
-                        created_at:postData.created_at,
-                        page_link : postData.page_link,
-                        post_visible_mode : postData.post_visible_mode,
-                        comment_count :postData.comment_count,
-                        lik_count:postData.like_count,
-                        created_by:postData.created_by,
-                        post_mode:postData.post_mode
-
-                    };
-
-                    //TODO:: Handle attachment post later
-                    _this.addToCache(_post.visible_users,_postData,function(){
-
-                    });
-
-                    var query={
-                        q:_postData.created_by.toString(),
-                        index:'idx_usr'
-                    };
-                    //Find User from Elastic search
-                    ES.search(query,function(csResultSet){
-                        _postData['created_by'] = csResultSet.result[0];
-                        _postData['date'] = DateTime.explainDate(postData.created_at);
-                        callBack(null,_postData);
-
-                    });
-
-
-                    return 0;
-                }else{
-                    console.log("Server Error --------");
-                    console.log(err);
-                    callBack(null,err);
-                }
-
+        if(!err){
+            callBack({
+                status:200,
+                post:postData
             });
+        }else{
+            console.log("Server Error --------");
+            console.log(err);
+            callBack({status:400,error:err});
         }
 
-    ],function(err,resultSet){
-
-        callBack(resultSet)
     });
+
 }
 
 /**
@@ -186,19 +129,18 @@ PostSchema.statics.addToCache=function(users,data,callBack){
     for(var i=0;i<users.length;i++){
         var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+users[i];
         console.log(_cache_key)
-        /**CacheEngine.addTopToList(_cache_key,data,function(outData){
-            console.log(outData)
-        });**/
 
         var payLoad={
             index:_cache_key,
-            id:data.post_id,
+            id:data.post_id.toString(),
             type: 'posts',
             data:data,
             tag_fields:['content']
         }
+
         ES.createIndex(payLoad,function(resultSet){
-            callBack()
+
+            callBack(resultSet)
         });
 
     }
@@ -213,18 +155,9 @@ PostSchema.statics.addToCache=function(users,data,callBack){
  */
 PostSchema.statics.ch_getPost= function(userId,payload,callBack){
     var _this = this;
-    /*var _cache_key = PostConfig.CACHE_PREFIX+userId;
-
-    var _page = (page <= 1)?0 :parseInt(page)  - 1;
-    var _start_index    = Config.RESULT_PER_PAGE*_page;
-    var _end_index      =  (Config.RESULT_PER_PAGE*(_page+1) -1);
-
-    CacheEngine.getList(_cache_key,_start_index,_end_index,function(chResultSet){
-        callBack(_this.postList(chResultSet.result));
-    });*/
 
     var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+userId;
-console.log(_cache_key)
+
     var query={
         q:payload.q,
         index:_cache_key
@@ -232,119 +165,19 @@ console.log(_cache_key)
 
     //Find User from Elastic search
     ES.search(query,function(csResultSet){
-
-        //callBack(_this.postList(csResultSet.result));
-
-        _this.postList(csResultSet.result,function(lpData){
-            callBack(lpData);
-        });
-    });
-
-}
-
-
-/**
- * Update Post User data
- * this user data contain Liked users,Commented Users, sheared Users
- * @param postId
- * @param payLoad
- * @param callBack
- */
-PostSchema.statics.updatePostData = function (payLoad,callBack){
-
-    var _this = this,
-        _async = require('async');
-
-    _async.waterfall([
-
-        function updatePost(callBack){
-            var _update_param = {};
-
-            if(payLoad.is_commented_user){
-                _update_param= {
-                    $set:{
-                        comment_count:payLoad.comment_count
-                    }
-                }
-            }else if( payLoad.is_liked_users){
-                _update_param= {
-                    $set:{
-                        like_count:payLoad.like_count
-                    }
-                }
-            }
-
-            _this.update({_id:Util.toObjectId(payLoad.post_id)},_update_param,function(err,resultSet){
-                if(!err){
-                    callBack({
-                        status:200
-                    });
-                }else{
-                    console.log("Server Error --------", err);
-                    callBack({status:400,error:err});
-                }
+        if(csResultSet == null){
+            callBack(null);
+        }else{
+            _this.postList(csResultSet.result,function(lpData){
+                callBack(lpData);
             });
-
-
-        },
-        function getUserFromCache(callBack){
-            var query={
-                q:payLoad.user_id,
-                index:'idx_usr'
-            };
-            ES.search(query,function(csResultSet){
-                var formattedUser ={
-                    user_id:csResultSet.result[0].user_id,
-                    first_name:csResultSet.result[0].first_name,
-                    last_name:csResultSet.result[0].last_name,
-
-                }
-                console.log(csResultSet.result[0])
-                callBack(null,formattedUser)
-            });
-
-        },
-        function updateCache(callBack){
-
         }
 
-    ],function(err,dataSet){
-
     });
 
-
-
-
-
-
-
-
-    //THIS IS NEEDED FOR UPDATE LATEST CHANGES IN POST
-   /* _this.db_getPost({_id:Util.toObjectId(postId)},function(postData){
-
-            if(postData.status == 200){
-
-
-                if(typeof payLoad.commented_users != 'undefined' && payLoad.commented_users.length >0){
-
-                }
-
-                if(typeof payLoad.liked_users != 'undefined' && payLoad.liked_users.length > 0){
-
-                }
-
-
-
-
-
-
-
-
-
-            }
-
-    })*/
 }
+
+
 
 /**
  * Get Single Post from Database
@@ -362,7 +195,7 @@ PostSchema.statics.db_getPost = function(criteria,callBack){
                     index:'idx_usr'
                 };
 
-                //Find User from Elastisearch
+                //Find User from ElasticSearch
                 ES.search(query,function(csResultSet){
 
                     var _postData = {
@@ -372,6 +205,7 @@ PostSchema.statics.db_getPost = function(criteria,callBack){
                         created_at:postData.created_at,
                         page_link : postData.page_link,
                         post_visible_mode : postData.post_visible_mode,
+                        location:postData.location,
                         created_by : csResultSet.result[0],
                     };
                     callBack({status:200,post:_postData});
@@ -432,6 +266,7 @@ PostSchema.statics.postList=function(posts,callBack){
                 };
                 //Find User from Elastic search
                 ES.search(query,function(csResultSet){
+
                     _post['created_by'] = csResultSet.result[0];
                     data_by_date[_created_date].push(_post) ;
                     callBack()
@@ -470,14 +305,19 @@ PostSchema.statics.postList=function(posts,callBack){
  */
 PostSchema.statics.formatPost=function(postDate){
 
-    return {
+    var outPut = {
         post_id:postDate.post_id,
         has_attachment:postDate.has_attachment,
+        post_mode:postDate.post_mode,
         content:postDate.content,
         created_by:postDate.created_by,
         post_visible_mode:postDate.post_visible_mode,
         date:DateTime.explainDate(postDate.created_at),
+        location:postDate.location,
+        upload:(postDate.has_attachment)?postDate.upload:[]
 
     }
+
+    return outPut;
 }
 mongoose.model('Post',PostSchema);

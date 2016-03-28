@@ -23,7 +23,6 @@ exports.Authentication= function(req,res,next){
 
 
 
-    console.log(req.headers['prg-auth-header'])
     /**
      * Handle Logged User sessions
      */
@@ -67,6 +66,7 @@ exports.Authentication= function(req,res,next){
             }
 
             CurrentSession = cachedUser;
+
             next();
             return;
         });

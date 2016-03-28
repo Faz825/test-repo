@@ -160,9 +160,12 @@ var UserSchema = new Schema({
     education_details:[EducationSchema],
 
     skills:[{
-        type: Schema.ObjectId,
-        ref: 'Skill',
-        default:null
+        skill_id:{
+            type: Schema.ObjectId,
+            ref: 'Skill',
+            default:null,
+        },
+        is_day_to_day_comfort:0
     }],
 
     working_experiences:[WorkingExperienceSchema],
@@ -272,6 +275,29 @@ UserSchema.statics.findByEmail = function(email,callBack){
 
 };
 
+/**
+ * Find User according to the criteria
+ * @param criteria
+ * @param callBack
+ */
+UserSchema.statics.findUser = function(criteria,callBack){
+    var _this = this;
+
+    _this.findOne(criteria,function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200,
+                user:resultSet
+
+            });
+        }else{
+            console.log("Server Error --------")
+            callBack({status:400,error:err});
+        }
+    });
+
+
+};
 /**
  * Add Secretary for the user
  */
@@ -676,7 +702,9 @@ UserSchema.statics.addCollageAndJob = function(userId,data,callBack) {
                     {
                         $set: {
                             created_at: _this.created_at,
-                            updated_at: _this.updated_at
+                            updated_at: _this.updated_at,
+                            status:data.status
+
                         },
                         $push: {
                             education_details: _educationDetails,
@@ -872,21 +900,6 @@ UserSchema.statics.getAllUsers=function(q,userId,callBack){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * DATA FORMATTER HELPER FUNCTION WILL DEFINE HERE
  */
@@ -916,15 +929,20 @@ UserSchema.statics.formatUser=function(userObject,showOptions){
                 _temp_user['cur_designation']=userObject.working_experiences[i].title;
             }
         }
-        if(typeof showOptions != 'undefined' && showOptions.w_exp){
+        if(typeof showOptions.w_exp != 'undefined' && showOptions.w_exp){
             _temp_user['working_experiences'] = [];
             _temp_user['working_experiences'] = this.formatWorkingExperiences(userObject);
         }
-        if(typeof showOptions != 'undefined' && showOptions.edu){
+        if(typeof showOptions.edu != 'undefined' && showOptions.edu){
             _temp_user['education_details'] =[];
             _temp_user['education_details'] = this.formatEducation(userObject);
         }
 
+        if(typeof showOptions.skill != 'undefined' && showOptions.skill){
+            _temp_user['skills'] =[];
+            _temp_user['skills'] = userObject.skills
+
+        }
 
         return _temp_user
     }
@@ -1005,6 +1023,49 @@ UserSchema.statics.formatWorkingExperiences = function(userObject){
     }
     return _temp_we;
 }
+
+
+UserSchema.statics.formatSkills=function(userObject,callBack){
+    var Skill =  require('mongoose').model('Skill'),
+        _async = require('async'),
+        _tmp_out = {
+            'day_to_day_comforts':[],
+            'experienced':[]
+        };
+    _async.each(userObject.skills,
+    function(skill,callBack){
+
+
+        Skill.getSkillById(Util.toObjectId(skill.skill_id),function(resultSet){
+
+
+            if(skill.is_day_to_day_comfort === 1){
+                _tmp_out['day_to_day_comforts'].push({
+                    id:resultSet.skill.id,
+                    name:resultSet.skill.name
+                });
+                callBack();
+
+            }else{
+            //if(skill.is_day_to_day_comfort === 0){
+                _tmp_out['experienced'].push({
+                    id:resultSet.skill.id,
+                    name:resultSet.skill.name
+                });
+                callBack();
+            }
+
+        });
+
+    },
+    function(err){
+
+        callBack(_tmp_out);
+    });
+
+
+
+}
 /**
  * Format Connection users data
  * @param resultSet
@@ -1020,16 +1081,9 @@ UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
 };
 
 
-
-
-
-
-
 /**
  * CACHE IMPLEMENTATION
  */
-
-
 UserSchema.statics.addUserToCache = function(userId, callBack){
     var _async = require('async'),
         Connection = require('mongoose').model('Connection'),
@@ -1062,9 +1116,6 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
             }else{
                 callBack(null,null)
             }
-
-
-
         },
         function getProfileImage(profileData,callBack){
 
@@ -1077,11 +1128,7 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
             }else{
                 callBack(null,null)
             }
-
-
         }
-
-
 
     ],function(err,profileData){
         var outPut ={};
@@ -1097,6 +1144,7 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
                 data:profileData,
                 tag_fields:['first_name','last_name','email','user_name','country']
             }
+
             ES.createIndex(payLoad,function(resultSet){
                 callBack(resultSet)
                 return 0;
@@ -1114,7 +1162,7 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
  */
 UserSchema.statics.authenticate = function(data, callback) {
     var _this = this;
-    var criteria = {user_name:data.user_name}
+    var criteria = {email:data.user_name}
     _this.findOne(criteria,function(err,resultSet){
 
         if(!err){
@@ -1160,7 +1208,7 @@ UserSchema.statics.authenticate = function(data, callback) {
                     },
                     function getSecretary(profileData,callBack){
 
-                        console.log(profileData);
+
 
                         if( profileData.secretary_id != null){
                             Secretary.getSecretaryById(profileData.secretary_id,function(secretary){
@@ -1174,11 +1222,11 @@ UserSchema.statics.authenticate = function(data, callback) {
                         }
                     },
                     function getProfileImage(profileData,callBack){
-                        console.log(profileData)
+
 
                         if(profileData != null){
                             Upload.getProfileImage(profileData.id.toString(),function(profileImageData){
-                                profileData['images'] = profileImageData.image;
+                                profileData['profile_image'] = (profileImageData.status != 400)?profileImageData.image.profile_image.http_url:"";
                                 callBack(null,profileData)
                                 return 0;
                             });
@@ -1194,20 +1242,7 @@ UserSchema.statics.authenticate = function(data, callback) {
                     if (!err) {
 
                         callback({status:200,user:profileData});
-                        //outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                        //outPut['profile_data'] = profileData;
-                        //
-                        //var payLoad = {
-                        //    index: "idx_usr",
-                        //    id: profileData.user_id,
-                        //    type: 'user',
-                        //    data: profileData,
-                        //    tag_fields: ['first_name', 'last_name', 'email', 'user_name', 'country']
-                        //}
-                        //ES.createIndex(payLoad, function (resultSet) {
-                        //    callBack(resultSet)
-                        //    return 0;
-                        //});
+
 
                     } else {
                         callback(err)

@@ -13,11 +13,8 @@ import ForgotPassword from './pages/signup/ForgotPassword'
 import ChangePassword from './pages/signup/ChangePassword'
 import ChangePasswordInvalid from './pages/signup/ChangePasswordInvalid'
 import ChangedPassword from './pages/signup/ChangedPassword'
-
 import ChatIndex from './pages/chat/Index'
-
-
-
+import NewsIndex from './pages/news/Index';
 
 let rootRoute =(
     <Route name="main" path="/" component={Main} state="1">
@@ -40,10 +37,15 @@ let rootRoute =(
         <Route name="changed-password" path="/changed-password" component={ChangedPassword}/>
 
         <Route name="chats-video" path="/chat" component={ChatIndex}/>
-        <Route name="new-chat" path="/chat/new-message/:chatWith" component={ChatIndex}/>
+        <Route name="new-chat" path="/chat/:chatWith" component={ChatIndex}/>
 
 
 
+		/**
+		 * News
+		 */
+
+		 <Route name="news" path="/news" component={NewsIndex}/>
 
 	</Route>
 );

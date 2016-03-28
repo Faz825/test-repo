@@ -13,6 +13,7 @@
     "malihu-custom-scrollbar-plugin": "*",
     "components-font-awesome": "*",
     "html5shiv": "3.7.3",
-    "bit6": "^0.9.6"
+    "bit6": "^0.9.6",
+    "geosuggest": "react-geosuggest#^1.19.0"
   }
 }

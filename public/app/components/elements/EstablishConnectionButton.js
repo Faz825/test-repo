@@ -11,11 +11,11 @@ export default class EstablishConnectionButton extends React.Component{
 
         if (this.state.clicked) {
             this.props.click(false);
-            this.setState({clicked:false});
+            this.setState({clicked:false, value: "Connect"});
 
         }else{
             this.props.click(true);
-            this.setState({clicked:true});
+            this.setState({clicked:true, value: "Request Sent"});
         }
 
 	}
@@ -34,7 +34,7 @@ export default class EstablishConnectionButton extends React.Component{
 
 		return (
 			<div className={classes}>
-            	<a href={this.props.link} className={this.props.extraClasses} onClick={(event) => this.respond(event)} {...opts} >{this.props.value}</a>
+            	<a href={this.props.link} className={this.props.extraClasses} onClick={(event) => this.respond(event)} {...opts} >{this.state.value}</a>
             </div>
 		);
 	}

@@ -24,6 +24,11 @@ var ArticleSchema = new Schema({
         type:String,
         trim:true,
         default:null
+    },
+    article_date:{
+        type:String,
+        trim:true,
+        default:null
     }
 });
 

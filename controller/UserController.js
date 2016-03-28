@@ -10,6 +10,7 @@ var UserControler ={
 
     doSignup:function(req,res){
         var User = require('mongoose').model('User');
+            ;
 
         var user ={
             id:req.body._id,
@@ -19,12 +20,14 @@ var UserControler ={
             password:req.body.password,
             status:req.body.status,
             secretary:req.body.secretary,
-            user_name:req.body.email.replace(/@.*$/,"")
         }
+
+
         User.findByEmail(user.email,function(ResultSet){
 
             if(ResultSet.status == 200 && ResultSet.user == null ){
 
+                user['user_name'] =  Util.getUniqueUserName(user);
                 User.create(user,function(_ResultSet){
                     if(typeof _ResultSet.status != 'undefined' && _ResultSet.status == 400){
                         res.status(400).json({
@@ -172,6 +175,53 @@ var UserControler ={
         });
     },
     /**
+     * Add Collage and Job information in signup process
+     * @param req
+     * @param res
+     */
+    addCollageAndJob:function(req,res){
+        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+        CurrentSession['status']        = 4;
+        CurrentSession['school']        = (req.body.school)?req.body.school:null;
+        CurrentSession['grad_date']     = (req.body.grad_date)?req.body.grad_date:null;
+        CurrentSession['job_title']     = (req.body.job_title)?req.body.job_title:null;
+        CurrentSession['company_name']  = (req.body.company_name)?req.body.company_name:null;
+
+        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+
+            var User = require('mongoose').model('User'),
+                _collageAndJob={
+                    school:req.body.school,
+                    grad_date:req.body.grad_date,
+                    job_title:req.body.job_title,
+                    company_name:req.body.company_name,
+                    status:4
+                };
+
+            User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
+                var outPut ={};
+
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
+                    res.status(200).json(outPut);
+                    return 0;
+                }
+                if(!cacheData){
+                    outPut['extra']=Alert.CACHE_CREATION_ERROR
+                }
+                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user']      = CurrentSession;
+                res.status(200).json(outPut);
+
+
+
+
+            });
+
+        });
+    },
+
+    /**
      * Load Connections
      * @param req
      * @param res
@@ -233,29 +283,34 @@ var UserControler ={
 
 
 
-            var Connection = require('mongoose').model('Connection');
+            var Connection = require('mongoose').model('Connection'),
+                User       = require('mongoose').model('User');
 
-            Connection.sendConnectionRequest(req_connected_users,req_unconnected_users, function (resultSet) {
 
-                if (resultSet.status !== 200) {
-                    outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
-                    res.status(400).send(outPut);
-                    return 0;
-                }
+                User.saveUpdates(CurrentSession.id,{status:5},function(updateDataSet){
+                    Connection.sendConnectionRequest(req_connected_users,req_unconnected_users, function (resultSet) {
 
-                if (!cacheData) {
-                    outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                }
+                        if (resultSet.status !== 200) {
+                            outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
+                            res.status(400).send(outPut);
+                            return 0;
+                        }
 
-                res.status(200).json(outPut);
-                return 0;
-            });
+                        if (!cacheData) {
+                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                        }
+
+                        res.status(200).json(outPut);
+                        return 0;
+                    });
+                });
+
 
         });
     },
 
     /**
-     * Add new category to the user
+     * Add new category to the user in Sign up process
      * @param req
      * @param res
      */
@@ -272,33 +327,36 @@ var UserControler ={
 
             if(req_news_categories.length >= 1 ) {
 
-                var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+                var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
+                    User                  = require('mongoose').model('User');
                 var news_categories = [],
                     now = new Date();
 
-                for (var i = 0; req_news_categories.length > i; i++) {
-                    news_categories.push({
-                        user_id: CurrentSession.id.toObjectId(),
-                        category: null,
-                        created_at: now
-                    });
-                }
+                User.saveUpdates(CurrentSession.id,{status:6},function(updateDataSet){
 
+                    for (var i = 0; req_news_categories.length > i; i++) {
+                        news_categories.push({
+                            user_id: Util.toObjectId(CurrentSession.id),
+                            category: null,
+                            created_at: now
+                        });
+                    }
+                    FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
 
-                FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
+                        if (resultSet.status !== 200) {
+                            outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                            res.status(400).send(outPut);
+                            return 0;
+                        }
+                        if (!cacheData) {
+                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                        }
 
-                    if (resultSet.status !== 200) {
-                        outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
-                        res.status(400).send(outPut);
+                        res.status(200).json(outPut);
                         return 0;
-                    }
-                    if (!cacheData) {
-                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                    }
+                    });
+                })
 
-                    res.status(200).json(outPut);
-                    return 0;
-                });
 
             }else{
                 res.status(200).json(outPut);
@@ -307,6 +365,12 @@ var UserControler ={
         });
     },
 
+    /**
+     * Upload Profile Image in Sign up process
+     * @param req
+     * @param res
+     * @returns {number}
+     */
     uploadProfileImage:function(req,res){
 
 
@@ -323,15 +387,74 @@ var UserControler ={
             file_name:req.body.profileImg,
             is_default:1,
             entity_id:CurrentSession.id,
-            entity_tag:UploadMeta.PROFILE_IMAGE
+            entity_tag:UploadMeta.PROFILE_IMAGE,
+            status:7
+        }
+
+        User.saveUpdates(CurrentSession.id,{status:7},function(updateDataSet){
+            ContentUploader.uploadFile(data,function (payLoad) {
+
+                if (payLoad.status != 400) {
+                    var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+                    CurrentSession['status'] = 7;
+                    CurrentSession['profile_image'] = payLoad.http_url;
+
+
+                    CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                        var outPut = {
+                            status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                        }
+                        if (!cacheData) {
+                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                        }
+                        outPut['user'] = CurrentSession;
+                        //ADD TO CACHE
+                        User.addUserToCache(CurrentSession.id,function(csResult){});
+                        res.status(200).json(outPut);
+                    });
+
+                } else {
+                    var outPut={
+                        status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
+                    };
+                    res.status(400).send(outPut);
+                }
+            });
+
+
+        });
+
+
+    },
+
+    /**
+     * Upload cover image
+     * @param req
+     * @param res
+     */
+    uploadCoverImage:function(req,res){
+        if(typeof req.body.cover_img == 'undefined' || typeof req.body.cover_img == "") {
+            var outPut={
+                status: ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
+            };
+            res.status(400).send(outPut);
+            return 0;
+        }
+
+        var User = require('mongoose').model('User');
+        var data ={
+            content_title:"Cover Image",
+            file_name:req.body.cover_img,
+            is_default:1,
+            entity_id:CurrentSession.id,
+            entity_tag:UploadMeta.COVER_IMAGE
         }
         ContentUploader.uploadFile(data,function (payLoad) {
-            
+
             if (payLoad.status != 400) {
                 var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-                CurrentSession['status'] = 7;
-                CurrentSession['profile_image'] = payLoad.http_url;
-                console.log(CurrentSession);
+                CurrentSession['cover_image'] = payLoad.http_url;
+
 
                 CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
                     var outPut = {
@@ -341,9 +464,9 @@ var UserControler ={
                         outPut['extra'] = Alert.CACHE_CREATION_ERROR
                     }
                     outPut['user'] = CurrentSession;
-                    //ADD TO CACHE
-                    User.addUserToCache(CurrentSession.id,function(csResult){console.log(csResult)});
 
+                    //ADD TO CACHE
+                    User.addUserToCache(CurrentSession.id,function(csResult){});
 
                     res.status(200).json(outPut);
                 });
@@ -359,8 +482,9 @@ var UserControler ={
             }
         });
 
-    },
 
+
+    },
 
     /**
      * Add educational details to a user
@@ -423,7 +547,8 @@ var UserControler ={
         var criteria = {user_name:req.params['uname']},
             showOptions ={
                 w_exp:true,
-                edu:true
+                edu:true,
+                skill:false
             };
         User.getUser(criteria,showOptions,function(resultSet){
             var outPut ={};
@@ -525,46 +650,6 @@ var UserControler ={
 
     },
 
-    addCollageAndJob:function(req,res){
-        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-        CurrentSession['status']        = 4;
-        CurrentSession['school']        = (req.body.school)?req.body.school:null;
-        CurrentSession['grad_date']     = (req.body.grad_date)?req.body.grad_date:null;
-        CurrentSession['job_title']     = (req.body.job_title)?req.body.job_title:null;
-        CurrentSession['company_name']  = (req.body.company_name)?req.body.company_name:null;
-
-        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
-
-            var User = require('mongoose').model('User'),
-                _collageAndJob={
-                    school:req.body.school,
-                    grad_date:req.body.grad_date,
-                    job_title:req.body.job_title,
-                    company_name:req.body.company_name,
-                };
-
-            User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
-                var outPut ={};
-
-                if(resultSet.status != 200){
-                    outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
-                    res.status(200).json(outPut);
-                    return 0;
-                }
-                if(!cacheData){
-                    outPut['extra']=Alert.CACHE_CREATION_ERROR
-                }
-                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['user']      = CurrentSession;
-                res.status(200).json(outPut);
-
-
-
-
-            });
-
-        });
-    },
 
     /**
      * add / delete skills of a user
@@ -579,19 +664,38 @@ var UserControler ={
 
         // Need to COMMENT these
 
-        var userId = "56c2d6038c920a41750ac4db";
-        //var req_skills = ["PHP"]; // skills that are newly added by the user, but which are not in skill collection
-        //"56c43351f468ba8913f3d129", "56c44e88d7ffcaa91867862e", "56c44e88d7ffcaa91867862f"
-        var existing_skills = ["56c43351f468ba8913f3d12a", "56c44ddefd4ec41e18ab4e6d", "56c44ddefd4ec41e18ab4e6e"]; // skills that are newly added by the user, but which are available in skill collection
-        var deleted_skills = ["56c44e88d7ffcaa91867862e", "56c44e88d7ffcaa91867862f"]; // skills that are deleted by the user
+        var skill_sets = JSON.parse(req.body.skill_set);
 
-        // Need to UNCOMMENT these
-        //var userId = req.body.userId;
-        //var req_skills = req.body.new_skills; // skills that are newly added by the user, but which are not in skill collection
-        //var existing_skills = req.body.existing_skills; // skills that are newly added by the user, but which are available in skill collection
-        //var deleted_skills = req.body.deleted_skills; // skills that are deleted by the user
+        //GET EXPERIENCED SKILLS
+        var existing_skills =[],deleted_skills=[];
+
+
+        for(var a =0;a<skill_sets.experienced.add.length;a++){
+            existing_skills.push({
+                skill_id:skill_sets.experienced.add[a],
+                is_day_to_day_comfort:0
+
+            })
+        }
+
+
+        for(var a =0;a<skill_sets.day_to_day_comforts.add.length;a++){
+            existing_skills.push({
+                skill_id:skill_sets.day_to_day_comforts.add[a],
+                is_day_to_day_comfort:1
+            })
+        }
+        for(var a =0;a<skill_sets.experienced.remove.length;a++){
+            deleted_skills.push(skill_sets.experienced.remove[a])
+        }
+        for(var a =0;a<skill_sets.day_to_day_comforts.remove.length;a++){
+            deleted_skills.push(skill_sets.day_to_day_comforts.remove[a])
+        }
+        var userId = CurrentSession.id;
 
         //TODO : If user added new skills that are not in Skill Collection
+
+
 
         async.parallel([
 
@@ -627,6 +731,38 @@ var UserControler ={
 
     },
 
+    /**
+     * Get Skills
+     * @param req
+     * @param ress
+     */
+    getSkills:function(req,res){
+        var User = require('mongoose').model('User');
+
+        var criteria = {user_name:req.params['uname']},
+            showOptions ={
+                skill:true
+            };
+        User.getUser(criteria,showOptions,function(resultSet) {
+            var outPut = {};
+            if (resultSet.status != 200) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                res.status(400).json(outPut);
+                return 0;
+            }
+
+
+            User.formatSkills(resultSet.user,function(skillsData){
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['user'] = resultSet.user;
+                outPut['user']['skills'] = skillsData;
+
+                res.status(200).send(outPut);
+            })
+
+        })
+
+    },
     forgotPassword:function(req,res){
 
         var async = require('async'),
@@ -662,7 +798,7 @@ var UserControler ={
 
                         } else{
                             outPut['status'] = ApiHelper.getMessage(400, Alert.NO_ACCOUNT_FOUND, Alert.ERROR);
-                             res.status(400).json(outPut);
+ res.status(400).json(outPut);
                         }
                     });
 

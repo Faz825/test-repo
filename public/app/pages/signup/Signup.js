@@ -65,9 +65,8 @@ class Signup extends React.Component {
 
                     if (data.status === 'success') {
                         _this.setState({validateAlert: ""});
-                        console.log(data)
                         Session.createSession("prg_lg", data.user);
-                        location.reload();
+                        location.href="/choose-secretary";
                     }
 
                 },

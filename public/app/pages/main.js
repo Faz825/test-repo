@@ -3,6 +3,7 @@ import SignupLayout from './layout/SignupLayout'
 import DefaultLayout from './layout/DefaultLayout'
 import Session  from '../middleware/Session';
 import Chat  from '../middleware/Chat';
+import Signup  from './signup/Signup';
 
 class Main extends React.Component {
 
@@ -22,14 +23,14 @@ class Main extends React.Component {
         if (Session.isSessionSet('prg_lg')) {
             return (
                     <DefaultLayout>
-                        {this.props.children}
+                        {this.props.children }
                     </DefaultLayout>
             )
 
         }else{
             return (
                     <SignupLayout>
-                        {this.props.children}
+                        {this.props.children ||<Signup />}
                     </SignupLayout>
 
             )
@@ -44,4 +45,3 @@ class Main extends React.Component {
 
 
 module.exports = Main;
-
