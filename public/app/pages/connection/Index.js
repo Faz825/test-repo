@@ -93,49 +93,50 @@ export default class Index extends React.Component{
             friend_requests,
             friend_suggestions,
             my_connections
-
             }=this.state;
 
-        if(friend_requests.length > 0
-            && friend_suggestions.length > 0
-            && my_connections.length > 0){
 
-            return (
+        return (
 
-                <div className="pg-page" id="pg-connections-page">
-                    <div className="pg-connections-wrapper">
-                        <div className="row row-clr pg-connections-page-header">
-                            <div className="col-xs-10 col-xs-offset-1">
-                                <div className="row">
-                                    <div className="col-xs-6">
-                                        <h2 className="pg-connections-page-header-title">Connections</h2>
-                                    </div>
-
+            <div className="pg-page" id="pg-connections-page">
+                <div className="pg-connections-wrapper">
+                    <div className="row row-clr pg-connections-page-header">
+                        <div className="col-xs-10 col-xs-offset-1">
+                            <div className="row">
+                                <div className="col-xs-6">
+                                    <h2 className="pg-connections-page-header-title">Connections</h2>
                                 </div>
+
                             </div>
                         </div>
-
-                        <FriendRequests friend_requests={friend_requests}
-                                        onAcceptFriendRequestSuccess ={this.onAcceptFriendRequestSuccess.bind(this)}
-                                        onFriendRequestSkip = {this.onFriendRequestSkip.bind(this)}
-                                        loggedUser = {this.loggedUser}/>
-
-                        <FriendSuggestions friend_suggestions = {friend_suggestions}
-                                           loggedUser = {this.loggedUser}
-                                           onAddFriendSuccess={this.onAddFriendSuccess.bind(this)}
-                                           />
-
-                        <MyConnections my_connections = {my_connections}/>
                     </div>
+                    {
+                        (friend_requests.length > 0 )?
+                            <FriendRequests friend_requests={friend_requests}
+                                            onAcceptFriendRequestSuccess ={this.onAcceptFriendRequestSuccess.bind(this)}
+                                            onFriendRequestSkip = {this.onFriendRequestSkip.bind(this)}
+                                            loggedUser = {this.loggedUser}/>
+                            :null
+                    }
+
+                    {
+                        (friend_suggestions.length > 0 )?
+                            <FriendSuggestions friend_suggestions = {friend_suggestions}
+                                               loggedUser = {this.loggedUser}
+                                               onAddFriendSuccess={this.onAddFriendSuccess.bind(this)}
+                                />
+                            :null
+                    }
+
+                    {
+                        (my_connections.length > 0)?
+                            <MyConnections my_connections = {my_connections}/>
+                            :null
+                    }
+
                 </div>
-
-
-            )
-
-        }
-
-        return (<div/>);
-
+            </div>
+        )
 
     }
 }

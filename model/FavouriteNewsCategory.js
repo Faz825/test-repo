@@ -16,13 +16,8 @@ var FavouriteNewsCategorySchema = new Schema({
     },
     category:{
         type: Schema.ObjectId,
-        ref: 'News',
         default:null
     },
-    channels:[{
-        type: Schema.ObjectId,
-        default:null
-    }],
     created_at:{
         type:Date
     },
@@ -75,7 +70,7 @@ FavouriteNewsCategorySchema.statics.findFavouriteNewsCategory = function(criteri
 
     var _this = this;
 
-    _this.find(criteria.search).populate(criteria.populate, criteria.populate_field).exec(function(err,resultSet){
+    _this.find(criteria.search).exec(function(err,resultSet){
 
         if(!err){
             callBack({
@@ -242,10 +237,49 @@ FavouriteNewsCategorySchema.statics.formatFavouriteNewsChannel = function(newsOb
 };
 
 
+/**
+ * Get New Categories based on user
+ */
+FavouriteNewsCategorySchema.statics.getNewsCategoriesByUserId = function(userId,callBack){
+
+    var _this = this;
+    _this.find({user_id:Util.toObjectId(userId)}).lean().exec(function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200,
+                news_categories:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            callBack({status:400,error:err});
+        }
+
+    })
+
+}
+
+
+FavouriteNewsCategorySchema.statics.unFavourite = function (criteria,callBack){
+    var _this = this;
+
+
+    _this.remove({user_id:criteria.user_id,category:criteria.category},function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200,
+            });
+        }else{
+            console.log("Server Error --------")
+            callBack({status:400,error:err});
+        }
+
+    })
+}
 String.prototype.toObjectId = function() {
     var ObjectId = (require('mongoose').Types.ObjectId);
     return new ObjectId(this.toString());
 };
+
 
 
 

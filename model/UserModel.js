@@ -391,13 +391,12 @@ UserSchema.statics.getConnectionUsers=function(criteria,callBack){
             for(var i =0;i<_allUsers.length;i++){
                 var _c_users ={},
                 _my_friend = _my_friends[_allUsers[i].user_id.toString()];
-                _allUsers[i].connection_status = 0
+                _allUsers[i].connection_status = 0;
+
 
                 if(typeof _my_friend != 'undefined'){
                     _allUsers[i].connection_status = _my_friend.status;
                 }
-
-
                 _formattedFriendList.push(_allUsers[i]);
             }
             callBack(null,{

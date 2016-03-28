@@ -6,56 +6,7 @@ import NewsArticalThumb from '../../components/elements/NewsArticalThumb';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Session  from '../../middleware/Session';
 
-let newsArticals = [{
-    type : "business",
-    news: [
-            {"id": 1, "name": "Its Opening", "timeDuration": "4" , "imgLink": "images/news-page-sub-item-thumb-2.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 2, "name": "Google Work", "timeDuration": "2" , "imgLink": "images/news-page-sub-item-thumb-4.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 3, "name": "Google at Work", "timeDuration": "3" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 4, "name": "Microsoft", "timeDuration": "1" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 5, "name": "Google at Work", "timeDuration": "2" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 6, "name": "Its Opening", "timeDuration": "4" , "imgLink": "images/news-page-sub-item-thumb-2.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 7, "name": "Google Work", "timeDuration": "2" , "imgLink": "images/news-page-sub-item-thumb-4.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 8, "name": "Google at Work", "timeDuration": "3" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 9, "name": "Microsoft", "timeDuration": "1" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 10, "name": "Google at Work", "timeDuration": "2" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            }
-        ]
-},
-{
-    type : "sports",
-    news: [
-            {"id": 11, "name": "Its Opening", "timeDuration": "4" , "imgLink": "images/news-page-sub-item-thumb-2.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 12, "name": "Google Work", "timeDuration": "2" , "imgLink": "images/news-page-sub-item-thumb-4.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 13, "name": "Google at Work", "timeDuration": "3" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 14, "name": "Microsoft", "timeDuration": "1" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 15, "name": "Google at Work", "timeDuration": "2" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 16, "name": "Its Opening", "timeDuration": "4" , "imgLink": "images/news-page-sub-item-thumb-2.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 17, "name": "Google Work", "timeDuration": "2" , "imgLink": "images/news-page-sub-item-thumb-4.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 18, "name": "Google at Work", "timeDuration": "3" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 19, "name": "Microsoft", "timeDuration": "1" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            },
-            {"id": 20, "name": "Google at Work", "timeDuration": "2" , "imgLink": "images/news-page-sub-item-thumb-3.png","title" : "News Artical Title","mainImgLink" : "images/pg-news-popup-tech-banner.png","description" : "<p>After over a year\’s worth of controversy around Facebook\’s real names policy, Facebook has announced a couple of changes to its process in order to better serve all of its members, including those in the LGBTQ community.</p><p>Last October, Facebook promised it would make changes to its real name policy after a number of false account flagging incidents led to the suspension of LGBTQ members\’ pages. Facebook requires people to use the names their friends and family know them by. For many drag performers, for example, their drag names are the names people know them by, but that didn’t prevent the suspension of their accounts.</p>"
-            }
-        ]
-}]
+
 
 export default class Index extends React.Component{
     constructor(props){
@@ -66,10 +17,11 @@ export default class Index extends React.Component{
             data: {},
             isShowingModal : false,
             popUpContent : {},
-            popup: ""
+            popup: "",
+            news_categories :[]
         }
 
-        this.articalCats = newsArticals;
+
         this.onPopUp = this.onPopUp.bind(this);
 
         this.loadCategories();
@@ -77,22 +29,16 @@ export default class Index extends React.Component{
 
     loadCategories(){
         $.ajax({
-            url: '/news/news-categories',
+            url: '/news/get-categories',
             method: "GET",
             dataType: "JSON",
             headers: { 'prg-auth-header':this.state.loggedUser.token },
-            success: function (data, text) {
+        }).done(function (data, text) {
+            if (data.status.code == 200) {
 
-                if (data.status.code == 200) {
-                    //console.log(data);
-                }
-            }.bind(this),
-            error: function (request, status, error) {
-                console.log(request.responseText);
-                console.log(status);
-                console.log(error);
+                this.setState({news_categories:data.news})
             }
-        });
+        }.bind(this));
     }
 
     handleClose() {
@@ -141,73 +87,106 @@ export default class Index extends React.Component{
             </div>
         )
     }
+    onNewsCategoryClick(is_favourite,category_id){
 
+
+        $.ajax({
+            url: '/user/news/add-category',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            data:{nw_cat_id:category_id,fav:is_favourite}
+        }).done(function (data, text) {
+            console.log(data)
+            if (data.status.code == 200) {
+                this.loadCategories();
+
+            }
+        }.bind(this));
+
+    }
     render() {
-        let _articalCats = this.articalCats;
-        let _this = this;
+
+        const {
+            news_categories
+            } = this.state;
+
+        let _this= this;
+        let _news_category_template = news_categories.map(function(newsCategory,key){
+
+            return(
+                <NewsCategory newsCategory={newsCategory}
+                              onCategorySelect={_this.onNewsCategoryClick.bind(_this)}
+                              key={key} />
+            )
+        });
+
 
         return (
             <div className="newsCatHolder container-fluid">
                 <div className="row row-clr pg-news-page-content">
                     <div className="col-xs-10 col-xs-offset-1">
                         {
-                            _articalCats.map(function(articalCat,index){
-                                return(
-                                    <NewsCategory catName={articalCat.type} articals={articalCat.news} onNewsThumbClick={_this.onPopUp} key={index} />
-                                )
-                            })
+                            _news_category_template
                         }
                     </div>
                 </div>
-                {this.getPopup()}
             </div>
         );
     }
 }
 
-export class NewsCategory extends React.Component{
-    constructor(props){
-        super(props);
 
-        this.state={
-            hiddenThumbsAreVisible : false
-        }
 
-        this.onNewsThumbClick = this.onNewsThumbClick.bind(this);
-        this.onToggleView = this.onToggleView.bind(this);
-    }
 
-    onNewsThumbClick(data,type){
-        this.props.onNewsThumbClick(data,type);
-    }
 
-    onToggleView(e){
-        e.preventDefault();
-        let thumbsAreVisible = this.state.hiddenThumbsAreVisible;
+const NewsCategory = ({newsCategory,onCategorySelect})=>{
 
-        this.setState({hiddenThumbsAreVisible : !thumbsAreVisible});
-    }
+    let _opt_class = newsCategory.category.toLowerCase();
 
-    render() {
-        let articalList = this.props.articals,
-            thumbsAreVisible = this.state.hiddenThumbsAreVisible;
-
+    let _channel_template = newsCategory.channels.map(function(channel,key){
         return (
-            <div className="row row-clr pg-news-page-content-item pg-box-shadow item2">
-                <div className="col-xs-2 pg-news-page-content-item-left-thumb thumb-2"></div>
-                <div className="col-xs-10 pg-news-page-content-item-right-thumbs">
-                  <div className="pg-news-page-content-item-right-inner-box">
+            <NewsChannels newsChannel ={channel}
+                          key={key}/>
+        )
+    });
+
+    let _selected = (newsCategory.is_favorite)?"selected":"";
+    return (
+        <div className={"row row-clr pg-news-page-content-item pg-box-shadow "+ _selected}
+             onClick ={event=>onCategorySelect(newsCategory.is_favorite,newsCategory._id)}>
+
+            <div className={"col-xs-2 pg-news-page-content-item-left-thumb "+_opt_class }>
+                {newsCategory.category}
+            </div>
+            <div className="col-xs-10 pg-news-page-content-item-right-thumbs">
+                <div className="pg-news-page-content-item-right-inner-box">
                     <div className="pg-news-item-main-row">
 
-                        <NewsArticalThumb articals={articalList} type={this.props.catName} onNewsThumbClick={this.onNewsThumbClick} isHiddenBlockVisible={thumbsAreVisible} />
-
-                        <div className="row row-clr">
-                            <a href="#" className="pg-see-all-click" id="pg-see-all-click-2" onClick={this.onToggleView}>{(thumbsAreVisible)? "See Less" : "See All"}</a>
-                        </div>
+                        {_channel_template}
                     </div>
-                  </div>
                 </div>
             </div>
-        );
-    }
+        </div>
+    )
+
 }
+
+
+const NewsChannels = ({newsChannel})=>{
+
+    let _channel_img = "/images/news/"+newsChannel.channel_image;
+    return (
+        <div className="col-xs-2 pg-col-20 pg-news-item" >
+            <div className="row row-clr pg-news-inner-full various">
+
+                <img src={_channel_img} alt="" className="img-responsive pg-pg-news-inner-img" />
+                <div className="col-xs-12 pg-news-inner-box-content">
+                    <h6 className="pg-news-inner-box-content-txt">{newsChannel.name}</h6>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+

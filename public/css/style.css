@@ -1617,8 +1617,22 @@ textarea{
 .pg-news-page-content-item-left-thumb.thumb-1{
    background-image: url(../images/news-page-item-thumb-1.png);
 }
-.pg-news-page-content-item-left-thumb.thumb-2{
-   background-image: url(../images/news-page-item-thumb-2.png);
+
+
+.pg-news-page-content-item-left-thumb.business{
+	background-image: url(../images/business.png);
+}
+.pg-news-page-content-item-left-thumb.sports{
+    background-image: url(../images/sports.png);
+}
+.pg-news-page-content-item-left-thumb.technology{
+    background-image: url(../images/technology.png);
+}
+.pg-news-page-content-item-left-thumb.health{
+    background-image: url(../images/health.png);
+}
+.pg-news-page-content-item-left-thumb.entertainment{
+    background-image: url(../images/entertainment.png);
 }
 .pg-news-page-content-item-right-thumbs{
     background: #f2f6f9;

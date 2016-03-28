@@ -105,12 +105,13 @@ NewsSchema.statics.addNewsCategory = function(category, callBack){
 NewsSchema.statics.findNews = function(criteria,callBack){
     var _this = this;
 
-    _this.find(criteria.search, criteria.return_fields, function(err,resultSet){
+    _this.find(criteria.search).lean().exec(function(err,resultSet){
 
         if(!err){
+
             callBack({
                 status:200,
-                news:resultSet
+                news_list:resultSet
 
             });
         }else{
