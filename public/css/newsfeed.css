@@ -1,6 +1,4 @@
 
-
-
 /********************* right column - news feed *********************/
 .pg-timeline-white-box{
     background-color: #fff;
@@ -547,4 +545,177 @@
     max-height: 0;
     overflow: hidden;
     border-width: 0;
+}
+
+
+/** ========================================= Left column - news feed in news  ====================================================== */
+/**  newsfeed right section */
+
+#pg-newsfeed-page {
+    margin: 0 auto 140px;
+    padding: 70px 0 0;
+    width: calc(100% - 220px);
+}
+
+
+
+
+.pg-newsfeed-right-title-section-txt {
+    font: 16px 'montserratlight', sans-serif;
+    color: #2d5164;
+    margin: 0px;
+    text-transform: uppercase;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+.pg-newsfeed-right-title-section-date{
+    font: 16px 'montserratlight', sans-serif;
+    color: #61b3de;
+    margin: 0px;
+    text-transform: uppercase;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    text-align: right;
+}
+.pg-newsfeed-common-content-post-image-box{
+    width: 13%;
+    float: left;
+    margin-right: 1.2%;
+    position: relative;
+}
+
+.pg-newsfeed-common-content-post-image-box:hover .pg-post-img-hover {
+    display: block;
+}
+.pg-post-img-hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    display: none;
+}
+.pg-post-img-hover-txt{
+    font: 22px 'montserratlight', sans-serif;
+    color: #fff;
+    margin: 0;
+    text-align: center;
+    padding-top: 20px;
+}
+/**  newsfeed left section */
+.pg-newsfeed-left-title-section-txt{
+    font: 16px 'montserratlight', sans-serif;
+    color: #2d5164;
+    margin: 0px;
+    text-transform: uppercase;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+.pg-newsfeed-left-post-item{
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.pg-newsfeed-left-post-item-main-img-wrapper{
+    position: relative;
+}
+.pg-newsfeed-left-post-item-main-img{
+    width: 100%;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.pg-newsfeed-left-post-item-logo-wrapper{
+    position: absolute;
+    top: 15px;
+    left: 15px;
+}
+.pg-newsfeed-left-post-item-main-content{
+    padding: 15px;
+    background-color: #fff;
+    border-bottom: 1px solid #dee6eb;
+}
+.pg-newsfeed-left-post-item-main-content-title{
+    font: 14px 'montserratsemi_bold', sans-serif;
+    color: #2d5164;
+    margin: 0px;
+    padding-bottom: 10px;
+}
+.pg-newsfeed-left-post-item-main-content-description{
+    font: 11px 'montserratregular', sans-serif;
+    color: #2d5164;
+    margin: 0px;
+    padding-bottom: 10px;
+    line-height: 16px;
+}
+.pg-newsfeed-left-post-item-main-content-time{
+    font: 10px 'montserratregular', sans-serif;
+    color: #a8bfcd;
+    margin: 0px;
+}
+.pg-newsfeed-left-post-item-status-section{
+    padding: 15px;
+    background-color: #fff;
+    border-bottom: 1px solid #dee6eb;
+}
+.pg-newsfeed-left-post-item-status-section-left-links,
+.pg-newsfeed-left-post-item-status-section-left-links:hover,
+.pg-newsfeed-left-post-item-status-section-left-links:focus,
+.pg-newsfeed-left-post-item-status-section-left-links:active {
+    text-decoration: none;
+    font: 10px 'montserratregular', sans-serif;
+    color: #a8bfcd;
+    margin-right: 8px;
+    float: left;
+    padding-top: 5px;
+}
+.pg-newsfeed-left-post-item-status-section-right-links,
+.pg-newsfeed-left-post-item-status-section-right-links:hover,
+.pg-newsfeed-left-post-item-status-section-right-links:focus,
+.pg-newsfeed-left-post-item-status-section-right-links:active{
+    text-decoration: none;
+    font: 10px 'montserratregular', sans-serif;
+    color: #a8bfcd;
+    float: right;
+    padding-top: 5px;
+}
+.pg-newsfeed-left-post-item-comment-section{
+    background-color: #f2f6f9;
+    padding-top: 9px;
+    padding-bottom: 10px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    -moz-border-radius-bottomright: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.pg-newsfeed-left-post-item-comment-left-user-pic{
+    padding-right:0;
+}
+.pg-newsfeed-left-post-item-comment-left-user-input {
+    width: 100%;
+    font: 10px 'montserratregular', sans-serif;
+    color: #a8bfcd;
+    border: none;
+    background-color: transparent;
+    outline: none;
+}
+.pg-newsfeed-left-post-item-comment-right-section{
+    padding-left: 0px;
+}
+.pg-newsfeed-left-post-item-comment-right-section-link,
+.pg-newsfeed-left-post-item-comment-right-section-link:hover,
+.pg-newsfeed-left-post-item-comment-right-section-link:focus,
+.pg-newsfeed-left-post-item-comment-right-section-link:active{
+    text-decoration: none;
+    color: #a8bfcd;
+    margin-left: 10px;
+    float: right;
+    margin-top: 1px;
 }

@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * TODO: This class is for temporary usage only. This is just for  take  hard coded news  articles. Entire class need to be re do based on the requirment
+ *
+ */
 var NewsController ={
 
     /**
@@ -337,6 +341,72 @@ var NewsController ={
 
 
 
+
+    },
+
+    /**
+     * Get users saved articles from the database
+     * @param req
+     * @param res
+     */
+    getMyNews:function(req,res){
+        var News = require('mongoose').model('News'),
+            _async = require('async'),
+            FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+
+
+        var user_id=CurrentSession.id;
+
+        _async.waterfall([
+            function getFavouriteNewsCategories(callBack){
+
+                FavouriteNewsCategory.getNewsCategoriesByUserId(user_id,function(resultSet){
+
+                    callBack(null,resultSet.news_categories);
+                });
+
+            },
+            function getAllNewsCategories(newsCategories,callBack){
+                var criteria = {
+                    search:{},
+                    return_fields:{category:1, categoryImage:1,articles:1}
+                }
+                News.findNews(criteria,function(resultSet){
+                    var _tmpOutPut = [];
+                    for(var a=0;a<resultSet.news_list.length;a++){
+                        var _tmpData = resultSet.news_list[a];
+                        _tmpData.is_favorite = 0;
+                        for(var i = 0; i< newsCategories.length;i++ ) {
+                            if(newsCategories[i].category.toString() == _tmpData._id.toString()){
+                                _tmpData.is_favorite = 1;
+
+                                //NESTED LOOPS USED FOR THIS SCENARIO ONLY
+                                //CHANGE THIS FOR ACTUAL IMPLEMENTATION
+                                for(var x = 0;x <_tmpData.channels.length;x++){
+
+                                    var articles = _tmpData.channels[x].articles;
+
+                                    for(var y = 0 ; y<articles.length;y++){
+                                        var article = articles[y];
+                                        article.channel = _tmpData.channels[x].name;
+                                        _tmpOutPut.push(article)
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    callBack(null,_tmpOutPut);
+                });
+            }
+
+        ],function(err,resultSet){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                news:resultSet
+            }
+            res.status(200).json(outPut);
+        })
 
     }
 

@@ -56,7 +56,7 @@ GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password',
-	'/news'
+	'/news-settings','/news'
 
 ];
 
@@ -170,7 +170,7 @@ router.get('/news-info/delete-channel', UserController.deleteNewsChannel);
 
 
 router.post('/news-info/save-article', UserController.saveArticle);
-router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
+
 router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle);
 
 
@@ -235,4 +235,8 @@ router.post('/connection/skip-request', ConnectionController.getUniqueFriendRequ
 router.get('/news/get-channels/:category', NewsController.getNewsChannels);
 router.get('/news/get-categories', NewsController.getNewsCategories);
 router.post('/user/news/add-category', NewsController.addToFavourite);
+
+router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
+
+router.get('/news/get/my/news-articles', NewsController.getMyNews);
 module.exports = router;

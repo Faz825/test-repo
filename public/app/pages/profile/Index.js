@@ -41,7 +41,7 @@ export default class Index extends React.Component{
             url: '/pull/posts',
             method: "GET",
             dataType: "JSON",
-            data:{__pg:page,uname:_this.state.uname},
+            data:{__pg:page,uname:_this.state.uname,__own:"me"},
             success: function (data, text) {
                 if(data.status.code == 200){
 
