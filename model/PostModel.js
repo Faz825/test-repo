@@ -270,8 +270,11 @@ PostSchema.statics.postList=function(posts,callBack){
                     _post['created_by'] = csResultSet.result[0];
 
 
-                    Like.getLikedUsers(_post.post_id,0,function(likedUsers){
-                        _post['comment_count'] = likedUsers.length;
+                    Like.getLikedUsers(_post.post_id,0,function(likedUsers,likedUserIds){
+                        _post['like_count'] = likedUsers.length;
+                        _post['liked_user'] = likedUsers;
+                        _post['is_i_liked'] = (likedUserIds.indexOf(CurrentSession.id) == -1)?0:1;
+
                         data_by_date[_created_date].push(_post) ;
 
                         callBack();

@@ -38,8 +38,10 @@ var PostController ={
     },
     /**
      * Get Posts
+     * In order to  Load my post then set _own param to me otherwise set it all
      * @param req
      * @param res
+
      */
     getPost:function(req,res){
 
@@ -54,10 +56,14 @@ var PostController ={
             var _page   = req.query.__pg;
 
             var Post = require('mongoose').model('Post'),
+
+
                 payLoad ={
                     _page:_page,
-                    q:"created_by:"+esResultSet.result[0].user_id,
+                    q:(req.query._own =="me")?"created_by:"+esResultSet.result[0].user_id:"*",
                 };
+
+
 
             Post.ch_getPost(_id,payLoad,function(resultSet){
                 var outPut ={};

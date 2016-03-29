@@ -93,8 +93,8 @@ export default class Index extends React.Component{
             friend_requests,
             friend_suggestions,
             my_connections
-
             }=this.state;
+
 
         return (
 
@@ -110,23 +110,34 @@ export default class Index extends React.Component{
                             </div>
                         </div>
                     </div>
+                    {
+                        (friend_requests.length > 0 )?
+                            <FriendRequests friend_requests={friend_requests}
+                                            onAcceptFriendRequestSuccess ={this.onAcceptFriendRequestSuccess.bind(this)}
+                                            onFriendRequestSkip = {this.onFriendRequestSkip.bind(this)}
+                                            loggedUser = {this.loggedUser}/>
+                            :null
+                    }
 
-                    <FriendRequests friend_requests={friend_requests}
-                                    onAcceptFriendRequestSuccess ={this.onAcceptFriendRequestSuccess.bind(this)}
-                                    onFriendRequestSkip = {this.onFriendRequestSkip.bind(this)}
-                                    loggedUser = {this.loggedUser}/>
+                    {
+                        (friend_suggestions.length > 0 )?
+                            <FriendSuggestions friend_suggestions = {friend_suggestions}
+                                               loggedUser = {this.loggedUser}
+                                               onAddFriendSuccess={this.onAddFriendSuccess.bind(this)}
+                                />
+                            :null
+                    }
 
-                    <FriendSuggestions friend_suggestions = {friend_suggestions}
-                                       loggedUser = {this.loggedUser}
-                                       onAddFriendSuccess={this.onAddFriendSuccess.bind(this)}
-                                       onFriendSuggestionSkip = {this.onFriendSuggestionSkip.bind(this)}/>
+                    {
+                        (my_connections.length > 0)?
+                            <MyConnections my_connections = {my_connections}/>
+                            :null
+                    }
 
-                    <MyConnections my_connections = {my_connections}/>
                 </div>
             </div>
-
-
         )
+
     }
 }
 
@@ -156,7 +167,9 @@ export class FriendRequests extends React.Component{
         }.bind(this));
 
     }
-    skipRequest(user){
+    skipRequest(_current_block_ids){
+
+        console.log("FriendRequests->",_current_block_ids)
         this.props.onFriendRequestSkip()
     }
 
@@ -167,12 +180,15 @@ export class FriendRequests extends React.Component{
         }
 
 
-        let _this = this;
+        let _this = this,
+            _current_block_ids ="";
         let user_elements = this.props.friend_requests.map(function(friend,key){
+            _current_block_ids += friend.user_id+"!$" ;
+
             return (
                 <UserBlockTileView user = {friend}
                                    onAccept = {user=>_this.acceptFriendRequest(user)}
-                                   onSkip = {user=>_this.skipRequest(user)}
+                                   onSkip = {user=>_this.skipRequest(_current_block_ids)}
                                    key = {key}/>
             );
         });
@@ -199,8 +215,11 @@ export class FriendRequests extends React.Component{
 export class FriendSuggestions  extends React.Component{
     constructor(props){
         super(props);
-        this.state ={};
+        this.state ={
+            friend_suggestions :this.props.friend_suggestions
+        };
         this.loggedUser = this.props.loggedUser;
+
     }
 
 
@@ -223,22 +242,41 @@ export class FriendSuggestions  extends React.Component{
 
     }
 
-    skipRequest(user){
-        this.props.onFriendSuggestionSkip();
+    skipRequest(user,_current_block_ids){
+
+        $.ajax({
+            url: '/connection/skip-request',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.loggedUser.token },
+            data:{ hit_b_id:user.user_id,cur_b_ids: JSON.stringify(_current_block_ids)},
+
+        }).done(function(data){
+            if(data.status.code == 200){
+                let _friend_suggestions = this.state.friend_suggestions;
+                for(let a = 0;a<_friend_suggestions.length;a++){
+
+                    if(_friend_suggestions[a].user_id == user.user_id){
+                        _friend_suggestions.splice(a,1,data.connection);
+                        break;
+
+                    }
+                }
+                this.setState({friend_suggestions:this.state.friend_suggestions});
+            }
+        }.bind(this));
     }
 
     render(){
-
-        if(typeof this.props.friend_suggestions == 'undefined'){
-            return (<div />)
-        }
-        let _this = this;
-        let user_elements = this.props.friend_suggestions.map(function(friend,key){
-
+        const {friend_suggestions} =this.state;
+        let _this = this,
+            _current_block_ids =[];
+        let user_elements = friend_suggestions.map(function(friend,key){
+            _current_block_ids.push(friend.user_id);
             return (
                 <UserBlockTileView user = {friend}
                                    onAdd = {user=>_this.onAddFriend(user)}
-                                   onSkip = {user=>_this.skipRequest(user)}
+                                   onSkip = {user=>_this.skipRequest(user,_current_block_ids)}
                                    key = {key}/>
 
 
@@ -286,6 +324,7 @@ export class MyConnections  extends React.Component{
         }
         let _this = this;
         let user_elements = this.props.my_connections.map(function(friend,key){
+
             return (
                 <UserBlockThumbView user = {friend}
                                     onClick = {user=>_this.onUserSelect(user)}

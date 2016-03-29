@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * TODO: This class is for temporary usage only. This is just for  take  hard coded news  articles. Entire class need to be re do based on the requirment
+ *
+ */
 var NewsController ={
 
     /**
@@ -38,16 +42,60 @@ var NewsController ={
      */
     getNewsCategories:function(req,res){
 
-        var News = require('mongoose').model('News');
+        var News = require('mongoose').model('News'),
+            _async = require('async'),
+            FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
-        var criteria = {
-            search:{},
-            return_fields:{category:1, categoryImage:1} // for now only getting _id, category, categoryImage
-        };
 
-        News.findNews(criteria,function(resultSet){
-            res.status(200).json(resultSet);
-        });
+        var user_id=CurrentSession.id;
+
+        _async.waterfall([
+            function getFavouriteNewsCategories(callBack){
+
+                FavouriteNewsCategory.getNewsCategoriesByUserId(user_id,function(resultSet){
+
+                    callBack(null,resultSet.news_categories);
+                });
+
+            },
+            function getAllNewsCategories(newsCategories,callBack){
+                var criteria = {
+                    search:{},
+                    return_fields:{category:1, categoryImage:1,articles:1}
+                }
+                News.findNews(criteria,function(resultSet){
+                    var _tmpOutPut = [];
+                    for(var a=0;a<resultSet.news_list.length;a++){
+                        var _tmpData = resultSet.news_list[a];
+
+                        _tmpData.is_favorite = 0;
+                        for(var i = 0; i< newsCategories.length;i++ ) {
+
+
+
+                            if(newsCategories[i].category.toString() == _tmpData._id.toString()){
+                                _tmpData.is_favorite = 1;
+                                break;
+                            }
+
+                        }
+
+                        _tmpOutPut.push(_tmpData)
+
+                    }
+                    callBack(null,_tmpOutPut);
+                });
+
+            }
+
+        ],function(err,resultSet){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                news:resultSet
+            }
+            res.status(200).json(outPut);
+        })
+
 
     },
 
@@ -62,7 +110,7 @@ var NewsController ={
 
         var userId = CurrentSession.id;
 
-        
+
     },
 
     /**
@@ -126,6 +174,7 @@ var NewsController ={
             return_fields:{channels:1} // for now only getting channels
         };
 
+
         News.findNews(criteria,function(resultSet){
             res.status(200).json(resultSet);
         });
@@ -170,19 +219,6 @@ var NewsController ={
         var articleImage = req.body.articleImage;
         var articleDate = req.body.articleDate;
 
-        //var categoryId = "56cbeae0e975b0070ad200f8";
-        //var channelId = "56cbf541a5a22e790dcac546";
-        //var articleHeading = "First Heading Business";
-        //var articleContent = "First Content Business";
-        //var articleImage = "images/pg-signup-6_03.png";
-
-        /*var categoryId = "56cbeae0e975b0070ad200f8";
-        var channelId = "56cbf541a5a22e790dcac546";
-        var articleHeading = "Third Heading Sports";
-        var articleContent = "Third Content Sports";
-        var articleImage = "images/pg-signup-6_03.png";*/
-
-        //TODO: Article Image Upload part
 
         var article = {
             heading:articleHeading,
@@ -257,6 +293,124 @@ var NewsController ={
                 res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
             }
         });
+
+    },
+
+    addToFavourite:function(req,res){
+
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
+            news_categories = [],
+            now = new Date();
+
+
+
+
+        //REMOVE IF ALREADY DID FAVOURITE
+        if(req.body.fav == 1){
+
+            var param ={
+                user_id: Util.toObjectId(CurrentSession.id),
+                category: Util.toObjectId(req.body.nw_cat_id),
+            }
+            FavouriteNewsCategory.unFavourite(param,function(resultSet){
+                var outPut = {};
+                if (resultSet.status !== 200) {
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                    res.status(400).send(outPut);
+                    return 0;
+                }
+
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                res.status(200).json(outPut);
+            });
+        }else{
+            news_categories.push({
+                user_id: Util.toObjectId(CurrentSession.id),
+                category: Util.toObjectId(req.body.nw_cat_id),
+                created_at: now
+            });
+            FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
+                var outPut = {};
+                if (resultSet.status !== 200) {
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                    res.status(400).send(outPut);
+                    return 0;
+                }
+
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                res.status(200).json(outPut);
+                return 0;
+            });
+        }
+
+
+
+
+    },
+
+    /**
+     * Get users saved articles from the database
+     * @param req
+     * @param res
+     */
+    getMyNews:function(req,res){
+        var News = require('mongoose').model('News'),
+            _async = require('async'),
+            FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+
+
+        var user_id=CurrentSession.id;
+
+        _async.waterfall([
+            function getFavouriteNewsCategories(callBack){
+
+                FavouriteNewsCategory.getNewsCategoriesByUserId(user_id,function(resultSet){
+
+                    callBack(null,resultSet.news_categories);
+                });
+
+            },
+            function getAllNewsCategories(newsCategories,callBack){
+                var criteria = {
+                    search:{},
+                    return_fields:{category:1, categoryImage:1,articles:1}
+                }
+                News.findNews(criteria,function(resultSet){
+                    var _tmpOutPut = [];
+                    for(var a=0;a<resultSet.news_list.length;a++){
+                        var _tmpData = resultSet.news_list[a];
+                        _tmpData.is_favorite = 0;
+                        for(var i = 0; i< newsCategories.length;i++ ) {
+                            if(newsCategories[i].category.toString() == _tmpData._id.toString()){
+                                _tmpData.is_favorite = 1;
+
+                                //NESTED LOOPS USED FOR THIS SCENARIO ONLY
+                                //CHANGE THIS FOR ACTUAL IMPLEMENTATION
+                                for(var x = 0;x <_tmpData.channels.length;x++){
+
+                                    var articles = _tmpData.channels[x].articles;
+
+                                    for(var y = 0 ; y<articles.length;y++){
+                                        var article = articles[y];
+                                        article.channel = _tmpData.channels[x].name;
+                                        _tmpOutPut.push(article)
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    callBack(null,_tmpOutPut);
+                });
+            }
+
+        ],function(err,resultSet){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                news:resultSet
+            }
+            res.status(200).json(outPut);
+        })
 
     }
 

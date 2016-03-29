@@ -84,13 +84,16 @@ var ConnectionController ={
      */
     getFriendSuggestion:function(req,res){
 
-        var Connection =require('mongoose').model('Connection');
+        var Connection =require('mongoose').model('Connection'),
+            filter_ids=[];
+        filter_ids.push(CurrentSession.id);
         var criteria ={
             pg:0,
             country:CurrentSession.country,
             user_id:CurrentSession.id,
             status: [ConnectionStatus.REQUEST_ACCEPTED, ConnectionStatus.REQUEST_SENT],
-            random:3
+            random:3,
+            filter_ids:filter_ids
         };
 
 
@@ -114,10 +117,7 @@ var ConnectionController ={
 
                 for(var a =0 ;a<3;a++){
                     var r = Util.getRandomInt(0,resultSet.total_result-1);
-
-
                         _connection.push(resultSet.friends[r]);
-
                 }
                 outPut['connections'] = _connection;
                 res.status(200).send(outPut);
@@ -155,6 +155,51 @@ var ConnectionController ={
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             res.status(200).json(outPut);
             return 0;
+        });
+    },
+
+    /**
+     * Get unique suggestion
+     * @param req
+     * @param res
+     */
+    getUniqueFriendRequest:function(req,res){
+        var Connection =require('mongoose').model('Connection'),
+         req_connected_users = JSON.parse(req.body.cur_b_ids);
+         req_connected_users.push(CurrentSession.id);
+        var criteria ={
+            pg:0,
+            country:CurrentSession.country,
+            user_id:CurrentSession.id,
+            status: [ConnectionStatus.REQUEST_ACCEPTED, ConnectionStatus.REQUEST_SENT],
+            random:3,
+            filter_ids:req_connected_users
+        };
+
+
+        Connection.getFriendSuggestion(criteria,function(resultSet){
+
+            var outPut	={};
+
+            if(resultSet.status !== 400){
+
+                outPut['status'] = ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS);
+                outPut['header'] ={
+                    total_result:resultSet.total_result,
+                    result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
+                    total_pages:Math.ceil(resultSet.total_result/Config.CONNECTION_RESULT_PER_PAGE)
+                };
+
+                outPut['connection'] = resultSet.friends[0];
+                res.status(200).send(outPut);
+                return 0
+            }else{
+                outPut['status'] = ApiHelper.getMessage(400,Alert.CONNECTION_USERS_EMPTY,Alert.ERROR);
+
+                res.status(400).send(outPut);
+                return 0;
+            }
+
         });
     }
 

@@ -7,7 +7,8 @@ import InfiniteScroll from  'react-infinite-scroll';
 import Session  from '../../middleware/Session';
 import Lib    from '../../middleware/Lib';
 import CommentElement from './CommentElement';
-import ProgressBar from '../elements/ProgressBar'
+import ProgressBar from '../elements/ProgressBar';
+
 const ListPostsElement  = ({posts})=>{
 
         if(posts.length <= 0){
@@ -41,7 +42,10 @@ class SinglePost extends React.Component{
             postItem :this.props.postItem,
             profile:this.props.postItem.created_by,
             showCommentPane:false,
-            comments:[]
+            comments:[],
+            is_i_liked:this.props.postItem.is_i_liked,
+            liked_users_elm : [],
+
         };
 
     }
@@ -58,10 +62,10 @@ class SinglePost extends React.Component{
             headers: { 'prg-auth-header':user.token },
         }).done(function (data, text) {
             if(data.status.code == 200){
-                console.log(data);
+               this.setState({is_i_liked:true});
             }
         }.bind(this));
-        console.log("LIKED -->",this.state.postItem.post_id);
+
     }
     onShareClick(event){
         console.log("Share -->" ,this.state.postItem.post_id);
@@ -103,6 +107,7 @@ class SinglePost extends React.Component{
     onCommentAddSuccess(){
         this.loadComment();
     }
+
     render(){
         const _post = this.props.postItem;
 
@@ -167,7 +172,10 @@ class SinglePost extends React.Component{
                         <PostActionBar comment_count={_post.comment_count}
                                        onLikeClick = {event=>this.onLikeClick()}
                                        onShareClick = {event=>this.onShareClick()}
-                                       onCommentClick = {event=>this.onCommentClick()}/>
+                                       onCommentClick = {event=>this.onCommentClick()}
+                                       OnLikeHover = {event=>this.loadLikedUsers()}
+                                       is_i_liked = {this.state.is_i_liked}
+                                       liked_users = {_post.liked_users}/>
                         <LikeSummery
                             visibility={false}
                             likes =""/>
@@ -198,13 +206,19 @@ class SinglePost extends React.Component{
  * @param onComment
  * @constructor
  */
-const PostActionBar =({comment_count,onLikeClick,onShareClick,onCommentClick})=>{
+const PostActionBar =({comment_count,onLikeClick,onShareClick,onCommentClick,liked_users,is_i_liked})=>{
+    let __opt ={};
+    if(is_i_liked){
+        __opt['style'] = {color:"#61b3de", "pointer-events": "none",cursor: "default"}
+    }
+
+
     return (
         <div className="row pg-newsfeed-common-content-post-status">
             <div className="pg-newsfeed-status-left-section">
                 <a href="javascript:void(0)"
                    onClick ={(event)=>{onLikeClick(event)}}
-                   className="pg-newsfeed-status-left-section-icon"><i className="fa fa-heart"></i> Like</a>
+                   className="pg-newsfeed-status-left-section-icon" {...__opt}><i className="fa fa-heart"></i> Like</a>
                 <a href="javascript:void(0)"
                    onClick ={(event)=>{onCommentClick(event)}}
                    className="pg-newsfeed-status-left-section-icon"><i className="fa fa-comment"></i> Comment</a>
@@ -215,6 +229,7 @@ const PostActionBar =({comment_count,onLikeClick,onShareClick,onCommentClick})=>
             <div className="pg-newsfeed-status-right-section">
                 <a href="#" className="pg-newsfeed-status-right-section-view-comment">{comment_count}</a>
             </div>
+
         </div>
     );
 

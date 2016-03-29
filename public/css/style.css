@@ -1,4 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800);
+html, body{
+	height: 100%;
+}
 body {
 	-webkit-font-smoothing: antialiased;
 	background-image: url(../images/site-background.png);
@@ -1500,9 +1503,9 @@ textarea{
 }
 
 /* ====================================================== news page ==================================================*/
-.newsCatHolder{
+.pg-middle-sign-wrapper .container-fluid .newsCatHolder{
 	margin-top: 100px;
-	padding: 0;
+	padding: 0 0 130px;
     width: calc(100% - 220px);
 }
 .pg-news-page-content{
@@ -1595,6 +1598,7 @@ textarea{
 .rm-side-padding{
     padding-right: 0;
     padding-left: 0;
+	float: right;
 }
 .pg-news-page-content-item.item1{
     background: #61b3de;
@@ -1607,18 +1611,76 @@ textarea{
 	display: -webkit-flex;
 	display: flex;
 	margin-bottom: 25px;
+	cursor: pointer;
+}
+.pg-news-page-content-item.pg-box-shadow .pg-news-page-content-item-right-thumbs{
+	border: 2px solid transparent;
+	border-left: none;
+}
+.pg-news-page-content-item.pg-box-shadow.selected.business .pg-news-page-content-item-right-thumbs{
+    border-color: #96a3ef;
+}
+.pg-news-page-content-item.pg-box-shadow.selected.technology .pg-news-page-content-item-right-thumbs{
+    border-color: #c47777;
+}
+.pg-news-page-content-item.pg-box-shadow.selected.health .pg-news-page-content-item-right-thumbs{
+    border-color: #92a970;
+}
+.pg-news-page-content-item.pg-box-shadow.selected{
+	box-shadow: 0px 1px 10px -1px #000;
+}
+.pg-news-page-content-item.pg-box-shadow.selected .pg-news-page-content-item-right-thumbs{
+	border-left: none;
 }
 .pg-news-page-content-item-left-thumb{
     border: none;
     width: 20%;
     background-repeat: no-repeat;
     background-size: 100% 100%;
+	position: relative;
+	text-align: center;
 }
 .pg-news-page-content-item-left-thumb.thumb-1{
    background-image: url(../images/news-page-item-thumb-1.png);
 }
-.pg-news-page-content-item-left-thumb.thumb-2{
-   background-image: url(../images/news-page-item-thumb-2.png);
+.pg-news-page-content-item-left-thumb.business{
+	background-image: url(../images/business.png);
+}
+.pg-news-page-content-item-left-thumb.sports{
+    background-image: url(../images/sports.png);
+}
+.pg-news-page-content-item-left-thumb.technology{
+    background-image: url(../images/technology.png);
+}
+.pg-news-page-content-item-left-thumb.health{
+    background-image: url(../images/health.png);
+}
+.pg-news-page-content-item-left-thumb.entertainment{
+    background-image: url(../images/entertainment.png);
+}
+.pg-news-page-content-item-left-thumb .cat-icon{
+	display: block;
+	margin: 35% auto 0;
+}
+.pg-news-page-content-item-left-thumb.business .cat-icon{
+	background: url("../images/news/business-icon.png") no-repeat;
+	width: 53px;
+	height: 52px;
+}
+.pg-news-page-content-item-left-thumb.technology .cat-icon{
+	background: url("../images/news/technology-icon.png") no-repeat;
+	width: 57px;
+	height: 55px;
+}
+.pg-news-page-content-item-left-thumb.health .cat-icon{
+	background: url("../images/news/health-icon.png") no-repeat;
+	width: 41px;
+	height: 41px;
+}
+.pg-news-page-content-item-left-thumb .cat-title{
+	font: 1em 'montserratsemi_bold', sans-serif;
+	margin: 10px 0 0;
+	color: #fff;
 }
 .pg-news-page-content-item-right-thumbs{
     background: #f2f6f9;
@@ -1634,7 +1696,7 @@ textarea{
     padding: 0 9px;
 }
 .pg-news-item{
-    margin-top: 15px
+    margin: 15px 0 ;
 }
 .pg-news-item-top-row{
     display:inline-block;
@@ -1806,9 +1868,11 @@ textarea{
 }
 .pg-main-pop-img{
     margin-bottom: 28px;
+	width: 100%;
+    height: auto;
 }
 .pg-new-news-popup-inner-container {
-    padding: 0px 50px;
+    padding: 0px 20px;
 }
 .pg-body-heading-title{
     font: 20px 'montserratregular', sans-serif;

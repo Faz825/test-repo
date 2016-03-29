@@ -16,8 +16,8 @@ import ChangedPassword from './pages/signup/ChangedPassword'
 
 import Connection  from './pages/connection/Index';
 
-import NewsIndex from './pages/news/Index';
-
+import NewsSettings from './pages/news/NewsSettings';
+import NewsIndex from './pages/news/index';
 
 let rootRoute =(
 	<Route name="main" path="/" component={Main} state="1">
@@ -51,9 +51,8 @@ let rootRoute =(
 		/**
 		 * News
 		 */
-
-
-		 <Route name="news" path="/news" component={NewsIndex}/>
+        <Route name="news-feed" path="/news-feed" component={NewsIndex}/>
+        <Route name="news" path="/news" component={NewsSettings}/>
 	</Route>
 );
 

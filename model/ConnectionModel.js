@@ -457,7 +457,7 @@ ConnectionSchema.statics.getFriendSuggestion = function(criteria,callBack){
                 var _c_users ={},
                     _my_friend = _my_friends[_allUsers[i].user_id.toString()];
 
-                if(typeof _my_friend == 'undefined' && _allUsers[i].user_id != criteria.user_id){
+                if(typeof _my_friend == 'undefined' && criteria.filter_ids.indexOf(_allUsers[i].user_id) == -1){
                     _allUsers[i].connection_status = 0
                     _formattedFriendList.push(_allUsers[i]);
 

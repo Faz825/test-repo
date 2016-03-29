@@ -58,7 +58,7 @@ GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password',
-	'/news'
+	'/news-feed','/news'
 
 ];
 
@@ -145,11 +145,10 @@ router.post('/collage-and-job/save',UserController.addCollageAndJob);
 
 //News Category / Channel & News Add / Get All & Delete
 router.post('/news/add-category', NewsController.addNewsCategory);
-router.get('/news/get-categories', NewsController.getNewsCategories);
 router.get('/news/delete-category', NewsController.deleteNewsCategory);
 
 router.post('/news/add-channel', NewsController.addNewsChannel);
-router.get('/news/get-channels/:category', NewsController.getNewsChannels);
+
 router.get('/news/delete-channel', NewsController.deleteNewsChannel);
 
 router.post('/news/add-news', NewsController.addNews);
@@ -164,7 +163,7 @@ router.get('/get-profile/:uname',UserController.getProfile);
 
 
 
-router.get('/news-info/get-categories', UserController.getNewsCategories);
+
 router.get('/news-info/delete-category', UserController.deleteNewsCategory);
 
 router.get('/news-info/add-channel', UserController.addNewsChannel);
@@ -172,8 +171,8 @@ router.get('/news-info/get-channels/:category', UserController.getNewsChannels);
 router.get('/news-info/delete-channel', UserController.deleteNewsChannel);
 
 
-router.get('/news-info/save-article', UserController.saveArticle);
-router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
+router.post('/news-info/save-article', UserController.saveArticle);
+
 router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle);
 
 
@@ -232,8 +231,18 @@ router.post('/connection/accept', ConnectionController.acceptFriendRequest);
 
 router.get('/connection/suggestion', ConnectionController.getFriendSuggestion);
 router.post('/connection/send-request', ConnectionController.sendFriendRequest);
+router.post('/connection/skip-request', ConnectionController.getUniqueFriendRequest);
+
+//NEWS
+router.get('/news/get-channels/:category', NewsController.getNewsChannels);
+router.get('/news/get-categories', NewsController.getNewsCategories);
+router.post('/user/news/add-category', NewsController.addToFavourite);
+
+router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
+router.get('/news/get/my/news-articles', NewsController.getMyNews);
 
 
 
 router.post('/like/composer', LikeController.doLike);
+
 module.exports = router;

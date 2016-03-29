@@ -83,7 +83,8 @@ LikeSchema.statics.getLikedUsers = function(postId,page,callBack){
     var _this = this,
         _async = require('async'),
         _cache_key = LikeConfig.CACHE_PREFIX+postId,
-        liked_users = [];
+        liked_users = [],
+        liked_user_ids= [];
 
 
     var _page = (page <= 1)?0 :parseInt(page)  - 1;
@@ -91,7 +92,7 @@ LikeSchema.statics.getLikedUsers = function(postId,page,callBack){
     var _end_index      =  (LikeConfig.RESULT_PER_PAGE*(_page+1) -1);
 
     CacheEngine.getList(_cache_key,_start_index,_end_index,function(chResultSet){
-        console.log(chResultSet);
+
         _async.each(chResultSet.result,
             function(likedUser,callBack){
                 var query={
@@ -100,14 +101,33 @@ LikeSchema.statics.getLikedUsers = function(postId,page,callBack){
                 };
                 //Find User from Elastic search
                 ES.search(query,function(csResultSet){
-                    liked_users.push({
-                        user_id:csResultSet.result[0].user_id,
-                        profile_image:csResultSet.result[0].images.profile_image.http_url});
-                    callBack()
+
+                    if(csResultSet.result[0].user_id == CurrentSession.id){
+                        liked_users.push({
+                            user_id:csResultSet.result[0].user_id,
+                            profile_image:"you",
+                            name:"You",
+                            user_name:csResultSet.result[0].user_name
+                        });
+                        liked_user_ids.push(csResultSet.result[0].user_id);
+                    }else{
+                        liked_users.push({
+                            user_id:csResultSet.result[0].user_id,
+                            profile_image:csResultSet.result[0].images.profile_image.http_url,
+                            name:csResultSet.result[0].first_name + " " +csResultSet.result[0].last_name,
+                            user_name:csResultSet.result[0].user_name
+                        });
+
+                        liked_user_ids.push(csResultSet.result[0].user_id);
+
+                    }
+
+
+                    callBack();
                 });
             },
             function(err){
-                callBack(liked_users);
+                callBack(liked_users,liked_user_ids);
             })
     });
 }
