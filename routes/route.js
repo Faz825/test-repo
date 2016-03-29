@@ -21,6 +21,7 @@ require('../model/NotificationRecipientModel');
 require('../model/CommentModel');
 require('../model/LifeEventModel');
 require('../model/LifeEventCategoryModel');
+require('../model/LikeModel');
 /** Load  Controllers
  */
 var DefaultController   = require('../controller/DefaultController'),
@@ -33,7 +34,8 @@ var DefaultController   = require('../controller/DefaultController'),
     CommentController   = require('../controller/CommentController'),
     UploadController    = require('../controller/UploadController'),
     LifeEventController = require('../controller/LifeEventController'),
-    ConnectionController = require('../controller/ConnectionController');
+    ConnectionController = require('../controller/ConnectionController'),
+    LikeController      =  require('../controller/LikeController');
 
 
 
@@ -231,4 +233,7 @@ router.post('/connection/accept', ConnectionController.acceptFriendRequest);
 router.get('/connection/suggestion', ConnectionController.getFriendSuggestion);
 router.post('/connection/send-request', ConnectionController.sendFriendRequest);
 
+
+
+router.post('/like/composer', LikeController.doLike);
 module.exports = router;

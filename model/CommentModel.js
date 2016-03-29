@@ -71,7 +71,6 @@ CommentSchema.statics.addComment = function (comment,callBack) {
                 q:comment.user_id.toString(),
                 index:'idx_usr'
             };
-            console.log(query)
             ES.search(query,function(csResultSet){
                 var _formattedComment ={
                     comment_id:resultSet._id.toString(),
@@ -134,7 +133,6 @@ CommentSchema.statics.getCommentCount = function(postId,callBack){
  */
 CommentSchema.statics.addToCache=function(postId,data){
     var _cache_key = CommentConfig.CACHE_PREFIX+postId;
-    console.log(_cache_key)
     CacheEngine.addBottomToList(_cache_key,data,function(outData){
     });
 

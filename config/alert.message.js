@@ -62,7 +62,9 @@ GLOBAL.Alert={
     USER_NOT_FOUND:"Invalid Username",
     INVALID_PASSWORD:"Invalid Password",
 
-    CATEGORY_ID_EMPTY:"Category id empty"
+    CATEGORY_ID_EMPTY:"Category id empty",
+
+    POST_ID_EMPTY:"Post Id empty"
 
 
 

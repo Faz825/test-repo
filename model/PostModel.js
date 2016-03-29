@@ -52,14 +52,7 @@ var PostSchema = new Schema({
         default:PostConfig.NORMAL_POST,
 
     },
-    comment_count:{
-        type:Number,
-        default:0
-    },
-    like_count:{
-        type:Number,
-        default:0
-    },
+
     location:{
         type:String,
         trim:true,
@@ -134,7 +127,6 @@ PostSchema.statics.addToCache=function(users,data,callBack){
 
     for(var i=0;i<users.length;i++){
         var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+users[i];
-        console.log(_cache_key)
 
         var payLoad={
             index:_cache_key,
@@ -249,7 +241,8 @@ PostSchema.statics.postList=function(posts,callBack){
 
     var _this = this,
         _async = require('async'),
-        Comment = require('mongoose').model('Comment');
+        Comment = require('mongoose').model('Comment'),
+        Like =require('mongoose').model('Like');
 
     var a =0;
     _async.each(posts,
@@ -269,15 +262,22 @@ PostSchema.statics.postList=function(posts,callBack){
                 _post['comment_count'] = commentCount;
 
                 var query={
-                    q:post.created_by.toString(),
+                    q:"user_id:"+post.created_by.toString(),
                     index:'idx_usr'
                 };
                 //Find User from Elastic search
                 ES.search(query,function(csResultSet){
-
                     _post['created_by'] = csResultSet.result[0];
-                    data_by_date[_created_date].push(_post) ;
-                    callBack()
+
+
+                    Like.getLikedUsers(_post.post_id,0,function(likedUsers){
+                        _post['comment_count'] = likedUsers.length;
+                        data_by_date[_created_date].push(_post) ;
+
+                        callBack();
+                    })
+
+
                 });
 
             });

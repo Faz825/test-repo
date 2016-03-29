@@ -48,6 +48,19 @@ class SinglePost extends React.Component{
 
 
     onLikeClick(event){
+        let user = Session.getSession('prg_lg');
+        let _this =  this;
+        $.ajax({
+            url: '/like/composer',
+            method: "POST",
+            dataType: "JSON",
+            data:{__post_id:this.props.postItem.post_id},
+            headers: { 'prg-auth-header':user.token },
+        }).done(function (data, text) {
+            if(data.status.code == 200){
+                console.log(data);
+            }
+        }.bind(this));
         console.log("LIKED -->",this.state.postItem.post_id);
     }
     onShareClick(event){
