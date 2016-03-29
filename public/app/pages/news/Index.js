@@ -149,6 +149,7 @@ export class NewsFeed extends React.Component{
         }
 
 
+
         let _news_item = this.props.news_articles.map(function(newsItem,key){
             return(
                 <NewsItem newsItem ={newsItem}
@@ -165,6 +166,7 @@ export class NewsFeed extends React.Component{
 
 
 export const NewsItem =({newsItem})=>{
+
 
     let news_logo= "/images/news/"+newsItem.channel.toLowerCase()+".png";
     return(
@@ -193,3 +195,4 @@ export const NewsItem =({newsItem})=>{
     );
 
 };
+

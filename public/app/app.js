@@ -51,8 +51,8 @@ let rootRoute =(
 		/**
 		 * News
 		 */
-        <Route name="news" path="/news" component={NewsIndex}/>
-        <Route name="news-settings" path="/news-settings" component={NewsSettings}/>
+        <Route name="news-feed" path="/news-feed" component={NewsIndex}/>
+        <Route name="news" path="/news" component={NewsSettings}/>
 	</Route>
 );
 

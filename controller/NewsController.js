@@ -67,8 +67,12 @@ var NewsController ={
                     var _tmpOutPut = [];
                     for(var a=0;a<resultSet.news_list.length;a++){
                         var _tmpData = resultSet.news_list[a];
+
                         _tmpData.is_favorite = 0;
                         for(var i = 0; i< newsCategories.length;i++ ) {
+
+
+
                             if(newsCategories[i].category.toString() == _tmpData._id.toString()){
                                 _tmpData.is_favorite = 1;
                                 break;
@@ -106,7 +110,7 @@ var NewsController ={
 
         var userId = CurrentSession.id;
 
-        
+
     },
 
     /**

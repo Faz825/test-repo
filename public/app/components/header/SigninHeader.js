@@ -38,7 +38,7 @@ export default class Header extends React.Component {
                       </div>
                       <span className="col-xs-1"></span>
                       <div className="col-xs-2 pg-header-options">
-                        <a href="#">
+                        <a href="/news-feed">
                           <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_09.png" alt="" />
                           <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_03.png" alt="" />
                         </a>

@@ -56,7 +56,7 @@ GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password',
-	'/news-settings','/news'
+	'/news-feed','/news'
 
 ];
 
