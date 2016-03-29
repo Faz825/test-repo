@@ -396,12 +396,16 @@ ConnectionSchema.statics.getMyConnection = function(criteria,callBack){
                 function(result,callBack){
 
                     var query={
-                        q:result.user_id,
+                        q:"user_id:"+result.user_id,
                         index:'idx_usr'
                     };
                     ES.search(query,function(sesResultSet){
-                        formatted_users.push(sesResultSet.result[0]);
+                        if(result.user_id != criteria.user_id){
+                            formatted_users.push(sesResultSet.result[0]);
+
+                        }
                         callBack();
+
                     });
                 },
                 function(err){
