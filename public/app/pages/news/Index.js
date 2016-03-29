@@ -5,7 +5,9 @@
 
 import React from 'react';
 import AddPostElement from '../../components/timeline/AddPostElement';
-import ListPostsElement from '../../components/timeline/ListPostsElement'
+import ListPostsElement from '../../components/timeline/ListPostsElement';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import { Scrollbars } from 'react-custom-scrollbars';
 import Session  from '../../middleware/Session';
 
 export default class Index extends React.Component{
@@ -99,7 +101,7 @@ export default class Index extends React.Component{
                                 <div id="pg-news-middle-container-left-col-details">
                                     <h2 className="pg-newsfeed-left-title-section-txt">NEWS</h2>
 
-                                    <NewsFeed news_articles = {news_articles}/>
+                                    <NewsArtical news_articles = {news_articles}/>
                                 </div>
 
 
@@ -132,45 +134,92 @@ export default class Index extends React.Component{
 
 
 
-export class NewsFeed extends React.Component{
+export class NewsArtical extends React.Component{
 
     constructor(props){
         super(props);
         this.state={
-            news_articles:this.props.news_articles
+            news_articles:this.props.news_articles,
+            isShowingModal : false,
+            popupData : ""
         }
+
+        this.selectedArtical = this.selectedArtical.bind(this);
 
     }
 
-    render(){
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
 
+    getPopup(){
+        let popupData = this.state.popupData;
+
+        return(
+            <div>
+                {this.state.isShowingModal &&
+                    <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                        <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
+                            <div className="modal-body pg-modal-body">
+                                <div className="popup-img-holder">
+                                    <img className="img-responsive pg-main-pop-img" alt src={popupData.article_image} />
+                                </div>
+                                <div className="row row-clr pg-new-news-popup-inner-container">
+                                <h3 className="pg-body-heading-title">{popupData.heading}</h3>
+                                <div className="row row-clr pg-new-news-popup-inner-border" />
+                                <Scrollbars style={{ height: 250 }} onScroll={this.handleScroll}>
+                                    <div dangerouslySetInnerHTML={{__html: popupData.content}} />
+                                </Scrollbars>
+                                </div>
+                            </div>
+
+                        </ModalDialog>
+                    </ModalContainer>
+                }
+            </div>
+        )
+    }
+
+    selectedArtical(data){
+        console.log(data);
+        this.setState({isShowingModal : true, popupData : data});
+    }
+
+    render(){
+        let _this = this;
         if(this.props.news_articles.length <0){
             return(<div />);
         }
 
-
-
         let _news_item = this.props.news_articles.map(function(newsItem,key){
             return(
-                <NewsItem newsItem ={newsItem}
+                <NewsItem newsItem ={newsItem} selected={_this.selectedArtical}
                           key={key}/>
             );
         });
         return(
             <div className="row row-clr pg-newsfeed-left-post-container">
                 {_news_item}
+                {this.getPopup()}
             </div>
         );
     }
 }
 
 
-export const NewsItem =({newsItem})=>{
+export const NewsItem =({newsItem,selected})=>{
 
 
     let news_logo= "/images/news/"+newsItem.channel.toLowerCase()+".png";
+
+    function createMarkup() { return {__html: newsItem.content}; };
+
+    function onArticalSelect(){
+            selected(newsItem);
+    }
+
     return(
-        <div className="row row-clr pg-newsfeed-left-post-item">
+        <div className="row row-clr pg-newsfeed-left-post-item" onClick={event=>onArticalSelect(event)}>
             <div className="row row-clr pg-newsfeed-left-post-item-main-img-wrapper">
                 <img src={newsItem.article_image} className="img-responsive  pg-newsfeed-left-post-item-main-img"/>
                 <div className="pg-newsfeed-left-post-item-logo-wrapper">
@@ -181,7 +230,7 @@ export const NewsItem =({newsItem})=>{
                 <h4 className="pg-newsfeed-left-post-item-main-content-title">
                     {newsItem.heading}
                 </h4>
-                { newsItem.content}
+                <div className="artical-content-holder" dangerouslySetInnerHTML={createMarkup()} />
                 <h5 className="pg-newsfeed-left-post-item-main-content-time">December 08 at 3:20pm</h5>
             </div>
             <div className="row row-clr pg-newsfeed-left-post-item-status-section">
@@ -195,4 +244,3 @@ export const NewsItem =({newsItem})=>{
     );
 
 };
-

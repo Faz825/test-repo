@@ -617,6 +617,7 @@
     -moz-border-radius: 5px;
     border-radius: 5px;
     margin-bottom: 10px;
+    cursor: pointer;
 }
 .pg-newsfeed-left-post-item-main-img-wrapper{
     position: relative;
@@ -634,6 +635,7 @@
     position: absolute;
     top: 15px;
     left: 15px;
+    width: 70px;
 }
 .pg-newsfeed-left-post-item-main-content{
     padding: 15px;
@@ -718,4 +720,9 @@
     margin-left: 10px;
     float: right;
     margin-top: 1px;
+}
+
+.pg-newsfeed-left-post-item-main-content .artical-content-holder{
+    max-height: 85px;
+    overflow: hidden;
 }

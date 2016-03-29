@@ -1598,6 +1598,7 @@ textarea{
 .rm-side-padding{
     padding-right: 0;
     padding-left: 0;
+	float: right;
 }
 .pg-news-page-content-item.item1{
     background: #61b3de;
@@ -1867,9 +1868,11 @@ textarea{
 }
 .pg-main-pop-img{
     margin-bottom: 28px;
+	width: 100%;
+    height: auto;
 }
 .pg-new-news-popup-inner-container {
-    padding: 0px 50px;
+    padding: 0px 20px;
 }
 .pg-body-heading-title{
     font: 20px 'montserratregular', sans-serif;
