@@ -2136,7 +2136,16 @@ textarea{
 	border-bottom: 1px solid #dee6eb;
 }
 
+.conv-holder .msg-holder a{
+	display: block;
+}
 .conv-holder .msg-holder:hover{
+	background: #e2f4ff;
+	border-left: 3px solid #61b3de;
+	padding-left: 9px;
+}
+
+.conv-holder .msg-holder-selected{
 	background: #e2f4ff;
 	border-left: 3px solid #61b3de;
 	padding-left: 9px;

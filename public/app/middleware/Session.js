@@ -2,7 +2,6 @@
  * This class Will Handle browser sessions 
  */
 
-import Chat  from './Chat';
  class Session{
 
 
@@ -26,11 +25,6 @@ import Chat  from './Chat';
 		}
 	}
 	createSession(key,value){
-
-		var doSub = true;
-		if(value == ""){
-			doSub = false;
-		}
 		value = JSON.stringify(value);
 		var expires;
 
@@ -42,10 +36,6 @@ import Chat  from './Chat';
 	        this.expires = "";
 	    }
 	    document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(value) + this.expires + "; path=/";
-		if(doSub){
-			Chat.doChatSubscription();
-		}
-
 	}
 	getSession(key){
 		var nameEQ = encodeURIComponent(key) + "=";

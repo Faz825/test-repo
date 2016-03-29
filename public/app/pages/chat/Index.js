@@ -21,62 +21,30 @@ export default class Index extends React.Component{
 
         this.state= {
             chatWith:this.getUrl(),
-            userLogedIn : Session.getSession('prg_lg'),
-            chatWithUserData:{}
+            userLogedIn : Session.getSession('prg_lg')
         };
-
-        this.convuser = {};
 
         this.b6 = Chat.b6;
 
-        console.log("this.state.chatWith  =  "+this.state.chatWith)
         this.uri = 'usr:proglobe'+this.state.chatWith;
-        this.b6.addEmptyConversation(this.uri);
-        this.showMessages(this.uri);
+        Chat.showMessages(this.uri);
 
     };
-
-
-    showMessages(uri){
-        console.log("showMessages - "+uri)
-        this.conv = this.b6.getConversation(uri);console.log(this.conv)
-        // Mark all messages as read
-        if (this.b6.markConversationAsRead(this.conv) > 0) {
-            // Some messages have been marked as read
-            // update chat list
-            console.log("marked read")
-        }
-        this.convuser.user_name = this.b6.getNameFromIdentity(this.conv.id);console.log("this.convuser.user_name = "+this.convuser.user_name)
-
-        this.msgsDiv = $(this.msgDomIdForConversation(this.conv));
-        // Show only message container for this conversation
-        // Hide all the other message containers
-        $("#msgListRow").append(this.msgsDiv);
-        this.msgsDiv.show().siblings().hide();
-
-        // Request focus for the compose message text field
-        $('#msgText').focus();
-    }
-
-    // Get Messages Container jQuery selector for a Conversation
-    msgDomIdForConversation(c) {
-        console.log('#msgs__' + c.domId())
-        return '#msgs__' + c.domId();
-    }
 
     getUrl(){
         return  this.props.params.chatWith;
     }
 
-
-
-    sendChat(e){
+    sendChat(){
 
         let _this = this;
 
         var msg = $("#msgText").val();
 
-        if(msg==""){
+        if(typeof this.state.chatWith == 'undefined'){
+            _this.setState({validateAlert: Alert.EMPTY_RECEIVER});
+            return 0;
+        } else if(msg==""){
             _this.setState({validateAlert: Alert.EMPTY_MESSAGE});
             return 0;
         } else{
@@ -92,6 +60,34 @@ export default class Index extends React.Component{
 
     }
 
+    doVideoCall(){
+
+        let _this = this;
+
+        if(typeof this.state.chatWith == 'undefined'){
+            _this.setState({validateAlert: Alert.EMPTY_RECEIVER});
+            return 0;
+        } else{
+            Chat.startOutgoingCall(this.uri, true);
+        }
+
+    }
+
+    doAudioCall(){
+
+        let _this = this;
+
+        if(typeof this.state.chatWith == 'undefined'){
+            _this.setState({validateAlert: Alert.EMPTY_RECEIVER});
+            return 0;
+        } else{
+            Chat.startOutgoingCall(this.uri, false);
+        }
+
+    }
+
+
+
     render() {
         return (
             <div className="pg-middle-chat-screen-area container-fluid">
@@ -104,7 +100,8 @@ export default class Index extends React.Component{
                     <div className="header">
                         <div className="chat-inbox-options col-sm-4">
                             <div className="inbox">
-                                <p>inbox<span className="total">50</span></p>
+                                <p>inbox</p>
+                                <div id="inbox_count"></div>
                             </div>
                             <div className="otherMsg">
                                 <p>Other<span className="total">7</span></p>
@@ -115,17 +112,17 @@ export default class Index extends React.Component{
                         </div>
                         <div className="col-sm-8 chat-person-options">
                             <div className="connection-name">
-                                <p>Prasad Sampath</p>
+                                <p id="chat_with"></p>
                             </div>
                             <div className="media-options-holder">
                                 <div className="media-options">
                                     <span className="opt chat-icon">
                                         <i className="fa"></i>
                                     </span>
-                                    <span className="opt video-icon">
+                                    <span className="opt video-icon" onClick={()=>this.doVideoCall()}>
                                         <i className="fa fa-video-camera"></i>
                                     </span>
-                                    <span className="opt call-icon">
+                                    <span className="opt call-icon" onClick={()=>this.doAudioCall()}>
                                         <i className="fa fa-phone"></i>
                                     </span>
                                     <span className="opt search-icon">
@@ -142,15 +139,18 @@ export default class Index extends React.Component{
                     <div className="chat-body">
                         <div className="conv-holder col-sm-4">
                             <Scrollbars style={{ height: 486 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
-                                <div className="msg-holder" id="chatList">
-
+                                <div id="chatList">
                                 </div>
                             </Scrollbars>
                         </div>
                         <div className="chat-msg-holder col-sm-8">
                             <div className="chat-view">
-                                <Scrollbars style={{ height: 220 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
-                                    <div id="msgListRow"></div>
+                                <Scrollbars style={{ height: 335 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
+                                    <div id="msgListRow">
+                                        <div class="col-xs-12">
+                                            <div id="msgList"></div>
+                                        </div>
+                                    </div>
                                 </Scrollbars>
                             </div>
                             <div className="chat-msg-input-holder">
@@ -169,7 +169,82 @@ export default class Index extends React.Component{
                         </div>
                     </div>
                 </div>
+
+
+                <div class="modal fade" id="incomingCallAlert" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="alert fade in" id="incomingCall" style="text-align:
+                                                    center;">
+                                    <img src="" id="incoming_call_alert_other_profile_image"
+                                         class="img-circle
+                                                                    img-custom-medium bottom-margin-20" />
+                                    <h4 id="incomingCallFrom">User is calling...</h4>
+                                    <p>
+                                        <button type="button" class="btn btn-success" id="answer"
+                                                style="border-radius:20px;"       >Answer</button>
+                                        <button type="button" class="btn btn-danger" id="reject"
+                                                style="border-radius:20px;">Reject</button>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-9 fh top-padding-20" id="detailPane" style="border-left:1px solid
+                                     #e6e9ec;">
+
+                    <div class="row hidden" id="inCallPane">
+
+                        <div class="col-sm-12 fh ">
+
+                            <div class="row top-row" style="background-color:
+                                                    #514c46; padding-top: 30px; padding-bottom: 110px; height: auto;
+                                                    text-align:
+                                                    center; margin-bottom: 20px;">
+
+                                <div class="col-sm-offset-1 col-xs-offset-0 col-sm-10 col-xs-10">
+                                    <div class="row text-center" id="videoContainer">
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 top-margin-20" style="font-size:18px;">
+                                            <img src="" id="call_other_profile_image"
+                                                 class="img-responsive img-circle
+                                                                    img-custom-large pull-left left-margin-30 hidden" />
+                                            <span id="inCallOther" style="color:#c7bfb2;">Video Call</span> <span style="color:#fff;">On Call...</span>
+                                        </div>
+
+                                        <div class="col-sm-12 top-margin-5">
+                                            <div id="clock" style="color:#c7bfb2;">
+                                                <span id="hour">00</span>:<span id="min">00</span>:<span id="sec">00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="col-xs-1">
+                                    <button class="btn btn-danger" id="hangup" title="Stop Call">
+                                        <span class="fa fa-square"></span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    </div>
+
             </div>
+
+
+
         );
     }
 }
