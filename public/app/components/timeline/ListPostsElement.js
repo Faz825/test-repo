@@ -44,7 +44,7 @@ class SinglePost extends React.Component{
             showCommentPane:false,
             comments:[],
             is_i_liked:this.props.postItem.is_i_liked,
-            liked_users_elm : [],
+            liked_users : [],
 
         };
 
@@ -109,6 +109,13 @@ class SinglePost extends React.Component{
     }
 
     render(){
+
+        if(typeof  this.props.postItem == 'undefined'){
+            return(<div />);
+        }
+
+
+
         const _post = this.props.postItem;
 
         let post_content = "";
@@ -136,7 +143,6 @@ class SinglePost extends React.Component{
                 )
             }
         })
-
 
 
         return (
@@ -175,10 +181,16 @@ class SinglePost extends React.Component{
                                        onCommentClick = {event=>this.onCommentClick()}
                                        OnLikeHover = {event=>this.loadLikedUsers()}
                                        is_i_liked = {this.state.is_i_liked}
-                                       liked_users = {_post.liked_users}/>
-                        <LikeSummery
-                            visibility={false}
-                            likes =""/>
+                                       liked_users = {_post.liked_user}/>
+
+                        {
+                            (_post.liked_user.length > 0)?
+                                <LikeSummery
+                                    visibility={true}
+                                    likes ={_post.liked_user}/>
+                                :null
+                        }
+
 
                         {
                             (this.state.showCommentPane) ? <CommentElement
@@ -249,13 +261,22 @@ const LikeSummery=({likes,visibility}) =>{
     if(visibility){
         opt['style'] ={display:"block"}
     }
+
+
+
     return (
         <div className="row pg-newsfeed-common-content-like-status" {...opt}>
             <div className="col-xs-12">
                 <p className="pg-newsfeed-common-content-like-status-paragraph">
-                    <a href="#" className="pg-newsfeed-common-content-like-status-profile-links">Saad El Yamani</a>,
-                    <a href="#" className="pg-newsfeed-common-content-like-status-profile-links"> Mark Daniel </a>, and
-                    <a href="#" className="pg-newsfeed-common-content-like-status-profile-links">84 others </a> like this...
+                    <a href={"/profile/"+likes[0]} className="pg-newsfeed-common-content-like-status-profile-links">{likes[0].name}</a>
+                    {
+                        (likes.length == 2)?
+                            <a href={"/profile/"+likes[1]} className="pg-newsfeed-common-content-like-status-profile-links"> and  {likes[1].name}</a>
+                            :(likes.length > 2)?
+                                <a href="#" className="pg-newsfeed-common-content-like-status-profile-links"> and {likes.length}</a>
+                            :null
+
+                    } like this...
                 </p>
             </div>
         </div>
