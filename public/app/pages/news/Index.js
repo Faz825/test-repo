@@ -153,11 +153,12 @@ const NewsCategory = ({newsCategory,onCategorySelect})=>{
 
     let _selected = (newsCategory.is_favorite)?"selected":"";
     return (
-        <div className={"row row-clr pg-news-page-content-item pg-box-shadow "+ _selected}
+        <div className={"row row-clr pg-news-page-content-item pg-box-shadow "+ _selected + " " + _opt_class}
              onClick ={event=>onCategorySelect(newsCategory.is_favorite,newsCategory._id)}>
 
             <div className={"col-xs-2 pg-news-page-content-item-left-thumb "+_opt_class }>
-                {newsCategory.category}
+                <span className="cat-icon"></span>
+                <h3 className="cat-title">{newsCategory.category}</h3>
             </div>
             <div className="col-xs-10 pg-news-page-content-item-right-thumbs">
                 <div className="pg-news-page-content-item-right-inner-box">
@@ -175,18 +176,12 @@ const NewsCategory = ({newsCategory,onCategorySelect})=>{
 
 const NewsChannels = ({newsChannel})=>{
 
-    let _channel_img = "/images/news/"+newsChannel.channel_image;
+    let _channel_img = "/images/news/channels/"+newsChannel.channel_image;
     return (
         <div className="col-xs-2 pg-col-20 pg-news-item" >
             <div className="row row-clr pg-news-inner-full various">
-
                 <img src={_channel_img} alt="" className="img-responsive pg-pg-news-inner-img" />
-                <div className="col-xs-12 pg-news-inner-box-content">
-                    <h6 className="pg-news-inner-box-content-txt">{newsChannel.name}</h6>
-                </div>
             </div>
         </div>
     )
 }
-
-
