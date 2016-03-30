@@ -13,7 +13,7 @@ export default class ProfileImgUpload extends React.Component{
       	this.loggedUser = Session.getSession('prg_lg');
 
 		this.state = {
-	        profileImg : (typeof  this.loggedUser.profile_image != "undefined")?this.loggedUser.profile_image:"images/default-profile-pic.png",
+	        profileImg : (typeof  this.loggedUser.profile_image != "undefined")?this.loggedUser.profile_image:"",
 			loadingBarIsVisible : false
 	    };
 
@@ -85,7 +85,7 @@ export default class ProfileImgUpload extends React.Component{
                                         <p>Would you like to upload a picture now?</p>
 
 										<div className="Profile-pic-main proImgHolder">
-											<img src={this.state.profileImg} alt="Default user profile image" id="previewProfileImg" className="img-responsive Profile-pic-uploaded"/>
+											<img src={(this.state.profileImg == "")?"/images/default-profile-pic.png":this.state.profileImg} alt="Default user profile image" id="previewProfileImg" className="img-responsive Profile-pic-uploaded"/>
 											<ProfileImageUploader profileImgSrc={this.state.profileImg} imgUpdated={this.profileImgUpdated.bind(this)} />
 										</div>
 

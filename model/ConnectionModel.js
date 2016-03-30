@@ -467,8 +467,6 @@ ConnectionSchema.statics.getFriendSuggestion = function(criteria,callBack){
 
                 }
 
-
-
             }
             callBack(null,{
                 total_result: _formattedFriendList.length,

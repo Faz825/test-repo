@@ -43,21 +43,33 @@ FavouriteNewsCategorySchema.pre('save', function(next){
  * @param criteria
  * @param callBack
  */
-FavouriteNewsCategorySchema.statics.addUserNewsCategory =function(news_categories,callBack){
+FavouriteNewsCategorySchema.statics.addUserNewsCategory =function(news_categories,un_selected_categories,callBack){
 
+    //REMOVE UNSELECTED CATEGORIES
+    if(un_selected_categories.length > 0){
+        for(var a=0;a<un_selected_categories.length;a++){
+            this.remove({user_id:CurrentSession.id,category:Util.toObjectId(un_selected_categories[a])},function(err){
+                console.log(err);
+            })
+        }
+    }
 
-
-    this.collection.insert(news_categories,function(err,resultSet){
-        if(! err){
-            callBack({status:200,
-                connected:resultSet.result.ok});
-        }else{
-            console.log("Server Error --------");
-            console.log(err);
-            callBack({status:400,error:err});
+    if(news_categories.length >0){
+        var __news_categories = [];
+        for (var i = 0; news_categories.length > i; i++) {
+            __news_categories.push({
+                user_id: Util.toObjectId(CurrentSession.id),
+                category: Util.toObjectId(news_categories[i]),
+                created_at:   new Date()
+            });
         }
 
-    });
+        this.collection.insert(__news_categories,function(err,resultSet){
+            console.log(err)
+        });
+    }
+    callBack({status:200});
+
 };
 
 

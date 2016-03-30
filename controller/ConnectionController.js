@@ -181,8 +181,10 @@ var ConnectionController ={
 
             var outPut	={};
 
-            if(resultSet.status !== 400){
 
+
+            if(resultSet.status !== 400){
+                var rand = Util.getRandomInt(0,resultSet.total_result);
                 outPut['status'] = ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS);
                 outPut['header'] ={
                     total_result:resultSet.total_result,
@@ -190,7 +192,9 @@ var ConnectionController ={
                     total_pages:Math.ceil(resultSet.total_result/Config.CONNECTION_RESULT_PER_PAGE)
                 };
 
-                outPut['connection'] = resultSet.friends[0];
+                console.log(resultSet.friends[rand]);
+
+                outPut['connection'] = resultSet.friends[rand];
                 res.status(200).send(outPut);
                 return 0
             }else{

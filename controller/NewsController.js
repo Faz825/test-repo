@@ -302,9 +302,6 @@ var NewsController ={
             news_categories = [],
             now = new Date();
 
-
-
-
         //REMOVE IF ALREADY DID FAVOURITE
         if(req.body.fav == 1){
 
@@ -324,12 +321,8 @@ var NewsController ={
                 res.status(200).json(outPut);
             });
         }else{
-            news_categories.push({
-                user_id: Util.toObjectId(CurrentSession.id),
-                category: Util.toObjectId(req.body.nw_cat_id),
-                created_at: now
-            });
-            FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
+            news_categories.push(req.body.nw_cat_id);
+            FavouriteNewsCategory.addUserNewsCategory(news_categories,[],function(resultSet){
                 var outPut = {};
                 if (resultSet.status !== 200) {
                     outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
@@ -342,8 +335,6 @@ var NewsController ={
                 return 0;
             });
         }
-
-
 
 
     },

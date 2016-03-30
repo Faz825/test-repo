@@ -324,24 +324,17 @@ var UserControler ={
             outPut['user']=CurrentSession;
 
             var req_news_categories = JSON.parse(req.body.news_categories);
+            var un_selected_categories = JSON.parse(req.body.un_selected);
 
-            if(req_news_categories.length >= 1 ) {
+
 
                 var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
                     User                  = require('mongoose').model('User');
-                var news_categories = [],
-                    now = new Date();
+
 
                 User.saveUpdates(CurrentSession.id,{status:6},function(updateDataSet){
 
-                    for (var i = 0; req_news_categories.length > i; i++) {
-                        news_categories.push({
-                            user_id: Util.toObjectId(CurrentSession.id),
-                            category: null,
-                            created_at: now
-                        });
-                    }
-                    FavouriteNewsCategory.addUserNewsCategory(news_categories,function(resultSet){
+                    FavouriteNewsCategory.addUserNewsCategory(req_news_categories,un_selected_categories,function(resultSet){
 
                         if (resultSet.status !== 200) {
                             outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
@@ -355,13 +348,8 @@ var UserControler ={
                         res.status(200).json(outPut);
                         return 0;
                     });
-                })
+                });
 
-
-            }else{
-                res.status(200).json(outPut);
-                return 0;
-            }
         });
     },
 
@@ -373,14 +361,6 @@ var UserControler ={
      */
     uploadProfileImage:function(req,res){
 
-
-        if(typeof req.body.profileImg == 'undefined' || typeof req.body.profileImg == "") {
-            var outPut={
-                status: ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
-            };
-            res.status(400).send(outPut);
-            return 0;
-        }
         var User = require('mongoose').model('User');
         var data ={
             content_title:"Profile Image",
@@ -392,12 +372,12 @@ var UserControler ={
         }
 
         User.saveUpdates(CurrentSession.id,{status:7},function(updateDataSet){
-            ContentUploader.uploadFile(data,function (payLoad) {
 
-                if (payLoad.status != 400) {
+                //IF PROFILE IMAGE NOT FOUND
+                if(typeof req.body.profileImg == 'undefined' || req.body.profileImg == "") {
                     var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
                     CurrentSession['status'] = 7;
-                    CurrentSession['profile_image'] = payLoad.http_url;
+                    CurrentSession['profile_image'] = Config.DEFAULT_PROFILE_IMAGE;
 
 
                     CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
@@ -413,13 +393,45 @@ var UserControler ={
                         res.status(200).json(outPut);
                     });
 
-                } else {
-                    var outPut={
-                        status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
-                    };
-                    res.status(400).send(outPut);
+                }else{
+                    ContentUploader.uploadFile(data,function (payLoad) {
+
+                        if (payLoad.status != 400) {
+                            var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+                            CurrentSession['status'] = 7;
+                            CurrentSession['profile_image'] = payLoad.http_url;
+
+
+                            CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                                var outPut = {
+                                    status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                                }
+                                if (!cacheData) {
+                                    outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                                }
+                                outPut['user'] = CurrentSession;
+                                //ADD TO CACHE
+                                User.addUserToCache(CurrentSession.id,function(csResult){});
+                                res.status(200).json(outPut);
+                            });
+
+                        } else {
+                            var outPut={
+                                status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
+                            };
+                            res.status(400).send(outPut);
+                        }
+                    });
                 }
-            });
+
+
+
+
+
+
+
+
+
 
 
         });
@@ -972,16 +984,28 @@ var UserControler ={
 
             },
             function getProfileImage(profileData,callBack){
+                Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
 
-                if(profileData != null){
-                    Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
+
+                    if(profileImageData.status != 200){
+                        profileData['images'] = {
+                            'profile_image': {
+                                id: "DEFAULT",
+                                file_name: "default_profile_image.png",
+                                file_type: ".png",
+                                http_url: Config.DEFAULT_PROFILE_IMAGE
+                            }
+                        };
+                    }else{
                         profileData['images'] = profileImageData.image;
-                        callBack(null,profileData)
-                        return 0;
-                    });
-                }else{
-                    callBack(null,null)
-                }
+
+                    }
+
+
+                    callBack(null,profileData);
+                    return 0;
+                });
+
 
 
             }

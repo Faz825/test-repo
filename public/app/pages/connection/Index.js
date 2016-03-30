@@ -235,7 +235,8 @@ export class FriendSuggestions  extends React.Component{
 
         }).done(function(data){
             if(data.status.code == 200){
-                this.props.onAddFriendSuccess(true)
+                this.props.onAddFriendSuccess(true);
+
 
             }
         }.bind(this));
@@ -254,15 +255,18 @@ export class FriendSuggestions  extends React.Component{
         }).done(function(data){
             if(data.status.code == 200){
                 let _friend_suggestions = this.state.friend_suggestions;
-                for(let a = 0;a<_friend_suggestions.length;a++){
+                if(data.connection){
+                    for(let a = 0;a<_friend_suggestions.length;a++){
 
-                    if(_friend_suggestions[a].user_id == user.user_id){
-                        _friend_suggestions.splice(a,1,data.connection);
-                        break;
+                        if(_friend_suggestions[a].user_id == user.user_id){
+                            _friend_suggestions.splice(a,1,data.connection);
+                            break;
 
+                        }
                     }
                 }
-                this.setState({friend_suggestions:this.state.friend_suggestions});
+
+                this.setState({friend_suggestions:_friend_suggestions});
             }
         }.bind(this));
     }

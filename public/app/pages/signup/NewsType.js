@@ -17,6 +17,7 @@ export default class NewsType extends React.Component{
         };
 
         this.selectedNewsCategories =[];
+        this.unSelectedNewsCategories =[];
     }
 
     componentDidMount() {
@@ -25,14 +26,11 @@ export default class NewsType extends React.Component{
         this.setState({sesData:_sesData});
     }
 
-    onCategorySelect(categories){
+    onCategorySelect(categories,unSelectedNewsCategories){
         this.selectedNewsCategories = categories;
+        this.unSelectedNewsCategories = unSelectedNewsCategories
 
-        if(this.selectedNewsCategories.length >=1){
-            this.setState({"btn_name":"Next"});
-        }else{
-            this.setState({"btn_name":"Skip"});
-        }
+
     }
 
     onNextStep(){
@@ -43,7 +41,7 @@ export default class NewsType extends React.Component{
             method: "POST",
             dataType: "JSON",
             headers: { 'prg-auth-header':user.token },
-            data:{ news_categories: JSON.stringify(this.selectedNewsCategories)},
+            data:{ news_categories: JSON.stringify(this.selectedNewsCategories),un_selected:JSON.stringify(this.unSelectedNewsCategories)},
             success: function (data, text) {
                 if (data.status.code == 200) {
                     Session.createSession("prg_lg", data.user);
@@ -81,7 +79,7 @@ export default class NewsType extends React.Component{
                                     </div>
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form pgs-middle-sign-wrapper-news-inner-form">
                                     	<h6>Tell me about what type of news you would like to read</h6>
-                                        <NewsCategoryList onCategorySelect={(categories)=>this.onCategorySelect(categories)}/>
+                                        <NewsCategoryList onCategorySelect={(categories,unselectedCategories)=>this.onCategorySelect(categories,unselectedCategories)}/>
                                             <div className="row">
 		                                        <Button type="button"
                                                         size="6"
@@ -91,7 +89,7 @@ export default class NewsType extends React.Component{
 		                                        <Button type="button"
                                                         size="6"
                                                         classes="pgs-sign-submit"
-                                                        value={this.state.btn_name}
+                                                        value="Next"
                                                         onButtonClick ={()=>this.onNextStep()}  />
 		                                    </div>
                                     </div>

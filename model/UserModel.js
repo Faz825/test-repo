@@ -1123,15 +1123,28 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
         },
         function getProfileImage(profileData,callBack){
 
-            if(profileData != null){
-                Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
+
+            Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
+
+                if(profileImageData.status != 200){
+                    profileData['images'] = {
+                        'profile_image': {
+                            id: "DEFAULT",
+                            file_name: "default_profile_image.png",
+                            file_type: ".png",
+                            http_url: Config.DEFAULT_PROFILE_IMAGE
+                        }
+                    };
+                }else{
                     profileData['images'] = profileImageData.image;
-                    callBack(null,profileData)
-                    return 0;
-                });
-            }else{
-                callBack(null,null)
-            }
+
+                }
+
+
+                callBack(null,profileData)
+                return 0;
+            });
+
         }
 
     ],function(err,profileData){
