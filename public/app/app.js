@@ -17,7 +17,7 @@ import ChangedPassword from './pages/signup/ChangedPassword'
 import Connection  from './pages/connection/Index';
 
 import NewsSettings from './pages/news/NewsSettings';
-import NewsIndex from './pages/news/index';
+import NewsIndex from './pages/news/Index';
 
 let rootRoute =(
 	<Route name="main" path="/" component={Main} state="1">
