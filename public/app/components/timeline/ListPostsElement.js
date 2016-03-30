@@ -238,6 +238,7 @@ class SinglePost extends React.Component{
             post_content = _post.content;
         }else if(_post.post_mode == "LE"){
             post_content = _post.life_event;
+            this.lifeEvent = post_content.toLowerCase().replace(/ /g,"-");
         }
 
         let _profile = _post.created_by;
@@ -276,12 +277,6 @@ class SinglePost extends React.Component{
                                     <p className="location_text">at - {_post.location} </p>:
                                     null
                             }
-                        </div>
-
-
-
-                        <div className="row row-clr pg-newsfeed-common-content-post-content">
-                            <p className="pg-newsfeed-post-description">{post_content}</p>
                         </div>
 
                         <div className="row row-clr pg-newsfeed-common-content-post-content">
