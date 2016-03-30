@@ -14,21 +14,34 @@ var SavedArticleSchema = new Schema({
         ref: 'User',
         default:null
     },
-    category:{
-        type: Schema.ObjectId,
-        ref: 'News',
+
+    heading:{
+        type:String,
+        trim:true,
         default:null
     },
-    channel:{
-        type: Schema.ObjectId,
+    article_image:{
+        type:String,
+        trim:true,
         default:null
     },
-    article:{
-        type: Schema.ObjectId,
+    content:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    article_date:{
+        type:String,
+        trim:true,
         default:null
     },
     created_at:{
         type:Date
+    },
+    channel:{
+        type:String,
+        trim:true,
+        default:null
     },
     updated_at:{
         type:Date
@@ -52,33 +65,23 @@ SavedArticleSchema.pre('save', function(next){
  * @param criteria
  * @param callBack
  */
-SavedArticleSchema.statics.saveArticle =function(req_saved_articles,callBack){
-
-    var articles = [],
-        now = new Date(),
-        user = "56c6aeaa6e1ac13e18b2400d";
-
-    for (var i = 0; req_saved_articles.length > i; i++) {
-        articles.push({
-            user_id:user.toObjectId(),
-            category:req_saved_articles[i].category.toObjectId(),
-            channel:req_saved_articles[i].channel.toObjectId(),
-            article:req_saved_articles[i].article.toObjectId(),
-            created_at: now
-        });
-    }
-
-    this.collection.insert(articles,function(err,resultSet){
-        if(! err){
-            callBack({status:200,
-                connected:resultSet.result.ok});
+SavedArticleSchema.statics.saveArticle =function(articel,callBack){
+    var _article =  new this();
+    _article.user_id = CurrentSession.id;
+    _article.heading = articel.heading;
+    _article.article_image=articel.article_image
+    _article.content=articel.content;
+    _article.article_date=articel.article_date;
+    _article.channel = articel.channel
+    _article.save(function(err,success){
+        if(!err){
+            callBack({status:200});
         }else{
             console.log("Server Error --------");
-            console.log(err);
             callBack({status:400,error:err});
         }
-
     });
+
 };
 
 
@@ -89,49 +92,17 @@ SavedArticleSchema.statics.saveArticle =function(req_saved_articles,callBack){
  */
 SavedArticleSchema.statics.findSavedArticle = function(criteria,callBack){
 
-    var _this = this;
-
-    _this.aggregate([
-        { $match:criteria.search },
-        {
-            $lookup:{
-                from:"news",
-                localField:"category",
-                foreignField:"_id",
-                as:"channelsData"
-            }
-        },
-        { $unwind: '$channelsData'},
-        { $unwind: '$channelsData.channels'},
-        { $unwind: '$channelsData.channels.articles'},
-        {
-            $project: {
-                _id:1,
-                user_id:1,
-                category_id:"$category",
-                category:"$channelsData.category",
-                channel_id:"$channel",
-                channel_name:"$channelsData.channels.name",
-                article_id:"$article",
-                article_heading:"$channelsData.channels.articles.heading",
-                isEqual: {$eq:["$article", "$channelsData.channels.articles._id"]}
-            }
-        },
-        { $match:{ "isEqual":true}}
-    ], function(err, resultSet){
+    this.find({user_id:Util.toObjectId(criteria.user_id)}).exec(function(err,resultSet){
         if(!err){
-
             callBack({
                 status:200,
-                articles:resultSet
-
+                news_list:resultSet
             });
-        }else {
+        }else{
             console.log("Server Error --------")
-            callBack({status: 400, error: err});
+            callBack({status:400,error:err});
         }
-    });
-
+    })
 };
 
 

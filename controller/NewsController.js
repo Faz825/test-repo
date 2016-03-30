@@ -403,6 +403,46 @@ var NewsController ={
             res.status(200).json(outPut);
         })
 
+    },
+
+    /**
+     * Save news Articles
+     * @param req
+     * @param res
+     */
+    saveMyNews:function(req,res){
+
+
+        var SavedArticle = require('mongoose').model('SavedArticle');
+
+        SavedArticle.saveArticle(req.body,function(resultSet){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                news:resultSet
+            }
+            res.status(200).json(outPut);
+        })
+
+    },
+    /**
+     * Get saved Articles
+     * @param req
+     * @param res
+     */
+
+    getSavedArticles:function(req,res){
+        var SavedArticle = require('mongoose').model('SavedArticle');
+
+        var criteria ={
+            user_id:CurrentSession.id
+        }
+        SavedArticle.findSavedArticle(criteria,function(resultSet){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                news_list:resultSet.news_list
+            }
+            res.status(200).json(outPut);
+        })
     }
 
 };

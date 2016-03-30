@@ -154,6 +154,20 @@ export class NewsArtical extends React.Component{
     handleClose() {
         this.setState({isShowingModal: false});
     }
+    saveArticle(){
+        let loggedUser = Session.getSession('prg_lg');
+        $.ajax({
+            url: '/news/articles/save',
+            method: "POST",
+            dataType: "JSON",
+            data:this.state.popupData,
+            headers: { 'prg-auth-header':loggedUser.token },
+        }).done( function (data, text) {
+            if(data.status.code == 200){
+                this.setState({isShowingModal: false});
+            }
+        }.bind(this));
+    }
 
     getPopup(){
         let popupData = this.state.popupData;
@@ -174,6 +188,9 @@ export class NewsArtical extends React.Component{
                                     <div dangerouslySetInnerHTML={{__html: popupData.content}} />
                                 </Scrollbars>
                                 </div>
+                            </div>
+                            <div className="save-news">
+                                <a href="javascript:void(0)" onClick={this.saveArticle.bind(this)} >Save</a>
                             </div>
 
                         </ModalDialog>

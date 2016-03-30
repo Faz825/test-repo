@@ -239,8 +239,9 @@ router.post('/user/news/add-category', NewsController.addToFavourite);
 
 router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
 router.get('/news/get/my/news-articles', NewsController.getMyNews);
+router.post('/news/articles/save', NewsController.saveMyNews);
 
-
+router.get('/news/saved/articles', NewsController.getSavedArticles);
 
 router.post('/like/composer', LikeController.doLike);
 

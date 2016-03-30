@@ -126,6 +126,7 @@ export default class NewsSettings extends React.Component{
             <div className="newsCatHolder container-fluid">
                 <div className="row row-clr pg-news-page-content">
                     <div className="col-xs-10 col-xs-offset-1">
+                        <SavedArticles />
                         {
                             _news_category_template
                         }
@@ -187,3 +188,61 @@ const NewsChannels = ({newsChannel})=>{
 }
 
 
+export class SavedArticles extends React.Component{
+
+    constructor(props){
+        super(props);
+        this.state={
+            articles:[],
+            loggedUser:Session.getSession('prg_lg')
+        };
+
+        this.loadArticles();
+    }
+    loadArticles(){
+        $.ajax({
+            url: '/news/saved/articles',
+            method: "GET",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
+
+        }).done(function (data, text) {
+
+            if (data.status.code == 200) {
+                this.setState({articles:data.news_list})
+            }
+        }.bind(this));
+    }
+
+    render(){
+
+        let _channel_template = this.state.articles.map(function(articles,key){
+            let _articles ={
+                channel_image:articles.channel.replace(/\s+/g, '_').toLowerCase()+".png"
+            }
+            return (
+                <NewsChannels newsChannel ={_articles}
+                              key={key}/>
+            )
+        });
+        return(
+            <div className={"row row-clr pg-news-page-content-item pg-box-shadow"}>
+
+                <div className={"col-xs-2 pg-news-page-content-item-left-thumb "}>
+                    <span className="cat-icon"></span>
+                    <h3 className="cat-title">Saved Articles</h3>
+                </div>
+                <div className="col-xs-10 pg-news-page-content-item-right-thumbs">
+                    <div className="pg-news-page-content-item-right-inner-box">
+                        <div className="pg-news-item-main-row">
+
+                            {_channel_template}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        )
+    }
+
+}
