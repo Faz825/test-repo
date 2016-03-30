@@ -79,7 +79,8 @@ export default class Index extends React.Component{
                                 <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
                                                 uname = {this.state.uname}/>
                                 <ListPostsElement posts={this.state.posts}
-                                                  uname = {this.state.uname}/>
+                                                  uname = {this.state.uname}
+                                                  onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}/>
                             </div>
                             <div className="col-xs-6"></div>
                         </div>

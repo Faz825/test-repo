@@ -211,9 +211,8 @@ router.post('/education/update', UserController.updateEducationDetail);
 
 router.post('/work-experience/update', UserController.updateWorkExperience);
 
-
 router.post('/post/composer', PostController.addPost);
-
+router.post('/post/share', PostController.sharePost);
 
 
 router.post('/comment/composer', CommentController.addComment);

@@ -19,8 +19,10 @@ GLOBAL.PostConfig={
     LIFE_EVENT:"LE",
     VIDEO_POST:"VP",
     LOCATION_POST:"LP",
-    ALBUM_POST:"AP"
+    ALBUM_POST:"AP",
+    SHARED_POST:"SP"
 };
+
 
 
 var PostSchema = new Schema({
@@ -52,7 +54,10 @@ var PostSchema = new Schema({
         default:PostConfig.NORMAL_POST,
 
     },
-
+    shared_post_id:{
+        type: Schema.ObjectId,
+        default:null
+    },
     location:{
         type:String,
         trim:true,
@@ -101,6 +106,7 @@ PostSchema.statics.addNew = function(post,callBack){
     _post.post_mode = post.post_mode;
     _post.location = post.location;
     _post.life_event = post.life_event;
+    _post.shared_post_id = (typeof post.shared_post_id != "undefined")?post.shared_post_id:null;
     _post.save(function(err,postData){
 
         if(!err){
@@ -326,7 +332,8 @@ PostSchema.statics.formatPost=function(postData){
         date:DateTime.explainDate(postData.created_at),
         location:postData.location,
         life_event:postData.life_event,
-        upload:(postData.has_attachment)?postData.upload:[]
+        upload:(postData.has_attachment)?postData.upload:[],
+        shared_post:postData.shared_post
 
     }
 

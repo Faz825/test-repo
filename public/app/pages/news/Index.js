@@ -180,6 +180,7 @@ export class NewsArtical extends React.Component{
         )
     }
 
+
     selectedArtical(data){
         console.log(data);
         this.setState({isShowingModal : true, popupData : data});

@@ -101,6 +101,110 @@ var TimeLinePostHandler ={
         });
 
 
+    },
+
+    /**
+     * Share Post
+     * 1) Get Post owner friend list. This will help to retrieve data fast based on the friends
+     * 2) Save Post in to the data base
+     * 3) Get Shared Post detail from ES
+     * 4) Update Elastic Search
+     * 5) Return Formatted Dataset to the front end
+     * @param data
+     * @param callBack
+     */
+    sharePost:function(postData,callBack){
+        var _async = require('async'),
+            Post = require('mongoose').model('Post'),
+            _post = postData;
+        _async.waterfall([
+            //GET FRIEND LIST BASED ON POST OWNER
+            function getPostVisibleUsers(callBack){
+                // Add to Cache when it is public or Friend only
+                // TODO:: think for Friend only algorithm separately
+                if(parseInt(_post.post_visible_mode) == PostVisibleMode.PUBLIC ||
+                    parseInt(_post.post_visible_mode) == PostVisibleMode.FRIEND_ONLY ){
+                    var Connection = require('mongoose').model('Connection'),
+                        status =[ConnectionStatus.REQUEST_ACCEPTED];
+                    Connection.getFriends(_post.created_by,status,function(myFriendIds){
+                        _post.visible_users = myFriendIds.friends_ids;
+                        _post.visible_users.push(_post.created_by);
+                        callBack(null)
+                    });
+                }
+                //Add to list it is Friend only for me
+                else if(parseInt(_post.post_visible_mode) == PostVisibleMode.ONLY_MY){
+                    _post.visible_users.push(_post.created_by);
+                    callBack(null)
+                }
+
+                else if(parseInt(_post.post_visible_mode) == PostVisibleMode.SELECTED_USERS){
+                    _post.visible_users= _post.visible_users;
+                    callBack(null)
+                }
+            },
+            function savePostInDb(callBack){
+
+
+
+                Post.addNew(_post,function(postData){
+
+
+                    if(postData.status ==200){
+                        _post.post_id       = postData.post._id
+                        _post['created_at'] = postData.post.created_at;
+                    }
+                    callBack(null)
+                });
+
+            },
+            //GET SHARED POST FROM CACHE
+            function getPostFromCache(callBack){
+
+
+                var _pay_load = {
+                    q:"post_id:"+_post.shared_post_id,
+                }
+                Post.ch_getPost(_post.created_by,_pay_load,function(csResultSet){
+                    var selected_post = csResultSet[0];
+                    delete selected_post.date;
+                    delete selected_post.comment_count;
+                    delete selected_post.like_count;
+                    delete selected_post.liked_user;
+                    delete selected_post.is_i_liked;
+                    delete selected_post.is_i_liked;
+                    delete selected_post.shared_post;
+
+                    console.log(selected_post);
+
+
+                    _post.shared_post =selected_post;
+                    callBack(null);
+                });
+
+            },
+            function saveInCache(callBack){
+                Post.addToCache(_post.visible_users,_post,function(chData){ });
+                callBack(null)
+            },
+            function finalizedPost(callBack){
+                var query={
+                    q:"user_id:"+_post.created_by.toString(),
+                    index:'idx_usr'
+                };
+                _post['date'] = DateTime.explainDate(_post.created_at)
+                //Find User from Elastic search
+                ES.search(query,function(csResultSet){
+                    delete _post['created_by'];
+                    _post['created_by'] = csResultSet.result[0];
+                    callBack(null);
+
+                });
+            }
+
+        ],function(err,resultSet){
+            callBack(_post)
+        });
     }
 
 }

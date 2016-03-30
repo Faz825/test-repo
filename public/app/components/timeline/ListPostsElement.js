@@ -8,8 +8,8 @@ import Session  from '../../middleware/Session';
 import Lib    from '../../middleware/Lib';
 import CommentElement from './CommentElement';
 import ProgressBar from '../elements/ProgressBar';
-
-const ListPostsElement  = ({posts})=>{
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+const ListPostsElement  = ({posts,onPostSubmitSuccess})=>{
 
         if(posts.length <= 0){
             return (<div />)
@@ -17,7 +17,7 @@ const ListPostsElement  = ({posts})=>{
 
         let _postElement = posts.map((post,key)=>{
 
-            return (<SinglePost postItem = {post} key={key} />)
+            return (<SinglePost postItem = {post} key={key} onPostSubmitSuccess ={(post)=>onPostSubmitSuccess(post)} />)
         });
 
         return (
@@ -45,21 +45,24 @@ class SinglePost extends React.Component{
             comments:[],
             is_i_liked:this.props.postItem.is_i_liked,
             liked_users : [],
+            isShowingModal:false,
+            iniTextisVisible:false,
+            text:"",
 
         };
-
+        this.loggedUser= Session.getSession('prg_lg');
     }
 
 
     onLikeClick(event){
-        let user = Session.getSession('prg_lg');
+
         let _this =  this;
         $.ajax({
             url: '/like/composer',
             method: "POST",
             dataType: "JSON",
             data:{__post_id:this.props.postItem.post_id},
-            headers: { 'prg-auth-header':user.token },
+            headers: { 'prg-auth-header':this.loggedUser.token },
         }).done(function (data, text) {
             if(data.status.code == 200){
                this.setState({is_i_liked:true});
@@ -68,26 +71,26 @@ class SinglePost extends React.Component{
 
     }
     onShareClick(event){
-        console.log("Share -->" ,this.state.postItem.post_id);
+
+        this.setState({isShowingModal : true});
+
+
     }
     onCommentClick(event){
-
         if(this.state.showCommentPane){
             this.setState({showCommentPane:false});
         }else{
             this.loadComment();
         }
-
     }
     loadComment(postId){
-        let user = Session.getSession('prg_lg');
         let _this =  this;
         $.ajax({
             url: '/pull/comments',
             method: "GET",
             dataType: "JSON",
             data:{__pg:0,__post_id:this.props.postItem.post_id},
-            headers: { 'prg-auth-header':user.token },
+            headers: { 'prg-auth-header':this.loggedUser.token},
             success: function (data, text) {
                 if(data.status.code == 200){
                     this.setState({
@@ -96,7 +99,6 @@ class SinglePost extends React.Component{
                         comment_count:data.comments.length
                     })
                 }
-
             }.bind(this),
             error: function (request, status, error) {
                 console.log(status);
@@ -107,14 +109,153 @@ class SinglePost extends React.Component{
     onCommentAddSuccess(){
         this.loadComment();
     }
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
+    onContentAdd(event){
+        let _text  = Lib.sanitize(event.target.innerHTML);
+        let visibilityStat = (_text)? false : true;
+        this.setState({text:_text, iniTextisVisible: visibilityStat});
 
+    }
+    onSubmitPost(event){
+
+        let post_data ={
+            __content :this.state.text,
+            __pid:this.props.postItem.post_id
+        }
+        $.ajax({
+            url: '/post/share',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.loggedUser.token },
+            data:post_data,
+            cache: false,
+
+        }).done(this.handleAjaxSuccess);
+    }
+    handleAjaxSuccess(data){
+
+        if (data.status.code == 200) {
+            this.props.onPostSubmitSuccess(data.post);
+            this.setState({
+                text:"",
+                isShowingModal:false,
+                iniTextisVisible:false,
+            });
+            document.getElementById('input').innerHTML = "";
+
+        }
+    }
+    getPopup(){
+
+        const _post = this.props.postItem;
+        let post_content = "";
+        if (_post.post_mode == "NP" ){
+
+            post_content = _post.content;
+        }else if(_post.post_mode == "LE"){
+            post_content = _post.life_event;
+        }
+
+        let _profile = _post.created_by;
+        let postImgLength = _post.upload.length;
+        let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
+            _profile.images.profile_image.http_url:"";
+
+
+        let _show_share_button = (_profile.user_id != this.loggedUser.id)?true:false;
+
+        var uploaded_files = _post.upload.map((upload,key)=>{
+            if(key <= 3){
+                return (
+                    <div className="pg-newsfeed-post-upload-image" key={key}>
+                        <img src = {upload.http_url}/>
+                        {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
+                    </div>
+                )
+            }
+        });
+        return(
+            <div>
+                {this.state.isShowingModal &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
+
+                        <AddPostElementPopupText onContentAdd = {event=>this.onContentAdd(event)}
+                                                 iniTextisVisible = {this.state.iniTextisVisible}
+                                                loggedUser = {this.loggedUser}
+                                                 onSubmitPost = {event=>this.onSubmitPost(event)}/>
+
+                        <div className="row row-clr pg-newsfeed-section-common-content-post-info">
+                            <div className="pg-user-pro-pic">
+                                <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
+                            </div>
+                            <div className="pg-user-pro-info">
+                                <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}</h5>
+                                <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>
+                                {
+                                    (typeof _post.location != 'undefined' && _post.location != null)?
+                                        <p className="location_text">at - {_post.location} </p>:
+                                        null
+                                }
+                            </div>
+                            <div className="row row-clr pg-newsfeed-common-content-post-content">
+                                <p className="pg-newsfeed-post-description">{post_content}</p>
+                            </div>
+
+                            <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
+                                {uploaded_files}
+                            </div>
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
+    }
+
+    getSharedPostTemplate(_post){
+        var uploaded_files = _post.upload.map((upload,key)=>{
+            if(key <= 3){
+                return (
+                    <div className="pg-newsfeed-post-upload-image" key={key}>
+                        <img src = {upload.http_url}/>
+                        {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
+                    </div>
+                )
+            }
+        });
+        return(
+            <div className="row row-clr pg-newsfeed-section-common-content-post-info">
+                <div className="pg-user-pro-pic">
+                    <img src={profile_image} alt={_post.created_by.first_name + " " + _post.created_by.last_name} className="img-responsive"/>
+                </div>
+                <div className="pg-user-pro-info">
+                    <h5 className="pg-newsfeed-profile-name">{_post.created_by.first_name + " " + _post.created_by.last_name} <i className="mhs img sp_wbrxMs0Iv2Z_2x sx_1c5f90"><u>to</u></i></h5>
+                    <p className="pg-newsfeed-post-time">{_post.created_by.date.time_a_go}</p>
+                    {
+                        (typeof _post.location != 'undefined' && _post.location != null)?
+                            <p className="location_text">at - {_post.location} </p>:
+                            null
+                    }
+                </div>
+                <div className="row row-clr pg-newsfeed-common-content-post-content">
+                    <p className="pg-newsfeed-post-description">{post_content}</p>
+                </div>
+
+                <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
+                    {uploaded_files}
+                </div>
+            </div>
+        )
+    }
     render(){
 
         if(typeof  this.props.postItem == 'undefined'){
             return(<div />);
         }
-
-
 
         const _post = this.props.postItem;
 
@@ -133,6 +274,8 @@ class SinglePost extends React.Component{
             _profile.images.profile_image.http_url:"";
 
 
+        let _show_share_button = (_profile.user_id != this.loggedUser.id)?true:false;
+
         var uploaded_files = _post.upload.map((upload,key)=>{
             if(key <= 3){
                 return (
@@ -142,13 +285,9 @@ class SinglePost extends React.Component{
                     </div>
                 )
             }
-        })
-
+        });
 
         return (
-
-
-
 
             <div className="pg-timeline-white-box pg-top-round-border pg-add-margin-top">
                 <div className="row row-clr pg-newsfeed-section-common-content-inner pg-rm-padding-bottom">
@@ -157,7 +296,7 @@ class SinglePost extends React.Component{
                             <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
                         </div>
                         <div className="pg-user-pro-info">
-                            <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}</h5>
+                            <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name} <i className="mhs img sp_wbrxMs0Iv2Z_2x sx_1c5f90"><u>to</u></i></h5>
                             <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>
                             {
                                 (typeof _post.location != 'undefined' && _post.location != null)?
@@ -165,15 +304,14 @@ class SinglePost extends React.Component{
                                     null
                             }
                         </div>
-                        <div className="row row-clr pg-newsfeed-common-content-post-content">
 
+
+                        <div className="row row-clr pg-newsfeed-common-content-post-content">
                             <p className="pg-newsfeed-post-description">{post_content}</p>
                         </div>
 
                         <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
-
                             {uploaded_files}
-
                         </div>
                         <PostActionBar comment_count={_post.comment_count}
                                        onLikeClick = {event=>this.onLikeClick()}
@@ -181,7 +319,8 @@ class SinglePost extends React.Component{
                                        onCommentClick = {event=>this.onCommentClick()}
                                        OnLikeHover = {event=>this.loadLikedUsers()}
                                        is_i_liked = {this.state.is_i_liked}
-                                       liked_users = {_post.liked_user}/>
+                                       liked_users = {_post.liked_user}
+                                       show_share_button ={true}/>
 
                         {
                             (_post.liked_user.length > 0)?
@@ -190,7 +329,6 @@ class SinglePost extends React.Component{
                                     likes ={_post.liked_user}/>
                                 :null
                         }
-
 
                         {
                             (this.state.showCommentPane) ? <CommentElement
@@ -201,8 +339,7 @@ class SinglePost extends React.Component{
                             : ""
                         }
 
-
-
+                        {this.getPopup()}
                     </div>
                 </div>
             </div>
@@ -218,12 +355,11 @@ class SinglePost extends React.Component{
  * @param onComment
  * @constructor
  */
-const PostActionBar =({comment_count,onLikeClick,onShareClick,onCommentClick,liked_users,is_i_liked})=>{
+const PostActionBar =({comment_count,onLikeClick,onShareClick,onCommentClick,liked_users,is_i_liked,show_share_button})=>{
     let __opt ={};
     if(is_i_liked){
         __opt['style'] = {color:"#61b3de", "pointer-events": "none",cursor: "default"}
     }
-
 
     return (
         <div className="row pg-newsfeed-common-content-post-status">
@@ -234,19 +370,20 @@ const PostActionBar =({comment_count,onLikeClick,onShareClick,onCommentClick,lik
                 <a href="javascript:void(0)"
                    onClick ={(event)=>{onCommentClick(event)}}
                    className="pg-newsfeed-status-left-section-icon"><i className="fa fa-comment"></i> Comment</a>
-                <a href="javascript:void(0)"
-                   onClick ={(event)=>{onShareClick(event)}}
-                   className="pg-newsfeed-status-left-section-icon"><i className="fa fa-share-alt"></i> Share</a>
+                {
+                    (show_share_button)?
+                        <a href="javascript:void(0)"
+                           onClick ={(event)=>{onShareClick(event)}}
+                           className="pg-newsfeed-status-left-section-icon"><i className="fa fa-share-alt"></i> Share</a>
+                        :null
+                }
             </div>
             <div className="pg-newsfeed-status-right-section">
                 <a href="#" className="pg-newsfeed-status-right-section-view-comment">{comment_count}</a>
             </div>
-
         </div>
     );
-
 };
-
 
 /**
  * Display Like Sumery
@@ -278,6 +415,32 @@ const LikeSummery=({likes,visibility}) =>{
 
                     } like this...
                 </p>
+            </div>
+        </div>
+    )
+}
+
+
+
+
+export const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost})=>{
+    let full_name = loggedUser.first_name + " " +loggedUser.last_name;
+    return (
+        <div id="pg_content_1" className="row row_clr pg-newsfeed-post-content tab_info clearfix">
+            <div className="pg-user-pro-pic">
+                <img src={loggedUser.profile_image} alt={full_name} className="img-responsive" />
+            </div>
+
+
+            <div className="editerHolder">
+                <div id="input" contentEditable={true}
+                     className="containable-div"
+                     onInput={(event)=>{onContentAdd(event)}}></div>
+            </div>
+
+            <div className="col-xs-4">
+                <a href="javascript:void(0)" onClick={(event)=>onSubmitPost(event)} className="pg-status-post-btn">post</a>
+
             </div>
         </div>
     )

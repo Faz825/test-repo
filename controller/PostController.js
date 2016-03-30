@@ -82,6 +82,30 @@ var PostController ={
             });
         });
 
+    },
+
+    /**
+     * Share post on time line
+     * @param res
+     * @param res
+     */
+    sharePost:function(req,res){
+
+        var data ={
+            content:req.body.__content,
+            created_by:CurrentSession.id,
+            shared_post_id:req.body.__pid,
+            post_visible_mode:PostVisibleMode.PUBLIC,
+            post_mode:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostConfig.SHARED_POST,
+        }
+        var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
+        TimeLinePostHandler.sharePost(data,function(resultSet){
+            var outPut ={};
+            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['post']      = resultSet;
+            res.status(200).send(outPut);
+            return 0;
+        });
     }
 
 
