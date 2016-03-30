@@ -53,7 +53,7 @@ class SinglePost extends React.Component{
         this.loggedUser= Session.getSession('prg_lg');
 
         this.lifeEvent;
-
+        this.sharedPos = false;
     }
 
 
@@ -239,6 +239,8 @@ class SinglePost extends React.Component{
         }else if(_post.post_mode == "LE"){
             post_content = _post.life_event;
             this.lifeEvent = post_content.toLowerCase().replace(/ /g,"-");
+        }else if(_post.post_mode == "SP"){
+            this.sharedPost = true;
         }
 
         let _profile = _post.created_by;
@@ -260,6 +262,7 @@ class SinglePost extends React.Component{
             }
         });
 
+        console.log(_post.shared_post);
 
         return (
 
@@ -270,7 +273,15 @@ class SinglePost extends React.Component{
                             <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
                         </div>
                         <div className="pg-user-pro-info">
-                            <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name} <i className="mhs img sp_wbrxMs0Iv2Z_2x sx_1c5f90"><u>to</u></i></h5>
+                            <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}
+                                {
+                                    this.sharedPost?
+                                        (_post.shared_post.created_by.user_id == this.loggedUser.id)?
+                                        <span className="sharedText"> shared own post</span>
+                                        :<span className="post-owner-name"><i className="fa fa-caret-right"></i>{_profile.first_name + " " + _profile.last_name + " post"}</span>
+                                    : null
+                                }
+                            </h5>
                             <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>
                             {
                                 (typeof _post.location != 'undefined' && _post.location != null)?
@@ -295,6 +306,11 @@ class SinglePost extends React.Component{
                         <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
                             {uploaded_files}
                         </div>
+                        {
+                            (this.sharedPost)?
+                            <SharedPost sharedPostData={_post.shared_post} />
+                            :null
+                        }
                         <PostActionBar comment_count={_post.comment_count}
                                        onLikeClick = {event=>this.onLikeClick()}
                                        onShareClick = {event=>this.onShareClick()}
@@ -323,6 +339,78 @@ class SinglePost extends React.Component{
 
                         {this.getPopup()}
                     </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+export class SharedPost extends React.Component{
+    constructor(props){
+        super(props);
+
+        this.state={}
+
+        this.lifeEvent;
+    }
+
+    render() {
+        let sharedPost = this.props.sharedPostData,
+            post_content;
+
+        if(sharedPost.post_mode == "LE"){
+            post_content = sharedPost.life_event;
+            this.lifeEvent = post_content.toLowerCase().replace(/ /g,"-");
+        }else if(sharedPost.post_mode == "NP"){
+            post_content = sharedPost.content;
+        }
+
+        let _profile = sharedPost.created_by;
+        let postImgLength = sharedPost.upload.length;
+        let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
+            _profile.images.profile_image.http_url:"";
+
+
+        var uploaded_files = sharedPost.upload.map((upload,key)=>{
+            if(key <= 3){
+                return (
+                    <div className="pg-newsfeed-post-upload-image" key={key}>
+                        <img src = {upload.http_url}/>
+                        {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
+                    </div>
+                )
+            }
+        });
+
+        return (
+            <div className="shared-post-holder">
+                <div className="pg-user-pro-pic">
+                    <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
+                </div>
+                <div className="pg-user-pro-info">
+                    <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}</h5>
+                    {
+                        (typeof sharedPost.location != 'undefined' && sharedPost.location != null)?
+                            <p className="location_text">at - {sharedPost.location} </p>:
+                            null
+                    }
+                </div>
+
+                <div className="row row-clr pg-newsfeed-common-content-post-content">
+                    {
+                        (this.lifeEvent)?
+                        <div className="life-event-holder">
+                            <img src={"/images/life-events/" + this.lifeEvent + ".png"} alt={post_content} className="event-img"/>
+                            <p className="life-event-title">{post_content}</p>
+                        </div>
+                        :
+                        <p className="pg-newsfeed-post-description">{post_content}</p>
+                    }
+
+                </div>
+
+                <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
+                    {uploaded_files}
                 </div>
             </div>
         );
