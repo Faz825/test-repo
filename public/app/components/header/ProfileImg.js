@@ -46,7 +46,9 @@ export default class ProfileImg extends React.Component{
         return (
           <div className="pg-top-profile-pic-box">
             <div className="proImgholder">
-              <img src={this.state.imgSrc} alt="Profile-Pic" className="img-responsive"/>
+            <a href="javascript:void(0)" onClick={event=>this.loadProfile(event)}>
+                <img src={this.state.imgSrc} alt="Profile-Pic" className="img-responsive"/>
+            </a>
             </div>
             <div className="pg-top-profile-pic-options">
                 <a href="javascript:void(0)" onClick={event=>this.logout(event)}><img src="/images/pg-home-v6_06.png" alt="" className="img-responsive"/></a>

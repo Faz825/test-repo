@@ -333,6 +333,34 @@
     text-decoration: none;
 }
 
+/* Life Event */
+.life-event-holder{
+    text-align: center;
+    margin: 15px 0;
+}
+
+.life-event-holder .life-event-title{
+    font: 1em 'montserratsemi_bold', sans-serif;
+    text-transform: capitalize;
+    margin: 10px 0 0;
+}
+
+.life-event-dropdown-wrapper .pgs-life-event-select{
+    border: none;
+    border-bottom: 1px solid;
+    float: left;
+    width: 85%;
+    height: 28px;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    margin-top: 5px;
+}
+
+.life-event-dropdown-wrapper .pgs-life-event-select:focus{
+    box-shadow: none;
+}
+
 /** comment area **/
 
 .pg-comment-row-inner{

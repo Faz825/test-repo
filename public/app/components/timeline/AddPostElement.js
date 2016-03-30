@@ -472,14 +472,13 @@ export class LifeEventSelector extends React.Component{
     render(){
         const {life_events} = this.state;
 
-
         return (
-            <div>
+            <div className="life-event-dropdown-wrapper">
                 <select name="life_events"
-                        className="pgs-life-event-select"
+                        className="pgs-life-event-select form-control"
                         value={this.props.defaultOpt}
                         onChange={this.selectChange.bind(this)} >
-                    <option/>
+                    <option value="">Select Life Event</option>
                     {life_events.map(function(lifeEvent, i){
                         return <option value={lifeEvent.name}
                                        key={i}

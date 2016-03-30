@@ -44,9 +44,10 @@ class SinglePost extends React.Component{
             showCommentPane:false,
             comments:[],
             is_i_liked:this.props.postItem.is_i_liked,
-            liked_users : [],
-
+            liked_users : []
         };
+
+        this.lifeEvent;
 
     }
 
@@ -125,6 +126,7 @@ class SinglePost extends React.Component{
             post_content = _post.content;
         }else if(_post.post_mode == "LE"){
             post_content = _post.life_event;
+            this.lifeEvent = post_content.toLowerCase().replace(/ /g,"-");
         }
 
         let _profile = _post.created_by;
@@ -144,12 +146,7 @@ class SinglePost extends React.Component{
             }
         })
 
-
         return (
-
-
-
-
             <div className="pg-timeline-white-box pg-top-round-border pg-add-margin-top">
                 <div className="row row-clr pg-newsfeed-section-common-content-inner pg-rm-padding-bottom">
                     <div className="row row-clr pg-newsfeed-section-common-content-post-info">
@@ -166,8 +163,15 @@ class SinglePost extends React.Component{
                             }
                         </div>
                         <div className="row row-clr pg-newsfeed-common-content-post-content">
-
-                            <p className="pg-newsfeed-post-description">{post_content}</p>
+                            {
+                                (this.lifeEvent)?
+                                <div className="life-event-holder">
+                                    <img src={"/images/life-events/" + this.lifeEvent + ".png"} alt={post_content} className="event-img"/>
+                                    <p className="life-event-title">{post_content}</p>
+                                </div>
+                                :
+                                <p className="pg-newsfeed-post-description">{post_content}</p>
+                            }
                         </div>
 
                         <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
@@ -184,7 +188,7 @@ class SinglePost extends React.Component{
                                        liked_users = {_post.liked_user}/>
 
                         {
-                            (_post.liked_user.length > 0)?
+                            (typeof _post.liked_use != 'undefined' &&  _post.liked_user.length > 0)?
                                 <LikeSummery
                                     visibility={true}
                                     likes ={_post.liked_user}/>
@@ -221,9 +225,8 @@ class SinglePost extends React.Component{
 const PostActionBar =({comment_count,onLikeClick,onShareClick,onCommentClick,liked_users,is_i_liked})=>{
     let __opt ={};
     if(is_i_liked){
-        __opt['style'] = {color:"#61b3de", "pointer-events": "none",cursor: "default"}
+        __opt['style'] = {color:"#61b3de", "pointerEvents": "none",cursor: "default"}
     }
-
 
     return (
         <div className="row pg-newsfeed-common-content-post-status">
