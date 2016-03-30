@@ -51,6 +51,9 @@ class SinglePost extends React.Component{
 
         };
         this.loggedUser= Session.getSession('prg_lg');
+
+        this.lifeEvent;
+
     }
 
 
@@ -156,6 +159,7 @@ class SinglePost extends React.Component{
             post_content = _post.content;
         }else if(_post.post_mode == "LE"){
             post_content = _post.life_event;
+            this.lifeEvent = post_content.toLowerCase().replace(/ /g,"-");
         }
 
         let _profile = _post.created_by;
@@ -216,40 +220,8 @@ class SinglePost extends React.Component{
         )
     }
 
-    getSharedPostTemplate(_post){
-        var uploaded_files = _post.upload.map((upload,key)=>{
-            if(key <= 3){
-                return (
-                    <div className="pg-newsfeed-post-upload-image" key={key}>
-                        <img src = {upload.http_url}/>
-                        {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
-                    </div>
-                )
-            }
-        });
-        return(
-            <div className="row row-clr pg-newsfeed-section-common-content-post-info">
-                <div className="pg-user-pro-pic">
-                    <img src={profile_image} alt={_post.created_by.first_name + " " + _post.created_by.last_name} className="img-responsive"/>
-                </div>
-                <div className="pg-user-pro-info">
-                    <h5 className="pg-newsfeed-profile-name">{_post.created_by.first_name + " " + _post.created_by.last_name} <i className="mhs img sp_wbrxMs0Iv2Z_2x sx_1c5f90"><u>to</u></i></h5>
-                    <p className="pg-newsfeed-post-time">{_post.created_by.date.time_a_go}</p>
-                    {
-                        (typeof _post.location != 'undefined' && _post.location != null)?
-                            <p className="location_text">at - {_post.location} </p>:
-                            null
-                    }
-                </div>
-                <div className="row row-clr pg-newsfeed-common-content-post-content">
-                    <p className="pg-newsfeed-post-description">{post_content}</p>
-                </div>
-
-                <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
-                    {uploaded_files}
-                </div>
-            </div>
-        )
+    getSharedPostTemplate(sharedPost){
+        console.log(sharedPost)
     }
     render(){
 
@@ -287,6 +259,7 @@ class SinglePost extends React.Component{
             }
         });
 
+
         return (
 
             <div className="pg-timeline-white-box pg-top-round-border pg-add-margin-top">
@@ -306,8 +279,22 @@ class SinglePost extends React.Component{
                         </div>
 
 
+
                         <div className="row row-clr pg-newsfeed-common-content-post-content">
                             <p className="pg-newsfeed-post-description">{post_content}</p>
+                        </div>
+
+                        <div className="row row-clr pg-newsfeed-common-content-post-content">
+                            {
+                                (this.lifeEvent)?
+                                <div className="life-event-holder">
+                                    <img src={"/images/life-events/" + this.lifeEvent + ".png"} alt={post_content} className="event-img"/>
+                                    <p className="life-event-title">{post_content}</p>
+                                </div>
+                                :
+                                <p className="pg-newsfeed-post-description">{post_content}</p>
+                            }
+
                         </div>
 
                         <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
@@ -323,7 +310,7 @@ class SinglePost extends React.Component{
                                        show_share_button ={true}/>
 
                         {
-                            (_post.liked_user.length > 0)?
+                            (typeof _post.liked_use != 'undefined' &&  _post.liked_user.length > 0)?
                                 <LikeSummery
                                     visibility={true}
                                     likes ={_post.liked_user}/>
@@ -358,7 +345,7 @@ class SinglePost extends React.Component{
 const PostActionBar =({comment_count,onLikeClick,onShareClick,onCommentClick,liked_users,is_i_liked,show_share_button})=>{
     let __opt ={};
     if(is_i_liked){
-        __opt['style'] = {color:"#61b3de", "pointer-events": "none",cursor: "default"}
+        __opt['style'] = {color:"#61b3de", "pointerEvents": "none",cursor: "default"}
     }
 
     return (
