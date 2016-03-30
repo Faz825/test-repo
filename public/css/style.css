@@ -2324,6 +2324,37 @@ textarea{
 	font-size: 0.6em;
 }
 
+#incomingCall{
+	text-align:center;
+}
+
+#answer, #reject{
+	border-radius:20px;
+}
+
+#detailPane{
+	border-left:1px solid #e6e9ec;
+}
+
+#inCallPane_inner_div{
+	background-color: #514c46;
+	padding-top: 30px;
+	padding-bottom: 110px;
+	height: auto;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+#inCallOther{font-size:18px;color:#c7bfb2;}
+
+#onCall{font-size:18px;color:#fff;}
+
+.top-padding-20 { padding-top: 20px; }
+.img-custom-medium { width: 75px; height: 75px; }
+.bottom-margin-20 { margin-bottom: 20px; }
+.income-call{margin-right: 20px;}
+.hangup-outer{padding-right: 20px;}
+
 /* Large Screen */
 @media (min-width: 1200px) {
 

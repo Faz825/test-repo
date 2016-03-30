@@ -30,29 +30,55 @@ import Session  from './Session.js';
          var currentChatUser = null;
          var convUsers = [];
          var unreadCount = 0;
+         var incomingCallUser = [];
+         var outGoingCallUser = [];
 
          // A conversation has changed
          b6.on('conversation', function(c, op) {
-             //console.log('onConv', c);
-             //console.log('onConv', op);
              onConversationChange(c, op);
          });
 
          // A message has changed
          b6.on('message', function(m, op) {
-             //console.log('onMsg', m);console.log('onMsg', op);
              onMessageChange(m, op);
          });
 
          // Incoming call from another user
          b6.on('incomingCall', function(c) {
-             console.log('Incoming call', c);
              attachCallEvents(c);
-             var s = b6.getNameFromIdentity(c.other) + ' is ' + (c.options.video ? 'video ' : '') + 'calling...';
-             $('#incomingCallFrom').text(s);
-             $('#incomingCall')
-                 .data({'dialog': c})
-                 .show();
+             var cf = b6.getNameFromIdentity(c.other);
+
+             var title_array = cf.split('proglobe');
+             var title = title_array[1];
+
+             $.ajax({
+                 url: '/get-profile/'+title,
+                 method: "GET",
+                 dataType: "JSON",
+                 success: function (data, text) {
+
+                     if (data.status.code == 200 && data.profile_data != null) {
+
+                         incomingCallUser[title] = data.profile_data;
+
+                         var incomingCallUserName = data.profile_data['first_name']+" "+data.profile_data['last_name'] + ' is ' + (c.options.video ? 'video ' : '') + 'calling...';
+                         $('#incomingCallFrom').text(incomingCallUserName);
+
+                         var incomingCallProfilePicture = "/images/default-profile-pic.png";
+                         if (data.profile_data['images'] != null && data.profile_data['images']['profile_image'] != null) {
+                             $("#incoming_call_alert_other_profile_image").attr('src', incomingCallProfilePicture);
+                         }
+
+                         $('#incomingCall')
+                             .data({'dialog': c})
+                             .show();
+
+                         $('#incomingCallAlert').modal('show');
+
+                     }
+                 }});
+
+
          });
 
          this.bit6Auth = function (isNewUser) {
@@ -66,15 +92,7 @@ import Session  from './Session.js';
                      this.bit6Auth(true);
                  }
                  else {
-                     //if (b6.session.authenticated) {
-                     //    console.log('User is logged in');
-                     //}
-                     //else {
-                     //    //console.log('User is not logged in');
-                     //}
-                     //loginDone();
                      me = Session.getSession('prg_lg');
-                     //console.log("my profile image => ",me['images']);
                      return true;
                  }
              });
@@ -82,8 +100,6 @@ import Session  from './Session.js';
 
          // Update Conversation View
          function onConversationChange(c, op) {
-             //console.log(c)
-             //console.log("op = "+op)
              var chatList = $('#chatList');
              var tabId = tabDomIdForConversation(c);
              var msgsId = msgsDomIdForConversation(c);
@@ -91,16 +107,9 @@ import Session  from './Session.js';
              var msgsDiv = $(msgsId);
 
              var chatListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
-             //var chatListDataDiv = $('');
 
              // Conversation deleted
              if (op < 0) {
-                 if (!c.deleted) {
-                     //console.log('Warning: Deleting a conversation with no deleted property!', c);
-                 }
-                 if (tabDiv.length == 0 || msgsDiv.length == 0) {
-                     //console.log('Warning: Deleting a conversation with no DOM element!', c);
-                 }
                  tabDiv.remove();
                  msgsDiv.remove();
                  return
@@ -114,11 +123,7 @@ import Session  from './Session.js';
              if (op > 0) {
 
                  if (c.deleted) {
-                     //console.log('Error: Adding a deleted conversation', c);
                      return;
-                 }
-                 if (tabDiv.length > 0 || msgsDiv.length > 0) {
-                     //console.log('Error: Adding a conversation that has DOM elements!', c);
                  }
 
                  if(title != 'undefined'){
@@ -141,7 +146,7 @@ import Session  from './Session.js';
 
                                  // Entry in the Chat List
                                  if(currentChatUserName == proglobe_title){
-                                     currentChatUser = data.profile_data;//console.log(currentChatUser['images']);
+                                     currentChatUser = data.profile_data;
                                      tabDiv = $('<div class="tab msg-holder msg-holder-selected" />')
                                          .attr('id', tabId.substring(1))
                                          .append(chatListADiv);
@@ -201,7 +206,7 @@ import Session  from './Session.js';
 
                                  if(currentChatUri != null){
 
-                                     var conv = b6.getConversation(currentChatUri); //console.log(conv)
+                                     var conv = b6.getConversation(currentChatUri);
 
                                      if(conv != null){
 
@@ -210,11 +215,10 @@ import Session  from './Session.js';
                                              // Some messages have been marked as read
                                              // update chat list
                                              unreadCount -= 1;
-                                             console.log('Messages marked as read');
                                          }
 
 
-                                         var msgsDiv = $( msgsDomIdForConversation(conv) );//console.log(msgsDiv)
+                                         var msgsDiv = $( msgsDomIdForConversation(conv) );
                                          // Show only message container for this conversation
                                          // Hide all the other message containers
                                          msgsDiv.show().siblings().hide();
@@ -228,17 +232,14 @@ import Session  from './Session.js';
 
                                  }
 
-                                 //console.log(c.id);console.log(c.messages.length);
                                  for(var i = 0; i < c.messages.length; i++){
-                                     //console.log("message emit from conversation");
-                                     //b6.emit('message', o.messages[i], op);
                                      onMessageChange(c.messages[i], op)
                                  }
 
                                  if(unreadCount > 0){
                                      $("#inbox_count").html('<span class="total">'+unreadCount+'</span>');
+                                     $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
                                  }
-
 
                              }
                          }.bind(this),
@@ -246,20 +247,12 @@ import Session  from './Session.js';
                              console.log(request.responseText);
                              console.log(status);
                              console.log(error);
-
                          }
                      });
 
                  }
              }
 
-             //if(currentChatUri != null && latestChatUser != null){
-             //    var uri_array = currentChatUri.split('proglobe');
-             //    var currentChatUriTitle = uri_array[1];
-             //    if(currentChatUriTitle == 'undefined'){
-             //        //window.location.href = '/chat/'+latestChatUser;
-             //    }
-             //}
          }
 
          // Get Chat Tab jQuery selector for a Conversation
@@ -334,20 +327,11 @@ import Session  from './Session.js';
          // Update Message View
          var onMessageChange = function (m, op) {
 
-             //console.log(m);
-
              var divId = domIdForMessage(m);
              var div = $(divId);
 
              // Message deleted
              if (op < 0) {
-                 console.log('Deleting msg div', m);
-                 if (!m.deleted) {
-                     console.log('Warning: Deleting a message with no deleted property!', m);
-                 }
-                 if (div.length === 0) {
-                     console.log('Warning: Deleting a message with no DOM element!', m);
-                 }
                  div.remove();
                  return;
              }
@@ -356,16 +340,13 @@ import Session  from './Session.js';
              if (op > 0) {
 
                  if (m.deleted) {
-                     console.log('Error: Adding a deleted message', m);
                      return;
                  }
                  if (div.length > 0) {
                      div.remove();
-                     //console.log('Error: Adding a message that has a DOM element!', m);
                  }
 
                  var cssClass = m.incoming() ? 'receiver' : 'sender';
-                 //console.log(cssClass)
 
                  div = $('<div class="chat-block ' + cssClass + '" />').attr('id', divId.substring(1));
 
@@ -419,9 +400,6 @@ import Session  from './Session.js';
                      }
                  }
 
-                 // Latest updated stamp
-                 //var stamp = getRelativeTime(m.updated);
-
                  var my_name = '';
                  var my_prof_img = '';
                  var other_name = '';
@@ -449,7 +427,6 @@ import Session  from './Session.js';
 
                  // Text content
                  if (text) {
-                     //console.log("hereee");
                      div.append('<img src="' + display_prof_img + '" alt="' + display_name + '" width="40px" height="40px"/>');
                      div.append('<div class="chat-msg-body"><span class="user-name">'+display_name+'</span><p class="chat-msg">'+text+'</p></div>');
                  }
@@ -457,7 +434,7 @@ import Session  from './Session.js';
                  // Find the container for this message
                  var convId = m.getConversationId();
                  var c = b6.getConversation(convId);
-                 var msgsDiv = $( msgsDomIdForConversation(c) );//console.log(msgsDiv);
+                 var msgsDiv = $( msgsDomIdForConversation(c) );
                  msgsDiv.append(div);
 
                  // If the conversation for this message is visible
@@ -477,6 +454,8 @@ import Session  from './Session.js';
 
          this.startOutgoingCall = function(to, video){
 
+             console.log("this.startOutgoingCall")//detailPane
+
              // Outgoing call params
              var opts = {
                  audio: audioCall,
@@ -492,29 +471,33 @@ import Session  from './Session.js';
 
          // Attach call state events to a RtcDialog
          function attachCallEvents(c) {
-             console.log(c);
+             console.log("attachCallEvents");
              // Call progress
              c.on('progress', function() {
+                 console.log("PROGRESS")
                  showInCallName();
-                 console.log('CALL progress', c);
+                 //console.log('CALL progress', c);
              });
              // Call answered
              c.on('answer', function() {
-                 console.log('CALL answered', c);
+                 console.log("ANSWER")
+                 //console.log('CALL answered', c);
              });
              // Error during the call
              c.on('error', function() {
-                 console.log('CALL error', c);
+                 console.log("ERROR")
+                 //console.log('CALL error', c);
              });
              // Call ended
              c.on('end', function() {
+                 console.log("END")
                  showInCallName();
-                 console.log('CALL ended', c);
+                 //console.log('CALL ended', c);
                  // No more dialogs?
                  if (b6.dialogs.length === 0) {
                      // Hide InCall UI
-                     $('#detailPane').removeClass('hidden');
-                     $('#inCallPane').addClass('hidden');
+                     //$('#detailPane').removeClass('hidden');
+                     $('#detailPane').addClass('hidden');
                  }
                  // Hide Incoming Call dialog
                  // TODO: check that it was for this dialog
@@ -525,15 +508,12 @@ import Session  from './Session.js';
          }
 
          function updateInCallUI(c, opts) {
+
+             //console.log("updateInCallUI")
              showInCallName();
 
-             $('body').addClass('detail');
-
-             $('#detailPane').addClass('hidden');
-             $('#inCallPane').removeClass('hidden');
-
-             $('#incallVideo').toggleClass('active', c.options.video);
-             $('#incallScreen').toggleClass('active', c.options.screen);
+             //$('#detailPane').addClass('hidden');
+             $('#detailPane').removeClass('hidden');
 
              // Start/update the call
              c.connect(opts);
@@ -541,20 +521,80 @@ import Session  from './Session.js';
 
          // Show all the call participants
          function showInCallName() {
+             //console.log("showInCallName")
              var s = '';
              for(var i in b6.dialogs) {
+                 //console.log(i, b6.dialogs[i])
                  var d = b6.dialogs[i];
                  if (i > 0) {
                      s += ', ';
                  }
-                 s += b6.getNameFromIdentity(d.other);
+
+                 var title_array = d.other.split('proglobe');
+                 var title = title_array[1];
+
+                 $.ajax({
+                     url: '/get-profile/'+title,
+                     method: "GET",
+                     dataType: "JSON",
+                     success: function (data, text) {
+
+                         if (data.status.code == 200 && data.profile_data != null) {
+
+                             outGoingCallUser[title] = data.profile_data;
+
+                             var outGoingCallUserName = data.profile_data['first_name']+" "+data.profile_data['last_name'];
+                             s += b6.getNameFromIdentity(outGoingCallUserName);
+                             $('#inCallOther').text(s);
+                         }
+                     }});
+
              }
-             $('#inCallOther').text(s);
+
          }
 
+         // 'Answer Incoming Call' click
+         this.answerCall = function(opts){
+             console.log("answer clicked")
+             console.log(opts)
+             //var e = $('#incomingCall').hide();
+             var d = $('#incomingCall').data();
+             // Call controller
+             if (d && d.dialog) {
+                 var c = d.dialog;
+                 // Accept the call, send local audio only
+                 updateInCallUI(c, opts);
+                 $('#incomingCall').data({'dialog': null}).hide();
+             }
+         };
+
+         // 'Reject Incoming Call' click
+         this.rejectCall = function(){
+             console.log("reject clicked")
+             var e = $('#incomingCall').hide();
+             var d = e.data();
+             // Call controller
+             if (d && d.dialog) {
+                 // Reject call
+                 d.dialog.hangup();
+                 e.data({'dialog': null});
+             }
+         };
+
+         // 'Call Hangup' click
+         this.hangupCall = function(){
+             console.log("Hangup clicked")
+             $('#detailPane').removeClass('hidden');
+             $('#inCallPane').addClass('hidden');
+             // Hangup all active calls
+             var x = b6.dialogs.slice();
+             for (var i in x) {
+                 //console.log('multi-hangup: ', x[i]);
+                 x[i].hangup();
+             }
+         };
+
      }
-
-
 
  }
 

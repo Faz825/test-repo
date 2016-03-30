@@ -17,6 +17,13 @@ let errorStyles = {
 
 export default class Index extends React.Component{
     constructor(props) {
+
+            if (window.location.protocol == 'http:' ) {
+                var url_arr = window.location.href.split('http');
+                window.location.href = 'https'+url_arr[1];
+            }
+
+
         super(props);
 
         this.state= {
@@ -53,7 +60,6 @@ export default class Index extends React.Component{
                     console.log('error', err);
                 }
                 else {
-                    console.log('message sent');
                 }
             });
         }
@@ -86,7 +92,23 @@ export default class Index extends React.Component{
 
     }
 
+    answerVideo(){
+        var opts = {audio: true, video: true};
+        Chat.answerCall(opts);
+    }
 
+    answerAudio(){
+        var opts = {audio: true, video: false};
+        Chat.answerCall(opts);
+    }
+
+    reject(){
+        Chat.rejectCall();
+    }
+
+    hangup(){
+        Chat.hangupCall();
+    }
 
     render() {
         return (
@@ -104,7 +126,7 @@ export default class Index extends React.Component{
                                 <div id="inbox_count"></div>
                             </div>
                             <div className="otherMsg">
-                                <p>Other<span className="total">7</span></p>
+                                <p>Other</p>
                             </div>
                             <div className="more">
                                 <p>more...</p>
@@ -147,7 +169,7 @@ export default class Index extends React.Component{
                             <div className="chat-view">
                                 <Scrollbars style={{ height: 335 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
                                     <div id="msgListRow">
-                                        <div class="col-xs-12">
+                                        <div className="col-xs-12">
                                             <div id="msgList"></div>
                                         </div>
                                     </div>
@@ -171,22 +193,17 @@ export default class Index extends React.Component{
                 </div>
 
 
-                <div class="modal fade" id="incomingCallAlert" tabindex="-1" role="dialog"
-                     aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-body">
-                                <div class="alert fade in" id="incomingCall" style="text-align:
-                                                    center;">
-                                    <img src="" id="incoming_call_alert_other_profile_image"
-                                         class="img-circle
-                                                                    img-custom-medium bottom-margin-20" />
+                <div className="modal fade" id="incomingCallAlert" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-body">
+                                <div className="alert fade in" id="incomingCall">
+                                    <img src="/images/default-profile-pic.png" id="incoming_call_alert_other_profile_image" className="img-circle img-custom-medium bottom-margin-20" />
                                     <h4 id="incomingCallFrom">User is calling...</h4>
                                     <p>
-                                        <button type="button" class="btn btn-success" id="answer"
-                                                style="border-radius:20px;"       >Answer</button>
-                                        <button type="button" class="btn btn-danger" id="reject"
-                                                style="border-radius:20px;">Reject</button>
+                                        <button type="button" className="btn btn-success income-call" id="answerVideo" onClick={()=>this.answerVideo()}>Video</button>
+                                        <button type="button" className="btn btn-success income-call" id="answerAudio" onClick={()=>this.answerAudio()}>Audio</button>
+                                        <button type="button" className="btn btn-danger income-call" id="reject" onClick={()=>this.reject()}>Reject</button>
                                     </p>
                                 </div>
                             </div>
@@ -194,43 +211,23 @@ export default class Index extends React.Component{
                     </div>
                 </div>
 
-                <div class="col-sm-9 fh top-padding-20" id="detailPane" style="border-left:1px solid
-                                     #e6e9ec;">
-
-                    <div class="row hidden" id="inCallPane">
-
-                        <div class="col-sm-12 fh ">
-
-                            <div class="row top-row" style="background-color:
-                                                    #514c46; padding-top: 30px; padding-bottom: 110px; height: auto;
-                                                    text-align:
-                                                    center; margin-bottom: 20px;">
-
-                                <div class="col-sm-offset-1 col-xs-offset-0 col-sm-10 col-xs-10">
-                                    <div class="row text-center" id="videoContainer">
-
+                <div className="col-sm-9 fh top-padding-20" id="detailPane">
+                    <div className="row" id="inCallPane">
+                        <div className="col-sm-12 fh">
+                            <div className="row top-row" id="inCallPane_inner_div">
+                                <div className="col-sm-offset-1 col-xs-offset-0 col-sm-10 col-xs-10">
+                                    <div className="row text-center" id="videoContainer">
                                     </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-12 top-margin-20" style="font-size:18px;">
-                                            <img src="" id="call_other_profile_image"
-                                                 class="img-responsive img-circle
-                                                                    img-custom-large pull-left left-margin-30 hidden" />
-                                            <span id="inCallOther" style="color:#c7bfb2;">Video Call</span> <span style="color:#fff;">On Call...</span>
-                                        </div>
-
-                                        <div class="col-sm-12 top-margin-5">
-                                            <div id="clock" style="color:#c7bfb2;">
-                                                <span id="hour">00</span>:<span id="min">00</span>:<span id="sec">00</span>
-                                            </div>
+                                    <div className="row">
+                                        <div className="col-sm-12 top-margin-20">
+                                            <img src="" id="call_other_profile_image" className="img-responsive img-circle img-custom-large pull-left left-margin-30 hidden" />
+                                            <span id="inCallOther">Video Call</span> <span id="onCall">On Call...</span>
                                         </div>
                                     </div>
-
-
                                 </div>
-                                <div class="col-xs-1">
-                                    <button class="btn btn-danger" id="hangup" title="Stop Call">
-                                        <span class="fa fa-square"></span>
+                                <div className="col-xs-1 hangup-outer">
+                                    <button className="btn btn-danger" id="hangup" title="Stop Call" onClick={()=>this.hangup()}>
+                                        <span className="fa fa-square"></span>
                                     </button>
                                 </div>
                             </div>
@@ -239,7 +236,7 @@ export default class Index extends React.Component{
                     </div>
 
 
-                    </div>
+                </div>
 
             </div>
 
