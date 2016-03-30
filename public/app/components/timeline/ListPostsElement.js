@@ -52,8 +52,8 @@ class SinglePost extends React.Component{
         };
         this.loggedUser= Session.getSession('prg_lg');
 
-        this.lifeEvent;
-        this.sharedPos = false;
+        this.lifeEvent="";
+        this.sharedPost = false;
     }
 
 
@@ -127,15 +127,30 @@ class SinglePost extends React.Component{
             __content :this.state.text,
             __pid:this.props.postItem.post_id
         }
+
+        let _this = this;
+
         $.ajax({
             url: '/post/share',
             method: "POST",
             dataType: "JSON",
             headers: { 'prg-auth-header':this.loggedUser.token },
             data:post_data,
-            cache: false,
+            success:function(data){
 
-        }).done(this.handleAjaxSuccess);
+                if (data.status.code == 200) {
+                    _this.props.onPostSubmitSuccess(data.post);
+                    _this.setState({
+                        text:"",
+                        isShowingModal:false,
+                        iniTextisVisible:false,
+                    });
+                    document.getElementById('input').innerHTML = "";
+
+                }
+            }
+
+        });
     }
     handleAjaxSuccess(data){
 
@@ -239,7 +254,7 @@ class SinglePost extends React.Component{
         }else if(_post.post_mode == "LE"){
             post_content = _post.life_event;
             this.lifeEvent = post_content.toLowerCase().replace(/ /g,"-");
-        }else if(_post.post_mode == "SP"){
+        }else if(_post.post_mode == "SP" ){
             this.sharedPost = true;
         }
 
@@ -262,7 +277,6 @@ class SinglePost extends React.Component{
             }
         });
 
-        console.log(_post.shared_post);
 
         return (
 
@@ -275,10 +289,8 @@ class SinglePost extends React.Component{
                         <div className="pg-user-pro-info">
                             <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}
                                 {
-                                    this.sharedPost?
-                                        (_post.shared_post.created_by.user_id == this.loggedUser.id)?
-                                        <span className="sharedText"> shared own post</span>
-                                        :<span className="post-owner-name"><i className="fa fa-caret-right"></i>{_profile.first_name + " " + _profile.last_name + " post"}</span>
+                                    this.sharedPost && typeof _post.shared_post != "undefined"?
+                                        <span className="post-owner-name"><i className="fa fa-caret-right"></i>{_post.shared_post.created_by.first_name + " " + _post.shared_post.created_by.last_name + " post"}</span>
                                     : null
                                 }
                             </h5>
@@ -292,7 +304,7 @@ class SinglePost extends React.Component{
 
                         <div className="row row-clr pg-newsfeed-common-content-post-content">
                             {
-                                (this.lifeEvent)?
+                                (this.lifeEvent != "")?
                                 <div className="life-event-holder">
                                     <img src={"/images/life-events/" + this.lifeEvent + ".png"} alt={post_content} className="event-img"/>
                                     <p className="life-event-title">{post_content}</p>
@@ -307,8 +319,8 @@ class SinglePost extends React.Component{
                             {uploaded_files}
                         </div>
                         {
-                            (this.sharedPost)?
-                            <SharedPost sharedPostData={_post.shared_post} />
+                            (this.sharedPost )?
+                                <SharedPost sharedPostData={_post.shared_post} />
                             :null
                         }
                         <PostActionBar comment_count={_post.comment_count}
@@ -351,10 +363,16 @@ export class SharedPost extends React.Component{
 
         this.state={}
 
-        this.lifeEvent;
+        this.lifeEvent = "";
     }
 
     render() {
+
+        if(typeof this.props.sharedPostData == "undefined"){
+            return (<div />);
+        }
+
+
         let sharedPost = this.props.sharedPostData,
             post_content;
 
@@ -398,7 +416,7 @@ export class SharedPost extends React.Component{
 
                 <div className="row row-clr pg-newsfeed-common-content-post-content">
                     {
-                        (this.lifeEvent)?
+                        (this.lifeEvent != "")?
                         <div className="life-event-holder">
                             <img src={"/images/life-events/" + this.lifeEvent + ".png"} alt={post_content} className="event-img"/>
                             <p className="life-event-title">{post_content}</p>

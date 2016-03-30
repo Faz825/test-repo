@@ -26,7 +26,7 @@ export default class AddPostElement extends React.Component{
     }
 
     afterPostSubmit(data){
-        console.log(data)
+
         this.props.onPostSubmitSuccess(data);
         this.setState({uuid:this.IDGenerator()})
 

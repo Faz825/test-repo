@@ -29,6 +29,8 @@ export default class Index extends React.Component{
 
         let _posts = this.state.posts;
         _posts.unshift(data);
+
+
         this.setState({posts:_posts});
 
 

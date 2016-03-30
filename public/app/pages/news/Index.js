@@ -32,6 +32,8 @@ export default class Index extends React.Component{
 
 
     }
+
+
     loadPosts(page){
 
         let user = Session.getSession('prg_lg');
@@ -119,7 +121,8 @@ export default class Index extends React.Component{
                                 <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
                                                 uname = {uname}/>
                                 <ListPostsElement posts={posts}
-                                                  uname = {uname}/>
+                                                  uname = {uname}
+                                                  onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}/>
                             </div>
                             <div className="col-xs-6"></div>
                         </div>

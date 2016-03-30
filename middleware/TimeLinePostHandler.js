@@ -175,10 +175,11 @@ var TimeLinePostHandler ={
                     delete selected_post.is_i_liked;
                     delete selected_post.shared_post;
 
-                    console.log(selected_post);
+
 
 
                     _post.shared_post =selected_post;
+                    _post.upload = [];
                     callBack(null);
                 });
 
@@ -203,6 +204,7 @@ var TimeLinePostHandler ={
             }
 
         ],function(err,resultSet){
+
             callBack(_post)
         });
     }
