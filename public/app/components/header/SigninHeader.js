@@ -48,6 +48,7 @@ export default class Header extends React.Component {
                             <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_033.png" alt="" />
                           </span>
                             <span id="unread_chat_count_header"></span>
+                            <div id="unread_chat_list"></div>
                         </a>
                         <a href="#">
                           <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_13.png" alt="" />

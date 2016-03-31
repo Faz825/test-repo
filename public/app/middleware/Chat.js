@@ -99,7 +99,7 @@ import Session  from './Session.js';
              if (op !== 0) {
                  vc.toggle(n > 0);
              }
-             console.log('VIDEO elems.count: ' + n);
+             //console.log('VIDEO elems.count: ' + n);
              // Use number of video elems to determine the layout using CSS
              var kl = n > 2 ? 'grid' : 'simple';
              vc.attr('class', kl);
@@ -127,15 +127,20 @@ import Session  from './Session.js';
              var chatList = $('#chatList');
              var tabId = tabDomIdForConversation(c);
              var msgsId = msgsDomIdForConversation(c);
+             var notificationId = notificationDomIdForConversation(c);
              var tabDiv = $(tabId);
              var msgsDiv = $(msgsId);
+             var notificationWrapperDiv = $("#unread_chat_list");
+             var notificationDiv = $(notificationId);
 
              var chatListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
+             var notificationListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
 
              // Conversation deleted
              if (op < 0) {
                  tabDiv.remove();
                  msgsDiv.remove();
+                 notificationDiv.remove();
                  return
              }
 
@@ -180,8 +185,12 @@ import Session  from './Session.js';
                                          .attr('id', tabId.substring(1))
                                          .append(chatListADiv);
                                  }
-
                                  chatList.append(tabDiv);
+
+                                 notificationDiv = $('<div class="tab msg-holder" />')
+                                     .attr('id', notificationId.substring(1))
+                                     .append(notificationListADiv);
+                                 notificationWrapperDiv.append(notificationDiv)
 
                                  // Update Conversation data
                                  var stamp = getRelativeTime(c.updated);
@@ -211,6 +220,12 @@ import Session  from './Session.js';
                                  tabDiv.find('.chat-body').find('.msg').html(latestText);
                                  tabDiv.find('.chat-body').find('.chat-date').html(stamp);
 
+                                 notificationDiv.find('a').attr('href', '/chat/'+title);
+                                 notificationDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
+                                 notificationDiv.find('.chat-body').find('.connection-name').html(connection_name);
+                                 notificationDiv.find('.chat-body').find('.msg').html(latestText);
+                                 notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
+
                                  // If the updated conversation is newer than the top one -
                                  // move this conversation to the top
                                  var top = chatList.children(':first');
@@ -221,6 +236,19 @@ import Session  from './Session.js';
 
                                      if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
                                          top.before(tabDiv);
+                                     }
+                                 }
+
+                                 // If the updated conversation is newer than the top one -
+                                 // move this conversation to the top
+                                 var notificationTop = notificationWrapperDiv.children(':first');
+                                 if (notificationTop.length > 0 && title != 'undefined') {
+                                     var notificationTopTabId = notificationTop.attr('id');
+                                     var notificationTopConvId = domIdToConversationId(notificationTopTabId);
+                                     var notificationTopConv = b6.getConversation(notificationTopConvId);
+
+                                     if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
+                                         notificationTop.before(notificationDiv);
                                      }
                                  }
 
@@ -277,6 +305,10 @@ import Session  from './Session.js';
                  }
              }
 
+         }
+
+         function notificationDomIdForConversation(c){
+             return '#notification__' + c.domId();
          }
 
          // Get Chat Tab jQuery selector for a Conversation
@@ -478,7 +510,7 @@ import Session  from './Session.js';
 
          this.startOutgoingCall = function(to, video){
 
-             console.log("this.startOutgoingCall")//detailPane
+             //console.log("this.startOutgoingCall")//detailPane
 
              // Outgoing call params
              var opts = {
@@ -495,10 +527,10 @@ import Session  from './Session.js';
 
          // Attach call state events to a RtcDialog
          function attachCallEvents(c) {
-             console.log("attachCallEvents");
+             //console.log("attachCallEvents");
              // Call progress
              c.on('progress', function() {
-                 console.log("PROGRESS")
+                 //console.log("PROGRESS")
                  showInCallName();
                  //console.log('CALL progress', c);
              });
@@ -511,17 +543,19 @@ import Session  from './Session.js';
              });
              // Call answered
              c.on('answer', function() {
-                 console.log("ANSWER")
+                 //console.log("ANSWER")
+                 $('#incomingCallAlert').modal('hide');
                  //console.log('CALL answered', c);
              });
              // Error during the call
              c.on('error', function() {
-                 console.log("ERROR")
+                 //console.log("ERROR")
+                 $('#incomingCallAlert').modal('hide');
                  //console.log('CALL error', c);
              });
              // Call ended
              c.on('end', function() {
-                 console.log("END")
+                 //console.log("END")
                  showInCallName();
                  //console.log('CALL ended', c);
                  // No more dialogs?
@@ -537,6 +571,7 @@ import Session  from './Session.js';
                      .hide();
 
                  $("#videoContainer").html("");
+                 $('#incomingCallAlert').modal('hide');
              });
          }
 
@@ -591,8 +626,8 @@ import Session  from './Session.js';
 
          // 'Answer Incoming Call' click
          this.answerCall = function(opts){
-             console.log("answer clicked")
-             console.log(opts)
+             //console.log("answer clicked")
+             //console.log(opts)
              //var e = $('#incomingCall').hide();
              var d = $('#incomingCall').data();
 
@@ -608,7 +643,7 @@ import Session  from './Session.js';
 
          // 'Reject Incoming Call' click
          this.rejectCall = function(){
-             console.log("reject clicked")
+             //console.log("reject clicked")
              var e = $('#incomingCall').hide();
              var d = e.data();
              // Call controller
@@ -616,14 +651,15 @@ import Session  from './Session.js';
                  // Reject call
                  d.dialog.hangup();
                  e.data({'dialog': null});
+                 $('#incomingCallAlert').modal('hide');
              }
          };
 
          // 'Call Hangup' click
          this.hangupCall = function(){
-             console.log("Hangup clicked")
-             $('#detailPane').removeClass('hidden');
-             $('#inCallPane').addClass('hidden');
+             //console.log("Hangup clicked")
+             //$('#detailPane').removeClass('hidden');
+             $('#detailPane').addClass('hidden');
              // Hangup all active calls
              var x = b6.dialogs.slice();
              for (var i in x) {
