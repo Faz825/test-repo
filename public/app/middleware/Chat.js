@@ -117,7 +117,24 @@ import Session  from './Session.js';
              var fn = isNewUser ? 'signup' : 'login';
              b6.session[fn]({'identity': ident, 'password': pass}, function (err) {
                  if (err) {
-                     this.bit6Auth(true);
+                     bit6AuthLocal(true);
+                 }
+                 else {
+                     me = Session.getSession('prg_lg');
+                     return true;
+                 }
+             });
+         };
+
+         function bit6AuthLocal(isNewUser) {
+             // Convert username to an identity URI
+             var ident = 'usr:proglobe_' + Session.getSession('prg_lg').user_name;
+             var pass = 'proglobe_'+Session.getSession('prg_lg').id;
+             // Call either login or signup function
+             var fn = isNewUser ? 'signup' : 'login';
+             b6.session[fn]({'identity': ident, 'password': pass}, function (err) {
+                 if (err) {
+                     bit6AuthLocal(true);
                  }
                  else {
                      me = Session.getSession('prg_lg');

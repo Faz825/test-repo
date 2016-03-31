@@ -29,7 +29,6 @@ var DefaultController   = require('../controller/DefaultController'),
     NewsController      = require('../controller/NewsController'),
     PostController      = require('../controller/PostController'),
     CommentController   = require('../controller/CommentController'),
-    ChatController      = require('../controller/ChatController');
     UploadController    = require('../controller/UploadController');
 
 

@@ -4,7 +4,7 @@
 import React from 'react';
 import { Link} from 'react-router';
 import Logo from './Logo';
-
+import { Scrollbars } from 'react-custom-scrollbars';
 import GlobalSearch from './GlobalSearch';
 import ProfileImg from './ProfileImg';
 import LogoutButton from '../../components/elements/LogoutButton';
@@ -45,7 +45,7 @@ export default class Header extends React.Component {
                           <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_09.png" alt="" />
                           <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_03.png" alt="" />
                         </a>
-                        <a  href="#" onClick={()=>this.showChatList()}>
+                        <a  href="#" onClick={()=>this.showChatList()} className="chat-dropdown-holder">
                           <span className="pg-drop-down">
                             <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_11.png" alt="" />
                             <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_033.png" alt="" />
@@ -53,8 +53,9 @@ export default class Header extends React.Component {
                             <span id="unread_chat_count_header"></span>
                             <div id="chat_notification_wrapper" className="chat-notification-wrapper">
                                 <img className="drop_downarrow" src="/images/drop_arrow.png" alt="" />
-                                <div className="chat-notification-header" id="unread_chat_list">
-                                </div>
+                                <Scrollbars style={{ height: 260 }}>
+                                  <div className="chat-notification-header" id="unread_chat_list"></div>
+                                </Scrollbars>
                             </div>
                         </a>
                         <a href="#">

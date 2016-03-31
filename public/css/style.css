@@ -2375,7 +2375,7 @@ textarea{
 	background: #fff;
 	width: 225px;
 	border-radius: 3px;
-	right: 15px;
+	right: -100px;
 	top: 55px;
 	display: none;
 	z-index: 100;
@@ -2404,7 +2404,7 @@ textarea{
 	padding-left: 9px;
 }
 
-.drop_downarrow{ position:absolute; top: -7px; right:120px; }
+.drop_downarrow{ position:absolute; top: -7px; right:110px; }
 
 #unread_chat_count_header{
     position: relative;
@@ -2418,6 +2418,9 @@ textarea{
 	border-radius: 10px;
 	font-size: 0.7em;
 	line-height: 1;
+}
+.chat-dropdown-holder{
+	position: relative;
 }
 
 #videoContainer{
