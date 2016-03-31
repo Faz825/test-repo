@@ -46,7 +46,7 @@ var PostController ={
     getPost:function(req,res){
 
         var query={
-            q:req.query.uname,
+            q:"user_name:"+req.query.uname,
             index:'idx_usr'
         };
 

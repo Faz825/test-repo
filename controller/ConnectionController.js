@@ -138,12 +138,12 @@ var ConnectionController ={
      * @param res
      */
     sendFriendRequest:function(req,res){
-        var Connection =require('mongoose').model('Connection');
+        var Connection =require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
 
         var req_connected_users = JSON.parse(req.body.connected_users);
         var req_unconnected_users = [];
 
-        Connection.sendConnectionRequest(req_connected_users,req_unconnected_users, function (resultSet) {
+        Connection.sendConnectionRequest(CurrentSession.id,req_connected_users,req_unconnected_users, function (resultSet) {
             var outPut = {};
             if (resultSet.status !== 200) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
