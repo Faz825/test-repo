@@ -67,6 +67,10 @@ var PostController ={
 
             Post.ch_getPost(_id,payLoad,function(resultSet){
                 var outPut ={};
+                console.log("RESULT");
+                console.log(resultSet);
+
+
 
                 if(resultSet == null){
                     outPut['status']    = ApiHelper.getMessage(200, Alert.LIST_EMPTY, Alert.SUCCESS);
