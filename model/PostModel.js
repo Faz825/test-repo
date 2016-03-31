@@ -169,8 +169,7 @@ console.log("ch_getPost -- >",_cache_key);
 
     //Find User from Elastic search
     ES.search(query,function(csResultSet){
-        console.log("RESULT");
-        console.log(csResultSet);
+
 
         if(csResultSet == null){
             callBack(null);
@@ -258,12 +257,17 @@ PostSchema.statics.postList=function(userId,posts,callBack){
             var _post = _this.formatPost(post),
             _created_date = _post.date.time_stamp;
 
-            if(_tmp_created_date.indexOf(_created_date) == -1)
+            if(_tmp_created_date.indexOf(_created_date) == -1){
                 _tmp_created_date.push(_created_date);
+            }
 
 
-            if( typeof data_by_date[_created_date] == 'undefined' )
+
+            if( typeof data_by_date[_created_date] == 'undefined' ){
                 data_by_date[_created_date] = [];
+            }
+            console.log("postList");
+            console.log(_post);
 
             //GET COMMENT COUNT
             Comment.getCommentCount(_post.post_id,function(commentCount){
