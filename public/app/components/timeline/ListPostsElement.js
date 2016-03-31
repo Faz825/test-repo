@@ -284,8 +284,6 @@ class SinglePost extends React.Component{
             }
         });
 
-        console.log(_post);
-
         return (
 
             <div className="pg-timeline-white-box pg-top-round-border pg-add-margin-top">

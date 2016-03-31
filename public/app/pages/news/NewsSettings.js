@@ -198,11 +198,13 @@ export class SavedArticles extends React.Component{
             articles:[],
             isShowingModal : false,
             popupData:"",
+            allArticalsAreVisible: false,
             loggedUser:Session.getSession('prg_lg')
         };
 
         this.loadArticles();
         this.popUpArtical = this.popUpArtical.bind(this);
+        this.showMoreArticals = this.showMoreArticals.bind(this);
     }
     loadArticles(){
         $.ajax({
@@ -254,10 +256,16 @@ export class SavedArticles extends React.Component{
         this.setState({popupData: data, isShowingModal: true});
     }
 
+    showMoreArticals(){
+        let visibilityState = this.state.allArticalsAreVisible;
+        this.setState({allArticalsAreVisible : !visibilityState});
+        console.log("clicked");
+    }
+
     render(){
         let _this = this;
         let _channel_template = this.state.articles.map(function(articles,key){
-            if(key <= 5){
+            if(key < 5){
                 return (
                     <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
                           <div className="row row-clr pg-news-inner-full various">
@@ -272,7 +280,7 @@ export class SavedArticles extends React.Component{
 
         });
         let _more_articals = this.state.articles.map(function(articles,key){
-            if(key > 5){
+            if(key >= 5){
                 return (
                     <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
                           <div className="row row-clr pg-news-inner-full various">
@@ -286,7 +294,8 @@ export class SavedArticles extends React.Component{
             }
         });
 
-        console.log(this.state.articles);
+        //console.log(this.state.articles);
+        console.log(this.state.allArticalsAreVisible);
         return(
             <div className="row row-clr pg-news-page-content-item pg-box-shadow">
                 <div className="col-xs-2 pg-news-page-content-item-left-thumb saved-articals-holder">
@@ -297,15 +306,20 @@ export class SavedArticles extends React.Component{
                 <div className="col-xs-10 pg-news-page-content-item-right-thumbs">
                     <div className="pg-news-page-content-item-right-inner-box">
                         <div className="pg-news-item-main-row">
-                            {_channel_template}
+                            <div className="articals">
+                                {_channel_template}
+                            </div>
                             {
-                                (_more_articals)?
+                                (this.state.allArticalsAreVisible)?
                                 <div className="more-articals">
                                     {_more_articals}
                                 </div>
                                 :
                                 null
                             }
+                        </div>
+                        <div className="show-more-btn" onClick={this.showMoreArticals.bind(this)}>
+                            {this.state.allArticalsAreVisible? "Show Less" : "Show More"}
                         </div>
                     </div>
                 </div>
