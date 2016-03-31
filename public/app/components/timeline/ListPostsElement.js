@@ -298,7 +298,7 @@ class SinglePost extends React.Component{
                             <h5 className="pg-newsfeed-profile-name"><span className="pro-name">{_profile.first_name + " " + _profile.last_name + " "}</span>
                                 {
                                     this.sharedPost && typeof _post.shared_post != "undefined"?
-                                        (this.loggedUser.id == _post.created_by.user_id)?
+                                        (this.loggedUser.id == _post.shared_post.created_by.user_id)?
                                         <span className="own-post-share">shared own post</span>
                                         :
                                         <span className="post-owner-name"><i className="fa fa-caret-right"></i>
