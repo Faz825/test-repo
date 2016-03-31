@@ -169,6 +169,8 @@ console.log("ch_getPost -- >",_cache_key);
 
     //Find User from Elastic search
     ES.search(query,function(csResultSet){
+        console.log("RESULT");
+        console.log(csResultSet);
 
         if(csResultSet == null){
             callBack(null);

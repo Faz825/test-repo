@@ -67,8 +67,6 @@ var PostController ={
 
             Post.ch_getPost(_id,payLoad,function(resultSet){
                 var outPut ={};
-                console.log("RESULT");
-                console.log(resultSet);
 
 
 
