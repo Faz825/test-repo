@@ -5,7 +5,7 @@ import React from 'react';
 import NewsArticalThumb from '../../components/elements/NewsArticalThumb';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Session  from '../../middleware/Session';
-
+import { Scrollbars } from 'react-custom-scrollbars';
 
 
 export default class NewsSettings extends React.Component{
@@ -158,8 +158,10 @@ const NewsCategory = ({newsCategory,onCategorySelect})=>{
              onClick ={event=>onCategorySelect(newsCategory.is_favorite,newsCategory._id)}>
 
             <div className={"col-xs-2 pg-news-page-content-item-left-thumb "+_opt_class }>
-                <span className="cat-icon"></span>
-                <h3 className="cat-title">{newsCategory.category}</h3>
+                <div className="cat-icon-holder">
+                    <span className="cat-icon"></span>
+                    <h3 className="cat-title">{newsCategory.category}</h3>
+                </div>
             </div>
             <div className="col-xs-10 pg-news-page-content-item-right-thumbs">
                 <div className="pg-news-page-content-item-right-inner-box">
@@ -194,10 +196,13 @@ export class SavedArticles extends React.Component{
         super(props);
         this.state={
             articles:[],
+            isShowingModal : false,
+            popupData:"",
             loggedUser:Session.getSession('prg_lg')
         };
 
         this.loadArticles();
+        this.popUpArtical = this.popUpArtical.bind(this);
     }
     loadArticles(){
         $.ajax({
@@ -214,32 +219,97 @@ export class SavedArticles extends React.Component{
         }.bind(this));
     }
 
-    render(){
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
 
-        let _channel_template = this.state.articles.map(function(articles,key){
-            let _articles ={
-                channel_image:articles.channel.replace(/\s+/g, '_').toLowerCase()+".png"
-            }
-            return (
-                <NewsChannels newsChannel ={_articles}
-                              key={key}/>
-            )
-        });
+    getPopup(){
+        let popupData = this.state.popupData;
+
         return(
-            <div className={"row row-clr pg-news-page-content-item pg-box-shadow"}>
+            <div>
+                {this.state.isShowingModal &&
+                    <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                        <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
+                            <div className="modal-body pg-modal-body">
+                                <div className="popup-img-holder">
+                                    <img className="img-responsive pg-main-pop-img" alt src={popupData.article_image} />
+                                </div>
+                                <div className="row row-clr pg-new-news-popup-inner-container">
+                                <h3 className="pg-body-heading-title">{popupData.heading}</h3>
+                                <div className="row row-clr pg-new-news-popup-inner-border" />
+                                <Scrollbars style={{ height: 250 }} onScroll={this.handleScroll}>
+                                    <div dangerouslySetInnerHTML={{__html: popupData.content}} />
+                                </Scrollbars>
+                                </div>
+                            </div>
+                        </ModalDialog>
+                    </ModalContainer>
+                }
+            </div>
+        )
+    }
 
-                <div className={"col-xs-2 pg-news-page-content-item-left-thumb "}>
-                    <span className="cat-icon"></span>
-                    <h3 className="cat-title">Saved Articles</h3>
+    popUpArtical(data){
+        this.setState({popupData: data, isShowingModal: true});
+    }
+
+    render(){
+        let _this = this;
+        let _channel_template = this.state.articles.map(function(articles,key){
+            if(key <= 5){
+                return (
+                    <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
+                          <div className="row row-clr pg-news-inner-full various">
+                            <img src={articles.article_image} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
+                            <div className="artical-heading-holder">
+                                <p className="artical-name">{articles.heading}</p>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
+        });
+        let _more_articals = this.state.articles.map(function(articles,key){
+            if(key > 5){
+                return (
+                    <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
+                          <div className="row row-clr pg-news-inner-full various">
+                            <img src={articles.article_image} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
+                            <div className="artical-heading-holder">
+                                <p className="artical-name">{articles.heading}</p>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+        });
+
+        console.log(this.state.articles);
+        return(
+            <div className="row row-clr pg-news-page-content-item pg-box-shadow">
+                <div className="col-xs-2 pg-news-page-content-item-left-thumb saved-articals-holder">
+                    <div className="cat-icon-holder">
+                        <h3 className="cat-title">Saved Articles</h3>
+                    </div>
                 </div>
                 <div className="col-xs-10 pg-news-page-content-item-right-thumbs">
                     <div className="pg-news-page-content-item-right-inner-box">
                         <div className="pg-news-item-main-row">
-
                             {_channel_template}
+                            {
+                                (_more_articals)?
+                                <div className="more-articals">
+                                    {_more_articals}
+                                </div>
+                                :
+                                null
+                            }
                         </div>
                     </div>
                 </div>
+                {this.getPopup()}
             </div>
 
         )

@@ -170,11 +170,14 @@ class SinglePost extends React.Component{
         const _post = this.props.postItem;
         let post_content = "";
         if (_post.post_mode == "NP" ){
-
             post_content = _post.content;
         }else if(_post.post_mode == "LE"){
             post_content = _post.life_event;
             this.lifeEvent = post_content.toLowerCase().replace(/ /g,"-");
+        }else if(_post.post_mode == "SP"){
+            post_content = _post.content;
+        }else if(_post.post_mode == "AP"){
+            post_content = _post.content;
         }
 
         let _profile = _post.created_by;
@@ -195,37 +198,39 @@ class SinglePost extends React.Component{
                 )
             }
         });
+
         return(
             <div>
                 {this.state.isShowingModal &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
 
                     <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
+                        <div className="share-popup-holder">
+                            <AddPostElementPopupText onContentAdd = {event=>this.onContentAdd(event)}
+                                                     iniTextisVisible = {this.state.iniTextisVisible}
+                                                    loggedUser = {this.loggedUser}
+                                                     onSubmitPost = {event=>this.onSubmitPost(event)}/>
 
-                        <AddPostElementPopupText onContentAdd = {event=>this.onContentAdd(event)}
-                                                 iniTextisVisible = {this.state.iniTextisVisible}
-                                                loggedUser = {this.loggedUser}
-                                                 onSubmitPost = {event=>this.onSubmitPost(event)}/>
+                            <div className="row row-clr pg-newsfeed-section-common-content-post-info share-popup-post-view">
+                                <div className="pg-user-pro-pic">
+                                    <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
+                                </div>
+                                <div className="pg-user-pro-info">
+                                    <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}</h5>
+                                    <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>
+                                    {
+                                        (typeof _post.location != 'undefined' && _post.location != null)?
+                                            <p className="location_text">at - {_post.location} </p>:
+                                            null
+                                    }
+                                </div>
+                                <div className="row row-clr pg-newsfeed-common-content-post-content">
+                                    <p className="pg-newsfeed-post-description">{post_content}</p>
+                                </div>
 
-                        <div className="row row-clr pg-newsfeed-section-common-content-post-info">
-                            <div className="pg-user-pro-pic">
-                                <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
-                            </div>
-                            <div className="pg-user-pro-info">
-                                <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}</h5>
-                                <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>
-                                {
-                                    (typeof _post.location != 'undefined' && _post.location != null)?
-                                        <p className="location_text">at - {_post.location} </p>:
-                                        null
-                                }
-                            </div>
-                            <div className="row row-clr pg-newsfeed-common-content-post-content">
-                                <p className="pg-newsfeed-post-description">{post_content}</p>
-                            </div>
-
-                            <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
-                                {uploaded_files}
+                                <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
+                                    {uploaded_files}
+                                </div>
                             </div>
                         </div>
                     </ModalDialog>
@@ -249,13 +254,15 @@ class SinglePost extends React.Component{
         let post_content = "";
 
         if (_post.post_mode == "NP" ){
-
             post_content = _post.content;
         }else if(_post.post_mode == "LE"){
             post_content = _post.life_event;
             this.lifeEvent = post_content.toLowerCase().replace(/ /g,"-");
         }else if(_post.post_mode == "SP" ){
             this.sharedPost = true;
+            post_content = _post.content;
+        }else if(_post.post_mode == "AP" ){
+            post_content = _post.content;
         }
 
         let _profile = _post.created_by;
@@ -277,6 +284,7 @@ class SinglePost extends React.Component{
             }
         });
 
+        console.log(_post);
 
         return (
 
@@ -287,10 +295,16 @@ class SinglePost extends React.Component{
                             <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
                         </div>
                         <div className="pg-user-pro-info">
-                            <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}
+                            <h5 className="pg-newsfeed-profile-name"><span className="pro-name">{_profile.first_name + " " + _profile.last_name + " "}</span>
                                 {
                                     this.sharedPost && typeof _post.shared_post != "undefined"?
-                                        <span className="post-owner-name"><i className="fa fa-caret-right"></i>{_post.shared_post.created_by.first_name + " " + _post.shared_post.created_by.last_name + " post"}</span>
+                                        (this.loggedUser.id == _post.created_by.user_id)?
+                                        <span className="own-post-share">shared own post</span>
+                                        :
+                                        <span className="post-owner-name"><i className="fa fa-caret-right"></i>
+                                            <span className="pro-name">{" "+_post.shared_post.created_by.first_name + " " + _post.shared_post.created_by.last_name}</span>
+                                            's post
+                                        </span>
                                     : null
                                 }
                             </h5>
@@ -379,7 +393,11 @@ export class SharedPost extends React.Component{
         if(sharedPost.post_mode == "LE"){
             post_content = sharedPost.life_event;
             this.lifeEvent = post_content.toLowerCase().replace(/ /g,"-");
+        }else if(sharedPost.post_mode == "AP"){
+            post_content = sharedPost.content;
         }else if(sharedPost.post_mode == "NP"){
+            post_content = sharedPost.content;
+        }else if(sharedPost.post_mode == "SP"){
             post_content = sharedPost.content;
         }
 
@@ -406,7 +424,7 @@ export class SharedPost extends React.Component{
                     <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
                 </div>
                 <div className="pg-user-pro-info">
-                    <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}</h5>
+                    <h5 className="pg-newsfeed-profile-name"><span className="pro-name">{_profile.first_name + " " + _profile.last_name}</span></h5>
                     {
                         (typeof sharedPost.location != 'undefined' && sharedPost.location != null)?
                             <p className="location_text">at - {sharedPost.location} </p>:
@@ -525,11 +543,7 @@ export const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost})=>
                      className="containable-div"
                      onInput={(event)=>{onContentAdd(event)}}></div>
             </div>
-
-            <div className="col-xs-4">
-                <a href="javascript:void(0)" onClick={(event)=>onSubmitPost(event)} className="pg-status-post-btn">post</a>
-
-            </div>
+            <a href="javascript:void(0)" onClick={(event)=>onSubmitPost(event)} className="pg-status-post-btn btn btn-default">post</a>
         </div>
     )
 }

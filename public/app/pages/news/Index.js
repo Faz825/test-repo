@@ -190,7 +190,7 @@ export class NewsArtical extends React.Component{
                                 </div>
                             </div>
                             <div className="save-news">
-                                <a href="javascript:void(0)" onClick={this.saveArticle.bind(this)} >Save</a>
+                                <a href="javascript:void(0)" onClick={this.saveArticle.bind(this)} className="artical-save-btn btn btn-default">Save</a>
                             </div>
 
                         </ModalDialog>

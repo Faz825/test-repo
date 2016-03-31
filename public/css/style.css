@@ -1641,6 +1641,20 @@ textarea{
 	position: relative;
 	text-align: center;
 }
+.pg-news-page-content-item-left-thumb .cat-icon-holder{
+	bottom: 0;
+	height: 70px;
+	left: 0;
+	margin: auto;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 90px;
+}
+.pg-news-page-content-item-left-thumb.saved-articals-holder .cat-icon-holder{
+	height: 40px;
+	width: 60%;
+}
 .pg-news-page-content-item-left-thumb.thumb-1{
    background-image: url(../images/news-page-item-thumb-1.png);
 }
@@ -1659,9 +1673,12 @@ textarea{
 .pg-news-page-content-item-left-thumb.entertainment{
     background-image: url(../images/entertainment.png);
 }
+.pg-news-page-content-item-left-thumb.saved-articals-holder{
+    background-image: url(../images/news/saved-articals-bg.png);
+}
 .pg-news-page-content-item-left-thumb .cat-icon{
 	display: block;
-	margin: 35% auto 0;
+	margin: 0 auto;
 }
 .pg-news-page-content-item-left-thumb.business .cat-icon{
 	background: url("../images/news/business-icon.png") no-repeat;
@@ -1682,6 +1699,12 @@ textarea{
 	font: 1em 'montserratsemi_bold', sans-serif;
 	margin: 10px 0 0;
 	color: #fff;
+}
+.pg-news-page-content-item-left-thumb.saved-articals-holder .cat-title{
+	margin: 0 auto;
+    border: 1px solid #fff;
+    padding: 10px;
+    width: 90%;
 }
 .pg-news-page-content-item-right-thumbs{
     background: #f2f6f9;
@@ -1727,7 +1750,8 @@ textarea{
     z-index: 500;
 }
 .pg-pg-news-inner-img{
-    width:100%;
+	width: 100%;
+    height: 100%;
 }
 .pg-news-inner-box-content {
     position: absolute;
@@ -1737,6 +1761,20 @@ textarea{
     width: 100%;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
+}
+.pg-news-inner-full .artical-heading-holder{
+	width: 100%;
+    overflow: hidden !important;
+	padding: 10px;
+	background: #232d38;
+}
+.pg-news-inner-full .artical-name{
+	margin: 0;
+    max-width: 150px;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+	color: #fff;
 }
 .pg-news-inner-box-content-txt{
     font: 12px 'montserratregular', sans-serif;

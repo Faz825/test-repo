@@ -756,13 +756,52 @@
 }
 
 /* Shared post */
-.shared-post-holder{
+.shared-post-holder,
+.share-popup-post-view{
     padding: 5px;
     border: 1px solid #dee6eb;
     box-shadow: 0px 0px 7px -2px #000;
 }
 
-.pg-newsfeed-section-common-content-inner .sharedText{
+.pg-newsfeed-section-common-content-inner .own-post-share{
     font: 0.8em 'montserratregular', sans-serif;
     color: #a8bfcd;
+}
+
+.share-popup-holder{
+    position: relative;
+    padding: 0 0 40px;
+}
+
+.share-popup-holder .share-popup-post-view{
+    margin-top: 15px;
+}
+
+.share-popup-holder .pg-status-post-btn{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font: 11px 'montserratsemi_bold', sans-serif;
+    color: #fff;
+    background-color: #61b3de;
+    text-transform: uppercase;
+    border: none;
+}
+
+.pro-name{
+    text-transform: capitalize;
+}
+
+.artical-save-btn{
+    float: right;
+    font: 11px 'montserratsemi_bold', sans-serif;
+    color: #fff;
+    background-color: #61b3de;
+    text-transform: uppercase;
+    border: none;
+}
+
+.artical-save-btn:hover{
+    color: #fff;
+    background-color: #61b3de;
 }
