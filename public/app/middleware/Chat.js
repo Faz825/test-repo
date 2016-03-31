@@ -81,6 +81,30 @@ import Session  from './Session.js';
 
          });
 
+         // Changes in video elements
+         // v - video element to add or remove
+         // c - Dialog - call controller. null for a local video feed
+         // op - operation. 1 - add, 0 - update, -1 - remove
+         b6.on('video', function(v, c, op) {
+             var vc = $('#videoContainer');
+             if (op < 0) {
+                 vc[0].removeChild(v);
+             }
+             else if (op > 0) {
+                 v.setAttribute('class', c ? 'remote' : 'local');
+                 vc.append(v);
+             }
+             // Total number of video elements (local and remote)
+             var n = vc[0].children.length;
+             if (op !== 0) {
+                 vc.toggle(n > 0);
+             }
+             console.log('VIDEO elems.count: ' + n);
+             // Use number of video elems to determine the layout using CSS
+             var kl = n > 2 ? 'grid' : 'simple';
+             vc.attr('class', kl);
+         });
+
          this.bit6Auth = function (isNewUser) {
              // Convert username to an identity URI
              var ident = 'usr:proglobe_' + Session.getSession('prg_lg').user_name;
@@ -478,6 +502,13 @@ import Session  from './Session.js';
                  showInCallName();
                  //console.log('CALL progress', c);
              });
+             // Number of video feeds/elements changed
+             c.on('videos', function () {
+                 var container = $('#videoContainer');
+                 var elems = container.children();
+
+                 container.attr('class', elems.length > 2 ? 'grid' : 'simple');
+             });
              // Call answered
              c.on('answer', function() {
                  console.log("ANSWER")
@@ -504,6 +535,8 @@ import Session  from './Session.js';
                  $('#incomingCall')
                      .data({'dialog': null})
                      .hide();
+
+                 $("#videoContainer").html("");
              });
          }
 
@@ -514,6 +547,9 @@ import Session  from './Session.js';
 
              //$('#detailPane').addClass('hidden');
              $('#detailPane').removeClass('hidden');
+
+             // Do not show video feeds area for audio-only call
+             var div = $('#videoContainer').toggle(c.options.video);
 
              // Start/update the call
              c.connect(opts);
@@ -559,12 +595,14 @@ import Session  from './Session.js';
              console.log(opts)
              //var e = $('#incomingCall').hide();
              var d = $('#incomingCall').data();
+
              // Call controller
              if (d && d.dialog) {
                  var c = d.dialog;
                  // Accept the call, send local audio only
                  updateInCallUI(c, opts);
                  $('#incomingCall').data({'dialog': null}).hide();
+                 $('#incomingCallAlert').modal('hide');
              }
          };
 

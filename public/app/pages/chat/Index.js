@@ -113,6 +113,32 @@ export default class Index extends React.Component{
     render() {
         return (
             <div className="pg-middle-chat-screen-area container-fluid">
+                <div className="col-sm-9 fh top-padding-20" id="detailPane">
+                    <div className="row" id="inCallPane">
+                        <div className="col-sm-12 fh">
+                            <div className="row top-row" id="inCallPane_inner_div">
+                                <div className="col-sm-offset-1 col-xs-offset-0 col-sm-10 col-xs-10">
+                                    <div className="row text-center" id="videoContainer">
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-sm-12 top-margin-20">
+                                            <img src="" id="call_other_profile_image" className="img-responsive img-circle img-custom-large pull-left left-margin-30 hidden" />
+                                            <span id="inCallOther">Video Call</span> <span id="onCall">On Call...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-xs-1 hangup-outer">
+                                    <button className="btn btn-danger" id="hangup" title="Stop Call" onClick={()=>this.hangup()}>
+                                        <span className="fa fa-square"></span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
                 <div className="pg-middle-chat-content-header pg-chat-screen-header">
                     <div className="container">
                         <h2>Message and video calls</h2>
@@ -211,32 +237,7 @@ export default class Index extends React.Component{
                     </div>
                 </div>
 
-                <div className="col-sm-9 fh top-padding-20" id="detailPane">
-                    <div className="row" id="inCallPane">
-                        <div className="col-sm-12 fh">
-                            <div className="row top-row" id="inCallPane_inner_div">
-                                <div className="col-sm-offset-1 col-xs-offset-0 col-sm-10 col-xs-10">
-                                    <div className="row text-center" id="videoContainer">
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-sm-12 top-margin-20">
-                                            <img src="" id="call_other_profile_image" className="img-responsive img-circle img-custom-large pull-left left-margin-30 hidden" />
-                                            <span id="inCallOther">Video Call</span> <span id="onCall">On Call...</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-xs-1 hangup-outer">
-                                    <button className="btn btn-danger" id="hangup" title="Stop Call" onClick={()=>this.hangup()}>
-                                        <span className="fa fa-square"></span>
-                                    </button>
-                                </div>
-                            </div>
 
-                        </div>
-                    </div>
-
-
-                </div>
 
             </div>
 
