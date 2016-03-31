@@ -281,7 +281,7 @@ PostSchema.statics.postList=function(userId,posts,callBack){
             },
             function getLikes(_post,callBack){
                 var _created_date = _post.date.time_stamp;
-                Like.getLikedUsers(_post.post_id,0,function(likedUsers,likedUserIds){
+                Like.getLikedUsers(userId,_post.post_id,0,function(likedUsers,likedUserIds){
                     _post['like_count'] = likedUsers.length;
                     _post['liked_user'] = likedUsers;
                     _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1)?0:1;
