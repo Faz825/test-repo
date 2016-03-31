@@ -266,8 +266,7 @@ PostSchema.statics.postList=function(userId,posts,callBack){
             if( typeof data_by_date[_created_date] == 'undefined' ){
                 data_by_date[_created_date] = [];
             }
-            console.log("postList");
-            console.log(_post);
+
 
             //GET COMMENT COUNT
             Comment.getCommentCount(_post.post_id,function(commentCount){
@@ -288,7 +287,8 @@ PostSchema.statics.postList=function(userId,posts,callBack){
                         _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1)?0:1;
 
                         data_by_date[_created_date].push(_post) ;
-
+                        console.log("postList");
+                        console.log(data_by_date);
                         callBack();
                     })
 
