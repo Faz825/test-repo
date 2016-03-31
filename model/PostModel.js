@@ -254,46 +254,57 @@ PostSchema.statics.postList=function(userId,posts,callBack){
     var a =0;
 
     var q = _async.queue(function(post, callBack) {
-        var _post = _this.formatPost(post),
-            _created_date = _post.date.time_stamp;
 
-        if(_tmp_created_date.indexOf(_created_date) == -1){
-            _tmp_created_date.push(_created_date);
-        }
+        _async.waterfall([
 
+            function formatPost(callBack){
+                var _post = _this.formatPost(post);
 
+                callBack(null,_post);
+            },
+            function getCommentCount(_post,callBack){
+                Comment.getCommentCount(_post.post_id,function(commentCount){
+                    _post['comment_count'] = commentCount;
 
-        if( typeof data_by_date[_created_date] == 'undefined' ){
-            data_by_date[_created_date] = [];
-        }
+                    var query={
+                        q:"user_id:"+post.created_by.toString(),
+                        index:'idx_usr'
+                    };
+                    //Find User from Elastic search
+                    ES.search(query,function(csResultSet){
+                        _post['created_by'] = csResultSet.result[0];
+                        callBack(null,_post);
 
+                    });
 
-        //GET COMMENT COUNT
-        Comment.getCommentCount(_post.post_id,function(commentCount){
-            _post['comment_count'] = commentCount;
-
-            var query={
-                q:"user_id:"+post.created_by.toString(),
-                index:'idx_usr'
-            };
-            //Find User from Elastic search
-            ES.search(query,function(csResultSet){
-                _post['created_by'] = csResultSet.result[0];
-
-
+                });
+            },
+            function getLikes(_post,callBack){
+                var _created_date = _post.date.time_stamp;
                 Like.getLikedUsers(_post.post_id,0,function(likedUsers,likedUserIds){
                     _post['like_count'] = likedUsers.length;
                     _post['liked_user'] = likedUsers;
                     _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1)?0:1;
 
-                    data_by_date[_created_date].push(_post) ;
-
-                    callBack();
+                    callBack(null,_post);
                 })
 
+            }
 
-            });
+        ],function(err,_post){
+            var _created_date = _post.date.time_stamp;
 
+            if(_tmp_created_date.indexOf(_created_date) == -1){
+                _tmp_created_date.push(_created_date);
+            }
+
+            if( typeof data_by_date[_created_date] == 'undefined' ){
+                data_by_date[_created_date] = [];
+            }
+
+            data_by_date[_created_date].push(_post);
+
+            callBack(data_by_date);
         });
 
     }, 1);
