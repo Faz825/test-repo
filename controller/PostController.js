@@ -60,7 +60,7 @@ var PostController ={
 
                 payLoad ={
                     _page:_page,
-                    q:(req.query.__own =="me")?"created_by.user_id"+_id:"*",
+                    q:(req.query.__own =="me")?"created_by:"+_id:"*",
                 };
 
 
