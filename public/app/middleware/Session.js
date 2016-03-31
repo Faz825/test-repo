@@ -1,6 +1,7 @@
 /**
  * This class Will Handle browser sessions 
  */
+
  class Session{
 
 
@@ -24,7 +25,6 @@
 		}
 	}
 	createSession(key,value){
-
 		value = JSON.stringify(value);
 		var expires;
 
@@ -36,7 +36,6 @@
 	        this.expires = "";
 	    }
 	    document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(value) + this.expires + "; path=/";
-
 	}
 	getSession(key){
 		var nameEQ = encodeURIComponent(key) + "=";

@@ -17,9 +17,10 @@ const Alert = {
 	"ENTER_COMPANY"              : "Please enter your 'Company'",
 	"ENTER_GRAD_DATE"            : "Please select your 'Graduation Date'",
 	"ENTER_COUNTRY"              : "Please select your 'Country'",
-	"ENTER_DOB"                  : "Please select your 'Date of Birth'",
 	"EMPTY_USER_NAME"            : "Please enter your 'User Name'",
-	"EMPTY_STATUS_UPDATE"		 : "This status update appears to be blank. Please write something or a photo to update your status."
+	"EMPTY_MESSAGE"				 : "Please enter message",
+	"EMPTY_STATUS_UPDATE"		 : "This status update appears to be blank. Please write something or a photo to update your status.",
+	"EMPTY_RECEIVER"			 : "Please select user to send message",
 }
 
 

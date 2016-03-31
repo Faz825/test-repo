@@ -6,11 +6,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 
+
 var redis = require('redis');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var client  = redis.createClient();
-
 
 GLOBAL.Config = require('./config/app.config');
 

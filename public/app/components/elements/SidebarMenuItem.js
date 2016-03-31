@@ -1,4 +1,5 @@
 import React from 'react'
+import Session  from '../../middleware/Session';
 
 export default class SidebarManuItem extends React.Component{
 

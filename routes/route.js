@@ -59,7 +59,8 @@ GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password',
-	'/news-feed','/news'
+	'/news-feed','/news','/chat'
+
 
 ];
 
@@ -79,6 +80,7 @@ router.get('/forgot-password/reset/:token', UserController.validateToken);
 router.get('/change-password/:token', DefaultController.index);
 router.post('/change-password/:token', UserController.resetPassword);
 
+router.get('/chat/:chatWith', DefaultController.index);
 
 
 router.get('/life-event/categories', LifeEventController.getLifeEventCategories);
@@ -226,6 +228,7 @@ router.post('/post/share', PostController.sharePost);
 router.post('/comment/composer', CommentController.addComment);
 router.get('/pull/comments', CommentController.getComment);
 
+
 router.post('/skill-info/save', UserController.saveSkillInfo);
 
 router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
@@ -252,5 +255,6 @@ router.post('/news/articles/save', NewsController.saveMyNews);
 router.get('/news/saved/articles', NewsController.getSavedArticles);
 
 router.post('/like/composer', LikeController.doLike);
+
 
 module.exports = router;

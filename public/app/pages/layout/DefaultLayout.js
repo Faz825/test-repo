@@ -21,7 +21,7 @@ const DefaultLayout = (props) =>{
 
             <SidebarNav side="right" menuItems={{items:[
                 {"name": "Connections", "link" : "/connections", "imgName": "nav-ico-6"},
-                {"name": "Chats/Video", "link" : "/chat-screen", "imgName": "nav-ico-7"},
+                {"name": "Chats/Video", "link" : "/chat", "imgName": "nav-ico-7"},
                 {"name": "interests", "link" : "/interests", "imgName": "nav-ico-8"},
                 {"name": "Recruiting", "link" : "/find-job", "imgName": "nav-ico-9"},
                 {"name": "Pro Networks", "link" : "/professional-networks", "imgName": "nav-ico-10"}
