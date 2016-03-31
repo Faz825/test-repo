@@ -67,7 +67,7 @@ SavedArticleSchema.pre('save', function(next){
  */
 SavedArticleSchema.statics.saveArticle =function(articel,callBack){
     var _article =  new this();
-    _article.user_id = CurrentSession.id;
+    _article.user_id = articel.user_id;
     _article.heading = articel.heading;
     _article.article_image=articel.article_image
     _article.content=articel.content;

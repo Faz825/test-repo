@@ -43,12 +43,12 @@ FavouriteNewsCategorySchema.pre('save', function(next){
  * @param criteria
  * @param callBack
  */
-FavouriteNewsCategorySchema.statics.addUserNewsCategory =function(news_categories,un_selected_categories,callBack){
+FavouriteNewsCategorySchema.statics.addUserNewsCategory =function(user_id,news_categories,un_selected_categories,callBack){
 
     //REMOVE UNSELECTED CATEGORIES
     if(un_selected_categories.length > 0){
         for(var a=0;a<un_selected_categories.length;a++){
-            this.remove({user_id:CurrentSession.id,category:Util.toObjectId(un_selected_categories[a])},function(err){
+            this.remove({user_id:user_id,category:Util.toObjectId(un_selected_categories[a])},function(err){
                 console.log(err);
             })
         }
@@ -58,7 +58,7 @@ FavouriteNewsCategorySchema.statics.addUserNewsCategory =function(news_categorie
         var __news_categories = [];
         for (var i = 0; news_categories.length > i; i++) {
             __news_categories.push({
-                user_id: Util.toObjectId(CurrentSession.id),
+                user_id: Util.toObjectId(user_id),
                 category: Util.toObjectId(news_categories[i]),
                 created_at:   new Date()
             });

@@ -49,7 +49,7 @@ var ConnectionSchema = new Schema({
 
 },{collection:"connections"});
 
-ConnectionSchema.statics.sendConnectionRequest=function(connected_users,unconnected_users,callBack){
+ConnectionSchema.statics.sendConnectionRequest=function(user_id,connected_users,unconnected_users,callBack){
     var _connected_users =[],now = new Date();
     //REMOVE UNSELECTED CONNECTIONS
     if(unconnected_users.length > 0){
@@ -63,10 +63,10 @@ ConnectionSchema.statics.sendConnectionRequest=function(connected_users,unconnec
     if(connected_users.length >0){
         for (var i = 0; connected_users.length > i; i++) {
             _connected_users.push({
-                user_id: CurrentSession.id.toObjectId(),
+                user_id: Util.toObjectId(user_id),
                 connected_with: connected_users[i].toObjectId(),
                 created_at: now,
-                action_user_id:CurrentSession.id.toObjectId(),
+                action_user_id:Util.toObjectId(user_id),
                 status:ConnectionStatus.REQUEST_SENT
             });
         }

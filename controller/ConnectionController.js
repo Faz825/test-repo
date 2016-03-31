@@ -11,7 +11,7 @@ var ConnectionController ={
      * @param res
      */
     getRequestedConnections :function(req,res){
-        var Connection =require('mongoose').model('Connection');
+        var Connection =require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
 
         var criteria ={
             user_id:CurrentSession.id,
@@ -34,7 +34,7 @@ var ConnectionController ={
      * @param res
      */
     getMyConnections:function(req,res){
-        var Connection = require('mongoose').model('Connection');
+        var Connection = require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
         var criteria = {
             user_id :CurrentSession.id,
             q:req.query['q']
@@ -63,7 +63,7 @@ var ConnectionController ={
      * @param res
      */
     acceptFriendRequest:function(req,res){
-        var Connection =require('mongoose').model('Connection');
+        var Connection =require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
         var criteria ={
             sender_id  :req.body.sender_id,
             user_id:CurrentSession.id
@@ -85,7 +85,7 @@ var ConnectionController ={
     getFriendSuggestion:function(req,res){
 
         var Connection =require('mongoose').model('Connection'),
-            filter_ids=[];
+            filter_ids=[],CurrentSession = Util.getCurrentSession(req);
         filter_ids.push(CurrentSession.id);
         var criteria ={
             pg:0,
@@ -165,7 +165,7 @@ var ConnectionController ={
      */
     getUniqueFriendRequest:function(req,res){
         var Connection =require('mongoose').model('Connection'),
-         req_connected_users = JSON.parse(req.body.cur_b_ids);
+         req_connected_users = JSON.parse(req.body.cur_b_ids),CurrentSession = Util.getCurrentSession(req);
          req_connected_users.push(CurrentSession.id);
         var criteria ={
             pg:0,
@@ -191,9 +191,6 @@ var ConnectionController ={
                     result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
                     total_pages:Math.ceil(resultSet.total_result/Config.CONNECTION_RESULT_PER_PAGE)
                 };
-
-                console.log(resultSet.friends[rand]);
-
                 outPut['connection'] = resultSet.friends[rand];
                 res.status(200).send(outPut);
                 return 0

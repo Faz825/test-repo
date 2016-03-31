@@ -173,7 +173,7 @@ PostSchema.statics.ch_getPost= function(userId,payload,callBack){
         if(csResultSet == null){
             callBack(null);
         }else{
-            _this.postList(csResultSet.result,function(lpData){
+            _this.postList(userId,csResultSet.result,function(lpData){
                 callBack(lpData);
             });
         }
@@ -241,7 +241,7 @@ PostSchema.statics.db_getPost = function(criteria,callBack){
  * Format Post list
  * @param posts
  */
-PostSchema.statics.postList=function(posts,callBack){
+PostSchema.statics.postList=function(userId,posts,callBack){
     var _tmp =[],_out_put =[],_tmp_created_date=[],data_by_date ={};
 
 
@@ -279,7 +279,7 @@ PostSchema.statics.postList=function(posts,callBack){
                     Like.getLikedUsers(_post.post_id,0,function(likedUsers,likedUserIds){
                         _post['like_count'] = likedUsers.length;
                         _post['liked_user'] = likedUsers;
-                        _post['is_i_liked'] = (likedUserIds.indexOf(CurrentSession.id) == -1)?0:1;
+                        _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1)?0:1;
 
                         data_by_date[_created_date].push(_post) ;
 

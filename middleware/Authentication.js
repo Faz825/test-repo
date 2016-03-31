@@ -23,15 +23,42 @@ exports.Authentication= function(req,res,next){
 
 
 
+    if(typeof  req.session.user != 'undefined'  ){
+        if(String(req.originalUrl).indexOf('logout') != -1){
+
+            req.session.destroy(function(err){
+                _out_put={
+                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                }
+                res.status(200).json(_out_put);
+            });
+            return ;
+        }
+
+        next();
+        return;
+
+
+
+    }else{
+
+        var _out_put= {
+            status:'success',
+            message:Alert.INVALID_TOKEN
+        }
+        res.status(401).json(_out_put);
+        return ;
+    }
+
     /**
      * Handle Logged User sessions
-     */
+
     if(typeof req.headers['prg-auth-header'] != 'undefined'){
 
         //Handle Logout
         if(String(req.originalUrl).indexOf('logout') != -1){
 
-            CacheEngine.deleteCache(req.headers['prg-auth-header'],function(cachedUser){
+            CacheEngine.deleteCache("sess:"+req.headers['prg-auth-header'],function(cachedUser){
                 var _out_put={};
 
                 if(typeof cachedUser == 'undefined'){
@@ -53,7 +80,7 @@ exports.Authentication= function(req,res,next){
         }
 
 
-        CacheEngine.getCachedDate(req.headers['prg-auth-header'],function(cachedUser){
+        CacheEngine.getCachedDate("sess:"+req.headers['prg-auth-header'],function(cachedUser){
 
 
             if(typeof cachedUser == 'undefined'){
@@ -65,7 +92,7 @@ exports.Authentication= function(req,res,next){
                 return ;
             }
 
-            CurrentSession = cachedUser;
+            req.CurrentSession = cachedUser;
 
             next();
             return;
@@ -81,7 +108,7 @@ exports.Authentication= function(req,res,next){
         return ;
     }
 
-
+    */
 
  }
 

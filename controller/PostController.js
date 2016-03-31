@@ -12,7 +12,7 @@ var PostController ={
      */
     addPost:function(req,res){
 
-        var outPut ={};
+        var outPut ={},CurrentSession = Util.getCurrentSession(req);
 
         var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
         var data ={
@@ -90,7 +90,7 @@ var PostController ={
      * @param res
      */
     sharePost:function(req,res){
-
+        var CurrentSession = Util.getCurrentSession(req);
         var data ={
             content:req.body.__content,
             created_by:CurrentSession.id,

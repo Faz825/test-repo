@@ -17,7 +17,7 @@ var LikeController ={
             return 0;
         }
 
-        var Like = require('mongoose').model('Like');
+        var Like = require('mongoose').model('Like'),CurrentSession = Util.getCurrentSession(req);
 
         var _like ={
             post_id:req.body.__post_id,

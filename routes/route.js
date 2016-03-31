@@ -41,7 +41,8 @@ var DefaultController   = require('../controller/DefaultController'),
 
 var TestPostController          = require('../test/TestPostController'),
     TestConnectionController    = require('../test/TestConnectionController'),
-    TestCommentController    = require('../test/TestCommentController');
+    TestCommentController    = require('../test/TestCommentController'),
+    TestSessionController   =   require('../test/TestSessionController')       ;
 /**
  * Define Public URLs
  * this public urls will load without authentication component.
@@ -113,6 +114,13 @@ router.post('/test/accept-friend-requests/:id', TestConnectionController.acceptF
 
 
 router.get('/test/my-connections/:id/:q',TestConnectionController.myConnections);
+
+
+router.post('/test/session',TestSessionController.addToSession);
+router.get('/test/get-session',TestSessionController.getSession);
+router.post('/test/logout',TestSessionController.logout);
+
+
 
 router.get('/test/save-notification', TestController.saveNotification);
 router.get('/test/get-notifications', TestController.getNotifications);

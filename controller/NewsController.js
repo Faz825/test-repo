@@ -44,7 +44,8 @@ var NewsController ={
 
         var News = require('mongoose').model('News'),
             _async = require('async'),
-            FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+            FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
+            CurrentSession = Util.getCurrentSession(req);
 
 
         var user_id=CurrentSession.id;
@@ -300,7 +301,8 @@ var NewsController ={
 
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
             news_categories = [],
-            now = new Date();
+            now = new Date(),
+          CurrentSession = Util.getCurrentSession(req);
 
         //REMOVE IF ALREADY DID FAVOURITE
         if(req.body.fav == 1){
@@ -347,7 +349,8 @@ var NewsController ={
     getMyNews:function(req,res){
         var News = require('mongoose').model('News'),
             _async = require('async'),
-            FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
+            FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
+            CurrentSession = Util.getCurrentSession(req);;;
 
 
         var user_id=CurrentSession.id;
@@ -413,8 +416,9 @@ var NewsController ={
     saveMyNews:function(req,res){
 
 
-        var SavedArticle = require('mongoose').model('SavedArticle');
-
+        var SavedArticle = require('mongoose').model('SavedArticle')
+        , CurrentSession = Util.getCurrentSession(req)
+        req.body.user_id = CurrentSession.id;
         SavedArticle.saveArticle(req.body,function(resultSet){
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
@@ -431,7 +435,7 @@ var NewsController ={
      */
 
     getSavedArticles:function(req,res){
-        var SavedArticle = require('mongoose').model('SavedArticle');
+        var SavedArticle = require('mongoose').model('SavedArticle'), CurrentSession = Util.getCurrentSession(req);
 
         var criteria ={
             user_id:CurrentSession.id
