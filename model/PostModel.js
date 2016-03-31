@@ -299,6 +299,7 @@ PostSchema.statics.postList=function(userId,posts,callBack){
     }, 1);
 
     q.drain = function() {
+        console.log(data_by_date);
         _tmp_created_date.sort(function(a,b){
             return b - a;
         });
@@ -309,15 +310,13 @@ PostSchema.statics.postList=function(userId,posts,callBack){
                 _out_put.push(data_by_date[_created_date][a]);
             }
         }
-        console.log("postList");
-        console.log(data_by_date);
+
         callBack(_out_put)
 
     };
 
     q.push(posts);
 
-    console.log('B)');
     /*_async.each(posts,
         function(post,callBack){
             var _post = _this.formatPost(post),
@@ -401,16 +400,16 @@ PostSchema.statics.formatPost=function(postData){
 
     var outPut = {
         post_id:postData.post_id,
-        has_attachment:postData.has_attachment,
+        has_attachment:(postData.has_attachment)?postData.has_attachment:false,
         post_mode:postData.post_mode,
-        content:postData.content,
+        content:(postData.content)?postData.content:"",
         created_by:postData.created_by,
         post_visible_mode:postData.post_visible_mode,
         date:DateTime.explainDate(postData.created_at),
-        location:postData.location,
-        life_event:postData.life_event,
+        location:(postData.location)?postData.location:"",
+        life_event:(postData.life_event)?postData.life_event:"",
         upload:(postData.has_attachment)?postData.upload:[],
-        shared_post:postData.shared_post
+        shared_post:(postData.shared_post)?postData.shared_post:""
 
     }
 
