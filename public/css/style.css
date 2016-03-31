@@ -1802,6 +1802,13 @@ textarea{
     float: right;
     cursor: pointer;
 }
+.show-more-btn{
+    font: 10px 'montserratsemi_bold', sans-serif;
+    color: #61b3de;
+    margin: 8px 15px 12px;
+    float: right;
+    cursor: pointer;
+}
 .pg-news-item-other-row{
     display: none;
 }
@@ -1810,6 +1817,11 @@ textarea{
 }
 .pg-news-item-main-row{
 	transition: all 0.5s;
+	overflow: hidden;
+}
+.pg-news-item-main-row .more-articals,
+.pg-news-item-main-row .articals{
+	overflow: hidden;
 }
 .pg-news-item-main-row .hiddenBlock{
 	position: relative;
