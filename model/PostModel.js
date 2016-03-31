@@ -161,7 +161,7 @@ PostSchema.statics.ch_getPost= function(userId,payload,callBack){
     var _this = this;
 
     var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+userId;
-console.log("ch_getPost -- >",_cache_key);
+
     var query={
         q:payload.q,
         index:_cache_key
