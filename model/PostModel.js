@@ -253,7 +253,7 @@ PostSchema.statics.postList=function(userId,posts,callBack){
 
     var a =0;
 
-    var q = async.queue(function(post, callBack) {
+    var q = _async.queue(function(post, callBack) {
         var _post = _this.formatPost(post),
             _created_date = _post.date.time_stamp;
 
