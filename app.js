@@ -6,10 +6,14 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 
+var redis = require('redis');
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+var client  = redis.createClient();
 
 
 GLOBAL.Config = require('./config/app.config');
-GLOBAL.CurrentSession = {};
+
 require('./config/alert.message');
 require('./config/notification');
 GLOBAL.ApiHelper = require('./middleware/ApiHelper');
@@ -38,6 +42,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
+app.use(session({
+  store: new RedisStore({
+    host: Config.CACHE_HOST,
+    port: Config.CACHE_PORT,
+
+  }),
+    secret: Config.SECRET,
+    saveUninitialized: true,
+    resave: true
+}));
 
 
 require('./core/model');

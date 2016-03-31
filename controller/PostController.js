@@ -12,7 +12,7 @@ var PostController ={
      */
     addPost:function(req,res){
 
-        var outPut ={};
+        var outPut ={},CurrentSession = Util.getCurrentSession(req);
 
         var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
         var data ={
@@ -46,7 +46,7 @@ var PostController ={
     getPost:function(req,res){
 
         var query={
-            q:req.query.uname,
+            q:"user_name:"+req.query.uname,
             index:'idx_usr'
         };
 
@@ -60,13 +60,15 @@ var PostController ={
 
                 payLoad ={
                     _page:_page,
-                    q:(req.query._own =="me")?"created_by:"+esResultSet.result[0].user_id:"*",
+                    q:(req.query._own =="me")?"created_by.user_id"+_id:"*",
                 };
 
 
 
             Post.ch_getPost(_id,payLoad,function(resultSet){
                 var outPut ={};
+
+
 
                 if(resultSet == null){
                     outPut['status']    = ApiHelper.getMessage(200, Alert.LIST_EMPTY, Alert.SUCCESS);
@@ -90,7 +92,7 @@ var PostController ={
      * @param res
      */
     sharePost:function(req,res){
-
+        var CurrentSession = Util.getCurrentSession(req);
         var data ={
             content:req.body.__content,
             created_by:CurrentSession.id,

@@ -161,7 +161,7 @@ PostSchema.statics.ch_getPost= function(userId,payload,callBack){
     var _this = this;
 
     var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+userId;
-
+console.log("ch_getPost -- >",_cache_key);
     var query={
         q:payload.q,
         index:_cache_key
@@ -170,10 +170,11 @@ PostSchema.statics.ch_getPost= function(userId,payload,callBack){
     //Find User from Elastic search
     ES.search(query,function(csResultSet){
 
+
         if(csResultSet == null){
             callBack(null);
         }else{
-            _this.postList(csResultSet.result,function(lpData){
+            _this.postList(userId,csResultSet.result,function(lpData){
                 callBack(lpData);
             });
         }
@@ -241,7 +242,7 @@ PostSchema.statics.db_getPost = function(criteria,callBack){
  * Format Post list
  * @param posts
  */
-PostSchema.statics.postList=function(posts,callBack){
+PostSchema.statics.postList=function(userId,posts,callBack){
     var _tmp =[],_out_put =[],_tmp_created_date=[],data_by_date ={};
 
 
@@ -251,17 +252,23 @@ PostSchema.statics.postList=function(posts,callBack){
         Like =require('mongoose').model('Like');
 
     var a =0;
+
+
+
     _async.each(posts,
         function(post,callBack){
             var _post = _this.formatPost(post),
             _created_date = _post.date.time_stamp;
 
-            if(_tmp_created_date.indexOf(_created_date) == -1)
+            if(_tmp_created_date.indexOf(_created_date) == -1){
                 _tmp_created_date.push(_created_date);
+            }
 
 
-            if( typeof data_by_date[_created_date] == 'undefined' )
+            if( typeof data_by_date[_created_date] == 'undefined' ){
                 data_by_date[_created_date] = [];
+            }
+
 
             //GET COMMENT COUNT
             Comment.getCommentCount(_post.post_id,function(commentCount){
@@ -276,10 +283,10 @@ PostSchema.statics.postList=function(posts,callBack){
                     _post['created_by'] = csResultSet.result[0];
 
 
-                    Like.getLikedUsers(_post.post_id,0,function(likedUsers,likedUserIds){
+                    Like.getLikedUsers(userId,_post.post_id,0,function(likedUsers,likedUserIds){
                         _post['like_count'] = likedUsers.length;
                         _post['liked_user'] = likedUsers;
-                        _post['is_i_liked'] = (likedUserIds.indexOf(CurrentSession.id) == -1)?0:1;
+                        _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1)?0:1;
 
                         data_by_date[_created_date].push(_post) ;
 
@@ -308,6 +315,10 @@ PostSchema.statics.postList=function(posts,callBack){
         }
     );
 
+
+
+
+
 }
 
 
@@ -324,16 +335,16 @@ PostSchema.statics.formatPost=function(postData){
 
     var outPut = {
         post_id:postData.post_id,
-        has_attachment:postData.has_attachment,
+        has_attachment:(postData.has_attachment)?postData.has_attachment:false,
         post_mode:postData.post_mode,
-        content:postData.content,
+        content:(postData.content)?postData.content:"",
         created_by:postData.created_by,
         post_visible_mode:postData.post_visible_mode,
         date:DateTime.explainDate(postData.created_at),
-        location:postData.location,
-        life_event:postData.life_event,
+        location:(postData.location)?postData.location:"",
+        life_event:(postData.life_event)?postData.life_event:"",
         upload:(postData.has_attachment)?postData.upload:[],
-        shared_post:postData.shared_post
+        shared_post:(postData.shared_post)?postData.shared_post:""
 
     }
 

@@ -10,7 +10,7 @@ var UserControler ={
 
     doSignup:function(req,res){
         var User = require('mongoose').model('User');
-            ;
+
 
         var user ={
             id:req.body._id,
@@ -36,9 +36,37 @@ var UserControler ={
                         });
                         return;
                     }
+                    Util.addToSession(req,_ResultSet.user);
+                    var _out_put= {
+                        status:'success',
+                        message:Alert.ACCOUNT_CREATION_SUCCESS
+                    }
 
-                    var _cache_key = CacheEngine.prepareCacheKey(_ResultSet.user.token);
-                    CacheEngine.addToCache(_cache_key,_ResultSet.user,function(cacheData){
+                    _out_put['user']=_ResultSet.user;
+
+                    res.render('email-templates/signup', {
+                        name: _ResultSet.user.first_name,
+                    }, function(err, emailHTML) {
+
+                        var sendOptions = {
+                            to: _ResultSet.user.email,
+                            subject: 'Proglobe Signup',
+                            html: emailHTML
+                        };
+                        EmailEngine.sendMail(sendOptions, function(err){
+                            if(!err){
+                                console.log("Email Send")
+                            } else{
+                                console.log("EMAIL Sending Error");
+                                console.log(err);
+                            }
+                        });
+                        res.status(200).json(_out_put);
+                        return 0
+                    });
+                    /*
+                    var _cache_key = CacheEngine.prepareCacheKey("sess:"+_ResultSet.user.token);
+                    /*CacheEngine.addToCache(_cache_key,_ResultSet.user,function(cacheData){
 
                         var _out_put= {
                             status:'success',
@@ -70,7 +98,7 @@ var UserControler ={
                             res.status(200).json(_out_put);
                             return 0
                         });
-                    });
+                    });*/
 
                 });
             }else{
@@ -98,16 +126,27 @@ var UserControler ={
             secretary:req.body.secretary,
             status:2
         }
+
+        var CurrentSession = Util.getCurrentSession(req);
+
         User.saveUpdates(CurrentSession.id,secretaryData,function(resultSet){
             Secretary.getSecretaryById(secretaryData.secretary,function(resultSet){
-                var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+
+
                 CurrentSession['secretary_name']        = resultSet.full_name;
                 CurrentSession['secretary_id']          = resultSet.id;
                 CurrentSession['secretary_image_url']   = resultSet.image_name;
                 CurrentSession['status']                = 2;
 
+                Util.addToSession(req,CurrentSession);
+                var _out_put= {
+                    status:'success',
+                    message:Alert.ADDED_SECRETARY,
+                    user:CurrentSession
+                };
 
-                CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+                res.status(200).json(_out_put);
+                /*CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
                     var _out_put= {
                         status:'success',
                         message:Alert.ADDED_SECRETARY
@@ -116,8 +155,10 @@ var UserControler ={
                         _out_put['extra']=Alert.CACHE_CREATION_ERROR
                     }
                     _out_put['user']=CurrentSession;
+                    console.log("saveSecretary");
+                    console.log(CurrentSession);
                     res.status(200).json(_out_put);
-                });
+                });*/
             });
 
         });
@@ -137,6 +178,7 @@ var UserControler ={
             zip:req.body.zip,
             status:3
         }
+        var CurrentSession = Util.getCurrentSession(req);
         User.saveUpdates(CurrentSession.id,generalInfo,function(resultSet){
 
 
@@ -148,14 +190,18 @@ var UserControler ={
                 });
 
             }
-            var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+
             CurrentSession['status']        = 3;
             CurrentSession['country']       = req.body.country;
             CurrentSession['dob']           = req.body.dob;
             CurrentSession['zip']           = req.body.zip;
-
-
-            CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+            Util.addToSession(req,CurrentSession)
+            var _out_put = {
+                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.INFO),
+                user:CurrentSession
+            }
+            res.status(200).json(_out_put);
+            /*CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
                 var  _out_put = {}
                 _out_put = {
                     status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.INFO),
@@ -164,9 +210,10 @@ var UserControler ={
                 if(!cacheData){
                     _out_put['extra']=Alert.CACHE_CREATION_ERROR
                 }
-
+                console.log("saveGeneralInfo");
+                console.log(CurrentSession);
                 res.status(200).json(_out_put);
-            });
+            });*/
 
 
             return 0;
@@ -180,14 +227,43 @@ var UserControler ={
      * @param res
      */
     addCollageAndJob:function(req,res){
-        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+
+        var CurrentSession = Util.getCurrentSession(req);
         CurrentSession['status']        = 4;
         CurrentSession['school']        = (req.body.school)?req.body.school:null;
         CurrentSession['grad_date']     = (req.body.grad_date)?req.body.grad_date:null;
         CurrentSession['job_title']     = (req.body.job_title)?req.body.job_title:null;
         CurrentSession['company_name']  = (req.body.company_name)?req.body.company_name:null;
 
-        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
+        Util.addToSession(req,CurrentSession);
+        var User = require('mongoose').model('User'),
+            _collageAndJob={
+                school:req.body.school,
+                grad_date:req.body.grad_date,
+                job_title:req.body.job_title,
+                company_name:req.body.company_name,
+                status:4
+            };
+
+        User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
+            var outPut ={};
+
+            if(resultSet.status != 200){
+                outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
+                res.status(200).json(outPut);
+                return 0;
+            }
+
+            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['user']      = CurrentSession;
+
+            res.status(200).json(outPut);
+
+
+
+
+        });
+        /*CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
 
             var User = require('mongoose').model('User'),
                 _collageAndJob={
@@ -211,6 +287,9 @@ var UserControler ={
                 }
                 outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
                 outPut['user']      = CurrentSession;
+
+                console.log("addCollageAndJob");
+                console.log(CurrentSession);
                 res.status(200).json(outPut);
 
 
@@ -218,7 +297,7 @@ var UserControler ={
 
             });
 
-        });
+        });*/
     },
 
     /**
@@ -228,6 +307,7 @@ var UserControler ={
      */
     getConnections:function(req,res){
         var User = require('mongoose').model('User');
+        var CurrentSession = Util.getCurrentSession(req);
         var criteria ={
             pg:0,
             country:CurrentSession.country,
@@ -271,41 +351,32 @@ var UserControler ={
      * @param res
      */
     connect:function(req,res){
-        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+        var CurrentSession = Util.getCurrentSession(req);
         CurrentSession['status']    = 5;
-        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
-            var outPut ={};
-            outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['user']=CurrentSession;
+        Util.addToSession(req,CurrentSession);
+        var outPut ={};
+        outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+        outPut['user']= CurrentSession;
 
-            var req_connected_users = JSON.parse(req.body.connected_users);
-            var req_unconnected_users = JSON.parse(req.body.unconnected_users);
-
-
-
-            var Connection = require('mongoose').model('Connection'),
-                User       = require('mongoose').model('User');
+        var req_connected_users = JSON.parse(req.body.connected_users);
+        var req_unconnected_users = JSON.parse(req.body.unconnected_users);
 
 
-                User.saveUpdates(CurrentSession.id,{status:5},function(updateDataSet){
-                    Connection.sendConnectionRequest(req_connected_users,req_unconnected_users, function (resultSet) {
 
-                        if (resultSet.status !== 200) {
-                            outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
-                            res.status(400).send(outPut);
-                            return 0;
-                        }
-
-                        if (!cacheData) {
-                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                        }
-
-                        res.status(200).json(outPut);
-                        return 0;
-                    });
-                });
+        var Connection = require('mongoose').model('Connection'),
+            User       = require('mongoose').model('User');
 
 
+        User.saveUpdates(CurrentSession.id,{status:5},function(updateDataSet){
+            Connection.sendConnectionRequest(CurrentSession.id,req_connected_users,req_unconnected_users, function (resultSet) {
+                if (resultSet.status !== 200) {
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
+                    res.status(400).send(outPut);
+                    return 0;
+                }
+                res.status(200).json(outPut);
+                return 0;
+            });
         });
     },
 
@@ -315,42 +386,37 @@ var UserControler ={
      * @param res
      */
     addNewsCategory:function(req,res){
-        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+        var CurrentSession = Util.getCurrentSession(req);
         CurrentSession['status']    = 6;
+        Util.addToSession(req,CurrentSession);
+        var outPut ={};
+        outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+        outPut['user']=CurrentSession;
 
-        CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
-            var outPut ={};
-            outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['user']=CurrentSession;
-
-            var req_news_categories = JSON.parse(req.body.news_categories);
-            var un_selected_categories = JSON.parse(req.body.un_selected);
-
+        var req_news_categories = JSON.parse(req.body.news_categories);
+        var un_selected_categories = JSON.parse(req.body.un_selected);
 
 
-                var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
-                    User                  = require('mongoose').model('User');
+
+        var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
+            User                  = require('mongoose').model('User');
 
 
-                User.saveUpdates(CurrentSession.id,{status:6},function(updateDataSet){
+        User.saveUpdates(CurrentSession.id,{status:6},function(updateDataSet){
 
-                    FavouriteNewsCategory.addUserNewsCategory(req_news_categories,un_selected_categories,function(resultSet){
+            FavouriteNewsCategory.addUserNewsCategory(CurrentSession.id,req_news_categories,un_selected_categories,function(resultSet){
 
-                        if (resultSet.status !== 200) {
-                            outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
-                            res.status(400).send(outPut);
-                            return 0;
-                        }
-                        if (!cacheData) {
-                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                        }
+                if (resultSet.status !== 200) {
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                    res.status(400).send(outPut);
+                    return 0;
+                }
 
-                        res.status(200).json(outPut);
-                        return 0;
-                    });
-                });
-
+                res.status(200).json(outPut);
+                return 0;
+            });
         });
+
     },
 
     /**
@@ -360,6 +426,7 @@ var UserControler ={
      * @returns {number}
      */
     uploadProfileImage:function(req,res){
+        var CurrentSession = Util.getCurrentSession(req);
 
         var User = require('mongoose').model('User');
         var data ={
@@ -378,9 +445,18 @@ var UserControler ={
                     var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
                     CurrentSession['status'] = 7;
                     CurrentSession['profile_image'] = Config.DEFAULT_PROFILE_IMAGE;
+                    Util.addToSession(req,CurrentSession);
+                    var outPut = {
+                        status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                    }
+
+                    outPut['user'] = CurrentSession;
+                    //ADD TO CACHE
+                    User.addUserToCache(CurrentSession.id,function(csResult){});
+                    res.status(200).json(outPut);
 
 
-                    CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                    /*CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
                         var outPut = {
                             status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
                         }
@@ -391,7 +467,7 @@ var UserControler ={
                         //ADD TO CACHE
                         User.addUserToCache(CurrentSession.id,function(csResult){});
                         res.status(200).json(outPut);
-                    });
+                    });*/
 
                 }else{
                     ContentUploader.uploadFile(data,function (payLoad) {
@@ -400,9 +476,17 @@ var UserControler ={
                             var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
                             CurrentSession['status'] = 7;
                             CurrentSession['profile_image'] = payLoad.http_url;
+                            Util.addToSession(req,CurrentSession);
+                            var outPut = {
+                                status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                            }
 
+                            outPut['user'] = CurrentSession;
+                            //ADD TO CACHE
+                            User.addUserToCache(CurrentSession.id,function(csResult){});
+                            res.status(200).json(outPut);
 
-                            CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                            /*CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
                                 var outPut = {
                                     status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
                                 }
@@ -413,7 +497,7 @@ var UserControler ={
                                 //ADD TO CACHE
                                 User.addUserToCache(CurrentSession.id,function(csResult){});
                                 res.status(200).json(outPut);
-                            });
+                            });*/
 
                         } else {
                             var outPut={
@@ -445,6 +529,7 @@ var UserControler ={
      * @param res
      */
     uploadCoverImage:function(req,res){
+        var CurrentSession = Util.getCurrentSession(req);
         if(typeof req.body.cover_img == 'undefined' || typeof req.body.cover_img == "") {
             var outPut={
                 status: ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
@@ -467,8 +552,18 @@ var UserControler ={
                 var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
                 CurrentSession['cover_image'] = payLoad.http_url;
 
+                Util.addToSession(req,CurrentSession);
+                var outPut = {
+                    status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                }
+                outPut['user'] = CurrentSession;
 
-                CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                //ADD TO CACHE
+                User.addUserToCache(CurrentSession.id,function(csResult){});
+
+                res.status(200).json(outPut);
+                return 0;
+               /* CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
                     var outPut = {
                         status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
                     }
@@ -481,7 +576,7 @@ var UserControler ={
                     User.addUserToCache(CurrentSession.id,function(csResult){});
 
                     res.status(200).json(outPut);
-                });
+                });*/
 
 
 
@@ -588,7 +683,7 @@ var UserControler ={
     updateEducationDetail:function(req, res){
 
         var User = require('mongoose').model('User');
-
+        var CurrentSession = Util.getCurrentSession(req);
         //var _userId = CurrentSession.id;
 
         var _userId = CurrentSession.id;
@@ -923,7 +1018,7 @@ var UserControler ={
      */
     connectionCount:function(req,res){
         var Connection = require('mongoose').model('Connection');
-
+        var CurrentSession = Util.getCurrentSession(req);
 
         Connection.getConnectionCount(CurrentSession.id,function(connectionCount){
             var outPut = {};
@@ -1291,7 +1386,7 @@ var UserControler ={
      */
     updateWorkExperience:function(req,res){
         var User = require('mongoose').model('User');
-
+        var CurrentSession = Util.getCurrentSession(req);
         //var _userId = CurrentSession.id;
 
         var _userId = CurrentSession.id;
@@ -1375,8 +1470,14 @@ var UserControler ={
                     return 0;
                 }
 
+
+                Util.addToSession(req,resultSet.user);
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
                 var _cache_key = CacheEngine.prepareCacheKey(resultSet.user.token);
-                CacheEngine.addToCache(_cache_key,resultSet.user,function(cacheData){
+                outPut['user']=resultSet.user;
+                res.status(200).send(outPut);
+                return 0;
+                /*CacheEngine.addToCache(_cache_key,resultSet.user,function(cacheData){
 
                     outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
 
@@ -1387,7 +1488,7 @@ var UserControler ={
                     outPut['user']=resultSet.user;
                     res.status(200).send(outPut);
 
-                });
+                });*/
 
             });
 

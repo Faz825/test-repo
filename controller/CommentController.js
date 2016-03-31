@@ -25,7 +25,7 @@ var CommentController ={
             return 0;
         }
 
-        var Comment = require('mongoose').model('Comment');
+        var Comment = require('mongoose').model('Comment'),CurrentSession = Util.getCurrentSession(req);
 
 
         var _comment ={

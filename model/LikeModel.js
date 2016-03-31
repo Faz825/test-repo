@@ -79,7 +79,7 @@ LikeSchema.statics.addLike = function(likeData,callBack){
  * @param page
  * @param callBack
  */
-LikeSchema.statics.getLikedUsers = function(postId,page,callBack){
+LikeSchema.statics.getLikedUsers = function(userId,postId,page,callBack){
     var _this = this,
         _async = require('async'),
         _cache_key = LikeConfig.CACHE_PREFIX+postId,
@@ -102,7 +102,7 @@ LikeSchema.statics.getLikedUsers = function(postId,page,callBack){
                 //Find User from Elastic search
                 ES.search(query,function(csResultSet){
 
-                    if(csResultSet.result[0].user_id == CurrentSession.id){
+                    if(csResultSet.result[0].user_id == userId){
                         liked_users.push({
                             user_id:csResultSet.result[0].user_id,
                             profile_image:"you",
