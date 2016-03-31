@@ -32,14 +32,17 @@ import Session  from './Session.js';
          var unreadCount = 0;
          var incomingCallUser = [];
          var outGoingCallUser = [];
+         var unreadConversationCount = [];
 
          // A conversation has changed
          b6.on('conversation', function(c, op) {
+             //console.log("A conversation has changed")
              onConversationChange(c, op);
          });
 
          // A message has changed
          b6.on('message', function(m, op) {
+             //console.log("A message has changed")
              onMessageChange(m, op);
          });
 
@@ -76,8 +79,9 @@ import Session  from './Session.js';
                          $('#incomingCallAlert').modal('show');
 
                      }
-                 }});
 
+                 }
+             });
 
          });
 
@@ -151,16 +155,13 @@ import Session  from './Session.js';
              // New conversation
              if (op > 0) {
 
+                 //console.log("New conversation")
+
                  if (c.deleted) {
                      return;
                  }
 
                  if(title != 'undefined'){
-                     // Create a container for message list for this conversation
-                     msgsDiv = $('<div class="msgs" />')
-                         .attr('id', msgsId.substring(1))
-                         .hide();
-                     $('#msgList').append(msgsDiv);
 
                      $.ajax({
                          url: '/get-profile/'+title,
@@ -187,12 +188,21 @@ import Session  from './Session.js';
                                  }
                                  chatList.append(tabDiv);
 
+                                 // Create a container for message list for this conversation
+                                 msgsDiv = $('<div class="msgs" />')
+                                     .attr('id', msgsId.substring(1))
+                                     .hide();
+                                 $('#msgList').append(msgsDiv);
+
+                                 //console.log("notificationId.substring(1) => "+notificationId.substring(1))
+
+                                 //TODO::Show only 5 and if more display 'see all'
                                  notificationDiv = $('<div class="tab msg-holder" />')
                                      .attr('id', notificationId.substring(1))
                                      .append(notificationListADiv);
                                  notificationWrapperDiv.append(notificationDiv)
 
-                                 // Update Conversation data
+                                  //Update Conversation data
                                  var stamp = getRelativeTime(c.updated);
                                  var latestText = '';
                                  var lastMsg = c.getLastMessage();
@@ -231,6 +241,7 @@ import Session  from './Session.js';
                                  var top = chatList.children(':first');
                                  if (top.length > 0 && title != 'undefined') {
                                      var topTabId = top.attr('id');
+                                     //console.log("1 => "+topTabId)
                                      var topConvId = domIdToConversationId(topTabId);
                                      var topConv = b6.getConversation(topConvId);
 
@@ -244,6 +255,7 @@ import Session  from './Session.js';
                                  var notificationTop = notificationWrapperDiv.children(':first');
                                  if (notificationTop.length > 0 && title != 'undefined') {
                                      var notificationTopTabId = notificationTop.attr('id');
+                                     //console.log("2 => "+notificationTopTabId)
                                      var notificationTopConvId = domIdToConversationId(notificationTopTabId);
                                      var notificationTopConv = b6.getConversation(notificationTopConvId);
 
@@ -252,8 +264,9 @@ import Session  from './Session.js';
                                      }
                                  }
 
-                                 if (c.unread > 0) {
+                                 if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
                                      unreadCount += 1;
+                                     unreadConversationCount.push(c.id);
                                  }
 
                                  if(currentChatUri != null){
@@ -266,7 +279,10 @@ import Session  from './Session.js';
                                          if (b6.markConversationAsRead(conv) > 0) {
                                              // Some messages have been marked as read
                                              // update chat list
-                                             unreadCount -= 1;
+                                             if(unreadConversationCount.indexOf(c.id) != -1){
+                                                 unreadCount -= 1;
+                                                 unreadConversationCount.splice(c.id);
+                                             }
                                          }
 
 
@@ -288,11 +304,6 @@ import Session  from './Session.js';
                                      onMessageChange(c.messages[i], op)
                                  }
 
-                                 if(unreadCount > 0){
-                                     $("#inbox_count").html('<span class="total">'+unreadCount+'</span>');
-                                     $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
-                                 }
-
                              }
                          }.bind(this),
                          error: function (request, status, error) {
@@ -303,6 +314,86 @@ import Session  from './Session.js';
                      });
 
                  }
+             }
+
+             if(op >= 0 && title != 'undefined'){
+                 //console.log("existing conversation");
+
+                 // Update Conversation data
+                 var stamp = getRelativeTime(c.updated);
+                 var latestText = '';
+                 var lastMsg = c.getLastMessage();
+                 if (lastMsg) {
+                     // Show the text from the latest conversation
+                     if (lastMsg.content)
+                         latestText = lastMsg.content;
+                     // If no text, but has an attachment, show the mime type
+                     else if (lastMsg.data && lastMsg.data.type) {
+                         latestText = lastMsg.data.type;
+                     }
+                 }
+
+                 tabDiv.find('.chat-body').find('.msg').html(latestText);
+                 tabDiv.find('.chat-body').find('.chat-date').html(stamp);
+
+                 notificationDiv.find('.chat-body').find('.msg').html(latestText);
+                 notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
+
+                 // If the updated conversation is newer than the top one -
+                 // move this conversation to the top
+                 var top = chatList.children(':first');
+                 if (top.length > 0 && title != 'undefined') {
+                     var topTabId = top.attr('id');
+                     var topConvId = domIdToConversationId(topTabId);
+                     var topConv = b6.getConversation(topConvId);
+
+                     if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
+                         //console.log("going to move the top ")
+                         top.before(tabDiv);
+                     }
+                 }
+
+                 // If the updated conversation is newer than the top one -
+                 // move this conversation to the top
+                 var notificationTop = notificationWrapperDiv.children(':first'); //console.log(notificationTop)
+                 if (notificationTop.length > 0 && title != 'undefined') {
+                     var notificationTopTabId = notificationTop.attr('id');
+                     var notificationTopConvId = domIdToConversationId(notificationTopTabId);
+                     var notificationTopConv = b6.getConversation(notificationTopConvId);
+
+                     if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
+                         notificationTop.before(notificationDiv);
+                     }
+                 }
+
+                 if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
+                     unreadCount += 1;
+                     unreadConversationCount.push(c.id);
+                 }
+
+                 if(currentChatUri != null){
+
+                     var conv = b6.getConversation(currentChatUri);
+
+                     if (conv != null && b6.markConversationAsRead(conv) > 0) {
+                         // Some messages have been marked as read
+                         // update chat list
+                         if(unreadConversationCount.indexOf(c.id) != -1){
+                             unreadCount -= 1;
+                             unreadConversationCount.splice(c.id);
+                         }
+                     }
+
+                 }
+             }
+
+             //console.log("Index of "+c.id+" = "+unreadConversationCount.indexOf(c.id));
+             //console.log("unreadConversationCount.length => "+unreadConversationCount.length);
+
+             if(unreadCount > 0){
+                 $("#unread_inbox_p").find('.total').remove();
+                 $("#unread_inbox_p").append('<span class="total">'+unreadCount+'</span>');
+                 $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
              }
 
          }
@@ -551,6 +642,7 @@ import Session  from './Session.js';
              c.on('error', function() {
                  //console.log("ERROR")
                  $('#incomingCallAlert').modal('hide');
+                 $('#detailPane').addClass('hidden');
                  //console.log('CALL error', c);
              });
              // Call ended
@@ -572,6 +664,7 @@ import Session  from './Session.js';
 
                  $("#videoContainer").html("");
                  $('#incomingCallAlert').modal('hide');
+                 $('#detailPane').addClass('hidden');
              });
          }
 
@@ -582,6 +675,7 @@ import Session  from './Session.js';
 
              //$('#detailPane').addClass('hidden');
              $('#detailPane').removeClass('hidden');
+             $('#onCall').text("on call")
 
              // Do not show video feeds area for audio-only call
              var div = $('#videoContainer').toggle(c.options.video);
@@ -617,6 +711,7 @@ import Session  from './Session.js';
                              var outGoingCallUserName = data.profile_data['first_name']+" "+data.profile_data['last_name'];
                              s += b6.getNameFromIdentity(outGoingCallUserName);
                              $('#inCallOther').text(s);
+                             $('#onCall').text("ringing")
                          }
                      }});
 

@@ -2128,7 +2128,7 @@ textarea{
 	border-right: 1px solid #dee6eb;
 }
 
-.conv-holder .msg-holder{
+.conv-holder .msg-holder, .chat-notification-header .msg-holder{
 	padding: 12px;
 	overflow: hidden;
 	position: relative;
@@ -2136,16 +2136,16 @@ textarea{
 	border-bottom: 1px solid #dee6eb;
 }
 
-.conv-holder .msg-holder a{
+.conv-holder .msg-holder a, .chat-notification-header .msg-holder a{
 	display: block;
 }
-.conv-holder .msg-holder:hover{
+.conv-holder .msg-holder:hover, .chat-notification-header .msg-holder:hover{
 	background: #e2f4ff;
 	border-left: 3px solid #61b3de;
 	padding-left: 9px;
 }
 
-.conv-holder .msg-holder-selected{
+.conv-holder .msg-holder-selected, .chat-notification-header .msg-holder-selected{
 	background: #e2f4ff;
 	border-left: 3px solid #61b3de;
 	padding-left: 9px;
@@ -2324,25 +2324,36 @@ textarea{
 	font-size: 0.6em;
 }
 
+/** CSS for chat audio /video */
 #incomingCall{
 	text-align:center;
+}
+
+.video-call-view{
+	position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 600px;
+    margin: auto;
 }
 
 #answer, #reject{
 	border-radius:20px;
 }
 
-#detailPane{
-	border-left:1px solid #e6e9ec;
-}
-
 #inCallPane_inner_div{
 	background-color: #514c46;
-	padding-top: 30px;
-	padding-bottom: 110px;
-	height: auto;
-	text-align: center;
-	margin-bottom: 20px;
+    height: auto;
+    text-align: center;
+    padding: 20px 25px;
+    border-radius: 10px;
+}
+
+.video-call-holder{
+	min-height: 510px;
+	position: relative;
 }
 
 #inCallOther{font-size:18px;color:#c7bfb2;}
@@ -2353,7 +2364,92 @@ textarea{
 .img-custom-medium { width: 75px; height: 75px; }
 .bottom-margin-20 { margin-bottom: 20px; }
 .income-call{margin-right: 20px;}
-.hangup-outer{padding-right: 20px;}
+.hangup-outer{
+	position: absolute;
+    top: -15px;
+    right: -18px;
+}
+
+.chat-notification-wrapper{
+	position: absolute;
+	background: #fff;
+	width: 225px;
+	border-radius: 3px;
+	right: 15px;
+	top: 55px;
+	display: none;
+	z-index: 100;
+}
+
+.chat-notification-header .msg-holder{
+	padding: 12px;
+	overflow: hidden;
+	position: relative;
+	cursor: pointer;
+	border-bottom: 1px solid #dee6eb;
+}
+
+.chat-notification-header .msg-holder a{
+	display: block;
+}
+.chat-notification-header .msg-holder:hover{
+	background: #e2f4ff;
+	border-left: 3px solid #61b3de;
+	padding-left: 9px;
+}
+
+.chat-notification-header .msg-holder-selected{
+	background: #e2f4ff;
+	border-left: 3px solid #61b3de;
+	padding-left: 9px;
+}
+
+.drop_downarrow{ position:absolute; top: -7px; right:120px; }
+
+#unread_chat_count_header{
+    position: relative;
+    top: -45px;
+    left: 30px;}
+
+#unread_chat_count_header .total{
+	color: #fff;
+	padding: 2px 5px;
+	background: #61b3de;
+	border-radius: 10px;
+	font-size: 0.7em;
+	line-height: 1;
+}
+
+#videoContainer{
+	display: block;
+    min-height: 510px;
+}
+
+#videoContainer .local{
+    width: 100px !important;
+    left: 6px;
+    position: absolute;
+    bottom: 39px;
+    border: 1px solid #fff;
+}
+
+#videoContainer .remote{
+	width: 100%;
+}
+
+.inCallPane-wrapper{
+	position: fixed;
+	width: 100%;
+	z-index: 1000;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+}
+
+.chat-notification-header .msg-holder .chat-body .msg{
+
+}
 
 /* Large Screen */
 @media (min-width: 1200px) {

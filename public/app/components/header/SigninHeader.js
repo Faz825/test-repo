@@ -13,7 +13,10 @@ export default class Header extends React.Component {
 
     constructor(props) {
         super(props);
+    }
 
+    showChatList(){
+        $("#chat_notification_wrapper").toggle();
     }
 
 
@@ -42,13 +45,17 @@ export default class Header extends React.Component {
                           <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_09.png" alt="" />
                           <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_03.png" alt="" />
                         </a>
-                        <a href="#">
+                        <a  href="#" onClick={()=>this.showChatList()}>
                           <span className="pg-drop-down">
                             <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_11.png" alt="" />
                             <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_033.png" alt="" />
                           </span>
                             <span id="unread_chat_count_header"></span>
-                            <div id="unread_chat_list"></div>
+                            <div id="chat_notification_wrapper" className="chat-notification-wrapper">
+                                <img className="drop_downarrow" src="/images/drop_arrow.png" alt="" />
+                                <div className="chat-notification-header" id="unread_chat_list">
+                                </div>
+                            </div>
                         </a>
                         <a href="#">
                           <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_13.png" alt="" />

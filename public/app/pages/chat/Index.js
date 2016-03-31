@@ -56,6 +56,7 @@ export default class Index extends React.Component{
             return 0;
         } else{
             this.b6.compose(this.uri).text(msg).send(function(err) {
+                $("#msgText").val("");
                 if (err) {
                     console.log('error', err);
                 }
@@ -92,53 +93,9 @@ export default class Index extends React.Component{
 
     }
 
-    answerVideo(){
-        var opts = {audio: true, video: true};
-        Chat.answerCall(opts);
-    }
-
-    answerAudio(){
-        var opts = {audio: true, video: false};
-        Chat.answerCall(opts);
-    }
-
-    reject(){
-        Chat.rejectCall();
-    }
-
-    hangup(){
-        Chat.hangupCall();
-    }
-
     render() {
         return (
             <div className="pg-middle-chat-screen-area container-fluid">
-                <div className="col-sm-9 fh top-padding-20" id="detailPane">
-                    <div className="row" id="inCallPane">
-                        <div className="col-sm-12 fh">
-                            <div className="row top-row" id="inCallPane_inner_div">
-                                <div className="col-sm-offset-1 col-xs-offset-0 col-sm-10 col-xs-10">
-                                    <div className="row text-center" id="videoContainer">
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-sm-12 top-margin-20">
-                                            <img src="" id="call_other_profile_image" className="img-responsive img-circle img-custom-large pull-left left-margin-30 hidden" />
-                                            <span id="inCallOther">Video Call</span> <span id="onCall">On Call...</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-xs-1 hangup-outer">
-                                    <button className="btn btn-danger" id="hangup" title="Stop Call" onClick={()=>this.hangup()}>
-                                        <span className="fa fa-square"></span>
-                                    </button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-
-                </div>
                 <div className="pg-middle-chat-content-header pg-chat-screen-header">
                     <div className="container">
                         <h2>Message and video calls</h2>
@@ -148,8 +105,7 @@ export default class Index extends React.Component{
                     <div className="header">
                         <div className="chat-inbox-options col-sm-4">
                             <div className="inbox">
-                                <p>inbox</p>
-                                <div id="inbox_count"></div>
+                                <p id="unread_inbox_p">inbox</p>
                             </div>
                             <div className="otherMsg">
                                 <p>Other</p>
@@ -217,32 +173,7 @@ export default class Index extends React.Component{
                         </div>
                     </div>
                 </div>
-
-
-                <div className="modal fade" id="incomingCallAlert" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-body">
-                                <div className="alert fade in" id="incomingCall">
-                                    <img src="/images/default-profile-pic.png" id="incoming_call_alert_other_profile_image" className="img-circle img-custom-medium bottom-margin-20" />
-                                    <h4 id="incomingCallFrom">User is calling...</h4>
-                                    <p>
-                                        <button type="button" className="btn btn-success income-call" id="answerVideo" onClick={()=>this.answerVideo()}>Video</button>
-                                        <button type="button" className="btn btn-success income-call" id="answerAudio" onClick={()=>this.answerAudio()}>Audio</button>
-                                        <button type="button" className="btn btn-danger income-call" id="reject" onClick={()=>this.reject()}>Reject</button>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
             </div>
-
-
-
         );
     }
 }
