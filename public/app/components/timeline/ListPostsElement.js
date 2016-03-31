@@ -310,7 +310,7 @@ class SinglePost extends React.Component{
                             </h5>
                             <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>
                             {
-                                (typeof _post.location != 'undefined' && _post.location != null)?
+                                (typeof _post.post_mode != 'undefined' && _post.post_mode != "LP")?
                                     <p className="location_text">at - {_post.location} </p>:
                                     null
                             }
