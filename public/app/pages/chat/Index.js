@@ -13,30 +13,62 @@ let errorStyles = {
     textTransform : "capitalize",
     margin        : '0 0 15px',
     display       : "block"
-}
+};
 
 export default class Index extends React.Component{
     constructor(props) {
-
-            if (window.location.protocol == 'http:' ) {
-                var url_arr = window.location.href.split('http');
-                window.location.href = 'https'+url_arr[1];
-            }
-
-
         super(props);
+
+        if (window.location.protocol == 'http:' ) {
+            var url_arr = window.location.href.split('http');
+            window.location.href = 'https'+url_arr[1];
+        }
 
         this.state= {
             chatWith:this.getUrl(),
-            userLogedIn : Session.getSession('prg_lg')
+            userLogedIn : Session.getSession('prg_lg'),
+            my_connections:[]
         };
 
         this.b6 = Chat.b6;
 
-        this.uri = 'usr:proglobe'+this.state.chatWith;
-        Chat.showMessages(this.uri);
+        console.log(this.state.userLogedIn.token);
+        console.log(this.state.chatWith);
+
+        if(this.state.chatWith == 'new'){
+            $.ajax({
+                url: '/connection/me',
+                method: "GET",
+                dataType: "JSON",
+                headers: { 'prg-auth-header':this.state.userLogedIn.token }
+            }).done(function(data){
+                if(data.status.code == 200){
+                    this.setState({my_connections:data.my_con})
+                    console.log(this.state.my_connections);
+                }
+            }.bind(this));
+        } else{
+            this.uri = 'usr:proglobe'+this.state.chatWith;
+            Chat.showMessages(this.uri);
+        }
+
+        this.selectChange = this.selectChange.bind(this);
 
     };
+
+    selectChange(e){
+
+        console.log(e.target.value);console.log(e.target.value.length);
+
+        if(e.target.value.length != 0 ){
+            var url_arr = window.location.href.split('new');
+            window.location.href = url_arr[0]+e.target.value;
+        }else{
+            //status = "invalid";
+            console.log("no user selected")
+        }
+
+    }
 
     getUrl(){
         return  this.props.params.chatWith;
@@ -94,6 +126,13 @@ export default class Index extends React.Component{
     }
 
     render() {
+
+        let opts = {};
+
+        if (this.props.error_message) {
+            opts['style'] = {"borderColor" : "#ed0909"};
+        }
+
         return (
             <div className="pg-middle-chat-screen-area container-fluid">
                 <div className="pg-middle-chat-content-header pg-chat-screen-header">
@@ -118,8 +157,30 @@ export default class Index extends React.Component{
                             <div className="connection-name">
                                 <p id="chat_with"></p>
                             </div>
+                            {
+                                (this.state.chatWith == 'new')?
+                                    <div className="connection-list btn btn-default">
+                                        <select id="connection_list"
+                                                className="pgs-sign-select"
+                                                onChange={this.selectChange.bind(this)} {...opts}>
+                                            <option/>
+                                            {this.state.my_connections.map(function(connection, i){
+                                                return <option value={connection.user_name}
+                                                               key={i}
+                                                    >
+                                                    {connection.first_name+" "+connection.last_name}</option>;
+                                            })}
+                                        </select>
+                                    </div> : null
+                            }
                             <div className="media-options-holder">
                                 <div className="media-options">
+                                    {
+                                        (this.state.chatWith !== 'new')?
+                                            <span className="opt new-message">
+                                                <a href='/chat/new'>New Message</a>
+                                            </span> : null
+                                    }
                                     <span className="opt chat-icon">
                                         <i className="fa"></i>
                                     </span>

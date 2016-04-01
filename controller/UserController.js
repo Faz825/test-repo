@@ -1048,6 +1048,7 @@ var UserControler ={
 
 
         var _uname =req.params['uname'];
+        console.log(_uname)
         _async.waterfall([
             function getUserById(callBack){
                 var _search_param = {
@@ -1060,6 +1061,7 @@ var UserControler ={
                 User.getUser(_search_param,showOptions,function(resultSet){
                     if(resultSet.status ==200 ){
                         callBack(null,resultSet.user)
+                        console.log(resultSet.user);
                     }
                 })
             },
@@ -1079,27 +1081,34 @@ var UserControler ={
 
             },
             function getProfileImage(profileData,callBack){
-                Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
+                console.log(profileData)
+                if( profileData!= null){
+                    Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
 
 
-                    if(profileImageData.status != 200){
-                        profileData['images'] = {
-                            'profile_image': {
-                                id: "DEFAULT",
-                                file_name: "default_profile_image.png",
-                                file_type: ".png",
-                                http_url: Config.DEFAULT_PROFILE_IMAGE
-                            }
-                        };
-                    }else{
-                        profileData['images'] = profileImageData.image;
+                        if(profileImageData.status != 200){
+                            profileData['images'] = {
+                                'profile_image': {
+                                    id: "DEFAULT",
+                                    file_name: "default_profile_image.png",
+                                    file_type: ".png",
+                                    http_url: Config.DEFAULT_PROFILE_IMAGE
+                                }
+                            };
+                        }else{
+                            profileData['images'] = profileImageData.image;
 
-                    }
+                        }
 
 
-                    callBack(null,profileData);
-                    return 0;
-                });
+                        callBack(null,profileData);
+                        return 0;
+                    });
+
+                } else{
+                    callBack(null,null)
+                }
+
 
 
 

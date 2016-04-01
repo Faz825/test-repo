@@ -168,6 +168,7 @@ import Session  from './Session.js';
              var proglobe_title = b6.getNameFromIdentity(c.id);
              var proglobe_title_array = proglobe_title.split('proglobe');
              var title = proglobe_title_array[1];
+             console.log(proglobe_title);
 
              // New conversation
              if (op > 0) {

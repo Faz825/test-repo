@@ -2569,6 +2569,34 @@ textarea{
 
 }
 
+.connection-list{
+	float: left;
+	min-width: 100px;
+	height: 25px;
+	background: none;
+	border-color: #59afe1;
+	overflow: hidden;
+	padding: 0px;
+}
+
+.connection-list .pgs-sign-select{
+	width: 100%;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	background: url(../images/select-arrow.png) no-repeat 92% center;
+	font: 12px 'montserratregular', sans-serif;
+	color: #2d5164;
+	border: none;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	padding: 5px 10px;
+}
+
+.media-options-holder .media-options .new-message a{
+	padding-top: 2px;
+	text-decoration: none;
+}
+
 /* Large Screen */
 @media (min-width: 1200px) {
 
