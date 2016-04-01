@@ -241,9 +241,6 @@ class SinglePost extends React.Component{
         )
     }
 
-    getSharedPostTemplate(sharedPost){
-        console.log(sharedPost)
-    }
     render(){
 
         if(typeof  this.props.postItem == 'undefined'){
@@ -252,27 +249,11 @@ class SinglePost extends React.Component{
 
         const _post = this.props.postItem;
 
-        let post_content = "";
-
-        if (_post.post_mode == "NP" ){
-            post_content = _post.content;
-        }else if(_post.post_mode == "LE"){
-            post_content = _post.life_event;
-            this.lifeEvent = post_content.toLowerCase().replace(/ /g,"-");
-        }else if(_post.post_mode == "SP" ){
-            this.sharedPost = true;
-            post_content = _post.content;
-        }else if(_post.post_mode == "AP" ){
-            post_content = _post.content;
-        }
-
         let _profile = _post.created_by;
         let postImgLength = _post.upload.length;
         let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
             _profile.images.profile_image.http_url:"";
 
-
-        let _show_share_button = (_profile.user_id != this.loggedUser.id)?true:false;
 
         var uploaded_files = _post.upload.map((upload,key)=>{
             if(key <= 3){
@@ -295,47 +276,32 @@ class SinglePost extends React.Component{
                         </div>
                         <div className="pg-user-pro-info">
                             <h5 className="pg-newsfeed-profile-name"><span className="pro-name">{_profile.first_name + " " + _profile.last_name + " "}</span>
-                                {
-                                    this.sharedPost && typeof _post.shared_post != ""?
-                                        (this.loggedUser.id == _post.shared_post.created_by.user_id)?
-                                        <span className="own-post-share">shared own post</span>
-                                        :
-                                        <span className="post-owner-name"><i className="fa fa-caret-right"></i>
-                                            <span className="pro-name">{" "+_post.shared_post.created_by.first_name + " " + _post.shared_post.created_by.last_name}</span>
-                                            's post
-                                        </span>
-                                    : null
-                                }
+
+                                <SharedPostTitle post={_post}
+                                                 loggedUser={this.loggedUser}/>
+
                             </h5>
                             <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>
-                            {
-                                (typeof _post.post_mode != 'undefined' && _post.post_mode == "LP")?
-                                    <p className="location_text">at - {_post.location} </p>:
-                                    null
-                            }
+
+                                <LocationPostTitle post={_post}
+                                                   loggedUser={this.loggedUser}/>
+
                         </div>
 
                         <div className="row row-clr pg-newsfeed-common-content-post-content">
-                            {
-                                (this.lifeEvent != "")?
-                                <div className="life-event-holder">
-                                    <img src={"/images/life-events/" + this.lifeEvent + ".png"} alt={post_content} className="event-img"/>
-                                    <p className="life-event-title">{post_content}</p>
-                                </div>
-                                :
-                                <p className="pg-newsfeed-post-description">{post_content}</p>
-                            }
+                            <PostContentBody post={_post}
+                                             loggedUser={this.loggedUser}/>
 
                         </div>
 
                         <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
                             {uploaded_files}
                         </div>
-                        {
-                            (this.sharedPost )?
-                                <SharedPost sharedPostData={_post.shared_post} />
-                            :null
-                        }
+
+                        <SharedPostBody  post={_post}
+                                     loggedUser={this.loggedUser}/>
+
+
                         <PostActionBar comment_count={_post.comment_count}
                                        onLikeClick = {event=>this.onLikeClick()}
                                        onShareClick = {event=>this.onShareClick()}
@@ -370,87 +336,6 @@ class SinglePost extends React.Component{
     }
 }
 
-export class SharedPost extends React.Component{
-    constructor(props){
-        super(props);
-
-        this.state={}
-
-        this.lifeEvent = "";
-    }
-
-    render() {
-
-        if(typeof this.props.sharedPostData == "undefined"){
-            return (<div />);
-        }
-
-
-        let sharedPost = this.props.sharedPostData,
-            post_content;
-
-        if(sharedPost.post_mode == "LE"){
-            post_content = sharedPost.life_event;
-            this.lifeEvent = post_content.toLowerCase().replace(/ /g,"-");
-        }else if(sharedPost.post_mode == "AP"){
-            post_content = sharedPost.content;
-        }else if(sharedPost.post_mode == "NP"){
-            post_content = sharedPost.content;
-        }else if(sharedPost.post_mode == "SP"){
-            post_content = sharedPost.content;
-        }
-
-        let _profile = sharedPost.created_by;
-        let postImgLength = sharedPost.upload.length;
-        let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
-            _profile.images.profile_image.http_url:"";
-
-
-        var uploaded_files = sharedPost.upload.map((upload,key)=>{
-            if(key <= 3){
-                return (
-                    <div className="pg-newsfeed-post-upload-image" key={key}>
-                        <img src = {upload.http_url}/>
-                        {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
-                    </div>
-                )
-            }
-        });
-
-        return (
-            <div className="shared-post-holder">
-                <div className="pg-user-pro-pic">
-                    <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
-                </div>
-                <div className="pg-user-pro-info">
-                    <h5 className="pg-newsfeed-profile-name"><span className="pro-name">{_profile.first_name + " " + _profile.last_name}</span></h5>
-                    {
-                        (typeof sharedPost.location != 'undefined' && sharedPost.location != null)?
-                            <p className="location_text">at - {sharedPost.location} </p>:
-                            null
-                    }
-                </div>
-
-                <div className="row row-clr pg-newsfeed-common-content-post-content">
-                    {
-                        (this.lifeEvent != "")?
-                        <div className="life-event-holder">
-                            <img src={"/images/life-events/" + this.lifeEvent + ".png"} alt={post_content} className="event-img"/>
-                            <p className="life-event-title">{post_content}</p>
-                        </div>
-                        :
-                        <p className="pg-newsfeed-post-description">{post_content}</p>
-                    }
-
-                </div>
-
-                <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
-                    {uploaded_files}
-                </div>
-            </div>
-        );
-    }
-}
 
 
 /**
@@ -523,12 +408,12 @@ const LikeSummery=({likes,visibility}) =>{
             </div>
         </div>
     )
-}
+};
 
 
 
 
-export const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost})=>{
+const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost})=>{
     let full_name = loggedUser.first_name + " " +loggedUser.last_name;
     return (
         <div id="pg_content_1" className="row row_clr pg-newsfeed-post-content tab_info clearfix">
@@ -545,4 +430,110 @@ export const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost})=>
             <a href="javascript:void(0)" onClick={(event)=>onSubmitPost(event)} className="pg-status-post-btn btn btn-default">post</a>
         </div>
     )
+};
+
+
+const SharedPostTitle = ({loggedUser,post}) =>{
+
+    if(post.post_mode == "SP"){
+        return (
+            (loggedUser.id == post.shared_post.created_by.user_id)?
+                <span className="own-post-share">shared own post</span>
+                :   <span className="post-owner-name">
+                        <i className="fa fa-caret-right"></i>
+                        <span className="pro-name">
+                            {" "+post.shared_post.created_by.first_name + " " + post.shared_post.created_by.last_name}
+                        </span>'s post
+                    </span>
+        )
+    }
+    return (<span />);
+
+
+};
+
+
+const PostContentBody = ({loggedUser,post})=>{
+    if(post.post_mode == "LE"){
+        let lifeEvent = post.life_event.toLowerCase().replace(/ /g,"-");
+        return (
+            <div className="life-event-holder">
+                <img src={"/images/life-events/" + lifeEvent + ".png"} alt={post.life_event} className="event-img"/>
+                <p className="life-event-title">{post.life_event}</p>
+            </div>
+        )
+    }
+    return <p className="pg-newsfeed-post-description">{post.content}</p>;
+
+};
+
+
+export const LocationPostTitle = ({loggedUser,post})=>{
+    if(post.post_mode == "LP"){
+        return (
+            <p className="location_text">at - {post.location} </p>
+        )
+    }
+    return (<span />);
 }
+
+
+const SharedPostBody = ({loggedUser,post}) => {
+
+    if(post.post_mode != "SP"){
+        return (<span />);
+    }
+
+
+
+    let sharedPost = post.shared_post;
+    let _profile = sharedPost.created_by;
+    let postImgLength = sharedPost.upload.length;
+    let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
+        _profile.images.profile_image.http_url:"";
+
+    let uploaded_files = sharedPost.upload.map((upload,key)=>{
+        if(key <= 3){
+            return (
+                <div className="pg-newsfeed-post-upload-image" key={key}>
+                    <img src = {upload.http_url}/>
+                    {
+                        (key == 3 && postImgLength > 4)?
+                            <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1">
+                                <p>{"+" + (postImgLength - 4)}</p>
+                            </div> :
+                        null
+                    }
+                </div>
+            )
+        }
+    });
+
+    return (
+        <div className="shared-post-holder">
+            <div className="pg-user-pro-pic">
+                <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
+            </div>
+            <div className="pg-user-pro-info">
+                <h5 className="pg-newsfeed-profile-name">
+                    <span className="pro-name">
+                        {_profile.first_name + " " + _profile.last_name}
+                    </span>
+                </h5>
+
+                <LocationPostTitle post={sharedPost}
+                                   loggedUser={loggedUser}/>
+            </div>
+
+            <div className="row row-clr pg-newsfeed-common-content-post-content">
+                <PostContentBody post={sharedPost}
+                                 loggedUser={loggedUser}/>
+
+            </div>
+            <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
+                {uploaded_files}
+            </div>
+        </div>
+    )
+
+};

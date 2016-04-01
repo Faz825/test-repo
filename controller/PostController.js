@@ -25,8 +25,9 @@ var PostController ={
             file_content:(typeof req.body.__file_content != 'undefined')?req.body.__file_content:"",
             upload_id:(typeof req.body.__uuid  != 'undefined')? req.body.__uuid:"",
             location:(typeof req.body.__lct  != 'undefined')?req.body.__lct:null,
-            life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:null
-        }
+            life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:null,
+            shared_post:""
+        };
 
         TimeLinePostHandler.addNewPost(data,function(resultSet){
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
