@@ -32,9 +32,6 @@ export default class Index extends React.Component{
 
         this.b6 = Chat.b6;
 
-        console.log(this.state.userLogedIn.token);
-        console.log(this.state.chatWith);
-
         if(this.state.chatWith == 'new'){
             $.ajax({
                 url: '/connection/me',
@@ -57,8 +54,6 @@ export default class Index extends React.Component{
     };
 
     selectChange(e){
-
-        console.log(e.target.value);console.log(e.target.value.length);
 
         if(e.target.value.length != 0 ){
             var url_arr = window.location.href.split('new');
@@ -219,7 +214,10 @@ export default class Index extends React.Component{
                                 </Scrollbars>
                             </div>
                             <div className="chat-msg-input-holder">
-                                <img src="/images/pg-home-chats_06.png" alt=""/>
+                                {
+                                    (this.state.userLogedIn.profile_image != null ? <img src={this.state.userLogedIn.profile_image} alt="" width="40" height="40" id="my_profile_img"/>:<img src="/images/default-profile-pic.png" alt="" width="40" height="40" id="my_profile_img"/>)
+                                }
+
                                 <div className="msg-input">
                                     <textarea className="form-control" placeholder="New Message..." id="msgText" name="msg" ></textarea>
                                 </div>
