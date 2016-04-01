@@ -32,9 +32,6 @@ export default class Index extends React.Component{
 
         this.b6 = Chat.b6;
 
-        console.log(this.state.userLogedIn.token);
-        console.log(this.state.chatWith);
-
         if(this.state.chatWith == 'new'){
             $.ajax({
                 url: '/connection/me',
@@ -44,7 +41,7 @@ export default class Index extends React.Component{
             }).done(function(data){
                 if(data.status.code == 200){
                     this.setState({my_connections:data.my_con})
-                    console.log(this.state.my_connections);
+                    
                 }
             }.bind(this));
         } else{
@@ -54,13 +51,12 @@ export default class Index extends React.Component{
 
         this.selectChange = this.selectChange.bind(this);
 
-        this.loadMyConnections();
+
 
     };
 
     selectChange(e){
 
-        console.log(e.target.value);console.log(e.target.value.length);
 
         if(e.target.value.length != 0 ){
             var url_arr = window.location.href.split('new');
