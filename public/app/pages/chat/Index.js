@@ -36,8 +36,21 @@ export default class Index extends React.Component{
         this.uri = 'usr:proglobe'+this.state.chatWith;
         Chat.showMessages(this.uri);
 
-    };
+        this.loadMyConnections();
 
+    };
+    loadMyConnections(){
+        $.ajax({
+            url: '/connection/me',
+            method: "GET",
+            dataType: "JSON",
+        }).done(function(data){
+            if(data.status.code == 200){
+                console.log(data)
+
+            }
+        }.bind(this));
+    }
     getUrl(){
         return  this.props.params.chatWith;
     }

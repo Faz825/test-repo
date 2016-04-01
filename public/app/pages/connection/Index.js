@@ -5,7 +5,7 @@ import React from 'react';
 import Session  from '../../middleware/Session';
 import UserBlockTileView from '../../components/elements/UserBlockTileView';
 import UserBlockThumbView from '../../components/elements/UserBlockThumbView';
-
+import Lib from '../../middleware/Lib';
 export default class Index extends React.Component{
     constructor(props){
         super(props);
@@ -20,6 +20,8 @@ export default class Index extends React.Component{
         this.loadFriendRequests();
         this.loadFriendSuggestions();
         this.loadMyConnections();
+        this.allFriendRequest = [];
+
     }
     loadFriendRequests(){
         $.ajax({
@@ -30,8 +32,24 @@ export default class Index extends React.Component{
 
         }).done(function(data){
             if(data.status.code == 200){
-                this.setState({friend_requests:data.req_cons})
+
+
+
+                let _tmp_req_cons = [];
+                if( data.req_cons.length > 0){
+                    this.allFriendRequest = data.req_cons;
+                    let _end = (this.allFriendRequest.length < 3)?this.allFriendRequest.length:3;
+                    for(let a = 0 ; a < _end;a++){
+                        _tmp_req_cons.push(this.allFriendRequest[a]);
+                    }
+
+                }
+
+                this.setState({friend_requests:_tmp_req_cons})
             }
+
+
+
         }.bind(this));
     }
     onAcceptFriendRequestSuccess(isAccept){
@@ -43,8 +61,37 @@ export default class Index extends React.Component{
         }, 2000);
 
     }
-    onFriendRequestSkip(){
-        this.loadFriendRequests();
+    onFriendRequestSkip(user,_current_block_ids){
+        let _friend_request = this.state.friend_requests;
+        let _new_friend_request_list = [];
+
+        if(this.allFriendRequest.length > 2 ){
+            console.log(_current_block_ids);
+            console.log(this.allFriendRequest);
+            for(let a = 0 ; a < this.allFriendRequest.length;a++){
+                if(_current_block_ids.indexOf(this.allFriendRequest[a].user_id) == -1){
+                    _new_friend_request_list.push(this.allFriendRequest[a]);
+                }
+            }
+
+
+
+            //REPLACE NEW OBJECT
+            let _skipped_user_position = _current_block_ids.indexOf(user.user_id);
+            let rand_number = Lib.getRandomInt(0,_new_friend_request_list.length - 1);
+console.log(rand_number)
+            let new_friend_request = _new_friend_request_list[rand_number];
+
+            _friend_request.splice(_skipped_user_position,1,new_friend_request);
+
+
+        }
+
+        this.setState({friend_requests:_friend_request});
+
+
+
+
     }
 
 
@@ -59,13 +106,15 @@ export default class Index extends React.Component{
 
         }).done(function(data){
             if(data.status.code == 200){
-                this.setState({friend_suggestions:data.connections})
+
+                this.setState({friend_suggestions:data.connections});
 
             }
         }.bind(this));
     }
     onAddFriendSuccess(){
-        this.loadFriendSuggestions();
+
+        location.reload();
     }
     onFriendSuggestionSkip(){
         this.loadFriendSuggestions();
@@ -167,10 +216,9 @@ export class FriendRequests extends React.Component{
         }.bind(this));
 
     }
-    skipRequest(_current_block_ids){
+    skipRequest(user,_current_block_ids){
 
-        console.log("FriendRequests->",_current_block_ids)
-        this.props.onFriendRequestSkip()
+        this.props.onFriendRequestSkip(user,_current_block_ids)
     }
 
     render(){
@@ -181,14 +229,13 @@ export class FriendRequests extends React.Component{
 
 
         let _this = this,
-            _current_block_ids ="";
+            _current_block_ids =[];
         let user_elements = this.props.friend_requests.map(function(friend,key){
-            _current_block_ids += friend.user_id+"!$" ;
-
+            _current_block_ids.push(friend.user_id);
             return (
                 <UserBlockTileView user = {friend}
                                    onAccept = {user=>_this.acceptFriendRequest(user)}
-                                   onSkip = {user=>_this.skipRequest(_current_block_ids)}
+                                   onSkip = {user=>_this.skipRequest(user,_current_block_ids)}
                                    key = {key}/>
             );
         });
@@ -220,8 +267,8 @@ export class FriendSuggestions  extends React.Component{
         };
         this.loggedUser = this.props.loggedUser;
 
-    }
 
+    }
 
     onAddFriend(user){
         let _connectedUsers = [];

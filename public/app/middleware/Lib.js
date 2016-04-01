@@ -34,4 +34,14 @@ export default class Lib{
         return "textContent" in tmp ? tmp.textContent : tmp.innerHTML;
 
     }
+
+    /**
+     * Get Random Int
+     * @param min
+     * @param max
+     * @returns {*}
+     */
+    static getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 }

@@ -235,12 +235,10 @@ ConnectionSchema.statics.getConnectionRequests = function(criteria,callBack){
         connected_with:Util.toObjectId(criteria.user_id),
         status:ConnectionStatus.REQUEST_SENT
     }
-    _this.count(_query,function(err,resultCount){
 
-        var random = Math.floor(Math.random() * resultCount);
+
+
         _this.find(_query)
-            .limit(criteria.result_per_page)
-            .skip(random)
             .exec(function(err,resultSet){
                 if(!err){
                     _async.each(resultSet,
@@ -273,7 +271,7 @@ ConnectionSchema.statics.getConnectionRequests = function(criteria,callBack){
 
             });
 
-    });
+
 
 }
 
