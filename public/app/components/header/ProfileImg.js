@@ -28,7 +28,7 @@ export default class ProfileImg extends React.Component{
             headers: { 'prg-auth-header':this.state.userLogedIn.token },
             data:this.state.formData,
             success: function (data, text) {
-                console.log(data)
+
                 if (data.status.code == 200) {
                     location.href ="/sign-up"
 
@@ -43,10 +43,11 @@ export default class ProfileImg extends React.Component{
     }
 
     render() {
+        let _full_name = this.state.userLogedIn.first_name +" "+ this.state.userLogedIn.last_name;
         return (
           <div className="pg-top-profile-pic-box">
             <div className="proImgholder">
-            <a href="javascript:void(0)" onClick={event=>this.loadProfile(event)}>
+            <a href="javascript:void(0)" onClick={event=>this.loadProfile(event)} title={_full_name}>
                 <img src={this.state.imgSrc} alt="Profile-Pic" className="img-responsive"/>
             </a>
             </div>

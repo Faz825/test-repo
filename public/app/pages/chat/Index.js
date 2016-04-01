@@ -54,6 +54,8 @@ export default class Index extends React.Component{
 
         this.selectChange = this.selectChange.bind(this);
 
+        this.loadMyConnections();
+
     };
 
     selectChange(e){
