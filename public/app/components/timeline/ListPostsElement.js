@@ -121,7 +121,7 @@ class SinglePost extends React.Component{
         this.setState({text:_text, iniTextisVisible: visibilityStat});
 
     }
-    onSubmitPost(event){
+    onSharedPost(event){
 
         let post_data ={
             __content :this.state.text,
@@ -146,6 +146,7 @@ class SinglePost extends React.Component{
                         iniTextisVisible:false,
                     });
                     document.getElementById('input').innerHTML = "";
+                    
 
                 }
             }
@@ -209,7 +210,7 @@ class SinglePost extends React.Component{
                             <AddPostElementPopupText onContentAdd = {event=>this.onContentAdd(event)}
                                                      iniTextisVisible = {this.state.iniTextisVisible}
                                                     loggedUser = {this.loggedUser}
-                                                     onSubmitPost = {event=>this.onSubmitPost(event)}/>
+                                                     onSubmitPost = {event=>this.onSharedPost(event)}/>
 
                             <div className="row row-clr pg-newsfeed-section-common-content-post-info share-popup-post-view">
                                 <div className="pg-user-pro-pic">

@@ -28,7 +28,7 @@ export default class ProfileImg extends React.Component{
             headers: { 'prg-auth-header':this.state.userLogedIn.token },
             data:this.state.formData,
             success: function (data, text) {
-                console.log(data)
+
                 if (data.status.code == 200) {
                     location.href ="/sign-up"
 
