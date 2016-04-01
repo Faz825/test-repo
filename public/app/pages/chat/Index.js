@@ -41,7 +41,7 @@ export default class Index extends React.Component{
             }).done(function(data){
                 if(data.status.code == 200){
                     this.setState({my_connections:data.my_con})
-                    
+
                 }
             }.bind(this));
         } else{
