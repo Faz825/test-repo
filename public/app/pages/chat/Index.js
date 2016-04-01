@@ -29,9 +29,7 @@ export default class Index extends React.Component{
             userLogedIn : Session.getSession('prg_lg'),
             my_connections:[]
         };
-
         this.b6 = Chat.b6;
-
         if(this.state.chatWith == 'new'){
             $.ajax({
                 url: '/connection/me',
@@ -48,11 +46,7 @@ export default class Index extends React.Component{
             this.uri = 'usr:proglobe'+this.state.chatWith;
             Chat.showMessages(this.uri);
         }
-
         this.selectChange = this.selectChange.bind(this);
-
-
-
     };
 
     selectChange(e){
