@@ -1048,7 +1048,6 @@ var UserControler ={
 
 
         var _uname =req.params['uname'];
-        console.log(_uname)
         _async.waterfall([
             function getUserById(callBack){
                 var _search_param = {
@@ -1061,7 +1060,6 @@ var UserControler ={
                 User.getUser(_search_param,showOptions,function(resultSet){
                     if(resultSet.status ==200 ){
                         callBack(null,resultSet.user)
-                        console.log(resultSet.user);
                     }
                 })
             },
@@ -1081,7 +1079,7 @@ var UserControler ={
 
             },
             function getProfileImage(profileData,callBack){
-                console.log(profileData)
+
                 if( profileData!= null){
                     Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
 

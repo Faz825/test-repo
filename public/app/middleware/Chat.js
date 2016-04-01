@@ -168,12 +168,9 @@ import Session  from './Session.js';
              var proglobe_title = b6.getNameFromIdentity(c.id);
              var proglobe_title_array = proglobe_title.split('proglobe');
              var title = proglobe_title_array[1];
-             console.log(proglobe_title);
 
              // New conversation
              if (op > 0) {
-
-                 //console.log("New conversation")
 
                  if (c.deleted) {
                      return;
@@ -572,8 +569,8 @@ import Session  from './Session.js';
 
                  if (me != null) {
                      my_name = me['first_name'] + " " + me['last_name'];
-                     if (me['images'] != null && me['images']['profile_image'] != null) {
-                         my_prof_img = me['images']['profile_image']['http_url'];
+                     if (me['profile_image'] != null) {
+                         my_prof_img = me['profile_image'];
                      }
                  }
 
@@ -647,7 +644,7 @@ import Session  from './Session.js';
              c.on('videos', function () {
                  var container = $('#videoContainer');
                  var elems = container.children();
-
+                 $('#incomingCallAlert').modal('hide');
                  container.attr('class', elems.length > 2 ? 'grid' : 'simple');
              });
              // Call answered
