@@ -268,7 +268,7 @@ export class SkillsForm extends React.Component{
                         inputProps={inputProps} />
                     <div className="checkbox">
                         <label>
-                            <input className="pg-experience-current-option" type="checkbox" name="day_to_day_comforts" checked={this.state.checked} onChange={this.onCheck.bind(this)} />Is this Skill a Day today Comfort?
+                            <input className="pg-experience-current-option" type="checkbox" name="day_to_day_comforts" checked={this.state.checked} onChange={this.onCheck.bind(this)} />Is this skill a day-to-day comfort?
                         </label>
                     </div>
                     <button type="button" className="btn btn-primary pg-inline-item-btn" onClick={this.onSkillAdd}>Add</button>

@@ -1,5 +1,6 @@
 import React from 'react'
 import TextField from '../../components/elements/TextField'
+import NumberField from '../../components/elements/NumberField'
 import SelectDateDropdown from '../../components/elements/SelectDateDropdown'
 import CountryList from '../../components/elements/CountryList'
 import Button from '../../components/elements/Button'
@@ -94,6 +95,8 @@ export default class AboutYou extends React.Component{
     }
 
     elementChangeHandler(key,data,status){
+        //console.log(key,data);
+
         this.formData[key] = data;
 
         let er = this.traversObject();
@@ -133,7 +136,7 @@ export default class AboutYou extends React.Component{
                                                              required={true}
                                                              error_message={this.state.error.country} />
 
-                                                <TextField  name="zip"
+                                                <NumberField  name="zip"
                                                             size="2"
                                                             value={this.formData.zip}
                                                             label="Zip Code"
