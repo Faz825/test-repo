@@ -2,7 +2,7 @@ import React from 'react'
 import SignupLayout from './layout/SignupLayout'
 import DefaultLayout from './layout/DefaultLayout'
 import Session  from '../middleware/Session';
-import Chat  from '../middleware/Chat';
+
 import Signup  from './signup/Signup';
 
 class Main extends React.Component {

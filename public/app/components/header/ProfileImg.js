@@ -1,6 +1,6 @@
 import React from 'react'
 import Session  from '../../middleware/Session'
-
+import Chat  from '../../middleware/Chat';
 export default class ProfileImg extends React.Component{
     constructor(props){
         super(props);
