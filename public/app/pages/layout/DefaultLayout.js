@@ -5,6 +5,7 @@ import SidebarNav from '../../components/sidebarNav/SidebarNav'
 import FooterHolder from '../../components/footer/FooterHolder'
 import Session  from '../../middleware/Session';
 import Dashboard  from '../dashboard/Dashboard';
+import InCallPane  from '../chat/InCallPane';
 const DefaultLayout = (props) =>{
 
   return(
@@ -33,6 +34,7 @@ const DefaultLayout = (props) =>{
               </div>
             </div>
             <FooterHolder />
+            <InCallPane />
       </div>
   );
 }
