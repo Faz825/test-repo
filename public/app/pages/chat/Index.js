@@ -27,7 +27,8 @@ export default class Index extends React.Component{
         this.state= {
             chatWith:this.getUrl(),
             userLogedIn : Session.getSession('prg_lg'),
-            my_connections:[]
+            my_connections:[],
+            chatWithUser:[]
         };
         this.b6 = Chat.b6;
         if(this.state.chatWith == 'new'){
@@ -43,6 +44,16 @@ export default class Index extends React.Component{
                 }
             }.bind(this));
         } else{
+            $.ajax({
+                url: '/get-profile/' + this.state.chatWith,
+                method: "GET",
+                dataType: "JSON"
+            }).done(function(data){
+                if (data.status.code == 200 && data.profile_data != null) {
+                    this.setState({chatWithUser:data.profile_data})
+                    //this.state.chatWithUser = data.profile_data;
+                }
+            }.bind(this));
             this.uri = 'usr:proglobe'+this.state.chatWith;
             Chat.showMessages(this.uri);
         }
@@ -146,7 +157,10 @@ export default class Index extends React.Component{
                         </div>
                         <div className="col-sm-8 chat-person-options">
                             <div className="connection-name">
-                                <p id="chat_with"></p>
+                                {
+                                    (this.state.chatWith !== 'new' && this.state.chatWith !== 'undefined' && this.state.chatWithUser.length > 0)?
+                                        <p id="chat_with">this.state.chatWithUser.first_name+" "+this.state.chatWithUser.last_name</p>:<p id="chat_with"></p>
+                                }
                             </div>
                             {
                                 (this.state.chatWith == 'new')?

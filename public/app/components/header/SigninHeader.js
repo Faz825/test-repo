@@ -19,10 +19,8 @@ export default class Header extends React.Component {
         $("#chat_notification_wrapper").toggle();
     }
 
-
     render(){
         return(
-
                 <div className="row row-clr pg-top-navigation">
                   <div className="container-fluid pg-custom-container">
                     <div className="row">
