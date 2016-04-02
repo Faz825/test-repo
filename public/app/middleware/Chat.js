@@ -69,8 +69,9 @@ import Session  from './Session.js';
 
                          var incomingCallProfilePicture = "/images/default-profile-pic.png";
                          if (data.profile_data['images'] != null && data.profile_data['images']['profile_image'] != null) {
-                             $("#incoming_call_alert_other_profile_image").attr('src', incomingCallProfilePicture);
+                             incomingCallProfilePicture = data.profile_data['images']['profile_image']['http_url'];
                          }
+                         $("#incoming_call_alert_other_profile_image").attr('src', incomingCallProfilePicture);
 
                          $('#incomingCall')
                              .data({'dialog': c})
@@ -642,6 +643,7 @@ import Session  from './Session.js';
              });
              // Number of video feeds/elements changed
              c.on('videos', function () {
+                 //console.log("VIDEOS")
                  var container = $('#videoContainer');
                  var elems = container.children();
                  $('#incomingCallAlert').modal('hide');
@@ -739,6 +741,7 @@ import Session  from './Session.js';
              //console.log("answer clicked")
              //console.log(opts)
              //var e = $('#incomingCall').hide();
+             $('#onCall').text("ringing")
              var d = $('#incomingCall').data();
 
              // Call controller
