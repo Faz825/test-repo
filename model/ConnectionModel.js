@@ -248,8 +248,14 @@ ConnectionSchema.statics.getConnectionRequests = function(criteria,callBack){
                                 index:'idx_usr'
                             };
                             ES.search(query,function(esResultSet){
-                                _formatted_connection_requests.push(esResultSet.result[0]);
-                                callBack();
+
+                                if(typeof esResultSet.result[0] == "undefined"){
+                                    callBack();
+                                }else{
+                                    _formatted_connection_requests.push(esResultSet.result[0]);
+                                    callBack();
+                                }
+
 
                             });
 
@@ -476,10 +482,10 @@ ConnectionSchema.statics.getFriendSuggestion = function(criteria,callBack){
     ],function(err,resultSet){
 
         if(!err){
-            callBack(resultSet)
+            callBack({status:200,friends:resultSet.friends,total_result:resultSet.total_result})
         }else{
             console.log("LOOP ERROR")
-            console.log(err)
+            console.log({status:400,error:err});
         }
 
     });

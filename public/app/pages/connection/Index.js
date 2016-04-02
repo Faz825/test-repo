@@ -21,6 +21,7 @@ export default class Index extends React.Component{
         this.loadFriendSuggestions();
         this.loadMyConnections();
         this.allFriendRequest = [];
+        this.allFriendSugestions = [];
 
     }
     loadFriendRequests(){
@@ -62,36 +63,37 @@ export default class Index extends React.Component{
 
     }
     onFriendRequestSkip(user,_current_block_ids){
-        let _friend_request = this.state.friend_requests;
-        let _new_friend_request_list = [];
+        var data = {
+            current_active_data_block:this.state.friend_requests,
+            full_data_set:this.allFriendRequest,
+            current_block_ids:_current_block_ids,
+            user_id:user.user_id
+        };
 
-        if(this.allFriendRequest.length > 2 ){
-            console.log(_current_block_ids);
-            console.log(this.allFriendRequest);
-            for(let a = 0 ; a < this.allFriendRequest.length;a++){
-                if(_current_block_ids.indexOf(this.allFriendRequest[a].user_id) == -1){
-                    _new_friend_request_list.push(this.allFriendRequest[a]);
-                }
-            }
-
-
-
-            //REPLACE NEW OBJECT
-            let _skipped_user_position = _current_block_ids.indexOf(user.user_id);
-            let rand_number = Lib.getRandomInt(0,_new_friend_request_list.length - 1);
-console.log(rand_number)
-            let new_friend_request = _new_friend_request_list[rand_number];
-
-            _friend_request.splice(_skipped_user_position,1,new_friend_request);
-
-
-        }
-
+        var _friend_request =  this.getUniqueDataObjects(data);
         this.setState({friend_requests:_friend_request});
 
+    }
 
+    getUniqueDataObjects(data){
 
+        let _current_active_data_block = data.current_active_data_block;
+        let _new_user_request_list = [];
+        if(data.full_data_set.length > 2 ){
+            for(let a = 0 ; a < data.full_data_set.length;a++){
+                if(data.current_block_ids.indexOf(data.full_data_set[a].user_id) == -1){
+                    _new_user_request_list.push(data.full_data_set[a]);
+                }
+            }
+            //REPLACE NEW OBJECT
+            let _skipped_user_position = data.current_block_ids.indexOf(data.user_id);
+            let rand_number = Lib.getRandomInt(0,_new_user_request_list.length - 1);
+            let new_user_request = _new_user_request_list[rand_number];
+            _current_active_data_block.splice(_skipped_user_position,1,new_user_request);
 
+            return _current_active_data_block;
+
+        }
     }
 
 
@@ -106,8 +108,19 @@ console.log(rand_number)
 
         }).done(function(data){
             if(data.status.code == 200){
+                let _tmp_suggestions = [];
 
-                this.setState({friend_suggestions:data.connections});
+                if( data.connections.length > 0){
+
+                    this.allFriendSugestions = data.connections;
+
+                    let _end = (this.allFriendSugestions.length < 3)?this.allFriendSugestions.length:3;
+                    for(let a = 0 ; a < _end;a++){
+                        _tmp_suggestions.push(this.allFriendSugestions[a]);
+                    }
+
+                }
+                this.setState({friend_suggestions:_tmp_suggestions});
 
             }
         }.bind(this));
@@ -116,8 +129,18 @@ console.log(rand_number)
 
         location.reload();
     }
-    onFriendSuggestionSkip(){
-        this.loadFriendSuggestions();
+    onFriendSuggestionSkip(user,_current_block_ids){
+
+        var data = {
+            current_active_data_block:this.state.friend_suggestions,
+            full_data_set:this.allFriendSugestions,
+            current_block_ids:_current_block_ids,
+            user_id:user.user_id
+        };
+
+        var _tmp_suggestions = this.getUniqueDataObjects(data);
+        this.setState({friend_suggestions:_tmp_suggestions});
+
     }
 
 
@@ -131,6 +154,8 @@ console.log(rand_number)
 
         }).done(function(data){
             if(data.status.code == 200){
+
+
                 this.setState({my_connections:data.my_con})
 
             }
@@ -173,7 +198,7 @@ console.log(rand_number)
                             <FriendSuggestions friend_suggestions = {friend_suggestions}
                                                loggedUser = {this.loggedUser}
                                                onAddFriendSuccess={this.onAddFriendSuccess.bind(this)}
-                                />
+                                               onFriendSuggestionSkip = {this.onFriendSuggestionSkip.bind(this)}/>
                             :null
                     }
 
@@ -292,30 +317,7 @@ export class FriendSuggestions  extends React.Component{
 
     skipRequest(user,_current_block_ids){
 
-        $.ajax({
-            url: '/connection/skip-request',
-            method: "POST",
-            dataType: "JSON",
-            headers: { 'prg-auth-header':this.loggedUser.token },
-            data:{ hit_b_id:user.user_id,cur_b_ids: JSON.stringify(_current_block_ids)},
-
-        }).done(function(data){
-            if(data.status.code == 200){
-                let _friend_suggestions = this.state.friend_suggestions;
-                if(data.connection){
-                    for(let a = 0;a<_friend_suggestions.length;a++){
-
-                        if(_friend_suggestions[a].user_id == user.user_id){
-                            _friend_suggestions.splice(a,1,data.connection);
-                            break;
-
-                        }
-                    }
-                }
-
-                this.setState({friend_suggestions:_friend_suggestions});
-            }
-        }.bind(this));
+        this.props.onFriendSuggestionSkip(user,_current_block_ids);
     }
 
     render(){
