@@ -114,12 +114,31 @@ var ConnectionController ={
 
                 var _connection = [];
 
+                /*if(resultSet.total_result > 3){
 
-                for(var a =0 ;a<3;a++){
-                    var r = Util.getRandomInt(0,resultSet.total_result-1);
+                    for(var a =0 ;a<3;a++){
+                        var r = Util.getRandomInt(0,resultSet.total_result-1);
                         _connection.push(resultSet.friends[r]);
-                }
-                outPut['connections'] = _connection;
+                    }
+
+
+
+
+
+
+                    outPut['connections'] = _connection;
+
+
+
+
+
+
+
+                }else{
+                    outPut['connections'] = resultSet.friends;
+                }*/
+
+                outPut['connections'] = resultSet.friends
                 res.status(200).send(outPut);
                 return 0
             }else{
@@ -180,6 +199,7 @@ var ConnectionController ={
         Connection.getFriendSuggestion(criteria,function(resultSet){
 
             var outPut	={};
+
 
 
 
