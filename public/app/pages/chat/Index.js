@@ -28,43 +28,70 @@ export default class Index extends React.Component{
             chatWith:this.getUrl(),
             userLogedIn : Session.getSession('prg_lg'),
             my_connections:[],
-            chatWithUser:[]
+            chatWithUserName:""
         };
         this.b6 = Chat.b6;
         if(this.state.chatWith == 'new'){
-            $.ajax({
-                url: '/connection/me',
-                method: "GET",
-                dataType: "JSON",
-                headers: { 'prg-auth-header':this.state.userLogedIn.token }
-            }).done(function(data){
-                if(data.status.code == 200){
-                    this.setState({my_connections:data.my_con})
-
-                }
-            }.bind(this));
+            this.loadMyConnections();
         } else{
-            $.ajax({
-                url: '/get-profile/' + this.state.chatWith,
-                method: "GET",
-                dataType: "JSON"
-            }).done(function(data){
-                if (data.status.code == 200 && data.profile_data != null) {
-                    this.setState({chatWithUser:data.profile_data})
-                    //this.state.chatWithUser = data.profile_data;
-                }
-            }.bind(this));
-            this.uri = 'usr:proglobe'+this.state.chatWith;
-            Chat.showMessages(this.uri);
+            this.loadChat(this.state.chatWith);
         }
         this.selectChange = this.selectChange.bind(this);
     };
 
+    loadMyConnections(){
+        console.log("going to call connections")
+        $.ajax({
+            url: '/connection/me',
+            method: "GET",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.userLogedIn.token }
+        }).done(function(data){
+            if(data.status.code == 200){
+                this.setState({my_connections:data.my_con})
+            }
+        }.bind(this));
+    }
+
+    loadChat(chatWith){
+        console.log("loadChat");
+        let _this = this;
+        console.log("loadChat => ", chatWith)
+        if(chatWith != 'undefined'){
+            $.ajax({
+                url: '/get-profile/' + chatWith,
+                method: "GET",
+                dataType: "JSON"
+            }).done(function(data){
+                if (data.status.code == 200 && data.profile_data != null) {
+                    this.setState({chatWithUserName:data.profile_data.first_name+" "+data.profile_data.last_name});
+                    this.uri = 'usr:proglobe'+chatWith;console.log(this.uri)
+                    Chat.showMessages(this.uri);
+                }
+            }.bind(this));
+        } else{
+            Chat.loadFirstMessage();
+        }
+    }
+
+    loadRoute(url){
+        let _this = this;
+        _this.setState({chatWith : url});
+        console.log("loadRoute => ",this.state.chatWith);
+        if(url == 'new'){
+            this.loadMyConnections();
+        }else{
+            this.loadChat(url);
+        }
+        window.history.pushState('Chat','Chat','/chat/'+url);
+    }
+
     selectChange(e){
 
         if(e.target.value.length != 0 ){
-            var url_arr = window.location.href.split('new');
-            window.location.href = url_arr[0]+e.target.value;
+            //var url_arr = window.location.href.split('new');
+            //window.location.href = url_arr[0]+e.target.value;
+            this.loadRoute(e.target.value);
         }else{
             //status = "invalid";
             console.log("no user selected")
@@ -80,7 +107,7 @@ export default class Index extends React.Component{
 
         let _this = this;
 
-        var msg = $("#msgText").val();
+        var msg = $("#msgText").val(); console.log("sendChat => ", this.uri)
 
         if(typeof this.state.chatWith == 'undefined'){
             _this.setState({validateAlert: Alert.EMPTY_RECEIVER});
@@ -157,10 +184,7 @@ export default class Index extends React.Component{
                         </div>
                         <div className="col-sm-8 chat-person-options">
                             <div className="connection-name">
-                                {
-                                    (this.state.chatWith !== 'new' && this.state.chatWith !== 'undefined' && this.state.chatWithUser.length > 0)?
-                                        <p id="chat_with">this.state.chatWithUser.first_name+" "+this.state.chatWithUser.last_name</p>:<p id="chat_with"></p>
-                                }
+                                <p id="chat_with">{this.state.chatWithUserName}</p>
                             </div>
                             {
                                 (this.state.chatWith == 'new')?
@@ -183,7 +207,7 @@ export default class Index extends React.Component{
                                     {
                                         (this.state.chatWith !== 'new')?
                                             <span className="opt new-message">
-                                                <a href='/chat/new'>New Message</a>
+                                                <a href='#' onClick={()=>this.loadRoute('new')}>New Message</a>
                                             </span> : null
                                     }
                                     <span className="opt chat-icon">

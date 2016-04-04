@@ -17,6 +17,11 @@ export default class Header extends React.Component {
 
     showChatList(){
         $("#chat_notification_wrapper").toggle();
+        if($("#chat_notification_wrapper").is(':visible')){
+            $("#chat_notification_a").addClass('chat-notification-wrapper-opened');
+        } else{
+            $("#chat_notification_a").removeClass('chat-notification-wrapper-opened')
+        }
     }
 
     render(){
@@ -39,11 +44,11 @@ export default class Header extends React.Component {
                       </div>
                       <span className="col-xs-1"></span>
                       <div className="col-xs-2 pg-header-options">
-                        <a href="/news-feed">
+                        <a href="/news-feed" className="dropDown-holder">
                           <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_09.png" alt="" />
                           <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_03.png" alt="" />
                         </a>
-                        <a  href="#" onClick={()=>this.showChatList()} className="chat-dropdown-holder">
+                        <a  href="#" onClick={()=>this.showChatList()} className="chat-dropdown-holder dropDown-holder" id="chat_notification_a">
                           <span className="pg-drop-down">
                             <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_11.png" alt="" />
                             <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_033.png" alt="" />
@@ -56,7 +61,7 @@ export default class Header extends React.Component {
                                 </Scrollbars>
                             </div>
                         </a>
-                        <a href="#">
+                        <a href="#" className="dropDown-holder">
                           <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_13.png" alt="" />
                           <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_05.png" alt="" />
                         </a>

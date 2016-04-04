@@ -33,6 +33,7 @@ import Session  from './Session.js';
          var incomingCallUser = [];
          var outGoingCallUser = [];
          var unreadConversationCount = [];
+         var firstChat = false;
 
          // A conversation has changed
          b6.on('conversation', function(c, op) {
@@ -144,8 +145,13 @@ import Session  from './Session.js';
              });
          };
 
+         this.loadFirstMessage = function(){
+             firstChat = true;
+         }
+
          // Update Conversation View
          function onConversationChange(c, op) {
+             console.log("onConversationChange")
              var chatList = $('#chatList');
              var tabId = tabDomIdForConversation(c);
              var msgsId = msgsDomIdForConversation(c);
@@ -154,9 +160,6 @@ import Session  from './Session.js';
              var msgsDiv = $(msgsId);
              var notificationWrapperDiv = $("#unread_chat_list");
              var notificationDiv = $(notificationId);
-
-             var chatListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
-             var notificationListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
 
              // Conversation deleted
              if (op < 0) {
@@ -169,6 +172,11 @@ import Session  from './Session.js';
              var proglobe_title = b6.getNameFromIdentity(c.id);
              var proglobe_title_array = proglobe_title.split('proglobe');
              var title = proglobe_title_array[1];
+
+
+             var chatListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
+             var notificationListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
+
 
              // New conversation
              if (op > 0) {
@@ -287,32 +295,34 @@ import Session  from './Session.js';
 
                                  if(currentChatUri != null){
 
-                                     var conv = b6.getConversation(currentChatUri);
+                                     showTheConversation(currentChatUri);
 
-                                     if(conv != null){
-
-                                         // Mark all messages as read
-                                         if (b6.markConversationAsRead(conv) > 0) {
-                                             // Some messages have been marked as read
-                                             // update chat list
-                                             if(unreadConversationCount.indexOf(c.id) != -1){
-                                                 unreadCount -= 1;
-                                                 unreadConversationCount.splice(c.id);
-                                             }
-                                         }
-
-
-                                         var msgsDiv = $( msgsDomIdForConversation(conv) );
-                                         // Show only message container for this conversation
-                                         // Hide all the other message containers
-                                         msgsDiv.show().siblings().hide();
-                                         // Scroll to the bottom of the conversation
-                                         //scrollToLastMessage();
-
-                                         // Request focus for the compose message text field
-                                         $('#msgText').focus();
-
-                                     }
+                                     //var conv = b6.getConversation(currentChatUri);
+                                     //
+                                     //if(conv != null){
+                                     //
+                                     //    // Mark all messages as read
+                                     //    if (b6.markConversationAsRead(conv) > 0) {
+                                     //        // Some messages have been marked as read
+                                     //        // update chat list
+                                     //        if(unreadConversationCount.indexOf(c.id) != -1){
+                                     //            unreadCount -= 1;
+                                     //            unreadConversationCount.splice(c.id);
+                                     //        }
+                                     //    }
+                                     //
+                                     //
+                                     //    var msgsDiv = $( msgsDomIdForConversation(conv) );
+                                     //    // Show only message container for this conversation
+                                     //    // Hide all the other message containers
+                                     //    msgsDiv.show().siblings().hide();
+                                     //    // Scroll to the bottom of the conversation
+                                     //    //scrollToLastMessage();
+                                     //
+                                     //    // Request focus for the compose message text field
+                                     //    $('#msgText').focus();
+                                     //
+                                     //}
 
                                  }
 
@@ -423,8 +433,41 @@ import Session  from './Session.js';
              return '#tab__' + c.domId();
          }
 
+         function showTheConversation(uri){
+
+             var conv = b6.getConversation(uri);
+
+             if(conv != null){
+
+                 // Mark all messages as read
+                 if (b6.markConversationAsRead(conv) > 0) {
+                     // Some messages have been marked as read
+                     // update chat list
+                     if(unreadConversationCount.indexOf(c.id) != -1){
+                         unreadCount -= 1;
+                         unreadConversationCount.splice(c.id);
+                     }
+                 }
+
+
+                 var msgsDiv = $( msgsDomIdForConversation(conv) );
+                 // Show only message container for this conversation
+                 // Hide all the other message containers
+                 msgsDiv.show().siblings().hide();
+                 // Scroll to the bottom of the conversation
+                 //scrollToLastMessage();
+
+                 // Request focus for the compose message text field
+                 $('#msgText').focus();
+
+             }
+
+         }
+
 
          this.showMessages = function(uri) {
+
+             console.log("this.showMessages => ",uri)
 
              var proglobe_title_array = uri.split('proglobe');
 
@@ -433,6 +476,7 @@ import Session  from './Session.js';
                  // Current conversation identity
                  currentChatUri = uri;
                  currentChatUserName = 'proglobe'+proglobe_title_array[1];
+                 showTheConversation(currentChatUri);
 
              }
          };
@@ -489,6 +533,7 @@ import Session  from './Session.js';
 
          // Update Message View
          var onMessageChange = function (m, op) {
+             console.log("onMessageChange");
 
              var divId = domIdForMessage(m);
              var div = $(divId);
