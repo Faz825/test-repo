@@ -125,7 +125,8 @@ class SinglePost extends React.Component{
 
         let post_data ={
             __content :this.state.text,
-            __pid:this.props.postItem.post_id
+            __pid:this.props.postItem.post_id,
+            __own:this.props.postItem.created_by.user_id
         }
 
         let _this = this;

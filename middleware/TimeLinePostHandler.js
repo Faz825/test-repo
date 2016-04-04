@@ -165,21 +165,22 @@ var TimeLinePostHandler ={
                 var _pay_load = {
                     q:"post_id:"+_post.shared_post_id,
                 }
-                Post.ch_getPost(_post.created_by,_pay_load,function(csResultSet){
-                    var selected_post = csResultSet[0];
-                    delete selected_post.date;
-                    delete selected_post.comment_count;
-                    delete selected_post.like_count;
-                    delete selected_post.liked_user;
-                    delete selected_post.is_i_liked;
-                    delete selected_post.is_i_liked;
-                    delete selected_post.shared_post;
+                Post.ch_getPost(_post.post_owner,_pay_load,function(csResultSet){
+                    if(csResultSet.length >0){
+                        var selected_post = csResultSet[0];
+                        delete selected_post.date;
+                        delete selected_post.comment_count;
+                        delete selected_post.like_count;
+                        delete selected_post.liked_user;
+                        delete selected_post.is_i_liked;
+                        delete selected_post.is_i_liked;
+                        delete selected_post.shared_post;
 
 
+                        _post.shared_post =selected_post;
+                        _post.upload = [];
 
-
-                    _post.shared_post =selected_post;
-                    _post.upload = [];
+                    }
                     callBack(null);
                 });
 

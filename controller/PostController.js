@@ -100,6 +100,7 @@ var PostController ={
             shared_post_id:req.body.__pid,
             post_visible_mode:PostVisibleMode.PUBLIC,
             post_mode:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostConfig.SHARED_POST,
+            post_owner:req.body.__own
         }
         var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
         TimeLinePostHandler.sharePost(data,function(resultSet){
