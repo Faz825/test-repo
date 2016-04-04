@@ -140,7 +140,11 @@ class SinglePost extends React.Component{
             success:function(data){
 
                 if (data.status.code == 200) {
-                    _this.props.onPostSubmitSuccess(data.post);
+
+                    if(post_data.__own == _this.loggedUser.id ){
+                        _this.props.onPostSubmitSuccess(data.post);
+
+                    }
                     _this.setState({
                         text:"",
                         isShowingModal:false,
