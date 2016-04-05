@@ -59,6 +59,8 @@ export default class Texteditor extends React.Component {
         }
     }
 
+    console.log(this.state.editorState);
+
     return (
         <div id="pg-newsfeed-page" className="pg-page">
             <div className="row row-clr">
@@ -80,7 +82,7 @@ export default class Texteditor extends React.Component {
                                 editorState={editorState}
                                 handleKeyCommand={this.handleKeyCommand}
                                 onChange={this.onChange}
-                                placeholder="Tell a story..."
+                                placeholder="Write your note..."
                                 ref="editor"
                                 spellCheck={true}
                                 />
