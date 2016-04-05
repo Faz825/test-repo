@@ -48,6 +48,7 @@ class SinglePost extends React.Component{
             isShowingModal:false,
             iniTextisVisible:false,
             text:"",
+            shareBtnEnabled:true
 
         };
         this.loggedUser= Session.getSession('prg_lg');
@@ -125,11 +126,13 @@ class SinglePost extends React.Component{
 
         let post_data ={
             __content :this.state.text,
-            __pid:this.props.postItem.post_id
+            __pid:this.props.postItem.post_id,
+            __own:this.props.postItem.created_by.user_id
         }
 
         let _this = this;
 
+        this.setState({shareBtnEnabled:false});
         $.ajax({
             url: '/post/share',
             method: "POST",
@@ -139,11 +142,16 @@ class SinglePost extends React.Component{
             success:function(data){
 
                 if (data.status.code == 200) {
-                    _this.props.onPostSubmitSuccess(data.post);
+
+                    if(post_data.__own == _this.loggedUser.id ){
+                        _this.props.onPostSubmitSuccess(data.post);
+
+                    }
                     _this.setState({
                         text:"",
                         isShowingModal:false,
                         iniTextisVisible:false,
+                        shareBtnEnabled:true
                     });
                     document.getElementById('input').innerHTML = "";
                     
@@ -210,6 +218,7 @@ class SinglePost extends React.Component{
                             <AddPostElementPopupText onContentAdd = {event=>this.onContentAdd(event)}
                                                      iniTextisVisible = {this.state.iniTextisVisible}
                                                     loggedUser = {this.loggedUser}
+                                                     btnEnabled = {this.state.shareBtnEnabled}
                                                      onSubmitPost = {event=>this.onSharedPost(event)}/>
 
                             <div className="row row-clr pg-newsfeed-section-common-content-post-info share-popup-post-view">
@@ -413,7 +422,7 @@ const LikeSummery=({likes,visibility}) =>{
 
 
 
-const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost})=>{
+const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost,btnEnabled})=>{
     let full_name = loggedUser.first_name + " " +loggedUser.last_name;
     return (
         <div id="pg_content_1" className="row row_clr pg-newsfeed-post-content tab_info clearfix">
@@ -427,7 +436,12 @@ const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost})=>{
                      className="containable-div"
                      onInput={(event)=>{onContentAdd(event)}}></div>
             </div>
-            <a href="javascript:void(0)" onClick={(event)=>onSubmitPost(event)} className="pg-status-post-btn btn btn-default">post</a>
+            {
+                (btnEnabled)?
+                    <a href="javascript:void(0)" onClick={(event)=>onSubmitPost(event)} className="pg-status-post-btn btn btn-default">post</a>
+                    :<a href="javascript:void(0)"  className="pg-status-post-btn btn btn-default">post</a>
+            }
+
         </div>
     )
 };

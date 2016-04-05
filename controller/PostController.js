@@ -17,15 +17,15 @@ var PostController ={
         var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
         var data ={
             has_attachment:(typeof req.body.__hs_attachment != 'undefined')?req.body.__hs_attachment:false,
-            content:req.body.__content,
+            content:(typeof req.body.__content != 'undefined')?req.body.__content :"",
             created_by:CurrentSession.id,
             page_link:(typeof req.body.page_link != 'undefined')?req.body.page_link :"",
             post_visible_mode:PostVisibleMode.PUBLIC,
             post_mode:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostConfig.NORMAL_POST,
             file_content:(typeof req.body.__file_content != 'undefined')?req.body.__file_content:"",
             upload_id:(typeof req.body.__uuid  != 'undefined')? req.body.__uuid:"",
-            location:(typeof req.body.__lct  != 'undefined')?req.body.__lct:null,
-            life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:null,
+            location:(typeof req.body.__lct  != 'undefined')?req.body.__lct:"",
+            life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:"",
             shared_post:""
         };
 
@@ -100,6 +100,7 @@ var PostController ={
             shared_post_id:req.body.__pid,
             post_visible_mode:PostVisibleMode.PUBLIC,
             post_mode:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostConfig.SHARED_POST,
+            post_owner:req.body.__own
         }
         var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
         TimeLinePostHandler.sharePost(data,function(resultSet){
