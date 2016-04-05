@@ -295,7 +295,7 @@ export class SavedArticles extends React.Component{
         });
 
         //console.log(this.state.articles);
-        console.log(this.state.allArticalsAreVisible);
+        //console.log(this.state.allArticalsAreVisible);
         return(
             <div className="row row-clr pg-news-page-content-item pg-box-shadow">
                 <div className="col-xs-2 pg-news-page-content-item-left-thumb saved-articals-holder">
@@ -318,9 +318,14 @@ export class SavedArticles extends React.Component{
                                 null
                             }
                         </div>
-                        <div className="show-more-btn" onClick={this.showMoreArticals.bind(this)}>
-                            {this.state.allArticalsAreVisible? "Show Less" : "Show More"}
-                        </div>
+                        {
+                            (_more_articals)?
+                            <div className="show-more-btn" onClick={this.showMoreArticals.bind(this)}>
+                                {this.state.allArticalsAreVisible? "Show Less" : "Show More"}
+                            </div>
+                            :
+                            null
+                        }
                     </div>
                 </div>
                 {this.getPopup()}
