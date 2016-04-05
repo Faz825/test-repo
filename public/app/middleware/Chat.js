@@ -14,7 +14,7 @@ import Session  from './Session.js';
 
         this.b6 = new bit6.Client(opts);
 
-        this.initChat(this.b6);
+        //this.initChat(this.b6);
 
     }
 

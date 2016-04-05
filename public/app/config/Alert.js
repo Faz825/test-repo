@@ -20,7 +20,7 @@ const Alert = {
 	"EMPTY_USER_NAME"            : "Please enter your 'User Name'",
 	"EMPTY_MESSAGE"				 : "Please enter message",
 	"EMPTY_STATUS_UPDATE"		 : "This status update appears to be blank. Please write something or a photo to update your status.",
-	"EMPTY_RECEIVER"			 : "Please select user to send message",
+	"EMPTY_RECEIVER"			 : "Please select user to ",
 }
 
 
