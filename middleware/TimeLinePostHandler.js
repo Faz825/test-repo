@@ -76,8 +76,6 @@ var TimeLinePostHandler ={
 
             },
             function saveInCache(callBack){
-                console.log("saveInCache");
-                console.log(_post);
                 Post.addToCache(_post.visible_users,_post,function(chData){ });
                 callBack(null)
             },
