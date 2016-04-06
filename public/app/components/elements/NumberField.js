@@ -17,6 +17,7 @@ export default class NumberField extends React.Component{
     }
     elementChangeHandler(e){
         let zipCode = this.state.value;
+        console.log(e.keyCode);
             if (e.keyCode === 38 || e.keyCode === 40) {
                 e.preventDefault();
             }else{
@@ -53,7 +54,7 @@ export default class NumberField extends React.Component{
                    placeholder={this.props.placeholder}
                    className={this.props.classes}
                    onChange={(event)=>{ this.elementChangeHandler(event)}}
-                   onKeyDown={(event)=>{ this.elementChangeHandler(event)}}
+                   onKeyPress={(event)=>{ this.elementChangeHandler(event)}}
                    onBlur={(event)=>{ this.elementChangeHandler(event)}}
                     {...opts}  />
                 {(this.props.error_message)? <span className="invalid-msg" style={errorStyles}>{this.props.error_message}</span> : null}

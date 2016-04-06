@@ -1088,7 +1088,7 @@ var UserControler ={
                             profileData['images'] = {
                                 'profile_image': {
                                     id: "DEFAULT",
-                                    file_name: "default_profile_image.png",
+                                    file_name: "/images/default_profile_image.png",
                                     file_type: ".png",
                                     http_url: Config.DEFAULT_PROFILE_IMAGE
                                 }
