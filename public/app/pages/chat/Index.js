@@ -15,6 +15,8 @@ let errorStyles = {
     display       : "block"
 };
 
+let userConversations = [];
+
 export default class Index extends React.Component{
     constructor(props) {
         super(props);
@@ -31,44 +33,65 @@ export default class Index extends React.Component{
             chatWithUserName:"",
             validateAlert:""
         };
+
         this.b6 = Chat.b6;
+
         if(this.state.chatWith == 'new'){
             this.loadMyConnections();
         } else{
             this.loadChat(this.state.chatWith);
         }
-        this.conversations = [];
-        initChat(this.b6);
+
+        this.conversations = userConversations;
+        this.unreadConversationCount = [];
+
+        this.initChat = this.initChat.bind(this);
+        this.initChat(this.b6);
+
     };
 
     initChat(b6){
-        // A conversation has changed
+
+        //var conversations = [];
+
         b6.on('conversation', function(c, op) {
-            //console.log("A conversation has changed")
             onConversationChange(c, op);
         });
-    }
 
-    // Get Chat Tab jQuery selector for a Conversation
-    function tabDomIdForConversation(c) {
-        return '#tab__' + c.domId();
-    }
+        //this.conversations = conversations;
 
-    // Get Messages Container jQuery selector for a Conversation
-    function msgsDomIdForConversation(c) {
-        return '#msgs__' + c.domId();
-    }
+        // Get Chat Tab jQuery selector for a Conversation
+        function tabDomIdForConversation(c) {
+            return '#tab__' + c.domId();
+        }
 
-    onConversationChange(c, op){
-        // Update Conversation View
-        function onConversationChange(c, op) {
-            console.log("onConversationChange from INDEX")
+        // Get Messages Container jQuery selector for a Conversation
+        function msgsDomIdForConversation(c) {
+            return '#msgs__' + c.domId();
+        }
+
+        function getRelativeTime(stamp) {
+            var now = Date.now();
+            // 24 hours in milliseconds
+            var t24h = 24 * 60 * 60 * 1000;
+            var d = new Date(stamp);
+            var s = (now - stamp > t24h) ? d.toLocaleDateString() : d.toLocaleTimeString();
+            return s;
+        }
+
+        function onConversationChange(c, op){
+
+            console.log(userConversations);
+
+            var currentConversation = {};
+
+            // Update Conversation View
+
             var tabId = tabDomIdForConversation(c);
             var msgsId = msgsDomIdForConversation(c);
 
-             //Conversation deleted
+            //Conversation deleted
             if (op < 0) {
-
                 return
             }
 
@@ -79,11 +102,19 @@ export default class Index extends React.Component{
             // New conversation
             if (op > 0) {
 
+                console.log("new conversation from index")
+
                 if (c.deleted) {
                     return;
                 }
 
-                if(title != 'undefined'){
+                if(title != 'undefined' && title != 'new'){
+
+                    currentConversation[title] = {
+                        tabId:tabId,
+                        msgsId:msgsId,
+                        proglobe_title:proglobe_title
+                    }
 
                     $.ajax({
                         url: '/get-profile/'+title,
@@ -92,37 +123,38 @@ export default class Index extends React.Component{
                         success: function (data, text) {
 
                             if (data.status.code == 200 && data.profile_data != null) {
+                                console.log("here")
 
-                                convUsers[title] = data.profile_data;
-                                latestChatUser = title;
+                                //this.convUsers[title] = data.profile_data;
+                                currentConversation[title].user_data = data.profile_data;
 
                                 // Entry in the Chat List
-                                if(currentChatUserName == proglobe_title){
-                                    currentChatUser = data.profile_data;
-                                    tabDiv = $('<div class="tab msg-holder msg-holder-selected" />')
-                                        .attr('id', tabId.substring(1))
-                                        .append(chatListADiv);
-                                    $("#chat_with").html(currentChatUser['first_name']+" "+currentChatUser['last_name']);
-                                } else{
-                                    tabDiv = $('<div class="tab msg-holder" />')
-                                        .attr('id', tabId.substring(1))
-                                        .append(chatListADiv);
-                                }
-                                chatList.append(tabDiv);
+                                //if(this.currentChatUserName == proglobe_title){
+                                //    currentChatUser = data.profile_data;
+                                //    tabDiv = $('<div class="tab msg-holder msg-holder-selected" />')
+                                //        .attr('id', tabId.substring(1))
+                                //        .append(chatListADiv);
+                                //    $("#chat_with").html(currentChatUser['first_name']+" "+currentChatUser['last_name']);
+                                //} else{
+                                //    tabDiv = $('<div class="tab msg-holder" />')
+                                //        .attr('id', tabId.substring(1))
+                                //        .append(chatListADiv);
+                                //}
+                                //chatList.append(tabDiv);
 
                                 // Create a container for message list for this conversation
-                                msgsDiv = $('<div class="msgs" />')
-                                    .attr('id', msgsId.substring(1))
-                                    .hide();
-                                $('#msgList').append(msgsDiv);
+                                //msgsDiv = $('<div class="msgs" />')
+                                //    .attr('id', msgsId.substring(1))
+                                //    .hide();
+                                //$('#msgList').append(msgsDiv);
 
                                 //console.log("notificationId.substring(1) => "+notificationId.substring(1))
 
                                 //TODO::Show only 5 and if more display 'see all'
-                                notificationDiv = $('<div class="tab msg-holder" />')
-                                    .attr('id', notificationId.substring(1))
-                                    .append(notificationListADiv);
-                                notificationWrapperDiv.append(notificationDiv)
+                                //notificationDiv = $('<div class="tab msg-holder" />')
+                                //    .attr('id', notificationId.substring(1))
+                                //    .append(notificationListADiv);
+                                //notificationWrapperDiv.append(notificationDiv)
 
                                 //Update Conversation data
                                 var stamp = getRelativeTime(c.updated);
@@ -138,96 +170,52 @@ export default class Index extends React.Component{
                                     }
                                 }
 
-                                var connection_name = convUsers[title]['first_name']+" "+convUsers[title]['last_name'];
-                                var connection_prof_img = '/images/default-profile-pic.png';
+                                currentConversation[title].latestText = latestText;
+                                currentConversation[title].stamp = stamp;
 
-                                if (convUsers[title]['images'] != null && convUsers[title]['images']['profile_image'] != null) {
-                                    connection_prof_img = convUsers[title]['images']['profile_image']['http_url']
-                                }
+                                //var connection_name = convUsers[title]['first_name']+" "+convUsers[title]['last_name'];
+                                //var connection_prof_img = '/images/default-profile-pic.png';
+                                //
+                                //if (convUsers[title]['images'] != null && convUsers[title]['images']['profile_image'] != null) {
+                                //    connection_prof_img = convUsers[title]['images']['profile_image']['http_url']
+                                //}
 
-                                // Apply data to DOM
-                                tabDiv.find('a').attr('href', '/chat/'+title);
-                                tabDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
-                                tabDiv.find('.chat-body').find('.connection-name').html(connection_name);
-                                tabDiv.find('.chat-body').find('.msg').html(latestText);
-                                tabDiv.find('.chat-body').find('.chat-date').html(stamp);
 
-                                notificationDiv.find('a').attr('href', '/chat/'+title);
-                                notificationDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
-                                notificationDiv.find('.chat-body').find('.connection-name').html(connection_name);
-                                notificationDiv.find('.chat-body').find('.msg').html(latestText);
-                                notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
 
-                                // If the updated conversation is newer than the top one -
-                                // move this conversation to the top
-                                var top = chatList.children(':first');
-                                if (top.length > 0 && title != 'undefined') {
-                                    var topTabId = top.attr('id');
-                                    //console.log("1 => "+topTabId)
-                                    var topConvId = domIdToConversationId(topTabId);
-                                    var topConv = b6.getConversation(topConvId);
+                                //notificationDiv.find('a').attr('href', '/chat/'+title);
+                                //notificationDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
+                                //notificationDiv.find('.chat-body').find('.connection-name').html(connection_name);
+                                //notificationDiv.find('.chat-body').find('.msg').html(latestText);
+                                //notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
 
-                                    if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
-                                        top.before(tabDiv);
-                                    }
-                                }
+
 
                                 // If the updated conversation is newer than the top one -
                                 // move this conversation to the top
-                                var notificationTop = notificationWrapperDiv.children(':first');
-                                if (notificationTop.length > 0 && title != 'undefined') {
-                                    var notificationTopTabId = notificationTop.attr('id');
-                                    //console.log("2 => "+notificationTopTabId)
-                                    var notificationTopConvId = domIdToConversationId(notificationTopTabId);
-                                    var notificationTopConv = b6.getConversation(notificationTopConvId);
+                                //var notificationTop = notificationWrapperDiv.children(':first');
+                                //if (notificationTop.length > 0 && title != 'undefined') {
+                                //    var notificationTopTabId = notificationTop.attr('id');
+                                //    //console.log("2 => "+notificationTopTabId)
+                                //    var notificationTopConvId = domIdToConversationId(notificationTopTabId);
+                                //    var notificationTopConv = b6.getConversation(notificationTopConvId);
+                                //
+                                //    if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
+                                //        notificationTop.before(notificationDiv);
+                                //    }
+                                //}
 
-                                    if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
-                                        notificationTop.before(notificationDiv);
-                                    }
+                                if (c.unread > 0 && this.unreadConversationCount.indexOf(c.id) == -1) {
+                                    this.unreadConversationCount.push(c.id);
                                 }
 
-                                if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
-                                    unreadCount += 1;
-                                    unreadConversationCount.push(c.id);
+                                if(userConversations.indexOf(title) == -1){
+                                    console.log("no record")
+                                    userConversations.push(currentConversation);
+                                } else{
+                                    console.log("record exist")
+                                    userConversations.splice(userConversations.indexOf(title),1);
+                                    userConversations.push(currentConversation);
                                 }
-
-                                if(currentChatUri != null){
-
-                                    showTheConversation(currentChatUri);
-
-                                    //var conv = b6.getConversation(currentChatUri);
-                                    //
-                                    //if(conv != null){
-                                    //
-                                    //    // Mark all messages as read
-                                    //    if (b6.markConversationAsRead(conv) > 0) {
-                                    //        // Some messages have been marked as read
-                                    //        // update chat list
-                                    //        if(unreadConversationCount.indexOf(c.id) != -1){
-                                    //            unreadCount -= 1;
-                                    //            unreadConversationCount.splice(c.id);
-                                    //        }
-                                    //    }
-                                    //
-                                    //
-                                    //    var msgsDiv = $( msgsDomIdForConversation(conv) );
-                                    //    // Show only message container for this conversation
-                                    //    // Hide all the other message containers
-                                    //    msgsDiv.show().siblings().hide();
-                                    //    // Scroll to the bottom of the conversation
-                                    //    //scrollToLastMessage();
-                                    //
-                                    //    // Request focus for the compose message text field
-                                    //    $('#msgText').focus();
-                                    //
-                                    //}
-
-                                }
-
-                                for(var i = 0; i < c.messages.length; i++){
-                                    onMessageChange(c.messages[i], op)
-                                }
-
                             }
                         }.bind(this),
                         error: function (request, status, error) {
@@ -240,8 +228,8 @@ export default class Index extends React.Component{
                 }
             }
 
-            if(op >= 0 && title != 'undefined'){
-                //console.log("existing conversation");
+            if(op >= 0 && (title != 'undefined' && title != 'new')){
+                console.log("existing conversation from index");
 
                 // Update Conversation data
                 var stamp = getRelativeTime(c.updated);
@@ -257,67 +245,29 @@ export default class Index extends React.Component{
                     }
                 }
 
-                tabDiv.find('.chat-body').find('.msg').html(latestText);
-                tabDiv.find('.chat-body').find('.chat-date').html(stamp);
+                currentConversation[title].latestText = latestText;
+                currentConversation[title].stamp = stamp;
 
-                notificationDiv.find('.chat-body').find('.msg').html(latestText);
-                notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
 
-                // If the updated conversation is newer than the top one -
-                // move this conversation to the top
-                var top = chatList.children(':first');
-                if (top.length > 0 && title != 'undefined') {
-                    var topTabId = top.attr('id');
-                    var topConvId = domIdToConversationId(topTabId);
-                    var topConv = b6.getConversation(topConvId);
 
-                    if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
-                        //console.log("going to move the top ")
-                        top.before(tabDiv);
-                    }
+                if (c.unread > 0 && this.unreadConversationCount.indexOf(c.id) == -1) {
+                    this.unreadConversationCount.push(c.id);
                 }
 
-                // If the updated conversation is newer than the top one -
-                // move this conversation to the top
-                var notificationTop = notificationWrapperDiv.children(':first'); //console.log(notificationTop)
-                if (notificationTop.length > 0 && title != 'undefined') {
-                    var notificationTopTabId = notificationTop.attr('id');
-                    var notificationTopConvId = domIdToConversationId(notificationTopTabId);
-                    var notificationTopConv = b6.getConversation(notificationTopConvId);
-
-                    if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
-                        notificationTop.before(notificationDiv);
-                    }
-                }
-
-                if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
-                    unreadCount += 1;
-                    unreadConversationCount.push(c.id);
-                }
-
-                if(currentChatUri != null){
-
-                    var conv = b6.getConversation(currentChatUri);
-
-                    if (conv != null && b6.markConversationAsRead(conv) > 0) {
-                        // Some messages have been marked as read
-                        // update chat list
-                        if(unreadConversationCount.indexOf(c.id) != -1){
-                            unreadCount -= 1;
-                            unreadConversationCount.splice(c.id);
-                        }
-                    }
-
-                }
-            }
-
-            //console.log("Index of "+c.id+" = "+unreadConversationCount.indexOf(c.id));
-            //console.log("unreadConversationCount.length => "+unreadConversationCount.length);
-
-            if(unreadCount > 0){
-                $("#unread_inbox_p").find('.total').remove();
-                $("#unread_inbox_p").append('<span class="total">'+unreadCount+'</span>');
-                $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
+                //if(currentChatUri != null){
+                //
+                //    var conv = b6.getConversation(currentChatUri);
+                //
+                //    if (conv != null && b6.markConversationAsRead(conv) > 0) {
+                //        // Some messages have been marked as read
+                //        // update chat list
+                //        if(unreadConversationCount.indexOf(c.id) != -1){
+                //            unreadCount -= 1;
+                //            unreadConversationCount.splice(c.id);
+                //        }
+                //    }
+                //
+                //}
             }
 
         }
@@ -451,7 +401,7 @@ export default class Index extends React.Component{
                 </div>
                 <div className="chat-window container">
                     <div className="header">
-                        <LeftMenu />
+                        <LeftMenu unreadConversationCount = {this.unreadConversationCount}/>
                         <RightMenu
                             loadRoute ={this.loadRoute.bind(this)}
                             chatWith = {chatWith}
@@ -463,7 +413,7 @@ export default class Index extends React.Component{
                             />
                     </div>
                     <div className="chat-body">
-                        <ChatList />
+                        <ChatList loadRoute ={this.loadRoute.bind(this)}/>
                         <MessageList
                             loggedUser = {userLoggedIn}
                             chatWith = {chatWith}
@@ -569,20 +519,12 @@ export class ChatList extends React.Component{
         this.loggedUser = this.props.loggedUser;
     }
     render() {
+
         return (
             <div className="conv-holder col-sm-4">
                 <Scrollbars style={{ height: 486 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
                     <div id="chatList">
-                        <a href="">
-                            <div class="chat-pro-img">
-                                <img src="" alt="" width="40" height="40"/>
-                            </div>
-                            <div class="chat-body">
-                                <span class="connection-name"></span>
-                                <p class="msg"></p>
-                                <span class="chat-date"></span>
-                            </div>
-                        </a>
+
                     </div>
                 </Scrollbars>
             </div>

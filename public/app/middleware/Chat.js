@@ -24,10 +24,8 @@ import Session  from './Session.js';
          var screenCall = false;
          var currentChatUri = null;
          var typingLabelTimer = 0;
-         var latestChatUser = null;
          var me = null;
          var currentChatUserName = null;
-         var currentChatUser = null;
          var convUsers = [];
          var unreadCount = 0;
          var incomingCallUser = [];
@@ -151,7 +149,7 @@ import Session  from './Session.js';
 
          // Update Conversation View
          function onConversationChange(c, op) {
-             console.log("onConversationChange")
+             //console.log("onConversationChange")
              var chatList = $('#chatList');
              var tabId = tabDomIdForConversation(c);
              var msgsId = msgsDomIdForConversation(c);
@@ -196,27 +194,25 @@ import Session  from './Session.js';
                              if (data.status.code == 200 && data.profile_data != null) {
 
                                  convUsers[title] = data.profile_data;
-                                 latestChatUser = title;
 
                                  // Entry in the Chat List
-                                 if(currentChatUserName == proglobe_title){
-                                     currentChatUser = data.profile_data;
-                                     tabDiv = $('<div class="tab msg-holder msg-holder-selected" />')
-                                         .attr('id', tabId.substring(1))
-                                         .append(chatListADiv);
-                                     $("#chat_with").html(currentChatUser['first_name']+" "+currentChatUser['last_name']);
-                                 } else{
-                                     tabDiv = $('<div class="tab msg-holder" />')
-                                         .attr('id', tabId.substring(1))
-                                         .append(chatListADiv);
-                                 }
-                                 chatList.append(tabDiv);
+                                 //if(currentChatUserName == proglobe_title){
+                                 //    tabDiv = $('<div class="tab msg-holder msg-holder-selected" />')
+                                 //        .attr('id', tabId.substring(1))
+                                 //        .append(chatListADiv);
+                                 //    $("#chat_with").html(data.profile_data['first_name']+" "+data.profile_data['last_name']);
+                                 //} else{
+                                 //    tabDiv = $('<div class="tab msg-holder" />')
+                                 //        .attr('id', tabId.substring(1))
+                                 //        .append(chatListADiv);
+                                 //}
+                                 //chatList.append(tabDiv);
 
                                  // Create a container for message list for this conversation
-                                 msgsDiv = $('<div class="msgs" />')
-                                     .attr('id', msgsId.substring(1))
-                                     .hide();
-                                 $('#msgList').append(msgsDiv);
+                                 //msgsDiv = $('<div class="msgs" />')
+                                 //    .attr('id', msgsId.substring(1))
+                                 //    .hide();
+                                 //$('#msgList').append(msgsDiv);
 
                                  //console.log("notificationId.substring(1) => "+notificationId.substring(1))
 
@@ -248,11 +244,11 @@ import Session  from './Session.js';
                                  }
 
                                  // Apply data to DOM
-                                 tabDiv.find('a').attr('href', '/chat/'+title);
-                                 tabDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
-                                 tabDiv.find('.chat-body').find('.connection-name').html(connection_name);
-                                 tabDiv.find('.chat-body').find('.msg').html(latestText);
-                                 tabDiv.find('.chat-body').find('.chat-date').html(stamp);
+                                 //tabDiv.find('a').attr('href', '/chat/'+title);
+                                 //tabDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
+                                 //tabDiv.find('.chat-body').find('.connection-name').html(connection_name);
+                                 //tabDiv.find('.chat-body').find('.msg').html(latestText);
+                                 //tabDiv.find('.chat-body').find('.chat-date').html(stamp);
 
                                  notificationDiv.find('a').attr('href', '/chat/'+title);
                                  notificationDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
@@ -262,17 +258,17 @@ import Session  from './Session.js';
 
                                  // If the updated conversation is newer than the top one -
                                  // move this conversation to the top
-                                 var top = chatList.children(':first');
-                                 if (top.length > 0 && title != 'undefined') {
-                                     var topTabId = top.attr('id');
-                                     //console.log("1 => "+topTabId)
-                                     var topConvId = domIdToConversationId(topTabId);
-                                     var topConv = b6.getConversation(topConvId);
-
-                                     if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
-                                         top.before(tabDiv);
-                                     }
-                                 }
+                                 //var top = chatList.children(':first');
+                                 //if (top.length > 0 && title != 'undefined') {
+                                 //    var topTabId = top.attr('id');
+                                 //    //console.log("1 => "+topTabId)
+                                 //    var topConvId = domIdToConversationId(topTabId);
+                                 //    var topConv = b6.getConversation(topConvId);
+                                 //
+                                 //    if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
+                                 //        top.before(tabDiv);
+                                 //    }
+                                 //}
 
                                  // If the updated conversation is newer than the top one -
                                  // move this conversation to the top
@@ -359,25 +355,25 @@ import Session  from './Session.js';
                      }
                  }
 
-                 tabDiv.find('.chat-body').find('.msg').html(latestText);
-                 tabDiv.find('.chat-body').find('.chat-date').html(stamp);
+                 //tabDiv.find('.chat-body').find('.msg').html(latestText);
+                 //tabDiv.find('.chat-body').find('.chat-date').html(stamp);
 
                  notificationDiv.find('.chat-body').find('.msg').html(latestText);
                  notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
 
                  // If the updated conversation is newer than the top one -
                  // move this conversation to the top
-                 var top = chatList.children(':first');
-                 if (top.length > 0 && title != 'undefined') {
-                     var topTabId = top.attr('id');
-                     var topConvId = domIdToConversationId(topTabId);
-                     var topConv = b6.getConversation(topConvId);
-
-                     if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
-                         //console.log("going to move the top ")
-                         top.before(tabDiv);
-                     }
-                 }
+                 //var top = chatList.children(':first');
+                 //if (top.length > 0 && title != 'undefined') {
+                 //    var topTabId = top.attr('id');
+                 //    var topConvId = domIdToConversationId(topTabId);
+                 //    var topConv = b6.getConversation(topConvId);
+                 //
+                 //    if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
+                 //        //console.log("going to move the top ")
+                 //        top.before(tabDiv);
+                 //    }
+                 //}
 
                  // If the updated conversation is newer than the top one -
                  // move this conversation to the top
@@ -467,7 +463,7 @@ import Session  from './Session.js';
 
          this.showMessages = function(uri) {
 
-             console.log("this.showMessages => ",uri)
+             //console.log("this.showMessages => ",uri)
 
              var proglobe_title_array = uri.split('proglobe');
 
@@ -533,7 +529,7 @@ import Session  from './Session.js';
 
          // Update Message View
          var onMessageChange = function (m, op) {
-             console.log("onMessageChange");
+             //console.log("onMessageChange");
 
              var divId = domIdForMessage(m);
              var div = $(divId);
