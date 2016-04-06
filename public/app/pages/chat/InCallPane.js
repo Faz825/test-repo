@@ -10,12 +10,14 @@ export default class InCallPane extends React.Component{
         super(pros);
         if (Session.isSessionSet('prg_lg')) {
             this.b6 = Chat.b6;
-            Chat.initChat(this.b6);
+            //Chat.initChat(this.b6);
+            //Chat.bit6Auth(false);
             Chat.bit6Auth(false);
         }
 
     }
     onLinkClick(e){
+        console.log("calling from InCallPane")
         e.preventDefault();
     }
 

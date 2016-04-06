@@ -48,6 +48,8 @@ export default class Index extends React.Component{
         this.initChat = this.initChat.bind(this);
         this.initChat(this.b6);
 
+        console.log(Chat.opts);
+
     };
 
     initChat(b6){
