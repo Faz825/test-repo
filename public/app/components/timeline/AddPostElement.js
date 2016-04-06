@@ -100,7 +100,7 @@ export class TextPostElement extends React.Component{
     submitPost(event){
         let _this = this;
 
-        this.setState({emptyPostWarningIsVisible : false});
+        this.setState({emptyPostWarningIsVisible : false,btnEnabled:false});
         var _pay_load = {};
         if(this.state.text != ""){
             this.isValidToSubmit = true;
@@ -155,6 +155,7 @@ export class TextPostElement extends React.Component{
                 iniTextisVisible: true,
                 isLocationPanelOpen: false,
                 isLifeEventPanelOpen:false,
+                btnEnabled:true
 
             });
 

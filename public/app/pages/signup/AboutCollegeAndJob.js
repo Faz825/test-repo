@@ -27,11 +27,7 @@ export default class AboutCollegeAndJob extends React.Component{
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
         this.loggedUser = Session.getSession('prg_lg');
 
-        this.validateSchema = {
-                school: "",
-                job_title: "",
-                company_name: ""
-        };
+        this.validateSchema = {};
         this.isValid = true;
         this.formData = this.loggedUser;
     }
@@ -86,20 +82,6 @@ export default class AboutCollegeAndJob extends React.Component{
 
     traversObject(){
         let _error = {};
-        for(let elm in this.formData){
-
-            if(elm == "school" && this.formData[elm]==""){
-                _error[elm] = Alert.ENTER_SCHOOL_NAME;
-            }
-
-            if(elm == "job_title" && this.formData[elm] == ""){
-                _error[elm] = Alert.ENTER_CUR_JOB;
-            }
-
-            if(elm == "company_name" && this.formData[elm] == "" ){
-                _error[elm] = Alert.ENTER_COMPANY;
-            }
-        }
        return _error;
     }
 
@@ -134,7 +116,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                                         placeholder=""
                                                         classes="pgs-sign-inputs"
                                                         onInputChange={this.elementChangeHandler}
-                                                        required={true}
+                                                        required={false}
                                                         validate={this.state.invalidElements.school}
                                                         error_message={this.state.error.school}/>
                                         	<SelectDateDropdown title="Graduation Date"
@@ -151,7 +133,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                                         placeholder=""
                                                         classes="pgs-sign-inputs"
                                                         onInputChange={this.elementChangeHandler}
-                                                        required={true}
+                                                        required={false}
                                                         validate={this.state.invalidElements.job_title}
                                                         error_message={this.state.error.job_title}/>
                                             <TextField  name="company_name"
@@ -161,7 +143,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                                         placeholder=""
                                                         classes="pgs-sign-inputs"
                                                         onInputChange={this.elementChangeHandler}
-                                                        required={true}
+                                                        required={false}
                                                         validate={this.state.invalidElements.company_name}
                                                         error_message={this.state.error.company_name}/>
                                         </div>
