@@ -2061,11 +2061,27 @@ export default StyleSheet.create({
         "paddingLeft": 0,
         "width": "calc(100% - 220px)"
     },
-    "pg-news-page-content": {},
+    "pg-middle-sign-wrapper container-fluid notesCatHolder": {
+        "marginTop": 0,
+        "marginRight": "auto",
+        "marginBottom": 140,
+        "marginLeft": "auto",
+        "paddingTop": 70,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0,
+        "width": "calc(100% - 220px)"
+    },
     "pg-news-page-header": {
         "paddingTop": 11,
         "paddingBottom": 11,
         "backgroundColor": "rgba(7, 7, 7, 0.3)"
+    },
+    "pg-notes-page-header": {
+        "paddingTop": 11,
+        "paddingBottom": 11,
+        "backgroundColor": "rgba(7, 7, 7, 0.3)",
+        "marginBottom": 25
     },
     "pg-news-page-header-title": {
         "font": "20px 'montserratregular', sans-serif",
@@ -2075,6 +2091,75 @@ export default StyleSheet.create({
         "marginBottom": 0,
         "marginLeft": 0,
         "textTransform": "uppercase"
+    },
+    "pg-notes-page-header add-category-btn": {
+        "float": "right",
+        "width": 150,
+        "backgroundImage": "linear-gradient(to bottom, #61b2de 0%, #0272ae 72%)",
+        "borderRadius": 4,
+        "color": "#fff",
+        "display": "block",
+        "font": "10px \"montserratsemi_bold\",sans-serif",
+        "height": 25,
+        "marginTop": 5,
+        "marginRight": -10,
+        "marginBottom": 0,
+        "marginLeft": -10,
+        "paddingTop": 6,
+        "paddingRight": 0,
+        "paddingBottom": 8,
+        "paddingLeft": 0,
+        "textAlign": "center",
+        "textDecoration": "none",
+        "textTransform": "uppercase",
+        "cursor": "pointer"
+    },
+    "pg-notes-page-content-item note-cat-thumb": {
+        "background": "url(../images/pg-notes-view-all.png) #5ebdaa repeat-y -3px top"
+    },
+    "color-picker": {
+        "textAlign": "center",
+        "float": "left",
+        "marginTop": 30,
+        "marginRight": 0,
+        "marginBottom": 15,
+        "marginLeft": 0,
+        "width": "100%"
+    },
+    "color-picker color": {
+        "width": 45,
+        "height": 45,
+        "border": "2px\tsolid",
+        "borderRadius": 5,
+        "display": "inline-block",
+        "marginRight": 15,
+        "cursor": "pointer"
+    },
+    "color-picker tone-one": {
+        "background": "#5EBDAA"
+    },
+    "color-picker tone-two": {
+        "background": "#F1C058"
+    },
+    "color-picker tone-three": {
+        "background": "#F15858"
+    },
+    "color-picker tone-four": {
+        "background": "#202024"
+    },
+    "color-picker tone-five": {
+        "background": "#8758F1"
+    },
+    "color-picker tone-six": {
+        "background": "#8F7C68"
+    },
+    "add-note-cat": {
+        "float": "right",
+        "font": "11px 'montserratsemi_bold', sans-serif",
+        "color": "#fff",
+        "backgroundColor": "#61b3de",
+        "textTransform": "uppercase",
+        "border": "none"
     },
     "pg-news-page-add-new-topic-btn": {
         "width": 100,
@@ -2185,6 +2270,16 @@ export default StyleSheet.create({
         "paddingBottom": 0,
         "paddingLeft": 0
     },
+    "pg-notes-page-content-itempg-box-shadow": {
+        "boxShadow": "0px 1px 5px -1px #000",
+        "display": "flex",
+        "marginBottom": 25,
+        "cursor": "pointer",
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
     "pg-news-page-content-itempg-box-shadow pg-news-page-content-item-right-thumbs": {
         "border": "2px solid transparent",
         "borderLeft": "none"
@@ -2213,6 +2308,19 @@ export default StyleSheet.create({
         "textAlign": "center"
     },
     "pg-news-page-content-item-left-thumb cat-icon-holder": {
+        "bottom": 0,
+        "height": 70,
+        "left": 0,
+        "marginTop": "auto",
+        "marginRight": "auto",
+        "marginBottom": "auto",
+        "marginLeft": "auto",
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+        "width": 90
+    },
+    "pg-notes-page-content-item cat-icon-holder": {
         "bottom": 0,
         "height": 70,
         "left": 0,
@@ -2258,6 +2366,16 @@ export default StyleSheet.create({
         "marginBottom": 0,
         "marginLeft": "auto"
     },
+    "pg-notes-page-content-item note-cat-thumb cat-icon": {
+        "display": "block",
+        "marginTop": 0,
+        "marginRight": "auto",
+        "marginBottom": 0,
+        "marginLeft": "auto",
+        "background": "url(\"../images/notes-cat-icon.png\") no-repeat",
+        "width": 50,
+        "height": 57
+    },
     "pg-news-page-content-item-left-thumbbusiness cat-icon": {
         "background": "url(\"../images/news/business-icon.png\") no-repeat",
         "width": 53,
@@ -2281,6 +2399,15 @@ export default StyleSheet.create({
         "marginLeft": 0,
         "color": "#fff"
     },
+    "pg-notes-page-content-item note-cat-thumb cat-title": {
+        "font": "1em 'montserratsemi_bold', sans-serif",
+        "marginTop": 10,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "color": "#fff",
+        "textAlign": "center"
+    },
     "pg-news-page-content-item-left-thumbsaved-articals-holder cat-title": {
         "marginTop": 0,
         "marginRight": "auto",
@@ -2301,8 +2428,17 @@ export default StyleSheet.create({
         "paddingBottom": 0,
         "paddingLeft": 30,
         "borderTopRightRadius": 4,
-        "borderBottomRightRadius": 4,
-        "width": "80%"
+        "borderBottomRightRadius": 4
+    },
+    "pg-notes-page-content-item-right-thumbs": {
+        "background": "#f2f6f9",
+        "borderLeft": "1px solid #7297aa",
+        "paddingTop": 0,
+        "paddingRight": 30,
+        "paddingBottom": 0,
+        "paddingLeft": 30,
+        "borderTopRightRadius": 4,
+        "borderBottomRightRadius": 4
     },
     "pg-col-20": {
         "width": "20%",
@@ -2312,11 +2448,105 @@ export default StyleSheet.create({
         "paddingBottom": 0,
         "paddingLeft": 9
     },
+    "pg-notes-item-main-row note-holder": {
+        "width": "20%",
+        "float": "left",
+        "paddingTop": 0,
+        "paddingRight": 9,
+        "paddingBottom": 0,
+        "paddingLeft": 9,
+        "marginTop": 15,
+        "marginRight": 0,
+        "marginBottom": 15,
+        "marginLeft": 0
+    },
     "pg-news-item": {
         "marginTop": 15,
         "marginRight": 0,
         "marginBottom": 15,
         "marginLeft": 0
+    },
+    "pg-notes-item-main-row note": {
+        "height": 145,
+        "position": "relative",
+        "borderRadius": 5,
+        "background": "#fff",
+        "border": "1px solid #e3e7ea"
+    },
+    "pg-notes-item-main-row note time-wrapper": {
+        "paddingTop": 5,
+        "paddingRight": 12,
+        "paddingBottom": 5,
+        "paddingLeft": 12,
+        "borderBottom": "1px solid #e3e7ea"
+    },
+    "pg-notes-item-main-row time-wrapper p": {
+        "color": "#61b3de",
+        "font": "9px \"montserratsemi_bold\",sans-serif",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 2,
+        "marginLeft": 0
+    },
+    "pg-notes-item-main-row note note-title-holder": {
+        "paddingTop": 10,
+        "paddingRight": 12,
+        "paddingBottom": 10,
+        "paddingLeft": 12
+    },
+    "pg-notes-item-main-row note-title-holder note-title": {
+        "color": "#2d5164",
+        "font": "13px \"montserratsemi_bold\",sans-serif",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "pg-notes-item-main-row add-new-note": {
+        "background": "#e2ebf1",
+        "border": "1px dashed #b4c5d0"
+    },
+    "pg-notes-item-main-row add-new-note add-note-text": {
+        "position": "absolute",
+        "top": 20,
+        "left": 0,
+        "bottom": 0,
+        "textAlign": "center",
+        "right": 0,
+        "marginTop": "auto",
+        "marginRight": "auto",
+        "marginBottom": "auto",
+        "marginLeft": "auto",
+        "width": "100%",
+        "height": 25,
+        "color": "#2d5164",
+        "font": "10px \"montserratsemi_bold\",sans-serif"
+    },
+    "pg-notes-item-main-row add-new-note add-note-text:before": {
+        "content": "\"\"",
+        "display": "block",
+        "width": 8,
+        "height": 8,
+        "position": "absolute",
+        "top": -40,
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "marginTop": "auto",
+        "marginRight": "auto",
+        "marginBottom": "auto",
+        "marginLeft": "auto",
+        "background": "url(../images/add.png) no-repeat 0 0"
+    },
+    "pg-notes-item-main-row note-holder note-delete-btn": {
+        "content": "\"\"",
+        "display": "none",
+        "width": 25,
+        "height": 23,
+        "position": "absolute",
+        "top": -8,
+        "right": -13,
+        "background": "url(../images/del-note-icon.png) no-repeat 0 0"
     },
     "pg-news-item-top-row": {
         "display": "inline-block"
@@ -2398,6 +2628,12 @@ export default StyleSheet.create({
     },
     "pg-news-inner-full:hover": {
         "boxShadow": "0px 2px 7px 0px #000"
+    },
+    "pg-notes-item-main-row note-holder note:hover": {
+        "boxShadow": "0px 2px 7px 0px #000"
+    },
+    "pg-notes-item-main-row note:hover note-delete-btn": {
+        "display": "block"
     },
     "pg-see-all-click": {
         "font": "10px 'montserratsemi_bold', sans-serif",
