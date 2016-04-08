@@ -13,6 +13,9 @@ export default class Header extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state={
+            headerChatUnreadCount:0
+        }
     }
 
     showChatList(){
@@ -53,7 +56,8 @@ export default class Header extends React.Component {
                             <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_11.png" alt="" />
                             <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_033.png" alt="" />
                           </span>
-                            <span id="unread_chat_count_header"></span>
+                            <span id="unread_chat_count_header">
+                            </span>
                             <div id="chat_notification_wrapper" className="chat-notification-wrapper">
                                 <img className="drop_downarrow" src="/images/drop_arrow.png" alt="" />
                                 <Scrollbars style={{ height: 260 }}>

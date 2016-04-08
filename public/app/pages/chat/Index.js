@@ -2,10 +2,12 @@
  * This is chat index component
  */
 import React from 'react';
+import ReactDom from 'react-dom'
 import { Scrollbars } from 'react-custom-scrollbars';
 import Session  from '../../middleware/Session';
 import Chat  from '../../middleware/Chat';
 import {Alert} from '../../config/Alert';
+import ChatListView from '../../components/elements/ChatListView';
 
 let errorStyles = {
     color         : "#ed0909",
@@ -14,8 +16,6 @@ let errorStyles = {
     margin        : '0 0 15px',
     display       : "block"
 };
-
-let userConversations = [];
 
 export default class Index extends React.Component{
     constructor(props) {
@@ -31,7 +31,9 @@ export default class Index extends React.Component{
             userLoggedIn : Session.getSession('prg_lg'),
             my_connections:[],
             chatWithUserName:"",
-            validateAlert:""
+            validateAlert:"",
+            unreadConversations:[],
+            conversations:[]
         };
 
         this.b6 = Chat.b6;
@@ -41,238 +43,171 @@ export default class Index extends React.Component{
         } else{
             this.loadChat(this.state.chatWith);
         }
-
-        this.conversations = userConversations;
-        this.unreadConversationCount = [];
-
-        this.initChat = this.initChat.bind(this);
         this.initChat(this.b6);
-
-        console.log(Chat.opts);
-
+        this.convUsers = [];
+        this.conversations = [];
+        this.unreadConversations = [];
     };
 
     initChat(b6){
-
-        //var conversations = [];
-
+        let _this = this;
         b6.on('conversation', function(c, op) {
-            onConversationChange(c, op);
+            window.setTimeout(function() {
+                _this.onConversationChange(c, op, b6);
+                console.log("am I .")
+            }, 2000);
+
         });
+    }
 
-        //this.conversations = conversations;
+    // Get Chat Tab jQuery selector for a Conversation
+    tabDomIdForConversation(c) {
+        return '#tab__' + c.domId();
+    }
 
-        // Get Chat Tab jQuery selector for a Conversation
-        function tabDomIdForConversation(c) {
-            return '#tab__' + c.domId();
+    getRelativeTime(stamp) {
+        var now = Date.now();
+        // 24 hours in milliseconds
+        var t24h = 24 * 60 * 60 * 1000;
+        var d = new Date(stamp);
+        var s = (now - stamp > t24h) ? d.toLocaleDateString() : d.toLocaleTimeString();
+        return s;
+    }
+
+    onConversationChange(c,op,b6){
+
+        var conv = {};
+
+        let _unreadCount = this.state.unreadCount;
+        _unreadCount++;
+        console.log(_unreadCount);
+
+        var tabId = this.tabDomIdForConversation(c);
+
+        // Conversation deleted
+        if (op < 0) {
+            return
         }
 
-        // Get Messages Container jQuery selector for a Conversation
-        function msgsDomIdForConversation(c) {
-            return '#msgs__' + c.domId();
-        }
+        var proglobe_title = b6.getNameFromIdentity(c.id);
+        var proglobe_title_array = proglobe_title.split('proglobe');
+        var title = proglobe_title_array[1];
 
-        function getRelativeTime(stamp) {
-            var now = Date.now();
-            // 24 hours in milliseconds
-            var t24h = 24 * 60 * 60 * 1000;
-            var d = new Date(stamp);
-            var s = (now - stamp > t24h) ? d.toLocaleDateString() : d.toLocaleTimeString();
-            return s;
-        }
+        //console.log(title);
 
-        function onConversationChange(c, op){
+        // New conversation
+        if (op > 0) {
 
-            console.log(userConversations);
-
-            var currentConversation = {};
-
-            // Update Conversation View
-
-            var tabId = tabDomIdForConversation(c);
-            var msgsId = msgsDomIdForConversation(c);
-
-            //Conversation deleted
-            if (op < 0) {
-                return
+            if (c.deleted) {
+                return;
             }
 
-            var proglobe_title = b6.getNameFromIdentity(c.id);
-            var proglobe_title_array = proglobe_title.split('proglobe');
-            var title = proglobe_title_array[1];
-
-            // New conversation
-            if (op > 0) {
-
-                console.log("new conversation from index")
-
-                if (c.deleted) {
-                    return;
-                }
-
-                if(title != 'undefined' && title != 'new'){
-
-                    currentConversation[title] = {
-                        tabId:tabId,
-                        msgsId:msgsId,
-                        proglobe_title:proglobe_title
-                    }
-
-                    $.ajax({
-                        url: '/get-profile/'+title,
-                        method: "GET",
-                        dataType: "JSON",
-                        success: function (data, text) {
-
-                            if (data.status.code == 200 && data.profile_data != null) {
-                                console.log("here")
-
-                                //this.convUsers[title] = data.profile_data;
-                                currentConversation[title].user_data = data.profile_data;
-
-                                // Entry in the Chat List
-                                //if(this.currentChatUserName == proglobe_title){
-                                //    currentChatUser = data.profile_data;
-                                //    tabDiv = $('<div class="tab msg-holder msg-holder-selected" />')
-                                //        .attr('id', tabId.substring(1))
-                                //        .append(chatListADiv);
-                                //    $("#chat_with").html(currentChatUser['first_name']+" "+currentChatUser['last_name']);
-                                //} else{
-                                //    tabDiv = $('<div class="tab msg-holder" />')
-                                //        .attr('id', tabId.substring(1))
-                                //        .append(chatListADiv);
-                                //}
-                                //chatList.append(tabDiv);
-
-                                // Create a container for message list for this conversation
-                                //msgsDiv = $('<div class="msgs" />')
-                                //    .attr('id', msgsId.substring(1))
-                                //    .hide();
-                                //$('#msgList').append(msgsDiv);
-
-                                //console.log("notificationId.substring(1) => "+notificationId.substring(1))
-
-                                //TODO::Show only 5 and if more display 'see all'
-                                //notificationDiv = $('<div class="tab msg-holder" />')
-                                //    .attr('id', notificationId.substring(1))
-                                //    .append(notificationListADiv);
-                                //notificationWrapperDiv.append(notificationDiv)
-
-                                //Update Conversation data
-                                var stamp = getRelativeTime(c.updated);
-                                var latestText = '';
-                                var lastMsg = c.getLastMessage();
-                                if (lastMsg) {
-                                    // Show the text from the latest conversation
-                                    if (lastMsg.content)
-                                        latestText = lastMsg.content;
-                                    // If no text, but has an attachment, show the mime type
-                                    else if (lastMsg.data && lastMsg.data.type) {
-                                        latestText = lastMsg.data.type;
-                                    }
-                                }
-
-                                currentConversation[title].latestText = latestText;
-                                currentConversation[title].stamp = stamp;
-
-                                //var connection_name = convUsers[title]['first_name']+" "+convUsers[title]['last_name'];
-                                //var connection_prof_img = '/images/default-profile-pic.png';
-                                //
-                                //if (convUsers[title]['images'] != null && convUsers[title]['images']['profile_image'] != null) {
-                                //    connection_prof_img = convUsers[title]['images']['profile_image']['http_url']
-                                //}
+            if(title != 'undefined' && title != 'new'){
 
 
+                $.ajax({
+                    url: '/get-profile/'+title,
+                    method: "GET",
+                    dataType: "JSON",
+                    success: function (data, text) {
 
-                                //notificationDiv.find('a').attr('href', '/chat/'+title);
-                                //notificationDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
-                                //notificationDiv.find('.chat-body').find('.connection-name').html(connection_name);
-                                //notificationDiv.find('.chat-body').find('.msg').html(latestText);
-                                //notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
+                        if (data.status.code == 200 && data.profile_data != null) {
 
+                            //console.log("here => ", data.profile_data);
 
+                            this.convUsers[title] = data.profile_data;
+                            conv = {
+                                id:tabId.substring(1),
+                                tabId:tabId,
+                                proglobeTitle:proglobe_title,
+                                title:title,
+                                user:data.profile_data
+                            };
 
-                                // If the updated conversation is newer than the top one -
-                                // move this conversation to the top
-                                //var notificationTop = notificationWrapperDiv.children(':first');
-                                //if (notificationTop.length > 0 && title != 'undefined') {
-                                //    var notificationTopTabId = notificationTop.attr('id');
-                                //    //console.log("2 => "+notificationTopTabId)
-                                //    var notificationTopConvId = domIdToConversationId(notificationTopTabId);
-                                //    var notificationTopConv = b6.getConversation(notificationTopConvId);
-                                //
-                                //    if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
-                                //        notificationTop.before(notificationDiv);
-                                //    }
-                                //}
+                            //TODO::Show only 5 and if more display 'see all'
 
-                                if (c.unread > 0 && this.unreadConversationCount.indexOf(c.id) == -1) {
-                                    this.unreadConversationCount.push(c.id);
-                                }
-
-                                if(userConversations.indexOf(title) == -1){
-                                    console.log("no record")
-                                    userConversations.push(currentConversation);
-                                } else{
-                                    console.log("record exist")
-                                    userConversations.splice(userConversations.indexOf(title),1);
-                                    userConversations.push(currentConversation);
+                            //Update Conversation data
+                            var stamp = this.getRelativeTime(c.updated);
+                            var latestText = '';
+                            var lastMsg = c.getLastMessage();
+                            if (lastMsg) {
+                                // Show the text from the latest conversation
+                                if (lastMsg.content)
+                                    latestText = lastMsg.content;
+                                // If no text, but has an attachment, show the mime type
+                                else if (lastMsg.data && lastMsg.data.type) {
+                                    latestText = lastMsg.data.type;
                                 }
                             }
-                        }.bind(this),
-                        error: function (request, status, error) {
-                            console.log(request.responseText);
-                            console.log(status);
-                            console.log(error);
+
+                            conv.date = stamp;
+                            conv.latestMsg = latestText;
+
+                            if (c.unread > 0 && this.unreadConversations.indexOf(c.id) == -1) {
+                                this.unreadConversations.push(c.id);
+                            }
+
+                            this.conversations.push(conv)
                         }
-                    });
-
-                }
-            }
-
-            if(op >= 0 && (title != 'undefined' && title != 'new')){
-                console.log("existing conversation from index");
-
-                // Update Conversation data
-                var stamp = getRelativeTime(c.updated);
-                var latestText = '';
-                var lastMsg = c.getLastMessage();
-                if (lastMsg) {
-                    // Show the text from the latest conversation
-                    if (lastMsg.content)
-                        latestText = lastMsg.content;
-                    // If no text, but has an attachment, show the mime type
-                    else if (lastMsg.data && lastMsg.data.type) {
-                        latestText = lastMsg.data.type;
+                    }.bind(this),
+                    error: function (request, status, error) {
+                        console.log(request.responseText);
+                        console.log(status);
+                        console.log(error);
                     }
-                }
+                });
 
-                currentConversation[title].latestText = latestText;
-                currentConversation[title].stamp = stamp;
-
-
-
-                if (c.unread > 0 && this.unreadConversationCount.indexOf(c.id) == -1) {
-                    this.unreadConversationCount.push(c.id);
-                }
-
-                //if(currentChatUri != null){
-                //
-                //    var conv = b6.getConversation(currentChatUri);
-                //
-                //    if (conv != null && b6.markConversationAsRead(conv) > 0) {
-                //        // Some messages have been marked as read
-                //        // update chat list
-                //        if(unreadConversationCount.indexOf(c.id) != -1){
-                //            unreadCount -= 1;
-                //            unreadConversationCount.splice(c.id);
-                //        }
-                //    }
-                //
-                //}
             }
+        }
+
+        if(op >= 0 && title != 'undefined' && title != 'new'){
+            //console.log("existing conversation");
+
+            // Update Conversation data
+            var stamp = this.getRelativeTime(c.updated);
+            var latestText = '';
+            var lastMsg = c.getLastMessage();
+            if (lastMsg) {
+                // Show the text from the latest conversation
+                if (lastMsg.content)
+                    latestText = lastMsg.content;
+                // If no text, but has an attachment, show the mime type
+                else if (lastMsg.data && lastMsg.data.type) {
+                    latestText = lastMsg.data.type;
+                }
+            }
+
+            conv.date = stamp;
+            conv.latestMsg = latestText;
+
+            if (c.unread > 0 && this.unreadConversations.indexOf(c.id) == -1) {
+                this.unreadConversations.push(c.id);
+            }
+
 
         }
+
+
+
+        this.setState({unreadConversations:this.unreadConversations});
+        this.setState({headerChatUnreadCount:_unreadCount});
+        this.setState({conversations:this.conversations});
+        this.setState({unreadCount:_unreadCount});
+
+        if(_unreadCount > 0){
+            ReactDom.render((
+                <span class="total">{this.state.headerChatUnreadCount}</span>
+            ), document.getElementById('unread_chat_count_header'));
+        }
+
+
+
+        //console.log("this.state.unreadConversations => ");
+        //console.log(this.state.unreadConversations);
+
+        //console.log("this.state.conversations => ");
+        //console.log(this.state.conversations);
+
     }
 
     loadMyConnections(){
@@ -391,8 +326,34 @@ export default class Index extends React.Component{
             userLoggedIn,
             my_connections,
             chatWithUserName,
-            validateAlert
+            validateAlert,
+            conversations,
+            unreadConversations,
+            unreadCount
             }=this.state;
+
+        console.log("rendering");
+        console.log(conversations);
+
+
+        let convs = conversations.map(function(conv,key){
+            console.log("let")
+
+            return (
+                <div className="tab msg-holder" key={key}>
+                    <a href="javascript:void(0)">
+                        <div className="chat-pro-img">
+                            <img src={conv.user.images.profile_image.http_url}/>
+                        </div>
+                        <div className="chat-body">
+                            <span className="connection-name">{conv.user.first_name + " " + conv.user.last_name}</span>
+                            <p className="msg">{conv.latestMsg}</p>
+                            <span className="chat-date">{conv.date}</span>
+                        </div>
+                    </a>
+                </div>
+            );
+        });
 
         return (
             <div className="pg-middle-chat-screen-area container-fluid">
@@ -403,7 +364,7 @@ export default class Index extends React.Component{
                 </div>
                 <div className="chat-window container">
                     <div className="header">
-                        <LeftMenu unreadConversationCount = {this.unreadConversationCount}/>
+                        <LeftMenu unreadConversations = {unreadConversations} unreadCount = {unreadCount}/>
                         <RightMenu
                             loadRoute ={this.loadRoute.bind(this)}
                             chatWith = {chatWith}
@@ -415,7 +376,14 @@ export default class Index extends React.Component{
                             />
                     </div>
                     <div className="chat-body">
-                        <ChatList loadRoute ={this.loadRoute.bind(this)}/>
+
+                        <div className="conv-holder col-sm-4">
+                            <Scrollbars style={{ height: 486 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
+                                <div id="chatList">
+                                    {convs}
+                                </div>
+                            </Scrollbars>
+                        </div>
                         <MessageList
                             loggedUser = {userLoggedIn}
                             chatWith = {chatWith}
@@ -433,14 +401,18 @@ export default class Index extends React.Component{
 export class LeftMenu extends React.Component{
     constructor(props){
         super(props)
-        this.state ={};
+        this.state ={
+        };
         this.loggedUser = this.props.loggedUser;
     }
     render() {
         return (
             <div className="chat-inbox-options col-sm-4">
                 <div className="inbox">
-                    <p id="unread_inbox_p">inbox</p>
+                    <p id="unread_inbox_p">inbox
+
+                        {this.props.unreadCount > 0 ? <span className="total">{this.props.unreadCount}</span> : null}
+                    </p>
                 </div>
                 <div className="otherMsg">
                     <p>Other</p>
@@ -517,16 +489,22 @@ export class RightMenu extends React.Component{
 export class ChatList extends React.Component{
     constructor(props){
         super(props)
-        this.state ={};
+        this.state ={
+            //conversations :this.props.conversations
+        };
         this.loggedUser = this.props.loggedUser;
+        console.log("ChatList => ");
+        //console.log(this.state.conversations);
     }
     render() {
+        //const {conversations} =this.state;
+        let _this = this;
 
         return (
             <div className="conv-holder col-sm-4">
                 <Scrollbars style={{ height: 486 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
                     <div id="chatList">
-
+                        {conv}
                     </div>
                 </Scrollbars>
             </div>
@@ -543,34 +521,33 @@ export class MessageList extends React.Component{
     }
     render() {
         return (
-        <div className="chat-msg-holder col-sm-8">
-            <div className="chat-view">
-                <Scrollbars style={{ height: 335 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
-                    <div id="msgListRow">
-                        <div className="col-xs-12">
-                            <div id="msgList"></div>
+            <div className="chat-msg-holder col-sm-8">
+                <div className="chat-view">
+                    <Scrollbars style={{ height: 335 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
+                        <div id="msgListRow">
+                            <div className="col-xs-12">
+                                <div id="msgList"></div>
+                            </div>
                         </div>
+                    </Scrollbars>
+                </div>
+                <div className="chat-msg-input-holder">
+                    {
+                        (this.loggedUser.profile_image != null ? <img src={this.loggedUser.profile_image} alt="" width="40" height="40" id="my_profile_img"/>:<img src="/images/default-profile-pic.png" alt="" width="40" height="40" id="my_profile_img"/>)
+                    }
+
+                    <div className="msg-input">
+                        <textarea className="form-control" placeholder="New Message..." id="msgText" name="msg" ></textarea>
                     </div>
-                </Scrollbars>
-            </div>
-            <div className="chat-msg-input-holder">
-                {
-                    (this.loggedUser.profile_image != null ? <img src={this.loggedUser.profile_image} alt="" width="40" height="40" id="my_profile_img"/>:<img src="/images/default-profile-pic.png" alt="" width="40" height="40" id="my_profile_img"/>)
-                }
-
-                <div className="msg-input">
-                    <textarea className="form-control" placeholder="New Message..." id="msgText" name="msg" ></textarea>
+                    {this.props.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.props.validateAlert}</p> : null}
                 </div>
-                {this.props.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.props.validateAlert}</p> : null}
-            </div>
-            <div className="chat-msg-options-holder">
-                <div className="send-msg">
-                    <span className="send-msg-helper-text">Press enter to send</span>
-                    <span className="btn btn-default send-btn" onClick={this.props.sendChat}>Send</span>
+                <div className="chat-msg-options-holder">
+                    <div className="send-msg">
+                        <span className="send-msg-helper-text">Press enter to send</span>
+                        <span className="btn btn-default send-btn" onClick={this.props.sendChat}>Send</span>
+                    </div>
                 </div>
             </div>
-        </div>
-
         )
     }
 }

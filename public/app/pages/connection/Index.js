@@ -321,9 +321,13 @@ export class FriendSuggestions  extends React.Component{
     }
 
     render(){
+        console.log("this.state")
+        console.log(this.state)
         const {friend_suggestions} =this.state;
         let _this = this,
             _current_block_ids =[];
+        console.log("friend_suggestions")
+        console.log(friend_suggestions)
         let user_elements = friend_suggestions.map(function(friend,key){
             _current_block_ids.push(friend.user_id);
             return (

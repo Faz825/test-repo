@@ -14,7 +14,7 @@ import Session  from './Session.js';
 
         this.b6 = new bit6.Client(opts);
 
-        //this.initChat(this.b6);
+        this.initChat(this.b6);
 
     }
 
@@ -141,11 +141,11 @@ import Session  from './Session.js';
                      return true;
                  }
              });
-         };
+         }
 
          this.loadFirstMessage = function(){
              firstChat = true;
-         }
+         };
 
          // Update Conversation View
          function onConversationChange(c, op) {
@@ -195,7 +195,7 @@ import Session  from './Session.js';
 
                                  convUsers[title] = data.profile_data;
 
-                                 // Entry in the Chat List
+                                  //Entry in the Chat List
                                  //if(currentChatUserName == proglobe_title){
                                  //    tabDiv = $('<div class="tab msg-holder msg-holder-selected" />')
                                  //        .attr('id', tabId.substring(1))
@@ -208,7 +208,7 @@ import Session  from './Session.js';
                                  //}
                                  //chatList.append(tabDiv);
 
-                                 // Create a container for message list for this conversation
+                                  //Create a container for message list for this conversation
                                  //msgsDiv = $('<div class="msgs" />')
                                  //    .attr('id', msgsId.substring(1))
                                  //    .hide();

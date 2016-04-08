@@ -2601,6 +2601,11 @@ textarea{
 	text-decoration: none;
 }
 
+.chat-pro-img img{
+	width: 40px;
+	height: 40px;
+}
+
 /* Large Screen */
 @media (min-width: 1200px) {
 
