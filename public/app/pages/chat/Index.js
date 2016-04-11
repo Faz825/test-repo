@@ -79,6 +79,7 @@ export default class Index extends React.Component{
         _this.setState({chatWith : url});
         console.log("loadRoute => ",this.state.chatWith);
         if(url == 'new'){
+            this.setState({chatWithUserName:" "});
             this.loadMyConnections();
         }else{
             this.loadChat(url);
