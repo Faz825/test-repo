@@ -3,12 +3,185 @@
 */
 import React from 'react';
 import Immutable from 'immutable';
-import {Editor, EditorState, RichUtils} from 'draft-js';
+import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, ContentState, Entity} from 'draft-js';
+
+const rawContent = {
+      "entityMap": {},
+      "blocks": [
+        {
+          "key": "p40s",
+          "text": "Heading",
+          "type": "header-one",
+          "depth": 0,
+          "inlineStyleRanges": [
+            {
+              "offset": 0,
+              "length": 7,
+              "style": "UNDERLINE"
+            },
+            {
+              "offset": 0,
+              "length": 7,
+              "style": "BOLD"
+            }
+          ],
+          "entityRanges": []
+        },
+        {
+          "key": "811o3",
+          "text": "Sub heading",
+          "type": "header-three",
+          "depth": 0,
+          "inlineStyleRanges": [
+            {
+              "offset": 0,
+              "length": 11,
+              "style": "UNDERLINE"
+            }
+          ],
+          "entityRanges": []
+        },
+        {
+          "key": "4vq83",
+          "text": "",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "2prok",
+          "text": "Nam tristique hendrerit nulla id interdum. Maecenas pretium pretium massa in pharetra. Pellentesque sapien enim, convallis at tincidunt sed; sodales at quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis in arcu in est consectetur porttitor ac ac purus. Etiam auctor eu quam et lacinia. Nullam bibendum mi dui. Vivamus eu placerat ipsum. Maecenas rutrum venenatis velit nec ultrices. Sed imperdiet malesuada molestie. Duis sagittis ultrices tempor. Pellentesque varius nunc sit amet dui congue, ",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "3qche",
+          "text": "",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "41quc",
+          "text": "Praesent ac eleifend velit",
+          "type": "unordered-list-item",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "kkog",
+          "text": "Pellentesque varius nunc sit amet dui congue",
+          "type": "unordered-list-item",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "1ugpa",
+          "text": "at ornare mi sagittis!",
+          "type": "unordered-list-item",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "d10fo",
+          "text": "",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "8ud3a",
+          "text": "Aenean turpis lectus, luctus vitae mattis ut, ultricies eu nibh. Duis maximus egestas magna, eu ultrices turpis tincidunt in. Suspendisse potenti. Praesent fringilla metus at dui convallis congue. Sed venenatis magna in sagittis sodales. In vel libero nec enim consequat tincidunt! Nunc tincidunt erat nec congue luctus. Nullam consequat tellus ut felis condimentum tempus. Quisque nec varius libero. Mauris cursus sapien non orci accumsan, ac hendrerit quam elementum.",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "480pg",
+          "text": "",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "ea80v",
+          "text": "Praesent ac eleifend velit",
+          "type": "ordered-list-item",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "c4rln",
+          "text": "Pellentesque varius nunc sit amet dui congue",
+          "type": "ordered-list-item",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "9s285",
+          "text": "at ornare mi sagittis!",
+          "type": "ordered-list-item",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "4gq7a",
+          "text": "",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "ff1i",
+          "text": "Phasellus convallis ante dolor, a vehicula massa elementum ut. Nunc vulputate eget ipsum vitae convallis. Maecenas pretium, diam a pulvinar pellentesque, enim ex efficitur mi, nec pretium enim nunc sit amet augue. Nunc varius mi nec rhoncus cursus. Suspendisse et nibh nec purus consectetur lobortis. Interdum et malesuada fames ac ante ipsum primis in faucibus. In rhoncus metus et nisl placerat mattis. Aenean quis facilisis ante! Integer justo enim, blandit a luctus ut, laoreet et odio. Fusce sed augue ante? In massa nunc, feugiat vitae facilisis ut, luctus vitae ipsum. Donec non interdum leo. Praesent bibendum orci a congue fringilla. Maecenas non nulla eget lorem elementum suscipit. Donec cursus egestas nisi ut auctor!",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "bap4u",
+          "text": "",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        },
+        {
+          "key": "a1e4k",
+          "text": "",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": []
+        }
+      ]
+    };
 
 export default class Texteditor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {editorState: EditorState.createEmpty()};
+        const blocks = convertFromRaw(rawContent);
+
+        this.state = {
+            editorState: EditorState.createWithContent(
+              ContentState.createFromBlockArray(blocks)
+            )
+        };
 
         this.focus = () => this.refs.editor.focus();
         this.onChange = (editorState) => this.setState({editorState});
@@ -16,6 +189,11 @@ export default class Texteditor extends React.Component {
         this.handleKeyCommand = (command) => this._handleKeyCommand(command);
         this.toggleBlockType = (type) => this._toggleBlockType(type);
         this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
+
+        this.logState = () => {
+          const content = this.state.editorState.getCurrentContent();
+          console.log(convertToRaw(content));
+        };
     }
 
     _handleKeyCommand(command) {
@@ -85,9 +263,15 @@ export default class Texteditor extends React.Component {
                                 placeholder="Write your note..."
                                 ref="editor"
                                 spellCheck={true}
+                                textAlignment = "center"
                                 />
                             </div>
                         </div>
+                        <input
+                            onClick={this.logState}
+                            type="button"
+                            value="Log State"
+                            />
                     </div>
                 </div>
             </div>
