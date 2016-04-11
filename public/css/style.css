@@ -2601,9 +2601,14 @@ textarea{
 	text-decoration: none;
 }
 
-.chat-pro-img img{
+.chat-pro-img img {
 	width: 40px;
 	height: 40px;
+}
+
+#clock{
+	color:#c7bfb2;
+	display: none;
 }
 
 /* Large Screen */

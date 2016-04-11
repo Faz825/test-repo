@@ -2,7 +2,7 @@
  * This is chat index component
  */
 import React from 'react';
-import ReactDom from 'react-dom'
+import ReactDom from 'react-dom';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Session  from '../../middleware/Session';
 import Chat  from '../../middleware/Chat';
@@ -31,7 +31,6 @@ export default class Index extends React.Component{
             userLoggedIn : Session.getSession('prg_lg'),
             my_connections:[],
             chatWithUserName:"",
-            validateAlert:"",
             unreadConversations:[],
             conversations:[]
         };
@@ -54,10 +53,15 @@ export default class Index extends React.Component{
         b6.on('conversation', function(c, op) {
             window.setTimeout(function() {
                 _this.onConversationChange(c, op, b6);
-                console.log("am I .")
-            }, 2000);
-
+            }, 1000);
         });
+    }
+
+    // Convert element id to a Conversation id
+    domIdToConversationId(id) {
+        var r = id.split('__');
+        id = r.length > 0 ? r[1] : id
+        return bit6.Conversation.fromDomId(id);
     }
 
     // Get Chat Tab jQuery selector for a Conversation
@@ -77,10 +81,6 @@ export default class Index extends React.Component{
     onConversationChange(c,op,b6){
 
         var conv = {};
-
-        let _unreadCount = this.state.unreadCount;
-        _unreadCount++;
-        console.log(_unreadCount);
 
         var tabId = this.tabDomIdForConversation(c);
 
@@ -112,8 +112,6 @@ export default class Index extends React.Component{
                     success: function (data, text) {
 
                         if (data.status.code == 200 && data.profile_data != null) {
-
-                            //console.log("here => ", data.profile_data);
 
                             this.convUsers[title] = data.profile_data;
                             conv = {
@@ -147,7 +145,21 @@ export default class Index extends React.Component{
                                 this.unreadConversations.push(c.id);
                             }
 
-                            this.conversations.push(conv)
+                            if(this.conversations.length > 0){
+                                var first_conv = this.conversations[0];
+                                var first_id = first_conv.id;
+                                //console.log("2 => "+notificationTopTabId)
+                                var first_conv_id = this.domIdToConversationId(first_id);
+                                var first_conversation = b6.getConversation(first_conv_id);
+
+                                if (first_conversation && first_conversation.id != c.id && c.updated > first_conversation.updated) {
+                                    this.conversations.splice(0,0,conv);
+                                } else{
+                                    this.conversations.push(conv);
+                                }
+                            } else{
+                                this.conversations.push(conv);
+                            }
                         }
                     }.bind(this),
                     error: function (request, status, error) {
@@ -177,36 +189,51 @@ export default class Index extends React.Component{
                 }
             }
 
-            conv.date = stamp;
-            conv.latestMsg = latestText;
+            var i = 0;
+            var cur_conv = 0;
+            for(let con in this.conversations){
+                console.log(con);
+                if(con.title == title){
+                    this.conversations[i].date = stamp;
+                    this.conversations[i].latestMsg = latestText;
+                    cur_conv = i;
+                }
+                i++;
+            }
 
             if (c.unread > 0 && this.unreadConversations.indexOf(c.id) == -1) {
                 this.unreadConversations.push(c.id);
             }
 
+            if(this.conversations.length > 0){
+                var first_conv = this.conversations[0];
+                var first_id = first_conv.id;
+                var first_conv_id = this.domIdToConversationId(first_id);
+                var first_conversation = b6.getConversation(first_conv_id);
 
+                var current_conv = this.conversations[cur_conv];
+                var current_conv_id = current_conv.id;
+                //console.log("2 => "+notificationTopTabId)
+                var current_conversation_id = this.domIdToConversationId(current_conv_id);
+                var current_conversation = b6.getConversation(current_conversation_id);
+
+
+                if (first_conversation && first_conversation.id != current_conversation.id && current_conversation.updated > first_conversation.updated) {
+                    this.conversations.splice(0,0,current_conv);
+                    this.conversations.splice(0,0,current_conv);
+
+                }
+            }
         }
-
-
 
         this.setState({unreadConversations:this.unreadConversations});
-        this.setState({headerChatUnreadCount:_unreadCount});
         this.setState({conversations:this.conversations});
-        this.setState({unreadCount:_unreadCount});
 
-        if(_unreadCount > 0){
-            ReactDom.render((
-                <span class="total">{this.state.headerChatUnreadCount}</span>
-            ), document.getElementById('unread_chat_count_header'));
-        }
-
-
-
-        //console.log("this.state.unreadConversations => ");
-        //console.log(this.state.unreadConversations);
-
-        //console.log("this.state.conversations => ");
-        //console.log(this.state.conversations);
+        //if(_unreadCount > 0){
+        //    ReactDom.render((
+        //        <span className="total">{this.state.headerChatUnreadCount}</span>
+        //    ), document.getElementById('unread_chat_count_header'));
+        //}
 
     }
 
@@ -224,7 +251,6 @@ export default class Index extends React.Component{
     }
 
     loadChat(chatWith){
-        let _this = this;
         if(chatWith != 'undefined'){
             $.ajax({
                 url: '/get-profile/' + chatWith,
@@ -241,9 +267,8 @@ export default class Index extends React.Component{
     }
 
     loadRoute(url){
-        let _this = this;
-        _this.setState({chatWith : url});
-        _this.setState({chatWithUserName : ""});
+        this.setState({chatWith : url});
+        this.setState({chatWithUserName : ""});
         if(url == 'new'){
             this.loadMyConnections();
         }else{
@@ -264,22 +289,26 @@ export default class Index extends React.Component{
         return  this.props.params.chatWith;
     }
 
-    sendChat(){
+    sendChat(formData){
 
-        let _this = this;
+        console.log("Global sendChat")
 
-        var msg = $("#msgText").val();
+        console.log(formData)
 
-        if(typeof this.state.chatWith == 'undefined' || this.state.chatWith == 'new'){
-            _this.setState({validateAlert: Alert.EMPTY_RECEIVER+"send message"});
-            return 0;
-        } else if(msg==""){
-            _this.setState({validateAlert: Alert.EMPTY_MESSAGE});
-            return 0;
-        } else{
-            _this.setState({validateAlert: ""});
-            this.b6.compose(this.uri).text(msg).send(function(err) {
-                $("#msgText").val("");
+        console.log(this.uri)
+
+
+        //var msg = $("#msgText").val();
+
+        //if(typeof this.state.chatWith == 'undefined' || this.state.chatWith == 'new'){
+        //    _this.setState({validateAlert: Alert.EMPTY_RECEIVER+"send message"});
+        //    return 0;
+        //} else if(msg==""){
+        //    _this.setState({validateAlert: Alert.EMPTY_MESSAGE});
+        //    return 0;
+        //} else{
+        //    _this.setState({validateAlert: ""});
+            this.b6.compose(this.uri).text(formData.msg).send(function(err) {
                 if (err) {
                     console.log('error', err);
                 }
@@ -287,7 +316,7 @@ export default class Index extends React.Component{
                     console.log("msg sent");
                 }
             });
-        }
+        //}
 
     }
 
@@ -326,34 +355,9 @@ export default class Index extends React.Component{
             userLoggedIn,
             my_connections,
             chatWithUserName,
-            validateAlert,
             conversations,
-            unreadConversations,
-            unreadCount
+            unreadConversations
             }=this.state;
-
-        console.log("rendering");
-        console.log(conversations);
-
-
-        let convs = conversations.map(function(conv,key){
-            console.log("let")
-
-            return (
-                <div className="tab msg-holder" key={key}>
-                    <a href="javascript:void(0)">
-                        <div className="chat-pro-img">
-                            <img src={conv.user.images.profile_image.http_url}/>
-                        </div>
-                        <div className="chat-body">
-                            <span className="connection-name">{conv.user.first_name + " " + conv.user.last_name}</span>
-                            <p className="msg">{conv.latestMsg}</p>
-                            <span className="chat-date">{conv.date}</span>
-                        </div>
-                    </a>
-                </div>
-            );
-        });
 
         return (
             <div className="pg-middle-chat-screen-area container-fluid">
@@ -364,7 +368,7 @@ export default class Index extends React.Component{
                 </div>
                 <div className="chat-window container">
                     <div className="header">
-                        <LeftMenu unreadConversations = {unreadConversations} unreadCount = {unreadCount}/>
+                        <LeftMenu unreadConversations = {unreadConversations}/>
                         <RightMenu
                             loadRoute ={this.loadRoute.bind(this)}
                             chatWith = {chatWith}
@@ -376,20 +380,17 @@ export default class Index extends React.Component{
                             />
                     </div>
                     <div className="chat-body">
-
-                        <div className="conv-holder col-sm-4">
-                            <Scrollbars style={{ height: 486 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
-                                <div id="chatList">
-                                    {convs}
-                                </div>
-                            </Scrollbars>
+                        <ChatList conversations = {conversations} chatWith = {chatWith}/>
+                        <div className="chat-msg-holder col-sm-8">
+                            <MessageList
+                                loggedUser = {userLoggedIn}
+                                chatWith = {chatWith}
+                                sendChat = {this.sendChat.bind(this)}
+                                />
+                            <ComposeMessage loggedUser = {userLoggedIn}
+                                            chatWith = {chatWith}
+                                            sendChat = {this.sendChat.bind(this)}/>
                         </div>
-                        <MessageList
-                            loggedUser = {userLoggedIn}
-                            chatWith = {chatWith}
-                            sendChat = {this.sendChat.bind(this)}
-                            validateAlert = {validateAlert}
-                            />
                     </div>
                 </div>
             </div>
@@ -488,23 +489,34 @@ export class RightMenu extends React.Component{
 
 export class ChatList extends React.Component{
     constructor(props){
-        super(props)
-        this.state ={
-            //conversations :this.props.conversations
-        };
+        super(props);
+        this.state ={};
         this.loggedUser = this.props.loggedUser;
-        console.log("ChatList => ");
-        //console.log(this.state.conversations);
     }
     render() {
-        //const {conversations} =this.state;
-        let _this = this;
+        let convs = this.props.conversations.map(function(conv,key){
+
+            return (
+                <div className="tab msg-holder" key={key}>
+                    <a href="javascript:void(0)">
+                        <div className="chat-pro-img">
+                            <img src={conv.user.images.profile_image.http_url}/>
+                        </div>
+                        <div className="chat-body">
+                            <span className="connection-name">{conv.user.first_name + " " + conv.user.last_name}</span>
+                            <p className="msg">{conv.latestMsg}</p>
+                            <span className="chat-date">{conv.date}</span>
+                        </div>
+                    </a>
+                </div>
+            );
+        });
 
         return (
             <div className="conv-holder col-sm-4">
                 <Scrollbars style={{ height: 486 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
                     <div id="chatList">
-                        {conv}
+                        {convs}
                     </div>
                 </Scrollbars>
             </div>
@@ -521,7 +533,6 @@ export class MessageList extends React.Component{
     }
     render() {
         return (
-            <div className="chat-msg-holder col-sm-8">
                 <div className="chat-view">
                     <Scrollbars style={{ height: 335 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
                         <div id="msgListRow">
@@ -531,23 +542,73 @@ export class MessageList extends React.Component{
                         </div>
                     </Scrollbars>
                 </div>
+        )
+    }
+}
+
+
+export class ComposeMessage extends React.Component{
+    constructor(props) {
+        super(props);
+        this.loggedUser = this.props.loggedUser;
+        this.state = {
+            validateAlert: "",
+            formData: {}
+        };
+        this.elementChangeHandler = this.elementChangeHandler.bind(this);
+    }
+
+    elementChangeHandler(event){
+
+        this.state.formData['msg'] = event.target.value;
+
+        let _error = "";
+        if(this.state.formData['msg'] == ""){
+            _error = Alert.EMPTY_MESSAGE;
+        }
+        this.setState({validateAlert:_error})
+
+    }
+
+    sendMessage(e){
+        e.preventDefault();
+        let _this = this;
+        console.log(this.props.chatWith);
+        if(typeof this.props.chatWith == 'undefined' || this.props.chatWith == 'new'){
+            this.setState({validateAlert: Alert.EMPTY_RECEIVER+"send message"});
+            return 0;
+        } else if(!this.state.formData['msg'] || this.state.formData['msg'] == "") {
+            console.log(this.state.formData);
+            this.setState({validateAlert: Alert.EMPTY_MESSAGE});
+        } else{
+                this.state.formData['status'] = 1;
+                this.props.sendChat(this.state.formData);
+                this.setState({validateAlert: ""});
+                this.setState({formData: {}});
+        }
+    }
+
+    render(){
+        //let formData = this.state.formData;
+        return(
+            <form onSubmit={this.sendMessage.bind(this)}>
                 <div className="chat-msg-input-holder">
                     {
                         (this.loggedUser.profile_image != null ? <img src={this.loggedUser.profile_image} alt="" width="40" height="40" id="my_profile_img"/>:<img src="/images/default-profile-pic.png" alt="" width="40" height="40" id="my_profile_img"/>)
                     }
-
                     <div className="msg-input">
-                        <textarea className="form-control" placeholder="New Message..." id="msgText" name="msg" ></textarea>
+                        <textarea className="form-control" placeholder="New Message..." name="msg" value={this.state.formData.msg}
+                                  onChange={(event)=>{ this.elementChangeHandler(event)}}></textarea>
                     </div>
-                    {this.props.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.props.validateAlert}</p> : null}
+                    {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
                 </div>
                 <div className="chat-msg-options-holder">
                     <div className="send-msg">
                         <span className="send-msg-helper-text">Press enter to send</span>
-                        <span className="btn btn-default send-btn" onClick={this.props.sendChat}>Send</span>
+                        <button type="submit" className="btn btn-default send-btn">Send</button>
                     </div>
                 </div>
-            </div>
+            </form>
         )
     }
 }

@@ -11,17 +11,8 @@ export default class InCallPane extends React.Component{
         if (Session.isSessionSet('prg_lg')) {
             this.b6 = Chat.b6;
             Chat.initChat(this.b6);
-            Chat.bit6Auth(false);
         }
-        this.state = {
-            InCallPaneUnreadCount : 0
-        }
-
     }
-    onLinkClick(e){
-        e.preventDefault();
-    }
-
 
     answerVideo(){
         var opts = {audio: true, video: true};
@@ -40,8 +31,8 @@ export default class InCallPane extends React.Component{
     hangup(){
         Chat.hangupCall();
     }
-    render() {
 
+    render() {
 
         return(
             <div>
@@ -57,7 +48,13 @@ export default class InCallPane extends React.Component{
                                             <img src="" id="call_other_profile_image" className="img-responsive img-circle img-custom-large pull-left left-margin-30 hidden" />
                                             <span id="inCallOther">Video Call</span> <span id="onCall">on call...</span>
                                         </div>
+                                        <div className="col-sm-12 top-margin-5">
+                                            <div id="clock">
+                                                <span id="hour">00</span>:<span id="min">00</span>:<span id="sec">00</span>
+                                            </div>
+                                        </div>
                                     </div>
+
                                 </div>
                                 <div className="hangup-outer">
                                     <button className="btn btn-danger" id="hangup" title="Stop Call" onClick={()=>this.hangup()}>
