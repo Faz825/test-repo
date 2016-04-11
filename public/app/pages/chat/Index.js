@@ -59,7 +59,7 @@ export default class Index extends React.Component{
 
     // Convert element id to a Conversation id
     domIdToConversationId(id) {
-        var r = id.split('__');
+        let r = id.split('__');
         id = r.length > 0 ? r[1] : id
         return bit6.Conversation.fromDomId(id);
     }
@@ -70,28 +70,30 @@ export default class Index extends React.Component{
     }
 
     getRelativeTime(stamp) {
-        var now = Date.now();
+        let now = Date.now();
         // 24 hours in milliseconds
-        var t24h = 24 * 60 * 60 * 1000;
-        var d = new Date(stamp);
-        var s = (now - stamp > t24h) ? d.toLocaleDateString() : d.toLocaleTimeString();
+        let t24h = 24 * 60 * 60 * 1000;
+        let d = new Date(stamp);
+        let s = (now - stamp > t24h) ? d.toLocaleDateString() : d.toLocaleTimeString();
         return s;
     }
 
     onConversationChange(c,op,b6){
 
-        var conv = {};
+        console.log("onConversationChange")
 
-        var tabId = this.tabDomIdForConversation(c);
+        let conv = {};
+
+        let tabId = this.tabDomIdForConversation(c);
 
         // Conversation deleted
         if (op < 0) {
             return
         }
 
-        var proglobe_title = b6.getNameFromIdentity(c.id);
-        var proglobe_title_array = proglobe_title.split('proglobe');
-        var title = proglobe_title_array[1];
+        let proglobe_title = b6.getNameFromIdentity(c.id);
+        let proglobe_title_array = proglobe_title.split('proglobe');
+        let title = proglobe_title_array[1];
 
         //console.log(title);
 
@@ -125,9 +127,9 @@ export default class Index extends React.Component{
                             //TODO::Show only 5 and if more display 'see all'
 
                             //Update Conversation data
-                            var stamp = this.getRelativeTime(c.updated);
-                            var latestText = '';
-                            var lastMsg = c.getLastMessage();
+                            let stamp = this.getRelativeTime(c.updated);
+                            let latestText = '';
+                            let lastMsg = c.getLastMessage();
                             if (lastMsg) {
                                 // Show the text from the latest conversation
                                 if (lastMsg.content)
@@ -146,11 +148,11 @@ export default class Index extends React.Component{
                             }
 
                             if(this.conversations.length > 0){
-                                var first_conv = this.conversations[0];
-                                var first_id = first_conv.id;
+                                let first_conv = this.conversations[0];
+                                let first_id = first_conv.id;
                                 //console.log("2 => "+notificationTopTabId)
-                                var first_conv_id = this.domIdToConversationId(first_id);
-                                var first_conversation = b6.getConversation(first_conv_id);
+                                let first_conv_id = this.domIdToConversationId(first_id);
+                                let first_conversation = b6.getConversation(first_conv_id);
 
                                 if (first_conversation && first_conversation.id != c.id && c.updated > first_conversation.updated) {
                                     this.conversations.splice(0,0,conv);
@@ -176,9 +178,9 @@ export default class Index extends React.Component{
             //console.log("existing conversation");
 
             // Update Conversation data
-            var stamp = this.getRelativeTime(c.updated);
-            var latestText = '';
-            var lastMsg = c.getLastMessage();
+            let stamp = this.getRelativeTime(c.updated);
+            let latestText = '';
+            let lastMsg = c.getLastMessage();
             if (lastMsg) {
                 // Show the text from the latest conversation
                 if (lastMsg.content)
@@ -189,39 +191,37 @@ export default class Index extends React.Component{
                 }
             }
 
-            var i = 0;
             var cur_conv = 0;
+
             for(let con in this.conversations){
-                console.log(con);
-                if(con.title == title){
-                    this.conversations[i].date = stamp;
-                    this.conversations[i].latestMsg = latestText;
-                    cur_conv = i;
+                console.log(this.conversations[con]);
+                if(this.conversations[con].title == title){
+                    this.conversations[con].date = stamp;
+                    this.conversations[con].latestMsg = latestText;
+                    cur_conv = con;
                 }
-                i++;
             }
 
             if (c.unread > 0 && this.unreadConversations.indexOf(c.id) == -1) {
                 this.unreadConversations.push(c.id);
             }
 
-            if(this.conversations.length > 0){
-                var first_conv = this.conversations[0];
-                var first_id = first_conv.id;
-                var first_conv_id = this.domIdToConversationId(first_id);
-                var first_conversation = b6.getConversation(first_conv_id);
+            if(this.conversations.length > 0 && cur_conv !=  0){
+                let first_conv = this.conversations[0];
+                let first_id = first_conv.id;
+                let first_conv_id = this.domIdToConversationId(first_id);
+                let first_conversation = b6.getConversation(first_conv_id);
 
-                var current_conv = this.conversations[cur_conv];
-                var current_conv_id = current_conv.id;
+                let current_conv = this.conversations[cur_conv];
+                let current_conv_id = current_conv.id;
                 //console.log("2 => "+notificationTopTabId)
-                var current_conversation_id = this.domIdToConversationId(current_conv_id);
-                var current_conversation = b6.getConversation(current_conversation_id);
+                let current_conversation_id = this.domIdToConversationId(current_conv_id);
+                let current_conversation = b6.getConversation(current_conversation_id);
 
 
                 if (first_conversation && first_conversation.id != current_conversation.id && current_conversation.updated > first_conversation.updated) {
                     this.conversations.splice(0,0,current_conv);
-                    this.conversations.splice(0,0,current_conv);
-
+                    this.conversations.splice(cur_conv+1,1);
                 }
             }
         }
