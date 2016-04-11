@@ -40,7 +40,6 @@ export default class Index extends React.Component{
     };
 
     loadMyConnections(){
-        console.log("going to call connections")
         $.ajax({
             url: '/connection/me',
             method: "GET",
@@ -54,10 +53,7 @@ export default class Index extends React.Component{
     }
 
     loadChat(chatWith){
-        console.log("loadChat");
-        let _this = this;
-        console.log("loadChat => ", chatWith)
-        if(chatWith != 'undefined'){
+        if(chatWith != 'undefined' && chatWith != 'new'){
             $.ajax({
                 url: '/get-profile/' + chatWith,
                 method: "GET",
@@ -65,7 +61,7 @@ export default class Index extends React.Component{
             }).done(function(data){
                 if (data.status.code == 200 && data.profile_data != null) {
                     this.setState({chatWithUserName:data.profile_data.first_name+" "+data.profile_data.last_name});
-                    this.uri = 'usr:proglobe'+chatWith;console.log(this.uri)
+                    this.uri = 'usr:proglobe'+chatWith;
                     Chat.showMessages(this.uri);
                 }
             }.bind(this));
@@ -75,11 +71,9 @@ export default class Index extends React.Component{
     }
 
     loadRoute(url){
-        let _this = this;
-        _this.setState({chatWith : url});
-        console.log("loadRoute => ",this.state.chatWith);
+        this.setState({chatWith : url});
+        this.setState({chatWithUserName : ""});
         if(url == 'new'){
-            this.setState({chatWithUserName:" "});
             this.loadMyConnections();
         }else{
             this.loadChat(url);
@@ -90,11 +84,8 @@ export default class Index extends React.Component{
     selectChange(e){
 
         if(e.target.value.length != 0 ){
-            //var url_arr = window.location.href.split('new');
-            //window.location.href = url_arr[0]+e.target.value;
             this.loadRoute(e.target.value);
         }else{
-            //status = "invalid";
             console.log("no user selected")
         }
 
@@ -108,9 +99,9 @@ export default class Index extends React.Component{
 
         let _this = this;
 
-        var msg = $("#msgText").val(); console.log("sendChat => ", this.uri)
+        var msg = $("#msgText").val();
 
-        if(typeof this.state.chatWith == 'undefined'){
+        if(typeof this.state.chatWith == 'undefined' || this.state.chatWith == 'new'){
             _this.setState({validateAlert: Alert.EMPTY_RECEIVER});
             return 0;
         } else if(msg==""){
@@ -133,7 +124,7 @@ export default class Index extends React.Component{
 
         let _this = this;
 
-        if(typeof this.state.chatWith == 'undefined'){
+        if(typeof this.state.chatWith == 'undefined' || this.state.chatWith == 'new'){
             _this.setState({validateAlert: Alert.EMPTY_RECEIVER});
             return 0;
         } else{
@@ -146,7 +137,7 @@ export default class Index extends React.Component{
 
         let _this = this;
 
-        if(typeof this.state.chatWith == 'undefined'){
+        if(typeof this.state.chatWith == 'undefined' || this.state.chatWith == 'new'){
             _this.setState({validateAlert: Alert.EMPTY_RECEIVER});
             return 0;
         } else{
