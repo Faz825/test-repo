@@ -4,12 +4,14 @@
 import React from 'react';
 import TextField from '../../components/elements/TextField';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import Texteditor from '../../components/elements/Texteditor';
 import Session from '../../middleware/Session';
 
 const data = [
     {
         "category" : "Business",
         "id" : 1,
+        "color" : "#F1C058",
         "notes": [
             {
                 "title" : "Note title",
@@ -360,6 +362,7 @@ const data = [
     {
         "category" : "Personal",
         "id" : 2,
+        "color" : "#F15858",
         "notes": [
             {
                 "title" : "Note title",
@@ -714,52 +717,77 @@ export default class Index extends React.Component {
         super(props);
         let user =  Session.getSession('prg_lg');
         this.state={
-            isShowingModal : false
+            isShowingModal : false,
+            catColor : "",
+            catNameValue : "",
+            clrChosen : ""
         }
 
-        this.newCat = {};
+        this.newCat = {
+            category : "",
+            color : ""
+        };
+        this.elementChangeHandler = this.elementChangeHandler.bind(this);
+        this.addNote = this.addNote.bind(this);
+        this.colorPicker = this.colorPicker.bind(this);
     }
 
     handleClick() {
-        this.setState({isShowingModal: true})
+        this.setState({isShowingModal: true});
     }
 
     handleClose() {
-        this.setState({isShowingModal: false})
+        this.setState({isShowingModal: false});
     }
 
     elementChangeHandler(key,data,status){
-        console.log(key,data,status);
-
-        this.newCat.category = key;
+        this.setState({catName : data});
     }
 
     addNote(){
-        
+        this.newCat.category = this.state.catNameValue;
+        this.newCat.color = this.state.catColor;
+        this.setState({isShowingModal: false});
+    }
+
+    colorPicker(e){
+        let colorName = e.target.getAttribute('data-name');
+        this.setState({catColor : e.target.id, clrChosen : colorName});
+    }
+
+    handleChange(event) {
+        this.setState({catNameValue: event.target.value});
+    }
+
+    isActive(value){
+        return 'color '+((value===this.state.clrChosen) ? value+' active': value);
     }
 
     getPopup(){
+        let clrActive = this.state.clrChosen;
         return(
             <div onClick={this.handleClick}>
                 {this.state.isShowingModal &&
                     <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
                         <ModalDialog onClose={this.handleClose.bind(this)} width="50%" style={{marginTop : "-100px"}}>
                             <h3>Create a new note category.</h3>
-                            <TextField  name="NoteCategoryName"
-                                        size="12"
-                                        value={this.newCat.category}
-                                        label="Note category"
-                                        placeholder=""
-                                        classes="pgs-sign-inputs"
-                                        onInputChange={this.elementChangeHandler}
-                                        required={false}/>
+                            <div className="col-xs-12">
+                                <p>Category Name</p>
+                                <input
+                                    type="text"
+                                    value={this.state.catNameValue}
+                                    name="NoteCategoryName"
+                                    onChange={this.handleChange.bind(this)}
+                                    className="pgs-sign-inputs"
+                                  />
+                            </div>
                             <div className="color-picker">
-                                <span className="color tone-one"></span>
-                                <span className="color tone-two"></span>
-                                <span className="color tone-three"></span>
-                                <span className="color tone-four"></span>
-                                <span className="color tone-five"></span>
-                                <span className="color tone-six"></span>
+                                <span className={this.isActive('tone-one')} id="#5EBDAA" data-name="tone-one" onClick={this.colorPicker.bind(this)}></span>
+                                <span className={this.isActive('tone-two')} id="#F1C058" data-name="tone-two" onClick={this.colorPicker.bind(this)}></span>
+                                <span className={this.isActive('tone-three')} id="#F15858" data-name="tone-three" onClick={this.colorPicker.bind(this)}></span>
+                                <span className={this.isActive('tone-four')} id="#202024" data-name="tone-four" onClick={this.colorPicker.bind(this)}></span>
+                                <span className={this.isActive('tone-five')} id="#8758F1" data-name="tone-five" onClick={this.colorPicker.bind(this)}></span>
+                                <span className={this.isActive('tone-six')} id="#8F7C68" data-name="tone-six" onClick={this.colorPicker.bind(this)}></span>
                             </div>
                             <p className="add-note-cat btn" onClick={this.addNote.bind(this)}>Add note category</p>
                         </ModalDialog>
@@ -788,7 +816,7 @@ export default class Index extends React.Component {
                     <div className="col-xs-10 col-xs-offset-1">
                         {
                             data.map(function(noteCat,key){
-                                return <NoteCategory noteCats={noteCat} key={key} />
+                                return <NoteCategory noteCats={noteCat} key={key} catColor={noteCat.color} />
                             })
                         }
                     </div>
@@ -807,11 +835,10 @@ export class NoteCategory extends React.Component{
 
     render() {
         let catData = this.props.noteCats;
-
-        console.log(catData);
+        let catClr = this.props.catColor;
         return (
             <div className="row row-clr pg-notes-page-content-item pg-box-shadow">
-                <div className="col-xs-2 note-cat-thumb">
+                <div className="col-xs-2 note-cat-thumb" style={{backgroundColor : catClr}}>
                     <div className="cat-icon-holder">
                         <span className="cat-icon"></span>
                         <h3 className="cat-title">{catData.category}</h3>
