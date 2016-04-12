@@ -1699,6 +1699,9 @@ textarea{
 	cursor: pointer;
 	padding: 0;
 }
+.pg-notes-page-content-item.pg-box-shadow{
+	cursor: default;
+}
 .pg-news-page-content-item.pg-box-shadow .pg-news-page-content-item-right-thumbs{
 	border: 2px solid transparent;
 	border-left: none;
@@ -1828,6 +1831,7 @@ textarea{
     border-radius: 5px;
 	background: #fff;
 	border: 1px solid #e3e7ea;
+	cursor: pointer;
 }
 .pg-notes-item-main-row .note .time-wrapper{
 	padding: 5px 12px;
@@ -2835,12 +2839,27 @@ textarea{
 }
 
 /* Text editor */
+#middle-content-wrapper{
+	min-width: 500px;
+}
 .RichEditor-root {
   background: #fff;
   border: 1px solid #ddd;
   font-family: 'Georgia', serif;
   font-size: 14px;
   padding: 15px;
+}
+
+.note-title-holder{
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+.note-title-holder .edit-note-header{
+	font: 16px 'montserratlight', sans-serif;
+    color: #2d5164;
+    margin: 0 0 5px;
+    text-transform: uppercase;
 }
 
 .RichEditor-editor {
@@ -2896,4 +2915,21 @@ textarea{
 
 .RichEditor-activeButton {
   color: #5890ff;
+}
+
+.submit-note-btn{
+	font: 11px 'montserratsemi_bold', sans-serif;
+    color: #fff;
+    width: auto;
+    text-align: center;
+    background-color: #61b3de;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    padding: 4px 10px;
+    margin-top: 20px;
+    display: block;
+    text-decoration: none;
+    text-transform: uppercase;
+    float: right;
 }

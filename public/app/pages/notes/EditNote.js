@@ -14,7 +14,9 @@ export default class EditNote extends React.Component {
 
     render() {
         return (
-            <Texteditor />
+            <div id="pg-newsfeed-page" className="pg-page">
+                <Texteditor />
+            </div>
         );
     }
 }

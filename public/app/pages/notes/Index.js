@@ -2,9 +2,7 @@
  * This is notes index class that handle all
  */
 import React from 'react';
-import TextField from '../../components/elements/TextField';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import Texteditor from '../../components/elements/Texteditor';
 import Session from '../../middleware/Session';
 
 const data = [
@@ -866,7 +864,7 @@ export const NoteThumb = ({catData}) => {
             {
                 _notes.map(function(note,key){
                     return (
-                        <div className="note-holder" id={note.id}>
+                        <div className="note-holder" id={note.id} key={key}>
                             <div className="row-clear note">
                                 <div className="time-wrapper">
                                     <p className="date-created">{note.createdDate}</p>
