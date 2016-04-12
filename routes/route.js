@@ -12,7 +12,6 @@ require('../model/ConnectionModel');
 require('../model/FavouriteNewsCategory');
 require('../model/UploadModel');
 require('../model/SkillModel');
-
 require('../model/PostModel');
 require('../model/NewsModel');
 require('../model/SavedArticleModel');
@@ -22,6 +21,9 @@ require('../model/CommentModel');
 require('../model/LifeEventModel');
 require('../model/LifeEventCategoryModel');
 require('../model/LikeModel');
+require('../model/NotesModel');
+require('../model/NoteBookModel');
+
 /** Load  Controllers
  */
 var DefaultController   = require('../controller/DefaultController'),
@@ -35,7 +37,8 @@ var DefaultController   = require('../controller/DefaultController'),
     UploadController    = require('../controller/UploadController'),
     LifeEventController = require('../controller/LifeEventController'),
     ConnectionController = require('../controller/ConnectionController'),
-    LikeController      =  require('../controller/LikeController');
+    LikeController      =  require('../controller/LikeController'),
+    NotesController     = require('../controller/NotesController');
 
 
 
@@ -85,6 +88,10 @@ router.get('/chat/:chatWith', DefaultController.index);
 
 router.get('/life-event/categories', LifeEventController.getLifeEventCategories);
 router.get('/life-events', LifeEventController.getLifeEvents);
+
+router.get('/chat/:chatWith', DefaultController.index);
+router.get('/notes/new-note/:notebook_id', DefaultController.index);
+router.get('/notes/edit-note/:note_id', DefaultController.index);
 
 
 
@@ -255,6 +262,13 @@ router.post('/news/articles/save', NewsController.saveMyNews);
 router.get('/news/saved/articles', NewsController.getSavedArticles);
 
 router.post('/like/composer', LikeController.doLike);
+
+router.post('/notes/add-notebook', NotesController.addNoteBook);
+router.post('/notes/add-note', NotesController.addNote);
+router.get('/notes/get-notes', NotesController.getNotes);
+router.get('/notes/get-note/:note_id', NotesController.getNote);
+router.post('/notes/update-note', NotesController.updateNote);
+router.post('/notes/delete-note', NotesController.deleteNote);
 
 
 module.exports = router;

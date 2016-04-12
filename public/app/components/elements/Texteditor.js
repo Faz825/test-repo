@@ -3,12 +3,39 @@
 */
 import React from 'react';
 import Immutable from 'immutable';
-import {Editor, EditorState, RichUtils} from 'draft-js';
+import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, ContentState, Entity} from 'draft-js';
+import {Alert} from '../../config/Alert';
+import Session from '../../middleware/Session';
+
+let errorStyles = {
+    color         : "#ed0909",
+    fontSize      : "0.8em",
+    textTransform : "capitalize",
+    margin        : '0 0 15px',
+    display       : "inline-block"
+}
 
 export default class Texteditor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {editorState: EditorState.createEmpty()};
+        this.note = this.props.content;console.log(this.note)
+        this.notebook_id = this.props.notebook_id;console.log(this.notebook_id)
+        this.note_id = this.props.note_id;console.log(this.note_id)
+        var editorState = null;
+        if(typeof this.note != 'undefined' && this.note != null){
+            const blocks = convertFromRaw(this.note);
+            editorState = EditorState.createWithContent(
+                ContentState.createFromBlockArray(blocks)
+            )
+        } else{
+            editorState = EditorState.createEmpty();
+        }
+
+        this.state = {
+            editorState:editorState,
+            noteTitle : "",
+            validateAlert : ""
+        };
 
         this.focus = () => this.refs.editor.focus();
         this.onChange = (editorState) => this.setState({editorState});
@@ -16,6 +43,12 @@ export default class Texteditor extends React.Component {
         this.handleKeyCommand = (command) => this._handleKeyCommand(command);
         this.toggleBlockType = (type) => this._toggleBlockType(type);
         this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
+        this.handleChange = this.handleChange.bind(this);
+
+        this.logState = () => {
+          const content = this.state.editorState.getCurrentContent();
+          this.saveNote(convertToRaw(content));
+        };
     }
 
     _handleKeyCommand(command) {
@@ -46,6 +79,69 @@ export default class Texteditor extends React.Component {
         );
     }
 
+    handleChange(e){
+        this.setState({noteTitle : e.target.value});
+    }
+
+    saveNote(data){
+        console.log(data);
+        console.log(this.state.noteTitle);
+
+        if(this.state.noteTitle == ""){
+            this.setState({validateAlert:Alert.EMPTY_NOTE_TITLE})
+        } else{
+            if(typeof this.notebook_id != 'undefined' && this.notebook_id != null){
+                let _note = {
+                    noteName:this.state.noteTitle,
+                    noteContent:{data},
+                    notebookId:this.notebook_id
+                }
+
+                console.log(_note)
+
+                let loggedUser = Session.getSession('prg_lg');
+
+                $.ajax({
+                    url: '/notes/add-note',
+                    method: "POST",
+                    dataType: "JSON",
+                    data:_note,
+                    headers: { 'prg-auth-header':loggedUser.token },
+                }).done( function (data, text) {
+                    if(data.code == 200){
+                        location.href = '/notes';
+                    }
+                }.bind(this));
+            }
+
+            if(typeof this.note_id != 'undefined' && this.note_id != null){
+                let _note = {
+                    noteName:this.state.noteTitle,
+                    noteContent:data,
+                    notebookId:this.notebook_id
+                }
+
+                let loggedUser = Session.getSession('prg_lg');
+
+                $.ajax({
+                    url: '/notes/add-note',
+                    method: "POST",
+                    dataType: "JSON",
+                    data:_note,
+                    headers: { 'prg-auth-header':loggedUser.token },
+                }).done( function (data, text) {
+                    if(data.code == 200){
+                        location.href = '/notes';
+                    }
+                }.bind(this));
+            }
+
+
+        }
+
+
+    }
+
     render() {
     const {editorState} = this.state;
 
@@ -59,13 +155,22 @@ export default class Texteditor extends React.Component {
         }
     }
 
-    console.log(this.state.editorState);
-
     return (
-        <div id="pg-newsfeed-page" className="pg-page">
-            <div className="row row-clr">
+        <div className="row row-clr">
+            <div className="note-title-holder col-md-10 col-md-offset-1">
+                <p className="edit-note-header">Note title</p>
+                <input
+                    type="text"
+                    value={this.state.noteTitle}
+                    name="NoteCategoryName"
+                    onChange={this.handleChange.bind(this)}
+                    className="pgs-sign-inputs"
+                  />
+                {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
+            </div>
+            <div className="note-holder">
                 <div className="container-fluid">
-                    <div className="col-xs-10 col-xs-offset-1" id="middle-content-wrapper">
+                    <div className="col-md-10 col-md-offset-1" id="middle-content-wrapper">
                         <div className="RichEditor-root">
                             <BlockStyleControls
                             editorState={editorState}
@@ -85,9 +190,16 @@ export default class Texteditor extends React.Component {
                                 placeholder="Write your note..."
                                 ref="editor"
                                 spellCheck={true}
+                                textAlignment = "center"
                                 />
                             </div>
                         </div>
+                        <input
+                            onClick={this.logState}
+                            type="button"
+                            value="Save Note"
+                            className="submit-note-btn"
+                            />
                     </div>
                 </div>
             </div>
