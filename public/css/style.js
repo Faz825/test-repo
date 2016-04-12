@@ -2135,6 +2135,9 @@ export default StyleSheet.create({
         "marginRight": 15,
         "cursor": "pointer"
     },
+    "color-picker coloractive": {
+        "boxShadow": "0px 0px 20px -1px #000"
+    },
     "color-picker tone-one": {
         "background": "#5EBDAA"
     },
