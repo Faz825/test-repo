@@ -33,6 +33,8 @@ import Session  from './Session.js';
          var incomingCallUser = [];
          var outGoingCallUser = [];
          var unreadConversationCount = [];
+         var firstChat = false;
+         var callTimer = null;
 
          // A conversation has changed
          b6.on('conversation', function(c, op) {
@@ -91,6 +93,7 @@ import Session  from './Session.js';
          // c - Dialog - call controller. null for a local video feed
          // op - operation. 1 - add, 0 - update, -1 - remove
          b6.on('video', function(v, c, op) {
+             console.log("b6.on('video'")
              var vc = $('#videoContainer');
              if (op < 0) {
                  vc[0].removeChild(v);
@@ -144,8 +147,13 @@ import Session  from './Session.js';
              });
          };
 
+         this.loadFirstMessage = function(){
+             firstChat = true;
+         }
+
          // Update Conversation View
          function onConversationChange(c, op) {
+             //console.log("onConversationChange")
              var chatList = $('#chatList');
              var tabId = tabDomIdForConversation(c);
              var msgsId = msgsDomIdForConversation(c);
@@ -154,9 +162,6 @@ import Session  from './Session.js';
              var msgsDiv = $(msgsId);
              var notificationWrapperDiv = $("#unread_chat_list");
              var notificationDiv = $(notificationId);
-
-             var chatListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
-             var notificationListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
 
              // Conversation deleted
              if (op < 0) {
@@ -169,6 +174,11 @@ import Session  from './Session.js';
              var proglobe_title = b6.getNameFromIdentity(c.id);
              var proglobe_title_array = proglobe_title.split('proglobe');
              var title = proglobe_title_array[1];
+
+
+             var chatListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
+             var notificationListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
+
 
              // New conversation
              if (op > 0) {
@@ -287,32 +297,34 @@ import Session  from './Session.js';
 
                                  if(currentChatUri != null){
 
-                                     var conv = b6.getConversation(currentChatUri);
+                                     showTheConversation(currentChatUri);
 
-                                     if(conv != null){
-
-                                         // Mark all messages as read
-                                         if (b6.markConversationAsRead(conv) > 0) {
-                                             // Some messages have been marked as read
-                                             // update chat list
-                                             if(unreadConversationCount.indexOf(c.id) != -1){
-                                                 unreadCount -= 1;
-                                                 unreadConversationCount.splice(c.id);
-                                             }
-                                         }
-
-
-                                         var msgsDiv = $( msgsDomIdForConversation(conv) );
-                                         // Show only message container for this conversation
-                                         // Hide all the other message containers
-                                         msgsDiv.show().siblings().hide();
-                                         // Scroll to the bottom of the conversation
-                                         //scrollToLastMessage();
-
-                                         // Request focus for the compose message text field
-                                         $('#msgText').focus();
-
-                                     }
+                                     //var conv = b6.getConversation(currentChatUri);
+                                     //
+                                     //if(conv != null){
+                                     //
+                                     //    // Mark all messages as read
+                                     //    if (b6.markConversationAsRead(conv) > 0) {
+                                     //        // Some messages have been marked as read
+                                     //        // update chat list
+                                     //        if(unreadConversationCount.indexOf(c.id) != -1){
+                                     //            unreadCount -= 1;
+                                     //            unreadConversationCount.splice(c.id);
+                                     //        }
+                                     //    }
+                                     //
+                                     //
+                                     //    var msgsDiv = $( msgsDomIdForConversation(conv) );
+                                     //    // Show only message container for this conversation
+                                     //    // Hide all the other message containers
+                                     //    msgsDiv.show().siblings().hide();
+                                     //    // Scroll to the bottom of the conversation
+                                     //    //scrollToLastMessage();
+                                     //
+                                     //    // Request focus for the compose message text field
+                                     //    $('#msgText').focus();
+                                     //
+                                     //}
 
                                  }
 
@@ -423,8 +435,41 @@ import Session  from './Session.js';
              return '#tab__' + c.domId();
          }
 
+         function showTheConversation(uri){
+
+             var conv = b6.getConversation(uri);
+
+             if(conv != null){
+
+                 // Mark all messages as read
+                 if (b6.markConversationAsRead(conv) > 0) {
+                     // Some messages have been marked as read
+                     // update chat list
+                     if(unreadConversationCount.indexOf(c.id) != -1){
+                         unreadCount -= 1;
+                         unreadConversationCount.splice(c.id);
+                     }
+                 }
+
+
+                 var msgsDiv = $( msgsDomIdForConversation(conv) );
+                 // Show only message container for this conversation
+                 // Hide all the other message containers
+                 msgsDiv.show().siblings().hide();
+                 // Scroll to the bottom of the conversation
+                 //scrollToLastMessage();
+
+                 // Request focus for the compose message text field
+                 $('#msgText').focus();
+
+             }
+
+         }
+
 
          this.showMessages = function(uri) {
+
+             //console.log("this.showMessages => ",uri)
 
              var proglobe_title_array = uri.split('proglobe');
 
@@ -433,6 +478,7 @@ import Session  from './Session.js';
                  // Current conversation identity
                  currentChatUri = uri;
                  currentChatUserName = 'proglobe'+proglobe_title_array[1];
+                 showTheConversation(currentChatUri);
 
              }
          };
@@ -489,6 +535,7 @@ import Session  from './Session.js';
 
          // Update Message View
          var onMessageChange = function (m, op) {
+             //console.log("onMessageChange");
 
              var divId = domIdForMessage(m);
              var div = $(divId);
@@ -617,8 +664,6 @@ import Session  from './Session.js';
 
          this.startOutgoingCall = function(to, video){
 
-             //console.log("this.startOutgoingCall")//detailPane
-
              // Outgoing call params
              var opts = {
                  audio: audioCall,
@@ -634,16 +679,12 @@ import Session  from './Session.js';
 
          // Attach call state events to a RtcDialog
          function attachCallEvents(c) {
-             //console.log("attachCallEvents");
              // Call progress
              c.on('progress', function() {
-                 //console.log("PROGRESS")
                  showInCallName();
-                 //console.log('CALL progress', c);
              });
              // Number of video feeds/elements changed
              c.on('videos', function () {
-                 //console.log("VIDEOS")
                  var container = $('#videoContainer');
                  var elems = container.children();
                  $('#incomingCallAlert').modal('hide');
@@ -651,26 +692,26 @@ import Session  from './Session.js';
              });
              // Call answered
              c.on('answer', function() {
-                 //console.log("ANSWER")
                  $('#incomingCallAlert').modal('hide');
-                 //console.log('CALL answered', c);
+                 $('#onCall').text("on call")
+                 $('#clock').show();
+                 callTimer = window.setInterval(function(){
+                     updateTime();
+                 },1000);
+
              });
              // Error during the call
              c.on('error', function() {
-                 //console.log("ERROR")
                  $('#incomingCallAlert').modal('hide');
                  $('#detailPane').addClass('hidden');
-                 //console.log('CALL error', c);
              });
              // Call ended
              c.on('end', function() {
-                 //console.log("END")
+                 console.log("END");
                  showInCallName();
-                 //console.log('CALL ended', c);
                  // No more dialogs?
                  if (b6.dialogs.length === 0) {
                      // Hide InCall UI
-                     //$('#detailPane').removeClass('hidden');
                      $('#detailPane').addClass('hidden');
                  }
                  // Hide Incoming Call dialog
@@ -682,31 +723,27 @@ import Session  from './Session.js';
                  $("#videoContainer").html("");
                  $('#incomingCallAlert').modal('hide');
                  $('#detailPane').addClass('hidden');
+                 $('#clock').hide();
+                 window.clearInterval(callTimer);
+                 $("#hour").html("00");
+                 $("#min").html("00");
+                 $("#sec").html("00");
              });
          }
 
          function updateInCallUI(c, opts) {
-
-             //console.log("updateInCallUI")
              showInCallName();
-
-             //$('#detailPane').addClass('hidden');
              $('#detailPane').removeClass('hidden');
-             $('#onCall').text("on call")
-
              // Do not show video feeds area for audio-only call
              var div = $('#videoContainer').toggle(c.options.video);
-
              // Start/update the call
              c.connect(opts);
          }
 
          // Show all the call participants
          function showInCallName() {
-             //console.log("showInCallName")
              var s = '';
              for(var i in b6.dialogs) {
-                 //console.log(i, b6.dialogs[i])
                  var d = b6.dialogs[i];
                  if (i > 0) {
                      s += ', ';
@@ -730,56 +767,77 @@ import Session  from './Session.js';
                              $('#inCallOther').text(s);
                              $('#onCall').text("ringing")
                          }
-                     }});
-
+                     }
+                 });
              }
 
          }
 
          // 'Answer Incoming Call' click
          this.answerCall = function(opts){
-             //console.log("answer clicked")
-             //console.log(opts)
-             //var e = $('#incomingCall').hide();
-             $('#onCall').text("ringing")
              var d = $('#incomingCall').data();
-
              // Call controller
              if (d && d.dialog) {
                  var c = d.dialog;
                  // Accept the call, send local audio only
                  updateInCallUI(c, opts);
-                 $('#incomingCall').data({'dialog': null}).hide();
-                 $('#incomingCallAlert').modal('hide');
              }
          };
 
          // 'Reject Incoming Call' click
          this.rejectCall = function(){
-             //console.log("reject clicked")
-             var e = $('#incomingCall').hide();
-             var d = e.data();
+             var d = $('#incomingCall').data();
              // Call controller
              if (d && d.dialog) {
                  // Reject call
                  d.dialog.hangup();
-                 e.data({'dialog': null});
-                 $('#incomingCallAlert').modal('hide');
              }
          };
 
          // 'Call Hangup' click
          this.hangupCall = function(){
-             //console.log("Hangup clicked")
-             //$('#detailPane').removeClass('hidden');
-             $('#detailPane').addClass('hidden');
              // Hangup all active calls
              var x = b6.dialogs.slice();
              for (var i in x) {
-                 //console.log('multi-hangup: ', x[i]);
                  x[i].hangup();
              }
          };
+
+         function updateTime() {
+
+             var hours = parseInt($('#hour').html());
+             var minutes = parseInt($('#min').html());
+             var seconds = parseInt($('#sec').html());
+
+             var currentTotalTime = (hours*60*60) + (minutes*60) + seconds;
+
+             currentTotalTime = currentTotalTime + 1;
+
+             var newHours = 0;
+             var newMinutes = 0;
+             var newSeconds = 0;
+
+             if (currentTotalTime > 3599) {
+                 var newHours = (currentTotalTime - (currentTotalTime % (60 * 60))) / (60 * 60);
+
+                 var newMins1 = currentTotalTime - (currentTotalTime % (60 * 60));
+
+                 var newMinutes = (newMins1 - (newMins1 % 60)) / 60;
+
+                 var newSeconds = (currentTotalTime % 60);
+
+             } else if (currentTotalTime > 59) {
+                 var newMinutes = (currentTotalTime - (currentTotalTime % 60)) / 60;
+                 var newSeconds = (currentTotalTime % 60);
+             } else {
+                 var newSeconds = currentTotalTime;
+             }
+
+             $('#hour').html(String(newHours).length==1?'0'+String(newHours):newHours);
+             $('#min').html(String(newMinutes).length==1?'0'+String(newMinutes):newMinutes);
+             $('#sec').html(String(newSeconds).length==1?'0'+String(newSeconds):newSeconds);
+
+         }
 
      }
 

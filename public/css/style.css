@@ -198,11 +198,14 @@ a:focus{
     display: none;
 }
 
-.pg-header-options a:hover .pg-top-defalt-ico {
-    display: none;
+.chat-dropdown-holder.chat-notification-wrapper-opened .pg-top-defalt-ico,
+.dropDown-holder:hover .pg-top-defalt-ico{
+	display: none;
 }
-.pg-header-options a:hover .pg-top-hover-ico {
-    display: block;
+
+.chat-dropdown-holder.chat-notification-wrapper-opened .pg-top-hover-ico,
+.dropDown-holder:hover .pg-top-hover-ico{
+	display: block;
 }
 
 .pg-drop-down {
@@ -2260,27 +2263,25 @@ textarea{
 	border-right: 1px solid #dee6eb;
 }
 
-.conv-holder .msg-holder, .chat-notification-header .msg-holder{
-	padding: 12px;
+.conv-holder .msg-holder{
+	padding: 0;
 	overflow: hidden;
 	position: relative;
 	cursor: pointer;
 	border-bottom: 1px solid #dee6eb;
 }
 
-.conv-holder .msg-holder a, .chat-notification-header .msg-holder a{
+.conv-holder .msg-holder a{
 	display: block;
-}
-.conv-holder .msg-holder:hover, .chat-notification-header .msg-holder:hover{
-	background: #e2f4ff;
-	border-left: 3px solid #61b3de;
-	padding-left: 9px;
+	overflow: hidden;
+	padding: 12px;
 }
 
-.conv-holder .msg-holder-selected, .chat-notification-header .msg-holder-selected{
+.conv-holder .msg-holder:hover a,
+.conv-holder .msg-holder-selected a{
+	padding-left: 9px;
 	background: #e2f4ff;
 	border-left: 3px solid #61b3de;
-	padding-left: 9px;
 }
 
 .msg-holder .chat-pro-img{
@@ -2504,33 +2505,36 @@ textarea{
 
 .chat-notification-wrapper{
 	position: absolute;
-	background: #fff;
 	width: 225px;
 	border-radius: 3px;
 	right: -100px;
 	top: 55px;
 	display: none;
 	z-index: 100;
+	cursor: default;
+}
+
+.chat-notification-wrapper-opened{
+
 }
 
 .chat-notification-header .msg-holder{
-	padding: 12px;
+	padding: 0;
 	overflow: hidden;
 	position: relative;
 	cursor: pointer;
 	border-bottom: 1px solid #dee6eb;
+	background: #fff;
 }
 
 .chat-notification-header .msg-holder a{
 	display: block;
-}
-.chat-notification-header .msg-holder:hover{
-	background: #e2f4ff;
-	border-left: 3px solid #61b3de;
-	padding-left: 9px;
+	padding: 12px;
+	overflow: hidden;
 }
 
-.chat-notification-header .msg-holder-selected{
+.chat-notification-header .msg-holder a:hover,
+.chat-notification-header .msg-holder-selected a{
 	background: #e2f4ff;
 	border-left: 3px solid #61b3de;
 	padding-left: 9px;
@@ -2614,6 +2618,11 @@ textarea{
 	text-decoration: none;
 }
 
+#clock{
+	color:#c7bfb2;
+	display: none;
+}
+
 /* Large Screen */
 @media (min-width: 1200px) {
 
@@ -2679,7 +2688,6 @@ textarea{
 	.pg-news-inner-box-content-txt{
 		font-size: 0.95em;
 	}
-
 }
 
 /* Text editor */
@@ -2745,3 +2753,4 @@ textarea{
 .RichEditor-activeButton {
   color: #5890ff;
 }
+
