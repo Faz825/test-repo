@@ -2277,7 +2277,7 @@ export default StyleSheet.create({
         "boxShadow": "0px 1px 5px -1px #000",
         "display": "flex",
         "marginBottom": 25,
-        "cursor": "pointer",
+        "cursor": "default",
         "paddingTop": 0,
         "paddingRight": 0,
         "paddingBottom": 0,
@@ -2474,7 +2474,8 @@ export default StyleSheet.create({
         "position": "relative",
         "borderRadius": 5,
         "background": "#fff",
-        "border": "1px solid #e3e7ea"
+        "border": "1px solid #e3e7ea",
+        "cursor": "pointer"
     },
     "pg-notes-item-main-row note time-wrapper": {
         "paddingTop": 5,
@@ -3452,6 +3453,9 @@ export default StyleSheet.create({
         "paddingTop": 2,
         "textDecoration": "none"
     },
+    "middle-content-wrapper": {
+        "minWidth": 500
+    },
     "RichEditor-root": {
         "background": "#fff",
         "border": "1px solid #ddd",
@@ -3461,6 +3465,19 @@ export default StyleSheet.create({
         "paddingRight": 15,
         "paddingBottom": 15,
         "paddingLeft": 15
+    },
+    "note-title-holder": {
+        "marginTop": 20,
+        "marginBottom": 15
+    },
+    "note-title-holder edit-note-header": {
+        "font": "16px 'montserratlight', sans-serif",
+        "color": "#2d5164",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 5,
+        "marginLeft": 0,
+        "textTransform": "uppercase"
     },
     "RichEditor-editor": {
         "borderTop": "1px solid #ddd",
@@ -3532,5 +3549,24 @@ export default StyleSheet.create({
     },
     "RichEditor-activeButton": {
         "color": "#5890ff"
+    },
+    "submit-note-btn": {
+        "font": "11px 'montserratsemi_bold', sans-serif",
+        "color": "#fff",
+        "width": "auto",
+        "textAlign": "center",
+        "backgroundColor": "#61b3de",
+        "WebkitBorderRadius": 5,
+        "MozBorderRadius": 5,
+        "borderRadius": 5,
+        "paddingTop": 4,
+        "paddingRight": 10,
+        "paddingBottom": 4,
+        "paddingLeft": 10,
+        "marginTop": 20,
+        "display": "block",
+        "textDecoration": "none",
+        "textTransform": "uppercase",
+        "float": "right"
     }
 });
