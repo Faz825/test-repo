@@ -23,6 +23,7 @@ const Alert = {
 	"EMPTY_RECEIVER"			 : "Please select user to send message",
 	"EMPTY_NOTEBOOK_NAME"     : "Please enter notebook name",
 	"INVALID_COLOR"     : "Please pick a color for this notebook",
+	"EMPTY_NOTE_TITLE"     : "Please enter note title",
 }
 
 

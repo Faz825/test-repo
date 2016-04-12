@@ -41,6 +41,9 @@ var NotesController ={
         //var userId = CurrentSession.id;
         //var notebookId = req.body.notebookId;
 
+        console.log("addNote => ")
+        console.log(req.body)
+
         var _note = {
             name:req.body.noteName,
             content:req.body.noteContent,
@@ -100,6 +103,7 @@ var NotesController ={
                             if(_index != -1){
                                 //console.log(_notes[_index]);
                                 var _note = {
+                                    note_id:notes[b]._id,
                                     note_name:notes[b].name,
                                     note_content:notes[b].content,
                                     updated_at:DateTime.noteCreatedDate(notes[b].updated_at)
@@ -132,6 +136,27 @@ var NotesController ={
                 notes:resultSet
             }
             res.status(200).json(outPut);
+        });
+
+    },
+
+    getNote:function(req,res){
+
+        var Note = require('mongoose').model('Notes');
+
+        var note_id = req.body.note_id;
+        var criteria = {_id:Util.toObjectId(note_id)};
+
+        Note.getNote(criteria, function(resultSet){
+            if(resultSet.status == 200){
+                var outPut ={
+                    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                    note:resultSet.note
+                }
+                res.status(200).json(outPut);
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
         });
 
     },

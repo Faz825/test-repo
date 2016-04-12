@@ -145,6 +145,21 @@ export default class Index extends React.Component {
         )
     }
 
+    deleteNote(note_id){
+        console.log("calling root")
+        $.ajax({
+            url: '/notes/delete-note',
+            method: "POST",
+            dataType: "JSON",
+            data:{noteId:note_id},
+            headers: { 'prg-auth-header':loggedUser.token },
+        }).done( function (data, text) {
+            if(data.code == 200){
+                this.loadNotes();
+            }
+        }.bind(this));
+    }
+
     render() {
         return (
             <div className="notesCatHolder container-fluid">
@@ -164,7 +179,6 @@ export default class Index extends React.Component {
                     <div className="col-xs-10 col-xs-offset-1">
                         {
                             this.state.notes.map(function(noteCat,key){
-                                console.log(noteCat)
                                 return <NoteCategory noteCats={noteCat} key={key} catColor={noteCat.notebook_color} />
                             })
                         }
@@ -194,43 +208,66 @@ export class NoteCategory extends React.Component{
                     </div>
                 </div>
                 <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
-                    <NoteThumb catData={catData.notes} />
+                    <NoteThumb catData={catData.notes} catID={catData.notebook_id}/>
                 </div>
             </div>
         );
     }
 }
 
-export const NoteThumb = ({catData}) => {
-    let _this = this;
-    let _notes = (typeof  catData != 'undefined')?catData:[];
+export class NoteThumb extends React.Component{
 
-    return(
-        <div className="pg-notes-item-main-row">
-            <div className="note-holder">
-                <div className="row-clear add-new-note note">
-                    <p className="add-note-text">Add new</p>
+    constructor(props) {
+        super(props);
+        this.state={}
+    }
+
+    addNewNote(notebook_id){
+        location.href = "/notes/new-note/"+notebook_id;
+    }
+
+    editNote(note_id){
+        location.href = "/notes/edit-note/"+note_id;
+    }
+
+    render(){
+
+        let _this = this;
+        let _notes = this.props.catData;
+        let _notebook = this.props.catID;
+
+        return(
+            <div className="pg-notes-item-main-row">
+                <div className="note-holder">
+                    <div className="row-clear add-new-note note">
+                        <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
+                    </div>
                 </div>
-            </div>
-            {
-                _notes.map(function(note,key){
-                    return (
-                        <div className="note-holder" id={note.id} key={key}>
+                {
+                    _notes.map(function(note,key){
+                        //console.log(note)
+                        return (
+                            <div className="note-holder" id={note.note_id} key={key}>
+                                <div className="row-clear note">
+                                    <a href="javascript:void(0)" onClick={()=>_this.editNote(note.note_id)}>
+                                        <div className="time-wrapper">
+                                            <p className="date-created">{note.updated_at}</p>
+                                            <p className="time-created"></p>
+                                        </div>
+                                        <div className="note-title-holder">
+                                            <p className="note-title">{note.note_name}</p>
+                                        </div>
+                                    </a>
+                                        <span className="note-delete-btn" onClick={()=>_this.deleteNote(note.note_id)}></span>
 
-                            <div className="row-clear note">
-                                <div className="time-wrapper">
-                                    <p className="date-created">{note.updated_at}</p>
-                                    <p className="time-created"></p>
                                 </div>
-                                <div className="note-title-holder">
-                                    <p className="note-title">{note.note_name}</p>
-                                </div>
-                                <span className="note-delete-btn"></span>
                             </div>
-                        </div>
-                    )
-                })
-            }
-        </div>
-    )
+                        )
+                    })
+                }
+            </div>
+        )
+
+    }
+
 };

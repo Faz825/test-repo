@@ -14,10 +14,7 @@ var NoteSchema = new Schema({
         type:String,
         trim:true
     },
-    content:{
-        type:String,
-        trim:true
-    },
+    content:[],
     user_id:{
         type: Schema.ObjectId,
         ref: 'User',
@@ -117,6 +114,30 @@ NoteSchema.statics.getNotes = function(criteria,callBack){
             callBack({
                 status:200,
                 notes:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            callBack({status:400,error:err});
+        }
+    })
+
+};
+
+
+/**
+ * Get Notes
+ */
+NoteSchema.statics.getNote = function(criteria,callBack){
+
+
+    var _this = this;
+
+
+    _this.findOne(criteria).exec(function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200,
+                note:resultSet
             });
         }else{
             console.log("Server Error --------")

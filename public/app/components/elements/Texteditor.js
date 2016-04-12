@@ -4,144 +4,37 @@
 import React from 'react';
 import Immutable from 'immutable';
 import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, ContentState, Entity} from 'draft-js';
+import {Alert} from '../../config/Alert';
+import Session from '../../middleware/Session';
 
-const rawContent = {
-  "entityMap": {},
-  "blocks": [
-    {
-      "key": "p40s",
-      "text": "Heading",
-      "type": "header-one",
-      "depth": 0,
-      "inlineStyleRanges": [
-        {
-          "offset": 0,
-          "length": 7,
-          "style": "UNDERLINE"
-        },
-        {
-          "offset": 0,
-          "length": 7,
-          "style": "BOLD"
-        }
-      ],
-      "entityRanges": []
-    },
-    {
-      "key": "811o3",
-      "text": "Sub heading",
-      "type": "header-three",
-      "depth": 0,
-      "inlineStyleRanges": [
-        {
-          "offset": 0,
-          "length": 11,
-          "style": "UNDERLINE"
-        }
-      ],
-      "entityRanges": []
-    },
-    {
-      "key": "4vq83",
-      "text": "",
-      "type": "unstyled",
-      "depth": 0,
-      "inlineStyleRanges": [],
-      "entityRanges": []
-    },
-    {
-      "key": "2prok",
-      "text": "Nam tristique hendrerit nulla id interdum. Maecenas pretium pretium massa in pharetra. Pellentesque sapien enim, convallis at tincidunt sed; sodales at quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis in arcu in est consectetur porttitor ac ac purus. Etiam auctor eu quam et lacinia. Nullam bibendum mi dui. Vivamus eu placerat ipsum. Maecenas rutrum venenatis velit nec ultrices. Sed imperdiet malesuada molestie. Duis sagittis ultrices tempor. Pellentesque varius nunc sit amet dui congue, ",
-      "type": "unstyled",
-      "depth": 0,
-      "inlineStyleRanges": [],
-      "entityRanges": []
-    },
-    {
-      "key": "3qche",
-      "text": "",
-      "type": "unstyled",
-      "depth": 0,
-      "inlineStyleRanges": [],
-      "entityRanges": []
-    },
-    {
-      "key": "480pg",
-      "text": "",
-      "type": "unstyled",
-      "depth": 0,
-      "inlineStyleRanges": [],
-      "entityRanges": []
-    },
-    {
-      "key": "ea80v",
-      "text": "Praesent ac eleifend velit",
-      "type": "ordered-list-item",
-      "depth": 0,
-      "inlineStyleRanges": [],
-      "entityRanges": []
-    },
-    {
-      "key": "c4rln",
-      "text": "Pellentesque varius nunc sit amet dui congue",
-      "type": "ordered-list-item",
-      "depth": 0,
-      "inlineStyleRanges": [],
-      "entityRanges": []
-    },
-    {
-      "key": "9s285",
-      "text": "at ornare mi sagittis!",
-      "type": "ordered-list-item",
-      "depth": 0,
-      "inlineStyleRanges": [],
-      "entityRanges": []
-    },
-    {
-      "key": "4gq7a",
-      "text": "",
-      "type": "unstyled",
-      "depth": 0,
-      "inlineStyleRanges": [],
-      "entityRanges": []
-    },
-    {
-      "key": "ff1i",
-      "text": "Phasellus convallis ante dolor, a vehicula massa elementum ut. Nunc vulputate eget ipsum vitae convallis. Maecenas pretium, diam a pulvinar pellentesque, enim ex efficitur mi, nec pretium enim nunc sit amet augue. Nunc varius mi nec rhoncus cursus. Suspendisse et nibh nec purus consectetur lobortis. Interdum et malesuada fames ac ante ipsum primis in faucibus. In rhoncus metus et nisl placerat mattis. Aenean quis facilisis ante! Integer justo enim, blandit a luctus ut, laoreet et odio. Fusce sed augue ante? In massa nunc, feugiat vitae facilisis ut, luctus vitae ipsum. Donec non interdum leo. Praesent bibendum orci a congue fringilla. Maecenas non nulla eget lorem elementum suscipit. Donec cursus egestas nisi ut auctor!",
-      "type": "unstyled",
-      "depth": 0,
-      "inlineStyleRanges": [],
-      "entityRanges": []
-    },
-    {
-      "key": "bap4u",
-      "text": "",
-      "type": "unstyled",
-      "depth": 0,
-      "inlineStyleRanges": [],
-      "entityRanges": []
-    },
-    {
-      "key": "a1e4k",
-      "text": "",
-      "type": "unstyled",
-      "depth": 0,
-      "inlineStyleRanges": [],
-      "entityRanges": []
-    }
-  ]
-};
+let errorStyles = {
+    color         : "#ed0909",
+    fontSize      : "0.8em",
+    textTransform : "capitalize",
+    margin        : '0 0 15px',
+    display       : "inline-block"
+}
 
 export default class Texteditor extends React.Component {
     constructor(props) {
         super(props);
-        const blocks = convertFromRaw(rawContent);
+        this.note = this.props.content;console.log(this.note)
+        this.notebook_id = this.props.notebook_id;console.log(this.notebook_id)
+        this.note_id = this.props.note_id;console.log(this.note_id)
+        var editorState = null;
+        if(typeof this.note != 'undefined' && this.note != null){
+            const blocks = convertFromRaw(this.note);
+            editorState = EditorState.createWithContent(
+                ContentState.createFromBlockArray(blocks)
+            )
+        } else{
+            editorState = EditorState.createEmpty();
+        }
 
         this.state = {
-            editorState: EditorState.createWithContent(
-              ContentState.createFromBlockArray(blocks)
-          ),
-          noteTitle : ""
+            editorState:editorState,
+            noteTitle : "",
+            validateAlert : ""
         };
 
         this.focus = () => this.refs.editor.focus();
@@ -193,6 +86,60 @@ export default class Texteditor extends React.Component {
     saveNote(data){
         console.log(data);
         console.log(this.state.noteTitle);
+
+        if(this.state.noteTitle == ""){
+            this.setState({validateAlert:Alert.EMPTY_NOTE_TITLE})
+        } else{
+            if(typeof this.notebook_id != 'undefined' && this.notebook_id != null){
+                let _note = {
+                    noteName:this.state.noteTitle,
+                    noteContent:{data},
+                    notebookId:this.notebook_id
+                }
+
+                console.log(_note)
+
+                let loggedUser = Session.getSession('prg_lg');
+
+                $.ajax({
+                    url: '/notes/add-note',
+                    method: "POST",
+                    dataType: "JSON",
+                    data:_note,
+                    headers: { 'prg-auth-header':loggedUser.token },
+                }).done( function (data, text) {
+                    if(data.code == 200){
+                        location.href = '/notes';
+                    }
+                }.bind(this));
+            }
+
+            if(typeof this.note_id != 'undefined' && this.note_id != null){
+                let _note = {
+                    noteName:this.state.noteTitle,
+                    noteContent:data,
+                    notebookId:this.notebook_id
+                }
+
+                let loggedUser = Session.getSession('prg_lg');
+
+                $.ajax({
+                    url: '/notes/add-note',
+                    method: "POST",
+                    dataType: "JSON",
+                    data:_note,
+                    headers: { 'prg-auth-header':loggedUser.token },
+                }).done( function (data, text) {
+                    if(data.code == 200){
+                        location.href = '/notes';
+                    }
+                }.bind(this));
+            }
+
+
+        }
+
+
     }
 
     render() {
@@ -219,6 +166,7 @@ export default class Texteditor extends React.Component {
                     onChange={this.handleChange.bind(this)}
                     className="pgs-sign-inputs"
                   />
+                {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
             </div>
             <div className="note-holder">
                 <div className="container-fluid">

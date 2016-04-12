@@ -67,7 +67,8 @@ let rootRoute =(
 		 */
 
         <Route name="notes" path="/notes" component={NotesIndex}/>
-        <Route name="editnote" path="/editnote" component={EditNote}/>
+        <Route name="add-note" path="/notes/new-note/:notebook_id" component={EditNote}/>
+        <Route name="edit-note" path="/notes/edit-note/:note_id" component={EditNote}/>
 
 	</Route>
 );

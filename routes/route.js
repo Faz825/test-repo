@@ -62,7 +62,7 @@ GLOBAL.AccessAllow = [
 
     '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password',
-	'/news-feed','/news','/chat','/notes','/editnote'
+	'/news-feed','/news','/chat','/notes'
 
 
 ];
@@ -89,9 +89,9 @@ router.get('/chat/:chatWith', DefaultController.index);
 router.get('/life-event/categories', LifeEventController.getLifeEventCategories);
 router.get('/life-events', LifeEventController.getLifeEvents);
 
-router.get('/notes/get-notes', NotesController.getNotes);
-router.get('/notes/update-note', NotesController.updateNote);
-router.get('/notes/delete-note', NotesController.deleteNote);
+router.get('/chat/:chatWith', DefaultController.index);
+router.get('/notes/new-note/:notebook_id', DefaultController.index);
+router.get('/notes/edit-note/:note_id', DefaultController.index);
 
 
 
@@ -266,8 +266,9 @@ router.post('/like/composer', LikeController.doLike);
 router.post('/notes/add-notebook', NotesController.addNoteBook);
 router.post('/notes/add-note', NotesController.addNote);
 router.get('/notes/get-notes', NotesController.getNotes);
-//router.post('/notes/update-note', NotesController.updateNote);
-//router.post('/notes/delete-note', NotesController.deleteNote);
+router.get('/notes/get-note/:note_id', NotesController.getNote);
+router.post('/notes/update-note', NotesController.updateNote);
+router.post('/notes/delete-note', NotesController.deleteNote);
 
 
 module.exports = router;
