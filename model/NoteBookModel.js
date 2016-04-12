@@ -70,5 +70,27 @@ NoteBookSchema.statics.addNewNoteBook = function(NotebookData,callBack){
 };
 
 
+/**
+ * Get Notebooks
+ */
+NoteBookSchema.statics.getNotebooks = function(criteria,callBack){
+
+    var _this = this;
+
+    _this.find(criteria).exec(function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200,
+                notebooks:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            callBack({status:400,error:err});
+        }
+    })
+
+};
+
+
 
 mongoose.model('NoteBook',NoteBookSchema);

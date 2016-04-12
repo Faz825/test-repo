@@ -60,20 +60,78 @@ var NotesController ={
 
     getNotes:function(req,res){
 
-        var Note = require('mongoose').model('Notes');
+        var Note = require('mongoose').model('Notes'),
+            _async = require('async'),
+            NoteBook = require('mongoose').model('NoteBook');
 
-        //var criteria = {user_id:Util.getCurrentSession(req).id};
+        var user_id = Util.getCurrentSession(req).id;
+        var criteria = {user_id:Util.toObjectId(user_id)};
 
-        Note.getNotes({user_id:Util.toObjectId("5702078a79409fc607b61699")},function(resultSet){
-            if(resultSet.status == 200){
-                var outPut ={
-                    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                    notes:resultSet.notes
-                };
-                res.status(200).json(outPut);
-            }else{
-                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+        _async.waterfall([
+            function getNotebooks(callBack){
+                NoteBook.getNotebooks(criteria,function(resultSet){
+                    callBack(null,resultSet.notebooks);
+                });
+            },
+            function getNotes(notebooks,callBack){
+                Note.getNotes(criteria,function(resultSet){
+                    var notes = resultSet.notes;
+                    var _notes = [];
+                    var _notebook_ids = [];
+                    for(var a = 0; a<notebooks.length; a++){
+                        var _notebook = {
+                            notebook_id:notebooks[a]._id,
+                            notebook_name:notebooks[a].name,
+                            notebook_color:notebooks[a].color,
+                            notes:[]
+                        };
+                        _notebook_ids.push(notebooks[a]._id.toString());
+                        _notes.push(_notebook);
+                    }
+                    //_notebook_ids.push(null);
+                    //_notes.push({notebook_id:null,notebook_name:"My Notes", notes:[]});
+                    //console.log(_notebook_ids)
+
+                    for(var b = 0; b<notes.length; b++){
+                        //console.log(notes[b].notebook_id)
+
+                        if(notes[b].notebook_id != null){
+                            var _index = _notebook_ids.indexOf(notes[b].notebook_id.toString());//console.log(_index)
+                            if(_index != -1){
+                                //console.log(_notes[_index]);
+                                var _note = {
+                                    note_name:notes[b].name,
+                                    note_content:notes[b].content,
+                                    updated_at:DateTime.noteCreatedDate(notes[b].updated_at)
+                                };
+                                _notes[_index].notes.push(_note)
+                            }
+
+                        }
+                        //else{
+                        //    var _index = _notebook_ids.indexOf(notes[b].notebook_id);console.log(_index)
+                        //    if(_index != -1){
+                        //        console.log(_notes[_index]);
+                        //        var _note = {
+                        //            note_name:notes[b].name,
+                        //            note_content:notes[b].content,
+                        //            updated_at:notes[b].updated_at
+                        //        };
+                        //        _notes[_index].notes.push(_note)
+                        //    }
+                        //}
+                    }
+
+                    callBack(null,_notes);
+                });
             }
+
+        ],function(err,resultSet){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                notes:resultSet
+            }
+            res.status(200).json(outPut);
         });
 
     },

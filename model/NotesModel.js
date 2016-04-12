@@ -82,37 +82,47 @@ NoteSchema.statics.addNewNote = function(NoteData,callBack){
  */
 NoteSchema.statics.getNotes = function(criteria,callBack){
 
-    console.log(criteria)
+    //db.getCollection('notes').aggregate([
+    //    {$match:{user_id:ObjectId("5702078a79409fc607b61699")}},
+    //    {$group:{_id:"$notebook_id", notes:{$push:"$$ROOT"}}}
+    //])
 
     var _this = this;
-    _this.aggregate([
-        { $match : criteria },
-        { $group : "notebook_id"}
-    ], function(err, resultSet){
-        if(!err){
-
-            callBack({
-                status:200,
-                notes:resultSet
-
-            });
-        }else {
-            console.log("Server Error --------")
-            callBack({status: 400, error: err});
-        }
-    });
-
-    //_this.find(criteria).exec(function(err,resultSet){
+    //_this.aggregate([
+    //    { $match : criteria },
+    //    {$lookup:{
+    //        from:"notebooks",
+    //        localField:"notebook_id",
+    //        foreignField:"_id",
+    //        as:"notebookData"
+    //    }},
+    //    { $unwind: '$notebookData'},
+    //    { $group : {"_id":"$notebook_id", notes:{$push:"$$ROOT"}}}
+    //], function(err, resultSet){
     //    if(!err){
+    //
     //        callBack({
     //            status:200,
     //            notes:resultSet
+    //
     //        });
-    //    }else{
+    //    }else {
     //        console.log("Server Error --------")
-    //        callBack({status:400,error:err});
+    //        callBack({status: 400, error: err});
     //    }
-    //})
+    //});
+
+    _this.find(criteria).exec(function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200,
+                notes:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            callBack({status:400,error:err});
+        }
+    })
 
 };
 

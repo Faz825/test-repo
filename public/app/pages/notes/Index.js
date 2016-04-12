@@ -6,6 +6,15 @@ import TextField from '../../components/elements/TextField';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Texteditor from '../../components/elements/Texteditor';
 import Session from '../../middleware/Session';
+import {Alert} from '../../config/Alert';
+
+let errorStyles = {
+    color         : "#ed0909",
+    fontSize      : "0.8em",
+    textTransform : "capitalize",
+    margin        : '0 0 15px',
+    display       : "inline-block"
+}
 
 const data = [
     {
@@ -720,16 +729,32 @@ export default class Index extends React.Component {
             isShowingModal : false,
             catColor : "",
             catNameValue : "",
-            clrChosen : ""
-        }
-
-        this.newCat = {
-            category : "",
-            color : ""
+            clrChosen : "",
+            validateAlert : "",
+            notes:[]
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
         this.addNote = this.addNote.bind(this);
         this.colorPicker = this.colorPicker.bind(this);
+        this.loadNotes();
+    }
+
+    loadNotes(){
+
+        let loggedUser = Session.getSession('prg_lg');
+
+        $.ajax({
+            url: '/notes/get-notes',
+            method: "GET",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':loggedUser.token }
+        }).done( function (data, text) {
+            //console.log(data);
+            if(data.status.code == 200){
+                this.setState({notes:data.notes});
+            }
+        }.bind(this));
+
     }
 
     handleClick() {
@@ -737,6 +762,9 @@ export default class Index extends React.Component {
     }
 
     handleClose() {
+        this.setState({catNameValue: ""});
+        this.setState({catColor: ""});
+        this.setState({validateAlert:Alert.INVALID_COLOR});
         this.setState({isShowingModal: false});
     }
 
@@ -745,9 +773,35 @@ export default class Index extends React.Component {
     }
 
     addNote(){
-        this.newCat.category = this.state.catNameValue;
-        this.newCat.color = this.state.catColor;
-        this.setState({isShowingModal: false});
+
+      if(this.state.catNameValue == ""){
+        this.setState({validateAlert:Alert.EMPTY_NOTEBOOK_NAME})
+      } else if(this.state.catColor == ""){
+        this.setState({validateAlert:Alert.INVALID_COLOR})
+      } else{
+        let _noteBook = {
+          notebookName:this.state.catNameValue,
+          notebookColor:this.state.catColor
+        };
+
+        let loggedUser = Session.getSession('prg_lg');
+
+        $.ajax({
+          url: '/notes/add-notebook',
+          method: "POST",
+          dataType: "JSON",
+          data:_noteBook,
+          headers: { 'prg-auth-header':loggedUser.token },
+        }).done( function (data, text) {
+          if(data.code == 200){
+              this.loadNotes();
+              this.setState({catNameValue: ""});
+              this.setState({catColor: ""});
+              this.setState({validateAlert:Alert.INVALID_COLOR});
+              this.setState({isShowingModal: false});
+          }
+        }.bind(this));
+      }
     }
 
     colorPicker(e){
@@ -766,7 +820,7 @@ export default class Index extends React.Component {
     getPopup(){
         let clrActive = this.state.clrChosen;
         return(
-            <div onClick={this.handleClick}>
+            <div onClick={this.handleClick.bind(this)}>
                 {this.state.isShowingModal &&
                     <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
                         <ModalDialog onClose={this.handleClose.bind(this)} width="50%" style={{marginTop : "-100px"}}>
@@ -789,6 +843,7 @@ export default class Index extends React.Component {
                                 <span className={this.isActive('tone-five')} id="#8758F1" data-name="tone-five" onClick={this.colorPicker.bind(this)}></span>
                                 <span className={this.isActive('tone-six')} id="#8F7C68" data-name="tone-six" onClick={this.colorPicker.bind(this)}></span>
                             </div>
+                            {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
                             <p className="add-note-cat btn" onClick={this.addNote.bind(this)}>Add note category</p>
                         </ModalDialog>
                     </ModalContainer>
@@ -815,8 +870,9 @@ export default class Index extends React.Component {
                     </div>
                     <div className="col-xs-10 col-xs-offset-1">
                         {
-                            data.map(function(noteCat,key){
-                                return <NoteCategory noteCats={noteCat} key={key} catColor={noteCat.color} />
+                            this.state.notes.map(function(noteCat,key){
+                                console.log(noteCat)
+                                return <NoteCategory noteCats={noteCat} key={key} catColor={noteCat.notebook_color} />
                             })
                         }
                     </div>
@@ -841,7 +897,7 @@ export class NoteCategory extends React.Component{
                 <div className="col-xs-2 note-cat-thumb" style={{backgroundColor : catClr}}>
                     <div className="cat-icon-holder">
                         <span className="cat-icon"></span>
-                        <h3 className="cat-title">{catData.category}</h3>
+                        <h3 className="cat-title">{catData.notebook_name}</h3>
                     </div>
                 </div>
                 <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
@@ -866,14 +922,14 @@ export const NoteThumb = ({catData}) => {
             {
                 _notes.map(function(note,key){
                     return (
-                        <div className="note-holder" id={note.id}>
+                        <div key={key} className="note-holder" id={note.id}>
                             <div className="row-clear note">
                                 <div className="time-wrapper">
-                                    <p className="date-created">{note.createdDate}</p>
-                                    <p className="time-created">{note.createdTime}</p>
+                                    <p className="date-created">{note.updated_at.createdDate}</p>
+                                    <p className="time-created">{note.updated_at.createdTime}</p>
                                 </div>
                                 <div className="note-title-holder">
-                                    <p className="note-title">{note.title}</p>
+                                    <p className="note-title">{note.note_name}</p>
                                 </div>
                                 <span className="note-delete-btn"></span>
                             </div>
