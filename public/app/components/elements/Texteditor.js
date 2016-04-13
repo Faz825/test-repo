@@ -13,29 +13,43 @@ let errorStyles = {
     textTransform : "capitalize",
     margin        : '0 0 15px',
     display       : "inline-block"
-}
+};
 
 export default class Texteditor extends React.Component {
     constructor(props) {
         super(props);
-        this.note = this.props.content;console.log(this.note)
-        this.notebook_id = this.props.notebook_id;console.log(this.notebook_id)
-        this.note_id = this.props.note_id;console.log(this.note_id)
-        var editorState = null;
-        if(typeof this.note != 'undefined' && this.note != null){
-            const blocks = convertFromRaw(this.note);
-            editorState = EditorState.createWithContent(
-                ContentState.createFromBlockArray(blocks)
-            )
-        } else{
-            editorState = EditorState.createEmpty();
-        }
-
         this.state = {
-            editorState:editorState,
+            editorState:EditorState.createEmpty(),
             noteTitle : "",
             validateAlert : ""
         };
+        this.notebook_id = this.props.notebook_id;
+        this.note_id = this.props.note_id;
+
+        if(typeof this.note_id != 'undefined' && this.note_id != null){
+            let loggedUser = Session.getSession('prg_lg');
+
+            $.ajax({
+                url: '/notes/get-note/'+this.note_id,
+                method: "GET",
+                dataType: "JSON",
+                headers: { 'prg-auth-header':loggedUser.token }
+            }).done( function (data, text) {
+                if(data.status.code == 200){
+
+                    let _content = {
+                        entityMap : {},
+                        blocks : data.note.content[0].blocks
+                    }
+                    const blocks = convertFromRaw(_content);
+                    var editorState = EditorState.createWithContent(
+                        ContentState.createFromBlockArray(blocks)
+                    );
+                    this.setState({editorState:editorState});
+                    this.setState({noteTitle:data.note.name});
+                }
+            }.bind(this));
+        }
 
         this.focus = () => this.refs.editor.focus();
         this.onChange = (editorState) => this.setState({editorState});
@@ -84,8 +98,6 @@ export default class Texteditor extends React.Component {
     }
 
     saveNote(data){
-        console.log(data);
-        console.log(this.state.noteTitle);
 
         if(this.state.noteTitle == ""){
             this.setState({validateAlert:Alert.EMPTY_NOTE_TITLE})
@@ -93,11 +105,9 @@ export default class Texteditor extends React.Component {
             if(typeof this.notebook_id != 'undefined' && this.notebook_id != null){
                 let _note = {
                     noteName:this.state.noteTitle,
-                    noteContent:{data},
+                    noteContent:JSON.stringify(data),
                     notebookId:this.notebook_id
-                }
-
-                console.log(_note)
+                };
 
                 let loggedUser = Session.getSession('prg_lg');
 
@@ -117,14 +127,14 @@ export default class Texteditor extends React.Component {
             if(typeof this.note_id != 'undefined' && this.note_id != null){
                 let _note = {
                     noteName:this.state.noteTitle,
-                    noteContent:data,
-                    notebookId:this.notebook_id
+                    noteContent:JSON.stringify(data),
+                    noteId:this.note_id
                 }
 
                 let loggedUser = Session.getSession('prg_lg');
 
                 $.ajax({
-                    url: '/notes/add-note',
+                    url: '/notes/update-note',
                     method: "POST",
                     dataType: "JSON",
                     data:_note,
@@ -136,10 +146,7 @@ export default class Texteditor extends React.Component {
                 }.bind(this));
             }
 
-
         }
-
-
     }
 
     render() {

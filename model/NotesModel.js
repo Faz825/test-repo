@@ -128,11 +128,7 @@ NoteSchema.statics.getNotes = function(criteria,callBack){
  * Get Notes
  */
 NoteSchema.statics.getNote = function(criteria,callBack){
-
-
     var _this = this;
-
-
     _this.findOne(criteria).exec(function(err,resultSet){
         if(!err){
             callBack({

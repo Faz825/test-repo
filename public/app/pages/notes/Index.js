@@ -17,7 +17,6 @@ let errorStyles = {
 export default class Index extends React.Component {
     constructor(props) {
         super(props);
-        let user =  Session.getSession('prg_lg');
         this.state={
             isShowingModal : false,
             catColor : "",
@@ -29,6 +28,7 @@ export default class Index extends React.Component {
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
         this.addNote = this.addNote.bind(this);
         this.colorPicker = this.colorPicker.bind(this);
+        this.deleteNote = this.deleteNote.bind(this);
         this.loadNotes();
     }
 
@@ -42,7 +42,6 @@ export default class Index extends React.Component {
             dataType: "JSON",
             headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
-            //console.log(data);
             if(data.status.code == 200){
                 this.setState({notes:data.notes});
             }
@@ -176,13 +175,10 @@ export default class Index extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-10 col-xs-offset-1">
-                        {
-                            this.state.notes.map(function(noteCat,key){
-                                return <NoteCategory noteCats={noteCat} key={key} catColor={noteCat.notebook_color} />
-                            })
-                        }
-                    </div>
+                    {
+                        (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} deleteNote={()=>this.deleteNote.bind(this)}/>:null
+                    }
+
                     {this.getPopup()}
                 </div>
             </div>
@@ -196,22 +192,38 @@ export class NoteCategory extends React.Component{
         this.state={}
     }
 
+    deleteNote(note_id){
+        console.log(note_id)
+        console.log("NoteCategory")
+        this.props.deleteNote(note_id);
+    }
+
     render() {
-        let catData = this.props.noteCats;
-        let catClr = this.props.catColor;
-        return (
-            <div className="row row-clr pg-notes-page-content-item pg-box-shadow">
-                <div className="col-xs-2 note-cat-thumb" style={{backgroundColor : catClr}}>
-                    <div className="cat-icon-holder">
-                        <span className="cat-icon"></span>
-                        <h3 className="cat-title">{catData.notebook_name}</h3>
+        let _this = this;
+        let notebooks = this.props.notebooks;
+
+        let _noteBooks = notebooks.map(function(notebook,key){
+            return (
+                <div className="row row-clr pg-notes-page-content-item pg-box-shadow" key={key}>
+                    <div className="col-xs-2 note-cat-thumb" style={{backgroundColor : notebook.notebook_color}}>
+                        <div className="cat-icon-holder">
+                            <span className="cat-icon"></span>
+                            <h3 className="cat-title">{notebook.notebook_name}</h3>
+                        </div>
+                    </div>
+                    <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
+                        <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} deleteNote={()=>_this.deleteNote.bind(_this)}/>
                     </div>
                 </div>
-                <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
-                    <NoteThumb catData={catData.notes} catID={catData.notebook_id}/>
-                </div>
+            );
+        });
+
+        return (
+            <div className="col-xs-10 col-xs-offset-1">
+                {_noteBooks}
             </div>
         );
+
     }
 }
 
@@ -230,6 +242,12 @@ export class NoteThumb extends React.Component{
         location.href = "/notes/edit-note/"+note_id;
     }
 
+    deleteNote(note_id){
+        console.log(note_id)
+        console.log("NoteThumb")
+        this.props.deleteNote(note_id);
+    }
+
     render(){
 
         let _this = this;
@@ -245,14 +263,13 @@ export class NoteThumb extends React.Component{
                 </div>
                 {
                     _notes.map(function(note,key){
-                        //console.log(note)
                         return (
                             <div className="note-holder" id={note.note_id} key={key}>
                                 <div className="row-clear note">
                                     <a href="javascript:void(0)" onClick={()=>_this.editNote(note.note_id)}>
                                         <div className="time-wrapper">
-                                            <p className="date-created">{note.updated_at}</p>
-                                            <p className="time-created"></p>
+                                            <p className="date-created">{note.updated_at.createdDate}</p>
+                                            <p className="time-created">{note.updated_at.createdTime}</p>
                                         </div>
                                         <div className="note-title-holder">
                                             <p className="note-title">{note.note_name}</p>

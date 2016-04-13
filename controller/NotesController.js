@@ -10,11 +10,6 @@ var NotesController ={
 
         var NoteBook = require('mongoose').model('NoteBook');
 
-        //var CurrentSession = Util.getCurrentSession(req);
-        //var notebookName = req.body.notebookName;
-        //var notebookColor = req.body.notebookColor;
-        //var userId = CurrentSession.id;
-
         var _notebook = {
             name:req.body.notebookName,
             color:req.body.notebookColor,
@@ -34,19 +29,11 @@ var NotesController ={
     addNote:function(req,res) {
 
         var Note = require('mongoose').model('Notes');
-
-        //var CurrentSession = Util.getCurrentSession(req);
-        //var noteName = req.body.noteName;
-        //var noteContent = req.body.noteContent;
-        //var userId = CurrentSession.id;
-        //var notebookId = req.body.notebookId;
-
-        console.log("addNote => ")
-        console.log(req.body)
+        var _content = JSON.parse(req.body.noteContent);
 
         var _note = {
             name:req.body.noteName,
-            content:req.body.noteContent,
+            content:_content,
             user_id:Util.getCurrentSession(req).id,
             notebook_id:req.body.notebookId
         };
@@ -91,17 +78,12 @@ var NotesController ={
                         _notebook_ids.push(notebooks[a]._id.toString());
                         _notes.push(_notebook);
                     }
-                    //_notebook_ids.push(null);
-                    //_notes.push({notebook_id:null,notebook_name:"My Notes", notes:[]});
-                    //console.log(_notebook_ids)
 
                     for(var b = 0; b<notes.length; b++){
-                        //console.log(notes[b].notebook_id)
 
                         if(notes[b].notebook_id != null){
                             var _index = _notebook_ids.indexOf(notes[b].notebook_id.toString());//console.log(_index)
                             if(_index != -1){
-                                //console.log(_notes[_index]);
                                 var _note = {
                                     note_id:notes[b]._id,
                                     note_name:notes[b].name,
@@ -112,18 +94,7 @@ var NotesController ={
                             }
 
                         }
-                        //else{
-                        //    var _index = _notebook_ids.indexOf(notes[b].notebook_id);console.log(_index)
-                        //    if(_index != -1){
-                        //        console.log(_notes[_index]);
-                        //        var _note = {
-                        //            note_name:notes[b].name,
-                        //            note_content:notes[b].content,
-                        //            updated_at:notes[b].updated_at
-                        //        };
-                        //        _notes[_index].notes.push(_note)
-                        //    }
-                        //}
+
                     }
 
                     callBack(null,_notes);
@@ -144,7 +115,7 @@ var NotesController ={
 
         var Note = require('mongoose').model('Notes');
 
-        var note_id = req.body.note_id;
+        var note_id = req.params.note_id;
         var criteria = {_id:Util.toObjectId(note_id)};
 
         Note.getNote(criteria, function(resultSet){
@@ -169,9 +140,11 @@ var NotesController ={
             _id:req.body.noteId
         };
 
+        var _content = JSON.parse(req.body.noteContent);
+
         var updateData = {
             name:req.body.noteName,
-            content:req.body.noteContent
+            content:_content
         };
 
         Note.updateNote(criteria,updateData,function(resultSet){
