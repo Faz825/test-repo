@@ -28,7 +28,6 @@ export default class Index extends React.Component {
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
         this.addNote = this.addNote.bind(this);
         this.colorPicker = this.colorPicker.bind(this);
-        this.deleteNote = this.deleteNote.bind(this);
         this.loadNotes();
     }
 
@@ -145,13 +144,13 @@ export default class Index extends React.Component {
     }
 
     deleteNote(note_id){
-        console.log("calling root")
+        let loggedUser = Session.getSession('prg_lg');
         $.ajax({
             url: '/notes/delete-note',
             method: "POST",
             dataType: "JSON",
             data:{noteId:note_id},
-            headers: { 'prg-auth-header':loggedUser.token },
+            headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
             if(data.code == 200){
                 this.loadNotes();
@@ -176,7 +175,7 @@ export default class Index extends React.Component {
                         </div>
                     </div>
                     {
-                        (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} deleteNote={()=>this.deleteNote.bind(this)}/>:null
+                        (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} deleteNote={this.deleteNote.bind(this)}/>:null
                     }
 
                     {this.getPopup()}
@@ -192,15 +191,10 @@ export class NoteCategory extends React.Component{
         this.state={}
     }
 
-    deleteNote(note_id){
-        console.log(note_id)
-        console.log("NoteCategory")
-        this.props.deleteNote(note_id);
-    }
-
     render() {
         let _this = this;
         let notebooks = this.props.notebooks;
+        let deleteNote = this.props.deleteNote;
 
         let _noteBooks = notebooks.map(function(notebook,key){
             return (
@@ -212,7 +206,7 @@ export class NoteCategory extends React.Component{
                         </div>
                     </div>
                     <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
-                        <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} deleteNote={()=>_this.deleteNote.bind(_this)}/>
+                        <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} deleteNote={deleteNote}/>
                     </div>
                 </div>
             );
@@ -243,8 +237,6 @@ export class NoteThumb extends React.Component{
     }
 
     deleteNote(note_id){
-        console.log(note_id)
-        console.log("NoteThumb")
         this.props.deleteNote(note_id);
     }
 
