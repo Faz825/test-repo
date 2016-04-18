@@ -2925,7 +2925,6 @@ textarea{
   color: #5890ff;
 }
 
-
 .submit-note-btn{
 	font: 11px 'montserratsemi_bold', sans-serif;
     color: #fff;
@@ -2943,3 +2942,6 @@ textarea{
     float: right;
 }
 
+.public-DraftEditorPlaceholder-inner{
+	color: #999;
+}

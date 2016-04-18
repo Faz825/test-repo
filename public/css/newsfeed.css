@@ -226,6 +226,7 @@
 }
 .pg-newsfeed-common-content-post-content{
     margin-top: 15px;
+    word-wrap: break-word;
 }
 .pg-newsfeed-post-description{
     font: 12px 'montserratregular', sans-serif;
