@@ -23,7 +23,9 @@ export default class Index extends React.Component {
             catNameValue : "",
             clrChosen : "",
             validateAlert : "",
-            notes:[]
+            notes:[],
+            showConfirm:false,
+            deleteNoteId:0
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
         this.addNote = this.addNote.bind(this);
@@ -143,17 +145,44 @@ export default class Index extends React.Component {
         )
     }
 
-    deleteNote(note_id){
+    getConfirmationPopup(){
+        return(
+            <div>
+                {this.state.showConfirm &&
+                <ModalContainer zIndex={9999}>
+                    <ModalDialog width="30%" style={{marginTop : "-100px"}}>
+                        <div className="col-xs-12">
+                            <p className="confirmation_p">Are you sure to delete this note?</p>
+                        </div>
+                        <p className="add-note-cat btn" onClick={this.deleteNote.bind(this)}>Yes</p>
+                        <p className="add-note-cat confirm-no btn" onClick={this.closeConfirmPopup.bind(this)}>No</p>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        );
+    }
+
+    showConfirm(note_id){
+        this.setState({showConfirm:true, deleteNoteId:note_id})
+    }
+
+    closeConfirmPopup(){
+        this.setState({showConfirm:false, deleteNoteId:0})
+    }
+
+    deleteNote(){
         let loggedUser = Session.getSession('prg_lg');
         $.ajax({
             url: '/notes/delete-note',
             method: "POST",
             dataType: "JSON",
-            data:{noteId:note_id},
+            data:{noteId:this.state.deleteNoteId},
             headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
             if(data.code == 200){
                 this.loadNotes();
+                this.setState({showConfirm:false, deleteNoteId:0})
             }
         }.bind(this));
     }
@@ -175,10 +204,11 @@ export default class Index extends React.Component {
                         </div>
                     </div>
                     {
-                        (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} deleteNote={this.deleteNote.bind(this)}/>:null
+                        (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} showConfirm={this.showConfirm.bind(this)}/>:null
                     }
 
                     {this.getPopup()}
+                    {this.getConfirmationPopup()}
                 </div>
             </div>
         );
@@ -192,9 +222,8 @@ export class NoteCategory extends React.Component{
     }
 
     render() {
-        let _this = this;
         let notebooks = this.props.notebooks;
-        let deleteNote = this.props.deleteNote;
+        let showConfirm = this.props.showConfirm;
 
         let _noteBooks = notebooks.map(function(notebook,key){
             return (
@@ -206,7 +235,7 @@ export class NoteCategory extends React.Component{
                         </div>
                     </div>
                     <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
-                        <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} deleteNote={deleteNote}/>
+                        <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm}/>
                     </div>
                 </div>
             );
@@ -225,7 +254,8 @@ export class NoteThumb extends React.Component{
 
     constructor(props) {
         super(props);
-        this.state={}
+        this.state={
+        }
     }
 
     addNewNote(notebook_id){
@@ -236,8 +266,8 @@ export class NoteThumb extends React.Component{
         location.href = "/notes/edit-note/"+note_id;
     }
 
-    deleteNote(note_id){
-        this.props.deleteNote(note_id);
+    showConfirm(note_id){
+        this.props.showConfirm(note_id);
     }
 
     render(){
@@ -267,7 +297,7 @@ export class NoteThumb extends React.Component{
                                             <p className="note-title">{note.note_name}</p>
                                         </div>
                                     </a>
-                                        <span className="note-delete-btn" onClick={()=>_this.deleteNote(note.note_id)}></span>
+                                    <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>
 
                                 </div>
                             </div>

@@ -23,7 +23,6 @@ import Session  from './Session.js';
          var audioCall = true;
          var screenCall = false;
          var currentChatUri = null;
-         var typingLabelTimer = 0;
          var latestChatUser = null;
          var me = null;
          var currentChatUserName = null;
@@ -145,11 +144,11 @@ import Session  from './Session.js';
                      return true;
                  }
              });
-         };
+         }
 
          this.loadFirstMessage = function(){
              firstChat = true;
-         }
+         };
 
          // Update Conversation View
          function onConversationChange(c, op) {
@@ -509,27 +508,18 @@ import Session  from './Session.js';
              return '#msgs__' + c.domId();
          }
 
-         var showUserTyping = function (ident) {
-             clearInterval(typingLabelTimer);
-             if (ident) {
-                 typingLabelTimer = setTimeout(function () {
-                     $('#msgOtherTyping').toggle(false);
-                 }, 1000);
-                 ident = b6.getNameFromIdentity(ident);
-                 var txt = ident + ' is typing...';
-                 $('#msgOtherTyping').html(txt);
-             }
-             $('#msgOtherTyping').toggle(ident ? true : false);
-         };
 
          // Scroll to the last message in the messages list
          var scrollToLastMessage = function () {
-             var t = document.getElementById("msgListRow").scrollHeight;
+             console.log(document.getElementById("msgListRow"))
+             console.log("scrollToLastMessage")
+             var t = document.getElementById("msgListRow").scrollHeight;console.log(t)
              if(typeof t == 'undefined'){
-                 t = $('#msgListRow')[0].scrollHeight;
-                 $('#msgListRow')[0].scrollTop = t;
+                 t = $('#msgList')[0].scrollHeight;
+                 $('#msgList')[0].scrollTop = t;
              } else{
-                 document.getElementById("msgListRow").scrollTop = t;
+                 console.log("here else")
+                 document.getElementById("msgListRow").scrollTop += t;
              }
          };
 
@@ -655,8 +645,6 @@ import Session  from './Session.js';
                      if (m.incoming()) {
                          b6.markMessageAsRead(m);
                      }
-                     // If we had user 'typing' indicator - clear it
-                     showUserTyping(false);
                  }
 
              }

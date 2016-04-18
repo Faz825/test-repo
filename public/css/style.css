@@ -2943,3 +2943,21 @@ textarea{
     float: right;
 }
 
+.confirmation_p{
+	color: #2d5164;
+	font: 20px "montserratsemi_bold",sans-serif;
+}
+
+.confirm-no{
+	background-color: #a4becd;
+	margin-right: 20px;
+	float: right;
+	color: #FFF;
+}
+
+/*#msgListRow{*/
+	/*height: 260px;*/
+	/*overflow-y: auto;*/
+/*}*/
+
+
