@@ -9,14 +9,17 @@ import SelectSecretary  from './pages/signup/SelectSecretary';
 
 import ProfileIndex  from './pages/profile/Index';
 
-import ForgotPassword from './pages/signup/ForgotPassword'
-import ChangePassword from './pages/signup/ChangePassword'
-import ChangePasswordInvalid from './pages/signup/ChangePasswordInvalid'
-import ChangedPassword from './pages/signup/ChangedPassword'
+import ForgotPassword from './pages/signup/ForgotPassword';
+import ChangePassword from './pages/signup/ChangePassword';
+import ChangePasswordInvalid from './pages/signup/ChangePasswordInvalid';
+import ChangedPassword from './pages/signup/ChangedPassword';
 import Connection  from './pages/connection/Index';
 import NewsSettings from './pages/news/NewsSettings';
-import ChatIndex from './pages/chat/Index'
+import ChatIndex from './pages/chat/Index';
 import NewsIndex from './pages/news/Index';
+import NotesIndex from './pages/notes/Index';
+import EditNote from './pages/notes/EditNote';
+
 
 let rootRoute =(
     <Route name="main" path="/" component={Main} state="1">
@@ -58,6 +61,12 @@ let rootRoute =(
 
         <Route name="news-feed" path="/news-feed" component={NewsIndex}/>
         <Route name="news" path="/news" component={NewsSettings}/>
+
+
+
+        <Route name="notes" path="/notes" component={NotesIndex}/>
+        <Route name="add-note" path="/notes/new-note/:notebook_id" component={EditNote}/>
+        <Route name="edit-note" path="/notes/edit-note/:note_id" component={EditNote}/>
 
 
 	</Route>

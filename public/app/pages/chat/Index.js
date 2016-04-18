@@ -124,8 +124,6 @@ export default class Index extends React.Component{
                                 user:data.profile_data
                             };
 
-                            //TODO::Show only 5 and if more display 'see all'
-
                             //Update Conversation data
                             let stamp = this.getRelativeTime(c.updated);
                             let latestText = '';
@@ -251,7 +249,7 @@ export default class Index extends React.Component{
     }
 
     loadChat(chatWith){
-        if(chatWith != 'undefined'){
+        if(chatWith != 'undefined' && chatWith != 'new'){
             $.ajax({
                 url: '/get-profile/' + chatWith,
                 method: "GET",
@@ -292,31 +290,18 @@ export default class Index extends React.Component{
     sendChat(formData){
 
         console.log("Global sendChat")
-
         console.log(formData)
 
         console.log(this.uri)
 
-
-        //var msg = $("#msgText").val();
-
-        //if(typeof this.state.chatWith == 'undefined' || this.state.chatWith == 'new'){
-        //    _this.setState({validateAlert: Alert.EMPTY_RECEIVER+"send message"});
-        //    return 0;
-        //} else if(msg==""){
-        //    _this.setState({validateAlert: Alert.EMPTY_MESSAGE});
-        //    return 0;
-        //} else{
-        //    _this.setState({validateAlert: ""});
-            this.b6.compose(this.uri).text(formData.msg).send(function(err) {
-                if (err) {
-                    console.log('error', err);
-                }
-                else {
-                    console.log("msg sent");
-                }
-            });
-        //}
+        this.b6.compose(this.uri).text(formData.msg).send(function(err) {
+            if (err) {
+                console.log('error', err);
+            }
+            else {
+                console.log("msg sent");
+            }
+        });
 
     }
 
@@ -589,7 +574,6 @@ export class ComposeMessage extends React.Component{
     }
 
     render(){
-        //let formData = this.state.formData;
         return(
             <form onSubmit={this.sendMessage.bind(this)}>
                 <div className="chat-msg-input-holder">

@@ -53,7 +53,7 @@ export default class CoverImageUploader extends React.Component{
                         style={{height: '450px', width: '100%'}}
                         guides={true}
                         crop={this.cropImage}
-                        aspectRatio={1600/230}
+                        aspectRatio={1600/299}
                         checkCrossOrigin={false}
                         />
                     :

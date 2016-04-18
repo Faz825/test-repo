@@ -13,7 +13,7 @@ const DefaultLayout = (props) =>{
             <SigninHeader />
             <SidebarNav side="left" menuItems={{items:[
                 {"name": "News", "link" : "/news", "imgName": "nav-ico-1"},
-                {"name": "Notes", "link" : "/note", "imgName": "nav-ico-2"},
+                {"name": "Notes", "link" : "/notes", "imgName": "nav-ico-2"},
                 {"name": "Desktop", "link" : "/desktop", "imgName": "nav-ico-3"},
                 {"name": "Smart Mail", "link" : "/email", "imgName": "nav-ico-4"},
                 {"name": "Pro Calendar", "link" : "/calender-weeks", "imgName": "nav-ico-5"}
