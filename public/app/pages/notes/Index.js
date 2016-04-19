@@ -12,7 +12,7 @@ let errorStyles = {
     textTransform : "capitalize",
     margin        : '0 0 15px',
     display       : "inline-block"
-}
+};
 
 export default class Index extends React.Component {
     constructor(props) {
@@ -21,6 +21,7 @@ export default class Index extends React.Component {
             isShowingModal : false,
             catColor : "",
             catNameValue : "",
+            isDefault : 0,
             clrChosen : "",
             validateAlert : "",
             notes:[],
@@ -44,7 +45,14 @@ export default class Index extends React.Component {
             headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200){
-                this.setState({notes:data.notes});
+                if(data.notes.length == 0){
+                    this.setState({catNameValue: "My Notes"});
+                    this.setState({catColor: "#0272ae"});
+                    this.setState({isDefault: 1});
+                    this.addNote();
+                } else{
+                    this.setState({notes:data.notes});
+                }
             }
         }.bind(this));
 
@@ -57,7 +65,8 @@ export default class Index extends React.Component {
     handleClose() {
         this.setState({catNameValue: ""});
         this.setState({catColor: ""});
-        this.setState({validateAlert:Alert.INVALID_COLOR});
+        this.setState({isDefault: 0});
+        this.setState({validateAlert:""});
         this.setState({isShowingModal: false});
     }
 
@@ -73,8 +82,9 @@ export default class Index extends React.Component {
         this.setState({validateAlert:Alert.INVALID_COLOR})
       } else{
         let _noteBook = {
-          notebookName:this.state.catNameValue,
-          notebookColor:this.state.catColor
+            notebookName:this.state.catNameValue,
+            notebookColor:this.state.catColor,
+            isDefault:this.state.isDefault
         };
 
         let loggedUser = Session.getSession('prg_lg');
@@ -84,17 +94,19 @@ export default class Index extends React.Component {
           method: "POST",
           dataType: "JSON",
           data:_noteBook,
-          headers: { 'prg-auth-header':loggedUser.token },
+          headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
           if(data.code == 200){
               this.loadNotes();
               this.setState({catNameValue: ""});
               this.setState({catColor: ""});
-              this.setState({validateAlert:Alert.INVALID_COLOR});
+              this.setState({isDefault: 0});
+              this.setState({validateAlert:""});
               this.setState({isShowingModal: false});
           }
         }.bind(this));
       }
+
     }
 
     colorPicker(e){
@@ -309,4 +321,4 @@ export class NoteThumb extends React.Component{
 
     }
 
-};
+}

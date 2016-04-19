@@ -18,6 +18,10 @@ var NoteBookSchema = new Schema({
         type:String,
         trim:true
     },
+    isDefault:{
+        type:Number,
+        default:0
+    },
     user_id:{
         type: Schema.ObjectId,
         ref: 'User',
@@ -50,6 +54,7 @@ NoteBookSchema.statics.addNewNoteBook = function(NotebookData,callBack){
     var newNotebook = new this();
     newNotebook.name 	= NotebookData.name;
     newNotebook.color  	= NotebookData.color;
+    newNotebook.isDefault  	= NotebookData.isDefault;
     newNotebook.user_id		= NotebookData.user_id;
 
     newNotebook.save(function(err,resultSet){
@@ -77,7 +82,7 @@ NoteBookSchema.statics.getNotebooks = function(criteria,callBack){
 
     var _this = this;
 
-    _this.find(criteria).exec(function(err,resultSet){
+    _this.find(criteria).sort({isDefault:-1}).exec(function(err,resultSet){
         if(!err){
             callBack({
                 status:200,
