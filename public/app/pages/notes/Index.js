@@ -267,6 +267,7 @@ export class NoteThumb extends React.Component{
     constructor(props) {
         super(props);
         this.state={
+            allNotesAreVisible: false
         }
     }
 
@@ -282,11 +283,62 @@ export class NoteThumb extends React.Component{
         this.props.showConfirm(note_id);
     }
 
+    showMoreNotes(){
+        let visibilityState = this.state.allNotesAreVisible;
+        this.setState({allNotesAreVisible : !visibilityState});
+    }
+
     render(){
 
         let _this = this;
         let _notes = this.props.catData;
         let _notebook = this.props.catID;
+
+        let _firstSetNotes = _notes.map(function(note,key){
+            if(key < 4) {
+                return (
+                    <div className="note-holder" id={note.note_id} key={key}>
+                        <div className="row-clear note">
+                            <a href="javascript:void(0)" onClick={()=>_this.editNote(note.note_id)}>
+                                <div className="time-wrapper">
+                                    <p className="date-created">{note.updated_at.createdDate}</p>
+
+                                    <p className="time-created">{note.updated_at.createdTime}</p>
+                                </div>
+                                <div className="note-title-holder">
+                                    <p className="note-title">{note.note_name}</p>
+                                </div>
+                            </a>
+                            <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>
+
+                        </div>
+                    </div>
+                )
+            }
+        });
+
+        let _allNotes = _notes.map(function(note,key){
+            if(key >= 4) {
+                return (
+                    <div className="note-holder" id={note.note_id} key={key}>
+                        <div className="row-clear note">
+                            <a href="javascript:void(0)" onClick={()=>_this.editNote(note.note_id)}>
+                                <div className="time-wrapper">
+                                    <p className="date-created">{note.updated_at.createdDate}</p>
+
+                                    <p className="time-created">{note.updated_at.createdTime}</p>
+                                </div>
+                                <div className="note-title-holder">
+                                    <p className="note-title">{note.note_name}</p>
+                                </div>
+                            </a>
+                            <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>
+
+                        </div>
+                    </div>
+                )
+            }
+        });
 
         return(
             <div className="pg-notes-item-main-row">
@@ -295,27 +347,12 @@ export class NoteThumb extends React.Component{
                         <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
                     </div>
                 </div>
+                {_firstSetNotes}
                 {
-                    _notes.map(function(note,key){
-                        return (
-                            <div className="note-holder" id={note.note_id} key={key}>
-                                <div className="row-clear note">
-                                    <a href="javascript:void(0)" onClick={()=>_this.editNote(note.note_id)}>
-                                        <div className="time-wrapper">
-                                            <p className="date-created">{note.updated_at.createdDate}</p>
-                                            <p className="time-created">{note.updated_at.createdTime}</p>
-                                        </div>
-                                        <div className="note-title-holder">
-                                            <p className="note-title">{note.note_name}</p>
-                                        </div>
-                                    </a>
-                                    <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>
-
-                                </div>
-                            </div>
-                        )
-                    })
+                    (this.state.allNotesAreVisible)? _allNotes : null
                 }
+                {(_notes.length > 4) ? <div className="show-more-btn" onClick={this.showMoreNotes.bind(this)}>{this.state.allNotesAreVisible? "Show Less" : "Show More"}</div> : null}
+
             </div>
         )
 
