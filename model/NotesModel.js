@@ -109,7 +109,7 @@ NoteSchema.statics.getNotes = function(criteria,callBack){
     //    }
     //});
 
-    _this.find(criteria).exec(function(err,resultSet){
+    _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
         if(!err){
             callBack({
                 status:200,
