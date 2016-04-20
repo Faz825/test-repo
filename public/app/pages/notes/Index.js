@@ -221,11 +221,9 @@ export default class Index extends React.Component {
                     }
 
                     {this.getPopup()}
-<<<<<<< HEAD
                     <RichTextEditor />
-=======
                     {this.getConfirmationPopup()}
->>>>>>> PROG-REL-V4.0
+                    
                 </div>
             </div>
         );
