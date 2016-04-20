@@ -5,6 +5,7 @@ import React from 'react';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Session from '../../middleware/Session';
 import {Alert} from '../../config/Alert';
+import RichTextEditor from '../../components/elementsRichTextEditor';
 
 let errorStyles = {
     color         : "#ed0909",
@@ -179,6 +180,7 @@ export default class Index extends React.Component {
                     }
 
                     {this.getPopup()}
+                    <RichTextEditor />
                 </div>
             </div>
         );
