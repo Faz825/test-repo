@@ -231,13 +231,13 @@ export default class Index extends React.Component{
                         </div>
                         <div className="chat-msg-holder col-sm-8">
                             <div className="chat-view">
-                                <Scrollbars style={{ height: 260 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
-                                    <div id="msgListRow">
+                                <div id="msgListRow">
+                                    <Scrollbars style={{ height: 260 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
                                         <div className="col-xs-12">
                                             <div id="msgList"></div>
                                         </div>
-                                    </div>
-                                </Scrollbars>
+                                    </Scrollbars>
+                                </div>
                             </div>
                             <div className="chat-msg-input-holder">
                                 {

@@ -3593,5 +3593,15 @@ export default StyleSheet.create({
     },
     "public-DraftEditorPlaceholder-inner": {
         "color": "#999"
+    },
+    "confirmation_p": {
+        "color": "#2d5164",
+        "font": "20px \"montserratsemi_bold\",sans-serif"
+    },
+    "confirm-no": {
+        "backgroundColor": "#a4becd",
+        "marginRight": 20,
+        "float": "right",
+        "color": "#FFF"
     }
 });

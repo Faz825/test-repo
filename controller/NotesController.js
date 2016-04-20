@@ -13,6 +13,7 @@ var NotesController ={
         var _notebook = {
             name:req.body.notebookName,
             color:req.body.notebookColor,
+            isDefault:req.body.isDefault,
             user_id:Util.getCurrentSession(req).id
         };
 
@@ -68,6 +69,7 @@ var NotesController ={
                     var notes = resultSet.notes;
                     var _notes = [];
                     var _notebook_ids = [];
+
                     for(var a = 0; a<notebooks.length; a++){
                         var _notebook = {
                             notebook_id:notebooks[a]._id,
@@ -81,18 +83,17 @@ var NotesController ={
 
                     for(var b = 0; b<notes.length; b++){
 
-                        if(notes[b].notebook_id != null){
+                        if(notes[b].notebook_id != null) {
                             var _index = _notebook_ids.indexOf(notes[b].notebook_id.toString());//console.log(_index)
-                            if(_index != -1){
+                            if (_index != -1) {
                                 var _note = {
-                                    note_id:notes[b]._id,
-                                    note_name:notes[b].name,
-                                    note_content:notes[b].content,
-                                    updated_at:DateTime.noteCreatedDate(notes[b].updated_at)
+                                    note_id: notes[b]._id,
+                                    note_name: notes[b].name,
+                                    note_content: notes[b].content,
+                                    updated_at: DateTime.noteCreatedDate(notes[b].updated_at)
                                 };
                                 _notes[_index].notes.push(_note)
                             }
-
                         }
 
                     }
