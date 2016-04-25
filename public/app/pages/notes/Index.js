@@ -5,7 +5,7 @@ import React from 'react';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Session from '../../middleware/Session';
 import {Alert} from '../../config/Alert';
-import RichTextEditor from '../../components/elementsRichTextEditor';
+import RichTextEditor from '../../components/elements/RichTextEditor';
 
 let errorStyles = {
     color         : "#ed0909",
@@ -220,10 +220,8 @@ export default class Index extends React.Component {
                         (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} showConfirm={this.showConfirm.bind(this)}/>:null
                     }
 
-                    {this.getPopup()}
-                    <RichTextEditor />
                     {this.getConfirmationPopup()}
-                    
+
                 </div>
             </div>
         );
@@ -233,8 +231,34 @@ export default class Index extends React.Component {
 export class NoteCategory extends React.Component{
     constructor(props) {
         super(props);
-        this.state={}
+        this.state={
+            isShowingModal : false
+        }
     }
+
+    handleClick() {
+        this.setState({isShowingModal: true});
+    }
+
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
+
+    getPopup(){
+        let clrActive = this.state.clrChosen;
+        return(
+            <div onClick={this.handleClick.bind(this)}>
+                {this.state.isShowingModal &&
+                    <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                        <ModalDialog onClose={this.handleClose.bind(this)} width="50%" style={{marginTop : "-100px"}}>
+
+                        </ModalDialog>
+                    </ModalContainer>
+                }
+            </div>
+        )
+    }
+
 
     render() {
         let notebooks = this.props.notebooks;
@@ -252,6 +276,7 @@ export class NoteCategory extends React.Component{
                     <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
                         <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm}/>
                     </div>
+                    <RichTextEditor note="testing!" />
                 </div>
             );
         });
@@ -259,6 +284,7 @@ export class NoteCategory extends React.Component{
         return (
             <div className="col-xs-10 col-xs-offset-1">
                 {_noteBooks}
+                {this.getPopup()}
             </div>
         );
 

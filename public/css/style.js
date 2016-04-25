@@ -6,11 +6,7 @@ const {width, height, scale} = Dimensions.get("window"),
     vmax = Math.max(vw, vh);
 
 export default StyleSheet.create({
-    "html": {
-        "height": "100%"
-    },
     "body": {
-        "height": "100%",
         "WebkitFontSmoothing": "antialiased",
         "backgroundImage": "url(../images/site-background.png)",
         "backgroundSize": "cover",
@@ -21,11 +17,12 @@ export default StyleSheet.create({
         "marginLeft": "0px !important",
         "marginRight": "0px !important"
     },
-    "pg-middle-sign-wrapper container-fluid": {
+    "pg-middle-sign-wrapper > container-fluid": {
         "paddingTop": 0,
         "paddingRight": 0,
         "paddingBottom": 0,
-        "paddingLeft": 0
+        "paddingLeft": 0,
+        "minHeight": 80 * vh
     },
     "a": {
         "outline": 0
@@ -1406,7 +1403,8 @@ export default StyleSheet.create({
         "marginLeft": 0
     },
     "pg-page": {
-        "paddingBottom": 120
+        "paddingBottom": 120,
+        "minHeight": 80 * vh
     },
     "pg-profile-banner-area": {
         "paddingTop": 0,
@@ -2076,7 +2074,8 @@ export default StyleSheet.create({
         "paddingRight": 0,
         "paddingBottom": 0,
         "paddingLeft": 0,
-        "width": "calc(100% - 220px)"
+        "width": "calc(100% - 220px)",
+        "minHeight": 80 * vh
     },
     "pg-news-page-header": {
         "paddingTop": 11,
@@ -2943,7 +2942,8 @@ export default StyleSheet.create({
         "paddingRight": 0,
         "paddingBottom": 0,
         "paddingLeft": 0,
-        "width": "calc(100% - 220px)"
+        "width": "calc(100% - 220px)",
+        "minHeight": 80 * vh
     },
     "pg-middle-chat-content-header": {
         "backgroundColor": "rgba(7, 7, 8, 0.3)",
