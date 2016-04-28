@@ -267,10 +267,16 @@ export default StyleSheet.create({
     "pg-top-hover-ico": {
         "display": "none"
     },
-    "pg-header-options a:hover pg-top-defalt-ico": {
+    "chat-dropdown-holderchat-notification-wrapper-opened pg-top-defalt-ico": {
         "display": "none"
     },
-    "pg-header-options a:hover pg-top-hover-ico": {
+    "dropDown-holder:hover pg-top-defalt-ico": {
+        "display": "none"
+    },
+    "chat-dropdown-holderchat-notification-wrapper-opened pg-top-hover-ico": {
+        "display": "block"
+    },
+    "dropDown-holder:hover pg-top-hover-ico": {
         "display": "block"
     },
     "pg-drop-down": {
@@ -2054,7 +2060,7 @@ export default StyleSheet.create({
         "textAlign": "center"
     },
     "pg-middle-sign-wrapper container-fluid newsCatHolder": {
-        "marginTop": 100,
+        "marginTop": 70,
         "paddingTop": 0,
         "paddingRight": 0,
         "paddingBottom": 130,
@@ -2113,6 +2119,9 @@ export default StyleSheet.create({
         "textDecoration": "none",
         "textTransform": "uppercase",
         "cursor": "pointer"
+    },
+    "pg-news-page-content pg-news-page-header": {
+        "marginBottom": 25
     },
     "pg-notes-page-content-item note-cat-thumb": {
         "background": "url(../images/pg-notes-view-all.png) #5ebdaa repeat-y -3px top"
@@ -3096,50 +3105,32 @@ export default StyleSheet.create({
         "borderRight": "1px solid #dee6eb"
     },
     "conv-holder msg-holder": {
-        "paddingTop": 12,
-        "paddingRight": 12,
-        "paddingBottom": 12,
-        "paddingLeft": 12,
-        "overflow": "hidden",
-        "position": "relative",
-        "cursor": "pointer",
-        "borderBottom": "1px solid #dee6eb"
-    },
-    "chat-notification-header msg-holder": {
-        "paddingTop": 12,
-        "paddingRight": 12,
-        "paddingBottom": 12,
-        "paddingLeft": 12,
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0,
         "overflow": "hidden",
         "position": "relative",
         "cursor": "pointer",
         "borderBottom": "1px solid #dee6eb"
     },
     "conv-holder msg-holder a": {
-        "display": "block"
+        "display": "block",
+        "overflow": "hidden",
+        "paddingTop": 12,
+        "paddingRight": 12,
+        "paddingBottom": 12,
+        "paddingLeft": 12
     },
-    "chat-notification-header msg-holder a": {
-        "display": "block"
-    },
-    "conv-holder msg-holder:hover": {
+    "conv-holder msg-holder:hover a": {
+        "paddingLeft": 9,
         "background": "#e2f4ff",
-        "borderLeft": "3px solid #61b3de",
-        "paddingLeft": 9
+        "borderLeft": "3px solid #61b3de"
     },
-    "chat-notification-header msg-holder:hover": {
+    "conv-holder msg-holder-selected a": {
+        "paddingLeft": 9,
         "background": "#e2f4ff",
-        "borderLeft": "3px solid #61b3de",
-        "paddingLeft": 9
-    },
-    "conv-holder msg-holder-selected": {
-        "background": "#e2f4ff",
-        "borderLeft": "3px solid #61b3de",
-        "paddingLeft": 9
-    },
-    "chat-notification-header msg-holder-selected": {
-        "background": "#e2f4ff",
-        "borderLeft": "3px solid #61b3de",
-        "paddingLeft": 9
+        "borderLeft": "3px solid #61b3de"
     },
     "msg-holder chat-pro-img": {
         "float": "left",
@@ -3366,13 +3357,43 @@ export default StyleSheet.create({
     },
     "chat-notification-wrapper": {
         "position": "absolute",
-        "background": "#fff",
         "width": 225,
         "borderRadius": 3,
         "right": -100,
         "top": 55,
         "display": "none",
-        "zIndex": 100
+        "zIndex": 100,
+        "cursor": "default"
+    },
+    "chat-notification-wrapper-opened": {},
+    "chat-notification-header msg-holder": {
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0,
+        "overflow": "hidden",
+        "position": "relative",
+        "cursor": "pointer",
+        "borderBottom": "1px solid #dee6eb",
+        "background": "#fff"
+    },
+    "chat-notification-header msg-holder a": {
+        "display": "block",
+        "paddingTop": 12,
+        "paddingRight": 12,
+        "paddingBottom": 12,
+        "paddingLeft": 12,
+        "overflow": "hidden"
+    },
+    "chat-notification-header msg-holder a:hover": {
+        "background": "#e2f4ff",
+        "borderLeft": "3px solid #61b3de",
+        "paddingLeft": 9
+    },
+    "chat-notification-header msg-holder-selected a": {
+        "background": "#e2f4ff",
+        "borderLeft": "3px solid #61b3de",
+        "paddingLeft": 9
     },
     "drop_downarrow": {
         "position": "absolute",
@@ -3452,6 +3473,10 @@ export default StyleSheet.create({
     "media-options-holder media-options new-message a": {
         "paddingTop": 2,
         "textDecoration": "none"
+    },
+    "clock": {
+        "color": "#c7bfb2",
+        "display": "none"
     },
     "middle-content-wrapper": {
         "minWidth": 500
@@ -3568,5 +3593,15 @@ export default StyleSheet.create({
         "textDecoration": "none",
         "textTransform": "uppercase",
         "float": "right"
+    },
+    "confirmation_p": {
+        "color": "#2d5164",
+        "font": "20px \"montserratsemi_bold\",sans-serif"
+    },
+    "confirm-no": {
+        "backgroundColor": "#a4becd",
+        "marginRight": 20,
+        "float": "right",
+        "color": "#FFF"
     }
 });

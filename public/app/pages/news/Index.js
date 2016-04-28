@@ -96,19 +96,12 @@ export default class Index extends React.Component{
                 <div className="row row-clr">
                     <div className="container-fluid">
                         <div className="col-xs-10 col-xs-offset-1" id="middle-content-wrapper">
-
                             <div className="col-xs-4" id="news-middle-container-left-col">
-
-
                                 <div id="pg-news-middle-container-left-col-details">
                                     <h2 className="pg-newsfeed-left-title-section-txt">NEWS</h2>
-
                                     <NewsArtical news_articles = {news_articles}/>
                                 </div>
-
-
                             </div>
-
                             <div className="col-xs-8" id="newsfeed-middle-container-right-col">
                                 <div className="row pg-newsfeed-right-title-section">
                                     <div className="col-xs-6">
@@ -148,6 +141,7 @@ export class NewsArtical extends React.Component{
         }
 
         this.selectedArtical = this.selectedArtical.bind(this);
+        this.onSaveArticleIconClick = this.onSaveArticleIconClick.bind(this);
 
     }
 
@@ -202,8 +196,14 @@ export class NewsArtical extends React.Component{
 
 
     selectedArtical(data){
-        console.log(data);
         this.setState({isShowingModal : true, popupData : data});
+    }
+
+    onSaveArticleIconClick(data){
+        let _this = this;
+        _this.setState({popupData : data},function(){
+            _this.saveArticle();
+        });
     }
 
     render(){
@@ -214,8 +214,10 @@ export class NewsArtical extends React.Component{
 
         let _news_item = this.props.news_articles.map(function(newsItem,key){
             return(
-                <NewsItem newsItem ={newsItem} selected={_this.selectedArtical}
-                          key={key}/>
+                <NewsItem newsItem ={newsItem}
+                        selected={_this.selectedArtical}
+                        saveArtical={_this.onSaveArticleIconClick}
+                        key={key} />
             );
         });
         return(
@@ -228,7 +230,7 @@ export class NewsArtical extends React.Component{
 }
 
 
-export const NewsItem =({newsItem,selected})=>{
+export const NewsItem =({newsItem,selected,saveArtical})=>{
 
 
     let news_logo= "/images/news/"+newsItem.channel.toLowerCase()+".png";
@@ -237,6 +239,10 @@ export const NewsItem =({newsItem,selected})=>{
 
     function onArticalSelect(){
             selected(newsItem);
+    }
+
+    function saveArticle(){
+        saveArtical(newsItem);
     }
 
     return(
@@ -256,8 +262,8 @@ export const NewsItem =({newsItem,selected})=>{
             </div>
             <div className="row row-clr pg-newsfeed-left-post-item-status-section">
 
-                <div className="col-xs-4 rm-side-padding">
-                    <a href="#" className="pg-newsfeed-left-post-item-status-section-right-links"><i className="fa fa-bookmark"></i> Save</a>
+                <div className="col-xs-4 rm-side-padding save-artical-btn">
+                    <a href="#" className="pg-newsfeed-left-post-item-status-section-right-links" onClick={event=>saveArticle(event)}><i className="fa fa-bookmark"></i> Save</a>
                 </div>
             </div>
 

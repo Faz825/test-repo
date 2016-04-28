@@ -125,6 +125,16 @@ export default class NewsSettings extends React.Component{
         return (
             <div className="newsCatHolder container-fluid">
                 <div className="row row-clr pg-news-page-content">
+                    <div className="row row-clr pg-news-page-header">
+                        <div className="col-xs-10 col-xs-offset-1">
+                            <div className="row">
+                                <div className="col-xs-6">
+                                    <h2 className="pg-connections-page-header-title">News</h2>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                     <div className="col-xs-10 col-xs-offset-1">
                         <SavedArticles />
                         {
@@ -259,11 +269,11 @@ export class SavedArticles extends React.Component{
     showMoreArticals(){
         let visibilityState = this.state.allArticalsAreVisible;
         this.setState({allArticalsAreVisible : !visibilityState});
-        console.log("clicked");
     }
 
     render(){
         let _this = this;
+        let _more_articals = "";
         let _channel_template = this.state.articles.map(function(articles,key){
             if(key < 5){
                 return (
@@ -279,23 +289,22 @@ export class SavedArticles extends React.Component{
             }
 
         });
-        let _more_articals = this.state.articles.map(function(articles,key){
-            if(key >= 5){
-                return (
-                    <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
-                          <div className="row row-clr pg-news-inner-full various">
-                            <img src={articles.article_image} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
-                            <div className="artical-heading-holder">
-                                <p className="artical-name">{articles.heading}</p>
+        if (this.state.articles.length > 5) {
+            _more_articals = this.state.articles.map(function(articles,key){
+                if(key >= 5){
+                    return (
+                        <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
+                            <div className="row row-clr pg-news-inner-full various">
+                                <img src={articles.article_image} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
+                                <div className="artical-heading-holder">
+                                    <p className="artical-name">{articles.heading}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )
-            }
-        });
-
-        //console.log(this.state.articles);
-        //console.log(this.state.allArticalsAreVisible);
+                    )
+                }
+            });
+        }
         return(
             <div className="row row-clr pg-news-page-content-item pg-box-shadow">
                 <div className="col-xs-2 pg-news-page-content-item-left-thumb saved-articals-holder">

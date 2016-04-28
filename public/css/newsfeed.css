@@ -694,6 +694,9 @@
     background-color: #fff;
     border-bottom: 1px solid #dee6eb;
 }
+.pg-newsfeed-left-post-item-status-section .save-artical-btn a:hover{
+    color: #61b3de;
+}
 .pg-newsfeed-left-post-item-status-section-left-links,
 .pg-newsfeed-left-post-item-status-section-left-links:hover,
 .pg-newsfeed-left-post-item-status-section-left-links:focus,
