@@ -25,7 +25,6 @@ import Lib from './Lib.js';
 
          var audioCall = true;
          var screenCall = false;
-         var currentChatUri = null;
          var me = null;
          var convUsers = [];
          var unreadCount = 0;
@@ -36,11 +35,12 @@ import Lib from './Lib.js';
 
          // A conversation has changed
          b6.on('conversation', function(c, op) {
-             onConversationChange(c, op);
+             //onConversationChange(c, op);
          });
 
          // Incoming call from another user
          b6.on('incomingCall', function(c) {
+
              attachCallEvents(c);
              var cf = b6.getNameFromIdentity(c.other);
 
@@ -102,6 +102,7 @@ import Lib from './Lib.js';
              // Use number of video elems to determine the layout using CSS
              var kl = n > 2 ? 'grid' : 'simple';
              vc.attr('class', kl);
+
          });
 
          function bit6Auth(isNewUser) {
@@ -221,46 +222,6 @@ import Lib from './Lib.js';
                      });
 
                  }
-             }
-
-             if(op >= 0 && title != 'undefined'){
-                 //console.log("existing conversation");
-
-                 // Update Conversation data
-                 var stamp = Lib.getRelativeTime(c.updated);
-                 var latestText = '';
-                 var lastMsg = c.getLastMessage();
-                 if (lastMsg) {
-                     // Show the text from the latest conversation
-                     if (lastMsg.content)
-                         latestText = lastMsg.content;
-                     // If no text, but has an attachment, show the mime type
-                     else if (lastMsg.data && lastMsg.data.type) {
-                         latestText = lastMsg.data.type;
-                     }
-                 }
-
-                 notificationDiv.find('.chat-body').find('.msg').html(latestText);
-                 notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
-
-                 // If the updated conversation is newer than the top one -
-                 // move this conversation to the top
-                 var notificationTop = notificationWrapperDiv.children(':first'); //console.log(notificationTop)
-                 if (notificationTop.length > 0 && title != 'undefined') {
-                     var notificationTopTabId = notificationTop.attr('id');
-                     var notificationTopConvId = domIdToConversationId(notificationTopTabId);
-                     var notificationTopConv = b6.getConversation(notificationTopConvId);
-
-                     if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
-                         notificationTop.before(notificationDiv);
-                     }
-                 }
-
-                 if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
-                     unreadCount += 1;
-                     unreadConversationCount.push(c.id);
-                 }
-
              }
 
              if(unreadCount > 0){
@@ -455,6 +416,25 @@ import Lib from './Lib.js';
              $('#min').html(String(newMinutes).length==1?'0'+String(newMinutes):newMinutes);
              $('#sec').html(String(newSeconds).length==1?'0'+String(newSeconds):newSeconds);
 
+         }
+
+         function makeConversationRead(uri){
+             var conv = b6.getConversation(uri);
+
+             if (conv != null && b6.markConversationAsRead(conv) > 0) {
+                 // Some messages have been marked as read
+                 // update chat list
+                 if(unreadConversationCount.indexOf(conv.id) != -1){
+                     unreadCount -= 1;
+                     unreadConversationCount.splice(conv.id);
+                 }
+                 if (unreadConversationCount.indexOf(conv.id) != -1) {
+
+                     unreadConversationCount.push(c.id);
+                 }
+
+
+             }
          }
 
      }
