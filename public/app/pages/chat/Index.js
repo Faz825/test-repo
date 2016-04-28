@@ -4,10 +4,11 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import { Scrollbars } from 'react-custom-scrollbars';
-import Session  from '../../middleware/Session';
-import Chat  from '../../middleware/Chat';
+import Session from '../../middleware/Session';
+import Chat from '../../middleware/Chat';
 import {Alert} from '../../config/Alert';
 import ChatListView from '../../components/elements/ChatListView';
+import Lib from '../../middleware/Lib';
 
 let errorStyles = {
     color         : "#ed0909",
@@ -32,28 +33,34 @@ export default class Index extends React.Component{
             my_connections:[],
             chatWithUserName:"",
             unreadConversations:[],
-            conversations:[]
+            conversations:[],
+            messages:[],
+            uri:'usr:proglobe'+this.getUrl()
         };
 
         this.b6 = Chat.b6;
-
-        if(this.state.chatWith == 'new'){
-            this.loadMyConnections();
-        } else{
-            this.loadChat(this.state.chatWith);
-        }
-        this.initChat(this.b6);
         this.convUsers = [];
         this.conversations = [];
         this.unreadConversations = [];
+        this.msgDivIds = [];
+        this.messages = [];
+        this.checkChatWith = this.getUrl();
+        this.initChat(this.b6);
+        this.loadChat(this.state.chatWith);
+        this.loadMyConnections();
     };
 
     initChat(b6){
         let _this = this;
+
+        // A conversation has changed
         b6.on('conversation', function(c, op) {
-            window.setTimeout(function() {
-                _this.onConversationChange(c, op, b6);
-            }, 1000);
+            _this.onConversationChange(c, op, b6);
+        });
+
+        // A message has changed
+        b6.on('message', function(m, op) {
+            _this.onMessageChange(m, op, b6);
         });
     }
 
@@ -69,22 +76,22 @@ export default class Index extends React.Component{
         return '#tab__' + c.domId();
     }
 
-    getRelativeTime(stamp) {
-        let now = Date.now();
-        // 24 hours in milliseconds
-        let t24h = 24 * 60 * 60 * 1000;
-        let d = new Date(stamp);
-        let s = (now - stamp > t24h) ? d.toLocaleDateString() : d.toLocaleTimeString();
-        return s;
+    // Get jQuery selector for a Message
+    domIdForMessage(m) {
+        return '#msg__' + m.domId();
+    };
+
+    // Get Messages Container jQuery selector for a Conversation
+    msgsDomIdForConversation(c) {
+        return '#msgs__' + c.domId();
     }
 
     onConversationChange(c,op,b6){
 
-        console.log("onConversationChange")
-
         let conv = {};
 
         let tabId = this.tabDomIdForConversation(c);
+        let msgsId = this.msgsDomIdForConversation(c);
 
         // Conversation deleted
         if (op < 0) {
@@ -95,8 +102,6 @@ export default class Index extends React.Component{
         let proglobe_title_array = proglobe_title.split('proglobe');
         let title = proglobe_title_array[1];
 
-        //console.log(title);
-
         // New conversation
         if (op > 0) {
 
@@ -106,26 +111,20 @@ export default class Index extends React.Component{
 
             if(title != 'undefined' && title != 'new'){
 
-
-                $.ajax({
-                    url: '/get-profile/'+title,
-                    method: "GET",
-                    dataType: "JSON",
-                    success: function (data, text) {
-
-                        if (data.status.code == 200 && data.profile_data != null) {
-
-                            this.convUsers[title] = data.profile_data;
+                if(typeof this.convUsers[title] == 'undefined'){
+                    for(let my_con in this.state.my_connections){
+                        if(title === this.state.my_connections[my_con].user_name){
+                            this.convUsers[title] = this.state.my_connections[my_con];
                             conv = {
                                 id:tabId.substring(1),
                                 tabId:tabId,
                                 proglobeTitle:proglobe_title,
                                 title:title,
-                                user:data.profile_data
+                                user:this.state.my_connections[my_con]
                             };
 
                             //Update Conversation data
-                            let stamp = this.getRelativeTime(c.updated);
+                            let stamp = Lib.getRelativeTime(c.updated);
                             let latestText = '';
                             let lastMsg = c.getLastMessage();
                             if (lastMsg) {
@@ -148,35 +147,50 @@ export default class Index extends React.Component{
                             if(this.conversations.length > 0){
                                 let first_conv = this.conversations[0];
                                 let first_id = first_conv.id;
-                                //console.log("2 => "+notificationTopTabId)
                                 let first_conv_id = this.domIdToConversationId(first_id);
                                 let first_conversation = b6.getConversation(first_conv_id);
 
                                 if (first_conversation && first_conversation.id != c.id && c.updated > first_conversation.updated) {
                                     this.conversations.splice(0,0,conv);
+                                    if(typeof this.checkChatWith == 'undefined'){
+                                        this.setState({chatWith : conv.title});
+                                        this.setState({chatWithUserName:conv.user.first_name+" "+conv.user.last_name});
+                                        this.setState({uri : 'usr:proglobe'+conv.title});
+                                        window.history.pushState('Chat','Chat','/chat/'+conv.title);
+                                    }
                                 } else{
                                     this.conversations.push(conv);
                                 }
                             } else{
                                 this.conversations.push(conv);
+                                if(typeof this.checkChatWith == 'undefined'){
+                                    this.setState({chatWith : conv.title});
+                                    this.setState({chatWithUserName:conv.user.first_name+" "+conv.user.last_name});
+                                    this.setState({uri : 'usr:proglobe'+conv.title});
+                                    window.history.pushState('Chat','Chat','/chat/'+conv.title);
+                                }
                             }
+
+                            let message = {};
+                            message = {
+                                id:msgsId,
+                                title:title,
+                                messages:[]
+                            };
+
+                            this.messages.push(message);
+                            this.setState({messages:this.messages});
                         }
-                    }.bind(this),
-                    error: function (request, status, error) {
-                        console.log(request.responseText);
-                        console.log(status);
-                        console.log(error);
                     }
-                });
+                }
 
             }
         }
 
         if(op >= 0 && title != 'undefined' && title != 'new'){
-            //console.log("existing conversation");
 
             // Update Conversation data
-            let stamp = this.getRelativeTime(c.updated);
+            let stamp = Lib.getRelativeTime(c.updated);
             let latestText = '';
             let lastMsg = c.getLastMessage();
             if (lastMsg) {
@@ -192,7 +206,6 @@ export default class Index extends React.Component{
             var cur_conv = 0;
 
             for(let con in this.conversations){
-                console.log(this.conversations[con]);
                 if(this.conversations[con].title == title){
                     this.conversations[con].date = stamp;
                     this.conversations[con].latestMsg = latestText;
@@ -212,27 +225,130 @@ export default class Index extends React.Component{
 
                 let current_conv = this.conversations[cur_conv];
                 let current_conv_id = current_conv.id;
-                //console.log("2 => "+notificationTopTabId)
                 let current_conversation_id = this.domIdToConversationId(current_conv_id);
                 let current_conversation = b6.getConversation(current_conversation_id);
 
-
                 if (first_conversation && first_conversation.id != current_conversation.id && current_conversation.updated > first_conversation.updated) {
+                    this.conversations.splice(cur_conv,1);
                     this.conversations.splice(0,0,current_conv);
-                    this.conversations.splice(cur_conv+1,1);
+                    if(typeof this.checkChatWith == 'undefined'){
+                        this.setState({chatWith : current_conv.title});
+                        this.setState({chatWithUserName:current_conv.user.first_name+" "+current_conv.user.last_name});
+                        this.setState({uri : 'usr:proglobe'+current_conv.title});
+                        window.history.pushState('Chat','Chat','/chat/'+current_conv.title);
+                    }
                 }
+            }
+
+            if(typeof this.checkChatWith != 'undefined' && this.checkChatWith != 'new' && "usr:"+proglobe_title == this.state.uri){
+
+                //var conversation = b6.getConversation(this.state.uri);
+
+                if (b6.markConversationAsRead(c) > 0) {
+                    // Some messages have been marked as read
+                    // update chat list
+                    if(this.unreadConversations.indexOf(c.id) != -1){
+                        this.unreadConversations.splice(c.id);
+                    }
+                }
+
             }
         }
 
-        this.setState({unreadConversations:this.unreadConversations});
         this.setState({conversations:this.conversations});
+        this.setState({unreadConversations:this.unreadConversations});
 
-        //if(_unreadCount > 0){
-        //    ReactDom.render((
-        //        <span className="total">{this.state.headerChatUnreadCount}</span>
-        //    ), document.getElementById('unread_chat_count_header'));
-        //}
+    }
 
+    onMessageChange(m, op, b6){
+
+        if(op < 0 || Object.keys(m).length > 7){
+            return;
+        }
+        let convId = m.getConversationId();
+        let c = b6.getConversation(convId);
+        let msgsId = this.msgsDomIdForConversation(c);
+        let divId = this.domIdForMessage(m);
+        if(this.msgDivIds.indexOf(divId) == -1){
+            this.msgDivIds.push(divId);
+            let cssClass = m.incoming() ? 'receiver' : 'sender';
+
+            if(typeof this.checkChatWith != 'undefined' && this.checkChatWith != 'new'){
+                if (convId == this.state.uri) {
+                    // Mark this new message as read since it is on the screen
+                    if (m.incoming()) {
+                        b6.markMessageAsRead(m);
+                    }
+                }
+            }
+
+            // Message content to show
+            let text = m.content;
+
+            // This is a call history item
+            if (m.isCall()) {
+                let ch = m.channel();
+                let r = [];
+                if (ch & bit6.Message.AUDIO) {
+                    r.push('Audio');
+                }
+                if (ch & bit6.Message.VIDEO) {
+                    r.push('Video');
+                }
+                if (ch & bit6.Message.DATA) {
+                    if (r.length === 0) {
+                        r.push('Data');
+                    }
+                }
+                text = r.join(' + ') + ' Call';
+                if (m.data && m.data.duration) {
+                    let dur = m.data.duration;
+                    let mins = Math.floor(dur / 60);
+                    let secs = dur % 60;
+                    text += ' - ' + (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+                }
+            }
+
+            let my_name = '';
+            let my_prof_img = '/images/default-profile-pic.png';
+            let other_name = '';
+            let other_prof_img = '/images/default-profile-pic.png';
+
+            if (this.state.userLoggedIn != null) {
+                my_name = this.state.userLoggedIn['first_name'] + " " + this.state.userLoggedIn['last_name'];
+                if (this.state.userLoggedIn['profile_image'] != null) {
+                    my_prof_img = this.state.userLoggedIn['profile_image'];
+                }
+            }
+
+            let other_array = m.other.split('proglobe');
+            let other = other_array[1];
+
+            if (this.convUsers != null && this.convUsers[other] != null) {
+                other_name = this.convUsers[other]['first_name'] + ' ' + this.convUsers[other]['last_name'];
+                if (this.convUsers[other]['images'] != null && this.convUsers[other]['images']['profile_image'] != null) {
+                    other_prof_img = this.convUsers[other]['images']['profile_image']['http_url']
+                }
+            }
+
+            var display_name = m.incoming() ? other_name : my_name;
+            var display_prof_img = m.incoming() ? other_prof_img : my_prof_img;
+
+            let msg = {
+                id:divId.substring(1),
+                cssClass:cssClass,
+                text:text,
+                display_name:display_name,
+                display_prof_img:display_prof_img
+            };
+
+            for(let con in this.messages){
+                if(this.messages[con].id == msgsId){
+                    this.messages[con].messages.push(msg);
+                }
+            }
+            this.setState({messages:this.messages});
+        }
     }
 
     loadMyConnections(){
@@ -243,13 +359,14 @@ export default class Index extends React.Component{
             headers: { 'prg-auth-header':this.state.userLoggedIn.token }
         }).done(function(data){
             if(data.status.code == 200){
-                this.setState({my_connections:data.my_con})
+                this.setState({my_connections:data.my_con});
             }
         }.bind(this));
     }
 
     loadChat(chatWith){
         if(chatWith != 'undefined' && chatWith != 'new'){
+            this.checkChatWith = chatWith;
             $.ajax({
                 url: '/get-profile/' + chatWith,
                 method: "GET",
@@ -257,8 +374,7 @@ export default class Index extends React.Component{
             }).done(function(data){
                 if (data.status.code == 200 && data.profile_data != null) {
                     this.setState({chatWithUserName:data.profile_data.first_name+" "+data.profile_data.last_name});
-                    this.uri = 'usr:proglobe'+chatWith;
-                    Chat.showMessages(this.uri);
+                    this.makeConversationRead(this.state.uri)
                 }
             }.bind(this));
         }
@@ -267,9 +383,8 @@ export default class Index extends React.Component{
     loadRoute(url){
         this.setState({chatWith : url});
         this.setState({chatWithUserName : ""});
-        if(url == 'new'){
-            this.loadMyConnections();
-        }else{
+        if(url !== 'new'){
+            this.setState({uri:'usr:proglobe'+url});
             this.loadChat(url);
         }
         window.history.pushState('Chat','Chat','/chat/'+url);
@@ -287,14 +402,12 @@ export default class Index extends React.Component{
         return  this.props.params.chatWith;
     }
 
-    sendChat(formData){
+    sendChat(msg){
 
-        console.log("Global sendChat")
-        console.log(formData)
+        this.checkChatWith = this.state.chatWith;console.log(this.checkChatWith)
+        this.makeConversationRead(this.state.uri)
 
-        console.log(this.uri)
-
-        this.b6.compose(this.uri).text(formData.msg).send(function(err) {
+        this.b6.compose(this.state.uri).text(msg).send(function(err) {
             if (err) {
                 console.log('error', err);
             }
@@ -314,7 +427,9 @@ export default class Index extends React.Component{
             return 0;
         } else{
             _this.setState({validateAlert: ""});
-            Chat.startOutgoingCall(this.uri, true);
+            this.checkChatWith = this.getUrl();console.log(this.checkChatWith)
+            this.makeConversationRead(this.state.uri)
+            Chat.startOutgoingCall(this.state.uri, true);
         }
 
     }
@@ -328,9 +443,24 @@ export default class Index extends React.Component{
             return 0;
         } else{
             _this.setState({validateAlert: ""});
-            Chat.startOutgoingCall(this.uri, false);
+            this.checkChatWith = this.getUrl();console.log(this.checkChatWith)
+            this.makeConversationRead(this.state.uri)
+            Chat.startOutgoingCall(this.state.uri, false);
         }
 
+    }
+
+    makeConversationRead(uri){
+        var conv = this.b6.getConversation(uri);
+
+        if (conv != null && this.b6.markConversationAsRead(conv) > 0) {
+            // Some messages have been marked as read
+            // update chat list
+            if(this.unreadConversations.indexOf(conv.id) != -1){
+                this.unreadConversations.splice(conv.id);
+                this.setState({unreadConversations:this.unreadConversations});
+            }
+        }
     }
 
     render() {
@@ -341,7 +471,8 @@ export default class Index extends React.Component{
             my_connections,
             chatWithUserName,
             conversations,
-            unreadConversations
+            unreadConversations,
+            messages
             }=this.state;
 
         return (
@@ -365,12 +496,13 @@ export default class Index extends React.Component{
                             />
                     </div>
                     <div className="chat-body">
-                        <ChatList conversations = {conversations} chatWith = {chatWith}/>
+                        <ChatList conversations = {conversations} chatWith = {chatWith} loadRoute ={this.loadRoute.bind(this)} />
                         <div className="chat-msg-holder col-sm-8">
                             <MessageList
                                 loggedUser = {userLoggedIn}
                                 chatWith = {chatWith}
                                 sendChat = {this.sendChat.bind(this)}
+                                messages = {messages}
                                 />
                             <ComposeMessage loggedUser = {userLoggedIn}
                                             chatWith = {chatWith}
@@ -397,7 +529,7 @@ export class LeftMenu extends React.Component{
                 <div className="inbox">
                     <p id="unread_inbox_p">inbox
 
-                        {this.props.unreadCount > 0 ? <span className="total">{this.props.unreadCount}</span> : null}
+                        {this.props.unreadConversations.length > 0 ? <span className="total">{this.props.unreadConversations.length}</span> : null}
                     </p>
                 </div>
                 <div className="otherMsg">
@@ -479,11 +611,16 @@ export class ChatList extends React.Component{
         this.loggedUser = this.props.loggedUser;
     }
     render() {
+        let _this = this;
         let convs = this.props.conversations.map(function(conv,key){
+            let _classNames = "tab msg-holder ";
+            if(_this.props.chatWith == conv.title){
+                _classNames += "msg-holder-selected";
+            }
 
             return (
-                <div className="tab msg-holder" key={key}>
-                    <a href="javascript:void(0)">
+                <div className={_classNames} key={key}>
+                    <a href="javascript:void(0)" onClick={()=>_this.props.loadRoute(conv.title)}>
                         <div className="chat-pro-img">
                             <img src={conv.user.images.profile_image.http_url}/>
                         </div>
@@ -517,12 +654,50 @@ export class MessageList extends React.Component{
         this.loggedUser = this.props.loggedUser;
     }
     render() {
+
+        if(Object.keys(this.refs).length > 0){
+
+            for(var key in this.refs){
+                if(key == "msgScrollBar"){
+                    const scrollbars = this.refs[key];
+                    const scrollHeight = scrollbars.getScrollHeight();
+                    scrollbars.scrollTop(scrollHeight);
+                }
+            }
+        }
+
+        let _this = this;
+        let convs = this.props.messages.map(function(conv,key){
+            let style = {display:"none"};
+            if(conv.title == _this.props.chatWith){
+                style = {display:"block"};
+            }
+
+            let msgs = conv.messages.map(function(msg,key){
+                let cssClass = 'chat-block '+msg.cssClass;
+                return (
+                    <div className={cssClass} key={key}>
+                        <img src={msg.display_prof_img} alt="" width="40px" height="40px"/>
+                        <div className="chat-msg-body"><span className="user-name">{msg.display_name}</span><p className="chat-msg">{msg.text}</p></div>
+                    </div>
+                );
+            });
+
+            return (
+                <div className="msgs" key={key} style={style}>
+                    {msgs}
+                </div>
+            );
+        });
+
         return (
                 <div className="chat-view">
-                    <Scrollbars style={{ height: 335 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
+                    <Scrollbars ref="msgScrollBar" style={{ height: 335 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
                         <div id="msgListRow">
                             <div className="col-xs-12">
-                                <div id="msgList"></div>
+                                <div id="msgList">
+                                    {convs}
+                                </div>
                             </div>
                         </div>
                     </Scrollbars>
@@ -558,18 +733,16 @@ export class ComposeMessage extends React.Component{
     sendMessage(e){
         e.preventDefault();
         let _this = this;
-        console.log(this.props.chatWith);
         if(typeof this.props.chatWith == 'undefined' || this.props.chatWith == 'new'){
             this.setState({validateAlert: Alert.EMPTY_RECEIVER+"send message"});
             return 0;
         } else if(!this.state.formData['msg'] || this.state.formData['msg'] == "") {
-            console.log(this.state.formData);
             this.setState({validateAlert: Alert.EMPTY_MESSAGE});
         } else{
-                this.state.formData['status'] = 1;
-                this.props.sendChat(this.state.formData);
-                this.setState({validateAlert: ""});
-                this.setState({formData: {}});
+            let msg = this.state.formData.msg;
+            this.setState({formData: {}});
+            this.setState({validateAlert: ""});
+            this.props.sendChat(msg);
         }
     }
 
@@ -581,7 +754,7 @@ export class ComposeMessage extends React.Component{
                         (this.loggedUser.profile_image != null ? <img src={this.loggedUser.profile_image} alt="" width="40" height="40" id="my_profile_img"/>:<img src="/images/default-profile-pic.png" alt="" width="40" height="40" id="my_profile_img"/>)
                     }
                     <div className="msg-input">
-                        <textarea className="form-control" placeholder="New Message..." name="msg" value={this.state.formData.msg}
+                        <textarea className="form-control" placeholder="New Message..." name="msg" value={(this.state.formData.msg)?this.state.formData.msg:''}
                                   onChange={(event)=>{ this.elementChangeHandler(event)}}></textarea>
                     </div>
                     {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}

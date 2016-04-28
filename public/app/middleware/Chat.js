@@ -3,6 +3,7 @@
  */
 
 import Session  from './Session.js';
+import Lib from './Lib.js';
 
  class Chat{
 
@@ -25,9 +26,7 @@ import Session  from './Session.js';
          var audioCall = true;
          var screenCall = false;
          var currentChatUri = null;
-         var typingLabelTimer = 0;
          var me = null;
-         var currentChatUserName = null;
          var convUsers = [];
          var unreadCount = 0;
          var incomingCallUser = [];
@@ -37,14 +36,7 @@ import Session  from './Session.js';
 
          // A conversation has changed
          b6.on('conversation', function(c, op) {
-             //console.log("A conversation has changed")
              onConversationChange(c, op);
-         });
-
-         // A message has changed
-         b6.on('message', function(m, op) {
-             //console.log("A message has changed")
-             onMessageChange(m, op);
          });
 
          // Incoming call from another user
@@ -133,20 +125,12 @@ import Session  from './Session.js';
 
          // Update Conversation View
          function onConversationChange(c, op) {
-             //console.log("onConversationChange")
-             var chatList = $('#chatList');
-             var tabId = tabDomIdForConversation(c);
-             var msgsId = msgsDomIdForConversation(c);
              var notificationId = notificationDomIdForConversation(c);
-             var tabDiv = $(tabId);
-             var msgsDiv = $(msgsId);
              var notificationWrapperDiv = $("#unread_chat_list");
              var notificationDiv = $(notificationId);
 
              // Conversation deleted
              if (op < 0) {
-                 tabDiv.remove();
-                 msgsDiv.remove();
                  notificationDiv.remove();
                  return
              }
@@ -155,10 +139,7 @@ import Session  from './Session.js';
              var proglobe_title_array = proglobe_title.split('proglobe');
              var title = proglobe_title_array[1];
 
-
-             var chatListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
              var notificationListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
-
 
              // New conversation
              if (op > 0) {
@@ -179,27 +160,6 @@ import Session  from './Session.js';
 
                                  convUsers[title] = data.profile_data;
 
-                                  //Entry in the Chat List
-                                 //if(currentChatUserName == proglobe_title){
-                                 //    tabDiv = $('<div class="tab msg-holder msg-holder-selected" />')
-                                 //        .attr('id', tabId.substring(1))
-                                 //        .append(chatListADiv);
-                                 //    $("#chat_with").html(data.profile_data['first_name']+" "+data.profile_data['last_name']);
-                                 //} else{
-                                 //    tabDiv = $('<div class="tab msg-holder" />')
-                                 //        .attr('id', tabId.substring(1))
-                                 //        .append(chatListADiv);
-                                 //}
-                                 //chatList.append(tabDiv);
-
-                                  //Create a container for message list for this conversation
-                                 //msgsDiv = $('<div class="msgs" />')
-                                 //    .attr('id', msgsId.substring(1))
-                                 //    .hide();
-                                 //$('#msgList').append(msgsDiv);
-
-                                 //console.log("notificationId.substring(1) => "+notificationId.substring(1))
-
                                  //TODO::Show only 5 and if more display 'see all'
                                  notificationDiv = $('<div class="tab msg-holder" />')
                                      .attr('id', notificationId.substring(1))
@@ -207,7 +167,7 @@ import Session  from './Session.js';
                                  notificationWrapperDiv.append(notificationDiv)
 
                                   //Update Conversation data
-                                 var stamp = getRelativeTime(c.updated);
+                                 var stamp = Lib.getRelativeTime(c.updated);
                                  var latestText = '';
                                  var lastMsg = c.getLastMessage();
                                  if (lastMsg) {
@@ -227,13 +187,6 @@ import Session  from './Session.js';
                                      connection_prof_img = convUsers[title]['images']['profile_image']['http_url']
                                  }
 
-                                 // Apply data to DOM
-                                 //tabDiv.find('a').attr('href', '/chat/'+title);
-                                 //tabDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
-                                 //tabDiv.find('.chat-body').find('.connection-name').html(connection_name);
-                                 //tabDiv.find('.chat-body').find('.msg').html(latestText);
-                                 //tabDiv.find('.chat-body').find('.chat-date').html(stamp);
-
                                  notificationDiv.find('a').attr('href', '/chat/'+title);
                                  notificationDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
                                  notificationDiv.find('.chat-body').find('.connection-name').html(connection_name);
@@ -242,24 +195,9 @@ import Session  from './Session.js';
 
                                  // If the updated conversation is newer than the top one -
                                  // move this conversation to the top
-                                 //var top = chatList.children(':first');
-                                 //if (top.length > 0 && title != 'undefined') {
-                                 //    var topTabId = top.attr('id');
-                                 //    //console.log("1 => "+topTabId)
-                                 //    var topConvId = domIdToConversationId(topTabId);
-                                 //    var topConv = b6.getConversation(topConvId);
-                                 //
-                                 //    if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
-                                 //        top.before(tabDiv);
-                                 //    }
-                                 //}
-
-                                 // If the updated conversation is newer than the top one -
-                                 // move this conversation to the top
                                  var notificationTop = notificationWrapperDiv.children(':first');
                                  if (notificationTop.length > 0 && title != 'undefined') {
                                      var notificationTopTabId = notificationTop.attr('id');
-                                     //console.log("2 => "+notificationTopTabId)
                                      var notificationTopConvId = domIdToConversationId(notificationTopTabId);
                                      var notificationTopConv = b6.getConversation(notificationTopConvId);
 
@@ -271,43 +209,6 @@ import Session  from './Session.js';
                                  if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
                                      unreadCount += 1;
                                      unreadConversationCount.push(c.id);
-                                 }
-
-                                 if(currentChatUri != null){
-
-                                     showTheConversation(currentChatUri);
-
-                                     //var conv = b6.getConversation(currentChatUri);
-                                     //
-                                     //if(conv != null){
-                                     //
-                                     //    // Mark all messages as read
-                                     //    if (b6.markConversationAsRead(conv) > 0) {
-                                     //        // Some messages have been marked as read
-                                     //        // update chat list
-                                     //        if(unreadConversationCount.indexOf(c.id) != -1){
-                                     //            unreadCount -= 1;
-                                     //            unreadConversationCount.splice(c.id);
-                                     //        }
-                                     //    }
-                                     //
-                                     //
-                                     //    var msgsDiv = $( msgsDomIdForConversation(conv) );
-                                     //    // Show only message container for this conversation
-                                     //    // Hide all the other message containers
-                                     //    msgsDiv.show().siblings().hide();
-                                     //    // Scroll to the bottom of the conversation
-                                     //    //scrollToLastMessage();
-                                     //
-                                     //    // Request focus for the compose message text field
-                                     //    $('#msgText').focus();
-                                     //
-                                     //}
-
-                                 }
-
-                                 for(var i = 0; i < c.messages.length; i++){
-                                     onMessageChange(c.messages[i], op)
                                  }
 
                              }
@@ -326,7 +227,7 @@ import Session  from './Session.js';
                  //console.log("existing conversation");
 
                  // Update Conversation data
-                 var stamp = getRelativeTime(c.updated);
+                 var stamp = Lib.getRelativeTime(c.updated);
                  var latestText = '';
                  var lastMsg = c.getLastMessage();
                  if (lastMsg) {
@@ -339,25 +240,8 @@ import Session  from './Session.js';
                      }
                  }
 
-                 //tabDiv.find('.chat-body').find('.msg').html(latestText);
-                 //tabDiv.find('.chat-body').find('.chat-date').html(stamp);
-
                  notificationDiv.find('.chat-body').find('.msg').html(latestText);
                  notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
-
-                 // If the updated conversation is newer than the top one -
-                 // move this conversation to the top
-                 //var top = chatList.children(':first');
-                 //if (top.length > 0 && title != 'undefined') {
-                 //    var topTabId = top.attr('id');
-                 //    var topConvId = domIdToConversationId(topTabId);
-                 //    var topConv = b6.getConversation(topConvId);
-                 //
-                 //    if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
-                 //        //console.log("going to move the top ")
-                 //        top.before(tabDiv);
-                 //    }
-                 //}
 
                  // If the updated conversation is newer than the top one -
                  // move this conversation to the top
@@ -377,28 +261,9 @@ import Session  from './Session.js';
                      unreadConversationCount.push(c.id);
                  }
 
-                 if(currentChatUri != null){
-
-                     var conv = b6.getConversation(currentChatUri);
-
-                     if (conv != null && b6.markConversationAsRead(conv) > 0) {
-                         // Some messages have been marked as read
-                         // update chat list
-                         if(unreadConversationCount.indexOf(c.id) != -1){
-                             unreadCount -= 1;
-                             unreadConversationCount.splice(c.id);
-                         }
-                     }
-
-                 }
              }
 
-             //console.log("Index of "+c.id+" = "+unreadConversationCount.indexOf(c.id));
-             //console.log("unreadConversationCount.length => "+unreadConversationCount.length);
-
              if(unreadCount > 0){
-                 $("#unread_inbox_p").find('.total').remove();
-                 $("#unread_inbox_p").append('<span class="total">'+unreadCount+'</span>');
                  $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
              }
 
@@ -408,237 +273,12 @@ import Session  from './Session.js';
              return '#notification__' + c.domId();
          }
 
-         // Get Chat Tab jQuery selector for a Conversation
-         function tabDomIdForConversation(c) {
-             return '#tab__' + c.domId();
-         }
-
-         function showTheConversation(uri){
-
-             var conv = b6.getConversation(uri);
-
-             if(conv != null){
-
-                 // Mark all messages as read
-                 if (b6.markConversationAsRead(conv) > 0) {
-                     // Some messages have been marked as read
-                     // update chat list
-                     if(unreadConversationCount.indexOf(c.id) != -1){
-                         unreadCount -= 1;
-                         unreadConversationCount.splice(c.id);
-                     }
-                 }
-
-
-                 var msgsDiv = $( msgsDomIdForConversation(conv) );
-                 // Show only message container for this conversation
-                 // Hide all the other message containers
-                 msgsDiv.show().siblings().hide();
-                 // Scroll to the bottom of the conversation
-                 //scrollToLastMessage();
-
-                 // Request focus for the compose message text field
-                 $('#msgText').focus();
-
-             }
-
-         }
-
-
-         this.showMessages = function(uri) {
-
-             //console.log("this.showMessages => ",uri)
-
-             var proglobe_title_array = uri.split('proglobe');
-
-             if(proglobe_title_array[1] != 'undefined'){
-
-                 // Current conversation identity
-                 currentChatUri = uri;
-                 currentChatUserName = 'proglobe'+proglobe_title_array[1];
-                 showTheConversation(currentChatUri);
-
-             }
-         };
-
          // Convert element id to a Conversation id
          function domIdToConversationId(id) {
              var r = id.split('__');
              id = r.length > 0 ? r[1] : id
              return bit6.Conversation.fromDomId(id);
          }
-
-         // Get jQuery selector for a Message
-         var domIdForMessage = function (m) {
-             return '#msg__' + m.domId();
-         };
-
-         function getRelativeTime(stamp) {
-             var now = Date.now();
-             // 24 hours in milliseconds
-             var t24h = 24 * 60 * 60 * 1000;
-             var d = new Date(stamp);
-             var s = (now - stamp > t24h) ? d.toLocaleDateString() : d.toLocaleTimeString();
-             return s;
-         }
-
-         // Get Messages Container jQuery selector for a Conversation
-         function msgsDomIdForConversation(c) {
-             return '#msgs__' + c.domId();
-         }
-
-         var showUserTyping = function (ident) {
-             clearInterval(typingLabelTimer);
-             if (ident) {
-                 typingLabelTimer = setTimeout(function () {
-                     $('#msgOtherTyping').toggle(false);
-                 }, 1000);
-                 ident = b6.getNameFromIdentity(ident);
-                 var txt = ident + ' is typing...';
-                 $('#msgOtherTyping').html(txt);
-             }
-             $('#msgOtherTyping').toggle(ident ? true : false);
-         };
-
-         // Scroll to the last message in the messages list
-         var scrollToLastMessage = function () {
-             var t = document.getElementById("msgListRow").scrollHeight;
-             if(typeof t == 'undefined'){
-                 t = $('#msgListRow')[0].scrollHeight;
-                 $('#msgListRow')[0].scrollTop = t;
-             } else{
-                 document.getElementById("msgListRow").scrollTop = t;
-             }
-         };
-
-         // Update Message View
-         var onMessageChange = function (m, op) {
-             //console.log("onMessageChange");
-
-             var divId = domIdForMessage(m);
-             var div = $(divId);
-
-             // Message deleted
-             if (op < 0) {
-                 div.remove();
-                 return;
-             }
-
-             // Message added
-             if (op > 0) {
-
-                 if (m.deleted) {
-                     return;
-                 }
-                 if (div.length > 0) {
-                     div.remove();
-                 }
-
-                 var cssClass = m.incoming() ? 'receiver' : 'sender';
-
-                 div = $('<div class="chat-block ' + cssClass + '" />').attr('id', divId.substring(1));
-
-                 // This message has an attachment
-                 if (m.data && m.data.type) {
-                     var attachType = m.data.type;
-                     var href = m.data.attach;
-                     // We have a thumbnail and this is not an audio file
-                     if (m.data.thumb && attachType.indexOf('audio/') < 0) {
-                         var thumbImg = m.data.thumb;
-                         div.append('<a class="thumb" href="' + href + '" target="_new"><img src="' + thumbImg + '" /></a>');
-                     }
-                     // Show Play button
-                     else {
-                         var btn = $('<button class="btn btn-info"/>')
-                             .text('Play')
-                             .data('src', href)
-                             .click(function () {
-                                 var src = $(this).data('src');
-                                 var audio = new Audio(src);
-                                 audio.play();
-                             });
-                         div.append(btn);
-                     }
-                 }
-
-                 // Message content to show
-                 var text = m.content;
-
-                 // This is a call history item
-                 if (m.isCall()) {
-                     var ch = m.channel();
-                     var r = [];
-                     if (ch & bit6.Message.AUDIO) {
-                         r.push('Audio');
-                     }
-                     if (ch & bit6.Message.VIDEO) {
-                         r.push('Video');
-                     }
-                     if (ch & bit6.Message.DATA) {
-                         if (r.length === 0) {
-                             r.push('Data');
-                         }
-                     }
-                     text = r.join(' + ') + ' Call';
-                     if (m.data && m.data.duration) {
-                         var dur = m.data.duration;
-                         var mins = Math.floor(dur / 60);
-                         var secs = dur % 60;
-                         text += ' - ' + (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
-                     }
-                 }
-
-                 var my_name = '';
-                 var my_prof_img = '';
-                 var other_name = '';
-                 var other_prof_img = '/images/default-profile-pic.png';
-
-                 if (me != null) {
-                     my_name = me['first_name'] + " " + me['last_name'];
-                     if (me['profile_image'] != null) {
-                         my_prof_img = me['profile_image'];
-                     }
-                 }
-
-                 var other_array = m.other.split('proglobe');
-                 var other = other_array[1];
-
-                 if (convUsers != null && convUsers[other] != null) {
-                     other_name = convUsers[other]['first_name'] + ' ' + convUsers[other]['last_name'];
-                     if (convUsers[other]['images'] != null && convUsers[other]['images']['profile_image'] != null) {
-                         other_prof_img = convUsers[other]['images']['profile_image']['http_url']
-                     }
-                 }
-
-                 var display_name = m.incoming() ? other_name : my_name;
-                 var display_prof_img = m.incoming() ? other_prof_img : my_prof_img;
-
-                 // Text content
-                 if (text) {
-                     div.append('<img src="' + display_prof_img + '" alt="' + display_name + '" width="40px" height="40px"/>');
-                     div.append('<div class="chat-msg-body"><span class="user-name">'+display_name+'</span><p class="chat-msg">'+text+'</p></div>');
-                 }
-
-                 // Find the container for this message
-                 var convId = m.getConversationId();
-                 var c = b6.getConversation(convId);
-                 var msgsDiv = $( msgsDomIdForConversation(c) );
-                 msgsDiv.append(div);
-
-                 // If the conversation for this message is visible
-                 if (msgsDiv.is(':visible')) {
-                     // Scroll to the bottom of the conversation
-                     scrollToLastMessage();
-                     // Mark this new message as read since it is on the screen
-                     if (m.incoming()) {
-                         b6.markMessageAsRead(m);
-                     }
-                     // If we had user 'typing' indicator - clear it
-                     showUserTyping(false);
-                 }
-
-             }
-         };
 
          this.startOutgoingCall = function(to, video){
 

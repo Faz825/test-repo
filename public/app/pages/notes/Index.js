@@ -12,7 +12,7 @@ let errorStyles = {
     textTransform : "capitalize",
     margin        : '0 0 15px',
     display       : "inline-block"
-}
+};
 
 export default class Index extends React.Component {
     constructor(props) {
