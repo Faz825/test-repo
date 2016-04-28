@@ -6,6 +6,9 @@ body {
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 }
+.row{
+	padding-bottom: 0;
+}
 
 .row-clr {
 	margin-left: 0px !important;
@@ -272,7 +275,7 @@ a:focus{
 	clear: right;
 	height: 0;
 }
-.pgs-middle-sign-wrapper {padding-top:95px;}
+.pgs-middle-sign-wrapper {padding-top:95px; min-height: 100vh;}
 .pgs-middle-sign-wrapper.changePassword,
 .pgs-middle-sign-wrapper.changedPassword,
 .pgs-middle-sign-wrapper.forgotPassword {
@@ -2958,7 +2961,148 @@ textarea{
 	color: #FFF;
 }
 
-/*#msgListRow{*/
-	/*height: 260px;*/
-	/*overflow-y: auto;*/
-/*}*/
+.editor-popup-holder{
+	background: url(../images/pop-up-back.png) no-repeat 0 0 / cover;
+	padding: 5px;
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.popup-header{
+	overflow: hidden;
+	margin: 5px 0 10px;
+	position: relative;
+}
+
+.popup-header span,
+.extra-func-btns span{
+	cursor: pointer;
+}
+
+.popup-header .closeBtn{
+	width: 13px;
+	height: 13px;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 5px 0 0 5px;
+	z-index: 1;
+	background: url(../images/pop_up_close.png) no-repeat 0 0;
+}
+
+.extra-func,
+.title-holder,
+.extra-func > .form-control{
+	float: left;
+	padding: 0;
+}
+
+.popup-header .toolbar-toggle-btn-holder,
+.popup-header .extra-func-btns{
+	float: left;
+	border: 1px solid #90a2b1;
+	border-radius: 5px;
+	margin-left: 15px;
+	height: 23px;
+	overflow: hidden;
+}
+
+.toolbar-toggle-btn-holder span,
+.extra-func-btns span{
+	display: inline-block;
+}
+
+.toolbar-toggle-btn-holder .text-format-menu{
+	width: 33px;
+	height: 23px;
+	background: url(../images/tlbr-fonts-toggle-btn.png) #fff no-repeat center center;
+	border-right: 1px solid #90a2b1;
+}
+
+.toolbar-toggle-btn-holder .text-style-menu{
+	width: 33px;
+	height: 23px;
+	background: url(../images/tlbr-font-styles-toggle-btn.png) #fff no-repeat center center;
+}
+
+.extra-func-btns .export-btn{
+	width: 45px;
+	height: 23px;
+	border-right: 1px solid #90a2b1;
+	background: url(../images/export-btn-bg.png) #5f778b no-repeat center center;
+}
+
+.extra-func-btns .email-btn{
+	width: 33px;
+	height: 23px;
+	background: url(../images/email-btn-bg.png) #fff no-repeat center center;
+}
+
+.extra-func .form-control{
+	width: 114px;
+	height: 23px;
+	font: 10px "montserratregular",sans-serif;
+	border: 1px solid #90a2b1;
+	padding: 6px 0 5px 8px;
+	margin-left: 10px;
+}
+
+.popup-header .note-title{
+	color: #2d5164;
+    font: 14px "montserratsemi_bold",sans-serif;
+    margin: 0;
+	text-align: center;
+    padding-right: 5%;
+	position: relative;
+	z-index: 0;
+	width: 250px;
+	height: 23px;
+	overflow: hidden;
+	float: right;
+	padding: 2px 0 1px;
+}
+
+.editor-popup-holder .quill-contents{
+	background: #fff;
+}
+
+.editor-popup-holder .btn{
+	float: right;
+    font: 11px 'montserratsemi_bold', sans-serif;
+    color: #fff;
+    background-color: #61b3de;
+    text-transform: uppercase;
+    border: none;
+	margin: 12px 0 5px;
+}
+
+.rich-editor-holder .quill-toolbar{
+	position: fixed;
+	top: 42px;
+	margin: 0 5px;
+	left: 0;
+	padding: 8px 0;
+	width: 98.6%;
+	z-index: 1;
+	background-color: #fff;
+}
+
+.rich-editor-holder .quill-contents{
+	position: relative;
+	z-index: 0;
+}
+
+.editor-popup-holder .ql-editor{
+	min-height: 340px !important;
+	margin-top: 40px;
+}
+
+.editor-popup-holder .ql-align .ql-picker-label,
+.editor-popup-holder .ql-align .ql-picker-item{
+	text-indent: -9999px;
+}
+
+.editor-popup-holder .ql-format-button.ql-link{
+	display: none;
+}

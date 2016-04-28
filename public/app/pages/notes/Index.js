@@ -5,6 +5,8 @@ import React from 'react';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Session from '../../middleware/Session';
 import {Alert} from '../../config/Alert';
+import { Scrollbars } from 'react-custom-scrollbars';
+import Lib    from '../../middleware/Lib';
 import RichTextEditor from '../../components/elements/RichTextEditor';
 
 let errorStyles = {
@@ -33,6 +35,8 @@ export default class Index extends React.Component {
         this.addNote = this.addNote.bind(this);
         this.colorPicker = this.colorPicker.bind(this);
         this.loadNotes();
+
+
     }
 
     loadNotes(){
@@ -221,7 +225,7 @@ export default class Index extends React.Component {
                     }
 
                     {this.getConfirmationPopup()}
-
+                    {this.getPopup()}
                 </div>
             </div>
         );
@@ -232,26 +236,49 @@ export class NoteCategory extends React.Component{
     constructor(props) {
         super(props);
         this.state={
-            isShowingModal : false
+            isShowingModal : false,
+            noteValue : "",
+            noteTitle : "My note title"
         }
+
+        this.getNoteData = this.getNoteData.bind(this);
+        this.saveNote = this.saveNote.bind(this);
+        this.notePopUp = this.notePopUp.bind(this);
+        this.onTitleEdit = this.onTitleEdit.bind(this);
+
     }
 
-    handleClick() {
-        this.setState({isShowingModal: true});
-    }
-
-    handleClose() {
-        this.setState({isShowingModal: false});
+    onTitleEdit(e){
+        let noteText = Lib.sanitize(e.target.innerHTML);
+        this.setState({noteTitle : noteText})
     }
 
     getPopup(){
         let clrActive = this.state.clrChosen;
         return(
-            <div onClick={this.handleClick.bind(this)}>
+            <div>
                 {this.state.isShowingModal &&
-                    <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                        <ModalDialog onClose={this.handleClose.bind(this)} width="50%" style={{marginTop : "-100px"}}>
-
+                    <ModalContainer zIndex={9999} >
+                        <ModalDialog width="50%" style={{marginTop : "-100px", padding : "0", borderRadius : "3px"}}>
+                            <div className="editor-popup-holder">
+                                <div className="popup-header">
+                                    <span className="closeBtn" onClick={this.saveNote.bind(this)}></span>
+                                    <div className="title-holder col-sm-8">
+                                        <div className="note-title" contentEditable={true} onInput={(event)=>{this.onTitleEdit(event)}}>{this.state.noteTitle}</div>
+                                    </div>
+                                    <div className="extra-func col-sm-4">
+                                        <input type="text" placeholder="Search" name="search" className="form-control" />
+                                        <div className="extra-func-btns">
+                                            <span className="export-btn"></span>
+                                            <span className="email-btn"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <Scrollbars style={{ height: 420 }}>
+                                    <RichTextEditor note="testing!" noteText={this.getNoteData} />
+                                </Scrollbars>
+                                <button className="btn btn-default" onClick={this.saveNote.bind(this)}>Save note</button>
+                            </div>
                         </ModalDialog>
                     </ModalContainer>
                 }
@@ -259,11 +286,27 @@ export class NoteCategory extends React.Component{
         )
     }
 
+    notePopUp(noteID){
+        this.setState({isShowingModal: true});
+        console.log(noteID);
+    }
+
+    getNoteData(value){
+        this.setState({noteValue : value});
+    }
+
+    saveNote(){
+        console.log(this.state.noteValue);
+        this.setState({isShowingModal: false});
+    }
 
     render() {
+        let _this = this;
         let notebooks = this.props.notebooks;
         let showConfirm = this.props.showConfirm;
-
+        if (notebooks.length <= 0) {
+            return <div />
+        }
         let _noteBooks = notebooks.map(function(notebook,key){
             return (
                 <div className="row row-clr pg-notes-page-content-item pg-box-shadow" key={key}>
@@ -274,9 +317,8 @@ export class NoteCategory extends React.Component{
                         </div>
                     </div>
                     <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
-                        <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm}/>
+                        <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm} editNotePopUp={_this.notePopUp} />
                     </div>
-                    <RichTextEditor note="testing!" />
                 </div>
             );
         });
@@ -305,7 +347,9 @@ export class NoteThumb extends React.Component{
     }
 
     editNote(note_id){
-        location.href = "/notes/edit-note/"+note_id;
+        //location.href = "/notes/edit-note/"+note_id;
+        console.log(note_id);
+        this.props.editNotePopUp(note_id);
     }
 
     showConfirm(note_id){
