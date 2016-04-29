@@ -1,7 +1,6 @@
 import React from 'react'
 import Session  from '../../middleware/Session';
 import SecretaryThumbnail from '../elements/SecretaryThumbnail';
-import Chat  from '../../middleware/Chat';
 
 export default class FooterHolder extends React.Component{
 

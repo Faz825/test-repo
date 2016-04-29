@@ -344,7 +344,9 @@ export class NoteThumb extends React.Component{
             <div className="pg-notes-item-main-row">
                 <div className="note-holder">
                     <div className="row-clear add-new-note note">
-                        <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
+                        <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}>
+                            <p className="add-note-text">Add new</p>
+                        </a>
                     </div>
                 </div>
                 {_firstSetNotes}

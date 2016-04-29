@@ -3,10 +3,11 @@
  */
 
 import Session  from './Session.js';
+import Lib from './Lib.js';
 
- class Chat{
+class Chat{
 
-	constructor() {
+    constructor() {
 
         var opts = {
             'apikey': '18j5x-sRBAbzhTW1ZD'
@@ -14,821 +15,477 @@ import Session  from './Session.js';
 
         this.b6 = new bit6.Client(opts);
 
-        this.initChat(this.b6);
+    }
+
+    initChat(b6){
+
+        bit6Auth(false);
+
+        var audioCall = true;
+        var screenCall = false;
+        var convUsers = [];
+        var unreadCount = 0;
+        var incomingCallUser = [];
+        var outGoingCallUser = [];
+        var unreadConversationCount = [];
+        var callTimer = null;
+        var my_connections = [];
+        var conv_ids = [];
+
+        var me = Session.getSession('prg_lg');
+        loadMyConnections(me.token);
+
+        // A conversation has changed
+        b6.on('conversation', function(c, op) {
+            onConversationChange(c, op);
+        });
+
+        // Incoming call from another user
+        b6.on('incomingCall', function(c) {
+
+            attachCallEvents(c);
+            var cf = b6.getNameFromIdentity(c.other);
+
+            var title_array = cf.split('proglobe');
+            var title = title_array[1];
+
+            $.ajax({
+                url: '/get-profile/'+title,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+
+                    if (data.status.code == 200 && data.profile_data != null) {
+
+                        incomingCallUser[title] = data.profile_data;
+
+                        var incomingCallUserName = data.profile_data['first_name']+" "+data.profile_data['last_name'] + ' is ' + (c.options.video ? 'video ' : '') + 'calling...';
+                        $('#incomingCallFrom').text(incomingCallUserName);
+
+                        var incomingCallProfilePicture = "/images/default-profile-pic.png";
+                        if (data.profile_data['images'] != null && data.profile_data['images']['profile_image'] != null) {
+                            incomingCallProfilePicture = data.profile_data['images']['profile_image']['http_url'];
+                        }
+                        $("#incoming_call_alert_other_profile_image").attr('src', incomingCallProfilePicture);
+
+                        $('#incomingCall')
+                            .data({'dialog': c})
+                            .show();
+
+                        $('#incomingCallAlert').modal('show');
+
+                    }
+
+                }
+            });
+
+        });
+
+        // Changes in video elements
+        // v - video element to add or remove
+        // c - Dialog - call controller. null for a local video feed
+        // op - operation. 1 - add, 0 - update, -1 - remove
+        b6.on('video', function(v, c, op) {
+            var vc = $('#videoContainer');
+            if (op < 0) {
+                vc[0].removeChild(v);
+            }
+            else if (op > 0) {
+                v.setAttribute('class', c ? 'remote' : 'local');
+                vc.append(v);
+            }
+            // Total number of video elements (local and remote)
+            var n = vc[0].children.length;
+            if (op !== 0) {
+                vc.toggle(n > 0);
+            }
+            // Use number of video elems to determine the layout using CSS
+            var kl = n > 2 ? 'grid' : 'simple';
+            vc.attr('class', kl);
+
+        });
+
+        function loadMyConnections(token){
+            $.ajax({
+                url: '/connection/me',
+                method: "GET",
+                dataType: "JSON",
+                headers: { 'prg-auth-header':token }
+            }).done(function(data){
+                if(data.status.code == 200){
+                    my_connections = data.my_con;
+                }
+            }.bind(this));
+        }
+
+        function bit6Auth(isNewUser) {
+            if(Session.getSession('prg_lg') != null){
+                // Convert username to an identity URI
+                var ident = 'usr:proglobe_' + Session.getSession('prg_lg').user_name;
+                var pass = 'proglobe_'+Session.getSession('prg_lg').id;
+                // Call either login or signup function
+                var fn = isNewUser ? 'signup' : 'login';
+                b6.session[fn]({'identity': ident, 'password': pass}, function (err) {
+                    if (err) {
+                        bit6Auth(true);
+                    }
+                    else {
+                        return true;
+                    }
+                });
+            }
+        }
+
+        // Update Conversation View
+        function onConversationChange(c, op) {
+            var notificationId = notificationDomIdForConversation(c);
+            var notificationWrapperDiv = $("#unread_chat_list");
+            var notificationDiv = $(notificationId);
+
+            // Conversation deleted
+            if (op < 0) {
+                notificationDiv.remove();
+                return
+            }
+
+            var proglobe_title = b6.getNameFromIdentity(c.id);
+            var proglobe_title_array = proglobe_title.split('proglobe');
+            var title = proglobe_title_array[1];
+
+            var notificationListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
+
+            // New conversation
+            if (op > 0) {
+
+                if (c.deleted) {
+                    return;
+                }
+
+                if(title != 'undefined' && typeof convUsers[title] == 'undefined'){
+
+                    for(let my_con in my_connections){
+
+                        if(title === my_connections[my_con].user_name){
+
+                            convUsers[title] = my_connections[my_con];
+
+                            //TODO::Show only 5 and if more display 'see all'
+                            notificationDiv = $('<div class="tab msg-holder" />')
+                                .attr('id', notificationId.substring(1))
+                                .append(notificationListADiv);
+
+                            if(conv_ids.indexOf(c.id) == -1){
+
+                                notificationWrapperDiv.append(notificationDiv)
+                                conv_ids.push(c.id);
+                            }
+
+                            //Update Conversation data
+                            var stamp = Lib.getRelativeTime(c.updated);
+                            var latestText = '';
+                            var lastMsg = c.getLastMessage();
+                            if (lastMsg) {
+                                // Show the text from the latest conversation
+                                if (lastMsg.content)
+                                    latestText = lastMsg.content;
+                                // If no text, but has an attachment, show the mime type
+                                else if (lastMsg.data && lastMsg.data.type) {
+                                    latestText = lastMsg.data.type;
+                                }
+                            }
+
+                            var connection_name = convUsers[title]['first_name']+" "+convUsers[title]['last_name'];
+                            var connection_prof_img = '/images/default-profile-pic.png';
+
+                            if (convUsers[title]['images'] != null && convUsers[title]['images']['profile_image'] != null) {
+                                connection_prof_img = convUsers[title]['images']['profile_image']['http_url']
+                            }
+
+                            notificationDiv.find('a').attr('href', '/chat/'+title);
+                            notificationDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
+                            notificationDiv.find('.chat-body').find('.connection-name').html(connection_name);
+                            notificationDiv.find('.chat-body').find('.msg').html(latestText);
+                            notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
+
+                            // If the updated conversation is newer than the top one -
+                            // move this conversation to the top
+                            var notificationTop = notificationWrapperDiv.children(':first');
+                            if (notificationTop.length > 0 && title != 'undefined') {
+                                var notificationTopTabId = notificationTop.attr('id');
+                                var notificationTopConvId = domIdToConversationId(notificationTopTabId);
+                                var notificationTopConv = b6.getConversation(notificationTopConvId);
+
+                                if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
+                                    notificationTop.before(notificationDiv);
+                                }
+                            }
+
+                            if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
+                                unreadCount += 1;
+                                unreadConversationCount.push(c.id);
+                            }
+
+                            if(unreadCount > 0){
+                                $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
+                            } else{
+                                $("#unread_chat_count_header").html('');
+                            }
+
+                        }
+                    }
+
+                }
+            }
+            if(op >= 0 && title != 'undefined'){
+
+                //Update Conversation data
+                var stamp = Lib.getRelativeTime(c.updated);
+                var latestText = '';
+                var lastMsg = c.getLastMessage();
+                if (lastMsg) {
+                    // Show the text from the latest conversation
+                    if (lastMsg.content)
+                        latestText = lastMsg.content;
+                    // If no text, but has an attachment, show the mime type
+                    else if (lastMsg.data && lastMsg.data.type) {
+                        latestText = lastMsg.data.type;
+                    }
+                }
+
+                notificationDiv.find('.chat-body').find('.msg').html(latestText);
+                notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
+
+                // If the updated conversation is newer than the top one -
+                // move this conversation to the top
+                var notificationTop = notificationWrapperDiv.children(':first');
+                if (notificationTop.length > 0 && title != 'undefined') {
+                    var notificationTopTabId = notificationTop.attr('id');
+                    var notificationTopConvId = domIdToConversationId(notificationTopTabId);
+                    var notificationTopConv = b6.getConversation(notificationTopConvId);
+
+                    if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
+                        notificationTop.before(notificationDiv);
+                    }
+                }
+
+                if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
+                    unreadCount += 1;
+                    unreadConversationCount.push(c.id);
+                }
+
+                if(unreadCount > 0){
+                    $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
+                } else{
+                    $("#unread_chat_count_header").html('');
+                }
+            }
+
+        }
+
+        function notificationDomIdForConversation(c){
+            return '#notification__' + c.domId();
+        }
+
+        // Convert element id to a Conversation id
+        function domIdToConversationId(id) {
+            var r = id.split('__');
+            id = r.length > 0 ? r[1] : id
+            return bit6.Conversation.fromDomId(id);
+        }
+
+        this.startOutgoingCall = function(to, video){
+
+            // Outgoing call params
+            var opts = {
+                audio: audioCall,
+                video: video,
+                screen: screenCall
+            };
+            // Start the outgoing call
+            var c = b6.startCall(to, opts);
+            attachCallEvents(c);
+            updateInCallUI(c);
+
+        };
+
+        // Attach call state events to a RtcDialog
+        function attachCallEvents(c) {
+            // Call progress
+            c.on('progress', function() {
+                showInCallName();
+            });
+            // Number of video feeds/elements changed
+            c.on('videos', function () {
+                var container = $('#videoContainer');
+                var elems = container.children();
+                $('#incomingCallAlert').modal('hide');
+                container.attr('class', elems.length > 2 ? 'grid' : 'simple');
+            });
+            // Call answered
+            c.on('answer', function() {
+                $('#incomingCallAlert').modal('hide');
+                $('#onCall').text("on call")
+                $('#clock').show();
+                callTimer = window.setInterval(function(){
+                    updateTime();
+                },1000);
+
+            });
+            // Error during the call
+            c.on('error', function() {
+                $('#incomingCallAlert').modal('hide');
+                $('#detailPane').addClass('hidden');
+            });
+            // Call ended
+            c.on('end', function() {
+                showInCallName();
+                // No more dialogs?
+                if (b6.dialogs.length === 0) {
+                    // Hide InCall UI
+                    $('#detailPane').addClass('hidden');
+                }
+                // Hide Incoming Call dialog
+                // TODO: check that it was for this dialog
+                $('#incomingCall')
+                    .data({'dialog': null})
+                    .hide();
+
+                $("#videoContainer").html("");
+                $('#incomingCallAlert').modal('hide');
+                $('#detailPane').addClass('hidden');
+                $('#clock').hide();
+                window.clearInterval(callTimer);
+                $("#hour").html("00");
+                $("#min").html("00");
+                $("#sec").html("00");
+            });
+        }
+
+        function updateInCallUI(c, opts) {
+            showInCallName();
+            $('#detailPane').removeClass('hidden');
+            // Do not show video feeds area for audio-only call
+            var div = $('#videoContainer').toggle(c.options.video);
+            // Start/update the call
+            c.connect(opts);
+        }
+
+        // Show all the call participants
+        function showInCallName() {
+            var s = '';
+            for(var i in b6.dialogs) {
+                var d = b6.dialogs[i];
+                if (i > 0) {
+                    s += ', ';
+                }
+
+                var title_array = d.other.split('proglobe');
+                var title = title_array[1];
+
+                $.ajax({
+                    url: '/get-profile/'+title,
+                    method: "GET",
+                    dataType: "JSON",
+                    success: function (data, text) {
+
+                        if (data.status.code == 200 && data.profile_data != null) {
+
+                            outGoingCallUser[title] = data.profile_data;
+
+                            var outGoingCallUserName = data.profile_data['first_name']+" "+data.profile_data['last_name'];
+                            s += b6.getNameFromIdentity(outGoingCallUserName);
+                            $('#inCallOther').text(s);
+                            $('#onCall').text("ringing")
+                        }
+                    }
+                });
+            }
+
+        }
+
+        // 'Answer Incoming Call' click
+        this.answerCall = function(opts){
+            $('#incomingCallAlert').modal('hide');
+            var d = $('#incomingCall').data();
+            // Call controller
+            if (d && d.dialog) {
+                var c = d.dialog;
+                // Accept the call, send local audio only
+                updateInCallUI(c, opts);
+            }
+        };
+
+        // 'Reject Incoming Call' click
+        this.rejectCall = function(){
+            var d = $('#incomingCall').data();
+            // Call controller
+            if (d && d.dialog) {
+                // Reject call
+                d.dialog.hangup();
+            }
+        };
+
+        // 'Call Hangup' click
+        this.hangupCall = function(){
+            // Hangup all active calls
+            var x = b6.dialogs.slice();
+            for (var i in x) {
+                x[i].hangup();
+            }
+        };
+
+        function updateTime() {
+
+            var hours = parseInt($('#hour').html());
+            var minutes = parseInt($('#min').html());
+            var seconds = parseInt($('#sec').html());
+
+            var currentTotalTime = (hours*60*60) + (minutes*60) + seconds;
+
+            currentTotalTime = currentTotalTime + 1;
+
+            var newHours = 0;
+            var newMinutes = 0;
+            var newSeconds = 0;
+
+            if (currentTotalTime > 3599) {
+                var newHours = (currentTotalTime - (currentTotalTime % (60 * 60))) / (60 * 60);
+
+                var newMins1 = currentTotalTime - (currentTotalTime % (60 * 60));
+
+                var newMinutes = (newMins1 - (newMins1 % 60)) / 60;
+
+                var newSeconds = (currentTotalTime % 60);
+
+            } else if (currentTotalTime > 59) {
+                var newMinutes = (currentTotalTime - (currentTotalTime % 60)) / 60;
+                var newSeconds = (currentTotalTime % 60);
+            } else {
+                var newSeconds = currentTotalTime;
+            }
+
+            $('#hour').html(String(newHours).length==1?'0'+String(newHours):newHours);
+            $('#min').html(String(newMinutes).length==1?'0'+String(newMinutes):newMinutes);
+            $('#sec').html(String(newSeconds).length==1?'0'+String(newSeconds):newSeconds);
+
+        }
+
+        this.updateHeaderUnreadCount = function(conv_id){
+
+            if(unreadConversationCount.indexOf(conv_id) != -1){
+                unreadCount -= 1;
+                unreadConversationCount.splice(unreadConversationCount.indexOf(conv_id),1);
+            }
+            if(unreadCount > 0){
+                $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
+            } else{
+                $("#unread_chat_count_header").html('');
+            }
+
+        }
 
     }
 
-     initChat(b6){
-
-         var audioCall = true;
-         var screenCall = false;
-         var currentChatUri = null;
-         var latestChatUser = null;
-         var me = null;
-         var currentChatUserName = null;
-         var currentChatUser = null;
-         var convUsers = [];
-         var unreadCount = 0;
-         var incomingCallUser = [];
-         var outGoingCallUser = [];
-         var unreadConversationCount = [];
-         var firstChat = false;
-         var callTimer = null;
-
-         // A conversation has changed
-         b6.on('conversation', function(c, op) {
-             //console.log("A conversation has changed")
-             onConversationChange(c, op);
-         });
-
-         // A message has changed
-         b6.on('message', function(m, op) {
-             //console.log("A message has changed")
-             onMessageChange(m, op);
-         });
-
-         // Incoming call from another user
-         b6.on('incomingCall', function(c) {
-             attachCallEvents(c);
-             var cf = b6.getNameFromIdentity(c.other);
-
-             var title_array = cf.split('proglobe');
-             var title = title_array[1];
-
-             $.ajax({
-                 url: '/get-profile/'+title,
-                 method: "GET",
-                 dataType: "JSON",
-                 success: function (data, text) {
-
-                     if (data.status.code == 200 && data.profile_data != null) {
-
-                         incomingCallUser[title] = data.profile_data;
-
-                         var incomingCallUserName = data.profile_data['first_name']+" "+data.profile_data['last_name'] + ' is ' + (c.options.video ? 'video ' : '') + 'calling...';
-                         $('#incomingCallFrom').text(incomingCallUserName);
-
-                         var incomingCallProfilePicture = "/images/default-profile-pic.png";
-                         if (data.profile_data['images'] != null && data.profile_data['images']['profile_image'] != null) {
-                             incomingCallProfilePicture = data.profile_data['images']['profile_image']['http_url'];
-                         }
-                         $("#incoming_call_alert_other_profile_image").attr('src', incomingCallProfilePicture);
-
-                         $('#incomingCall')
-                             .data({'dialog': c})
-                             .show();
-
-                         $('#incomingCallAlert').modal('show');
-
-                     }
-
-                 }
-             });
-
-         });
-
-         // Changes in video elements
-         // v - video element to add or remove
-         // c - Dialog - call controller. null for a local video feed
-         // op - operation. 1 - add, 0 - update, -1 - remove
-         b6.on('video', function(v, c, op) {
-             console.log("b6.on('video'")
-             var vc = $('#videoContainer');
-             if (op < 0) {
-                 vc[0].removeChild(v);
-             }
-             else if (op > 0) {
-                 v.setAttribute('class', c ? 'remote' : 'local');
-                 vc.append(v);
-             }
-             // Total number of video elements (local and remote)
-             var n = vc[0].children.length;
-             if (op !== 0) {
-                 vc.toggle(n > 0);
-             }
-             //console.log('VIDEO elems.count: ' + n);
-             // Use number of video elems to determine the layout using CSS
-             var kl = n > 2 ? 'grid' : 'simple';
-             vc.attr('class', kl);
-         });
-
-         this.bit6Auth = function (isNewUser) {
-             // Convert username to an identity URI
-             var ident = 'usr:proglobe_' + Session.getSession('prg_lg').user_name;
-             var pass = 'proglobe_'+Session.getSession('prg_lg').id;
-             // Call either login or signup function
-             var fn = isNewUser ? 'signup' : 'login';
-             b6.session[fn]({'identity': ident, 'password': pass}, function (err) {
-                 if (err) {
-                     bit6AuthLocal(true);
-                 }
-                 else {
-                     me = Session.getSession('prg_lg');
-                     return true;
-                 }
-             });
-         };
-
-         function bit6AuthLocal(isNewUser) {
-             // Convert username to an identity URI
-             var ident = 'usr:proglobe_' + Session.getSession('prg_lg').user_name;
-             var pass = 'proglobe_'+Session.getSession('prg_lg').id;
-             // Call either login or signup function
-             var fn = isNewUser ? 'signup' : 'login';
-             b6.session[fn]({'identity': ident, 'password': pass}, function (err) {
-                 if (err) {
-                     bit6AuthLocal(true);
-                 }
-                 else {
-                     me = Session.getSession('prg_lg');
-                     return true;
-                 }
-             });
-         }
-
-         this.loadFirstMessage = function(){
-             firstChat = true;
-         };
-
-         // Update Conversation View
-         function onConversationChange(c, op) {
-             //console.log("onConversationChange")
-             var chatList = $('#chatList');
-             var tabId = tabDomIdForConversation(c);
-             var msgsId = msgsDomIdForConversation(c);
-             var notificationId = notificationDomIdForConversation(c);
-             var tabDiv = $(tabId);
-             var msgsDiv = $(msgsId);
-             var notificationWrapperDiv = $("#unread_chat_list");
-             var notificationDiv = $(notificationId);
-
-             // Conversation deleted
-             if (op < 0) {
-                 tabDiv.remove();
-                 msgsDiv.remove();
-                 notificationDiv.remove();
-                 return
-             }
-
-             var proglobe_title = b6.getNameFromIdentity(c.id);
-             var proglobe_title_array = proglobe_title.split('proglobe');
-             var title = proglobe_title_array[1];
-
-
-             var chatListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
-             var notificationListADiv = $('<a href=""><div class="chat-pro-img"><img src="" alt="" width="40" height="40"/></div><div class="chat-body"><span class="connection-name"></span><p class="msg"></p><span class="chat-date"></span></div></a>');
-
-
-             // New conversation
-             if (op > 0) {
-
-                 if (c.deleted) {
-                     return;
-                 }
-
-                 if(title != 'undefined'){
-
-                     $.ajax({
-                         url: '/get-profile/'+title,
-                         method: "GET",
-                         dataType: "JSON",
-                         success: function (data, text) {
-
-                             if (data.status.code == 200 && data.profile_data != null) {
-
-                                 convUsers[title] = data.profile_data;
-                                 latestChatUser = title;
-
-                                 // Entry in the Chat List
-                                 if(currentChatUserName == proglobe_title){
-                                     currentChatUser = data.profile_data;
-                                     tabDiv = $('<div class="tab msg-holder msg-holder-selected" />')
-                                         .attr('id', tabId.substring(1))
-                                         .append(chatListADiv);
-                                     $("#chat_with").html(currentChatUser['first_name']+" "+currentChatUser['last_name']);
-                                 } else{
-                                     tabDiv = $('<div class="tab msg-holder" />')
-                                         .attr('id', tabId.substring(1))
-                                         .append(chatListADiv);
-                                 }
-                                 chatList.append(tabDiv);
-
-                                 // Create a container for message list for this conversation
-                                 msgsDiv = $('<div class="msgs" />')
-                                     .attr('id', msgsId.substring(1))
-                                     .hide();
-                                 $('#msgList').append(msgsDiv);
-
-                                 //console.log("notificationId.substring(1) => "+notificationId.substring(1))
-
-                                 //TODO::Show only 5 and if more display 'see all'
-                                 notificationDiv = $('<div class="tab msg-holder" />')
-                                     .attr('id', notificationId.substring(1))
-                                     .append(notificationListADiv);
-                                 notificationWrapperDiv.append(notificationDiv)
-
-                                  //Update Conversation data
-                                 var stamp = getRelativeTime(c.updated);
-                                 var latestText = '';
-                                 var lastMsg = c.getLastMessage();
-                                 if (lastMsg) {
-                                     // Show the text from the latest conversation
-                                     if (lastMsg.content)
-                                         latestText = lastMsg.content;
-                                     // If no text, but has an attachment, show the mime type
-                                     else if (lastMsg.data && lastMsg.data.type) {
-                                         latestText = lastMsg.data.type;
-                                     }
-                                 }
-
-                                 var connection_name = convUsers[title]['first_name']+" "+convUsers[title]['last_name'];
-                                 var connection_prof_img = '/images/default-profile-pic.png';
-
-                                 if (convUsers[title]['images'] != null && convUsers[title]['images']['profile_image'] != null) {
-                                     connection_prof_img = convUsers[title]['images']['profile_image']['http_url']
-                                 }
-
-                                 // Apply data to DOM
-                                 tabDiv.find('a').attr('href', '/chat/'+title);
-                                 tabDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
-                                 tabDiv.find('.chat-body').find('.connection-name').html(connection_name);
-                                 tabDiv.find('.chat-body').find('.msg').html(latestText);
-                                 tabDiv.find('.chat-body').find('.chat-date').html(stamp);
-
-                                 notificationDiv.find('a').attr('href', '/chat/'+title);
-                                 notificationDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
-                                 notificationDiv.find('.chat-body').find('.connection-name').html(connection_name);
-                                 notificationDiv.find('.chat-body').find('.msg').html(latestText);
-                                 notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
-
-                                 // If the updated conversation is newer than the top one -
-                                 // move this conversation to the top
-                                 var top = chatList.children(':first');
-                                 if (top.length > 0 && title != 'undefined') {
-                                     var topTabId = top.attr('id');
-                                     //console.log("1 => "+topTabId)
-                                     var topConvId = domIdToConversationId(topTabId);
-                                     var topConv = b6.getConversation(topConvId);
-
-                                     if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
-                                         top.before(tabDiv);
-                                     }
-                                 }
-
-                                 // If the updated conversation is newer than the top one -
-                                 // move this conversation to the top
-                                 var notificationTop = notificationWrapperDiv.children(':first');
-                                 if (notificationTop.length > 0 && title != 'undefined') {
-                                     var notificationTopTabId = notificationTop.attr('id');
-                                     //console.log("2 => "+notificationTopTabId)
-                                     var notificationTopConvId = domIdToConversationId(notificationTopTabId);
-                                     var notificationTopConv = b6.getConversation(notificationTopConvId);
-
-                                     if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
-                                         notificationTop.before(notificationDiv);
-                                     }
-                                 }
-
-                                 if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
-                                     unreadCount += 1;
-                                     unreadConversationCount.push(c.id);
-                                 }
-
-                                 if(currentChatUri != null){
-
-                                     showTheConversation(currentChatUri);
-
-                                     //var conv = b6.getConversation(currentChatUri);
-                                     //
-                                     //if(conv != null){
-                                     //
-                                     //    // Mark all messages as read
-                                     //    if (b6.markConversationAsRead(conv) > 0) {
-                                     //        // Some messages have been marked as read
-                                     //        // update chat list
-                                     //        if(unreadConversationCount.indexOf(c.id) != -1){
-                                     //            unreadCount -= 1;
-                                     //            unreadConversationCount.splice(c.id);
-                                     //        }
-                                     //    }
-                                     //
-                                     //
-                                     //    var msgsDiv = $( msgsDomIdForConversation(conv) );
-                                     //    // Show only message container for this conversation
-                                     //    // Hide all the other message containers
-                                     //    msgsDiv.show().siblings().hide();
-                                     //    // Scroll to the bottom of the conversation
-                                     //    //scrollToLastMessage();
-                                     //
-                                     //    // Request focus for the compose message text field
-                                     //    $('#msgText').focus();
-                                     //
-                                     //}
-
-                                 }
-
-                                 for(var i = 0; i < c.messages.length; i++){
-                                     onMessageChange(c.messages[i], op)
-                                 }
-
-                             }
-                         }.bind(this),
-                         error: function (request, status, error) {
-                             console.log(request.responseText);
-                             console.log(status);
-                             console.log(error);
-                         }
-                     });
-
-                 }
-             }
-
-             if(op >= 0 && title != 'undefined'){
-                 //console.log("existing conversation");
-
-                 // Update Conversation data
-                 var stamp = getRelativeTime(c.updated);
-                 var latestText = '';
-                 var lastMsg = c.getLastMessage();
-                 if (lastMsg) {
-                     // Show the text from the latest conversation
-                     if (lastMsg.content)
-                         latestText = lastMsg.content;
-                     // If no text, but has an attachment, show the mime type
-                     else if (lastMsg.data && lastMsg.data.type) {
-                         latestText = lastMsg.data.type;
-                     }
-                 }
-
-                 tabDiv.find('.chat-body').find('.msg').html(latestText);
-                 tabDiv.find('.chat-body').find('.chat-date').html(stamp);
-
-                 notificationDiv.find('.chat-body').find('.msg').html(latestText);
-                 notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
-
-                 // If the updated conversation is newer than the top one -
-                 // move this conversation to the top
-                 var top = chatList.children(':first');
-                 if (top.length > 0 && title != 'undefined') {
-                     var topTabId = top.attr('id');
-                     var topConvId = domIdToConversationId(topTabId);
-                     var topConv = b6.getConversation(topConvId);
-
-                     if (topConv && topConv.id != c.id && c.updated > topConv.updated) {
-                         //console.log("going to move the top ")
-                         top.before(tabDiv);
-                     }
-                 }
-
-                 // If the updated conversation is newer than the top one -
-                 // move this conversation to the top
-                 var notificationTop = notificationWrapperDiv.children(':first'); //console.log(notificationTop)
-                 if (notificationTop.length > 0 && title != 'undefined') {
-                     var notificationTopTabId = notificationTop.attr('id');
-                     var notificationTopConvId = domIdToConversationId(notificationTopTabId);
-                     var notificationTopConv = b6.getConversation(notificationTopConvId);
-
-                     if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
-                         notificationTop.before(notificationDiv);
-                     }
-                 }
-
-                 if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
-                     unreadCount += 1;
-                     unreadConversationCount.push(c.id);
-                 }
-
-                 if(currentChatUri != null){
-
-                     var conv = b6.getConversation(currentChatUri);
-
-                     if (conv != null && b6.markConversationAsRead(conv) > 0) {
-                         // Some messages have been marked as read
-                         // update chat list
-                         if(unreadConversationCount.indexOf(c.id) != -1){
-                             unreadCount -= 1;
-                             unreadConversationCount.splice(c.id);
-                         }
-                     }
-
-                 }
-             }
-
-             //console.log("Index of "+c.id+" = "+unreadConversationCount.indexOf(c.id));
-             //console.log("unreadConversationCount.length => "+unreadConversationCount.length);
-
-             if(unreadCount > 0){
-                 $("#unread_inbox_p").find('.total').remove();
-                 $("#unread_inbox_p").append('<span class="total">'+unreadCount+'</span>');
-                 $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
-             }
-
-         }
-
-         function notificationDomIdForConversation(c){
-             return '#notification__' + c.domId();
-         }
-
-         // Get Chat Tab jQuery selector for a Conversation
-         function tabDomIdForConversation(c) {
-             return '#tab__' + c.domId();
-         }
-
-         function showTheConversation(uri){
-
-             var conv = b6.getConversation(uri);
-
-             if(conv != null){
-
-                 // Mark all messages as read
-                 if (b6.markConversationAsRead(conv) > 0) {
-                     // Some messages have been marked as read
-                     // update chat list
-                     if(unreadConversationCount.indexOf(c.id) != -1){
-                         unreadCount -= 1;
-                         unreadConversationCount.splice(c.id);
-                     }
-                 }
-
-
-                 var msgsDiv = $( msgsDomIdForConversation(conv) );
-                 // Show only message container for this conversation
-                 // Hide all the other message containers
-                 msgsDiv.show().siblings().hide();
-                 // Scroll to the bottom of the conversation
-                 //scrollToLastMessage();
-
-                 // Request focus for the compose message text field
-                 $('#msgText').focus();
-
-             }
-
-         }
-
-
-         this.showMessages = function(uri) {
-
-             //console.log("this.showMessages => ",uri)
-
-             var proglobe_title_array = uri.split('proglobe');
-
-             if(proglobe_title_array[1] != 'undefined'){
-
-                 // Current conversation identity
-                 currentChatUri = uri;
-                 currentChatUserName = 'proglobe'+proglobe_title_array[1];
-                 showTheConversation(currentChatUri);
-
-             }
-         };
-
-         // Convert element id to a Conversation id
-         function domIdToConversationId(id) {
-             var r = id.split('__');
-             id = r.length > 0 ? r[1] : id
-             return bit6.Conversation.fromDomId(id);
-         }
-
-         // Get jQuery selector for a Message
-         var domIdForMessage = function (m) {
-             return '#msg__' + m.domId();
-         };
-
-         function getRelativeTime(stamp) {
-             var now = Date.now();
-             // 24 hours in milliseconds
-             var t24h = 24 * 60 * 60 * 1000;
-             var d = new Date(stamp);
-             var s = (now - stamp > t24h) ? d.toLocaleDateString() : d.toLocaleTimeString();
-             return s;
-         }
-
-         // Get Messages Container jQuery selector for a Conversation
-         function msgsDomIdForConversation(c) {
-             return '#msgs__' + c.domId();
-         }
-
-
-         // Scroll to the last message in the messages list
-         var scrollToLastMessage = function () {
-             console.log(document.getElementById("msgListRow"))
-             console.log("scrollToLastMessage")
-             var t = document.getElementById("msgListRow").scrollHeight;console.log(t)
-             if(typeof t == 'undefined'){
-                 t = $('#msgList')[0].scrollHeight;
-                 $('#msgList')[0].scrollTop = t;
-             } else{
-                 console.log("here else")
-                 document.getElementById("msgListRow").scrollTop += t;
-             }
-         };
-
-         // Update Message View
-         var onMessageChange = function (m, op) {
-             //console.log("onMessageChange");
-
-             var divId = domIdForMessage(m);
-             var div = $(divId);
-
-             // Message deleted
-             if (op < 0) {
-                 div.remove();
-                 return;
-             }
-
-             // Message added
-             if (op > 0) {
-
-                 if (m.deleted) {
-                     return;
-                 }
-                 if (div.length > 0) {
-                     div.remove();
-                 }
-
-                 var cssClass = m.incoming() ? 'receiver' : 'sender';
-
-                 div = $('<div class="chat-block ' + cssClass + '" />').attr('id', divId.substring(1));
-
-                 // This message has an attachment
-                 if (m.data && m.data.type) {
-                     var attachType = m.data.type;
-                     var href = m.data.attach;
-                     // We have a thumbnail and this is not an audio file
-                     if (m.data.thumb && attachType.indexOf('audio/') < 0) {
-                         var thumbImg = m.data.thumb;
-                         div.append('<a class="thumb" href="' + href + '" target="_new"><img src="' + thumbImg + '" /></a>');
-                     }
-                     // Show Play button
-                     else {
-                         var btn = $('<button class="btn btn-info"/>')
-                             .text('Play')
-                             .data('src', href)
-                             .click(function () {
-                                 var src = $(this).data('src');
-                                 var audio = new Audio(src);
-                                 audio.play();
-                             });
-                         div.append(btn);
-                     }
-                 }
-
-                 // Message content to show
-                 var text = m.content;
-
-                 // This is a call history item
-                 if (m.isCall()) {
-                     var ch = m.channel();
-                     var r = [];
-                     if (ch & bit6.Message.AUDIO) {
-                         r.push('Audio');
-                     }
-                     if (ch & bit6.Message.VIDEO) {
-                         r.push('Video');
-                     }
-                     if (ch & bit6.Message.DATA) {
-                         if (r.length === 0) {
-                             r.push('Data');
-                         }
-                     }
-                     text = r.join(' + ') + ' Call';
-                     if (m.data && m.data.duration) {
-                         var dur = m.data.duration;
-                         var mins = Math.floor(dur / 60);
-                         var secs = dur % 60;
-                         text += ' - ' + (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
-                     }
-                 }
-
-                 var my_name = '';
-                 var my_prof_img = '';
-                 var other_name = '';
-                 var other_prof_img = '/images/default-profile-pic.png';
-
-                 if (me != null) {
-                     my_name = me['first_name'] + " " + me['last_name'];
-                     if (me['profile_image'] != null) {
-                         my_prof_img = me['profile_image'];
-                     }
-                 }
-
-                 var other_array = m.other.split('proglobe');
-                 var other = other_array[1];
-
-                 if (convUsers != null && convUsers[other] != null) {
-                     other_name = convUsers[other]['first_name'] + ' ' + convUsers[other]['last_name'];
-                     if (convUsers[other]['images'] != null && convUsers[other]['images']['profile_image'] != null) {
-                         other_prof_img = convUsers[other]['images']['profile_image']['http_url']
-                     }
-                 }
-
-                 var display_name = m.incoming() ? other_name : my_name;
-                 var display_prof_img = m.incoming() ? other_prof_img : my_prof_img;
-
-                 // Text content
-                 if (text) {
-                     div.append('<img src="' + display_prof_img + '" alt="' + display_name + '" width="40px" height="40px"/>');
-                     div.append('<div class="chat-msg-body"><span class="user-name">'+display_name+'</span><p class="chat-msg">'+text+'</p></div>');
-                 }
-
-                 // Find the container for this message
-                 var convId = m.getConversationId();
-                 var c = b6.getConversation(convId);
-                 var msgsDiv = $( msgsDomIdForConversation(c) );
-                 msgsDiv.append(div);
-
-                 // If the conversation for this message is visible
-                 if (msgsDiv.is(':visible')) {
-                     // Scroll to the bottom of the conversation
-                     scrollToLastMessage();
-                     // Mark this new message as read since it is on the screen
-                     if (m.incoming()) {
-                         b6.markMessageAsRead(m);
-                     }
-                 }
-
-             }
-         };
-
-         this.startOutgoingCall = function(to, video){
-
-             // Outgoing call params
-             var opts = {
-                 audio: audioCall,
-                 video: video,
-                 screen: screenCall
-             };
-             // Start the outgoing call
-             var c = b6.startCall(to, opts);
-             attachCallEvents(c);
-             updateInCallUI(c);
-
-         };
-
-         // Attach call state events to a RtcDialog
-         function attachCallEvents(c) {
-             // Call progress
-             c.on('progress', function() {
-                 showInCallName();
-             });
-             // Number of video feeds/elements changed
-             c.on('videos', function () {
-                 var container = $('#videoContainer');
-                 var elems = container.children();
-                 $('#incomingCallAlert').modal('hide');
-                 container.attr('class', elems.length > 2 ? 'grid' : 'simple');
-             });
-             // Call answered
-             c.on('answer', function() {
-                 $('#incomingCallAlert').modal('hide');
-                 $('#onCall').text("on call")
-                 $('#clock').show();
-                 callTimer = window.setInterval(function(){
-                     updateTime();
-                 },1000);
-
-             });
-             // Error during the call
-             c.on('error', function() {
-                 $('#incomingCallAlert').modal('hide');
-                 $('#detailPane').addClass('hidden');
-             });
-             // Call ended
-             c.on('end', function() {
-                 console.log("END");
-                 showInCallName();
-                 // No more dialogs?
-                 if (b6.dialogs.length === 0) {
-                     // Hide InCall UI
-                     $('#detailPane').addClass('hidden');
-                 }
-                 // Hide Incoming Call dialog
-                 // TODO: check that it was for this dialog
-                 $('#incomingCall')
-                     .data({'dialog': null})
-                     .hide();
-
-                 $("#videoContainer").html("");
-                 $('#incomingCallAlert').modal('hide');
-                 $('#detailPane').addClass('hidden');
-                 $('#clock').hide();
-                 window.clearInterval(callTimer);
-                 $("#hour").html("00");
-                 $("#min").html("00");
-                 $("#sec").html("00");
-             });
-         }
-
-         function updateInCallUI(c, opts) {
-             showInCallName();
-             $('#detailPane').removeClass('hidden');
-             // Do not show video feeds area for audio-only call
-             var div = $('#videoContainer').toggle(c.options.video);
-             // Start/update the call
-             c.connect(opts);
-         }
-
-         // Show all the call participants
-         function showInCallName() {
-             var s = '';
-             for(var i in b6.dialogs) {
-                 var d = b6.dialogs[i];
-                 if (i > 0) {
-                     s += ', ';
-                 }
-
-                 var title_array = d.other.split('proglobe');
-                 var title = title_array[1];
-
-                 $.ajax({
-                     url: '/get-profile/'+title,
-                     method: "GET",
-                     dataType: "JSON",
-                     success: function (data, text) {
-
-                         if (data.status.code == 200 && data.profile_data != null) {
-
-                             outGoingCallUser[title] = data.profile_data;
-
-                             var outGoingCallUserName = data.profile_data['first_name']+" "+data.profile_data['last_name'];
-                             s += b6.getNameFromIdentity(outGoingCallUserName);
-                             $('#inCallOther').text(s);
-                             $('#onCall').text("ringing")
-                         }
-                     }
-                 });
-             }
-
-         }
-
-         // 'Answer Incoming Call' click
-         this.answerCall = function(opts){
-             var d = $('#incomingCall').data();
-             // Call controller
-             if (d && d.dialog) {
-                 var c = d.dialog;
-                 // Accept the call, send local audio only
-                 updateInCallUI(c, opts);
-             }
-         };
-
-         // 'Reject Incoming Call' click
-         this.rejectCall = function(){
-             var d = $('#incomingCall').data();
-             // Call controller
-             if (d && d.dialog) {
-                 // Reject call
-                 d.dialog.hangup();
-             }
-         };
-
-         // 'Call Hangup' click
-         this.hangupCall = function(){
-             // Hangup all active calls
-             var x = b6.dialogs.slice();
-             for (var i in x) {
-                 x[i].hangup();
-             }
-         };
-
-         function updateTime() {
-
-             var hours = parseInt($('#hour').html());
-             var minutes = parseInt($('#min').html());
-             var seconds = parseInt($('#sec').html());
-
-             var currentTotalTime = (hours*60*60) + (minutes*60) + seconds;
-
-             currentTotalTime = currentTotalTime + 1;
-
-             var newHours = 0;
-             var newMinutes = 0;
-             var newSeconds = 0;
-
-             if (currentTotalTime > 3599) {
-                 var newHours = (currentTotalTime - (currentTotalTime % (60 * 60))) / (60 * 60);
-
-                 var newMins1 = currentTotalTime - (currentTotalTime % (60 * 60));
-
-                 var newMinutes = (newMins1 - (newMins1 % 60)) / 60;
-
-                 var newSeconds = (currentTotalTime % 60);
-
-             } else if (currentTotalTime > 59) {
-                 var newMinutes = (currentTotalTime - (currentTotalTime % 60)) / 60;
-                 var newSeconds = (currentTotalTime % 60);
-             } else {
-                 var newSeconds = currentTotalTime;
-             }
-
-             $('#hour').html(String(newHours).length==1?'0'+String(newHours):newHours);
-             $('#min').html(String(newMinutes).length==1?'0'+String(newMinutes):newMinutes);
-             $('#sec').html(String(newSeconds).length==1?'0'+String(newSeconds):newSeconds);
-
-         }
-
-     }
-
- }
+}
 
 export default new Chat;

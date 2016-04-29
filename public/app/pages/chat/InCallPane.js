@@ -9,14 +9,10 @@ export default class InCallPane extends React.Component{
     constructor(pros){
         super(pros);
         if (Session.isSessionSet('prg_lg')) {
-            Chat.bit6Auth(false);
+            this.b6 = Chat.b6;
+            Chat.initChat(this.b6);
         }
-
     }
-    onLinkClick(e){
-        e.preventDefault();
-    }
-
 
     answerVideo(){
         var opts = {audio: true, video: true};
@@ -35,8 +31,8 @@ export default class InCallPane extends React.Component{
     hangup(){
         Chat.hangupCall();
     }
-    render() {
 
+    render() {
 
         return(
             <div>
