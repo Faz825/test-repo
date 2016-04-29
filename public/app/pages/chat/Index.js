@@ -7,7 +7,6 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import Session from '../../middleware/Session';
 import Chat from '../../middleware/Chat';
 import {Alert} from '../../config/Alert';
-import ChatListView from '../../components/elements/ChatListView';
 import Lib from '../../middleware/Lib';
 
 let errorStyles = {
@@ -248,7 +247,7 @@ export default class Index extends React.Component{
                     // Some messages have been marked as read
                     // update chat list
                     if(this.unreadConversations.indexOf(c.id) != -1){
-                        this.unreadConversations.splice(c.id);
+                        this.unreadConversations.splice(this.unreadConversations.indexOf(c.id),1);
                     }
                 }
 
@@ -404,7 +403,7 @@ export default class Index extends React.Component{
 
     sendChat(msg){
 
-        this.checkChatWith = this.state.chatWith;console.log(this.checkChatWith)
+        this.checkChatWith = this.state.chatWith;
         this.makeConversationRead(this.state.uri);
 
         this.b6.compose(this.state.uri).text(msg).send(function(err) {
@@ -427,7 +426,7 @@ export default class Index extends React.Component{
             return 0;
         } else{
             _this.setState({validateAlert: ""});
-            this.checkChatWith = this.getUrl();console.log(this.checkChatWith)
+            this.checkChatWith = this.getUrl();
             this.makeConversationRead(this.state.uri);
             Chat.startOutgoingCall(this.state.uri, true);
         }
@@ -443,7 +442,7 @@ export default class Index extends React.Component{
             return 0;
         } else{
             _this.setState({validateAlert: ""});
-            this.checkChatWith = this.getUrl();console.log(this.checkChatWith)
+            this.checkChatWith = this.getUrl();
             this.makeConversationRead(this.state.uri);
             Chat.startOutgoingCall(this.state.uri, false);
         }
@@ -457,7 +456,7 @@ export default class Index extends React.Component{
             // Some messages have been marked as read
             // update chat list
             if(this.unreadConversations.indexOf(conv.id) != -1){
-                this.unreadConversations.splice(conv.id);
+                this.unreadConversations.splice(this.unreadConversations.indexOf(conv.id), 1);
                 this.setState({unreadConversations:this.unreadConversations});
             }
             Chat.updateHeaderUnreadCount(conv.id);

@@ -15,8 +15,6 @@ import Lib from './Lib.js';
 
         this.b6 = new bit6.Client(opts);
 
-        this.initChat(this.b6);
-
     }
 
      initChat(b6){
@@ -25,13 +23,17 @@ import Lib from './Lib.js';
 
          var audioCall = true;
          var screenCall = false;
-         var me = null;
          var convUsers = [];
          var unreadCount = 0;
          var incomingCallUser = [];
          var outGoingCallUser = [];
          var unreadConversationCount = [];
          var callTimer = null;
+         var my_connections = [];
+         var conv_ids = [];
+
+         var me = Session.getSession('prg_lg');
+         loadMyConnections(me.token);
 
          // A conversation has changed
          b6.on('conversation', function(c, op) {
@@ -84,7 +86,6 @@ import Lib from './Lib.js';
          // c - Dialog - call controller. null for a local video feed
          // op - operation. 1 - add, 0 - update, -1 - remove
          b6.on('video', function(v, c, op) {
-             console.log("b6.on('video'")
              var vc = $('#videoContainer');
              if (op < 0) {
                  vc[0].removeChild(v);
@@ -98,12 +99,24 @@ import Lib from './Lib.js';
              if (op !== 0) {
                  vc.toggle(n > 0);
              }
-             //console.log('VIDEO elems.count: ' + n);
              // Use number of video elems to determine the layout using CSS
              var kl = n > 2 ? 'grid' : 'simple';
              vc.attr('class', kl);
 
          });
+
+         function loadMyConnections(token){
+             $.ajax({
+                 url: '/connection/me',
+                 method: "GET",
+                 dataType: "JSON",
+                 headers: { 'prg-auth-header':token }
+             }).done(function(data){
+                 if(data.status.code == 200){
+                     my_connections = data.my_con;
+                 }
+             }.bind(this));
+         }
 
          function bit6Auth(isNewUser) {
              if(Session.getSession('prg_lg') != null){
@@ -117,7 +130,6 @@ import Lib from './Lib.js';
                          bit6Auth(true);
                      }
                      else {
-                         me = Session.getSession('prg_lg');
                          return true;
                      }
                  });
@@ -149,88 +161,122 @@ import Lib from './Lib.js';
                      return;
                  }
 
-                 if(title != 'undefined'){
+                 if(title != 'undefined' && typeof convUsers[title] == 'undefined'){
 
-                     $.ajax({
-                         url: '/get-profile/'+title,
-                         method: "GET",
-                         dataType: "JSON",
-                         success: function (data, text) {
+                     for(let my_con in my_connections){
 
-                             if (data.status.code == 200 && data.profile_data != null) {
+                         if(title === my_connections[my_con].user_name){
 
-                                 convUsers[title] = data.profile_data;
+                             convUsers[title] = my_connections[my_con];
 
-                                 //TODO::Show only 5 and if more display 'see all'
-                                 notificationDiv = $('<div class="tab msg-holder" />')
-                                     .attr('id', notificationId.substring(1))
-                                     .append(notificationListADiv);
+                             //TODO::Show only 5 and if more display 'see all'
+                             notificationDiv = $('<div class="tab msg-holder" />')
+                                 .attr('id', notificationId.substring(1))
+                                 .append(notificationListADiv);
+
+                             if(conv_ids.indexOf(c.id) == -1){
+
                                  notificationWrapperDiv.append(notificationDiv)
-
-                                  //Update Conversation data
-                                 var stamp = Lib.getRelativeTime(c.updated);
-                                 var latestText = '';
-                                 var lastMsg = c.getLastMessage();
-                                 if (lastMsg) {
-                                     // Show the text from the latest conversation
-                                     if (lastMsg.content)
-                                         latestText = lastMsg.content;
-                                     // If no text, but has an attachment, show the mime type
-                                     else if (lastMsg.data && lastMsg.data.type) {
-                                         latestText = lastMsg.data.type;
-                                     }
-                                 }
-
-                                 var connection_name = convUsers[title]['first_name']+" "+convUsers[title]['last_name'];
-                                 var connection_prof_img = '/images/default-profile-pic.png';
-
-                                 if (convUsers[title]['images'] != null && convUsers[title]['images']['profile_image'] != null) {
-                                     connection_prof_img = convUsers[title]['images']['profile_image']['http_url']
-                                 }
-
-                                 notificationDiv.find('a').attr('href', '/chat/'+title);
-                                 notificationDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
-                                 notificationDiv.find('.chat-body').find('.connection-name').html(connection_name);
-                                 notificationDiv.find('.chat-body').find('.msg').html(latestText);
-                                 notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
-
-                                 // If the updated conversation is newer than the top one -
-                                 // move this conversation to the top
-                                 var notificationTop = notificationWrapperDiv.children(':first');
-                                 if (notificationTop.length > 0 && title != 'undefined') {
-                                     var notificationTopTabId = notificationTop.attr('id');
-                                     var notificationTopConvId = domIdToConversationId(notificationTopTabId);
-                                     var notificationTopConv = b6.getConversation(notificationTopConvId);
-
-                                     if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
-                                         notificationTop.before(notificationDiv);
-                                     }
-                                 }
-
-                                 console.log("HEREEEE===>"+c.unread+"===>"+unreadConversationCount.indexOf(c.id));
-
-                                 if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
-                                     console.log("HEREEEE1")
-                                     unreadCount += 1;
-                                     unreadConversationCount.push(c.id);
-                                 }
-
-                                 if(unreadCount > 0){
-                                     console.log("HEREEEE2")
-                                     $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
-                                 } else{
-                                     $("#unread_chat_count_header").html('');
-                                 }
-
+                                 conv_ids.push(c.id);
                              }
-                         }.bind(this),
-                         error: function (request, status, error) {
-                             console.log(request.responseText);
-                             console.log(status);
-                             console.log(error);
-                         }
-                     });
 
+                              //Update Conversation data
+                             var stamp = Lib.getRelativeTime(c.updated);
+                             var latestText = '';
+                             var lastMsg = c.getLastMessage();
+                             if (lastMsg) {
+                                 // Show the text from the latest conversation
+                                 if (lastMsg.content)
+                                     latestText = lastMsg.content;
+                                 // If no text, but has an attachment, show the mime type
+                                 else if (lastMsg.data && lastMsg.data.type) {
+                                     latestText = lastMsg.data.type;
+                                 }
+                             }
+
+                             var connection_name = convUsers[title]['first_name']+" "+convUsers[title]['last_name'];
+                             var connection_prof_img = '/images/default-profile-pic.png';
+
+                             if (convUsers[title]['images'] != null && convUsers[title]['images']['profile_image'] != null) {
+                                 connection_prof_img = convUsers[title]['images']['profile_image']['http_url']
+                             }
+
+                             notificationDiv.find('a').attr('href', '/chat/'+title);
+                             notificationDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
+                             notificationDiv.find('.chat-body').find('.connection-name').html(connection_name);
+                             notificationDiv.find('.chat-body').find('.msg').html(latestText);
+                             notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
+
+                             // If the updated conversation is newer than the top one -
+                             // move this conversation to the top
+                             var notificationTop = notificationWrapperDiv.children(':first');
+                             if (notificationTop.length > 0 && title != 'undefined') {
+                                 var notificationTopTabId = notificationTop.attr('id');
+                                 var notificationTopConvId = domIdToConversationId(notificationTopTabId);
+                                 var notificationTopConv = b6.getConversation(notificationTopConvId);
+
+                                 if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
+                                     notificationTop.before(notificationDiv);
+                                 }
+                             }
+
+                             if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
+                                 unreadCount += 1;
+                                 unreadConversationCount.push(c.id);
+                             }
+
+                             if(unreadCount > 0){
+                                 $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
+                             } else{
+                                 $("#unread_chat_count_header").html('');
+                             }
+
+                         }
+                     }
+
+                 }
+             }
+             if(op >= 0 && title != 'undefined'){
+
+                 //Update Conversation data
+                 var stamp = Lib.getRelativeTime(c.updated);
+                 var latestText = '';
+                 var lastMsg = c.getLastMessage();
+                 if (lastMsg) {
+                     // Show the text from the latest conversation
+                     if (lastMsg.content)
+                         latestText = lastMsg.content;
+                     // If no text, but has an attachment, show the mime type
+                     else if (lastMsg.data && lastMsg.data.type) {
+                         latestText = lastMsg.data.type;
+                     }
+                 }
+
+                 notificationDiv.find('.chat-body').find('.msg').html(latestText);
+                 notificationDiv.find('.chat-body').find('.chat-date').html(stamp);
+
+                 // If the updated conversation is newer than the top one -
+                 // move this conversation to the top
+                 var notificationTop = notificationWrapperDiv.children(':first');
+                 if (notificationTop.length > 0 && title != 'undefined') {
+                     var notificationTopTabId = notificationTop.attr('id');
+                     var notificationTopConvId = domIdToConversationId(notificationTopTabId);
+                     var notificationTopConv = b6.getConversation(notificationTopConvId);
+
+                     if (notificationTopConv && notificationTopConv.id != c.id && c.updated > notificationTopConv.updated) {
+                         notificationTop.before(notificationDiv);
+                     }
+                 }
+
+                 if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
+                     unreadCount += 1;
+                     unreadConversationCount.push(c.id);
+                 }
+
+                 if(unreadCount > 0){
+                     $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
+                 } else{
+                     $("#unread_chat_count_header").html('');
                  }
              }
 
@@ -292,7 +338,6 @@ import Lib from './Lib.js';
              });
              // Call ended
              c.on('end', function() {
-                 console.log("END");
                  showInCallName();
                  // No more dialogs?
                  if (b6.dialogs.length === 0) {
@@ -360,6 +405,7 @@ import Lib from './Lib.js';
 
          // 'Answer Incoming Call' click
          this.answerCall = function(opts){
+             $('#incomingCallAlert').modal('hide');
              var d = $('#incomingCall').data();
              // Call controller
              if (d && d.dialog) {
@@ -426,17 +472,11 @@ import Lib from './Lib.js';
 
          this.updateHeaderUnreadCount = function(conv_id){
 
-             console.log("updateHeaderUnreadCount"+conv_id);
-
-             console.log("updateHeaderUnreadCount"+unreadConversationCount.indexOf(conv_id));
-
              if(unreadConversationCount.indexOf(conv_id) != -1){
-                 console.log("Here");
                  unreadCount -= 1;
-                 unreadConversationCount.splice(conv_id);
+                 unreadConversationCount.splice(unreadConversationCount.indexOf(conv_id),1);
              }
              if(unreadCount > 0){
-                 console.log("unreadCount > 0");
                  $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
              } else{
                  $("#unread_chat_count_header").html('');
