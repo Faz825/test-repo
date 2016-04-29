@@ -23,7 +23,7 @@ export default class RichTextEditor extends React.Component{
     render() {
         return (
             <div className="rich-editor-holder">
-                <ReactQuill theme='snow' value={this.state.text} onChange={this.onTextChange} defaultValue ="Start your note.."/>
+                <ReactQuill theme='snow' value={this.state.text} onChange={this.onTextChange} defaultValue =""/>
             </div>
         );
     }

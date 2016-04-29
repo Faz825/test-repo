@@ -219,7 +219,7 @@ export default class Index extends React.Component {
         let _this = this;
 
         if(note == null){
-            this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1, editNoteTitle : "Note Title", editNote : "Start your note.."});
+            this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1, editNoteTitle : "Note Title", editNote : ""});
             this.saveInterval = setInterval(function(){_this.saveNote()}, 1000);
         } else{
             let editNoteId = note.note_id;
