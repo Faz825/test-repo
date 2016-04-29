@@ -3121,3 +3121,11 @@ textarea{
 .editor-popup-holder .ql-format-button.ql-link{
 	display: none;
 }
+
+
+@media screen and (min-color-index:0) and(-webkit-min-device-pixel-ratio:0)
+{ @media {
+	.rich-editor-holder .quill-toolbar{
+		top: 0;
+	}
+}}
