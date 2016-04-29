@@ -374,7 +374,7 @@ export default class Index extends React.Component{
             }).done(function(data){
                 if (data.status.code == 200 && data.profile_data != null) {
                     this.setState({chatWithUserName:data.profile_data.first_name+" "+data.profile_data.last_name});
-                    this.makeConversationRead(this.state.uri)
+                    this.makeConversationRead(this.state.uri);
                 }
             }.bind(this));
         }
@@ -405,7 +405,7 @@ export default class Index extends React.Component{
     sendChat(msg){
 
         this.checkChatWith = this.state.chatWith;console.log(this.checkChatWith)
-        this.makeConversationRead(this.state.uri)
+        this.makeConversationRead(this.state.uri);
 
         this.b6.compose(this.state.uri).text(msg).send(function(err) {
             if (err) {
@@ -428,7 +428,7 @@ export default class Index extends React.Component{
         } else{
             _this.setState({validateAlert: ""});
             this.checkChatWith = this.getUrl();console.log(this.checkChatWith)
-            this.makeConversationRead(this.state.uri)
+            this.makeConversationRead(this.state.uri);
             Chat.startOutgoingCall(this.state.uri, true);
         }
 
@@ -444,7 +444,7 @@ export default class Index extends React.Component{
         } else{
             _this.setState({validateAlert: ""});
             this.checkChatWith = this.getUrl();console.log(this.checkChatWith)
-            this.makeConversationRead(this.state.uri)
+            this.makeConversationRead(this.state.uri);
             Chat.startOutgoingCall(this.state.uri, false);
         }
 
@@ -460,6 +460,7 @@ export default class Index extends React.Component{
                 this.unreadConversations.splice(conv.id);
                 this.setState({unreadConversations:this.unreadConversations});
             }
+            Chat.updateHeaderUnreadCount(conv.id);
         }
     }
 

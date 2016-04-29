@@ -35,7 +35,7 @@ import Lib from './Lib.js';
 
          // A conversation has changed
          b6.on('conversation', function(c, op) {
-             //onConversationChange(c, op);
+             onConversationChange(c, op);
          });
 
          // Incoming call from another user
@@ -207,9 +207,19 @@ import Lib from './Lib.js';
                                      }
                                  }
 
+                                 console.log("HEREEEE===>"+c.unread+"===>"+unreadConversationCount.indexOf(c.id));
+
                                  if (c.unread > 0 && unreadConversationCount.indexOf(c.id) == -1) {
+                                     console.log("HEREEEE1")
                                      unreadCount += 1;
                                      unreadConversationCount.push(c.id);
+                                 }
+
+                                 if(unreadCount > 0){
+                                     console.log("HEREEEE2")
+                                     $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
+                                 } else{
+                                     $("#unread_chat_count_header").html('');
                                  }
 
                              }
@@ -222,10 +232,6 @@ import Lib from './Lib.js';
                      });
 
                  }
-             }
-
-             if(unreadCount > 0){
-                 $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
              }
 
          }
@@ -418,23 +424,24 @@ import Lib from './Lib.js';
 
          }
 
-         function makeConversationRead(uri){
-             var conv = b6.getConversation(uri);
+         this.updateHeaderUnreadCount = function(conv_id){
 
-             if (conv != null && b6.markConversationAsRead(conv) > 0) {
-                 // Some messages have been marked as read
-                 // update chat list
-                 if(unreadConversationCount.indexOf(conv.id) != -1){
-                     unreadCount -= 1;
-                     unreadConversationCount.splice(conv.id);
-                 }
-                 if (unreadConversationCount.indexOf(conv.id) != -1) {
+             console.log("updateHeaderUnreadCount"+conv_id);
 
-                     unreadConversationCount.push(c.id);
-                 }
+             console.log("updateHeaderUnreadCount"+unreadConversationCount.indexOf(conv_id));
 
-
+             if(unreadConversationCount.indexOf(conv_id) != -1){
+                 console.log("Here");
+                 unreadCount -= 1;
+                 unreadConversationCount.splice(conv_id);
              }
+             if(unreadCount > 0){
+                 console.log("unreadCount > 0");
+                 $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
+             } else{
+                 $("#unread_chat_count_header").html('');
+             }
+
          }
 
      }
