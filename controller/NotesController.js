@@ -30,18 +30,22 @@ var NotesController ={
     addNote:function(req,res) {
 
         var Note = require('mongoose').model('Notes');
-        var _content = JSON.parse(req.body.noteContent);
 
         var _note = {
             name:req.body.noteName,
-            content:_content,
+            content:req.body.noteContent,
             user_id:Util.getCurrentSession(req).id,
             notebook_id:req.body.notebookId
         };
 
         Note.addNewNote(_note,function(resultSet){
             if(resultSet.status == 200){
-                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+                var outPut ={
+                    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                    note:resultSet.note
+                }
+                res.status(200).json(outPut);
+                //res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
             }else{
                 res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
             }
@@ -141,11 +145,9 @@ var NotesController ={
             _id:req.body.noteId
         };
 
-        var _content = JSON.parse(req.body.noteContent);
-
         var updateData = {
             name:req.body.noteName,
-            content:_content
+            content:req.body.noteContent
         };
 
         Note.updateNote(criteria,updateData,function(resultSet){

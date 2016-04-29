@@ -6,26 +6,26 @@ const {width, height, scale} = Dimensions.get("window"),
     vmax = Math.max(vw, vh);
 
 export default StyleSheet.create({
-    "html": {
-        "height": "100%"
-    },
     "body": {
-        "height": "100%",
         "WebkitFontSmoothing": "antialiased",
         "backgroundImage": "url(../images/site-background.png)",
         "backgroundSize": "cover",
         "backgroundRepeat": "no-repeat",
         "backgroundAttachment": "fixed"
     },
+    "row": {
+        "paddingBottom": 0
+    },
     "row-clr": {
         "marginLeft": "0px !important",
         "marginRight": "0px !important"
     },
-    "pg-middle-sign-wrapper container-fluid": {
+    "pg-middle-sign-wrapper > container-fluid": {
         "paddingTop": 0,
         "paddingRight": 0,
         "paddingBottom": 0,
-        "paddingLeft": 0
+        "paddingLeft": 0,
+        "minHeight": 80 * vh
     },
     "a": {
         "outline": 0
@@ -267,10 +267,16 @@ export default StyleSheet.create({
     "pg-top-hover-ico": {
         "display": "none"
     },
-    "pg-header-options a:hover pg-top-defalt-ico": {
+    "chat-dropdown-holderchat-notification-wrapper-opened pg-top-defalt-ico": {
         "display": "none"
     },
-    "pg-header-options a:hover pg-top-hover-ico": {
+    "dropDown-holder:hover pg-top-defalt-ico": {
+        "display": "none"
+    },
+    "chat-dropdown-holderchat-notification-wrapper-opened pg-top-hover-ico": {
+        "display": "block"
+    },
+    "dropDown-holder:hover pg-top-hover-ico": {
         "display": "block"
     },
     "pg-drop-down": {
@@ -384,7 +390,8 @@ export default StyleSheet.create({
         "height": 0
     },
     "pgs-middle-sign-wrapper": {
-        "paddingTop": 95
+        "paddingTop": 95,
+        "minHeight": 100 * vh
     },
     "pgs-middle-sign-wrapperchangePassword": {
         "paddingTop": "13%"
@@ -1400,7 +1407,8 @@ export default StyleSheet.create({
         "marginLeft": 0
     },
     "pg-page": {
-        "paddingBottom": 120
+        "paddingBottom": 120,
+        "minHeight": 80 * vh
     },
     "pg-profile-banner-area": {
         "paddingTop": 0,
@@ -2070,7 +2078,8 @@ export default StyleSheet.create({
         "paddingRight": 0,
         "paddingBottom": 0,
         "paddingLeft": 0,
-        "width": "calc(100% - 220px)"
+        "width": "calc(100% - 220px)",
+        "minHeight": 80 * vh
     },
     "pg-news-page-header": {
         "paddingTop": 11,
@@ -2443,6 +2452,9 @@ export default StyleSheet.create({
         "borderTopRightRadius": 4,
         "borderBottomRightRadius": 4
     },
+    "pg-notes-page-content-item-right-thumbs note-thumb-wrapper": {
+        "overflow": "hidden"
+    },
     "pg-col-20": {
         "width": "20%",
         "float": "left",
@@ -2476,6 +2488,11 @@ export default StyleSheet.create({
         "background": "#fff",
         "border": "1px solid #e3e7ea",
         "cursor": "pointer"
+    },
+    "pg-notes-item-main-row note a": {
+        "display": "block",
+        "width": "100%",
+        "height": "100%"
     },
     "pg-notes-item-main-row note time-wrapper": {
         "paddingTop": 5,
@@ -2937,7 +2954,8 @@ export default StyleSheet.create({
         "paddingRight": 0,
         "paddingBottom": 0,
         "paddingLeft": 0,
-        "width": "calc(100% - 220px)"
+        "width": "calc(100% - 220px)",
+        "minHeight": 80 * vh
     },
     "pg-middle-chat-content-header": {
         "backgroundColor": "rgba(7, 7, 8, 0.3)",
@@ -3096,50 +3114,32 @@ export default StyleSheet.create({
         "borderRight": "1px solid #dee6eb"
     },
     "conv-holder msg-holder": {
-        "paddingTop": 12,
-        "paddingRight": 12,
-        "paddingBottom": 12,
-        "paddingLeft": 12,
-        "overflow": "hidden",
-        "position": "relative",
-        "cursor": "pointer",
-        "borderBottom": "1px solid #dee6eb"
-    },
-    "chat-notification-header msg-holder": {
-        "paddingTop": 12,
-        "paddingRight": 12,
-        "paddingBottom": 12,
-        "paddingLeft": 12,
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0,
         "overflow": "hidden",
         "position": "relative",
         "cursor": "pointer",
         "borderBottom": "1px solid #dee6eb"
     },
     "conv-holder msg-holder a": {
-        "display": "block"
+        "display": "block",
+        "overflow": "hidden",
+        "paddingTop": 12,
+        "paddingRight": 12,
+        "paddingBottom": 12,
+        "paddingLeft": 12
     },
-    "chat-notification-header msg-holder a": {
-        "display": "block"
-    },
-    "conv-holder msg-holder:hover": {
+    "conv-holder msg-holder:hover a": {
+        "paddingLeft": 9,
         "background": "#e2f4ff",
-        "borderLeft": "3px solid #61b3de",
-        "paddingLeft": 9
+        "borderLeft": "3px solid #61b3de"
     },
-    "chat-notification-header msg-holder:hover": {
+    "conv-holder msg-holder-selected a": {
+        "paddingLeft": 9,
         "background": "#e2f4ff",
-        "borderLeft": "3px solid #61b3de",
-        "paddingLeft": 9
-    },
-    "conv-holder msg-holder-selected": {
-        "background": "#e2f4ff",
-        "borderLeft": "3px solid #61b3de",
-        "paddingLeft": 9
-    },
-    "chat-notification-header msg-holder-selected": {
-        "background": "#e2f4ff",
-        "borderLeft": "3px solid #61b3de",
-        "paddingLeft": 9
+        "borderLeft": "3px solid #61b3de"
     },
     "msg-holder chat-pro-img": {
         "float": "left",
@@ -3366,13 +3366,43 @@ export default StyleSheet.create({
     },
     "chat-notification-wrapper": {
         "position": "absolute",
-        "background": "#fff",
         "width": 225,
         "borderRadius": 3,
         "right": -100,
         "top": 55,
         "display": "none",
-        "zIndex": 100
+        "zIndex": 100,
+        "cursor": "default"
+    },
+    "chat-notification-wrapper-opened": {},
+    "chat-notification-header msg-holder": {
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0,
+        "overflow": "hidden",
+        "position": "relative",
+        "cursor": "pointer",
+        "borderBottom": "1px solid #dee6eb",
+        "background": "#fff"
+    },
+    "chat-notification-header msg-holder a": {
+        "display": "block",
+        "paddingTop": 12,
+        "paddingRight": 12,
+        "paddingBottom": 12,
+        "paddingLeft": 12,
+        "overflow": "hidden"
+    },
+    "chat-notification-header msg-holder a:hover": {
+        "background": "#e2f4ff",
+        "borderLeft": "3px solid #61b3de",
+        "paddingLeft": 9
+    },
+    "chat-notification-header msg-holder-selected a": {
+        "background": "#e2f4ff",
+        "borderLeft": "3px solid #61b3de",
+        "paddingLeft": 9
     },
     "drop_downarrow": {
         "position": "absolute",
@@ -3452,6 +3482,10 @@ export default StyleSheet.create({
     "media-options-holder media-options new-message a": {
         "paddingTop": 2,
         "textDecoration": "none"
+    },
+    "clock": {
+        "color": "#c7bfb2",
+        "display": "none"
     },
     "middle-content-wrapper": {
         "minWidth": 500
@@ -3568,5 +3602,202 @@ export default StyleSheet.create({
         "textDecoration": "none",
         "textTransform": "uppercase",
         "float": "right"
+    },
+    "public-DraftEditorPlaceholder-inner": {
+        "color": "#999"
+    },
+    "confirmation_p": {
+        "color": "#2d5164",
+        "font": "20px \"montserratsemi_bold\",sans-serif"
+    },
+    "confirm-no": {
+        "backgroundColor": "#a4becd",
+        "marginRight": 20,
+        "float": "right",
+        "color": "#FFF"
+    },
+    "editor-popup-holder": {
+        "background": "url(../images/pop-up-back.png) no-repeat 0 0 / cover",
+        "paddingTop": 5,
+        "paddingRight": 5,
+        "paddingBottom": 5,
+        "paddingLeft": 5,
+        "borderRadius": 3,
+        "overflow": "hidden"
+    },
+    "popup-header": {
+        "overflow": "hidden",
+        "marginTop": 5,
+        "marginRight": 0,
+        "marginBottom": 10,
+        "marginLeft": 0,
+        "position": "relative"
+    },
+    "popup-header span": {
+        "cursor": "pointer"
+    },
+    "extra-func-btns span": {
+        "cursor": "pointer",
+        "display": "inline-block"
+    },
+    "popup-header closeBtn": {
+        "width": 13,
+        "height": 13,
+        "display": "block",
+        "position": "absolute",
+        "top": 0,
+        "left": 0,
+        "marginTop": 5,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 5,
+        "zIndex": 1,
+        "background": "url(../images/pop_up_close.png) no-repeat 0 0"
+    },
+    "extra-func": {
+        "float": "left",
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
+    "title-holder": {
+        "float": "left",
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
+    "extra-func > form-control": {
+        "float": "left",
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
+    "popup-header toolbar-toggle-btn-holder": {
+        "float": "left",
+        "border": "1px solid #90a2b1",
+        "borderRadius": 5,
+        "marginLeft": 15,
+        "height": 23,
+        "overflow": "hidden"
+    },
+    "popup-header extra-func-btns": {
+        "float": "left",
+        "border": "1px solid #90a2b1",
+        "borderRadius": 5,
+        "marginLeft": 15,
+        "height": 23,
+        "overflow": "hidden"
+    },
+    "toolbar-toggle-btn-holder span": {
+        "display": "inline-block"
+    },
+    "toolbar-toggle-btn-holder text-format-menu": {
+        "width": 33,
+        "height": 23,
+        "background": "url(../images/tlbr-fonts-toggle-btn.png) #fff no-repeat center center",
+        "borderRight": "1px solid #90a2b1"
+    },
+    "toolbar-toggle-btn-holder text-style-menu": {
+        "width": 33,
+        "height": 23,
+        "background": "url(../images/tlbr-font-styles-toggle-btn.png) #fff no-repeat center center"
+    },
+    "extra-func-btns export-btn": {
+        "width": 45,
+        "height": 23,
+        "borderRight": "1px solid #90a2b1",
+        "background": "url(../images/export-btn-bg.png) #5f778b no-repeat center center"
+    },
+    "extra-func-btns email-btn": {
+        "width": 33,
+        "height": 23,
+        "background": "url(../images/email-btn-bg.png) #fff no-repeat center center"
+    },
+    "extra-func form-control": {
+        "width": 114,
+        "height": 23,
+        "font": "10px \"montserratregular\",sans-serif",
+        "border": "1px solid #90a2b1",
+        "paddingTop": 6,
+        "paddingRight": 0,
+        "paddingBottom": 5,
+        "paddingLeft": 8,
+        "marginLeft": 10
+    },
+    "popup-header note-title": {
+        "background": "none",
+        "border": "none",
+        "boxShadow": "none",
+        "color": "#2d5164",
+        "float": "right",
+        "font": "14px \"montserratsemi_bold\",sans-serif",
+        "height": 23,
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "paddingTop": 2,
+        "paddingRight": 0,
+        "paddingBottom": 1,
+        "paddingLeft": 0,
+        "position": "relative",
+        "textAlign": "center",
+        "width": 250,
+        "zIndex": 0
+    },
+    "popup-header note-title:focus": {
+        "borderBottom": "1px solid #fff"
+    },
+    "editor-popup-holder quill-contents": {
+        "background": "#fff"
+    },
+    "editor-popup-holder btn": {
+        "float": "right",
+        "font": "11px 'montserratsemi_bold', sans-serif",
+        "color": "#fff",
+        "backgroundColor": "#61b3de",
+        "textTransform": "uppercase",
+        "border": "none",
+        "marginTop": 12,
+        "marginRight": 0,
+        "marginBottom": 5,
+        "marginLeft": 0
+    },
+    "rich-editor-holder quill-toolbar": {
+        "position": "fixed",
+        "marginTop": 0,
+        "marginRight": 5,
+        "marginBottom": 0,
+        "marginLeft": 5,
+        "paddingTop": 8,
+        "paddingRight": 0,
+        "paddingBottom": 8,
+        "paddingLeft": 0,
+        "width": "49%",
+        "zIndex": 1,
+        "backgroundColor": "#fff"
+    },
+    "dialog--jss-0-0note-popup": {
+        "transform": "none !important"
+    },
+    "rich-editor-holder quill-contents": {
+        "position": "relative",
+        "zIndex": 0
+    },
+    "editor-popup-holder ql-editor": {
+        "minHeight": "340px !important",
+        "marginTop": 40
+    },
+    "editor-popup-holder ql-align ql-picker-label": {
+        "textIndent": -9999
+    },
+    "editor-popup-holder ql-align ql-picker-item": {
+        "textIndent": -9999
+    },
+    "editor-popup-holder ql-format-buttonql-link": {
+        "display": "none"
     }
 });

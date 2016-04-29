@@ -17,6 +17,7 @@ import Connection  from './pages/connection/Index';
 import NewsSettings from './pages/news/NewsSettings';
 import ChatIndex from './pages/chat/Index';
 import NewsIndex from './pages/news/Index';
+import NotesIndex from './pages/notes/Index';
 
 
 let rootRoute =(
@@ -61,6 +62,8 @@ let rootRoute =(
         <Route name="news" path="/news" component={NewsSettings}/>
 
 
+
+        <Route name="notes" path="/notes" component={NotesIndex}/>
 
 
 	</Route>
