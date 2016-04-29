@@ -33,7 +33,7 @@ export default class Index extends React.Component {
             isShowingNoteModal:false,
             notebookId:0,
             editNoteId:0,
-            editNoteTitle:"",
+            editNoteTitle:"Note Title",
             editNote:"",
             staticNoteTitle:"",
             staticNote:"",
@@ -219,7 +219,7 @@ export default class Index extends React.Component {
         let _this = this;
 
         if(note == null){
-            this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1});
+            this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1, editNoteTitle : "Note Title", editNote : "Start your note.."});
             this.saveInterval = setInterval(function(){_this.saveNote()}, 1000);
         } else{
             let editNoteId = note.note_id;
@@ -232,7 +232,7 @@ export default class Index extends React.Component {
     }
 
     onTitleEdit(e){
-        let noteText = Lib.sanitize(e.target.innerHTML);
+        let noteText = e.target.value;
         this.setState({editNoteTitle : noteText})
     }
 
@@ -246,6 +246,10 @@ export default class Index extends React.Component {
         this.loadNotes();
         this.setState({isShowingNoteModal: false, noteAddEdit:0, editNoteId:0, editNoteTitle:"", editNote:"", staticNoteTitle:"", staticNote:"", notebookId:0});
 
+    }
+
+    closeNote(){
+        this.setState({isShowingNoteModal : false});
     }
 
     saveNote(){
@@ -300,12 +304,12 @@ export default class Index extends React.Component {
             <div>
                 {this.state.isShowingNoteModal &&
                 <ModalContainer zIndex={9999} >
-                    <ModalDialog width="50%" style={{marginTop : "-100px", padding : "0", borderRadius : "3px"}}>
+                    <ModalDialog width="50%" className="note-popup" style={{marginTop : "-100px", padding : "0", borderRadius : "3px" , transform : "none"}}>
                         <div className="editor-popup-holder">
                             <div className="popup-header">
-                                <span className="closeBtn" onClick={this.closeNotePopup.bind(this)}></span>
+                                <span className="closeBtn" onClick={this.closeNote.bind(this)}></span>
                                 <div className="title-holder col-sm-8">
-                                    <div className="note-title" contentEditable={true} onInput={(event)=>{this.onTitleEdit(event)}}>{this.state.editNoteTitle}</div>
+                                    <input type="text" className="note-title" value={this.state.editNoteTitle} onChange={(event)=>{this.onTitleEdit(event)}}/>
                                 </div>
                                 <div className="extra-func col-sm-4">
                                     <input type="text" placeholder="Search" name="search" className="form-control" />
@@ -475,15 +479,17 @@ export class NoteThumb extends React.Component{
 
         return(
             <div className="pg-notes-item-main-row">
-                <div className="note-holder">
-                    <div className="row-clear add-new-note note">
-                        <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
+                <div className="note-thumb-wrapper">
+                    <div className="note-holder">
+                        <div className="row-clear add-new-note note">
+                            <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
+                        </div>
                     </div>
+                    {_firstSetNotes}
+                    {
+                        (this.state.allNotesAreVisible)? _allNotes : null
+                    }
                 </div>
-                {_firstSetNotes}
-                {
-                    (this.state.allNotesAreVisible)? _allNotes : null
-                }
                 {(_notes.length > 4) ? <div className="show-more-btn" onClick={this.showMoreNotes.bind(this)}>{this.state.allNotesAreVisible? "Show Less" : "Show More"}</div> : null}
             </div>
         )

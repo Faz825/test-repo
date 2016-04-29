@@ -9,7 +9,7 @@ export default class RichTextEditor extends React.Component{
         super(props);
 
         this.state={
-            text : (this.props.note)? this.props.note : "Start your note.."
+            text : (this.props.note)? this.props.note : null
         };
 
         this.onTextChange = this.onTextChange.bind(this);
@@ -23,7 +23,7 @@ export default class RichTextEditor extends React.Component{
     render() {
         return (
             <div className="rich-editor-holder">
-                <ReactQuill theme='snow' value={this.state.text} onChange={this.onTextChange} />
+                <ReactQuill theme='snow' value={this.state.text} onChange={this.onTextChange} defaultValue ="Start your note.."/>
             </div>
         );
     }

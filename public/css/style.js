@@ -2452,6 +2452,9 @@ export default StyleSheet.create({
         "borderTopRightRadius": 4,
         "borderBottomRightRadius": 4
     },
+    "pg-notes-page-content-item-right-thumbs note-thumb-wrapper": {
+        "overflow": "hidden"
+    },
     "pg-col-20": {
         "width": "20%",
         "float": "left",
@@ -2485,6 +2488,11 @@ export default StyleSheet.create({
         "background": "#fff",
         "border": "1px solid #e3e7ea",
         "cursor": "pointer"
+    },
+    "pg-notes-item-main-row note a": {
+        "display": "block",
+        "width": "100%",
+        "height": "100%"
     },
     "pg-notes-item-main-row note time-wrapper": {
         "paddingTop": 5,
@@ -3720,23 +3728,28 @@ export default StyleSheet.create({
         "marginLeft": 10
     },
     "popup-header note-title": {
+        "background": "none",
+        "border": "none",
+        "boxShadow": "none",
         "color": "#2d5164",
+        "float": "right",
         "font": "14px \"montserratsemi_bold\",sans-serif",
+        "height": 23,
         "marginTop": 0,
         "marginRight": 0,
         "marginBottom": 0,
         "marginLeft": 0,
-        "textAlign": "center",
-        "paddingRight": 0,
-        "position": "relative",
-        "zIndex": 0,
-        "width": 250,
-        "height": 23,
-        "overflow": "hidden",
-        "float": "right",
         "paddingTop": 2,
+        "paddingRight": 0,
         "paddingBottom": 1,
-        "paddingLeft": 0
+        "paddingLeft": 0,
+        "position": "relative",
+        "textAlign": "center",
+        "width": 250,
+        "zIndex": 0
+    },
+    "popup-header note-title:focus": {
+        "borderBottom": "1px solid #fff"
     },
     "editor-popup-holder quill-contents": {
         "background": "#fff"
@@ -3755,19 +3768,20 @@ export default StyleSheet.create({
     },
     "rich-editor-holder quill-toolbar": {
         "position": "fixed",
-        "top": 42,
         "marginTop": 0,
         "marginRight": 5,
         "marginBottom": 0,
         "marginLeft": 5,
-        "left": 0,
         "paddingTop": 8,
         "paddingRight": 0,
         "paddingBottom": 8,
         "paddingLeft": 0,
-        "width": "98.6%",
+        "width": "49%",
         "zIndex": 1,
         "backgroundColor": "#fff"
+    },
+    "dialog--jss-0-0note-popup": {
+        "transform": "none !important"
     },
     "rich-editor-holder quill-contents": {
         "position": "relative",
