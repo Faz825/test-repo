@@ -2062,7 +2062,7 @@ export default StyleSheet.create({
         "textAlign": "center"
     },
     "pg-middle-sign-wrapper container-fluid newsCatHolder": {
-        "marginTop": 100,
+        "marginTop": 70,
         "paddingTop": 0,
         "paddingRight": 0,
         "paddingBottom": 130,
@@ -2122,6 +2122,9 @@ export default StyleSheet.create({
         "textDecoration": "none",
         "textTransform": "uppercase",
         "cursor": "pointer"
+    },
+    "pg-news-page-content pg-news-page-header": {
+        "marginBottom": 25
     },
     "pg-notes-page-content-item note-cat-thumb": {
         "background": "url(../images/pg-notes-view-all.png) #5ebdaa repeat-y -3px top"

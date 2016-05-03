@@ -315,6 +315,7 @@ export class TextPostElement extends React.Component{
     }
     render(){
         let full_name = this.loggedUser.first_name +" "+ this.loggedUser.last_name;
+        let proImg = (this.loggedUser.profile_image != '')? this.loggedUser.profile_image : "/images/default_profile_image.png";
         let opt = {
             style:{display:"block"}};
         let uploaded_files = this.state.uploadedFiles.map((file,key)=>{
@@ -329,6 +330,7 @@ export class TextPostElement extends React.Component{
                 </div>
             )
         })
+        console.log(proImg);
         return (
             <div>
                 <PostOptionMenu
@@ -337,7 +339,7 @@ export class TextPostElement extends React.Component{
                     />
                 <div id="pg_content_1" className="row row_clr pg-newsfeed-post-content tab_info clearfix">
                     <div className="pg-user-pro-pic">
-                        <img src={this.loggedUser.profile_image} alt={full_name} className="img-responsive" />
+                        <img src={proImg} alt={full_name} className="img-responsive" />
                     </div>
 
                     {

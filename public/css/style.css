@@ -1524,7 +1524,7 @@ textarea{
 
 /* ====================================================== news page/ notes ==================================================*/
 .pg-middle-sign-wrapper .container-fluid .newsCatHolder{
-	margin-top: 100px;
+	margin-top: 70px;
 	padding: 0 0 130px;
     width: calc(100% - 220px);
 }
@@ -1564,6 +1564,9 @@ textarea{
 	text-decoration: none;
 	text-transform: uppercase;
 	cursor: pointer;
+}
+.pg-news-page-content .pg-news-page-header{
+	margin-bottom: 25px;
 }
 .pg-notes-page-content-item .note-cat-thumb{
 	background: url(../images/pg-notes-view-all.png) #5ebdaa repeat-y -3px top;
