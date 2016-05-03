@@ -14,7 +14,10 @@ var NoteSchema = new Schema({
         type:String,
         trim:true
     },
-    content:[],
+    content:{
+        type:String,
+        trim:true
+    },
     user_id:{
         type: Schema.ObjectId,
         ref: 'User',

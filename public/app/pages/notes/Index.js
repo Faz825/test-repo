@@ -5,6 +5,9 @@ import React from 'react';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Session from '../../middleware/Session';
 import {Alert} from '../../config/Alert';
+import { Scrollbars } from 'react-custom-scrollbars';
+import Lib    from '../../middleware/Lib';
+import RichTextEditor from '../../components/elements/RichTextEditor';
 
 let errorStyles = {
     color         : "#ed0909",
@@ -26,11 +29,23 @@ export default class Index extends React.Component {
             validateAlert : "",
             notes:[],
             showConfirm:false,
-            deleteNoteId:0
+            deleteNoteId:0,
+            isShowingNoteModal:false,
+            notebookId:0,
+            editNoteId:0,
+            editNoteTitle:"Note Title",
+            editNote:"",
+            staticNoteTitle:"",
+            staticNote:"",
+            noteAddEdit:0 // 1 - add, 2 - edit
         };
+        this.saveInterval = null;
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
-        this.addNote = this.addNote.bind(this);
+        this.addNoteBook = this.addNoteBook.bind(this);
         this.colorPicker = this.colorPicker.bind(this);
+        this.getNoteData = this.getNoteData.bind(this);
+        this.closeNotePopup = this.closeNotePopup.bind(this);
+        this.onTitleEdit = this.onTitleEdit.bind(this);
         this.loadNotes();
     }
 
@@ -49,7 +64,7 @@ export default class Index extends React.Component {
                     this.setState({catNameValue: "My Notes"});
                     this.setState({catColor: "#0272ae"});
                     this.setState({isDefault: 1});
-                    this.addNote();
+                    this.addNoteBook();
                 } else{
                     this.setState({notes:data.notes});
                 }
@@ -74,7 +89,7 @@ export default class Index extends React.Component {
         this.setState({catName : data});
     }
 
-    addNote(){
+    addNoteBook(){
 
       if(this.state.catNameValue == ""){
         this.setState({validateAlert:Alert.EMPTY_NOTEBOOK_NAME})
@@ -149,7 +164,7 @@ export default class Index extends React.Component {
                                 <span className={this.isActive('tone-six')} id="#8F7C68" data-name="tone-six" onClick={this.colorPicker.bind(this)}></span>
                             </div>
                             {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
-                            <p className="add-note-cat btn" onClick={this.addNote.bind(this)}>Add note category</p>
+                            <p className="add-note-cat btn" onClick={this.addNoteBook.bind(this)}>Add note category</p>
                         </ModalDialog>
                     </ModalContainer>
                 }
@@ -199,6 +214,123 @@ export default class Index extends React.Component {
         }.bind(this));
     }
 
+    showNotePopup(notebook_id, note){
+
+        let _this = this;
+
+        if(note == null){
+            this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1, editNoteTitle : "Note Title", editNote : ""});
+            this.saveInterval = setInterval(function(){_this.saveNote()}, 1000);
+        } else{
+            let editNoteId = note.note_id;
+            let editNoteTitle = note.note_name;
+            let editNote = note.note_content;
+            this.setState({isShowingNoteModal:true, noteAddEdit:2, editNoteId:editNoteId, editNoteTitle:editNoteTitle, editNote:editNote, staticNoteTitle:editNoteTitle, staticNote:editNote});
+            this.saveInterval = setInterval(function(){_this.saveNote()}, 1000);
+        }
+
+    }
+
+    onTitleEdit(e){
+        let noteText = e.target.value;
+        this.setState({editNoteTitle : noteText})
+    }
+
+    getNoteData(value){
+        this.setState({editNote : value});
+    }
+
+    closeNotePopup(){
+        this.saveNote();
+        clearInterval(this.saveInterval);
+        this.loadNotes();
+        this.setState({isShowingNoteModal: false, noteAddEdit:0, editNoteId:0, editNoteTitle:"", editNote:"", staticNoteTitle:"", staticNote:"", notebookId:0});
+
+    }
+
+    closeNote(){
+        this.setState({isShowingNoteModal : false});
+    }
+
+    saveNote(){
+        let _this = this;
+
+        if(this.state.editNoteTitle != this.state.staticNoteTitle || this.state.editNote != this.state.staticNote){
+            if(this.state.noteAddEdit == 1){
+                clearInterval(this.saveInterval);
+                let _note = {
+                    noteName:this.state.editNoteTitle,
+                    noteContent:this.state.editNote,
+                    notebookId:this.state.notebookId
+                };
+
+                let loggedUser = Session.getSession('prg_lg');
+
+                $.ajax({
+                    url: '/notes/add-note',
+                    method: "POST",
+                    dataType: "JSON",
+                    data:_note,
+                    headers: { 'prg-auth-header':loggedUser.token }
+                }).done( function (data, text) {
+                    this.setState({noteAddEdit:2, editNoteId:data.note._id, editNoteTitle:data.note.name, editNote:data.note.content, staticNoteTitle:data.note.name, staticNote:data.note.content});
+                    this.saveInterval = setInterval(function(){_this.saveNote()}, 1000);
+                }.bind(this));
+            } else if(this.state.noteAddEdit == 2){
+                let _note = {
+                    noteName:this.state.editNoteTitle,
+                    noteContent:this.state.editNote,
+                    noteId:this.state.editNoteId
+                };
+
+                let loggedUser = Session.getSession('prg_lg');
+
+                $.ajax({
+                    url: '/notes/update-note',
+                    method: "POST",
+                    dataType: "JSON",
+                    data:_note,
+                    headers: { 'prg-auth-header':loggedUser.token }
+                }).done( function (data, text) {
+                }.bind(this));
+            }
+
+        }
+
+    }
+
+    getNotePopup(){
+        return(
+            <div>
+                {this.state.isShowingNoteModal &&
+                <ModalContainer zIndex={9999} >
+                    <ModalDialog width="50%" className="note-popup" style={{marginTop : "-100px", padding : "0", borderRadius : "3px" , transform : "none"}}>
+                        <div className="editor-popup-holder">
+                            <div className="popup-header">
+                                <span className="closeBtn" onClick={this.closeNote.bind(this)}></span>
+                                <div className="title-holder col-sm-8">
+                                    <input type="text" className="note-title" value={this.state.editNoteTitle} onChange={(event)=>{this.onTitleEdit(event)}}/>
+                                </div>
+                                <div className="extra-func col-sm-4">
+                                    <input type="text" placeholder="Search" name="search" className="form-control" />
+                                    <div className="extra-func-btns">
+                                        <span className="export-btn"></span>
+                                        <span className="email-btn"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <Scrollbars style={{ height: 420 }}>
+                                <RichTextEditor note={this.state.editNote} noteText={this.getNoteData} />
+                            </Scrollbars>
+                            <button className="btn btn-default" onClick={this.closeNotePopup.bind(this)}>Save note</button>
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
+    }
+
     render() {
         return (
             <div className="notesCatHolder container-fluid">
@@ -216,11 +348,11 @@ export default class Index extends React.Component {
                         </div>
                     </div>
                     {
-                        (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} showConfirm={this.showConfirm.bind(this)}/>:null
+                        (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} showConfirm={this.showConfirm.bind(this)} showNotePopup={this.showNotePopup.bind(this)}/>:null
                     }
-
                     {this.getPopup()}
                     {this.getConfirmationPopup()}
+                    {this.getNotePopup()}
                 </div>
             </div>
         );
@@ -230,13 +362,18 @@ export default class Index extends React.Component {
 export class NoteCategory extends React.Component{
     constructor(props) {
         super(props);
-        this.state={}
+        this.state={
+        };
     }
 
     render() {
+        let _this = this;
         let notebooks = this.props.notebooks;
         let showConfirm = this.props.showConfirm;
-
+        let showNotePopup = this.props.showNotePopup;
+        if (notebooks.length <= 0) {
+            return <div />
+        }
         let _noteBooks = notebooks.map(function(notebook,key){
             return (
                 <div className="row row-clr pg-notes-page-content-item pg-box-shadow" key={key}>
@@ -247,7 +384,7 @@ export class NoteCategory extends React.Component{
                         </div>
                     </div>
                     <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
-                        <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm}/>
+                        <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm} showNotePopup={showNotePopup}/>
                     </div>
                 </div>
             );
@@ -272,11 +409,11 @@ export class NoteThumb extends React.Component{
     }
 
     addNewNote(notebook_id){
-        location.href = "/notes/new-note/"+notebook_id;
+        this.props.showNotePopup(notebook_id,null);
     }
 
-    editNote(note_id){
-        location.href = "/notes/edit-note/"+note_id;
+    editNote(notebook_id, note){
+        this.props.showNotePopup(notebook_id,note);
     }
 
     showConfirm(note_id){
@@ -299,7 +436,7 @@ export class NoteThumb extends React.Component{
                 return (
                     <div className="note-holder" id={note.note_id} key={key}>
                         <div className="row-clear note">
-                            <a href="javascript:void(0)" onClick={()=>_this.editNote(note.note_id)}>
+                            <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note)}>
                                 <div className="time-wrapper">
                                     <p className="date-created">{note.updated_at.createdDate}</p>
 
@@ -322,7 +459,7 @@ export class NoteThumb extends React.Component{
                 return (
                     <div className="note-holder" id={note.note_id} key={key}>
                         <div className="row-clear note">
-                            <a href="javascript:void(0)" onClick={()=>_this.editNote(note.note_id)}>
+                            <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note)}>
                                 <div className="time-wrapper">
                                     <p className="date-created">{note.updated_at.createdDate}</p>
 
@@ -342,17 +479,18 @@ export class NoteThumb extends React.Component{
 
         return(
             <div className="pg-notes-item-main-row">
-                <div className="note-holder">
-                    <div className="row-clear add-new-note note">
-                        <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
+                <div className="note-thumb-wrapper">
+                    <div className="note-holder">
+                        <div className="row-clear add-new-note note">
+                            <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
+                        </div>
                     </div>
+                    {_firstSetNotes}
+                    {
+                        (this.state.allNotesAreVisible)? _allNotes : null
+                    }
                 </div>
-                {_firstSetNotes}
-                {
-                    (this.state.allNotesAreVisible)? _allNotes : null
-                }
                 {(_notes.length > 4) ? <div className="show-more-btn" onClick={this.showMoreNotes.bind(this)}>{this.state.allNotesAreVisible? "Show Less" : "Show More"}</div> : null}
-
             </div>
         )
 
