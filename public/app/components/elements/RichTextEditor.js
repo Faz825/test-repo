@@ -1,8 +1,9 @@
 /*
 * Rich text editor component
 */
+'use strict';
 import React from 'react';
-import ReactQuill from 'react-quill-editor';
+import ReactQuill from 'react-quill';
 
 export default class RichTextEditor extends React.Component{
     constructor(props){
@@ -16,14 +17,14 @@ export default class RichTextEditor extends React.Component{
     }
 
     onTextChange(value) {
-        this.props.noteText(value.target.value);
-        this.setState({text : value.target.value});
+        this.props.noteText(value);
+        this.setState({text : value});
     }
 
     render() {
         return (
             <div className="rich-editor-holder">
-                <ReactQuill theme='snow' value={this.state.text} onChange={this.onTextChange} defaultValue =""/>
+                <ReactQuill theme='snow' onChange={this.onTextChange} defaultValue ={this.state.text}/>
             </div>
         );
     }

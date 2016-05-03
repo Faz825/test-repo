@@ -41,7 +41,7 @@
     "react-geosuggest": "^1.19.0",
     "react-infinite-scroll": "^0.1.5",
     "react-modal-dialog": "^2.0.0",
-    "react-quill-editor": "^0.3.6",
+    "react-quill": "^0.4.0",
     "react-router": "^2.0.0-rc5",
     "react-tooltip": "^1.1.4",
     "redis": "^2.4.2",
