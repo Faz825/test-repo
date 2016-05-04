@@ -123,7 +123,8 @@ export default class AboutCollegeAndJob extends React.Component{
                                                                 dateFormat="mm-dd-yyyy"
                                                                 defaultOpt={defaultVals.grad_date}
                                                                 optChange={this.elementChangeHandler}
-                                                                dateType="grad_date"/>
+                                                                dateType="grad_date"
+                                                                startYear="2004" />
                                         </div>
                                         <div className="row pgs-middle-about-inputs">
                                             <TextField  name="job_title"

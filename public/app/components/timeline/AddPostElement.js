@@ -330,7 +330,6 @@ export class TextPostElement extends React.Component{
                 </div>
             )
         })
-        console.log(proImg);
         return (
             <div>
                 <PostOptionMenu

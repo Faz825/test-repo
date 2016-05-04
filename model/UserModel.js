@@ -113,14 +113,14 @@ var WorkingExperienceSchema = new Schema({
  * User Basic information
  */
 var UserSchema = new Schema({
-	first_name:{ 
-		type:String, 
+	first_name:{
+		type:String,
 		trim:true,
 
 	},
-	last_name:{ 
-		type:String, 
-		trim:true 
+	last_name:{
+		type:String,
+		trim:true
 	},
 	email:{
 		type:String,
@@ -144,7 +144,7 @@ var UserSchema = new Schema({
 		default:1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETED CHOOSE YOUR SECRETARY | 3 - COMPLETED GENERAL INFORMATION
 	},
 	secretary:{
-		 type: Schema.ObjectId, 
+		 type: Schema.ObjectId,
 		 ref: 'Secretary',
 		 default:null
 	},
@@ -255,7 +255,7 @@ UserSchema.statics.create = function(UserData,callBack){
 		}
 
 	});
-	
+
 };
 
 /**

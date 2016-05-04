@@ -1073,6 +1073,117 @@ export default StyleSheet.create({
         "right": -5,
         "top": 5
     },
+    "pg-interest-options-row": {
+        "float": "right",
+        "paddingTop": 3,
+        "width": 464
+    },
+    "pg-my-con-option": {
+        "display": "inline-block",
+        "marginLeft": 19,
+        "verticalAlign": "top"
+    },
+    "pb-find-job-upload-button": {
+        "paddingTop": 6,
+        "paddingRight": 0,
+        "paddingBottom": 8,
+        "paddingLeft": 0,
+        "color": "#fff",
+        "float": "right",
+        "marginTop": 0,
+        "marginRight": 5,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "textDecoration": "none !important",
+        "width": 100,
+        "backgroundImage": "linear-gradient(to bottom, #61b2de 0%, #0272ae 72%)",
+        "borderRadius": 4,
+        "display": "block",
+        "font": "10px \"montserratsemi_bold\",sans-serif",
+        "height": 25,
+        "textAlign": "center",
+        "textTransform": "uppercase"
+    },
+    "pg-interest-options-sort select": {
+        "paddingTop": 5,
+        "paddingRight": 5,
+        "paddingBottom": 5,
+        "paddingLeft": 5,
+        "MozAppearance": "none",
+        "backgroundColor": "#fff",
+        "backgroundImage": "url(\"../images/select-1.png\")",
+        "backgroundPosition": "90% center",
+        "backgroundRepeat": "no-repeat",
+        "border": "1px solid #59afe1",
+        "borderRadius": 4,
+        "color": "#2d5164",
+        "font": "10px \"montserratregular\",sans-serif",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "outline": "medium none",
+        "textIndent": 0.01,
+        "textOverflow": "\"\"",
+        "width": "100%"
+    },
+    "pg-my-con-option-view": {
+        "width": 60
+    },
+    "pb-t-note-head-list": {
+        "background": "#fff",
+        "border": "1px solid #59afe1",
+        "borderRadius": 4,
+        "float": "right",
+        "marginTop": 0,
+        "marginRight": 10,
+        "marginBottom": 5,
+        "marginLeft": 0
+    },
+    "pb-t-note-head-list-replica": {
+        "float": "none",
+        "width": 60
+    },
+    "pb-t-note-head-list::after": {
+        "clear": "left",
+        "content": "\" \"",
+        "display": "block",
+        "fontSize": 0,
+        "height": 0,
+        "visibility": "hidden"
+    },
+    "pb-t-note-head-list-item": {
+        "float": "left",
+        "width": 29
+    },
+    "pb-t-note-head-active": {
+        "background": "#3c5166",
+        "borderRadius": 4
+    },
+    "pb-t-note-head-list a": {
+        "display": "block",
+        "paddingTop": 2,
+        "paddingRight": 2,
+        "paddingBottom": 2,
+        "paddingLeft": 2,
+        "textAlign": "center"
+    },
+    "pg-interest-options-search input": {
+        "paddingTop": 7,
+        "paddingRight": 5,
+        "paddingBottom": 8,
+        "paddingLeft": 5,
+        "backgroundColor": "#fff",
+        "border": "1px solid #59afe1",
+        "borderRadius": 4,
+        "color": "#9dadbd",
+        "font": "10px \"montserratregular\",sans-serif",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "width": "100%"
+    },
     "pgs-news-read-select input[type=\"checkbox\"]": {
         "display": "none",
         "verticalAlign": "top",
@@ -3485,6 +3596,10 @@ export default StyleSheet.create({
     "media-options-holder media-options new-message a": {
         "paddingTop": 2,
         "textDecoration": "none"
+    },
+    "chat-pro-img img": {
+        "width": 40,
+        "height": 40
     },
     "clock": {
         "color": "#c7bfb2",

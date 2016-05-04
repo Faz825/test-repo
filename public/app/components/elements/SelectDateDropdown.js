@@ -3,11 +3,13 @@ import React from 'react';
 export default class SelectDateDropdown extends React.Component{
 	constructor(props) {
         super(props);
-				let defaultOption = (this.props.defaultOpt) ? this.props.defaultOpt : "";
+			let defaultOption = (this.props.defaultOpt) ? this.props.defaultOpt : "";
+			let startYear = (this.props.startYear) ? this.props.startYear : "";
 
         this.state = {
-						date:{},
-						defaultDateOpt : defaultOption
+				date:{},
+				defaultDateOpt : defaultOption,
+                startYear : startYear
         };
 
         this.dateUpdate = this.dateUpdate.bind(this);
@@ -57,9 +59,9 @@ export default class SelectDateDropdown extends React.Component{
 			<div className="col-xs-5">
             	<p>{this.props.title} {this.props.required ? <span style={{"color": "#ed0909"}}>*</span> : ""} </p>
                 <div className="row row-clr">
-                    <Dropdown fieldName={dateFormat[0]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[0]} errorMsg={this.props.error_message} />
-                    <Dropdown fieldName={dateFormat[1]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[1]} errorMsg={this.props.error_message} />
-                    <Dropdown fieldName={dateFormat[2]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[2]} errorMsg={this.props.error_message} />
+                    <Dropdown fieldName={dateFormat[0]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[0]} startYear="" errorMsg={this.props.error_message} />
+                    <Dropdown fieldName={dateFormat[1]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[1]} startYear="" errorMsg={this.props.error_message} />
+                    <Dropdown fieldName={dateFormat[2]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[2]} startYear={this.state.startYear} errorMsg={this.props.error_message} />
 					{(this.props.error_message)? <span className="invalid-msg" style={errorStyles}>{this.props.error_message}</span> : null}
                 </div>
             </div>
@@ -97,6 +99,7 @@ class Dropdown extends React.Component{
         let end;
 		let options = [];
 		let fieldName = this.props.fieldName;
+        let startYear = (this.props.startYear)? this.props.startYear : "1960";
 
 		switch(fieldName) {
 		    case "mm":
@@ -108,7 +111,7 @@ class Dropdown extends React.Component{
 		        end = "31";
 		        break;
 		    case "yyyy":
-		        start = "1960";
+		        start = startYear;
 		        end = this.currYear;
 		        break;
 

@@ -131,7 +131,35 @@ export default class NewsSettings extends React.Component{
                                 <div className="col-xs-6">
                                     <h2 className="pg-connections-page-header-title">News</h2>
                                 </div>
-
+                                <div className="col-xs-6">
+                                    <div className="row row-clr pg-interest-options-row">
+                                        <div className="pg-my-con-option">
+                                            <a href="#" className="pb-t-note-head-button pb-find-job-upload-button">Add new topic</a>
+                                        </div>
+                                        <div className="pg-my-con-option pg-my-con-option-sort pg-interest-options-sort">
+                                            <select>
+                                                <option>Sort by</option>
+                                            </select>
+                                        </div>
+                                        <div className="pg-my-con-option pg-my-con-option-view pg-interest-options-view">
+                                            <div className="pb-t-note-head-list pb-t-note-head-list-replica">
+                                                <div className="pb-t-note-head-list-item pb-t-note-head-active">
+                                                    <a href="#">
+                                                        <img alt src="images/grid.png" />
+                                                    </a>
+                                                </div>
+                                                <div className="pb-t-note-head-list-item">
+                                                    <a href="#">
+                                                        <i className="fa fa-bars" />
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="pg-my-con-option pg-my-con-option-search pg-interest-options-search">
+                                            <input type="text" placeholder="Search..." />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
