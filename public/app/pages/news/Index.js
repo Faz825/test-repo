@@ -17,20 +17,19 @@ export default class Index extends React.Component{
         this.state={
             uname:user.user_name,
             posts:[],
-            news_articles:[]
-        }
+            news_articles:[],
+            display_news_articles:[]
+        };
+        this.refreshInterval = null;
         this.loadPosts(0);
         this.loadNewsArticles();
         this.current_date = this.getCurrentDate();
-
     }
-    onPostSubmitSuccess(data){
 
+    onPostSubmitSuccess(data){
         let _posts = this.state.posts;
         _posts.unshift(data);
         this.setState({posts:_posts});
-
-
     }
 
 
@@ -45,7 +44,6 @@ export default class Index extends React.Component{
             data:{__pg:page,uname:_this.state.uname,__own:"all"},
             success: function (data, text) {
                 if(data.status.code == 200){
-
                     this.setState({posts:data.posts})
                 }
 
@@ -57,7 +55,20 @@ export default class Index extends React.Component{
         });
     }
 
+    getRandomNewsArticles(){
+        let _dis_art = [];
+
+        for( let j = 0; j < 10; j++){
+            let _art = this.state.news_articles[Math.floor(Math.random()*this.state.news_articles.length)];
+            _dis_art.push(_art);
+        }
+
+        this.setState({display_news_articles:_dis_art});
+    }
+
     loadNewsArticles(){
+        let _this = this;
+
         let loggedUser = Session.getSession('prg_lg');
         $.ajax({
             url: '/news/get/my/news-articles',
@@ -67,7 +78,13 @@ export default class Index extends React.Component{
             headers: { 'prg-auth-header':loggedUser.token },
         }).done( function (data, text) {
             if(data.status.code == 200){
-                this.setState({news_articles:data.news})
+                this.setState({news_articles:data.news});
+                this.setState({display_news_articles:data.news});
+                //if(data.news.length > 10){
+                //    this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 50000);
+                //}else{
+                //    this.setState({display_news_articles:data.news});
+                //}
             }
 
         }.bind(this));
@@ -90,7 +107,7 @@ export default class Index extends React.Component{
         }
     }
     render(){
-        const {uname,posts,news_articles}= this.state;
+        const {uname,posts,display_news_articles}= this.state;
         return(
             <div id="pg-newsfeed-page" className="pg-page">
                 <div className="row row-clr">
@@ -103,7 +120,7 @@ export default class Index extends React.Component{
                                 <div id="pg-news-middle-container-left-col-details">
                                     <h2 className="pg-newsfeed-left-title-section-txt">NEWS</h2>
 
-                                    <NewsArtical news_articles = {news_articles}/>
+                                    <NewsArtical news_articles = {display_news_articles}/>
                                 </div>
 
 
@@ -230,10 +247,11 @@ export class NewsArtical extends React.Component{
 
 export const NewsItem =({newsItem,selected})=>{
 
+    console.log(newsItem);
 
     let news_logo= "/images/news/"+newsItem.channel.toLowerCase()+".png";
 
-    function createMarkup() { return {__html: newsItem.content}; };
+    function createMarkup() { return {__html: newsItem.article.content}; };
 
     function onArticalSelect(){
             selected(newsItem);
@@ -242,17 +260,17 @@ export const NewsItem =({newsItem,selected})=>{
     return(
         <div className="row row-clr pg-newsfeed-left-post-item" onClick={event=>onArticalSelect(event)}>
             <div className="row row-clr pg-newsfeed-left-post-item-main-img-wrapper">
-                <img src={newsItem.article_image} className="img-responsive  pg-newsfeed-left-post-item-main-img"/>
+
                 <div className="pg-newsfeed-left-post-item-logo-wrapper">
                     <img src={news_logo} alt="" className="img-responsive"/>
                 </div>
             </div>
             <div className="row row-clr pg-newsfeed-left-post-item-main-content">
                 <h4 className="pg-newsfeed-left-post-item-main-content-title">
-                    {newsItem.heading}
+                    {newsItem.article.title}
                 </h4>
                 <div className="artical-content-holder" dangerouslySetInnerHTML={createMarkup()} />
-                <h5 className="pg-newsfeed-left-post-item-main-content-time">December 08 at 3:20pm</h5>
+                <h5 className="pg-newsfeed-left-post-item-main-content-time">{newsItem.article.published}</h5>
             </div>
             <div className="row row-clr pg-newsfeed-left-post-item-status-section">
 

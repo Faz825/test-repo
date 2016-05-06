@@ -21,7 +21,6 @@ export default class NewsSettings extends React.Component{
             news_categories :[]
         }
 
-
         this.onPopUp = this.onPopUp.bind(this);
 
         this.loadCategories();

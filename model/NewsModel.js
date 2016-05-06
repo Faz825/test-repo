@@ -51,7 +51,7 @@ var ChannelSchema = new Schema({
         trim:true,
         default:null
     },
-    articles:[ArticleSchema]
+    //articles:[ArticleSchema]
 });
 
 /**

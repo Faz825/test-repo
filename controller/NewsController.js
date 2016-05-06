@@ -350,8 +350,7 @@ var NewsController ={
         var News = require('mongoose').model('News'),
             _async = require('async'),
             FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
-            CurrentSession = Util.getCurrentSession(req);;;
-
+            CurrentSession = Util.getCurrentSession(req);
 
         var user_id=CurrentSession.id;
 
@@ -359,7 +358,6 @@ var NewsController ={
             function getFavouriteNewsCategories(callBack){
 
                 FavouriteNewsCategory.getNewsCategoriesByUserId(user_id,function(resultSet){
-
                     callBack(null,resultSet.news_categories);
                 });
 
@@ -367,27 +365,31 @@ var NewsController ={
             function getAllNewsCategories(newsCategories,callBack){
                 var criteria = {
                     search:{},
-                    return_fields:{category:1, categoryImage:1,articles:1}
-                }
+                    return_fields:{category:1, categoryImage:1}
+                };
                 News.findNews(criteria,function(resultSet){
                     var _tmpOutPut = [];
+
                     for(var a=0;a<resultSet.news_list.length;a++){
                         var _tmpData = resultSet.news_list[a];
-                        _tmpData.is_favorite = 0;
+
                         for(var i = 0; i< newsCategories.length;i++ ) {
                             if(newsCategories[i].category.toString() == _tmpData._id.toString()){
-                                _tmpData.is_favorite = 1;
 
                                 //NESTED LOOPS USED FOR THIS SCENARIO ONLY
                                 //CHANGE THIS FOR ACTUAL IMPLEMENTATION
                                 for(var x = 0;x <_tmpData.channels.length;x++){
 
-                                    var articles = _tmpData.channels[x].articles;
+                                    if(_tmpData.channels[x].url != ""){
 
-                                    for(var y = 0 ; y<articles.length;y++){
-                                        var article = articles[y];
-                                        article.channel = _tmpData.channels[x].name;
-                                        _tmpOutPut.push(article)
+                                        var _channel = {
+                                            id:_tmpData.channels[x]._id,
+                                            name:_tmpData.channels[x].name,
+                                            url:_tmpData.channels[x].url
+                                        };
+
+                                        _tmpOutPut.push(_channel)
+
                                     }
                                 }
                                 break;
@@ -399,13 +401,15 @@ var NewsController ={
             }
 
         ],function(err,resultSet){
-            var outPut ={
-                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                news:resultSet
-            }
-            res.status(200).json(outPut);
-        })
 
+            NewsFeed.getNewsFeed(resultSet, function(data){
+                var outPut ={
+                    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                    news:data
+                };
+                res.status(200).json(outPut);
+            });
+        })
     },
 
     /**

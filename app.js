@@ -21,6 +21,7 @@ GLOBAL.ContentUploader = require('./middleware/ContentUploader');
 ContentUploader.init();
 GLOBAL.DateTime  = require('./lib/DateTime');
 GLOBAL.Util  = require('./lib/Util');
+GLOBAL.NewsFeed  = require('./lib/NewsFeed');
 //Define Clusters
 var Clusters = require('./config/clusters');
 Clusters.init();
