@@ -563,7 +563,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .pgs-sign-select-about-col:last-child {margin-right:0px;}
 
-.pgs-sign-select-about-col .pgs-sign-select {background: url(../images/select-arrow.png) no-repeat 88% center;background-color: #f8fbfc;}
+.pgs-sign-select-about-col .pgs-sign-select {background: url(../images/select-arrow.png) no-repeat 88% center;background-color: #f8fbfc;margin: 0;}
 
 .pgs-sign-about-submit-inputs {margin-top:10px;}
 
@@ -2780,9 +2780,9 @@ textarea{
 
 .chat-notification-wrapper{
 	position: absolute;
-	width: 225px;
+	width: 300px;
 	border-radius: 3px;
-	right: -100px;
+	right: -130px;
 	top: 55px;
 	display: none;
 	z-index: 100;
@@ -2815,7 +2815,13 @@ textarea{
 	padding-left: 9px;
 }
 
-.drop_downarrow{ position:absolute; top: -7px; right:110px; }
+.drop_downarrow{
+	position:absolute;
+	top: -7px;
+	right: 0;
+    left: 0;
+    margin: auto;
+}
 
 #unread_chat_count_header{
     position: relative;

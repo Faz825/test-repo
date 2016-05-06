@@ -7,7 +7,7 @@ import React from 'react';
 const UserBlockTileView =({user,onAccept,onAdd,onSkip})=>{
 
 
-    const user_profile_image    = user.images.profile_image.http_url,
+    const user_profile_image = (typeof user.images.profile_image.http_url != 'undefined' )? user.images.profile_image.http_url : "images/"+user.images.profile_image.file_name,
           full_name             = user.first_name +" "+ user.last_name;
     return (
 

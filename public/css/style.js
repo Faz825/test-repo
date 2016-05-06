@@ -914,7 +914,11 @@ export default StyleSheet.create({
     },
     "pgs-sign-select-about-col pgs-sign-select": {
         "background": "url(../images/select-arrow.png) no-repeat 88% center",
-        "backgroundColor": "#f8fbfc"
+        "backgroundColor": "#f8fbfc",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
     },
     "pgs-sign-about-submit-inputs": {
         "marginTop": 10
@@ -3480,9 +3484,9 @@ export default StyleSheet.create({
     },
     "chat-notification-wrapper": {
         "position": "absolute",
-        "width": 225,
+        "width": 300,
         "borderRadius": 3,
-        "right": -100,
+        "right": -130,
         "top": 55,
         "display": "none",
         "zIndex": 100,
@@ -3521,7 +3525,12 @@ export default StyleSheet.create({
     "drop_downarrow": {
         "position": "absolute",
         "top": -7,
-        "right": 110
+        "right": 0,
+        "left": 0,
+        "marginTop": "auto",
+        "marginRight": "auto",
+        "marginBottom": "auto",
+        "marginLeft": "auto"
     },
     "unread_chat_count_header": {
         "position": "relative",
