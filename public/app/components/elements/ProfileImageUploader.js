@@ -30,16 +30,25 @@ export default class ProfileImageUploader extends React.Component{
         e.preventDefault();
         this.setState({cropperVisible : true, progressbarIsVisible: true});
         let files;
+
         if (e.dataTransfer) {
             files = e.dataTransfer.files;
         } else if (e.target) {
             files = e.target.files;
+            if(files[0].size > 2097152){
+                alert("File you selected is too large.");
+                this.setState({cropperVisible : false, progressbarIsVisible: false});
+            }else{
+                let reader = new FileReader();
+                reader.onload = () => {
+                    this.setState({src: reader.result, progressbarIsVisible: false});
+                };
+                reader.readAsDataURL(files[0]);
+            }
+        }else{
+            this.setState({cropperVisible : false, progressbarIsVisible: false});
         }
-        let reader = new FileReader();
-        reader.onload = () => {
-            this.setState({src: reader.result, progressbarIsVisible: false});
-        };
-        reader.readAsDataURL(files[0]);
+
     }
 
     getCropper(){
@@ -59,6 +68,7 @@ export default class ProfileImageUploader extends React.Component{
                     :
                     <div className="noImage">
                         <img src="/images/no_image.png" />
+                        <p className="notice-text">*Image should be less than 2MB.</p>
                     </div>
                 }
                 {(this.state.progressbarIsVisible)? <div className="progressBarHolder"><ProgressBar /></div> : null}

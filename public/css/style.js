@@ -256,7 +256,7 @@ export default StyleSheet.create({
         "paddingLeft": 0,
         "paddingTop": 8
     },
-    "pg-header-options a": {
+    "pg-header-options dropDown-holder": {
         "display": "inline-block",
         "marginRight": 7,
         "verticalAlign": "top"
@@ -278,6 +278,29 @@ export default StyleSheet.create({
     },
     "dropDown-holder:hover pg-top-hover-ico": {
         "display": "block"
+    },
+    "chat-dropdown-link-holder": {
+        "borderBottom": "1px solid #dee6eb",
+        "paddingTop": 5,
+        "paddingRight": 15,
+        "paddingBottom": 8,
+        "paddingLeft": 15,
+        "background": "#fff",
+        "textAlign": "center"
+    },
+    "chat-dropdown-link-holder a": {
+        "color": "#61b3de",
+        "cursor": "pointer",
+        "font": "10px \"montserratregular\",sans-serif",
+        "marginTop": 5,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "textAlign": "center",
+        "display": "block"
+    },
+    "chat-dropdown-link-holder a:hover": {
+        "textDecoration": "none"
     },
     "pg-drop-down": {
         "position": "relative"

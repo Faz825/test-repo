@@ -185,7 +185,7 @@ a:focus{
     padding-left: 0;
     padding-top: 8px;
 }
-.pg-header-options a {
+.pg-header-options .dropDown-holder{
     display: inline-block;
     margin-right: 7px;
     vertical-align: top;
@@ -207,6 +207,26 @@ a:focus{
 .chat-dropdown-holder.chat-notification-wrapper-opened .pg-top-hover-ico,
 .dropDown-holder:hover .pg-top-hover-ico{
 	display: block;
+}
+
+.chat-dropdown-link-holder{
+	border-bottom: 1px solid #dee6eb;
+	padding: 5px 15px 8px;
+	background: #fff;
+	text-align: center;
+}
+
+.chat-dropdown-link-holder a{
+	color: #61b3de;
+	cursor: pointer;
+	font: 10px "montserratregular",sans-serif;
+	margin: 5px 0 0;
+	text-align: center;
+	display: block;
+}
+
+.chat-dropdown-link-holder a:hover{
+	text-decoration: none;
 }
 
 .pg-drop-down {
