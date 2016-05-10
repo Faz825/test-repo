@@ -75,13 +75,13 @@ export default class Index extends React.Component{
             method: "GET",
             dataType: "JSON",
             data:{__pg:0,__own:"all"},
-            headers: { 'prg-auth-header':loggedUser.token },
+            headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200){
                 this.setState({news_articles:data.news});
                 _this.getRandomNewsArticles();
                 if(data.news.length > 10){
-                    this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 50000);
+                    this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
                 }else{
                     this.setState({display_news_articles:data.news});
                 }
