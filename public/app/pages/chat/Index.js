@@ -21,6 +21,7 @@ export default class Index extends React.Component{
     constructor(props) {
         super(props);
 
+        //bit6 will work on https
         if (window.location.protocol == 'http:' ) {
             var url_arr = window.location.href.split('http');
             window.location.href = 'https'+url_arr[1];

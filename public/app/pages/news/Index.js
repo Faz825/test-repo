@@ -13,6 +13,7 @@ import Session  from '../../middleware/Session';
 export default class Index extends React.Component{
     constructor(props) {
         super(props);
+
         let user =  Session.getSession('prg_lg');
         this.state={
             uname:user.user_name,
@@ -31,7 +32,6 @@ export default class Index extends React.Component{
         _posts.unshift(data);
         this.setState({posts:_posts});
     }
-
 
     loadPosts(page){
 
@@ -79,12 +79,12 @@ export default class Index extends React.Component{
         }).done( function (data, text) {
             if(data.status.code == 200){
                 this.setState({news_articles:data.news});
-                this.setState({display_news_articles:data.news});
-                //if(data.news.length > 10){
-                //    this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 50000);
-                //}else{
-                //    this.setState({display_news_articles:data.news});
-                //}
+                _this.getRandomNewsArticles();
+                if(data.news.length > 10){
+                    this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 50000);
+                }else{
+                    this.setState({display_news_articles:data.news});
+                }
             }
 
         }.bind(this));
@@ -162,7 +162,7 @@ export class NewsArtical extends React.Component{
             news_articles:this.props.news_articles,
             isShowingModal : false,
             popupData : ""
-        }
+        };
 
         this.selectedArtical = this.selectedArtical.bind(this);
 
@@ -219,6 +219,7 @@ export class NewsArtical extends React.Component{
 
 
     selectedArtical(data){
+        console.log("selectedArtical");
         console.log(data);
         this.setState({isShowingModal : true, popupData : data});
     }
@@ -251,26 +252,27 @@ export const NewsItem =({newsItem,selected})=>{
 
     let news_logo= "/images/news/"+newsItem.channel.toLowerCase()+".png";
 
-    function createMarkup() { return {__html: newsItem.article.content}; };
+    function createMarkup() { return {__html: newsItem.content}; }
 
     function onArticalSelect(){
+        console.log("onArticalSelect");
             selected(newsItem);
     }
 
     return(
         <div className="row row-clr pg-newsfeed-left-post-item" onClick={event=>onArticalSelect(event)}>
             <div className="row row-clr pg-newsfeed-left-post-item-main-img-wrapper">
-
+                <img src={newsItem.article_image} className="img-responsive  pg-newsfeed-left-post-item-main-img"/>
                 <div className="pg-newsfeed-left-post-item-logo-wrapper">
                     <img src={news_logo} alt="" className="img-responsive"/>
                 </div>
             </div>
             <div className="row row-clr pg-newsfeed-left-post-item-main-content">
                 <h4 className="pg-newsfeed-left-post-item-main-content-title">
-                    {newsItem.article.title}
+                    {newsItem.heading}
                 </h4>
                 <div className="artical-content-holder" dangerouslySetInnerHTML={createMarkup()} />
-                <h5 className="pg-newsfeed-left-post-item-main-content-time">{newsItem.article.published}</h5>
+                <h5 className="pg-newsfeed-left-post-item-main-content-time">{newsItem.article_date}</h5>
             </div>
             <div className="row row-clr pg-newsfeed-left-post-item-status-section">
 

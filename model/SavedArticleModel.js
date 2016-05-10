@@ -69,10 +69,10 @@ SavedArticleSchema.statics.saveArticle =function(articel,callBack){
     var _article =  new this();
     _article.user_id = articel.user_id;
     _article.heading = articel.heading;
-    _article.article_image=articel.article_image
+    _article.article_image=articel.article_image;
     _article.content=articel.content;
     _article.article_date=articel.article_date;
-    _article.channel = articel.channel
+    _article.channel = articel.channel;
     _article.save(function(err,success){
         if(!err){
             callBack({status:200});
