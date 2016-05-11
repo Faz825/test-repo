@@ -19,7 +19,7 @@ export default class NewsSettings extends React.Component{
             popUpContent : {},
             popup: "",
             news_categories :[]
-        }
+        };
 
         this.onPopUp = this.onPopUp.bind(this);
 
@@ -31,10 +31,9 @@ export default class NewsSettings extends React.Component{
             url: '/news/get-categories',
             method: "GET",
             dataType: "JSON",
-            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done(function (data, text) {
             if (data.status.code == 200) {
-
                 this.setState({news_categories:data.news})
             }
         }.bind(this));
@@ -45,7 +44,6 @@ export default class NewsSettings extends React.Component{
     }
 
     onPopUp(id,type){
-        console.log(id,type);
 
         let popupdata = this.articalCats,
             popup;
@@ -64,7 +62,6 @@ export default class NewsSettings extends React.Component{
     getPopup(){
         let popupData = this.state.popup;
 
-        console.log(popupData);
         return(
             <div>
                 {this.state.isShowingModal &&
@@ -211,9 +208,7 @@ export class SavedArticles extends React.Component{
             method: "GET",
             dataType: "JSON",
             headers: { 'prg-auth-header':this.state.loggedUser.token }
-
         }).done(function (data, text) {
-
             if (data.status.code == 200) {
                 this.setState({articles:data.news_list})
             }
@@ -227,6 +222,11 @@ export class SavedArticles extends React.Component{
     getPopup(){
         let popupData = this.state.popupData;
 
+        let _articalImage = '/images/image_not_found.png';
+        if(popupData.article_image != null){
+            _articalImage = popupData.article_image;
+        }
+
         return(
             <div>
                 {this.state.isShowingModal &&
@@ -234,7 +234,7 @@ export class SavedArticles extends React.Component{
                         <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
                             <div className="modal-body pg-modal-body">
                                 <div className="popup-img-holder">
-                                    <img className="img-responsive pg-main-pop-img" alt src={popupData.article_image} />
+                                    <img className="img-responsive pg-main-pop-img" alt src={_articalImage} />
                                 </div>
                                 <div className="row row-clr pg-new-news-popup-inner-container">
                                 <h3 className="pg-body-heading-title">{popupData.heading}</h3>
@@ -258,17 +258,21 @@ export class SavedArticles extends React.Component{
     showMoreArticals(){
         let visibilityState = this.state.allArticalsAreVisible;
         this.setState({allArticalsAreVisible : !visibilityState});
-        console.log("clicked");
     }
 
     render(){
         let _this = this;
         let _channel_template = this.state.articles.map(function(articles,key){
+            let _articalImage = '/images/image_not_found.png';
+            if(articles.article_image != null){
+                _articalImage = articles.article_image;
+            }
+
             if(key < 5){
                 return (
                     <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
                           <div className="row row-clr pg-news-inner-full various">
-                            <img src={articles.article_image} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
+                            <img src={_articalImage} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
                             <div className="artical-heading-holder">
                                 <p className="artical-name">{articles.heading}</p>
                             </div>
@@ -279,11 +283,15 @@ export class SavedArticles extends React.Component{
 
         });
         let _more_articals = this.state.articles.map(function(articles,key){
+            let _articalImage = '/images/image_not_found.png';
+            if(articles.article_image != null){
+                _articalImage = articles.article_image;
+            }
             if(key >= 5){
                 return (
                     <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
                           <div className="row row-clr pg-news-inner-full various">
-                            <img src={articles.article_image} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
+                            <img src={_articalImage} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
                             <div className="artical-heading-holder">
                                 <p className="artical-name">{articles.heading}</p>
                             </div>

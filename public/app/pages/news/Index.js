@@ -79,6 +79,7 @@ export default class Index extends React.Component{
         }).done( function (data, text) {
             if(data.status.code == 200){
                 this.setState({news_articles:data.news});
+                //this.setState({display_news_articles:data.news});
                 _this.getRandomNewsArticles();
                 if(data.news.length > 10){
                     this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
@@ -86,7 +87,6 @@ export default class Index extends React.Component{
                     this.setState({display_news_articles:data.news});
                 }
             }
-
         }.bind(this));
     }
 
@@ -189,6 +189,11 @@ export class NewsArtical extends React.Component{
     getPopup(){
         let popupData = this.state.popupData;
 
+        let _articalImage = '/images/image_not_found.png';
+        if(typeof popupData.article_image != 'undefined'){
+            _articalImage = popupData.article_image;
+        }
+
         return(
             <div>
                 {this.state.isShowingModal &&
@@ -196,7 +201,7 @@ export class NewsArtical extends React.Component{
                         <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
                             <div className="modal-body pg-modal-body">
                                 <div className="popup-img-holder">
-                                    <img className="img-responsive pg-main-pop-img" alt src={popupData.article_image} />
+                                    <img className="img-responsive pg-main-pop-img" alt src={_articalImage} />
                                 </div>
                                 <div className="row row-clr pg-new-news-popup-inner-container">
                                 <h3 className="pg-body-heading-title">{popupData.heading}</h3>
@@ -219,8 +224,6 @@ export class NewsArtical extends React.Component{
 
 
     selectedArtical(data){
-        console.log("selectedArtical");
-        console.log(data);
         this.setState({isShowingModal : true, popupData : data});
     }
 
@@ -248,21 +251,24 @@ export class NewsArtical extends React.Component{
 
 export const NewsItem =({newsItem,selected})=>{
 
-    console.log(newsItem);
+    //console.log(newsItem.article_image);
 
     let news_logo= "/images/news/"+newsItem.channel.toLowerCase()+".png";
+    let _articalImage = '/images/image_not_found.png';
+    if(typeof newsItem.article_image != 'undefined'){
+        _articalImage = newsItem.article_image;
+    }
 
     function createMarkup() { return {__html: newsItem.content}; }
 
     function onArticalSelect(){
-        console.log("onArticalSelect");
             selected(newsItem);
     }
 
     return(
         <div className="row row-clr pg-newsfeed-left-post-item" onClick={event=>onArticalSelect(event)}>
             <div className="row row-clr pg-newsfeed-left-post-item-main-img-wrapper">
-                <img src={newsItem.article_image} className="img-responsive  pg-newsfeed-left-post-item-main-img"/>
+                <img src={_articalImage} className="img-responsive  pg-newsfeed-left-post-item-main-img"/>
                 <div className="pg-newsfeed-left-post-item-logo-wrapper">
                     <img src={news_logo} alt="" className="img-responsive"/>
                 </div>
