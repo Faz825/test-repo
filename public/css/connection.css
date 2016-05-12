@@ -152,7 +152,7 @@
 .pg-connections-page-header-title2{
     font: 20px 'montserratregular', sans-serif;
     color: #fff;
-    margin: 8px 0px 0 0;
+    margin: 3px 0px 0 0;
     text-transform: uppercase;
 }
 
@@ -239,6 +239,44 @@
 body.no-touch .boxInner:hover .titleBox, body.touch .boxInner.touchFocus .titleBox {
     margin-bottom: 0;
 }
+
+.pg-my-con-option-zoom {
+    width: 70px;
+}
+
+.pg-connections-page-header2 select {
+    -moz-appearance: none;
+    background-color: #fff;
+    background-image: url("../images/select-1.png");
+    background-position: 90% center;
+    background-repeat: no-repeat;
+    border: 1px solid #59afe1;
+    border-radius: 4px;
+    color: #2d5164;
+    font: 10px "montserratregular",sans-serif;
+    margin: 0;
+    outline: medium none;
+    padding: 5px;
+    text-indent: 0.01px;
+    text-overflow: "";
+    width: 100%;
+}
+
+.pg-connections-page-header2 input {
+    background-color: #fff;
+    border: 1px solid #59afe1;
+    border-radius: 4px;
+    color: #9dadbd;
+    font: 10px "montserratregular",sans-serif;
+    margin: 0;
+    padding: 6px 10px;
+    width: 100%;
+}
+
+.pg-connections-page-header2 .connection-title-holder{
+    padding: 0;
+}
+
 @media only screen and (max-width : 480px) {
     .box {
         width: 100%;
