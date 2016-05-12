@@ -300,7 +300,7 @@ export default class Index extends React.Component {
             <div>
                 {this.state.isShowingNoteModal &&
                 <ModalContainer zIndex={9999} >
-                    <ModalDialog width="50%" className="note-popup" style={{marginTop : "-100px", padding : "0", borderRadius : "3px" , transform : "none"}}>
+                    <ModalDialog width="50%" className="note-popup" style={{padding : "0", borderRadius : "3px" , transform : "none"}}>
                         <div className="editor-popup-holder">
                             <div className="popup-header">
                                 <span className="closeBtn" onClick={this.closeNotePopup.bind(this)}></span>
