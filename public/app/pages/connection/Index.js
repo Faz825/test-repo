@@ -180,7 +180,6 @@ export default class Index extends React.Component{
                                 <div className="col-xs-6">
                                     <h2 className="pg-connections-page-header-title">Connections</h2>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -391,8 +390,42 @@ export class MyConnections  extends React.Component{
                 <div className="row row-clr pg-connections-page-header2">
                     <div className="col-xs-10 col-xs-offset-1">
                         <div className="row">
-                            <div className="col-xs-12">
-                                <h2 className="pg-connections-page-header-title2">MY CONNECTIONS</h2>
+                            <div className="col-sm-4 connection-title-holder">
+                                <h2 className="pg-connections-page-header-title2">My Connections</h2>
+                            </div>
+                            <div className="col-sm-8">
+                                <div className="pg-my-con-option-full-wrapper">
+                                    <div className="pg-my-con-option pg-my-con-option-zoom">
+                                        <select>
+                                            <option>Zoom</option>
+                                        </select>
+                                    </div>
+                                    <div className="pg-my-con-option pg-my-con-option-sort">
+                                        <select>
+                                            <option>Sort by</option>
+                                        </select>
+                                    </div>
+                                    <div className="pg-my-con-option pg-my-con-option-filter">
+                                        <select>
+                                            <option>Filter by</option>
+                                        </select>
+                                    </div>
+                                    <div className="pg-my-con-option pg-my-con-option-view">
+                                        <div className="pb-t-note-head-list pb-t-note-head-list-replica">
+                                            <div className="pb-t-note-head-list-item pb-t-note-head-active">
+                                                <a href="#">
+                                                    <img src="images/grid.png" alt />
+                                                </a>
+                                            </div>
+                                            <div className="pb-t-note-head-list-item">
+                                                <a href="#"><i className="fa fa-bars" /></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="pg-my-con-option pg-my-con-option-search">
+                                        <input type="text" placeholder="Search..." />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
