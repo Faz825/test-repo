@@ -185,7 +185,7 @@ a:focus{
     padding-left: 0;
     padding-top: 8px;
 }
-.pg-header-options a {
+.pg-header-options .dropDown-holder{
     display: inline-block;
     margin-right: 7px;
     vertical-align: top;
@@ -207,6 +207,26 @@ a:focus{
 .chat-dropdown-holder.chat-notification-wrapper-opened .pg-top-hover-ico,
 .dropDown-holder:hover .pg-top-hover-ico{
 	display: block;
+}
+
+.chat-dropdown-link-holder{
+	border-bottom: 1px solid #dee6eb;
+	padding: 5px 15px 8px;
+	background: #fff;
+	text-align: center;
+}
+
+.chat-dropdown-link-holder a{
+	color: #61b3de;
+	cursor: pointer;
+	font: 10px "montserratregular",sans-serif;
+	margin: 5px 0 0;
+	text-align: center;
+	display: block;
+}
+
+.chat-dropdown-link-holder a:hover{
+	text-decoration: none;
 }
 
 .pg-drop-down {
@@ -563,7 +583,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .pgs-sign-select-about-col:last-child {margin-right:0px;}
 
-.pgs-sign-select-about-col .pgs-sign-select {background: url(../images/select-arrow.png) no-repeat 88% center;background-color: #f8fbfc;}
+.pgs-sign-select-about-col .pgs-sign-select {background: url(../images/select-arrow.png) no-repeat 88% center;background-color: #f8fbfc;margin: 0;}
 
 .pgs-sign-about-submit-inputs {margin-top:10px;}
 
@@ -646,6 +666,110 @@ input[type=number]::-webkit-outer-spin-button {
 .pgs-news-read-box-content p {margin:0;font: 12px 'montserratsemi_bold', sans-serif;color: #fff;text-transform:capitalize;text-align:center;padding-top:10px;}
 
 .pgs-news-read-select {position:absolute;right:-5px;top:5px;}
+
+.pg-interest-options-row {
+	float: right;
+	padding-top: 3px;
+	width: 464px;
+}
+
+.pg-my-con-option {
+	display: inline-block;
+	margin-left: 19px;
+	vertical-align: top;
+}
+
+.pb-find-job-upload-button {
+	padding: 6px 0;
+	color: #fff;
+	float: right;
+	margin: 0 5px 0 0;
+	text-decoration: none;
+	width: 100px;
+	background-image: linear-gradient(to bottom, #61b2de 0%, #0272ae 72%);
+	border-radius: 4px;
+	color: #fff;
+	display: block;
+	font: 10px "montserratsemi_bold",sans-serif;
+	height: 25px;
+	padding: 6px 0 8px;
+	text-align: center;
+	text-decoration: none !important;
+	text-transform: uppercase;
+}
+
+.pg-interest-options-sort select {
+	padding: 5px;
+	-moz-appearance: none;
+	background-color: #fff;
+	background-image: url("../images/select-1.png");
+	background-position: 90% center;
+	background-repeat: no-repeat;
+	border: 1px solid #59afe1;
+	border-radius: 4px;
+	color: #2d5164;
+	font: 10px "montserratregular",sans-serif;
+	margin: 0;
+	outline: medium none;
+	padding: 5px;
+	text-indent: 0.01px;
+	text-overflow: "";
+	width: 100%;
+}
+
+.pg-my-con-option-view {
+	width: 60px;
+}
+
+.pb-t-note-head-list {
+	background: #fff;
+	border: 1px solid #59afe1;
+	border-radius: 4px;
+	float: right;
+	margin: 0 10px 5px 0;
+}
+
+.pb-t-note-head-list-replica {
+	float: none;
+	width: 60px;
+}
+
+.pb-t-note-head-list::after {
+	clear: left;
+	content: " ";
+	display: block;
+	font-size: 0;
+	height: 0;
+	visibility: hidden;
+}
+
+.pb-t-note-head-list-item {
+	float: left;
+	width: 29px;
+}
+
+.pb-t-note-head-active {
+	background: #3c5166;
+	border-radius: 4px;
+}
+
+.pb-t-note-head-list a {
+	display: block;
+	padding: 2px;
+	text-align: center;
+}
+
+.pg-interest-options-search input {
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #59afe1;
+	border-radius: 4px;
+	color: #9dadbd;
+	font: 10px "montserratregular",sans-serif;
+	margin: 0;
+	padding: 7px 5px 8px;
+	width: 100%;
+}
 
 /*Custom Checkbox Styling*/
 
@@ -1524,7 +1648,7 @@ textarea{
 
 /* ====================================================== news page/ notes ==================================================*/
 .pg-middle-sign-wrapper .container-fluid .newsCatHolder{
-	margin-top: 100px;
+	margin-top: 70px;
 	padding: 0 0 130px;
     width: calc(100% - 220px);
 }
@@ -1564,6 +1688,9 @@ textarea{
 	text-decoration: none;
 	text-transform: uppercase;
 	cursor: pointer;
+}
+.pg-news-page-content .pg-news-page-header{
+	margin-bottom: 25px;
 }
 .pg-notes-page-content-item .note-cat-thumb{
 	background: url(../images/pg-notes-view-all.png) #5ebdaa repeat-y -3px top;
@@ -2673,9 +2800,9 @@ textarea{
 
 .chat-notification-wrapper{
 	position: absolute;
-	width: 225px;
+	width: 300px;
 	border-radius: 3px;
-	right: -100px;
+	right: -130px;
 	top: 55px;
 	display: none;
 	z-index: 100;
@@ -2708,7 +2835,13 @@ textarea{
 	padding-left: 9px;
 }
 
-.drop_downarrow{ position:absolute; top: -7px; right:110px; }
+.drop_downarrow{
+	position:absolute;
+	top: -7px;
+	right: 0;
+    left: 0;
+    margin: auto;
+}
 
 #unread_chat_count_header{
     position: relative;

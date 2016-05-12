@@ -798,7 +798,8 @@ var UserControler ={
         for(var a =0;a<skill_sets.day_to_day_comforts.remove.length;a++){
             deleted_skills.push(skill_sets.day_to_day_comforts.remove[a])
         }
-        var userId = CurrentSession.id;
+
+        var userId = Util.getCurrentSession(req).id
 
         //TODO : If user added new skills that are not in Skill Collection
 

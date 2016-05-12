@@ -114,10 +114,10 @@ export default class Header extends React.Component {
             <div className="row row-clr pg-top-navigation">
                 <div className="container-fluid pg-custom-container">
                     <div className="row">
-                        <div className="col-xs-3 logoHolder">
+                        <div className="col-xs-2 logoHolder">
                             <Logo url ="/images/logo.png" />
                         </div>
-                        <div className="col-xs-5 pgs-main-nav-area">
+                        <div className="col-xs-6 pgs-main-nav-area">
                             <div className="row row-clr pgs-main-nav-area-inner">
                                 <ul>
                                     <li>

@@ -321,13 +321,9 @@ export class FriendSuggestions  extends React.Component{
     }
 
     render(){
-        console.log("this.state")
-        console.log(this.state)
         const {friend_suggestions} =this.state;
         let _this = this,
             _current_block_ids =[];
-        console.log("friend_suggestions")
-        console.log(friend_suggestions)
         let user_elements = friend_suggestions.map(function(friend,key){
             _current_block_ids.push(friend.user_id);
             return (
@@ -395,7 +391,7 @@ export class MyConnections  extends React.Component{
                 <div className="row row-clr pg-connections-page-header2">
                     <div className="col-xs-10 col-xs-offset-1">
                         <div className="row">
-                            <div className="col-xs-4 col-md-3">
+                            <div className="col-xs-12">
                                 <h2 className="pg-connections-page-header-title2">MY CONNECTIONS</h2>
                             </div>
                         </div>

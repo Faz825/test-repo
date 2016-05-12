@@ -51,7 +51,7 @@ export default class Header extends React.Component {
                           <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_09.png" alt="" />
                           <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_03.png" alt="" />
                         </a>
-                        <a  href="#" onClick={()=>this.showChatList()} className="chat-dropdown-holder dropDown-holder" id="chat_notification_a">
+                        <div onClick={()=>this.showChatList()} className="chat-dropdown-holder dropDown-holder" id="chat_notification_a">
                           <span className="pg-drop-down">
                             <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_11.png" alt="" />
                             <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_033.png" alt="" />
@@ -61,10 +61,14 @@ export default class Header extends React.Component {
                             <div id="chat_notification_wrapper" className="chat-notification-wrapper">
                                 <img className="drop_downarrow" src="/images/drop_arrow.png" alt="" />
                                 <Scrollbars style={{ height: 260 }}>
-                                  <div className="chat-notification-header" id="unread_chat_list"></div>
+                                    <div className="chat-notification-header" id="unread_chat_list">
+                                    </div>
+                                    <div className="chat-dropdown-link-holder">
+                                        <a href="/chat">See All</a>
+                                    </div>
                                 </Scrollbars>
                             </div>
-                        </a>
+                        </div>
                         <a href="#" className="dropDown-holder">
                           <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_13.png" alt="" />
                           <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_05.png" alt="" />

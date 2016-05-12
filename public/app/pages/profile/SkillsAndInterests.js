@@ -233,15 +233,19 @@ export class SkillsForm extends React.Component{
         let suggestionsList = this.state.suggestionsList;
         let typeSelected = (this.state.checked)? 'day_to_day_comforts' : 'experienced';
 
+        console.log(this.state.suggestionsList);
+
         for (var key in suggestionsList) {
             if(suggestionsList[key].name == skillName){
                 skillsObj[typeSelected].add.push(suggestionsList[key].id);
                 skillData[typeSelected].push({id : suggestionsList[key].id, name : skillName})
+            }else{
+                
             }
         }
+
         this.modifiedSkillsList = skillsObj;
         this.setState({formData : skillData, value : "", checked : false});
-
     }
 
     onCheck(){

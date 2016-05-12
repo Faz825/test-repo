@@ -256,7 +256,7 @@ export default StyleSheet.create({
         "paddingLeft": 0,
         "paddingTop": 8
     },
-    "pg-header-options a": {
+    "pg-header-options dropDown-holder": {
         "display": "inline-block",
         "marginRight": 7,
         "verticalAlign": "top"
@@ -278,6 +278,29 @@ export default StyleSheet.create({
     },
     "dropDown-holder:hover pg-top-hover-ico": {
         "display": "block"
+    },
+    "chat-dropdown-link-holder": {
+        "borderBottom": "1px solid #dee6eb",
+        "paddingTop": 5,
+        "paddingRight": 15,
+        "paddingBottom": 8,
+        "paddingLeft": 15,
+        "background": "#fff",
+        "textAlign": "center"
+    },
+    "chat-dropdown-link-holder a": {
+        "color": "#61b3de",
+        "cursor": "pointer",
+        "font": "10px \"montserratregular\",sans-serif",
+        "marginTop": 5,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "textAlign": "center",
+        "display": "block"
+    },
+    "chat-dropdown-link-holder a:hover": {
+        "textDecoration": "none"
     },
     "pg-drop-down": {
         "position": "relative"
@@ -914,7 +937,11 @@ export default StyleSheet.create({
     },
     "pgs-sign-select-about-col pgs-sign-select": {
         "background": "url(../images/select-arrow.png) no-repeat 88% center",
-        "backgroundColor": "#f8fbfc"
+        "backgroundColor": "#f8fbfc",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
     },
     "pgs-sign-about-submit-inputs": {
         "marginTop": 10
@@ -1072,6 +1099,117 @@ export default StyleSheet.create({
         "position": "absolute",
         "right": -5,
         "top": 5
+    },
+    "pg-interest-options-row": {
+        "float": "right",
+        "paddingTop": 3,
+        "width": 464
+    },
+    "pg-my-con-option": {
+        "display": "inline-block",
+        "marginLeft": 19,
+        "verticalAlign": "top"
+    },
+    "pb-find-job-upload-button": {
+        "paddingTop": 6,
+        "paddingRight": 0,
+        "paddingBottom": 8,
+        "paddingLeft": 0,
+        "color": "#fff",
+        "float": "right",
+        "marginTop": 0,
+        "marginRight": 5,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "textDecoration": "none !important",
+        "width": 100,
+        "backgroundImage": "linear-gradient(to bottom, #61b2de 0%, #0272ae 72%)",
+        "borderRadius": 4,
+        "display": "block",
+        "font": "10px \"montserratsemi_bold\",sans-serif",
+        "height": 25,
+        "textAlign": "center",
+        "textTransform": "uppercase"
+    },
+    "pg-interest-options-sort select": {
+        "paddingTop": 5,
+        "paddingRight": 5,
+        "paddingBottom": 5,
+        "paddingLeft": 5,
+        "MozAppearance": "none",
+        "backgroundColor": "#fff",
+        "backgroundImage": "url(\"../images/select-1.png\")",
+        "backgroundPosition": "90% center",
+        "backgroundRepeat": "no-repeat",
+        "border": "1px solid #59afe1",
+        "borderRadius": 4,
+        "color": "#2d5164",
+        "font": "10px \"montserratregular\",sans-serif",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "outline": "medium none",
+        "textIndent": 0.01,
+        "textOverflow": "\"\"",
+        "width": "100%"
+    },
+    "pg-my-con-option-view": {
+        "width": 60
+    },
+    "pb-t-note-head-list": {
+        "background": "#fff",
+        "border": "1px solid #59afe1",
+        "borderRadius": 4,
+        "float": "right",
+        "marginTop": 0,
+        "marginRight": 10,
+        "marginBottom": 5,
+        "marginLeft": 0
+    },
+    "pb-t-note-head-list-replica": {
+        "float": "none",
+        "width": 60
+    },
+    "pb-t-note-head-list::after": {
+        "clear": "left",
+        "content": "\" \"",
+        "display": "block",
+        "fontSize": 0,
+        "height": 0,
+        "visibility": "hidden"
+    },
+    "pb-t-note-head-list-item": {
+        "float": "left",
+        "width": 29
+    },
+    "pb-t-note-head-active": {
+        "background": "#3c5166",
+        "borderRadius": 4
+    },
+    "pb-t-note-head-list a": {
+        "display": "block",
+        "paddingTop": 2,
+        "paddingRight": 2,
+        "paddingBottom": 2,
+        "paddingLeft": 2,
+        "textAlign": "center"
+    },
+    "pg-interest-options-search input": {
+        "paddingTop": 7,
+        "paddingRight": 5,
+        "paddingBottom": 8,
+        "paddingLeft": 5,
+        "backgroundColor": "#fff",
+        "border": "1px solid #59afe1",
+        "borderRadius": 4,
+        "color": "#9dadbd",
+        "font": "10px \"montserratregular\",sans-serif",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "width": "100%"
     },
     "pgs-news-read-select input[type=\"checkbox\"]": {
         "display": "none",
@@ -2062,7 +2200,7 @@ export default StyleSheet.create({
         "textAlign": "center"
     },
     "pg-middle-sign-wrapper container-fluid newsCatHolder": {
-        "marginTop": 100,
+        "marginTop": 70,
         "paddingTop": 0,
         "paddingRight": 0,
         "paddingBottom": 130,
@@ -2122,6 +2260,9 @@ export default StyleSheet.create({
         "textDecoration": "none",
         "textTransform": "uppercase",
         "cursor": "pointer"
+    },
+    "pg-news-page-content pg-news-page-header": {
+        "marginBottom": 25
     },
     "pg-notes-page-content-item note-cat-thumb": {
         "background": "url(../images/pg-notes-view-all.png) #5ebdaa repeat-y -3px top"
@@ -3366,9 +3507,9 @@ export default StyleSheet.create({
     },
     "chat-notification-wrapper": {
         "position": "absolute",
-        "width": 225,
+        "width": 300,
         "borderRadius": 3,
-        "right": -100,
+        "right": -130,
         "top": 55,
         "display": "none",
         "zIndex": 100,
@@ -3407,7 +3548,12 @@ export default StyleSheet.create({
     "drop_downarrow": {
         "position": "absolute",
         "top": -7,
-        "right": 110
+        "right": 0,
+        "left": 0,
+        "marginTop": "auto",
+        "marginRight": "auto",
+        "marginBottom": "auto",
+        "marginLeft": "auto"
     },
     "unread_chat_count_header": {
         "position": "relative",
@@ -3482,6 +3628,10 @@ export default StyleSheet.create({
     "media-options-holder media-options new-message a": {
         "paddingTop": 2,
         "textDecoration": "none"
+    },
+    "chat-pro-img img": {
+        "width": 40,
+        "height": 40
     },
     "clock": {
         "color": "#c7bfb2",

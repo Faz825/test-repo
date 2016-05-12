@@ -121,6 +121,44 @@ export default class NewsSettings extends React.Component{
         return (
             <div className="newsCatHolder container-fluid">
                 <div className="row row-clr pg-news-page-content">
+                    <div className="row row-clr pg-news-page-header">
+                        <div className="col-xs-10 col-xs-offset-1">
+                            <div className="row">
+                                <div className="col-xs-6">
+                                    <h2 className="pg-connections-page-header-title">News</h2>
+                                </div>
+                                <div className="col-xs-6">
+                                    <div className="row row-clr pg-interest-options-row">
+                                        <div className="pg-my-con-option">
+                                            <a href="#" className="pb-t-note-head-button pb-find-job-upload-button">Add new topic</a>
+                                        </div>
+                                        <div className="pg-my-con-option pg-my-con-option-sort pg-interest-options-sort">
+                                            <select>
+                                                <option>Sort by</option>
+                                            </select>
+                                        </div>
+                                        <div className="pg-my-con-option pg-my-con-option-view pg-interest-options-view">
+                                            <div className="pb-t-note-head-list pb-t-note-head-list-replica">
+                                                <div className="pb-t-note-head-list-item pb-t-note-head-active">
+                                                    <a href="#">
+                                                        <img alt src="images/grid.png" />
+                                                    </a>
+                                                </div>
+                                                <div className="pb-t-note-head-list-item">
+                                                    <a href="#">
+                                                        <i className="fa fa-bars" />
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="pg-my-con-option pg-my-con-option-search pg-interest-options-search">
+                                            <input type="text" placeholder="Search..." />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div className="col-xs-10 col-xs-offset-1">
                         <SavedArticles />
                         {
@@ -262,6 +300,7 @@ export class SavedArticles extends React.Component{
 
     render(){
         let _this = this;
+        let _more_articals = "";
         let _channel_template = this.state.articles.map(function(articles,key){
             let _articalImage = '/images/image_not_found.png';
             if(articles.article_image != null){
@@ -282,27 +321,27 @@ export class SavedArticles extends React.Component{
             }
 
         });
-        let _more_articals = this.state.articles.map(function(articles,key){
+
+        if (this.state.articles.length > 5) {
+            _more_articals = this.state.articles.map(function(articles,key){
             let _articalImage = '/images/image_not_found.png';
             if(articles.article_image != null){
                 _articalImage = articles.article_image;
             }
-            if(key >= 5){
-                return (
-                    <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
-                          <div className="row row-clr pg-news-inner-full various">
-                            <img src={_articalImage} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
-                            <div className="artical-heading-holder">
-                                <p className="artical-name">{articles.heading}</p>
+                if(key >= 5){
+                    return (
+                        <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
+                            <div className="row row-clr pg-news-inner-full various">
+                                <img src={_articalImage} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
+                                <div className="artical-heading-holder">
+                                    <p className="artical-name">{articles.heading}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )
-            }
-        });
-
-        //console.log(this.state.articles);
-        //console.log(this.state.allArticalsAreVisible);
+                    )
+                }
+            });
+        }
         return(
             <div className="row row-clr pg-news-page-content-item pg-box-shadow">
                 <div className="col-xs-2 pg-news-page-content-item-left-thumb saved-articals-holder">
