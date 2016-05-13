@@ -1,46 +1,33 @@
 /**
- * Handle Saved Articles
+ * Handle Saved Articles of a user
  */
 'use strict';
 
 var mongoose = require('mongoose'),
     Schema   = mongoose.Schema;
 
-var SavedArticleSchema = new Schema({
-    heading:{
-        type:String,
-        trim:true,
+
+
+var UsersSavedArticleSchema = new Schema({
+    user_id:{
+        type: Schema.ObjectId,
+        ref: 'User',
         default:null
     },
-    article_image:{
-        type:String,
-        trim:true,
-        default:null
-    },
-    content:{
-        type:String,
-        trim:true,
-        default:null
-    },
-    article_date:{
-        type:String,
-        trim:true,
+    article:{
+        type: Schema.ObjectId,
+        ref: 'SavedArticle',
         default:null
     },
     created_at:{
         type:Date
-    },
-    channel:{
-        type:String,
-        trim:true,
-        default:null
     }
-},{collection:"saved_articles"});
 
+},{collection:"users_saved_articles"});
 
-
-SavedArticleSchema.pre('save', function(next){
+UsersSavedArticleSchema.pre('save', function(next){
     var now = new Date();
+    this.updated_at = now;
     if ( !this.created_at ) {
         this.created_at = now;
     }
@@ -53,20 +40,13 @@ SavedArticleSchema.pre('save', function(next){
  * @param criteria
  * @param callBack
  */
-SavedArticleSchema.statics.saveArticle =function(articel,callBack){
+UsersSavedArticleSchema.statics.saveArticle =function(articel,callBack){
     var _article =  new this();
-    _article.heading = articel.heading;
-    _article.article_image=articel.article_image;
-    _article.content=articel.content;
-    _article.article_date=articel.article_date;
-    _article.channel = articel.channel;
-    _article.save(function(err,resultSet){
-        console
+    _article.user_id = articel.user_id;
+    _article.article = articel.article;
+    _article.save(function(err,success){
         if(!err){
-            callBack({
-                status:200,
-                article:resultSet
-            });
+            callBack({status:200});
         }else{
             console.log("Server Error --------");
             callBack({status:400,error:err});
@@ -81,9 +61,11 @@ SavedArticleSchema.statics.saveArticle =function(articel,callBack){
  * @param criteria
  * @param callBack
  */
-SavedArticleSchema.statics.findSavedArticle = function(criteria,callBack){
+UsersSavedArticleSchema.statics.findSavedArticle = function(criteria,callBack){
 
-    this.find(criteria).exec(function(err,resultSet){
+    this.find({user_id:Util.toObjectId(criteria.user_id)}).populate("article").exec(function(err,resultSet){
+        console.log("UsersSavedArticleSchema.statics.findSavedArticle");
+        console.log(JSON.stringify(resultSet));
         if(!err){
             callBack({
                 status:200,
@@ -102,7 +84,7 @@ SavedArticleSchema.statics.findSavedArticle = function(criteria,callBack){
  * @param categoryId
  * @param callBack
  */
-SavedArticleSchema.statics.deleteSavedArticle=function(criteria, callBack){
+UsersSavedArticleSchema.statics.deleteSavedArticle=function(criteria, callBack){
 
     var _this = this;
 
@@ -117,4 +99,4 @@ SavedArticleSchema.statics.deleteSavedArticle=function(criteria, callBack){
 
 };
 
-mongoose.model('SavedArticle',SavedArticleSchema);
+mongoose.model('UsersSavedArticle',UsersSavedArticleSchema);

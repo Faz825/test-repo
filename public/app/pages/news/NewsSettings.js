@@ -240,6 +240,7 @@ export class SavedArticles extends React.Component{
         this.popUpArtical = this.popUpArtical.bind(this);
         this.showMoreArticals = this.showMoreArticals.bind(this);
     }
+
     loadArticles(){
         $.ajax({
             url: '/news/saved/articles',
@@ -303,17 +304,17 @@ export class SavedArticles extends React.Component{
         let _more_articals = "";
         let _channel_template = this.state.articles.map(function(articles,key){
             let _articalImage = '/images/image_not_found.png';
-            if(articles.article_image != null){
-                _articalImage = articles.article_image;
+            if(articles.article.article_image != null){
+                _articalImage = articles.article.article_image;
             }
 
             if(key < 5){
                 return (
-                    <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
+                    <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles.article)}>
                           <div className="row row-clr pg-news-inner-full various">
-                            <img src={_articalImage} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
+                            <img src={_articalImage} alt={articles.article.channel} className="img-responsive pg-pg-news-inner-img" />
                             <div className="artical-heading-holder">
-                                <p className="artical-name">{articles.heading}</p>
+                                <p className="artical-name">{articles.article.heading}</p>
                             </div>
                         </div>
                     </div>
@@ -326,15 +327,15 @@ export class SavedArticles extends React.Component{
             _more_articals = this.state.articles.map(function(articles,key){
             let _articalImage = '/images/image_not_found.png';
             if(articles.article_image != null){
-                _articalImage = articles.article_image;
+                _articalImage = articles.article.article_image;
             }
                 if(key >= 5){
                     return (
-                        <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles)}>
+                        <div className="col-xs-2 pg-col-20 pg-news-item" key={key} onClick={_this.popUpArtical.bind(this, articles.article)}>
                             <div className="row row-clr pg-news-inner-full various">
-                                <img src={_articalImage} alt={articles.channel} className="img-responsive pg-pg-news-inner-img" />
+                                <img src={_articalImage} alt={articles.article.channel} className="img-responsive pg-pg-news-inner-img" />
                                 <div className="artical-heading-holder">
-                                    <p className="artical-name">{articles.heading}</p>
+                                    <p className="artical-name">{articles.article.heading}</p>
                                 </div>
                             </div>
                         </div>

@@ -419,17 +419,54 @@ var NewsController ={
      */
     saveMyNews:function(req,res){
 
+        var SavedArticle = require('mongoose').model('SavedArticle'),
+            UsersSavedArticle = require('mongoose').model('UsersSavedArticle'),
+            _async = require('async'),
+            CurrentSession = Util.getCurrentSession(req);
+        //req.body.user_id = CurrentSession.id;
 
-        var SavedArticle = require('mongoose').model('SavedArticle')
-        , CurrentSession = Util.getCurrentSession(req)
-        req.body.user_id = CurrentSession.id;
-        SavedArticle.saveArticle(req.body,function(resultSet){
-            var outPut ={
-                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                news:resultSet
+        var criteria ={
+            heading:req.body.heading,
+            article_date:req.body.article_date,
+            channel:req.body.channel
+        };
+
+        _async.waterfall([
+            function saveArticle(callBack){
+                console.log("saveArticle");
+                SavedArticle.findSavedArticle(criteria,function(resultSet){
+                    console.log(resultSet);
+                    if(resultSet.news_list.length>0){
+                        console.log("resultSet.news_list.length>0",JSON.stringify(resultSet.news_list[0]));
+                        callBack(null, resultSet.news_list[0]._id);
+                    }else{
+                        console.log("else");
+                        SavedArticle.saveArticle(req.body,function(resultSet){
+                            console.log("SavedArticle.saveArticle");
+                            console.log(resultSet.article);
+                            callBack(null, resultSet.article._id);
+                        });
+                    }
+                });
+
+            },
+            function saveUsersArticle(article_id,callBack){
+                console.log("saveUsersArticle",article_id);
+                var data = {
+                    user_id:CurrentSession.id,
+                    article:article_id
+                }
+                UsersSavedArticle.saveArticle(data, function(resultSet){
+                    callBack(null);
+                });
             }
+
+        ],function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
             res.status(200).json(outPut);
-        })
+        });
 
     },
     /**
@@ -439,12 +476,13 @@ var NewsController ={
      */
 
     getSavedArticles:function(req,res){
-        var SavedArticle = require('mongoose').model('SavedArticle'), CurrentSession = Util.getCurrentSession(req);
+        var UsersSavedArticle = require('mongoose').model('UsersSavedArticle'), CurrentSession = Util.getCurrentSession(req);
 
         var criteria ={
             user_id:CurrentSession.id
         }
-        SavedArticle.findSavedArticle(criteria,function(resultSet){
+        UsersSavedArticle.findSavedArticle(criteria,function(resultSet){
+            console.log(resultSet.news_list.article);
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 news_list:resultSet.news_list

@@ -2,7 +2,6 @@
  * This is news index class that handle all
  */
 
-
 import React from 'react';
 import AddPostElement from '../../components/timeline/AddPostElement';
 import ListPostsElement from '../../components/timeline/ListPostsElement';
@@ -79,13 +78,13 @@ export default class Index extends React.Component{
         }).done( function (data, text) {
             if(data.status.code == 200){
                 this.setState({news_articles:data.news});
-                this.setState({display_news_articles:data.news});
-                //_this.getRandomNewsArticles();
-                //if(data.news.length > 10){
-                //    this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
-                //}else{
-                //    this.setState({display_news_articles:data.news});
-                //}
+                //this.setState({display_news_articles:data.news});
+                _this.getRandomNewsArticles();
+                if(data.news.length > 10){
+                    this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
+                }else{
+                    this.setState({display_news_articles:data.news});
+                }
             }
         }.bind(this));
     }

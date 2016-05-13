@@ -23,6 +23,7 @@ require('../model/LifeEventCategoryModel');
 require('../model/LikeModel');
 require('../model/NotesModel');
 require('../model/NoteBookModel');
+require('../model/UsersSavedArticle');
 
 /** Load  Controllers
  */
