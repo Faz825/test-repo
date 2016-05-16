@@ -18,12 +18,18 @@ export default class Index extends React.Component{
             uname:user.user_name,
             posts:[],
             news_articles:[],
-            display_news_articles:[]
+            display_news_articles:[],
+            display_articles_index:[],
+            isShowingModal : false,
+            popupData : {}
         };
         this.refreshInterval = null;
         this.loadPosts(0);
         this.loadNewsArticles();
         this.current_date = this.getCurrentDate();
+
+        this.selectedArtical = this.selectedArtical.bind(this);
+        this.onSaveArticleIconClick = this.onSaveArticleIconClick.bind(this);
     }
 
     onPostSubmitSuccess(data){
@@ -56,12 +62,15 @@ export default class Index extends React.Component{
 
     getRandomNewsArticles(){
         let _dis_art = [];
+        let _dis_art_in = [];
 
         for( let j = 0; j < 10; j++){
-            let _art = this.state.news_articles[Math.floor(Math.random()*this.state.news_articles.length)];
+            let _index = Math.floor(Math.random()*this.state.news_articles.length);
+            _dis_art_in.push(_index);
+            let _art = this.state.news_articles[_index];
             _dis_art.push(_art);
         }
-
+        this.setState({display_articles_index:_dis_art_in});
         this.setState({display_news_articles:_dis_art});
     }
 
@@ -96,6 +105,7 @@ export default class Index extends React.Component{
                 .split(",")[_current_date.getMonth()];
         return month+" " +date+this._nth(date) +" "+_current_date.getFullYear()
     }
+
     _nth(date){
         if(date>3 && date<21) return 'th';
         switch (date % 10) {
@@ -105,7 +115,91 @@ export default class Index extends React.Component{
             default: return "th";
         }
     }
+
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
+    saveArticle(){
+        if(!this.state.popupData.isSaved){
+            let loggedUser = Session.getSession('prg_lg');
+            $.ajax({
+                url: '/news/articles/save',
+                method: "POST",
+                dataType: "JSON",
+                data:this.state.popupData,
+                headers: { 'prg-auth-header':loggedUser.token }
+            }).done( function (data, text) {
+                if(data.status.code == 200){
+                    this.setState({isShowingModal: false});
+
+                    let dis_articles = this.state.display_news_articles;
+                    for(let i=0; i<dis_articles.length; i++){
+                        if(dis_articles[i].channel === this.state.popupData.channel && dis_articles[i].article_date === this.state.popupData.article_date && dis_articles[i].heading === this.state.popupData.heading){
+                            dis_articles[i].isSaved = 1;
+                            this.setState({display_news_articles:dis_articles});
+                            let _index = this.state.display_articles_index[i];
+                            let _news_art = this.state.news_articles;
+                            _news_art[_index].isSaved = 1;
+                            this.setState({news_articles:_news_art});
+                        }
+                    }
+                }
+            }.bind(this));
+        }
+    }
+
+    getPopup(){
+        let popupData = this.state.popupData;
+
+        let _articalImage = '/images/image_not_found.png';
+        if(typeof popupData.article_image != 'undefined'){
+            _articalImage = popupData.article_image;
+        }
+
+        return(
+            <div>
+                {this.state.isShowingModal &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
+                        <div className="modal-body pg-modal-body">
+                            <div className="popup-img-holder">
+                                <img className="img-responsive pg-main-pop-img" alt src={_articalImage} />
+                            </div>
+                            <div className="row row-clr pg-new-news-popup-inner-container">
+                                <h3 className="pg-body-heading-title">{popupData.heading}</h3>
+                                <div className="row row-clr pg-new-news-popup-inner-border" />
+                                <Scrollbars style={{ height: 250 }} onScroll={this.handleScroll}>
+                                    <div dangerouslySetInnerHTML={{__html: popupData.content}} />
+                                </Scrollbars>
+                            </div>
+                        </div>
+                        <div className="save-news">
+                            <a href="javascript:void(0)" onClick={this.saveArticle.bind(this)} className="artical-save-btn btn btn-default">Save</a>
+                        </div>
+
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
+    }
+
+
+    selectedArtical(data){
+        this.setState({isShowingModal : true, popupData : data});
+    }
+
+    onSaveArticleIconClick(data){
+        if(!data.isSaved){
+            let _this = this;
+            _this.setState({popupData : data},function(){
+                _this.saveArticle();
+            });
+        }
+    }
+
     render(){
+        let _this = this;
         const {uname,posts,display_news_articles}= this.state;
         return(
             <div id="pg-newsfeed-page" className="pg-page">
@@ -115,7 +209,8 @@ export default class Index extends React.Component{
                             <div className="col-xs-4" id="news-middle-container-left-col">
                                 <div id="pg-news-middle-container-left-col-details">
                                     <h2 className="pg-newsfeed-left-title-section-txt">NEWS</h2>
-                                    <NewsArtical news_articles = {display_news_articles}/>
+                                    <NewsArtical display_news_articles = {display_news_articles} selected = {_this.selectedArtical} saveArtical={_this.onSaveArticleIconClick}/>
+                                    {this.getPopup()}
                                 </div>
                             </div>
                             <div className="col-xs-8" id="newsfeed-middle-container-right-col">
@@ -150,150 +245,65 @@ export class NewsArtical extends React.Component{
 
     constructor(props){
         super(props);
-        this.state={
-            news_articles:this.props.news_articles,
-            isShowingModal : false,
-            popupData : ""
-        };
-
-        this.selectedArtical = this.selectedArtical.bind(this);
-        this.onSaveArticleIconClick = this.onSaveArticleIconClick.bind(this);
 
     }
 
-    handleClose() {
-        this.setState({isShowingModal: false});
-    }
-    saveArticle(){
-        let loggedUser = Session.getSession('prg_lg');
-        $.ajax({
-            url: '/news/articles/save',
-            method: "POST",
-            dataType: "JSON",
-            data:this.state.popupData,
-            headers: { 'prg-auth-header':loggedUser.token },
-        }).done( function (data, text) {
-            if(data.status.code == 200){
-                this.setState({isShowingModal: false});
-            }
-        }.bind(this));
+
+    onArticalSelect(newsItem){
+        this.props.selected(newsItem);
     }
 
-    getPopup(){
-        let popupData = this.state.popupData;
-
-        let _articalImage = '/images/image_not_found.png';
-        if(typeof popupData.article_image != 'undefined'){
-            _articalImage = popupData.article_image;
+    saveArticle(newsItem){
+        if(!newsItem.isSaved){
+            this.props.saveArtical(newsItem);
         }
-
-        return(
-            <div>
-                {this.state.isShowingModal &&
-                    <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                        <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
-                            <div className="modal-body pg-modal-body">
-                                <div className="popup-img-holder">
-                                    <img className="img-responsive pg-main-pop-img" alt src={_articalImage} />
-                                </div>
-                                <div className="row row-clr pg-new-news-popup-inner-container">
-                                <h3 className="pg-body-heading-title">{popupData.heading}</h3>
-                                <div className="row row-clr pg-new-news-popup-inner-border" />
-                                <Scrollbars style={{ height: 250 }} onScroll={this.handleScroll}>
-                                    <div dangerouslySetInnerHTML={{__html: popupData.content}} />
-                                </Scrollbars>
-                                </div>
-                            </div>
-                            <div className="save-news">
-                                <a href="javascript:void(0)" onClick={this.saveArticle.bind(this)} className="artical-save-btn btn btn-default">Save</a>
-                            </div>
-
-                        </ModalDialog>
-                    </ModalContainer>
-                }
-            </div>
-        )
-    }
-
-
-    selectedArtical(data){
-        this.setState({isShowingModal : true, popupData : data});
-    }
-
-    onSaveArticleIconClick(data){
-        let _this = this;
-        _this.setState({popupData : data},function(){
-            _this.saveArticle();
-        });
     }
 
     render(){
         let _this = this;
-        if(this.props.news_articles.length <0){
+        if(this.props.display_news_articles.length <0){
             return(<div />);
         }
 
-        let _news_item = this.props.news_articles.map(function(newsItem,key){
+        let _news_item = this.props.display_news_articles.map(function(newsItem,key){
+            let news_logo= "/images/news/"+newsItem.channel.toLowerCase()+".png";
+            let _articalImage = '/images/image_not_found.png';
+            if(typeof newsItem.article_image != 'undefined'){
+                _articalImage = newsItem.article_image;
+            }
+
+            let _className = "fa fa-bookmark";
+            if(newsItem.isSaved){
+                _className += " blue_i";
+            }
             return(
-                <NewsItem newsItem ={newsItem}
-                        selected={_this.selectedArtical}
-                        saveArtical={_this.onSaveArticleIconClick}
-                        key={key} />
+                <div className="row row-clr pg-newsfeed-left-post-item" onClick={event=>_this.onArticalSelect(newsItem)} key={key}>
+                    <div className="row row-clr pg-newsfeed-left-post-item-main-img-wrapper">
+                        <img src={_articalImage} className="img-responsive  pg-newsfeed-left-post-item-main-img"/>
+                        <div className="pg-newsfeed-left-post-item-logo-wrapper">
+                            <img src={news_logo} alt="" className="img-responsive"/>
+                        </div>
+                    </div>
+                    <div className="row row-clr pg-newsfeed-left-post-item-main-content">
+                        <h4 className="pg-newsfeed-left-post-item-main-content-title">
+                            {newsItem.heading}
+                        </h4>
+                        <div className="artical-content-holder" dangerouslySetInnerHTML={{__html: newsItem.content}} />
+                        <h5 className="pg-newsfeed-left-post-item-main-content-time">{newsItem.article_date}</h5>
+                    </div>
+                    <div className="row row-clr pg-newsfeed-left-post-item-status-section">
+                        <div className="col-xs-4 rm-side-padding save-artical-btn">
+                            <a href="#" className="pg-newsfeed-left-post-item-status-section-right-links" onClick={event=>_this.saveArticle(newsItem)}><i className={_className}></i> Save</a>
+                        </div>
+                    </div>
+                </div>
+
             );
         });
         return(
             <div className="row row-clr pg-newsfeed-left-post-container">
                 {_news_item}
-                {this.getPopup()}
             </div>
         );
     }
 }
-
-
-export const NewsItem =({newsItem,selected,saveArtical})=>{
-
-    //console.log(newsItem.article_image);
-
-    let news_logo= "/images/news/"+newsItem.channel.toLowerCase()+".png";
-    let _articalImage = '/images/image_not_found.png';
-    if(typeof newsItem.article_image != 'undefined'){
-        _articalImage = newsItem.article_image;
-    }
-
-    function createMarkup() { return {__html: newsItem.content}; }
-
-    function onArticalSelect(){
-            selected(newsItem);
-    }
-
-    function saveArticle(){
-        saveArtical(newsItem);
-    }
-
-    return(
-        <div className="row row-clr pg-newsfeed-left-post-item" onClick={event=>onArticalSelect(event)}>
-            <div className="row row-clr pg-newsfeed-left-post-item-main-img-wrapper">
-                <img src={_articalImage} className="img-responsive  pg-newsfeed-left-post-item-main-img"/>
-                <div className="pg-newsfeed-left-post-item-logo-wrapper">
-                    <img src={news_logo} alt="" className="img-responsive"/>
-                </div>
-            </div>
-            <div className="row row-clr pg-newsfeed-left-post-item-main-content">
-                <h4 className="pg-newsfeed-left-post-item-main-content-title">
-                    {newsItem.heading}
-                </h4>
-                <div className="artical-content-holder" dangerouslySetInnerHTML={createMarkup()} />
-                <h5 className="pg-newsfeed-left-post-item-main-content-time">{newsItem.article_date}</h5>
-            </div>
-            <div className="row row-clr pg-newsfeed-left-post-item-status-section">
-
-                <div className="col-xs-4 rm-side-padding save-artical-btn">
-                    <a href="#" className="pg-newsfeed-left-post-item-status-section-right-links" onClick={event=>saveArticle(event)}><i className="fa fa-bookmark"></i> Save</a>
-                </div>
-            </div>
-
-        </div>
-    );
-
-};

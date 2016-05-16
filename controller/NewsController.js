@@ -68,7 +68,6 @@ var NewsController ={
                     var _tmpOutPut = [];
                     for(var a=0;a<resultSet.news_list.length;a++){
                         var _tmpData = resultSet.news_list[a];
-
                         _tmpData.is_favorite = 0;
                         for(var i = 0; i< newsCategories.length;i++ ) {
 
@@ -350,19 +349,36 @@ var NewsController ={
         var News = require('mongoose').model('News'),
             _async = require('async'),
             FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
+            UsersSavedArticle = require('mongoose').model('UsersSavedArticle'),
             CurrentSession = Util.getCurrentSession(req);
 
         var user_id=CurrentSession.id;
 
+        var dateArr = DateTime.oneWeekDate();
+
         _async.waterfall([
-            function getFavouriteNewsCategories(callBack){
+            function getMySavedArticles(callBack){
+
+                var criteria ={
+                    user_id:user_id,
+                    created_at:{
+                        $gte:dateArr.weekAgo,
+                        $lte:dateArr.today
+                    }
+                };
+                UsersSavedArticle.findSavedArticle(criteria,function(resultSet){
+                    callBack(null,resultSet.news_list);
+                })
+
+            },
+            function getFavouriteNewsCategories(saved_articles, callBack){
 
                 FavouriteNewsCategory.getNewsCategoriesByUserId(user_id,function(resultSet){
-                    callBack(null,resultSet.news_categories);
+                    callBack(null,saved_articles,resultSet.news_categories);
                 });
 
             },
-            function getAllNewsCategories(newsCategories,callBack){
+            function getAllNewsCategories(saved_articles,newsCategories,callBack){
                 var criteria = {
                     search:{},
                     return_fields:{category:1, categoryImage:1}
@@ -388,11 +404,23 @@ var NewsController ={
                                             url:_tmpData.channels[x].url
                                         };
 
-                                        _tmpOutPut.push(_channel)
+                                        var articles = [];
 
+                                        for(var y = 0; y < saved_articles.length; y++){
+                                            if(saved_articles[y].article.channel == _tmpData.channels[x].name){
+                                                var _article = {
+                                                    heading:saved_articles[y].article.heading,
+                                                    article_date:saved_articles[y].article.article_date
+                                                };
+                                                articles.push(_article);
+                                            }
+                                        }
+                                        _channel.articles = articles;
+                                        _tmpOutPut.push(_channel)
                                     }
                                 }
                                 break;
+
                             }
                         }
                     }
@@ -433,17 +461,11 @@ var NewsController ={
 
         _async.waterfall([
             function saveArticle(callBack){
-                console.log("saveArticle");
                 SavedArticle.findSavedArticle(criteria,function(resultSet){
-                    console.log(resultSet);
                     if(resultSet.news_list.length>0){
-                        console.log("resultSet.news_list.length>0",JSON.stringify(resultSet.news_list[0]));
                         callBack(null, resultSet.news_list[0]._id);
                     }else{
-                        console.log("else");
                         SavedArticle.saveArticle(req.body,function(resultSet){
-                            console.log("SavedArticle.saveArticle");
-                            console.log(resultSet.article);
                             callBack(null, resultSet.article._id);
                         });
                     }
@@ -451,7 +473,6 @@ var NewsController ={
 
             },
             function saveUsersArticle(article_id,callBack){
-                console.log("saveUsersArticle",article_id);
                 var data = {
                     user_id:CurrentSession.id,
                     article:article_id

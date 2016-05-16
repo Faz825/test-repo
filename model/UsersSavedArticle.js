@@ -63,9 +63,7 @@ UsersSavedArticleSchema.statics.saveArticle =function(articel,callBack){
  */
 UsersSavedArticleSchema.statics.findSavedArticle = function(criteria,callBack){
 
-    this.find({user_id:Util.toObjectId(criteria.user_id)}).populate("article").exec(function(err,resultSet){
-        console.log("UsersSavedArticleSchema.statics.findSavedArticle");
-        console.log(JSON.stringify(resultSet));
+    this.find(criteria).populate("article").exec(function(err,resultSet){
         if(!err){
             callBack({
                 status:200,

@@ -1,6 +1,7 @@
 /*
 * News COntainer Component
 */
+
 import React from 'react';
 import NewsArticalThumb from '../../components/elements/NewsArticalThumb';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
@@ -326,7 +327,7 @@ export class SavedArticles extends React.Component{
         if (this.state.articles.length > 5) {
             _more_articals = this.state.articles.map(function(articles,key){
             let _articalImage = '/images/image_not_found.png';
-            if(articles.article_image != null){
+            if(articles.article.article_image != null){
                 _articalImage = articles.article.article_image;
             }
                 if(key >= 5){
