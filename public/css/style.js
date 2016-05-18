@@ -789,7 +789,7 @@ export default StyleSheet.create({
         "paddingBottom": 50,
         "position": "relative",
         "zIndex": 500,
-        "backgroundColor": "rgba(0, 0, 0, 0.4)"
+        "backgroundColor": "rgba(0, 0, 0, 0.6)"
     },
     "pgs-sign-left-arrow": {
         "position": "absolute",
@@ -1677,8 +1677,8 @@ export default StyleSheet.create({
         "content": "\"\"",
         "display": "block",
         "background": "url(../images/cameraIcon.png) no-repeat 0 0",
-        "width": 35,
-        "height": 28,
+        "width": 25,
+        "height": 20,
         "position": "absolute",
         "bottom": 6,
         "left": 6
@@ -1687,8 +1687,8 @@ export default StyleSheet.create({
         "content": "\"\"",
         "display": "block",
         "background": "url(../images/cameraIcon.png) no-repeat 0 0",
-        "width": 35,
-        "height": 28,
+        "width": 25,
+        "height": 20,
         "position": "absolute",
         "bottom": "auto",
         "left": 10,
@@ -3949,5 +3949,8 @@ export default StyleSheet.create({
     },
     "editor-popup-holder ql-format-buttonql-link": {
         "display": "none"
+    },
+    "blue_i": {
+        "color": "#428bca"
     }
 });

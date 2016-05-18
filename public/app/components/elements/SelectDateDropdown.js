@@ -98,6 +98,7 @@ class Dropdown extends React.Component{
 		let start;
         let end;
 		let options = [];
+		let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 		let fieldName = this.props.fieldName;
         let startYear = (this.props.startYear)? this.props.startYear : "1960";
 
@@ -111,8 +112,8 @@ class Dropdown extends React.Component{
 		        end = "31";
 		        break;
 		    case "yyyy":
+				end = this.currYear;
 		        start = startYear;
-		        end = this.currYear;
 		        break;
 
 		}
@@ -135,9 +136,15 @@ class Dropdown extends React.Component{
                         value={this.state.defaultOpt}
                         onChange={this.selectChange.bind(this)} {...opts}>
                     <option value="">{this.props.fieldName}</option>
-                    {options.map(function(opt, i){
-								        return <option value={opt} key={i}>{opt}</option>;
-								    })}
+                    {(fieldName == "mm")?
+						months.map(function(month, i){
+					        return <option value={i+1} key={i}>{month}</option>;
+					    })
+						:
+						options.map(function(opt, i){
+					        return <option value={opt} key={i}>{opt}</option>;
+					    })
+					}
                 </select>
             </div>
 		);

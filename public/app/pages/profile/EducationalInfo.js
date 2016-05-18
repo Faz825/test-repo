@@ -386,7 +386,7 @@ export class EducationForm extends React.Component{
                     </div>
                     <div className="form-group">
                         <label>Activities and Societies</label>
-                        <textarea className="form-control" name="activities_societies" rows="3" value={formData.activities_societies} onChange={this.fieldChangeHandler} ></textarea>
+                        <textarea className="form-control" name="activities_societies" rows="3" value={formData.activities_societies} onChange={this.fieldChangeHandler} placeholder='"Separate the groups you were a part of with a comma. For example "Investment club, intramural soccer club, etc"'></textarea>
                     </div>
                     <div className="form-group">
                         <label>Description</label>
