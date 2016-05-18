@@ -32,6 +32,7 @@ var PostController ={
         };
 
         TimeLinePostHandler.addNewPost(data,function(resultSet){
+            console.log("TimeLinePostHandler.addNewPost==================================");
             console.log(resultSet);
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['post']      = resultSet;
