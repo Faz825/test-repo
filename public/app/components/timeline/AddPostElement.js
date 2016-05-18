@@ -98,6 +98,7 @@ export class TextPostElement extends React.Component{
 
     }
     submitPost(event){
+        console.log("submitPost - AddPostElement.js");
         let _this = this;
 
         this.setState({emptyPostWarningIsVisible : false,btnEnabled:false});
@@ -126,6 +127,7 @@ export class TextPostElement extends React.Component{
         }
 
         if(this.isValidToSubmit){
+            console.log("this.isValidToSubmit");
 
             $.ajax({
                 url: '/post/composer',
@@ -141,8 +143,11 @@ export class TextPostElement extends React.Component{
         }
     }
     handleAjaxSuccess(data){
+        console.log("handleAjaxSuccess");
 
         if (data.status.code == 200) {
+
+            console.log("handleAjaxSuccess");
 
             this.props.afterPostSubmit(data.post)
 
