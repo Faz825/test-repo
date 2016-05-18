@@ -16,14 +16,12 @@ var TimeLinePostHandler ={
      * @param callBack
      */
     addNewPost:function(postData,callBack){
-        console.log("addNewPost - TimeLinePostHandler");
         var _async = require('async'),
             Post = require('mongoose').model('Post'),
             _post = postData;
         _async.waterfall([
             //GET FRIEND LIST BASED ON POST OWNER
             function getPostVisibleUsers(callBack){
-                console.log("getPostVisibleUsers");
                 // Add to Cache when it is public or Friend only
                 // TODO:: think for Friend only algorithm separately
                 if(parseInt(_post.post_visible_mode) == PostVisibleMode.PUBLIC ||
@@ -48,7 +46,6 @@ var TimeLinePostHandler ={
                 }
             },
             function savePostInDb(callBack){
-                console.log("savePostInDb");
 
                 Post.addNew(_post,function(postData){
 
@@ -62,7 +59,7 @@ var TimeLinePostHandler ={
             },
             //COPY CONTENT TO CDN
             function copyToCDN(callBack){
-                console.log("copyToCDN");
+
                 _post['upload'] = [];
                 if(_post.has_attachment){
                     var payLoad ={
@@ -80,12 +77,11 @@ var TimeLinePostHandler ={
 
             },
             function saveInCache(callBack){
-                console.log("saveInCache");
+
                 Post.addToCache(_post.visible_users,_post,function(chData){ });
                 callBack(null)
             },
             function finalizedPost(callBack){
-                console.log("finalizedPost");
 
                 var query={
                     q:_post.created_by.toString(),

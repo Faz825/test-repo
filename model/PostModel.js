@@ -131,12 +131,8 @@ PostSchema.statics.addNew = function(post,callBack){
  */
 PostSchema.statics.addToCache=function(users,data,callBack){
 
-    console.log("PostSchema.statics.addToCache");
-
     for(var i=0;i<users.length;i++){
-        console.log(i);
         var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+users[i];
-        console.log(_cache_key);
         var payLoad={
             index:_cache_key,
             id:data.post_id.toString(),
@@ -144,11 +140,8 @@ PostSchema.statics.addToCache=function(users,data,callBack){
             data:data,
             tag_fields:['content']
         }
-        console.log("PostSchema.statics.addToCache--------------------payLoad-----------------------------");
-        console.log(payLoad);
+
         ES.createIndex(payLoad,function(resultSet){
-            console.log("PostSchema.statics.addToCache>>>>>>>>>>>>>>>ES.createIndex>>>>>>>>>>>>>>>>>>>>>>>");
-            console.log(resultSet)
 
             callBack(resultSet)
         });

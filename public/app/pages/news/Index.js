@@ -39,8 +39,6 @@ export default class Index extends React.Component{
 
     loadPosts(page){
 
-        console.log("loadPosts");
-
         let user = Session.getSession('prg_lg');
         let _this =  this;
         $.ajax({
@@ -49,9 +47,7 @@ export default class Index extends React.Component{
             dataType: "JSON",
             data:{__pg:page,uname:_this.state.uname,__own:"all"},
             success: function (data, text) {
-                console.log("success");
                 if(data.status.code == 200){
-                    console.log(data.posts);
                     this.setState({posts:data.posts})
                 }
 

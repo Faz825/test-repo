@@ -12,8 +12,6 @@ var PostController ={
      */
     addPost:function(req,res){
 
-        console.log("addPost - PostController");
-
         var outPut ={},CurrentSession = Util.getCurrentSession(req);
 
         var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
@@ -32,8 +30,6 @@ var PostController ={
         };
 
         TimeLinePostHandler.addNewPost(data,function(resultSet){
-            console.log("TimeLinePostHandler.addNewPost==================================");
-            console.log(resultSet);
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['post']      = resultSet;
             res.status(200).send(outPut);
@@ -50,10 +46,6 @@ var PostController ={
      */
     getPost:function(req,res){
 
-        console.log("getPost");
-
-        console.log(req.query.uname);
-
         var query={
             q:"user_name:"+req.query.uname,
             index:'idx_usr'
@@ -61,9 +53,7 @@ var PostController ={
 
         ES.search(query,function(esResultSet){
 
-            console.log("ES.search");console.log(esResultSet);
-
-            var _id     = esResultSet.result[0].user_id;console.log(_id);
+            var _id     = esResultSet.result[0].user_id;
             var _page   = req.query.__pg;
 
             var Post = require('mongoose').model('Post'),
@@ -73,12 +63,9 @@ var PostController ={
                 q:(req.query.__own =="me")?"created_by:"+_id:"*"
             };
 
-            console.log(payLoad);
-
             Post.ch_getPost(_id,payLoad,function(resultSet){
-                console.log("Post.ch_getPost");
+
                 var outPut ={};
-                console.log(resultSet);
 
 
                 if(resultSet == null){
