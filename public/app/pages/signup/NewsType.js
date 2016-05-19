@@ -78,7 +78,7 @@ export default class NewsType extends React.Component{
                                         <h2>Welcome to Proglobe</h2>
                                     </div>
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form pgs-middle-sign-wrapper-news-inner-form">
-                                    	<h6>Tell me about what type of news you would like to read</h6>
+                                    	<h6>Which news topics interest you?</h6>
                                         <NewsCategoryList onCategorySelect={(categories,unselectedCategories)=>this.onCategorySelect(categories,unselectedCategories)}/>
                                             <div className="row">
 		                                        <Button type="button"

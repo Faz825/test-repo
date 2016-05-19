@@ -118,7 +118,7 @@ export default class AboutYou extends React.Component{
                                 <img src="images/sign-left-arrow-1.png" alt="" className="img-responsive pgs-sign-left-arrow" />
                                     <AboutInner />
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form">
-                                    	<h6>First, Let me know a little more about you...</h6>
+                                    	<h6>Before I begin helping you, tell me more about yourself.</h6>
                                         <form method="post" onSubmit={this.submitData.bind(this)}>
 	                                        <div className="row pgs-middle-about-inputs">
 

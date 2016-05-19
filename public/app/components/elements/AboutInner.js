@@ -11,7 +11,7 @@ const AboutInner =(pros)=>{
         <div className="row row-clr pgs-middle-sign-wrapper-about-inner">
             <h1>Hello {session.first_name},</h1>
             <h2>THANK YOU FOR CHOOSING ME</h2>
-            <h5>I, {session.secretary_name}, will now be your very own personal assistant and will be making your life easier.<br />We are bonded for life now. Yay!</h5>
+            <h5>I'm {session.secretary_name}, your own very personal assistant! I'm here to make your life easier.<br />We are now bonded forever! Yay!</h5>
         </div>
 
     )

@@ -6,6 +6,7 @@ import Button from '../../components/elements/Button'
 import {Alert} from '../../config/Alert'
 import Session  from '../../middleware/Session';
 import SecretaryThumbnail from '../../components/elements/SecretaryThumbnail'
+import AboutInner from '../../components/elements/AboutInner'
 
 let errorStyles = {
     color         : "#ed0909",
@@ -100,11 +101,7 @@ export default class AboutCollegeAndJob extends React.Component{
                             <div className="col-xs-12">
                                 <div className="row row-clr pgs-middle-sign-wrapper-inner-cover pgs-middle-sign-wrapper-inner-cover-secretary pgs-middle-sign-wrapper-about">
                                 <img src="images/sign-left-arrow-1.png" alt="" className="img-responsive pgs-sign-left-arrow"/>
-                                    <div className="row row-clr pgs-middle-sign-wrapper-about-inner">
-                                        <h1>Hello {session.first_name},</h1>
-                                        <h2>Welcome to Proglobe</h2>
-                                        <h5>I, Donna, will now be your very own personal assistant and will be making your life easier.<br/>We are bonded forever now. Yay!</h5>
-                                    </div>
+                                    <AboutInner />
                                     <div className="row row-clr pgs-middle-sign-wrapper-inner-form pgs-middle-sign-wrapper-about-inner-form">
                                     	<h6>About your college / job</h6>
                                         <form method="post" onSubmit={this.collectData.bind(this)}>
@@ -120,7 +117,7 @@ export default class AboutCollegeAndJob extends React.Component{
                                                         validate={this.state.invalidElements.school}
                                                         error_message={this.state.error.school}/>
                                         	<SelectDateDropdown title="Graduation Date"
-                                                                dateFormat="mm-dd-yyyy"
+                                                                dateFormat="mm-yyyy"
                                                                 defaultOpt={defaultVals.grad_date}
                                                                 optChange={this.elementChangeHandler}
                                                                 dateType="grad_date"

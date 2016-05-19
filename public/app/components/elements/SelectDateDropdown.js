@@ -44,6 +44,7 @@ export default class SelectDateDropdown extends React.Component{
 	}
 
 	render(){
+		let _this = this;
 		let dateFormat = this.getDateFormat();
 		let defaultDate = this.state.defaultDateOpt.split("-");
 
@@ -59,9 +60,11 @@ export default class SelectDateDropdown extends React.Component{
 			<div className="col-xs-5">
             	<p>{this.props.title} {this.props.required ? <span style={{"color": "#ed0909"}}>*</span> : ""} </p>
                 <div className="row row-clr">
-                    <Dropdown fieldName={dateFormat[0]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[0]} startYear="" errorMsg={this.props.error_message} />
-                    <Dropdown fieldName={dateFormat[1]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[1]} startYear="" errorMsg={this.props.error_message} />
-                    <Dropdown fieldName={dateFormat[2]} dateChange={this.dateUpdate.bind(this)} defaultVal={defaultDate[2]} startYear={this.state.startYear} errorMsg={this.props.error_message} />
+					{
+						dateFormat.map(function(date,i){
+							return <Dropdown fieldName={date} dateChange={_this.dateUpdate.bind(this)} defaultVal={date} startYear={(date == "yyyy")? _this.state.startYear : null} errorMsg={_this.props.error_message} key={i} />;
+						})
+					}
 					{(this.props.error_message)? <span className="invalid-msg" style={errorStyles}>{this.props.error_message}</span> : null}
                 </div>
             </div>
@@ -128,6 +131,10 @@ class Dropdown extends React.Component{
 		if (this.props.errorMsg) {
             opts['style'] = {"borderColor" : "#ed0909"};
         }
+
+		if (fieldName == "yyyy") {
+			options.sort(function(a, b){return b-a});
+		}
 
 		return(
 			<div className="pgs-sign-select-about-col">
