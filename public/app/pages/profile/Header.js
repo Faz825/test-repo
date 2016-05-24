@@ -137,12 +137,21 @@ export class ProfileInfo extends React.Component{
     constructor(props){
         super(props);
         let profileImg = (typeof  this.props.dt.images.profile_image.http_url != 'undefined')? this.props.dt.images.profile_image.http_url : this.props.dt.images.profile_image.file_name;
+        let working_at = (this.props.dt.cur_working_at)? this.props.dt.cur_working_at:"";
+        let designation = (this.props.dt.cur_designation)? this.props.dt.cur_designation:"";
+        let desigFieldLength = designation.length;
+        let officeFieldLength = working_at.length;
         this.state = {
             profileImgSrc : profileImg,
-
+            jobPostition : designation,
+            office : working_at,
+            desigFieldSize : desigFieldLength,
+            officeFieldSize : officeFieldLength,
+            saveEdit : false
         }
         this.profileImgUpdated = this.profileImgUpdated.bind(this);
         this.loggedUser = Session.getSession('prg_lg');
+        this.occupationStat = {};
     }
 
     profileImgUpdated(data){
@@ -175,9 +184,31 @@ export class ProfileInfo extends React.Component{
 
     }
 
+    positonChange(e){
+        let fieldName = e.target.name;
+        let value = e.target.value;
+        let fieldLength = value.length;
+
+        if(fieldName == "designation"){
+            this.setState({jobPostition : value, desigFieldSize : fieldLength});
+        }else{
+            this.setState({office : value, officeFieldSize : fieldLength});
+        }
+    }
+
+    editOccupation(){
+        this.setState({saveEdit : true});
+    }
+
+    saveOccupation(){
+        this.setState({saveEdit : false});
+        this.occupationStat.position = this.state.jobPostition;
+        this.occupationStat.office = this.state.office;
+
+        console.log(this.occupationStat);
+    }
+
     render() {
-        let working_at = (this.props.dt.cur_working_at)? this.props.dt.cur_working_at:"";
-        let designation = (this.props.dt.cur_designation)? this.props.dt.cur_designation:"";
         let full_name =  this.props.dt.first_name + " " +   this.props.dt.last_name;
 
         return (
@@ -186,7 +217,20 @@ export class ProfileInfo extends React.Component{
                     <div className="col-xs-10 col-xs-offset-1">
                         <div className="row">
                             <div className="col-xs-5 pg-profile-detail-work">
-                                <h3 className="text-center">{designation} at {working_at}</h3>
+                                <div className="curr-job-holder">
+                                    <input type="text" name="designation" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.desigFieldSize} value={this.state.jobPostition} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
+                                    <span className="combine-text">at</span>
+                                    <input type="text" name="workplace" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.officeFieldSize} value={this.state.office} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
+                                    {
+                                        (this.loggedUser)?
+                                            (!this.state.saveEdit)?
+                                            <span className="fa fa-pencil-square-o" onClick={this.editOccupation.bind(this)}></span>
+                                            :
+                                            <span className="fa fa-floppy-o" onClick={this.saveOccupation.bind(this)}></span>
+                                        :
+                                        null
+                                    }
+                                </div>
                             </div>
                             <div className="col-xs-2">
                                 <div className="row pg-profile-mid-wrapper">

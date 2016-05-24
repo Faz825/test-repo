@@ -1177,6 +1177,45 @@ input[type=number]::-webkit-outer-spin-button {
     color: #ffffff;
     font-size: 30px;
 }
+.curr-job-holder{
+	margin-top: 10px;
+}
+.curr-job-holder .job-data,
+.curr-job-holder .job-data:focus,
+.curr-job-holder .job-data:hover{
+	background: none;
+	border-radius: 0;
+	border: none;
+	max-width: 40%;
+	text-transform: capitalize;
+	color: #fff;
+	font: 18px 'montserratregular', sans-serif;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.curr-job-holder .job-data.editable{
+	border-bottom: 1px solid #fff;
+}
+.curr-job-holder .combine-text{
+	color: #fff;
+	font: 18px 'montserratregular', sans-serif;
+	display: inline-block;
+	margin: 0 8px 0 2px;
+}
+.curr-job-holder .fa{
+	color: #fff;
+	padding: 5px 5px 2px;
+	border-radius: 5px;
+	background: #61b3de;
+	cursor: pointer;
+	font-size: 0.8em;
+	display: none;
+	margin-left: 5px;
+}
+.curr-job-holder:hover .fa{
+	display: inline-block;
+}
 .proImgHolder{
 	margin: 0 auto;
     border: 5px solid #fff;
@@ -2939,6 +2978,10 @@ textarea{
 		font-size: 10px;
 		width: 68px;
 	}
+
+	.curr-job-holder .combine-text{
+		margin: 0 8px;
+	}
 }
 
 @media (max-width: 1200px){
@@ -2993,6 +3036,10 @@ textarea{
 
 	.pg-news-inner-box-content-txt{
 		font-size: 0.95em;
+	}
+
+	.curr-job-holder .combine-text{
+		margin: 0 8px;
 	}
 }
 

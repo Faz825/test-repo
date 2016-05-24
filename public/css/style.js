@@ -1634,6 +1634,73 @@ export default StyleSheet.create({
         "color": "#ffffff",
         "fontSize": 30
     },
+    "curr-job-holder": {
+        "marginTop": 10
+    },
+    "curr-job-holder job-data": {
+        "background": "none",
+        "borderRadius": 0,
+        "border": "none",
+        "maxWidth": "40%",
+        "textTransform": "capitalize",
+        "color": "#fff",
+        "font": "18px 'montserratregular', sans-serif",
+        "whiteSpace": "nowrap",
+        "overflow": "hidden",
+        "textOverflow": "ellipsis"
+    },
+    "curr-job-holder job-data:focus": {
+        "background": "none",
+        "borderRadius": 0,
+        "border": "none",
+        "maxWidth": "40%",
+        "textTransform": "capitalize",
+        "color": "#fff",
+        "font": "18px 'montserratregular', sans-serif",
+        "whiteSpace": "nowrap",
+        "overflow": "hidden",
+        "textOverflow": "ellipsis"
+    },
+    "curr-job-holder job-data:hover": {
+        "background": "none",
+        "borderRadius": 0,
+        "border": "none",
+        "maxWidth": "40%",
+        "textTransform": "capitalize",
+        "color": "#fff",
+        "font": "18px 'montserratregular', sans-serif",
+        "whiteSpace": "nowrap",
+        "overflow": "hidden",
+        "textOverflow": "ellipsis"
+    },
+    "curr-job-holder job-dataeditable": {
+        "borderBottom": "1px solid #fff"
+    },
+    "curr-job-holder combine-text": {
+        "color": "#fff",
+        "font": "18px 'montserratregular', sans-serif",
+        "display": "inline-block",
+        "marginTop": 0,
+        "marginRight": 8,
+        "marginBottom": 0,
+        "marginLeft": 2
+    },
+    "curr-job-holder fa": {
+        "color": "#fff",
+        "paddingTop": 5,
+        "paddingRight": 5,
+        "paddingBottom": 2,
+        "paddingLeft": 5,
+        "borderRadius": 5,
+        "background": "#61b3de",
+        "cursor": "pointer",
+        "fontSize": 0.8,
+        "display": "none",
+        "marginLeft": 5
+    },
+    "curr-job-holder:hover fa": {
+        "display": "inline-block"
+    },
     "proImgHolder": {
         "marginTop": 0,
         "marginRight": "auto",
