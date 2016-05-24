@@ -1579,6 +1579,9 @@ textarea{
 	color: #fff;
 	background: #61b3de;
 }
+#react-whatever-1 .react-autosuggest__suggestion-container{
+	z-index: 9999;
+}
 .pg-inline-item-btn{
     margin-left: 5px;
 }
@@ -2484,6 +2487,15 @@ textarea{
 
 .chat-person-options .connection-name{
 	float: left;
+}
+.chat-person-options .react-autosuggest__container{
+	float: left;
+	width: 60%;
+	position: relative;
+}
+
+.chat-person-options .react-autosuggest__container  #react-whatever-1{
+	top: 50px;
 }
 
 .chat-person-options .connection-name p{

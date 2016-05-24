@@ -107,6 +107,40 @@ var PostController ={
             res.status(200).send(outPut);
             return 0;
         });
+    },
+
+    /**
+     * when user update profile picture add that as a post
+     * @param req
+     * @param res
+     */
+
+    profileImagePost:function(req,res){
+
+        var outPut ={},CurrentSession = Util.getCurrentSession(req);
+
+        var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
+        var data ={
+            has_attachment:(typeof req.body.__hs_attachment != 'undefined')?req.body.__hs_attachment:false,
+            content:(typeof req.body.__content != 'undefined')?req.body.__content :"",
+            created_by:CurrentSession.id,
+            page_link:(typeof req.body.page_link != 'undefined')?req.body.page_link :"",
+            post_visible_mode:PostVisibleMode.PUBLIC,
+            post_mode:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostConfig.NORMAL_POST,
+            file_content:(typeof req.body.__file_content != 'undefined')?req.body.__file_content:"",
+            upload_id:(typeof req.body.__uuid  != 'undefined')? req.body.__uuid:"",
+            location:(typeof req.body.__lct  != 'undefined')?req.body.__lct:"",
+            life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:"",
+            shared_post:""
+        };
+
+        TimeLinePostHandler.addNewPost(data,function(resultSet){
+            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['post']      = resultSet;
+            res.status(200).send(outPut);
+            return 0;
+        });
+
     }
 
 

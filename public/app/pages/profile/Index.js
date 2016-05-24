@@ -27,8 +27,6 @@ export default class Index extends React.Component{
     }
     onPostSubmitSuccess(data){
 
-        console.log("onPostSubmitSuccess - profile/Index.js")
-
         let _posts = this.state.posts;
         _posts.unshift(data);
 
