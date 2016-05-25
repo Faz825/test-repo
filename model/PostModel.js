@@ -133,7 +133,6 @@ PostSchema.statics.addToCache=function(users,data,callBack){
 
     for(var i=0;i<users.length;i++){
         var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+users[i];
-
         var payLoad={
             index:_cache_key,
             id:data.post_id.toString(),
