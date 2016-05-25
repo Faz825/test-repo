@@ -231,6 +231,7 @@ router.post('/work-experience/update', UserController.updateWorkExperience);
 
 router.post('/post/composer', PostController.addPost);
 router.post('/post/share', PostController.sharePost);
+router.post('/post/profile-image-post', PostController.profileImagePost);
 
 
 router.post('/comment/composer', CommentController.addComment);
