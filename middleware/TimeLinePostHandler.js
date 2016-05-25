@@ -59,6 +59,7 @@ var TimeLinePostHandler ={
             },
             //COPY CONTENT TO CDN
             function copyToCDN(callBack){
+
                 _post['upload'] = [];
                 if(_post.has_attachment){
                     var payLoad ={
@@ -76,6 +77,7 @@ var TimeLinePostHandler ={
 
             },
             function saveInCache(callBack){
+
                 Post.addToCache(_post.visible_users,_post,function(chData){ });
                 callBack(null)
             },

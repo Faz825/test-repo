@@ -8,6 +8,7 @@ import Session from '../../middleware/Session';
 import Chat from '../../middleware/Chat';
 import {Alert} from '../../config/Alert';
 import Lib from '../../middleware/Lib';
+import Autosuggest from 'react-autosuggest';
 
 let errorStyles = {
     color         : "#ed0909",
@@ -391,11 +392,12 @@ export default class Index extends React.Component{
     }
 
     selectChange(e){
-        if(e.target.value.length != 0 ){
-            this.loadRoute(e.target.value);
-        }else{
-            console.log("no user selected")
-        }
+        this.loadRoute(e);
+        //if(e.target.value.length != 0 ){
+        //
+        //}else{
+        //    console.log("no user selected")
+        //}
     }
 
     getUrl(){
@@ -548,10 +550,59 @@ export class LeftMenu extends React.Component{
 export class RightMenu extends React.Component{
     constructor(props){
         super(props)
-        this.state ={};
+        this.state ={
+            value: '',
+            suggestions: this.getSuggestions(''),
+        };
         this.loggedUser = this.props.loggedUser;
+        this.onChange = this.onChange.bind(this);
+        this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
+        this.getSuggestionValue = this.getSuggestionValue.bind(this);
+        this.renderSuggestion = this.renderSuggestion.bind(this);
     }
+
+    escapeRegexCharacters(str) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    getSuggestions(value, data) {
+        const escapedValue = this.escapeRegexCharacters(value.trim());
+        if (escapedValue === '') {
+            return [];
+        }
+        const regex = new RegExp('^' + escapedValue, 'i');
+        return data.filter(data => regex.test(data.first_name+" "+data.last_name));
+    }
+
+    getSuggestionValue(suggestion) {
+        this.props.selectChange(suggestion.user_name)
+        return suggestion.first_name+" "+suggestion.last_name;
+    }
+
+    renderSuggestion(suggestion) {
+        return (
+            <span id={suggestion.user_id}>{suggestion.first_name+" "+suggestion.last_name}</span>
+        );
+    }
+
+    onChange(event, { newValue }) {
+        this.setState({ value: newValue });
+    }
+
+    onSuggestionsUpdateRequested({ value }) {
+        this.setState({
+            suggestions: this.getSuggestions(value, this.props.my_connections),
+            suggestionsList : this.getSuggestions(value, this.props.my_connections)
+        });
+    }
+
     render() {
+        const { value, suggestions } = this.state;
+        const inputProps = {
+            placeholder: 'To',
+            value,
+            onChange: this.onChange
+        };
         return (
             <div className="col-sm-8 chat-person-options">
                 <div className="connection-name">
@@ -559,19 +610,13 @@ export class RightMenu extends React.Component{
                 </div>
                 {
                     (this.props.chatWith == 'new')?
-                        <div className="connection-list btn btn-default">
-                            <select id="connection_list"
-                                    className="pgs-sign-select"
-                                    onChange={this.props.selectChange}>
-                                <option/>
-                                {this.props.my_connections.map(function(connection, i){
-                                    return <option value={connection.user_name}
-                                                   key={i}
-                                        >
-                                        {connection.first_name+" "+connection.last_name}</option>;
-                                })}
-                            </select>
-                        </div> : null
+
+                            <Autosuggest suggestions={suggestions}
+                                         onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                                         getSuggestionValue={this.getSuggestionValue}
+                                         renderSuggestion={this.renderSuggestion}
+                                         inputProps={inputProps} />
+                         : null
                 }
                 <div className="media-options-holder">
                     <div className="media-options">

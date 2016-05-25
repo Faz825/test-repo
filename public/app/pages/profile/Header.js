@@ -170,11 +170,39 @@ export class ProfileInfo extends React.Component{
             success: function (data, text) {
                 if (data.status.code == 200) {
 
-                    _this.setState({loadingBarIsVisible : false,profileImgSrc : data.user.profile_image});
-                    Session.createSession("prg_lg", data.user);
-                    document.location.reload(true)
+                    var _pay_load = {};
+                    _pay_load['__content'] = "Updated profile picture";
+                    _pay_load['__hs_attachment'] = true;
+                    _pay_load['__post_type'] = "AP";
+                    _pay_load['__profile_picture'] = data.profile_image;
+
+                    $.ajax({
+                        url: '/upload/profile-image',
+                        method: "POST",
+                        dataType: "JSON",
+                        headers: {'prg-auth-header': _this.loggedUser.token},
+                        data: {profileImg: data, extension: 'png'},
+                        cache: false,
+                        contentType: "application/x-www-form-urlencoded",
+                        success: function (data, text) {
+                            if (data.status.code == 200) {
+
+                                _this.setState({loadingBarIsVisible: false, profileImgSrc: data.user.profile_image});
+                                Session.createSession("prg_lg", data.user);
+                                document.location.reload(true)
+                            }
+                        },
+                        error: function (request, status, error) {
+                            console.log(request.responseText);
+                            console.log(status);
+                            console.log(error);
+                        }
+
+
+                    });
                 }
             },
+
             error: function (request, status, error) {
                 console.log(request.responseText);
                 console.log(status);

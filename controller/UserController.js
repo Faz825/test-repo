@@ -426,6 +426,8 @@ var UserControler ={
      * @returns {number}
      */
     uploadProfileImage:function(req,res){
+        console.log("uploadProfileImage");
+
         var CurrentSession = Util.getCurrentSession(req);
 
         var User = require('mongoose').model('User');
@@ -472,6 +474,8 @@ var UserControler ={
                 }else{
                     ContentUploader.uploadFile(data,function (payLoad) {
 
+                        console.log(payLoad);
+
                         if (payLoad.status != 400) {
                             var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
                             CurrentSession['status'] = 7;
@@ -482,6 +486,7 @@ var UserControler ={
                             }
 
                             outPut['user'] = CurrentSession;
+                            outPut['profile_image'] = payLoad;
                             //ADD TO CACHE
                             User.addUserToCache(CurrentSession.id,function(csResult){});
                             res.status(200).json(outPut);
@@ -507,16 +512,6 @@ var UserControler ={
                         }
                     });
                 }
-
-
-
-
-
-
-
-
-
-
 
         });
 

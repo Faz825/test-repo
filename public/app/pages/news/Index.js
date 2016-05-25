@@ -12,7 +12,6 @@ import Session  from '../../middleware/Session';
 export default class Index extends React.Component{
     constructor(props) {
         super(props);
-
         let user =  Session.getSession('prg_lg');
         this.state={
             uname:user.user_name,
@@ -117,9 +116,12 @@ export default class Index extends React.Component{
     }
 
     handleClose() {
+        let _this = this;
         this.setState({isShowingModal: false});
+        this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
     }
     saveArticle(){
+        let _this = this;
         if(!this.state.popupData.isSaved){
             let loggedUser = Session.getSession('prg_lg');
             $.ajax({
@@ -141,6 +143,7 @@ export default class Index extends React.Component{
                             let _news_art = this.state.news_articles;
                             _news_art[_index].isSaved = 1;
                             this.setState({news_articles:_news_art});
+                            this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
                         }
                     }
                 }
@@ -186,6 +189,7 @@ export default class Index extends React.Component{
 
 
     selectedArtical(data){
+        clearInterval(this.refreshInterval);
         this.setState({isShowingModal : true, popupData : data});
     }
 
@@ -193,6 +197,7 @@ export default class Index extends React.Component{
         if(!data.isSaved){
             let _this = this;
             _this.setState({popupData : data},function(){
+                clearInterval(this.refreshInterval);
                 _this.saveArticle();
             });
         }
