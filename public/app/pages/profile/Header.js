@@ -13,43 +13,27 @@ export default class Header extends Component {
         super(props);
         this.state={
             loggedUser:Session.getSession('prg_lg'),
-            user:{},
+            //user:this.props.user,
             ProgressBarIsVisible : false
         };
 
         let _this = this;
-        $.ajax({
-            url: '/get-profile/'+this.props.uname,
-            method: "GET",
-            dataType: "JSON",
-            success: function (data, text) {
 
-                if (data.status.code == 200) {
-
-                    this.setState({user:data.profile_data});
-
-                }
-            }.bind(this),
-            error: function (request, status, error) {
-                console.log(request.responseText);
-                console.log(status);
-                console.log(error);
-            }
-        });
     }
 
     render(){
+        console.log(this.props);
 
-        if(Object.keys(this.state.user).length ==0){
+        if(Object.keys(this.props.user).length ==0){
             return (<div> Loading ....</div>);
         }
 
-        let read_only = (this.state.loggedUser.id == this.state.user.user_id)?false:true;
+        let read_only = (this.state.loggedUser.id == this.props.user.user_id)?false:true;
         return (
             <div className="row row-clr" id="pg-profile-banner-area">
-                <CoverImage dt={this.state.user} readOnly={read_only}/>
-                <ConnectionIndicator dt ={this.state.user}  readOnly={read_only}/>
-                <ProfileInfo dt={this.state.user} readOnly={read_only} />
+                <CoverImage dt={this.props.user} readOnly={read_only}/>
+                <ConnectionIndicator dt ={this.props.user}  readOnly={read_only}/>
+                <ProfileInfo dt={this.props.user} readOnly={read_only} loadExperiences={this.props.loadExperiences} uname={this.props.uname}/>
             </div>
         )
     }
@@ -139,19 +123,22 @@ export class ProfileInfo extends React.Component{
         let profileImg = (typeof  this.props.dt.images.profile_image.http_url != 'undefined')? this.props.dt.images.profile_image.http_url : this.props.dt.images.profile_image.file_name;
         let working_at = (this.props.dt.cur_working_at)? this.props.dt.cur_working_at:"";
         let designation = (this.props.dt.cur_designation)? this.props.dt.cur_designation:"";
+        let exp_id = (this.props.dt.cur_exp_id)? this.props.dt.cur_exp_id:null;
         let desigFieldLength = designation.length;
         let officeFieldLength = working_at.length;
+        let uname = this.props.uname;
         this.state = {
             profileImgSrc : profileImg,
             jobPostition : designation,
             office : working_at,
             desigFieldSize : desigFieldLength,
             officeFieldSize : officeFieldLength,
-            saveEdit : false
+            saveEdit : false,
+            exp_id : exp_id,
+            uname:uname
         }
         this.profileImgUpdated = this.profileImgUpdated.bind(this);
         this.loggedUser = Session.getSession('prg_lg');
-        this.occupationStat = {};
     }
 
     profileImgUpdated(data){
@@ -234,8 +221,32 @@ export class ProfileInfo extends React.Component{
 
     saveOccupation(){
         this.setState({saveEdit : false});
-        this.occupationStat.position = this.state.jobPostition;
-        this.occupationStat.office = this.state.office;
+
+        let profileOccupation = {
+            exp_id:this.state.exp_id,
+            company_name:this.state.office,
+            title:this.state.jobPostition,
+            isProfile:true
+        }
+
+        $.ajax({
+            url: '/work-experience/update',
+            method: "POST",
+            dataType: "JSON",
+            data:profileOccupation,
+            headers: { 'prg-auth-header':loggedUser.token },
+            success: function (data, text) {
+                if(data.status.code == 200){
+                    this.props.loadExperiences(this.state.uname);
+                }
+
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }.bind(this)
+        });
 
         console.log(this.occupationStat);
     }

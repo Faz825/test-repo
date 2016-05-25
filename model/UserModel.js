@@ -618,18 +618,10 @@ UserSchema.statics.addWorkingExperience =function(userId,workingExperienceDetail
  * @param workingExperienceDetails
  * @param callBack
  */
-UserSchema.statics.updateWorkingExperience =function(userId, workingExperienceDetails, callBack){
+UserSchema.statics.updateWorkingExperience =function(userId, expId, workingExperienceDetails, callBack){
     var _this = this;
-    _this.update({_id:userId,"working_experiences._id":workingExperienceDetails._id},
-        {$set:{
-            "working_experiences.$.company_name":workingExperienceDetails.company_name,
-            "working_experiences.$.title":workingExperienceDetails.title,
-            "working_experiences.$.location":workingExperienceDetails.location,
-            "working_experiences.$.start_date":workingExperienceDetails.start_date,
-            "working_experiences.$.left_date":workingExperienceDetails.left_date,
-            "working_experiences.$.is_current_work_place":workingExperienceDetails.is_current_work_place,
-            "working_experiences.$.description":workingExperienceDetails.description,
-        }},function(err,resultSet){
+    _this.update({_id:userId,"working_experiences._id":expId},
+        {$set:workingExperienceDetails},function(err,resultSet){
             if(!err){
                 callBack({
                     status:200
@@ -931,6 +923,7 @@ UserSchema.statics.formatUser=function(userObject,showOptions){
         };
         for(var i=0;i<userObject.working_experiences.length;i++){
             if(userObject.working_experiences[i].is_current_work_place){
+                _temp_user['cur_exp_id']=userObject.working_experiences[i]._id;
                 _temp_user['cur_working_at']=userObject.working_experiences[i].company_name;
                 _temp_user['cur_designation']=userObject.working_experiences[i].title;
             }

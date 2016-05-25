@@ -17,8 +17,12 @@ export default class Index extends React.Component{
         super(props);
         this.state={
             uname:this.getUrl(),
+            user:{},
+            data:{},
             posts:[]
-        }
+        };
+        this.loadExperiences(this.state.uname);
+        this.loadProfileData();
         this.loadPosts(0)
     }
 
@@ -57,11 +61,51 @@ export default class Index extends React.Component{
             }.bind(this)
         });
     }
+    loadProfileData(){
+        $.ajax({
+            url: '/get-profile/'+this.state.uname,
+            method: "GET",
+            dataType: "JSON",
+            success: function (data, text) {
+                if (data.status.code == 200) {
+                    this.setState({user:data.profile_data});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+
+    }
+    loadExperiences(uname){
+        console.log("loadExperiences")
+        $.ajax({
+            url: '/work-experiences/'+uname,
+            method: "GET",
+            dataType: "JSON",
+            data:{uname:uname},
+            success: function (data, text) {
+                if (data.status.code == 200) {
+                    this.setState({data:data.user});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    };
+
+
+
     render(){
 
         return (
             <div id="pg-profile-page" className="loggedUserView pg-page">
-                <Header uname={this.state.uname}/>
+                <Header uname={this.state.uname} user={this.state.user} loadExperiences={this.loadExperiences}/>
                 <div className="row row-clr">
                     <div className="container-fluid">
                         <div className="col-xs-10 col-xs-offset-1" id="middle-content-wrapper">
@@ -70,7 +114,7 @@ export default class Index extends React.Component{
                                     <div className="row row-clr pg-profile-content">
                                         <EducationalInfo uname={this.state.uname} />
                                         <SkillsAndInterests uname={this.state.uname} />
-                                        <WorkExperience uname={this.state.uname} />
+                                        <WorkExperience uname={this.state.uname} data={this.state.data} loadExperiences={this.loadExperiences}/>
 
 
                                     </div>
