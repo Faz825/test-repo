@@ -217,20 +217,25 @@ export class ProfileInfo extends React.Component{
                     <div className="col-xs-10 col-xs-offset-1">
                         <div className="row">
                             <div className="col-xs-5 pg-profile-detail-work">
-                                <div className="curr-job-holder">
-                                    <input type="text" name="designation" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.desigFieldSize} value={this.state.jobPostition} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
-                                    <span className="combine-text">at</span>
-                                    <input type="text" name="workplace" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.officeFieldSize} value={this.state.office} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
-                                    {
-                                        (this.loggedUser)?
-                                            (!this.state.saveEdit)?
-                                            <span className="fa fa-pencil-square-o" onClick={this.editOccupation.bind(this)}></span>
-                                            :
-                                            <span className="fa fa-floppy-o" onClick={this.saveOccupation.bind(this)}></span>
-                                        :
-                                        null
-                                    }
-                                </div>
+                                {
+                                    (this.state.jobPostition || this.state.office)?
+                                            <div className="curr-job-holder">
+                                                <input type="text" name="designation" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.desigFieldSize} value={this.state.jobPostition} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
+                                                <span className="combine-text">at</span>
+                                                <input type="text" name="workplace" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.officeFieldSize} value={this.state.office} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
+                                                {
+                                                    (this.loggedUser)?
+                                                        (!this.state.saveEdit)?
+                                                        <span className="fa fa-pencil-square-o" onClick={this.editOccupation.bind(this)}></span>
+                                                        :
+                                                        <span className="fa fa-floppy-o" onClick={this.saveOccupation.bind(this)}></span>
+                                                    :
+                                                    null
+                                                }
+                                            </div>
+                                    :
+                                    null
+                                }
                             </div>
                             <div className="col-xs-2">
                                 <div className="row pg-profile-mid-wrapper">
