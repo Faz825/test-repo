@@ -11,7 +11,6 @@ export default class CommentElement extends React.Component{
             postId:this.props.postId,
             loggedUser : Session.getSession('prg_lg')
         };
-        console.log(this.props.postId)
     }
     onCommentAdd(comment_text){
         console.log(this.state.postId)
@@ -113,10 +112,11 @@ export class  PostCommentAction extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            text:""
-
+            text:"",
+            imgComment: ""
         };
         this.loggedUser =  this.props.loggedUser;
+        this.selectImage = this.selectImage.bind(this);
     }
     onContentAdd(event){
         let _text  = Lib.sanitize(event.target.innerHTML)
@@ -127,6 +127,32 @@ export class  PostCommentAction extends React.Component{
 
         this.props.onCommentAdd(this.state.text);
     }
+
+    selectImage(e){
+        let files = e.target.files,
+            imageType = new RegExp("image");
+
+        console.log(files[0]);
+
+        if(files[0].size > 2097152){
+            alert("File you selected is too large.");
+        }else if(!imageType.test(files[0].type)){
+            alert("You can only attach an image as a comment");
+        }else{
+            let reader = new FileReader();
+            reader.onload = () => {
+                console.log(reader.result);
+                this.setState({imgComment: reader.result});
+            };
+            reader.readAsDataURL(files[0]);
+            e.target.value = '';
+        }
+    }
+
+    removeImage(){
+        this.setState({imgComment: ""});
+    }
+
     render(){
 
         let profile_image = (typeof this.loggedUser.profile_image != 'undefined')?this.loggedUser.profile_image:"";
@@ -137,10 +163,23 @@ export class  PostCommentAction extends React.Component{
                         <div className="col-xs-2">
                             <img src={profile_image} alt={this.loggedUser.first_name +" "+ this.loggedUser.last_name} className="img-responsive"/>
                         </div>
-                        <div className="col-xs-10 pg-newsfeed-common-content-post-new-comment-input-area">
+                        <div className="col-xs-10 pg-newsfeed-common-content-post-new-comment-input-area comment-holder">
                             <div id="comment_input" contentEditable={true}
                                  className="comment-containable-div"
                                  onInput={this.onContentAdd.bind(this)}></div>
+                            <label htmlFor="cmntImgUpload" className="img-comment">
+                                <i className="fa fa-camera"></i>
+                            </label>
+                            <input type='file' id="cmntImgUpload" onChange={(event)=>{this.selectImage(event)}} />
+                            {
+                                (this.state.imgComment)?
+                                    <div className="comment-img-holder">
+                                        <img src={this.state.imgComment} className="img-responsive" />
+                                        <i className="fa fa-times close-icon" onClick={this.removeImage.bind(this)}></i>
+                                    </div>
+                                :
+                                null
+                            }
                         </div>
                     </div>
                 </div>
