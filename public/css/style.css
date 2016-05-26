@@ -1554,13 +1554,10 @@ textarea{
 	margin-bottom: 10px;
 }
 
-.intro-wrapper .add-intro:hover{
-	color: #61b3de;
-}
-
 .intro-wrapper .add-intro .add-intro-text{
 	float: left;
 	cursor: pointer;
+	color: #61b3de;
 }
 
 .intro-wrapper .add-intro .add-intro-text i{

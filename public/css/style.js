@@ -2103,12 +2103,10 @@ export default StyleSheet.create({
     "intro-wrapper": {
         "marginBottom": 10
     },
-    "intro-wrapper add-intro:hover": {
-        "color": "#61b3de"
-    },
     "intro-wrapper add-intro add-intro-text": {
         "float": "left",
-        "cursor": "pointer"
+        "cursor": "pointer",
+        "color": "#61b3de"
     },
     "intro-wrapper add-intro add-intro-text i": {
         "marginRight": 10
