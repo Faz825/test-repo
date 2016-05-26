@@ -2100,6 +2100,72 @@ export default StyleSheet.create({
         "borderRadius": 0,
         "font": "13px 'montserratregular', sans-serif"
     },
+    "intro-wrapper": {
+        "marginBottom": 10
+    },
+    "intro-wrapper add-intro:hover": {
+        "color": "#61b3de"
+    },
+    "intro-wrapper add-intro add-intro-text": {
+        "float": "left",
+        "cursor": "pointer"
+    },
+    "intro-wrapper add-intro add-intro-text i": {
+        "marginRight": 10
+    },
+    "intro-form-holder form-group": {
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "intro-form-holder form-control": {
+        "resize": "none",
+        "height": 80,
+        "textAlign": "center"
+    },
+    "intro-form-holder form-bottom-holder": {
+        "border": "1px solid #dee6eb",
+        "borderTop": "none",
+        "background": "#eceef1",
+        "marginTop": -2,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "paddingTop": 7,
+        "paddingRight": 10,
+        "paddingBottom": 5,
+        "paddingLeft": 10,
+        "borderRadius": "0 0 5px 5px"
+    },
+    "intro-form-holder form-bottom-holder char-length-holder": {
+        "float": "left"
+    },
+    "intro-form-holder form-bottom-holder button-holder": {
+        "float": "right"
+    },
+    "form-bottom-holder btn-default": {
+        "marginRight": 5
+    },
+    "form-bottom-holder char-length-holder span": {
+        "color": "#a8bfcd",
+        "fontSize": 0.8,
+        "marginTop": 8,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "display": "block"
+    },
+    "intro-wrapper intro-holder p": {
+        "wordWrap": "break-word"
+    },
+    "intro-wrapper intro-holder i": {
+        "marginLeft": 10,
+        "cursor": "pointer"
+    },
+    "intro-wrapper intro-holder i:hover": {
+        "color": "#61b3de"
+    },
     "pg-section-container": {
         "borderBottom": "1px solid #dee6eb"
     },

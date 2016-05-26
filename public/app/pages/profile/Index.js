@@ -6,6 +6,7 @@ import Header from './Header';
 import EducationalInfo from './EducationalInfo';
 import WorkExperience from './WorkExperience';
 import SkillsAndInterests from './SkillsAndInterests';
+import Intro from './Intro';
 import AddPostElement from '../../components/timeline/AddPostElement';
 import ListPostsElement from '../../components/timeline/ListPostsElement'
 import Session  from '../../middleware/Session';
@@ -16,6 +17,7 @@ export default class Index extends React.Component{
     constructor(props) {
         super(props);
         this.state={
+            loggedUser:Session.getSession('prg_lg'),
             uname:this.getUrl(),
             posts:[]
         }
@@ -58,7 +60,7 @@ export default class Index extends React.Component{
         });
     }
     render(){
-
+        let profileName = this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name;
         return (
             <div id="pg-profile-page" className="loggedUserView pg-page">
                 <Header uname={this.state.uname}/>
@@ -68,11 +70,13 @@ export default class Index extends React.Component{
                             <div className="col-xs-6" id="profile-middle-container-left-col">
                                 <div id="pg-profile-middle-container-left-col-details">
                                     <div className="row row-clr pg-profile-content">
+                                        <div className="row row-clr pg-profile-heading">
+                                            <h1>{profileName + "'s"} Resume</h1>
+                                        </div>
+                                        <Intro uname={this.state.uname} />
                                         <EducationalInfo uname={this.state.uname} />
-                                        <SkillsAndInterests uname={this.state.uname} />
                                         <WorkExperience uname={this.state.uname} />
-
-
+                                        <SkillsAndInterests uname={this.state.uname} />
                                     </div>
                                 </div>
                             </div>

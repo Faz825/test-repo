@@ -61,7 +61,6 @@ export default class EducationalInfo extends React.Component{
         });
     };
     render(){
-        let profileName = this.state.data.first_name + " " + this.state.data.last_name;
         let read_only = (this.state.loggedUser.id == this.state.data.user_id)?false:true;
 
         if(Object.keys(this.state.data).length ==0){
@@ -70,9 +69,6 @@ export default class EducationalInfo extends React.Component{
 
         return (
             <div>
-                <div className="row row-clr pg-profile-heading">
-                    <h1>{profileName + "'s"} Resume</h1>
-                </div>
                 <Education readOnly={read_only} data={this.state.data}  updateEducationInfo = {this.updateEducationInfo} />
             </div>
         );

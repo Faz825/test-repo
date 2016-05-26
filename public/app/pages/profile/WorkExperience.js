@@ -96,7 +96,7 @@ export default class WorkExperience extends React.Component{
                                 : null
                             }
                     </div>
-                    <div className="pg-body-item">
+                    <div className="exp-form-holder">
                         {
                             (this.state.editFormVisible)?
                             <WorkPlaceForm data={this.state.formData} onSubmit={this.updateWorkExperience} onCancel={this.editForm} />

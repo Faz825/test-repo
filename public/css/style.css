@@ -1550,6 +1550,74 @@ textarea{
     font: 13px 'montserratregular', sans-serif;
 }
 
+.intro-wrapper{
+	margin-bottom: 10px;
+}
+
+.intro-wrapper .add-intro:hover{
+	color: #61b3de;
+}
+
+.intro-wrapper .add-intro .add-intro-text{
+	float: left;
+	cursor: pointer;
+}
+
+.intro-wrapper .add-intro .add-intro-text i{
+	margin-right: 10px;
+}
+
+.intro-form-holder .form-group{
+	margin: 0;
+}
+
+.intro-form-holder .form-control{
+	resize: none;
+	height: 80px;
+	text-align: center;
+}
+
+.intro-form-holder .form-bottom-holder{
+	border: 1px solid #dee6eb;
+	border-top: none;
+	background: #eceef1;
+	margin: -2px 0 0;
+	padding: 7px 10px 5px 10px;
+	border-radius: 0 0 5px 5px;
+}
+
+.intro-form-holder .form-bottom-holder .char-length-holder{
+	float: left;
+}
+
+.intro-form-holder .form-bottom-holder .button-holder{
+	float: right;
+}
+
+.form-bottom-holder .btn-default{
+	margin-right: 5px;
+}
+
+.form-bottom-holder .char-length-holder span{
+	color: #a8bfcd;
+    font-size: 0.8em;
+    margin: 8px 0 0;
+    display: block;
+}
+
+.intro-wrapper .intro-holder p{
+    word-wrap: break-word;
+}
+
+.intro-wrapper .intro-holder i{
+	margin-left: 10px;
+	cursor: pointer;
+}
+
+.intro-wrapper .intro-holder i:hover{
+	color: #61b3de;
+}
+
 /** skills and interests **/
 .pg-section-container{
     border-bottom: 1px solid #dee6eb;
