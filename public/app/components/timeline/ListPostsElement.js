@@ -178,6 +178,7 @@ class SinglePost extends React.Component{
 
         const _post = this.props.postItem;
         let post_content = "";
+        let img_div_class = "pg-newsfeed-post-upload-image";
         if (_post.post_mode == "NP" ){
             post_content = _post.content;
         }else if(_post.post_mode == "LE"){
@@ -187,6 +188,9 @@ class SinglePost extends React.Component{
             post_content = _post.content;
         }else if(_post.post_mode == "AP"){
             post_content = _post.content;
+        }else if(_post.post_mode == "PP"){//profile update post
+            post_content = _post.content;
+            img_div_class += " profile-update";
         }
 
         let _profile = _post.created_by;
@@ -200,7 +204,7 @@ class SinglePost extends React.Component{
         var uploaded_files = _post.upload.map((upload,key)=>{
             if(key <= 3){
                 return (
-                    <div className="pg-newsfeed-post-upload-image" key={key}>
+                    <div className={img_div_class} key={key}>
                         <img src = {upload.http_url}/>
                         {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
                     </div>
@@ -257,6 +261,10 @@ class SinglePost extends React.Component{
         }
 
         const _post = this.props.postItem;
+        let img_div_class = "pg-newsfeed-post-upload-image";
+        if(_post.post_mode == "PP"){//profile update post
+            img_div_class += " profile-update";
+        }
 
         let _profile = _post.created_by;
         let postImgLength = _post.upload.length;
@@ -267,7 +275,7 @@ class SinglePost extends React.Component{
         var uploaded_files = _post.upload.map((upload,key)=>{
             if(key <= 3){
                 return (
-                    <div className="pg-newsfeed-post-upload-image" key={key}>
+                    <div className={img_div_class} key={key}>
                         <img src = {upload.http_url}/>
                         {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
                     </div>

@@ -117,8 +117,6 @@ var PostController ={
 
     profileImagePost:function(req,res){
 
-        console.log("profileImagePost");console.log(req.body);
-
         var outPut ={},CurrentSession = Util.getCurrentSession(req);
 
         var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');

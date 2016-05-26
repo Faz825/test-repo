@@ -66,25 +66,7 @@ CommentSchema.statics.addComment = function (comment,callBack) {
 
         if(!err){
 
-            //GET COMMENTED USER FROM INDEXING SERVER
-            var query={
-                q:comment.user_id.toString(),
-                index:'idx_usr'
-            };
-            ES.search(query,function(csResultSet){
-                var _formattedComment ={
-                    comment_id:resultSet._id.toString(),
-                    post_id:resultSet.post_id.toString(),
-                    comment:resultSet.comment,
-                    created_at:resultSet.created_at,
-                    commented_by:csResultSet.result[0]
-                };
-                //ADD TO THE CACHE
-                _this.addToCache(_formattedComment.post_id,_formattedComment);
-
-
-                callBack({status:200,comment:_formattedComment});
-            });
+            callBack({status:200,comment:resultSet});
 
         }else{
             console.log("Server Error --------");
@@ -146,7 +128,9 @@ CommentSchema.statics.formatCommentList = function(comments){
             post_id:comments[a].post_id,
             comment:comments[a].comment,
             commented_by:comments[a].commented_by,
-            date:DateTime.explainDate(comments[a].created_at)
+            date:DateTime.explainDate(comments[a].created_at),
+            attachment:comments[a].attachment
+
         })
     }
 
