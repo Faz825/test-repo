@@ -28,7 +28,6 @@ export default class WorkExperience extends React.Component{
     }
 
     updateWorkExperience(data){
-        console.log(data)
         let loggedUser = Session.getSession('prg_lg');
 
         $.ajax({
@@ -39,7 +38,8 @@ export default class WorkExperience extends React.Component{
             headers: { 'prg-auth-header':loggedUser.token },
             success: function (data, text) {
                 if(data.status.code == 200){
-                    this.props.loadExperiences(this.state.uname)
+                    this.props.loadExperiences();
+                    this.props.loadProfileData();
                 }
 
             }.bind(this),
@@ -53,7 +53,6 @@ export default class WorkExperience extends React.Component{
     }
 
     render(){
-        console.log(this.props);
         let read_only = (this.state.loggedUser.id == this.props.data.user_id)?false:true;
         let _this = this;
 

@@ -21,7 +21,9 @@ export default class Index extends React.Component{
             data:{},
             posts:[]
         };
-        this.loadExperiences(this.state.uname);
+        this.loadExperiences = this.loadExperiences.bind(this);
+        this.loadProfileData = this.loadProfileData.bind(this);
+        this.loadExperiences();
         this.loadProfileData();
         this.loadPosts(0)
     }
@@ -79,13 +81,12 @@ export default class Index extends React.Component{
         });
 
     }
-    loadExperiences(uname){
-        console.log("loadExperiences")
+    loadExperiences(){
         $.ajax({
-            url: '/work-experiences/'+uname,
+            url: '/work-experiences/'+this.state.uname,
             method: "GET",
             dataType: "JSON",
-            data:{uname:uname},
+            data:{uname:this.state.uname},
             success: function (data, text) {
                 if (data.status.code == 200) {
                     this.setState({data:data.user});
@@ -105,7 +106,7 @@ export default class Index extends React.Component{
 
         return (
             <div id="pg-profile-page" className="loggedUserView pg-page">
-                <Header uname={this.state.uname} user={this.state.user} loadExperiences={this.loadExperiences}/>
+                <Header uname={this.state.uname} user={this.state.user} loadExperiences={this.loadExperiences} loadProfileData={this.loadProfileData}/>
                 <div className="row row-clr">
                     <div className="container-fluid">
                         <div className="col-xs-10 col-xs-offset-1" id="middle-content-wrapper">
@@ -114,7 +115,7 @@ export default class Index extends React.Component{
                                     <div className="row row-clr pg-profile-content">
                                         <EducationalInfo uname={this.state.uname} />
                                         <SkillsAndInterests uname={this.state.uname} />
-                                        <WorkExperience uname={this.state.uname} data={this.state.data} loadExperiences={this.loadExperiences}/>
+                                        <WorkExperience uname={this.state.uname} data={this.state.data} loadExperiences={this.loadExperiences} loadProfileData={this.loadProfileData}/>
 
 
                                     </div>

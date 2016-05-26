@@ -22,7 +22,6 @@ export default class Header extends Component {
     }
 
     render(){
-        console.log(this.props);
 
         if(Object.keys(this.props.user).length ==0){
             return (<div> Loading ....</div>);
@@ -33,7 +32,7 @@ export default class Header extends Component {
             <div className="row row-clr" id="pg-profile-banner-area">
                 <CoverImage dt={this.props.user} readOnly={read_only}/>
                 <ConnectionIndicator dt ={this.props.user}  readOnly={read_only}/>
-                <ProfileInfo dt={this.props.user} readOnly={read_only} loadExperiences={this.props.loadExperiences} uname={this.props.uname}/>
+                <ProfileInfo dt={this.props.user} readOnly={read_only} loadExperiences={this.props.loadExperiences} uname={this.props.uname} loadProfileData={this.props.loadProfileData}/>
             </div>
         )
     }
@@ -68,7 +67,6 @@ export class CoverImage extends React.Component{
             cache: false,
             contentType:"application/x-www-form-urlencoded",
             success: function (data, text) {
-                console.log(data)
                 if (data.status.code == 200) {
 
                     _this.setState({loadingBarIsVisible : false,coverimgSrc : data.user.cover_image});
@@ -160,15 +158,11 @@ export class ProfileInfo extends React.Component{
                     _this.setState({loadingBarIsVisible: false, profileImgSrc: data.user.profile_image});
                     Session.createSession("prg_lg", data.user);
 
-                    console.log("/upload/profile-image success");
-
                     var _pay_load = {};
                     _pay_load['__content'] = "Updated profile picture";
                     _pay_load['__hs_attachment'] = true;
                     _pay_load['__post_type'] = "AP";
                     _pay_load['__profile_picture'] = data.profile_image;
-
-                    console.log(_pay_load);
 
                     $.ajax({
                         url: '/post/profile-image-post',
@@ -210,8 +204,10 @@ export class ProfileInfo extends React.Component{
 
         if(fieldName == "designation"){
             this.setState({jobPostition : value, desigFieldSize : fieldLength});
+            this.props.dt.cur_designation = value;
         }else{
             this.setState({office : value, officeFieldSize : fieldLength});
+            this.props.dt.cur_working_at = value;
         }
     }
 
@@ -227,7 +223,8 @@ export class ProfileInfo extends React.Component{
             company_name:this.state.office,
             title:this.state.jobPostition,
             isProfile:true
-        }
+        };
+        let loggedUser = Session.getSession('prg_lg');
 
         $.ajax({
             url: '/work-experience/update',
@@ -237,7 +234,8 @@ export class ProfileInfo extends React.Component{
             headers: { 'prg-auth-header':loggedUser.token },
             success: function (data, text) {
                 if(data.status.code == 200){
-                    this.props.loadExperiences(this.state.uname);
+                    this.props.loadExperiences();
+                    this.props.loadProfileData();
                 }
 
             }.bind(this),
@@ -248,7 +246,6 @@ export class ProfileInfo extends React.Component{
             }.bind(this)
         });
 
-        console.log(this.occupationStat);
     }
 
     render() {
@@ -263,9 +260,9 @@ export class ProfileInfo extends React.Component{
                                 {
                                     (this.state.jobPostition || this.state.office)?
                                             <div className="curr-job-holder">
-                                                <input type="text" name="designation" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.desigFieldSize} value={this.state.jobPostition} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
+                                                <input type="text" name="designation" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.desigFieldSize} value={this.props.dt.cur_designation} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
                                                 <span className="combine-text">at</span>
-                                                <input type="text" name="workplace" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.officeFieldSize} value={this.state.office} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
+                                                <input type="text" name="workplace" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.officeFieldSize} value={this.props.dt.cur_working_at} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
                                                 {
                                                     (this.loggedUser)?
                                                         (!this.state.saveEdit)?

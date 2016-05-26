@@ -426,7 +426,6 @@ var UserControler ={
      * @returns {number}
      */
     uploadProfileImage:function(req,res){
-        console.log("uploadProfileImage");
 
         var CurrentSession = Util.getCurrentSession(req);
 
@@ -473,8 +472,6 @@ var UserControler ={
 
                 }else{
                     ContentUploader.uploadFile(data,function (payLoad) {
-
-                        console.log(payLoad);
 
                         if (payLoad.status != 400) {
                             var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
@@ -1395,7 +1392,7 @@ var UserControler ={
         if(req.body.exp_id){
             if(req.body.isProfile){
                 var _weDetails = {
-                    "working_experiences.$.company_name":req.body.company,
+                    "working_experiences.$.company_name":req.body.company_name,
                     "working_experiences.$.title":req.body.title
                 };
 

@@ -630,7 +630,8 @@ UserSchema.statics.updateWorkingExperience =function(userId, expId, workingExper
                 console.log("Server Error --------")
                 callBack({status:400,error:err});
             }
-        });
+        },
+        {upsert: true, multi:true});
 
 }
 
@@ -878,7 +879,6 @@ UserSchema.statics.getUser=function(criteria,showOptions,callBack){
  * @param callBack
  */
 UserSchema.statics.getAllUsers=function(q,userId,callBack){
-    console.log("UserSchema.statics.getAllUsers ===== UserModel");
     var query={
         q:q,
         index:'idx_usr'
@@ -887,8 +887,6 @@ UserSchema.statics.getAllUsers=function(q,userId,callBack){
         var tmp_arr = [];
         for(var a=0;a <esResultSet.result.length;a++){
             if(typeof userId != 'undefined' && esResultSet.result[a] != userId){
-                console.log("======================================================");
-                console.log(esResultSet.result[a]);
                 tmp_arr.push(esResultSet.result[a])
             }
         }
