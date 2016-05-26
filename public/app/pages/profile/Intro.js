@@ -9,7 +9,6 @@ export default class Intro extends React.Component{
         super(props);
 
         this.state={
-            loggedUser:Session.getSession('prg_lg'),
             isFormVisible : false,
             introText : ""
         }
@@ -29,7 +28,6 @@ export default class Intro extends React.Component{
     }
 
     render(){
-        let read_only = (this.state.loggedUser.id == this.state.data.user_id)?false:true;
         return (
             <div className="ps-section">
                 <div className="pg-section-container">
