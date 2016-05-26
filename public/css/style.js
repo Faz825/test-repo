@@ -2185,6 +2185,9 @@ export default StyleSheet.create({
         "color": "#fff",
         "background": "#61b3de"
     },
+    "react-whatever-1 react-autosuggest__suggestion-container": {
+        "zIndex": 9999
+    },
     "pg-inline-item-btn": {
         "marginLeft": 5,
         "height": 23,
@@ -3195,12 +3198,13 @@ export default StyleSheet.create({
         "paddingLeft": 0
     },
     "chat-window header": {
-        "overflow": "hidden",
+        "position": "relative",
         "paddingTop": 10,
         "paddingRight": 0,
         "paddingBottom": 10,
         "paddingLeft": 0,
-        "boxShadow": "0px 2px 3px -3px #000"
+        "boxShadow": "0px 2px 3px -3px #000",
+        "zIndex": 1
     },
     "chat-inbox-options": {
         "marginTop": 2
@@ -3243,11 +3247,18 @@ export default StyleSheet.create({
         "background": "#61b3de"
     },
     "chat-person-options": {
-        "overflow": "hidden",
         "borderLeft": "1px solid #dee6eb"
     },
     "chat-person-options connection-name": {
         "float": "left"
+    },
+    "chat-person-options react-autosuggest__container": {
+        "float": "left",
+        "width": "60%",
+        "position": "relative"
+    },
+    "chat-person-options react-autosuggest__container  react-whatever-1": {
+        "top": 24
     },
     "chat-person-options connection-name p": {
         "font": "0.9em 'montserratsemi_bold', sans-serif",
@@ -3312,7 +3323,9 @@ export default StyleSheet.create({
     },
     "chat-body": {
         "maxHeight": 486,
-        "overflow": "hidden"
+        "position": "relative",
+        "overflow": "hidden",
+        "zIndex": 0
     },
     "chat-body conv-holder": {
         "paddingTop": 0,
