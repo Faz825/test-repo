@@ -2473,9 +2473,10 @@ textarea{
 }
 
 .chat-window .header{
-	overflow: hidden;
-	padding: 10px 0;
-	box-shadow: 0px 2px 3px -3px #000;
+	position: relative;
+    padding: 10px 0;
+    box-shadow: 0px 2px 3px -3px #000;
+    z-index: 1;
 }
 
 .chat-inbox-options{
@@ -2520,7 +2521,6 @@ textarea{
 }
 
 .chat-person-options{
-	overflow: hidden;
 	border-left: 1px solid #dee6eb;
 }
 
@@ -2534,7 +2534,7 @@ textarea{
 }
 
 .chat-person-options .react-autosuggest__container  #react-whatever-1{
-	top: 50px;
+	top: 24px;
 }
 
 .chat-person-options .connection-name p{
@@ -2601,7 +2601,9 @@ textarea{
 
 .chat-body{
 	max-height: 486px;
-	overflow: hidden;
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
 }
 
 .chat-body .conv-holder{

@@ -486,7 +486,7 @@ export default class Index extends React.Component{
                     </div>
                 </div>
                 <div className="chat-window container">
-                    <div className="header">
+                    <div className="header clearfix">
                         <LeftMenu unreadConversations = {unreadConversations}/>
                         <RightMenu
                             loadRoute ={this.loadRoute.bind(this)}
@@ -604,7 +604,7 @@ export class RightMenu extends React.Component{
             onChange: this.onChange
         };
         return (
-            <div className="col-sm-8 chat-person-options">
+            <div className="col-sm-8 chat-person-options clearfix">
                 <div className="connection-name">
                     <p id="chat_with">{this.props.chatWithUserName}</p>
                 </div>
