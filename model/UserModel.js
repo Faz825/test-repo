@@ -164,6 +164,12 @@ var UserSchema = new Schema({
 		default:null
 	},
 
+    introduction:{
+        type:String,
+        trim:true,
+        default:null
+    },
+
     education_details:[EducationSchema],
 
     skills:[{
