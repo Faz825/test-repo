@@ -499,6 +499,15 @@ export const LocationPostTitle = ({loggedUser,post})=>{
     return (<span />);
 }
 
+export const UpdatedProPic = ({loggedUser,post})=>{
+    if(post.post_mode == "PP"){
+        return (
+            <span className="own-post-share">has updated profile picture.</span>
+        )
+    }
+    return (<span />);
+}
+
 
 const SharedPostBody = ({loggedUser,post}) => {
 

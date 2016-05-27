@@ -1391,7 +1391,8 @@ export default StyleSheet.create({
         "zIndex": 100,
         "height": 110,
         "backgroundColor": "#eceef1",
-        "boxShadow": "2px 1px 8px -2px #000"
+        "boxShadow": "2px 1px 8px -2px #000",
+        "display": "none"
     },
     "pg-footer-left-options-panel": {
         "width": 110,
@@ -2103,10 +2104,12 @@ export default StyleSheet.create({
     "intro-wrapper": {
         "marginBottom": 10
     },
+    "intro-wrapper add-intro:hover": {
+        "color": "#61b3de"
+    },
     "intro-wrapper add-intro add-intro-text": {
         "float": "left",
-        "cursor": "pointer",
-        "color": "#61b3de"
+        "cursor": "pointer"
     },
     "intro-wrapper add-intro add-intro-text i": {
         "marginRight": 10
