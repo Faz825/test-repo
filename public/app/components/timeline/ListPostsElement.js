@@ -154,7 +154,7 @@ class SinglePost extends React.Component{
                         shareBtnEnabled:true
                     });
                     document.getElementById('input').innerHTML = "";
-                    
+
 
                 }
             }
@@ -296,6 +296,9 @@ class SinglePost extends React.Component{
 
                                 <SharedPostTitle post={_post}
                                                  loggedUser={this.loggedUser}/>
+
+                                <UpdatedProPic post={_post}
+                                              loggedUser={this.loggedUser}/>
 
                             </h5>
                             <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>

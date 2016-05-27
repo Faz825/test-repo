@@ -3399,3 +3399,8 @@ textarea{
 }}
 
 .blue_i{color:#428bca}
+
+/* To change the image cropper background */
+.dialog--jss-0-0 .cropper-bg{
+	background: #fff;
+}

@@ -4099,5 +4099,8 @@ export default StyleSheet.create({
     },
     "blue_i": {
         "color": "#428bca"
+    },
+    "dialog--jss-0-0 cropper-bg": {
+        "background": "#fff"
     }
 });

@@ -545,6 +545,11 @@
     overflow: hidden;
 }
 
+.pg-newsfeed-post-upload-image.profile-update{
+    float: none;
+    margin: 0 auto;
+}
+
 .pg-newsfeed-post-upload-image img {
     width: 100%;
     height: auto;
