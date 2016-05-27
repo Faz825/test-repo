@@ -159,7 +159,7 @@ export class ProfileInfo extends React.Component{
                     Session.createSession("prg_lg", data.user);
 
                     var _pay_load = {};
-                    _pay_load['__content'] = "Updated profile picture";
+                    _pay_load['__content'] = "";
                     _pay_load['__hs_attachment'] = true;
                     _pay_load['__post_type'] = "PP";//profile update post
                     _pay_load['__profile_picture'] = data.profile_image;
