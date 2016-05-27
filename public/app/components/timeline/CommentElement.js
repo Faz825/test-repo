@@ -12,12 +12,12 @@ export default class CommentElement extends React.Component{
             loggedUser : Session.getSession('prg_lg')
         };
     }
-    onCommentAdd(comment_text){
-        console.log(this.state.postId)
-        if(comment_text != ""){
+    onCommentAdd(comment){
+        if(comment.text != "" || comment.imgComment != ""){
             let commentData ={
                 __post_id:this.props.postId,
-                __content:comment_text
+                __content:comment.text,
+                __img:comment.imgComment
             }
             $.ajax({
                 url: '/comment/composer',
@@ -28,6 +28,7 @@ export default class CommentElement extends React.Component{
                 success: function (data, text) {
                     if (data.status.code == 200) {
                         this.setState({text:""});
+                        this.setState({imgComment:""});
                         document.getElementById('comment_input').innerHTML = "";
                         this.props.onCommentAddSuccess(this.state.postId);
                     }
@@ -99,6 +100,15 @@ const CommentItem =({comment}) =>{
                             </div>
                         </div>
                         <p className="pg-comment">{comment.comment}</p>
+                        {
+                            (comment.attachment)?
+                                <div className="pg-newsfeed-post-upload-image">
+                                    <img src = {comment.attachment.http_url}/>
+                                </div>
+                                :
+                                null
+                        }
+
                     </div>
                 </div>
             </div>
@@ -125,14 +135,14 @@ export class  PostCommentAction extends React.Component{
     }
     onCommentEnter(event){
 
-        this.props.onCommentAdd(this.state.text);
+        this.props.onCommentAdd(this.state);
+        this.setState({text:""});
+        this.setState({imgComment:""});
     }
 
     selectImage(e){
         let files = e.target.files,
             imageType = new RegExp("image");
-
-        console.log(files[0]);
 
         if(files[0].size > 2097152){
             alert("File you selected is too large.");
@@ -141,7 +151,6 @@ export class  PostCommentAction extends React.Component{
         }else{
             let reader = new FileReader();
             reader.onload = () => {
-                console.log(reader.result);
                 this.setState({imgComment: reader.result});
             };
             reader.readAsDataURL(files[0]);

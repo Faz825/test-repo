@@ -131,10 +131,11 @@ var PostController ={
             upload_id:(typeof req.body.__uuid  != 'undefined')? req.body.__uuid:"",
             location:(typeof req.body.__lct  != 'undefined')?req.body.__lct:"",
             life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:"",
-            shared_post:""
+            shared_post:"",
+            profile_picture_data:req.body.__profile_picture
         };
 
-        TimeLinePostHandler.addNewPost(data,function(resultSet){
+        TimeLinePostHandler.profileImagePost(data,function(resultSet){
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['post']      = resultSet;
             res.status(200).send(outPut);
@@ -145,6 +146,6 @@ var PostController ={
 
 
 
-}
+};
 
-module.exports = PostController
+module.exports = PostController;

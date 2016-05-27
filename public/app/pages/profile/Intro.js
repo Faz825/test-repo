@@ -3,11 +3,11 @@
 */
 import React from 'react';
 import Session  from '../../middleware/Session';
+import {Alert} from '../../config/Alert';
 
 export default class Intro extends React.Component{
     constructor(props){
         super(props);
-
         this.state={
             isFormVisible : false,
             introText : ""
@@ -25,7 +25,48 @@ export default class Intro extends React.Component{
     onFormSave(data){
         this.setState({isFormVisible : false, introText : data});
         console.log(data);
+        let loggedUser = Session.getSession('prg_lg');
+
+        $.ajax({
+            url: '/introduction/update',
+            method: "POST",
+            dataType: "JSON",
+            data:{introText:data},
+            headers: { 'prg-auth-header':loggedUser.token },
+            success: function (data, text) {
+                if(data.status.code == 200 ){
+                    this.props.loadProfileData();
+
+                }
+
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }.bind(this)
+        });
     }
+
+    loadIntroduction(){
+        $.ajax({
+            url: '/introduction/'+this.props.uname,
+            method: "GET",
+            dataType: "JSON",
+            data:{uname:this.props.uname},
+            success: function (data, text) {
+
+                if (data.status.code == 200 && data.user !=null) {
+                    this.setState({data:data.user});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    };
 
     render(){
         return (
@@ -36,7 +77,7 @@ export default class Intro extends React.Component{
                     </div>
                     <div className="intro-wrapper">
                         {
-                            (!(this.state.isFormVisible || this.state.introText))?
+                            (!(this.state.isFormVisible || this.props.user.introduction))?
                             <div className="add-intro clearfix">
                                 <p className="add-intro-text" onClick={this.openForm.bind(this)}><i className="fa fa-plus"></i>Describe who you are</p>
                             </div>
@@ -44,16 +85,16 @@ export default class Intro extends React.Component{
                             null
                         }
                         {
-                            (this.state.introText && !this.state.isFormVisible)?
+                            (this.props.user.introduction && !this.state.isFormVisible)?
                             <div className="intro-holder">
-                                <p>{this.state.introText}<i className="fa fa-pencil-square-o" onClick={this.openForm.bind(this)}></i></p>
+                                <p>{this.props.user.introduction}<i className="fa fa-pencil-square-o" onClick={this.openForm.bind(this)}></i></p>
                             </div>
                             :
                             null
                         }
                         {
                             (this.state.isFormVisible)?
-                            <IntroForm introText={this.state.introText} onFormClose={this.onFormCancel.bind(this)} formSave={this.onFormSave.bind(this)} />
+                            <IntroForm introText={this.props.user.introduction} onFormClose={this.onFormCancel.bind(this)} formSave={this.onFormSave.bind(this)} />
                             :
                             null
                         }
@@ -73,7 +114,8 @@ export class IntroForm extends React.Component{
 
         this.state={
             value : inputValue,
-            charLength : charLength
+            charLength : charLength,
+            validateAlert:""
         }
     }
 
@@ -87,11 +129,23 @@ export class IntroForm extends React.Component{
 
             this.setState({value : value, charLength : char});
         }
+
+        if(value == ""){
+            this.setState({validateAlert:Alert.EMPTY_INTRODUCTION})
+        }else{
+            this.setState({validateAlert:""})
+        }
     }
 
     onFormSave(e){
         e.preventDefault();
-        this.props.formSave(this.state.value);
+        if(this.state.value == ""){
+            this.setState({validateAlert:Alert.EMPTY_INTRODUCTION})
+        }else{
+            this.setState({validateAlert:""})
+            this.props.formSave(this.state.value);
+        }
+
     }
 
     render() {
@@ -104,6 +158,9 @@ export class IntroForm extends React.Component{
                     <div className="form-bottom-holder clearfix">
                         <div className="char-length-holder">
                             <span>{this.state.charLength}</span>
+                        </div>
+                        <div className="char-length-holder">
+                            <span className="error">{this.state.validateAlert}</span>
                         </div>
                         <div className="button-holder">
                             <button type="button" className="btn btn-default pg-btn-custom" onClick={this.props.onFormClose}>Cancel</button>

@@ -1602,6 +1602,13 @@ textarea{
     display: block;
 }
 
+.form-bottom-holder .char-length-holder span.error{
+	color: #ff0000;
+	font-size: 0.8em;
+	margin: 8px 10px 0;
+	display: block;
+}
+
 .intro-wrapper .intro-holder p{
     word-wrap: break-word;
 }

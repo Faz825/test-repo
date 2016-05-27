@@ -231,6 +231,7 @@ router.post('/work-experience/update', UserController.updateWorkExperience);
 
 router.post('/post/composer', PostController.addPost);
 router.post('/post/share', PostController.sharePost);
+router.post('/post/profile-image-post', PostController.profileImagePost);
 
 
 router.post('/comment/composer', CommentController.addComment);
@@ -270,6 +271,8 @@ router.get('/notes/get-notes', NotesController.getNotes);
 router.get('/notes/get-note/:note_id', NotesController.getNote);
 router.post('/notes/update-note', NotesController.updateNote);
 router.post('/notes/delete-note', NotesController.deleteNote);
+router.post('/introduction/update', UserController.updateIntroduction);
+router.get('/introduction/:uname',UserController.retrieveIntroduction);
 
 
 module.exports = router;

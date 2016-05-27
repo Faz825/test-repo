@@ -42,7 +42,6 @@ var ContentUploader ={
 
         _async.waterfall([
             function uploadFile(callBack){
-
                 _this.uploadToCDN(payLoad,function(cdnReturn){
                     if(cdnReturn.status == 200){
                         callBack(null,cdnReturn);

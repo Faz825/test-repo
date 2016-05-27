@@ -346,6 +346,7 @@ UserSchema.statics.saveUpdates=function(userId,data,callBack){
 
     _this.update({_id:userId},
         {$set:data},function(err,resultSet){
+            console.log(resultSet);
             if(!err){
                 callBack({
                     status:200
@@ -624,18 +625,10 @@ UserSchema.statics.addWorkingExperience =function(userId,workingExperienceDetail
  * @param workingExperienceDetails
  * @param callBack
  */
-UserSchema.statics.updateWorkingExperience =function(userId, workingExperienceDetails, callBack){
+UserSchema.statics.updateWorkingExperience =function(userId, expId, workingExperienceDetails, callBack){
     var _this = this;
-    _this.update({_id:userId,"working_experiences._id":workingExperienceDetails._id},
-        {$set:{
-            "working_experiences.$.company_name":workingExperienceDetails.company_name,
-            "working_experiences.$.title":workingExperienceDetails.title,
-            "working_experiences.$.location":workingExperienceDetails.location,
-            "working_experiences.$.start_date":workingExperienceDetails.start_date,
-            "working_experiences.$.left_date":workingExperienceDetails.left_date,
-            "working_experiences.$.is_current_work_place":workingExperienceDetails.is_current_work_place,
-            "working_experiences.$.description":workingExperienceDetails.description,
-        }},function(err,resultSet){
+    _this.update({_id:userId,"working_experiences._id":expId},
+        {$set:workingExperienceDetails},function(err,resultSet){
             if(!err){
                 callBack({
                     status:200
@@ -644,7 +637,8 @@ UserSchema.statics.updateWorkingExperience =function(userId, workingExperienceDe
                 console.log("Server Error --------")
                 callBack({status:400,error:err});
             }
-        });
+        },
+        {upsert: true, multi:true});
 
 }
 
@@ -892,7 +886,6 @@ UserSchema.statics.getUser=function(criteria,showOptions,callBack){
  * @param callBack
  */
 UserSchema.statics.getAllUsers=function(q,userId,callBack){
-    console.log("UserSchema.statics.getAllUsers ===== UserModel");
     var query={
         q:q,
         index:'idx_usr'
@@ -901,8 +894,6 @@ UserSchema.statics.getAllUsers=function(q,userId,callBack){
         var tmp_arr = [];
         for(var a=0;a <esResultSet.result.length;a++){
             if(typeof userId != 'undefined' && esResultSet.result[a] != userId){
-                console.log("======================================================");
-                console.log(esResultSet.result[a]);
                 tmp_arr.push(esResultSet.result[a])
             }
         }
@@ -933,10 +924,12 @@ UserSchema.statics.formatUser=function(userObject,showOptions){
             zip_code: userObject.zip_code,
             dob: userObject.dob,
             country:userObject.country,
-            user_name:userObject.user_name
+            user_name:userObject.user_name,
+            introduction:userObject.introduction
         };
         for(var i=0;i<userObject.working_experiences.length;i++){
             if(userObject.working_experiences[i].is_current_work_place){
+                _temp_user['cur_exp_id']=userObject.working_experiences[i]._id;
                 _temp_user['cur_working_at']=userObject.working_experiences[i].company_name;
                 _temp_user['cur_designation']=userObject.working_experiences[i].title;
             }

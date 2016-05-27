@@ -7,9 +7,10 @@ import Session  from '../../middleware/Session';
 export default class WorkExperience extends React.Component{
     constructor(props) {
         super(props);
+        let uname = this.props.uname;
         this.state={
             loggedUser:Session.getSession('prg_lg'),
-            data:{},
+            uname:uname,
             editFormVisible: false,
             formData : ""
         };
@@ -18,31 +19,8 @@ export default class WorkExperience extends React.Component{
         this.updateWorkExperience = this.updateWorkExperience.bind(this);
 
         let _this = this;
-        this.loadExperiences();
 
     }
-
-    loadExperiences(){
-        $.ajax({
-            url: '/work-experiences/'+this.props.uname,
-            method: "GET",
-            dataType: "JSON",
-            data:{uname:this.props.uname},
-            success: function (data, text) {
-
-                if (data.status.code == 200) {
-
-                    this.setState({data:data.user});
-
-                }
-            }.bind(this),
-            error: function (request, status, error) {
-                console.log(request.responseText);
-                console.log(status);
-                console.log(error);
-            }
-        });
-    };
 
     editForm(data){
         let visibility = this.state.editFormVisible;
@@ -50,7 +28,6 @@ export default class WorkExperience extends React.Component{
     }
 
     updateWorkExperience(data){
-        console.log(data)
         let loggedUser = Session.getSession('prg_lg');
 
         $.ajax({
@@ -61,7 +38,8 @@ export default class WorkExperience extends React.Component{
             headers: { 'prg-auth-header':loggedUser.token },
             success: function (data, text) {
                 if(data.status.code == 200){
-                    this.loadExperiences()
+                    this.props.loadExperiences();
+                    this.props.loadProfileData();
                 }
 
             }.bind(this),
@@ -75,10 +53,10 @@ export default class WorkExperience extends React.Component{
     }
 
     render(){
-        let read_only = (this.state.loggedUser.id == this.state.data.user_id)?false:true;
+        let read_only = (this.state.loggedUser.id == this.props.data.user_id)?false:true;
         let _this = this;
 
-        if(Object.keys(this.state.data).length ==0){
+        if(Object.keys(this.props.data).length ==0){
             return (<div> Loading ....</div>);
         }
         return (
@@ -104,7 +82,7 @@ export default class WorkExperience extends React.Component{
                         }
                     </div>
                     {
-                        this.state.data.working_experiences.map(function(data,index){
+                        this.props.data.working_experiences.map(function(data,index){
                             return <WorkPlaces readOnly={read_only} data={data} key={index} onEdit={_this.editForm} />
                         })
                     }
@@ -240,7 +218,7 @@ export class WorkPlaceForm extends React.Component{
                 toMonth     : (data.left_date != null && data.left_date.month >0)?data.left_date.month:null,
                 toYear      : (data.left_date != null)?data.left_date.year:null,
                 location    : data.location,
-                currentPlc  : data.is_current_work_place,
+                currentPlc  : (typeof data.is_current_work_place != 'undefined')?data.is_current_work_place:false,
                 description : data.description
             }
         }

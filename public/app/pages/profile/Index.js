@@ -19,8 +19,14 @@ export default class Index extends React.Component{
         this.state={
             loggedUser:Session.getSession('prg_lg'),
             uname:this.getUrl(),
+            user:{},
+            data:{},
             posts:[]
-        }
+        };
+        this.loadExperiences = this.loadExperiences.bind(this);
+        this.loadProfileData = this.loadProfileData.bind(this);
+        this.loadExperiences();
+        this.loadProfileData();
         this.loadPosts(0)
     }
 
@@ -59,11 +65,50 @@ export default class Index extends React.Component{
             }.bind(this)
         });
     }
+    loadProfileData(){
+        $.ajax({
+            url: '/get-profile/'+this.state.uname,
+            method: "GET",
+            dataType: "JSON",
+            success: function (data, text) {
+                if (data.status.code == 200) {
+                    this.setState({user:data.profile_data});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+
+    }
+    loadExperiences(){
+        $.ajax({
+            url: '/work-experiences/'+this.state.uname,
+            method: "GET",
+            dataType: "JSON",
+            data:{uname:this.state.uname},
+            success: function (data, text) {
+                if (data.status.code == 200) {
+                    this.setState({data:data.user});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    };
+
+
+
     render(){
         let profileName = this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name;
         return (
             <div id="pg-profile-page" className="loggedUserView pg-page">
-                <Header uname={this.state.uname}/>
+                <Header uname={this.state.uname} user={this.state.user} loadExperiences={this.loadExperiences} loadProfileData={this.loadProfileData}/>
                 <div className="row row-clr">
                     <div className="container-fluid">
                         <div className="col-xs-10 col-xs-offset-1" id="middle-content-wrapper">
@@ -73,9 +118,9 @@ export default class Index extends React.Component{
                                         <div className="row row-clr pg-profile-heading">
                                             <h1>{profileName + "'s"} Resume</h1>
                                         </div>
-                                        <Intro uname={this.state.uname} />
+                                        <Intro uname={this.state.uname} user={this.state.user} loadProfileData={this.loadProfileData}/>
                                         <EducationalInfo uname={this.state.uname} />
-                                        <WorkExperience uname={this.state.uname} />
+                                        <WorkExperience uname={this.state.uname} data={this.state.data} loadExperiences={this.loadExperiences} loadProfileData={this.loadProfileData}/>
                                         <SkillsAndInterests uname={this.state.uname} />
                                     </div>
                                 </div>

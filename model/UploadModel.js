@@ -10,6 +10,7 @@ GLOBAL.UploadMeta ={
 
     TIME_LINE_IMAGE:"time_line_image",
     TIME_LINE_VIDEO:"post_video",
+    COMMENT_IMAGE:"comment_image"
 
 
 
@@ -81,6 +82,7 @@ UploadSchema.pre('update', function(next){
  */
 
 UploadSchema.statics.saveOnDb = function(payLoad,callBack){
+    console.log("UploadSchema.statics.saveOnDb ")
     var _upload = this,
         content = new this();
 

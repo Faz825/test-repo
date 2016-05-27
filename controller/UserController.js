@@ -426,7 +426,6 @@ var UserControler ={
      * @returns {number}
      */
     uploadProfileImage:function(req,res){
-        console.log("uploadProfileImage");
 
         var CurrentSession = Util.getCurrentSession(req);
 
@@ -473,8 +472,6 @@ var UserControler ={
 
                 }else{
                     ContentUploader.uploadFile(data,function (payLoad) {
-
-                        console.log(payLoad);
 
                         if (payLoad.status != 400) {
                             var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
@@ -726,9 +723,6 @@ var UserControler ={
 
             });
         }
-
-
-
     },
 
     /**
@@ -1390,30 +1384,34 @@ var UserControler ={
     updateWorkExperience:function(req,res){
         var User = require('mongoose').model('User');
         var CurrentSession = Util.getCurrentSession(req);
-        //var _userId = CurrentSession.id;
-
         var _userId = CurrentSession.id;
 
-        var _weDetails = {
-            company_name:req.body.company,
-            title:req.body.title,
-            left_date:{
-                year:(req.body.toYear != null && !req.body.currentPlc)?req.body.toYear:0,
-                month:(req.body.toMonth != null && !req.body.currentPlc)?req.body.toMonth:0,
-            },
-            start_date:{
-                year:(req.body.fromYear != null)?req.body.fromYear:0,
-                month:(req.body.fromMonth != null)?req.body.fromMonth:0,
-            },
-            description:req.body.description,
-            location:req.body.location,
-            is_current_work_place:req.body.currentPlc
-        };
-
-
         if(req.body.exp_id){
-            _weDetails['_id'] = req.body.exp_id
-            User.updateWorkingExperience(_userId,_weDetails,function(resultSet){
+            if(req.body.isProfile){
+                var _weDetails = {
+                    "working_experiences.$.company_name":req.body.company_name,
+                    "working_experiences.$.title":req.body.title
+                };
+
+            }else{
+                var _weDetails = {
+                    "working_experiences.$.company_name":req.body.company,
+                    "working_experiences.$.title":req.body.title,
+                    "working_experiences.$.location":req.body.location,
+                    "working_experiences.$.start_date":{
+                        year:(req.body.fromYear != null)?req.body.fromYear:0,
+                        month:(req.body.fromMonth != null)?req.body.fromMonth:0,
+                    },
+                    "working_experiences.$.left_date":{
+                        year:(req.body.toYear != null && !req.body.currentPlc)?req.body.toYear:0,
+                        month:(req.body.toMonth != null && !req.body.currentPlc)?req.body.toMonth:0,
+                    },
+                    "working_experiences.$.is_current_work_place":req.body.currentPlc,
+                    "working_experiences.$.description":req.body.description
+                };
+            }
+
+            User.updateWorkingExperience(_userId, req.body.exp_id, _weDetails,function(resultSet){
 
                 var outPut ={};
                 if(resultSet.status != 200){
@@ -1428,7 +1426,23 @@ var UserControler ={
 
 
             });
+
         }else{
+            var _weDetails = {
+                company_name:req.body.company,
+                title:req.body.title,
+                left_date:{
+                    year:(req.body.toYear != null && !req.body.currentPlc)?req.body.toYear:0,
+                    month:(req.body.toMonth != null && !req.body.currentPlc)?req.body.toMonth:0,
+                },
+                start_date:{
+                    year:(req.body.fromYear != null)?req.body.fromYear:0,
+                    month:(req.body.fromMonth != null)?req.body.fromMonth:0,
+                },
+                description:req.body.description,
+                location:req.body.location,
+                is_current_work_place:req.body.currentPlc
+            };
             User.addWorkingExperience(_userId,_weDetails,function(resultSet){
 
                 var outPut ={};
@@ -1502,7 +1516,79 @@ var UserControler ={
 
         }
 
-    }
+    },
+
+
+    /**
+     * Update introduction of a user
+     * @param req
+     * @param res
+     */
+    updateIntroduction:function(req, res){
+
+        var User = require('mongoose').model('User');
+        var CurrentSession = Util.getCurrentSession(req);
+        var _userId = CurrentSession.id;
+
+        var outPut ={};
+        var _introInfo = {introduction:req.body.introText};
+
+        User.saveUpdates(_userId,_introInfo,function(resultSet){
+            if(resultSet.status == 200){
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                res.status(200).send(outPut);
+            }else{
+                outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                res.status(400).send(outPut);
+            }
+
+        });
+
+
+    },
+
+
+    /**
+     * Retrieve Introduction of a user
+     * @param req
+     * @param res
+     */
+    retrieveIntroduction:function(req, res){
+
+        var User = require('mongoose').model('User');
+
+        if(typeof req.params['uname'] == 'undefined'){
+            var outPut ={};
+            outPut['status']    = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
+            res.status(400).send(outPut);
+        }
+
+
+
+        var criteria = {user_name:req.params['uname']},
+            showOptions ={
+                w_exp:false,
+                edu:false,
+                skill:false
+            };
+        User.getUser(criteria,showOptions,function(resultSet){
+            var outPut ={};
+            if(resultSet.status != 200){
+                outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                res.status(400).json(outPut);
+                return 0;
+            }
+
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['user'] =resultSet.user;
+            res.status(200).send(outPut);
+
+
+
+        });
+
+    },
+
 
 
 
