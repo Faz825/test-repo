@@ -2344,6 +2344,14 @@ export default StyleSheet.create({
         "paddingLeft": 0,
         "width": "calc(100% - 220px)"
     },
+    "pg-middle-sign-wrapper container-fluid notificationsHolder": {
+        "marginTop": 70,
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 130,
+        "paddingLeft": 0,
+        "width": "calc(100% - 220px)"
+    },
     "pg-middle-sign-wrapper container-fluid notesCatHolder": {
         "marginTop": 0,
         "marginRight": "auto",
@@ -3783,6 +3791,115 @@ export default StyleSheet.create({
     "clock": {
         "color": "#c7bfb2",
         "display": "none"
+    },
+    "pg-middle-content-top-middle-secretary pgs-secratery-img": {
+        "float": "none",
+        "marginTop": 20,
+        "marginRight": "auto",
+        "marginBottom": 0,
+        "marginLeft": "auto",
+        "width": 95,
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
+    "pg-middle-content-top-middle-secretary pgs-secratery-img img": {
+        "borderRadius": 5
+    },
+    "notificationsHolder middle-info-holder": {
+        "textAlign": "center",
+        "marginTop": 20,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "notificationsHolder middle-info-holder users-time": {
+        "color": "#2d5164",
+        "font": "25px \"montserratlight\",sans-serif",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 5,
+        "marginLeft": 0
+    },
+    "notificationsHolder middle-info-holder user-date": {
+        "color": "#2d5164",
+        "font": "25px \"montserratlight\",sans-serif",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 10,
+        "marginLeft": 0,
+        "fontSize": 1.1,
+        "textTransform": "uppercase"
+    },
+    "notificationsHolder middle-info-holder greeting-and-notifi": {
+        "color": "#59afe1",
+        "font": "25px \"montserratlight\",sans-serif",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "notificationsHolder notification-box-holder": {
+        "marginTop": 15,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "notification-box notifi-inner-wrapper": {
+        "boxShadow": "0 0 4px -2px #020202"
+    },
+    "notifi-inner-wrapper box-header-wrapper": {
+        "background": "#fff",
+        "borderBottom": "1px solid #dee6eb",
+        "borderTopLeftRadius": 5,
+        "borderTopRightRadius": 5,
+        "paddingTop": 12,
+        "paddingRight": 0,
+        "paddingBottom": 12,
+        "paddingLeft": 0
+    },
+    "box-header-wrapper box-title": {
+        "color": "#2d5164",
+        "font": "14px \"montserratsemi_bold\",sans-serif",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "box-header-wrapper label": {
+        "font": "10px \"montserratregular\",sans-serif",
+        "color": "#7795a8",
+        "cursor": "pointer",
+        "display": "inline-block",
+        "marginTop": -4,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 5,
+        "textTransform": "capitalize",
+        "verticalAlign": "middle"
+    },
+    "box-header-wrapper notifi-sub-link": {
+        "font": "10px \"montserratregular\",sans-serif",
+        "color": "#7795a8",
+        "cursor": "pointer",
+        "display": "inline-block",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "textTransform": "capitalize",
+        "verticalAlign": "top",
+        "float": "right"
+    },
+    "box-header-wrapper pg-top-mark-setings input": {
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 5
+    },
+    "box-header-wrapper notifi-sub-link fa": {
+        "marginRight": 5
     },
     "middle-content-wrapper": {
         "minWidth": 500

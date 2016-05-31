@@ -1758,7 +1758,8 @@ textarea{
 }
 
 /* ====================================================== news page/ notes ==================================================*/
-.pg-middle-sign-wrapper .container-fluid .newsCatHolder{
+.pg-middle-sign-wrapper .container-fluid .newsCatHolder,
+.pg-middle-sign-wrapper .container-fluid .notificationsHolder{
 	margin-top: 70px;
 	padding: 0 0 130px;
 	width: calc(100% - 220px);
@@ -3049,6 +3050,93 @@ textarea{
 #clock{
 	color:#c7bfb2;
 	display: none;
+}
+
+/* Notiications page */
+.pg-middle-content-top-middle-secretary .pgs-secratery-img{
+	float: none;
+	margin: 20px auto 0;
+	width: 95px;
+	padding: 0;
+}
+
+.pg-middle-content-top-middle-secretary .pgs-secratery-img img{
+	border-radius: 5px;
+}
+
+.notificationsHolder .middle-info-holder{
+	text-align: center;
+	margin: 20px 0 0;
+}
+
+.notificationsHolder .middle-info-holder .users-time,
+.notificationsHolder .middle-info-holder .user-date,
+.notificationsHolder .middle-info-holder .greeting-and-notifi{
+	color: #2d5164;
+	font: 25px "montserratlight",sans-serif;
+	margin: 0 0 5px;
+}
+
+.notificationsHolder .middle-info-holder .user-date{
+	font-size: 1.1em;
+	margin: 0 0 10px;
+	text-transform: uppercase;
+}
+
+.notificationsHolder .middle-info-holder .greeting-and-notifi{
+	color: #59afe1;
+	margin: 0;
+}
+
+.notificationsHolder .notification-box-holder{
+	margin: 15px 0 0;
+}
+
+.notification-box .notifi-inner-wrapper{
+	box-shadow: 0 0 4px -2px #020202;
+}
+
+.notifi-inner-wrapper .box-header-wrapper{
+	background: #fff;
+	border-bottom: 1px solid #dee6eb;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	padding: 12px 0;
+}
+
+.box-header-wrapper .box-title{
+	color: #2d5164;
+	font: 14px "montserratsemi_bold",sans-serif;
+	margin: 0;
+}
+
+.box-header-wrapper label,
+.box-header-wrapper .notifi-sub-link{
+	font: 10px "montserratregular",sans-serif;
+	color: #7795a8;
+	cursor: pointer;
+	display: inline-block;
+}
+
+.box-header-wrapper label{
+	margin: -4px 0 0 5px;
+	text-transform: capitalize;
+	vertical-align: middle;
+}
+
+.box-header-wrapper .pg-top-mark-setings input{
+	margin: 0 0 0 5px;
+}
+
+.box-header-wrapper .notifi-sub-link{
+	margin: 0;
+	text-transform: capitalize;
+	vertical-align: top;
+    float: right;
+}
+
+.box-header-wrapper .notifi-sub-link .fa{
+	margin-right: 5px;
 }
 
 /* Large Screen */
