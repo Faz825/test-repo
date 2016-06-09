@@ -50,6 +50,8 @@ LikeSchema.pre('save', function(next){
  */
 LikeSchema.statics.addLike = function(likeData,callBack){
 
+    console.log("LikeSchema.statics.addLike");
+
     var _like = new this(),
         _this = this;
 
@@ -57,6 +59,7 @@ LikeSchema.statics.addLike = function(likeData,callBack){
     _like.user_id = Util.toObjectId(likeData.user_id);
 
     _like.save(function(err,resultSet){
+        console.log("_like.save");
         if(!err){
 
             _this.addToCache(resultSet.post_id,resultSet.user_id);
@@ -139,7 +142,8 @@ LikeSchema.statics.getLikedUsers = function(userId,postId,page,callBack){
  * @param data
  */
 LikeSchema.statics.addToCache=function(postId,data){
-    var _cache_key = LikeConfig.CACHE_PREFIX+postId;
+    console.log("LikeSchema.statics.addToCache");
+    var _cache_key = LikeConfig.CACHE_PREFIX+postId;console.log(_cache_key);console.log(data)
     CacheEngine.addBottomToList(_cache_key,data,function(outData){
     });
 
