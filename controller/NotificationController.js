@@ -17,6 +17,7 @@ var NotificationController ={
         var _notifications = {};
         var _unreadCount = 0;
         var _formattedNotificationData = [];
+        var _unreadNotificationIds = [];
 
         _async.waterfall([
             function getNotifications(callBack){
@@ -25,9 +26,7 @@ var NotificationController ={
                     var _types = [];
 
                     for(var i = 0; i < notifications.length; i++){
-                        if(notifications[i]['read_status'] == false){
-                            _unreadCount++;
-                        }
+
                         var _type = notifications[i]['post_id']+notifications[i]['notification_type'];
                         if(_types.indexOf(_type) == -1){
                             _notifications[notifications[i]['post_id']+notifications[i]['notification_type']] = {
@@ -37,7 +36,8 @@ var NotificationController ={
                                 post_owner:notifications[i]['post_owner'],
                                 created_at:notifications[i]['created_at'],
                                 senders:[],
-                                sender_count:0
+                                sender_count:0,
+                                unread_notification_ids:[]
                             };
                         }
 
@@ -52,6 +52,12 @@ var NotificationController ={
             function formatNotifications(unformatedNotifications, callBack){
 
                 for(var i = 0; i < unformatedNotifications.length; i++){
+
+                    if(unformatedNotifications[i]['read_status'] == false){
+                        _unreadCount++;
+                        _notifications[unformatedNotifications[i]['post_id']+unformatedNotifications[i]['notification_type']]['unread_notification_ids'].push(unformatedNotifications[i]['_id']);
+                        _unreadNotificationIds.push(unformatedNotifications[i]['_id']);
+                    }
 
                     if(_notifications[unformatedNotifications[i]['post_id']+unformatedNotifications[i]['notification_type']]['senders'].length < 2){
                         _notifications[unformatedNotifications[i]['post_id']+unformatedNotifications[i]['notification_type']]['senders'].push(unformatedNotifications[i]['sender_id']);
@@ -133,7 +139,8 @@ var NotificationController ={
                         post_owner_name:_postOwners[obj.post_owner]['name'],
                         sender_profile_picture:_notificationSenders[obj.senders[0]]['profile_image'],
                         sender_name:_notificationSenders[obj.senders[0]]['name'],
-                        sender_count:obj.sender_count
+                        sender_count:obj.sender_count,
+                        unread_notification_ids:obj.unread_notification_ids
                     };
 
                     if(obj.senders.length > 1){
@@ -151,12 +158,36 @@ var NotificationController ={
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 unreadCount:_unreadCount,
-                notifications:_formattedNotificationData
+                notifications:_formattedNotificationData,
+                unreadNotificationIds:_unreadNotificationIds
             }
             res.status(200).json(outPut);
         });
 
     },
+
+    updateNotifications: function(req,res){
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            _async = require('async'),
+            _data = {read_status:true};
+
+        _async.each(req.body.notifications,function(_notificationId, callBack){
+
+            var _criteria = {_id:Util.toObjectId(_notificationId)};
+
+            NotificationRecipient.updateRecipientNotification(_criteria, _data, function(res){
+                callBack(null);
+            })
+
+
+
+        },function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
+            res.status(200).json(outPut);
+        });
+    }
 
 };
 

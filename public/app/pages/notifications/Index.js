@@ -16,7 +16,8 @@ export default class Index extends React.Component{
             hours: "",
             minutes: "",
             notifications: [],
-            notificationCount: 0
+            notificationCount: 0,
+            unreadNotificationIds: []
         }
 
         this.currentTime = new Date();
@@ -26,18 +27,18 @@ export default class Index extends React.Component{
     }
 
     loadNotifications(){
-        let loggedUser = Session.getSession('prg_lg');
 
         $.ajax({
             url: '/notifications/get-notifications',
             method: "GET",
             dataType: "JSON",
-            headers: { 'prg-auth-header':loggedUser.token }
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             console.log(data);
             if(data.status.code == 200){
                 this.setState({notificationCount:data.unreadCount});
                 this.setState({notifications:data.notifications});
+                this.setState({unreadNotificationIds:data.unreadNotificationIds});
             }
         }.bind(this));
 
@@ -101,8 +102,36 @@ export default class Index extends React.Component{
     }
 
     redirectToNotification(_notification){
-        console.log(_notification);
-        window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
+
+        if(_notification.unread_notification_ids.length > 0){
+            $.ajax({
+                url: '/notifications/update-notifications',
+                method: "POST",
+                dataType: "JSON",
+                data:{notifications:_notification.unread_notification_ids},
+                headers: { 'prg-auth-header':this.state.loggedUser.token }
+            }).done( function (data, text) {
+                window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
+            }.bind(this));
+        } else{
+            window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
+        }
+    }
+
+    markAllRead(){
+
+        if(this.state.unreadNotificationIds.length > 0){
+            $.ajax({
+                url: '/notifications/update-notifications',
+                method: "POST",
+                dataType: "JSON",
+                data:{notifications:this.state.unreadNotificationIds},
+                headers: { 'prg-auth-header':this.state.loggedUser.token }
+            }).done( function (data, text) {
+                this.loadNotifications();
+            }.bind(this));
+        }
+
     }
 
     render() {
@@ -147,8 +176,8 @@ export default class Index extends React.Component{
                                             </div>
                                             <div className="col-sm-6">
                                                 <div className="pg-top-mark-setings">
-                                                    <label htmlFor="readAll">Mark All as Read</label>
-                                                    <input type="checkbox" id="readAll" />
+                                                    <label htmlFor="readAll" >Mark All as Read</label>
+                                                    <input type="checkbox" id="readAll" onChange={this.markAllRead.bind(this)}/>
                                                     <p className="notifi-sub-link"><i className="fa fa-cog"></i>Settings</p>
                                                 </div>
                                             </div>
