@@ -35,6 +35,7 @@ let rootRoute =(
          * Profile Route
          */
         <Route name="profile" path="/profile/:uname" component={ProfileIndex}/>
+        <Route name="profile" path="/profile/:uname/:post" component={ProfileIndex}/>
 
         <Route name="forgot-password" path="/forgot-password" component={ForgotPassword}/>
         <Route name="change-password" path="/change-password/:token" component={ChangePassword}/>

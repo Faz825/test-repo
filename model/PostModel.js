@@ -102,7 +102,7 @@ PostSchema.statics.addNew = function(post,callBack){
     _post.created_by = Util.toObjectId(post.created_by);
     _post.page_link = post.page_link;
     _post.post_visible_mode = post.post_visible_mode;
-    _post.visible_users = [];
+    _post.visible_users = post.visible_users;
     _post.post_mode = post.post_mode;
     _post.location = post.location;
     _post.life_event = post.life_event;
@@ -168,8 +168,6 @@ PostSchema.statics.ch_getPost= function(userId,payload,callBack){
 
     //Find User from Elastic search
     ES.search(query,function(csResultSet){
-
-
         if(csResultSet == null){
             callBack(null);
         }else{
@@ -252,8 +250,6 @@ PostSchema.statics.postList=function(userId,posts,callBack){
 
     var a =0;
 
-
-
     _async.each(posts,
         function(post,callBack){
             var _post = _this.formatPost(post),
@@ -273,6 +269,7 @@ PostSchema.statics.postList=function(userId,posts,callBack){
             Comment.getCommentCount(_post.post_id,function(commentCount){
                 _post['comment_count'] = commentCount;
 
+
                 var query={
                     q:"user_id:"+post.created_by.toString(),
                     index:'idx_usr'
@@ -281,8 +278,8 @@ PostSchema.statics.postList=function(userId,posts,callBack){
                 ES.search(query,function(csResultSet){
                     _post['created_by'] = csResultSet.result[0];
 
-
                     Like.getLikedUsers(userId,_post.post_id,0,function(likedUsers,likedUserIds){
+
                         _post['like_count'] = likedUsers.length;
                         _post['liked_user'] = likedUsers;
                         _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1)?0:1;
@@ -296,6 +293,11 @@ PostSchema.statics.postList=function(userId,posts,callBack){
                 });
 
             });
+
+
+
+
+
 
         },
         function(err){

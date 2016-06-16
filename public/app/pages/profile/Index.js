@@ -21,15 +21,19 @@ export default class Index extends React.Component{
             uname:this.getUrl(),
             user:{},
             data:{},
-            posts:[]
+            posts:[],
+            post_id:this.getPostId()
         };
         this.loadExperiences = this.loadExperiences.bind(this);
         this.loadProfileData = this.loadProfileData.bind(this);
         this.loadExperiences();
         this.loadProfileData();
-        this.loadPosts(0)
+        this.loadPosts(0);
+        console.log(this.state.post_id)
     }
-
+    getPostId(){
+        return  this.props.params.post;
+    }
     getUrl(){
         return  this.props.params.uname;
     }

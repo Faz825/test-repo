@@ -158,7 +158,6 @@ var CacheEngine ={
      * @param callBack
      */
     addBottomToList:function(key,data,callBack){
-        console.log("addBottomToList")
         var _data = JSON.stringify(data);
         this._cacheClient.rpush(key,_data,function(err, result){
             if( err ){

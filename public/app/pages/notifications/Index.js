@@ -14,11 +14,32 @@ export default class Index extends React.Component{
         this.state={
             loggedUser:Session.getSession('prg_lg'),
             hours: "",
-            minutes: ""
+            minutes: "",
+            notifications: [],
+            notificationCount: 0
         }
 
         this.currentTime = new Date();
         this.currentTimeUpdate = this.currentTimeUpdate.bind(this);
+        this.loadNotifications();
+
+    }
+
+    loadNotifications(){
+        let loggedUser = Session.getSession('prg_lg');
+
+        $.ajax({
+            url: '/notifications/get-notifications',
+            method: "GET",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':loggedUser.token }
+        }).done( function (data, text) {
+            console.log(data);
+            if(data.status.code == 200){
+                this.setState({notificationCount:data.unreadCount});
+                this.setState({notifications:data.notifications});
+            }
+        }.bind(this));
 
     }
 
@@ -79,6 +100,11 @@ export default class Index extends React.Component{
         return [year, month, date, dateAcr];
     }
 
+    redirectToNotification(_notification){
+        console.log(_notification);
+        window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
+    }
+
     render() {
         let loggedUser = this.state.loggedUser;
         let _secretary_image = loggedUser.secretary_image_url;
@@ -109,7 +135,7 @@ export default class Index extends React.Component{
                                 <div className="middle-info-holder">
                                     <p className="users-time">{this.state.hours + ":" + this.state.minutes + " " + partOfDay}</p>
                                     <p className="user-date">{date[2] + "," + date[1] + " " + date[3] + ", " + date[0]}</p>
-                                    <p className="greeting-and-notifi">{greating + " " + loggedUser.first_name + ", you have 13 Notifications"}</p>
+                                    <p className="greeting-and-notifi">{greating + " " + loggedUser.first_name } {this.state.notificationCount > 0 ? ", you have "+this.state.notificationCount+" Notifications":""}</p>
                                 </div>
                             </div>
                             <div className="row notification-box-holder">
@@ -129,6 +155,7 @@ export default class Index extends React.Component{
                                         </div>
                                         <div className="box-body-wrapper">
                                             <div className="chat-notification-header" id="unread_chat_list">
+                                                {this.state.notifications.length > 0? <Notification notifications = {this.state.notifications} clickNotification = {this.redirectToNotification.bind(this)}/>:null}
                                             </div>
                                         </div>
                                     </div>
@@ -139,5 +166,55 @@ export default class Index extends React.Component{
                 </div>
             </div>
         );
+    }
+}
+
+export class Notification extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state={
+        };
+    }
+
+    render() {
+        let _this = this;
+        let notifications = this.props.notifications;
+
+        if (notifications.length <= 0) {
+            return <div />
+        }
+        let _notifications = notifications.map(function(notification,key){
+            let _classNames = "tab msg-holder "; // unread notification
+            if(notification.read_status){ // read notification
+                _classNames += "read";
+            }
+            return (
+                <div className={_classNames} key={key}>
+                    <a href="javascript:void(0)" onClick={()=>_this.props.clickNotification(notification)}>
+                        <div className="chat-pro-img">
+                            <img src={notification.sender_profile_picture}/>
+                        </div>
+                        <div className="chat-body">
+                            <span className="connection-name">{notification.sender_name}</span>
+                            {notification.sender_count>0?<span> and {notification.sender_count} others </span>:""}
+                            <span>{notification.notification_type} {notification.post_owner_name} post</span>
+
+                            <span className="chat-date">{notification.created_at.time_a_go}</span>
+                        </div>
+                    </a>
+                </div>
+            );
+        });
+
+        return (
+            <div className="conv-holder">
+                <Scrollbars style={{ height: 486 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
+                    <div id="NotificationList">
+                        {_notifications}
+                    </div>
+                </Scrollbars>
+            </div>
+        );
+
     }
 }

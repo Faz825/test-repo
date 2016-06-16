@@ -24,6 +24,7 @@ require('../model/LikeModel');
 require('../model/NotesModel');
 require('../model/NoteBookModel');
 require('../model/UsersSavedArticle');
+require('../model/SubscribedPosts');
 
 /** Load  Controllers
  */
@@ -39,7 +40,8 @@ var DefaultController   = require('../controller/DefaultController'),
     LifeEventController = require('../controller/LifeEventController'),
     ConnectionController = require('../controller/ConnectionController'),
     LikeController      =  require('../controller/LikeController'),
-    NotesController     = require('../controller/NotesController');
+    NotesController     = require('../controller/NotesController'),
+    NotificationController     = require('../controller/NotificationController');
 
 
 
@@ -176,6 +178,7 @@ router.get('/news/news-categories', NewsController.allNewsCategories);
 
 
 router.get('/profile/:name', DefaultController.index);
+router.get('/profile/:name/:post', DefaultController.index);
 router.get('/get-profile/:uname',UserController.getProfile);
 
 
@@ -273,6 +276,7 @@ router.post('/notes/update-note', NotesController.updateNote);
 router.post('/notes/delete-note', NotesController.deleteNote);
 router.post('/introduction/update', UserController.updateIntroduction);
 router.get('/introduction/:uname',UserController.retrieveIntroduction);
+router.get('/notifications/get-notifications',NotificationController.getNotifications);
 
 
 module.exports = router;

@@ -4,6 +4,7 @@
 
 import React from 'react';
 import Session  from '../../middleware/Session';
+import Socket  from '../../middleware/Socket';
 import Lib    from '../../middleware/Lib';
 import ListPostsElement from './ListPostsElement';
 import ProgressBar from '../elements/ProgressBar';
@@ -143,6 +144,13 @@ export class TextPostElement extends React.Component{
     handleAjaxSuccess(data){
 
         if (data.status.code == 200) {
+
+            let _data = {
+                data:data,
+                isOwnPost:true
+            };
+
+            //Socket.subscribe(_data);
 
             this.props.afterPostSubmit(data.post)
 

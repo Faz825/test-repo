@@ -1,4 +1,5 @@
 GLOBAL.Notifications = {
-    LIKE:"Like",
-    COMMENT:"Comment"
+    LIKE:"Likes",
+    COMMENT:"Commented",
+    SHARE:"Shared"
 };

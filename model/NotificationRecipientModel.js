@@ -37,8 +37,9 @@ NotificationRecipientSchema.statics.saveRecipients = function(data,callBack){
 
     for (var i = 0; data.recipients.length > i; i++) {
         recipients.push({
-            notification_id: data.notification_id,
-            recipient: data.recipients[i].recipient.toObjectId()
+            notification_id: Util.toObjectId(data.notification_id),
+            recipient: Util.toObjectId(data.recipients[i]),
+            read_status: false
         });
     }
 
@@ -75,16 +76,25 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
         },
         {$unwind: '$notificationData'},
         {
+            $lookup:{
+                from:"posts",
+                localField:"notificationData.notified_post",
+                foreignField:"_id",
+                as:"postData"
+            }
+        },
+        {$unwind: '$postData'},
+        {
             $project:{
                 _id:1,
                 notification_id:1,
-                sender_id:"$notificationData.sender",
                 recipient_id:"$recipient",
-                post_id:"$notificationData.notified_post",
-                notification_type:"$notificationData.notification_type",
                 read_status:1,
-                created_at:"$notificationData.created_at"
-
+                created_at:"$notificationData.created_at",
+                notification_type:"$notificationData.notification_type",
+                sender_id:"$notificationData.sender",
+                post_id:"$notificationData.notified_post",
+                post_owner:"$postData.created_by"
             }
         },
         { $sort:{ "created_at":-1}}

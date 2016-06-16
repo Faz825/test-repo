@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import Session from '../../middleware/Session';
+import Socket  from '../../middleware/Socket';
 import Lib    from '../../middleware/Lib'
 export default class CommentElement extends React.Component{
     constructor(props){
@@ -13,7 +14,7 @@ export default class CommentElement extends React.Component{
         };
     }
     onCommentAdd(comment){
-        if(comment.text != "" || comment.imgComment != ""){
+        if(comment.text != "" || comment.imgComment != null){
             let commentData ={
                 __post_id:this.props.postId,
                 __content:comment.text,
@@ -27,6 +28,11 @@ export default class CommentElement extends React.Component{
                 data:commentData,
                 success: function (data, text) {
                     if (data.status.code == 200) {
+                        let _data = {
+                            data:data,
+                            isOwnPost:true
+                        };
+                        //Socket.subscribe(_data);
                         this.setState({text:""});
                         this.setState({imgComment:""});
                         document.getElementById('comment_input').innerHTML = "";
@@ -123,7 +129,7 @@ export class  PostCommentAction extends React.Component{
         super(props)
         this.state={
             text:"",
-            imgComment: ""
+            imgComment: null
         };
         this.loggedUser =  this.props.loggedUser;
         this.selectImage = this.selectImage.bind(this);
@@ -137,7 +143,7 @@ export class  PostCommentAction extends React.Component{
 
         this.props.onCommentAdd(this.state);
         this.setState({text:""});
-        this.setState({imgComment:""});
+        this.setState({imgComment:null});
     }
 
     selectImage(e){
@@ -159,7 +165,7 @@ export class  PostCommentAction extends React.Component{
     }
 
     removeImage(){
-        this.setState({imgComment: ""});
+        this.setState({imgComment: null});
     }
 
     render(){

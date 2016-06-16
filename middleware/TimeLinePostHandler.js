@@ -18,6 +18,7 @@ var TimeLinePostHandler ={
     addNewPost:function(postData,callBack){
         var _async = require('async'),
             Post = require('mongoose').model('Post'),
+            SubscribedPost = require('mongoose').model('SubscribedPost'),
             _post = postData;
         _async.waterfall([
             //GET FRIEND LIST BASED ON POST OWNER
@@ -55,6 +56,16 @@ var TimeLinePostHandler ={
                     }
                     callBack(null)
                 });
+
+            },
+            function subscribeToPost(callBack){
+                var _data = {
+                    user_id:_post.created_by,
+                    post_id:_post.post_id
+                }
+                SubscribedPost.saveSubscribe(_data, function(res){
+                    callBack(null);
+                })
 
             },
             //COPY CONTENT TO CDN
@@ -118,6 +129,7 @@ var TimeLinePostHandler ={
     sharePost:function(postData,callBack){
         var _async = require('async'),
             Post = require('mongoose').model('Post'),
+            SubscribedPost = require('mongoose').model('SubscribedPost'),
             _post = postData;
         _async.waterfall([
             //GET FRIEND LIST BASED ON POST OWNER
@@ -146,18 +158,22 @@ var TimeLinePostHandler ={
                 }
             },
             function savePostInDb(callBack){
-
-
-
                 Post.addNew(_post,function(postData){
-
-
                     if(postData.status ==200){
                         _post.post_id       = postData.post._id
                         _post['created_at'] = postData.post.created_at;
                     }
                     callBack(null)
                 });
+            },
+            function subscribeToPost(callBack){
+                var _data = {
+                    user_id:_post.created_by,
+                    post_id:_post.post_id
+                }
+                SubscribedPost.saveSubscribe(_data, function(res){
+                    callBack(null);
+                })
 
             },
             //GET SHARED POST FROM CACHE
@@ -227,6 +243,7 @@ var TimeLinePostHandler ={
     profileImagePost:function(postData,callBack){
         var _async = require('async'),
             Post = require('mongoose').model('Post'),
+            SubscribedPost = require('mongoose').model('SubscribedPost'),
             _post = postData;
         _async.waterfall([
             //GET FRIEND LIST BASED ON POST OWNER
@@ -266,6 +283,16 @@ var TimeLinePostHandler ={
                 });
 
             },
+            function subscribeToPost(callBack){
+                var _data = {
+                    user_id:_post.created_by,
+                    post_id:_post.post_id
+                }
+                SubscribedPost.saveSubscribe(_data, function(res){
+                    callBack(null);
+                })
+
+            },
             //Add to Uploads
             function saveUploads(callBack){
 
@@ -274,7 +301,6 @@ var TimeLinePostHandler ={
                     upload = [];
                 _post['upload'] = [];
                 if(_post.has_attachment){
-                    console.log("_post.has_attachment");
 
                     upload['file_name'] = _post['profile_picture_data']['file_name'];
                     upload['file_type'] = _post['profile_picture_data']['file_type'];
@@ -282,18 +308,14 @@ var TimeLinePostHandler ={
                     upload['entity_id'] = _post['post_id'];
                     upload['entity_tag'] = _post['profile_picture_data']['entity_tag'];
                     upload['content_title'] = _post['profile_picture_data']['title'];
-                    console.log(upload);
 
                     Upload.saveOnDb(upload,function(dbResultSet){
-                        console.log("Upload.saveOnDb");
                         upload_data.push({
                             entity_id:upload.entity_id,
                             file_name:upload.file_name,
                             file_type:upload.file_type,
                             http_url:_post['profile_picture_data']['http_url']
                         });
-
-                        console.log(upload_data);
 
                         _post['upload']= upload_data;
                         callBack(null)
@@ -327,7 +349,6 @@ var TimeLinePostHandler ={
             }
 
         ],function(err,resultSet){
-            console.log(_post);
             callBack(_post)
         });
 

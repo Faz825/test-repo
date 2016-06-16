@@ -22,8 +22,7 @@ var NotificationSchema = new Schema({
     },
     notified_post:{ // the post that origin user comment / share / like ...
         type: Schema.ObjectId,
-        //TODO::
-        //ref: 'Post',
+        ref: 'Post',
         default:null
     },
     created_at:{
@@ -32,6 +31,15 @@ var NotificationSchema = new Schema({
 
     }
 },{collection:"notifications"});
+
+NotificationSchema.pre('save', function(next){
+    var now = new Date();
+
+    if ( !this.created_at ) {
+        this.created_at = now;
+    }
+    next();
+});
 
 /**
  * Save notification
@@ -42,10 +50,9 @@ var NotificationSchema = new Schema({
 NotificationSchema.statics.saveNotification = function(new_notification,callBack){
 
     var notification = new this();
-    //notification.sender = CurrentSession.id.toObjectId();
-    notification.sender = new_notification.sender.toObjectId();
+    notification.sender = Util.toObjectId(new_notification.sender);
     notification.notification_type = new_notification.notification_type;
-    notification.notified_post = new_notification.notified_post.toObjectId();
+    notification.notified_post = Util.toObjectId(new_notification.notified_post);
     notification.save(function(err, result){
         if(!err){
             callBack({
