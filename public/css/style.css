@@ -2671,7 +2671,6 @@ textarea{
 
 .chat-body{
 	max-height: 486px;
-	position: relative;
 	overflow: hidden;
 	z-index: 0;
 }
@@ -2715,6 +2714,7 @@ textarea{
 	font: 0.8em "montserratregular", sans-serif;
 	color: #61b3de;
 	display: block;
+	margin-bottom: 2px;
 }
 
 .msg-holder .chat-body .msg{
@@ -2725,9 +2725,16 @@ textarea{
 .msg-holder .chat-body .chat-date{
 	font: 0.6em 'montserratsemi_bold', sans-serif;
 	position: absolute;
-	right: 12px;
-	top: 10px;
+	right: 10px;
+	bottom: 0;
 	color: #7795a8;
+}
+
+.msg-holder .chat-body .type-of-action{
+	font: 11px 'montserratregular', sans-serif;
+    color: #2d5164;
+    margin-top: -1px;
+	font-size: 0.7em;
 }
 
 .chat-msg-holder{
@@ -3104,6 +3111,23 @@ textarea{
 	padding: 12px 0;
 }
 
+.notifi-inner-wrapper .pg-secratery-chat-box-see-all {
+	background-color: #fff;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	padding: 12px 0 5px;
+	border-top: 1px solid #dee6eb;
+}
+
+.pg-secratery-chat-box-see-all p {
+  color: #61b3de;
+  display: block;
+  font: 1em "montserratregular",sans-serif;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .box-header-wrapper .box-title{
 	color: #2d5164;
 	font: 14px "montserratsemi_bold",sans-serif;
@@ -3133,10 +3157,15 @@ textarea{
 	text-transform: capitalize;
 	vertical-align: top;
     float: right;
+	width: 100%;
 }
 
 .box-header-wrapper .notifi-sub-link .fa{
 	margin-right: 5px;
+}
+
+.notifi-inner-wrapper .box-header-wrapper .pg-top-mark-setings{
+	text-align: right;
 }
 
 /* Large Screen */

@@ -16,7 +16,8 @@ export default class Index extends React.Component{
             hours: "",
             minutes: "",
             notifications: [],
-            notificationCount: 0
+            notificationCount: 0,
+            seeAllNotifications: false
         }
 
         this.currentTime = new Date();
@@ -105,6 +106,10 @@ export default class Index extends React.Component{
         window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
     }
 
+    allNotifications(){
+        this.setState({seeAllNotifications : true});
+    }
+
     render() {
         let loggedUser = this.state.loggedUser;
         let _secretary_image = loggedUser.secretary_image_url;
@@ -154,9 +159,28 @@ export default class Index extends React.Component{
                                             </div>
                                         </div>
                                         <div className="box-body-wrapper">
-                                            <div className="chat-notification-header" id="unread_chat_list">
-                                                {this.state.notifications.length > 0? <Notification notifications = {this.state.notifications} clickNotification = {this.redirectToNotification.bind(this)}/>:null}
-                                            </div>
+                                            {this.state.seeAllNotifications || this.state.notifications.length > 5?
+                                                <Scrollbars style={{ height: 360 }}>
+                                                    <div className="chat-notification-header" id="unread_chat_list">
+                                                        <Notification notifications = {this.state.notifications} clickNotification = {this.redirectToNotification.bind(this)}/>
+                                                    </div>
+                                                </Scrollbars>
+                                                :
+                                                this.state.notifications.length < 5?
+                                                    <div className="chat-notification-header" id="unread_chat_list">
+                                                        <Notification notifications = {this.state.notifications} clickNotification = {this.redirectToNotification.bind(this)}/>
+                                                    </div>
+                                                    :
+                                                    null
+
+                                            }
+                                            {this.state.notifications.length > 5?
+                                                <div className="row row-clr pg-secratery-chat-box-see-all">
+                                                    <p onClick={this.allNotifications.bind(this)}>See all</p>
+                                                </div>
+                                                :
+                                                null
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -195,11 +219,10 @@ export class Notification extends React.Component{
                             <img src={notification.sender_profile_picture}/>
                         </div>
                         <div className="chat-body">
-                            <span className="connection-name">{notification.sender_name}</span>
-                            {notification.sender_count>0?<span> and {notification.sender_count} others </span>:""}
-                            <span>{notification.notification_type} {notification.post_owner_name} post</span>
-
-                            <span className="chat-date">{notification.created_at.time_a_go}</span>
+                            <p className="connection-name">{notification.sender_name}</p>
+                            {notification.sender_count>0?<p> and {notification.sender_count} others </p>:""}
+                            <p className="type-of-action">{notification.notification_type} {notification.post_owner_name} post</p>
+                            <p className="chat-date">{notification.created_at.time_a_go}</p>
                         </div>
                     </a>
                 </div>
@@ -208,11 +231,9 @@ export class Notification extends React.Component{
 
         return (
             <div className="conv-holder">
-                <Scrollbars style={{ height: 486 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
-                    <div id="NotificationList">
-                        {_notifications}
-                    </div>
-                </Scrollbars>
+                <div id="NotificationList">
+                    {_notifications}
+                </div>
             </div>
         );
 

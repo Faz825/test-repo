@@ -3398,7 +3398,6 @@ export default StyleSheet.create({
     },
     "chat-body": {
         "maxHeight": 486,
-        "position": "relative",
         "overflow": "hidden",
         "zIndex": 0
     },
@@ -3447,7 +3446,8 @@ export default StyleSheet.create({
     "msg-holder chat-body connection-name": {
         "font": "0.8em \"montserratregular\", sans-serif",
         "color": "#61b3de",
-        "display": "block"
+        "display": "block",
+        "marginBottom": 2
     },
     "msg-holder chat-body msg": {
         "marginTop": 5,
@@ -3459,9 +3459,15 @@ export default StyleSheet.create({
     "msg-holder chat-body chat-date": {
         "font": "0.6em 'montserratsemi_bold', sans-serif",
         "position": "absolute",
-        "right": 12,
-        "top": 10,
+        "right": 10,
+        "bottom": 0,
         "color": "#7795a8"
+    },
+    "msg-holder chat-body type-of-action": {
+        "font": "11px 'montserratregular', sans-serif",
+        "color": "#2d5164",
+        "marginTop": -1,
+        "fontSize": 0.7
     },
     "chat-msg-holder": {
         "paddingTop": 30,
@@ -3859,6 +3865,24 @@ export default StyleSheet.create({
         "paddingBottom": 12,
         "paddingLeft": 0
     },
+    "notifi-inner-wrapper pg-secratery-chat-box-see-all": {
+        "backgroundColor": "#fff",
+        "borderBottomLeftRadius": 5,
+        "borderBottomRightRadius": 5,
+        "paddingTop": 12,
+        "paddingRight": 0,
+        "paddingBottom": 5,
+        "paddingLeft": 0,
+        "borderTop": "1px solid #dee6eb"
+    },
+    "pg-secratery-chat-box-see-all p": {
+        "color": "#61b3de",
+        "display": "block",
+        "font": "1em \"montserratregular\",sans-serif",
+        "textAlign": "center",
+        "textDecoration": "none",
+        "cursor": "pointer"
+    },
     "box-header-wrapper box-title": {
         "color": "#2d5164",
         "font": "14px \"montserratsemi_bold\",sans-serif",
@@ -3890,7 +3914,8 @@ export default StyleSheet.create({
         "marginLeft": 0,
         "textTransform": "capitalize",
         "verticalAlign": "top",
-        "float": "right"
+        "float": "right",
+        "width": "100%"
     },
     "box-header-wrapper pg-top-mark-setings input": {
         "marginTop": 0,
@@ -3900,6 +3925,9 @@ export default StyleSheet.create({
     },
     "box-header-wrapper notifi-sub-link fa": {
         "marginRight": 5
+    },
+    "notifi-inner-wrapper box-header-wrapper pg-top-mark-setings": {
+        "textAlign": "right"
     },
     "middle-content-wrapper": {
         "minWidth": 500

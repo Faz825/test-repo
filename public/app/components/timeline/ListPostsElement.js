@@ -55,8 +55,8 @@ class SinglePost extends React.Component{
 
         this.lifeEvent="";
         this.sharedPost = false;
-    }
 
+    }
 
     onLikeClick(event){
 
@@ -255,7 +255,6 @@ class SinglePost extends React.Component{
     }
 
     render(){
-
         if(typeof  this.props.postItem == 'undefined'){
             return(<div />);
         }
@@ -284,8 +283,7 @@ class SinglePost extends React.Component{
         });
 
         return (
-
-            <div className="pg-timeline-white-box pg-top-round-border pg-add-margin-top">
+            <div className="pg-timeline-white-box pg-top-round-border pg-add-margin-top" id={_post.post_id}>
                 <div className="row row-clr pg-newsfeed-section-common-content-inner pg-rm-padding-bottom">
                     <div className="row row-clr pg-newsfeed-section-common-content-post-info">
                         <div className="pg-user-pro-pic">
