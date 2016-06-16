@@ -277,6 +277,7 @@ router.post('/notes/delete-note', NotesController.deleteNote);
 router.post('/introduction/update', UserController.updateIntroduction);
 router.get('/introduction/:uname',UserController.retrieveIntroduction);
 router.get('/notifications/get-notifications',NotificationController.getNotifications);
+router.post('/notifications/update-notifications',NotificationController.updateNotifications);
 
 
 module.exports = router;

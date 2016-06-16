@@ -130,6 +130,8 @@ var TimeLinePostHandler ={
         var _async = require('async'),
             Post = require('mongoose').model('Post'),
             SubscribedPost = require('mongoose').model('SubscribedPost'),
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             _post = postData;
         _async.waterfall([
             //GET FRIEND LIST BASED ON POST OWNER
@@ -175,6 +177,58 @@ var TimeLinePostHandler ={
                     callBack(null);
                 })
 
+            },
+            function getOtherSubscribedUsers(callBack){
+
+                var _data = {
+                    post_id:Util.toObjectId(_post.shared_post_id),
+                    user_id:{$ne:Util.toObjectId(_post.created_by)}
+                }
+                SubscribedPost.getSubscribedUsers(_data, function(res){
+                    var _users = [];
+                    for(var i = 0; i < res.users.length; i++){
+                        _users.push(res.users[i].user_id);
+                    }
+
+                    callBack(null, _users);
+                })
+            },
+            function addNotification(subscribed_users, callBack){
+
+                var notification_id = 0;
+
+                if(subscribed_users.length > 0){
+
+                    var _data = {
+                        sender:_post.created_by,
+                        notification_type:Notifications.SHARE,
+                        notified_post:_post.shared_post_id
+                    }
+                    Notification.saveNotification(_data, function(res){
+                        if(res.status == 200){
+                            notification_id = res.result._id;
+                        }
+                        callBack(null, subscribed_users, notification_id);
+                    });
+
+                } else{
+                    callBack(null, subscribed_users, notification_id);
+                }
+            },
+
+            function notifyUsers(subscribed_users, notification_id, callBack){
+
+                if(subscribed_users.length > 0 && typeof notification_id != 0){
+                    var _data = {
+                        notification_id:notification_id,
+                        recipients:subscribed_users
+                    };
+                    NotificationRecipient.saveRecipients(_data, function(res){
+                        callBack(null);
+                    })
+                } else{
+                    callBack(null);
+                }
             },
             //GET SHARED POST FROM CACHE
             function getPostFromCache(callBack){
