@@ -3686,6 +3686,9 @@ export default StyleSheet.create({
         "position": "relative",
         "cursor": "pointer",
         "borderBottom": "1px solid #dee6eb",
+        "background": "#f2f6f9"
+    },
+    "chat-notification-header msg-holderread": {
         "background": "#fff"
     },
     "chat-notification-header msg-holder a": {

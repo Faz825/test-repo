@@ -2950,6 +2950,11 @@ textarea{
 	cursor: pointer;
 	border-bottom: 1px solid #dee6eb;
 	background: #fff;
+	background: #f2f6f9;
+}
+
+.chat-notification-header .msg-holder.read{
+	background: #fff;
 }
 
 .chat-notification-header .msg-holder a{

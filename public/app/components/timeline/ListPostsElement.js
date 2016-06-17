@@ -9,6 +9,7 @@ import Lib    from '../../middleware/Lib';
 import CommentElement from './CommentElement';
 import ProgressBar from '../elements/ProgressBar';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import Scroll from 'react-scroll';
 const ListPostsElement  = ({posts,onPostSubmitSuccess})=>{
 
         if(posts.length <= 0){
@@ -55,6 +56,22 @@ class SinglePost extends React.Component{
 
         this.lifeEvent="";
         this.sharedPost = false;
+
+    }
+
+    componentDidMount(){
+        let url = window.location.pathname.split('/');
+        let id = url[url.length-1];
+        let scroller = Scroll.directScroller;
+
+        if (url.length == 4) {
+            scroller.scrollTo(id, {
+                duration: 1500,
+                delay: 100,
+                smooth: true,
+                offset: -52
+            })
+        }
 
     }
 
