@@ -20,6 +20,7 @@ var TimeLinePostHandler ={
             Post = require('mongoose').model('Post'),
             SubscribedPost = require('mongoose').model('SubscribedPost'),
             _post = postData;
+
         _async.waterfall([
             //GET FRIEND LIST BASED ON POST OWNER
             function getPostVisibleUsers(callBack){
@@ -53,6 +54,8 @@ var TimeLinePostHandler ={
                     if(postData.status ==200){
                         _post.post_id       = postData.post._id
                         _post['created_at'] = postData.post.created_at;
+                        _post['shared_post'] = {};
+                        _post.shared_post_id = "";
                     }
                     callBack(null)
                 });
@@ -127,6 +130,7 @@ var TimeLinePostHandler ={
      * @param callBack
      */
     sharePost:function(postData,callBack){
+
         var _async = require('async'),
             Post = require('mongoose').model('Post'),
             SubscribedPost = require('mongoose').model('SubscribedPost'),
@@ -332,6 +336,8 @@ var TimeLinePostHandler ={
                     if(postData.status ==200){
                         _post.post_id       = postData.post._id
                         _post['created_at'] = postData.post.created_at;
+                        _post['shared_post'] = {};
+                        _post.shared_post_id = "";
                     }
                     callBack(null)
                 });
