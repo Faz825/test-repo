@@ -20,7 +20,8 @@ GLOBAL.PostConfig={
     VIDEO_POST:"VP",
     LOCATION_POST:"LP",
     ALBUM_POST:"AP",
-    SHARED_POST:"SP"
+    SHARED_POST:"SP",
+    SHARE_PREFIX:"post:share:"
 };
 
 
@@ -227,8 +228,16 @@ PostSchema.statics.db_getPost = function(criteria,callBack){
 }
 
 
+/**
+ *
+ */
+PostSchema.statics.addShareToRedis = function(postId,data,callback){
+    var _cache_key = PostConfig.SHARE_PREFIX+postId;
+    CacheEngine.addBottomToList(_cache_key,data,function(outData){
+        callback(outData);
+    });
 
-
+}
 
 
 /**
@@ -294,11 +303,6 @@ PostSchema.statics.postList=function(userId,posts,callBack){
 
             });
 
-
-
-
-
-
         },
         function(err){
             _tmp_created_date.sort(function(a,b){
@@ -316,16 +320,7 @@ PostSchema.statics.postList=function(userId,posts,callBack){
         }
     );
 
-
-
-
-
 }
-
-
-
-
-
 
 
 /**

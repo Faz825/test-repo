@@ -76,6 +76,20 @@ NotificationSchema.statics.saveNotification = function(new_notification,callBack
  */
 NotificationSchema.statics.getNotifications = function(criteria,callBack){
 
+    this.find(criteria).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    })
 
 };
 

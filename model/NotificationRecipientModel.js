@@ -60,9 +60,11 @@ NotificationRecipientSchema.statics.saveRecipients = function(data,callBack){
  * @param criteria
  * @param callBack
  */
-NotificationRecipientSchema.statics.getRecipientNotifications = function(criteria,callBack){
+NotificationRecipientSchema.statics.getRecipientNotifications = function(criteria,days,callBack){
 
     var _this = this;
+
+    console.log(criteria)
 
     _this.aggregate([
         { $match:criteria},
@@ -74,16 +76,23 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
                 as:"notificationData"
             }
         },
-        {$unwind: '$notificationData'},
+        { $unwind: '$notificationData'},
         {
-            $lookup:{
+            $match: {
+                "notificationData.created_at" : {$gt:new Date(Date.now() - days*24*60*60 * 1000)}
+            }
+        },
+        {
+            $lookup: {
                 from:"posts",
                 localField:"notificationData.notified_post",
                 foreignField:"_id",
                 as:"postData"
             }
         },
-        {$unwind: '$postData'},
+        {
+            $unwind: '$postData'
+        },
         {
             $project:{
                 _id:1,

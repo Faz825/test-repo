@@ -52,7 +52,7 @@ var TimeLinePostHandler ={
                 Post.addNew(_post,function(postData){
 
                     if(postData.status ==200){
-                        _post.post_id       = postData.post._id
+                        _post.post_id       = postData.post._id;
                         _post['created_at'] = postData.post.created_at;
                         _post['shared_post'] = {};
                         _post.shared_post_id = "";
@@ -102,7 +102,7 @@ var TimeLinePostHandler ={
                     index:'idx_usr'
                 };
 
-                _post['date'] = DateTime.explainDate(_post.created_at)
+                _post['date'] = DateTime.explainDate(_post.created_at);
                 //Find User from Elastic search
                 ES.search(query,function(csResultSet){
                     delete _post['created_by'];
@@ -131,6 +131,8 @@ var TimeLinePostHandler ={
      */
     sharePost:function(postData,callBack){
 
+        console.log("sharePost")
+
         var _async = require('async'),
             Post = require('mongoose').model('Post'),
             SubscribedPost = require('mongoose').model('SubscribedPost'),
@@ -140,6 +142,7 @@ var TimeLinePostHandler ={
         _async.waterfall([
             //GET FRIEND LIST BASED ON POST OWNER
             function getPostVisibleUsers(callBack){
+                console.log("getPostVisibleUsers")
                 // Add to Cache when it is public or Friend only
                 // TODO:: think for Friend only algorithm separately
                 if(parseInt(_post.post_visible_mode) == PostVisibleMode.PUBLIC ||
@@ -164,15 +167,23 @@ var TimeLinePostHandler ={
                 }
             },
             function savePostInDb(callBack){
+                console.log("savePostInDb")
                 Post.addNew(_post,function(postData){
                     if(postData.status ==200){
-                        _post.post_id       = postData.post._id
+                        _post.post_id       = postData.post._id;
                         _post['created_at'] = postData.post.created_at;
                     }
                     callBack(null)
                 });
             },
+            function saveToRedis(callBack){
+                console.log("saveToRedis")
+                Post.addShareToRedis(_post.shared_post_id,_post.created_by, function(res){
+                    callBack(null)
+                });
+            },
             function subscribeToPost(callBack){
+                console.log("subscribeToPost")
                 var _data = {
                     user_id:_post.created_by,
                     post_id:_post.post_id
@@ -183,7 +194,7 @@ var TimeLinePostHandler ={
 
             },
             function getOtherSubscribedUsers(callBack){
-
+                console.log("getOtherSubscribedUsers")
                 var _data = {
                     post_id:Util.toObjectId(_post.shared_post_id),
                     user_id:{$ne:Util.toObjectId(_post.created_by)}
@@ -198,7 +209,7 @@ var TimeLinePostHandler ={
                 })
             },
             function addNotification(subscribed_users, callBack){
-
+                console.log("addNotification")
                 var notification_id = 0;
 
                 if(subscribed_users.length > 0){
@@ -221,7 +232,7 @@ var TimeLinePostHandler ={
             },
 
             function notifyUsers(subscribed_users, notification_id, callBack){
-
+                console.log("notifyUsers")
                 if(subscribed_users.length > 0 && typeof notification_id != 0){
                     var _data = {
                         notification_id:notification_id,
@@ -236,7 +247,7 @@ var TimeLinePostHandler ={
             },
             //GET SHARED POST FROM CACHE
             function getPostFromCache(callBack){
-
+                console.log("getPostFromCache")
 
                 var _pay_load = {
                     q:"post_id:"+_post.shared_post_id,
@@ -262,11 +273,12 @@ var TimeLinePostHandler ={
 
             },
             function saveInCache(callBack){
-
+                console.log("saveInCache")
                Post.addToCache(_post.visible_users,_post,function(chData){ });
                 callBack(null)
             },
             function finalizedPost(callBack){
+                console.log("finalizedPost")
                 var query={
                     q:"user_id:"+_post.created_by.toString(),
                     index:'idx_usr'
@@ -413,7 +425,7 @@ var TimeLinePostHandler ={
         });
 
 
-    },
+    }
 
 };
 
