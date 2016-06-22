@@ -5,6 +5,7 @@
 import React from 'react';
 import InfiniteScroll from  'react-infinite-scroll';
 import Session  from '../../middleware/Session';
+import Socket  from '../../middleware/Socket';
 import Lib    from '../../middleware/Lib';
 import CommentElement from './CommentElement';
 import ProgressBar from '../elements/ProgressBar';
@@ -86,7 +87,17 @@ class SinglePost extends React.Component{
             headers: { 'prg-auth-header':this.loggedUser.token },
         }).done(function (data, text) {
             if(data.status.code == 200){
-               this.setState({is_i_liked:true});
+                this.setState({is_i_liked:true});
+                console.log(data);
+                console.log("Like Notification")
+                let _notificationData = {
+                    post_id:data.like.post_id,
+                    notification_type:"like",
+                    notification_sender:this.loggedUser
+                };
+                console.log(_notificationData);
+                Socket.sendNotification(_notificationData);
+
             }
         }.bind(this));
 
@@ -160,6 +171,24 @@ class SinglePost extends React.Component{
 
                 if (data.status.code == 200) {
 
+                    console.log("Share Post Subscribe")
+                    let _subscribeData = {
+                        post_id:data.post.post_id,
+                        isOwnPost:true
+                    };
+                    console.log(_subscribeData);
+                    Socket.subscribe(_subscribeData);
+
+                    console.log(this.loggedUser)
+
+                    let _notificationData = {
+                        post_id:data.post.shared_post_id,
+                        notification_type:"share",
+                        notification_sender:this.loggedUser
+                    };
+                    console.log(_notificationData);
+                    Socket.sendNotification(_notificationData);
+
                     if(post_data.__own == _this.loggedUser.id ){
                         _this.props.onPostSubmitSuccess(data.post);
 
@@ -174,7 +203,7 @@ class SinglePost extends React.Component{
 
 
                 }
-            }
+            }.bind(this)
 
         });
     }

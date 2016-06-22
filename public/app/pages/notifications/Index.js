@@ -5,11 +5,18 @@
 import React from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Session  from '../../middleware/Session';
+import Socket  from '../../middleware/Socket';
 import SecretaryThumbnail from '../../components/elements/SecretaryThumbnail';
 
 export default class Index extends React.Component{
     constructor(props){
         super(props);
+
+        //notification will work on http
+        if (window.location.protocol == 'https:' ) {
+            var url_arr = window.location.href.split('https');
+            window.location.href = 'http'+url_arr[1];
+        }
 
         this.state={
             loggedUser:Session.getSession('prg_lg'),
@@ -24,7 +31,85 @@ export default class Index extends React.Component{
         this.currentTime = new Date();
         this.currentTimeUpdate = this.currentTimeUpdate.bind(this);
         this.loadNotifications(1);
+        this.listenToNotification();
+    }
 
+    listenToNotification(){
+        let _this = this;
+
+        Socket.listenToNotification(function(data){
+            console.log("Got Notification")
+            if(data.user != _this.state.loggedUser.user_name){
+
+                console.log(data)
+
+                _this.state.notificationCount++;
+                let _existingNotifications = _this.state.notifications;
+                let _newNotifications = [];
+                let _curNotification = {};
+                let _alreadyExist = 0;
+
+                for(var j = _existingNotifications.length - 1; j >= 0; j--){
+
+                    if(_existingNotifications[j].post_id == data.post_id && _existingNotifications[j].notification_type == data.notification_type){
+                        _alreadyExist = 2;
+                        _curNotification = _existingNotifications[j];
+                    }else if(_existingNotifications[j].post_id == data.post_id && _existingNotifications[j].notification_type != data.notification_type){
+                        _alreadyExist = 1;
+                        _curNotification = _existingNotifications[j];
+                    }
+                    else{
+                        _newNotifications.unshift(_existingNotifications[j]);
+                    }
+                }
+
+                if(_alreadyExist == 2){
+                    _curNotification.sender_profile_picture = data.notification_sender.profile_image;
+                    let _sender = _curNotification.sender_name;
+                    _curNotification.sender_name = data.notification_sender.first_name+" "+data.notification_sender.last_name;
+                    let _senderFirstArray = _sender.split("and");
+                    if(_senderFirstArray.length > 1){
+                        let _senderSecondArray = _senderFirstArray[0].trim().split(",");
+                        if(_senderSecondArray.length > 1){
+                            _curNotification.sender_count++;
+                            _curNotification.sender_name += ", "+_senderSecondArray[0].trim()+" and "+_senderSecondArray[1].trim();
+                        } else{
+                            _curNotification.sender_name += " and "+_senderSecondArray[0].trim();
+                        }
+                    } else{
+                        _curNotification.sender_name += " and "+_senderFirstArray[0].trim();
+                    }
+                    _newNotifications.unshift(_curNotification);
+
+                }else if(_alreadyExist == 1) {
+                    _curNotification.sender_profile_picture = data.notification_sender.profile_image;
+                    _curNotification.sender_name = data.notification_sender.first_name+" "+data.notification_sender.last_name;
+                    _curNotification.notification_type = data.notification_type;
+                    _newNotifications.unshift(_curNotification);
+
+                }else {
+                    $.ajax({
+                        url: '/notifications/get-details',
+                        method: "GET",
+                        dataType: "JSON",
+                        data: {post_id:data.post_id},
+                        headers: { 'prg-auth-header':_this.state.loggedUser.token }
+                    }).done( function (data, text) {
+                        console.log(data);
+                        if(data.status.code == 200){
+                            _this.setState({notificationCount:data.unreadCount});
+                            _this.setState({notifications:data.notifications});
+                        }
+                    }.bind(_this));
+
+                }
+
+                _this.setState({notifications:_newNotifications});
+
+            }
+
+
+        });
     }
 
     loadNotifications(days){
@@ -36,7 +121,7 @@ export default class Index extends React.Component{
             data: {days:days},
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
-            console.log(data);
+
             if(data.status.code == 200){
                 this.setState({notificationCount:data.unreadCount});
                 this.setState({notifications:data.notifications});

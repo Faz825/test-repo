@@ -82,6 +82,7 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
                 "notificationData.created_at" : {$gt:new Date(Date.now() - days*24*60*60 * 1000)}
             }
         },
+        { $sort:{ "notificationData.created_at":-1}},
         {
             $lookup: {
                 from:"posts",
@@ -105,8 +106,8 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
                 post_id:"$notificationData.notified_post",
                 post_owner:"$postData.created_by"
             }
-        },
-        { $sort:{ "created_at":-1}}
+        }
+
     ], function(err, resultSet){
         if(!err){
 

@@ -319,6 +319,11 @@ var NotificationController ={
         }
 
 
+    },
+
+    getDetails:function(req,res){
+        console.log("=== getDetails ===");console.log(req)
+        console.log(req.query);
     }
 
 };

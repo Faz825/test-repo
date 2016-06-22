@@ -12,6 +12,7 @@ var CommentController ={
      * @returns {number}
      */
     addComment:function(req,res){
+
         var outPut ={}
         if((typeof req.body.__content == 'undefined' || typeof req.body.__content == "") && (typeof req.body.__img == 'undefined' || req.body.__img == "")){
             outPut['status']    = ApiHelper.getMessage(400, Alert.COMMENT_CONTENT_EMPTY, Alert.ERROR);
@@ -56,6 +57,7 @@ var CommentController ={
             },
             //COPY CONTENT TO CDN
             function copyToCDN(callBack){
+
 
                 _commentData['upload'] = [];
                 if(typeof req.body.__img != 'undefined' && req.body.__img != ""){

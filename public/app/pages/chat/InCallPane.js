@@ -12,7 +12,7 @@ export default class InCallPane extends React.Component{
         if (Session.isSessionSet('prg_lg')) {
             this.b6 = Chat.b6;
             Chat.initChat(this.b6);
-            //Socket.connect();
+            Socket.connect();
         }
     }
 

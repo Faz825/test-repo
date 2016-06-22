@@ -28,11 +28,24 @@ export default class CommentElement extends React.Component{
                 data:commentData,
                 success: function (data, text) {
                     if (data.status.code == 200) {
-                        let _data = {
-                            data:data,
-                            isOwnPost:true
+                        console.log(data);
+
+                        console.log("Comment Subscribe")
+                        let _subscribeData = {
+                            post_id:data.comment.post_id,
+                            isOwnPost:false
                         };
-                        //Socket.subscribe(_data);
+                        console.log(_subscribeData);
+                        Socket.subscribe(_subscribeData);
+
+                        let _notificationData = {
+                            post_id:data.comment.post_id,
+                            notification_type:"comment",
+                            notification_sender:this.state.loggedUser
+                        };
+                        console.log(_notificationData);
+                        Socket.sendNotification(_notificationData);
+
                         this.setState({text:""});
                         this.setState({imgComment:""});
                         document.getElementById('comment_input').innerHTML = "";

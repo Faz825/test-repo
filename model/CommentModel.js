@@ -116,6 +116,7 @@ CommentSchema.statics.getCommentCount = function(postId,callBack){
 CommentSchema.statics.addToCache=function(postId,data){
     var _cache_key = CommentConfig.CACHE_PREFIX+postId;
     CacheEngine.addBottomToList(_cache_key,data,function(outData){
+
     });
 
 }

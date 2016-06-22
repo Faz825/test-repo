@@ -16,6 +16,11 @@ export default class Index extends React.Component{
 
     constructor(props) {
         super(props);
+        //notification will work on http
+        if (window.location.protocol == 'https:' ) {
+            var url_arr = window.location.href.split('https');
+            window.location.href = 'http'+url_arr[1];
+        }
         this.state={
             loggedUser:Session.getSession('prg_lg'),
             uname:this.getUrl(),

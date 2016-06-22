@@ -16,7 +16,7 @@ export default class AddPostElement extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            uuid:this.IDGenerator(),
+            uuid:this.IDGenerator()
         }
 
     }
@@ -145,12 +145,15 @@ export class TextPostElement extends React.Component{
 
         if (data.status.code == 200) {
 
+            console.log(data.post.post_id);
+
             let _data = {
-                data:data,
+                post_id:data.post.post_id,
                 isOwnPost:true
             };
 
-            //Socket.subscribe(_data);
+            console.log("New Post Subscribe")
+            Socket.subscribe(_data);
 
             this.props.afterPostSubmit(data.post)
 
