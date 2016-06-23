@@ -5,14 +5,13 @@
 import React from 'react';
 import Session  from '../../middleware/Session';
 import Chat  from '../../middleware/Chat';
-import Socket  from '../../middleware/Socket';
+
 export default class InCallPane extends React.Component{
     constructor(pros){
         super(pros);
         if (Session.isSessionSet('prg_lg')) {
             this.b6 = Chat.b6;
             Chat.initChat(this.b6);
-            Socket.connect();
         }
     }
 

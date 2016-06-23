@@ -24,8 +24,7 @@ export default class Index extends React.Component{
             minutes: "",
             notifications: [],
             notificationCount: 0,
-            seeAllNotifications: false,
-            unreadNotificationIds: []
+            seeAllNotifications: false
         };
 
         this.currentTime = new Date();
@@ -38,35 +37,47 @@ export default class Index extends React.Component{
         let _this = this;
 
         Socket.listenToNotification(function(data){
-            console.log("Got Notification")
+            console.log("Got Notification in notification")
             if(data.user != _this.state.loggedUser.user_name){
 
                 console.log(data)
+
+                var cur_post_id = data.data.post_id;
+
+                console.log(cur_post_id)
 
                 _this.state.notificationCount++;
                 let _existingNotifications = _this.state.notifications;
                 let _newNotifications = [];
                 let _curNotification = {};
-                let _alreadyExist = 0;
+                let _alreadyExist = false;
+                console.log("existing notification length = "+_existingNotifications.length);
 
                 for(var j = _existingNotifications.length - 1; j >= 0; j--){
+                    console.log(j);
 
-                    if(_existingNotifications[j].post_id == data.post_id && _existingNotifications[j].notification_type == data.notification_type){
+                    if(_existingNotifications[j].post_id == data.data.post_id && _existingNotifications[j].notification_type == data.data.notification_type){
                         _alreadyExist = 2;
                         _curNotification = _existingNotifications[j];
-                    }else if(_existingNotifications[j].post_id == data.post_id && _existingNotifications[j].notification_type != data.notification_type){
+                    }else if(_existingNotifications[j].post_id == data.data.post_id && _existingNotifications[j].notification_type != data.data.notification_type){
                         _alreadyExist = 1;
                         _curNotification = _existingNotifications[j];
+                        _newNotifications.unshift(_existingNotifications[j]);
                     }
                     else{
                         _newNotifications.unshift(_existingNotifications[j]);
                     }
                 }
 
+                console.log("_newNotifications === 1 === > ")
+                console.log(_newNotifications);
+
                 if(_alreadyExist == 2){
-                    _curNotification.sender_profile_picture = data.notification_sender.profile_image;
+                    console.log(_curNotification)
+                    console.log("New notification Already exist in the list... Going to change the data");
+                    _curNotification.sender_profile_picture = data.data.notification_sender.profile_image;
                     let _sender = _curNotification.sender_name;
-                    _curNotification.sender_name = data.notification_sender.first_name+" "+data.notification_sender.last_name;
+                    _curNotification.sender_name = data.data.notification_sender.first_name+" "+data.data.notification_sender.last_name;
                     let _senderFirstArray = _sender.split("and");
                     if(_senderFirstArray.length > 1){
                         let _senderSecondArray = _senderFirstArray[0].trim().split(",");
@@ -79,32 +90,44 @@ export default class Index extends React.Component{
                     } else{
                         _curNotification.sender_name += " and "+_senderFirstArray[0].trim();
                     }
+                    console.log("_curNotification === 1 === > ")
+                    console.log(_curNotification)
                     _newNotifications.unshift(_curNotification);
-
                 }else if(_alreadyExist == 1) {
-                    _curNotification.sender_profile_picture = data.notification_sender.profile_image;
-                    _curNotification.sender_name = data.notification_sender.first_name+" "+data.notification_sender.last_name;
-                    _curNotification.notification_type = data.notification_type;
+                    console.log(_curNotification)
+                    console.log("New notification post exist in the list... Going to change the data");
+                    _curNotification.sender_profile_picture = data.data.notification_sender.profile_image;
+                    _curNotification.sender_name = data.data.notification_sender.first_name+" "+data.data.notification_sender.last_name;
+                    _curNotification.notification_type = data.data.notification_type;
+                    console.log("_curNotification === 2 === > ")
+                    console.log(_curNotification)
                     _newNotifications.unshift(_curNotification);
 
                 }else {
+                    console.log("New notification not exist... going to get the details from server")
+                    console.log(_this.state.loggedUser.token);console.log(cur_post_id)
                     $.ajax({
                         url: '/notifications/get-details',
                         method: "GET",
                         dataType: "JSON",
-                        data: {post_id:data.post_id},
+                        data: {post_id:cur_post_id},
                         headers: { 'prg-auth-header':_this.state.loggedUser.token }
                     }).done( function (data, text) {
                         console.log(data);
                         if(data.status.code == 200){
-                            _this.setState({notificationCount:data.unreadCount});
-                            _this.setState({notifications:data.notifications});
+                            //_this.setState({notificationCount:data.unreadCount});
+                            //_this.setState({notifications:data.notifications});
                         }
                     }.bind(_this));
 
                 }
+                console.log("_newNotifications === 2 === > ")
+                console.log(_newNotifications);
 
                 _this.setState({notifications:_newNotifications});
+
+                console.log("_this.state.notifications === > ")
+                console.log(_this.state.notifications)
 
             }
 
@@ -125,6 +148,7 @@ export default class Index extends React.Component{
             if(data.status.code == 200){
                 this.setState({notificationCount:data.unreadCount});
                 this.setState({notifications:data.notifications});
+                console.log(this.state.notifications);
             }
         }.bind(this));
 
@@ -236,6 +260,11 @@ export default class Index extends React.Component{
             greating = 'Good Evening';
         }
 
+        const {
+            notifications,
+            notificationCount
+            }=this.state;
+
         return (
             <div className="notificationsHolder container-fluid">
                 <div className="row row-clr pg-news-page-content">
@@ -248,7 +277,7 @@ export default class Index extends React.Component{
                                 <div className="middle-info-holder">
                                     <p className="users-time">{this.state.hours + ":" + this.state.minutes + " " + partOfDay}</p>
                                     <p className="user-date">{date[2] + "," + date[1] + " " + date[3] + ", " + date[0]}</p>
-                                    <p className="greeting-and-notifi">{greating + " " + loggedUser.first_name } {this.state.notificationCount > 0 ? ", you have "+this.state.notificationCount+" Notifications":""}</p>
+                                    <p className="greeting-and-notifi">{greating + " " + loggedUser.first_name } {notificationCount > 0 ? ", you have "+notificationCount+" Notifications":""}</p>
                                 </div>
                             </div>
                             <div className="row notification-box-holder">
@@ -270,7 +299,7 @@ export default class Index extends React.Component{
                                             {this.state.notifications.length > 5?
                                                 <Scrollbars style={{ height: 360 }}>
                                                     <div className="chat-notification-header" id="unread_chat_list">
-                                                        <Notification notifications = {this.state.notifications} clickNotification = {this.redirectToNotification.bind(this)}/>
+                                                        <Notification notifications = {notifications} clickNotification = {this.redirectToNotification.bind(this)}/>
                                                     </div>
                                                 </Scrollbars>
                                                 :

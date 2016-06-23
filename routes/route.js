@@ -279,5 +279,6 @@ router.get('/introduction/:uname',UserController.retrieveIntroduction);
 router.get('/notifications/get-notifications',NotificationController.getNotifications);
 router.post('/notifications/update-notifications',NotificationController.updateNotifications);
 router.get('/notifications/get-details',NotificationController.getDetails);
+router.get('/notifications/get-notification-count',NotificationController.getNotificationCount);
 
 module.exports = router;

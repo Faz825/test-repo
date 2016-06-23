@@ -324,6 +324,23 @@ var NotificationController ={
     getDetails:function(req,res){
         console.log("=== getDetails ===");console.log(req)
         console.log(req.query);
+    },
+
+    getNotificationCount:function(req,res){
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            _async = require('async'),
+            user_id = Util.getCurrentSession(req).id,
+            criteria = {recipient:Util.toObjectId(user_id),read_status:false};
+
+        NotificationRecipient.getUnreadCount(criteria,function(result){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                count:result.result.length
+            };
+            res.status(200).json(outPut);
+        })
+
+
     }
 
 };

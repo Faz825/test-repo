@@ -930,7 +930,6 @@ input[type=number]::-webkit-outer-spin-button {
 	height: 110px;
 	background-color: #eceef1;
 	box-shadow: 2px 1px 8px -2px #000;
-	display: none;
 }
 .pg-footer-left-options-panel {
 	width: 110px;
@@ -987,6 +986,18 @@ input[type=number]::-webkit-outer-spin-button {
 	width: 80px;
 	background: #ECF6FC;
 }
+
+.pg-footer-left-options-panel .pgs-secratery-img .counter {
+	position: absolute;
+	top: 2px;
+	right: 4px;
+	padding: 4px 10px;
+	display: block;
+	color: #fff;
+	background: #61B3DE;
+	border-radius: 999px;
+}
+
 .pg-footer-left-options-panel .pgs-secratery-img img{
 	height: auto;
 	width: 100%;

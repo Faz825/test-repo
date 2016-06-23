@@ -82,7 +82,6 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
                 "notificationData.created_at" : {$gt:new Date(Date.now() - days*24*60*60 * 1000)}
             }
         },
-        { $sort:{ "notificationData.created_at":-1}},
         {
             $lookup: {
                 from:"posts",
@@ -106,7 +105,8 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
                 post_id:"$notificationData.notified_post",
                 post_owner:"$postData.created_by"
             }
-        }
+        },
+        { $sort:{ "notificationData.created_at":-1}},
 
     ], function(err, resultSet){
         if(!err){
@@ -147,6 +147,31 @@ NotificationRecipientSchema.statics.updateRecipientNotification = function(crite
                 callBack({status:400,error:err});
             }
         });
+
+};
+
+/**
+ * Get notifications based on criteria
+ * @param criteria
+ * @param callBack
+ */
+NotificationRecipientSchema.statics.getUnreadCount = function(criteria,callBack){
+console.log(criteria)
+    this.find(criteria).exec(function(err,resultSet){
+        console.log(resultSet);
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    })
 
 };
 
