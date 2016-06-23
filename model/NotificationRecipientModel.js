@@ -106,7 +106,7 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
                 post_owner:"$postData.created_by"
             }
         },
-        { $sort:{ "notificationData.created_at":-1}},
+        { $sort:{ "created_at":-1}},
 
     ], function(err, resultSet){
         if(!err){
@@ -156,9 +156,9 @@ NotificationRecipientSchema.statics.updateRecipientNotification = function(crite
  * @param callBack
  */
 NotificationRecipientSchema.statics.getUnreadCount = function(criteria,callBack){
-console.log(criteria)
+
     this.find(criteria).exec(function(err,resultSet){
-        console.log(resultSet);
+
 
         if(!err){
             callBack({

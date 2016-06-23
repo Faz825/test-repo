@@ -57,9 +57,7 @@ var NotificationController ={
 
                 _async.each(_redisIds, function(_redisId, callBack){
 
-                    console.log("====="+_redisId+"=====");
-
-                    CacheEngine.getList(_redisId,0,3,function(chResultSet){
+                    CacheEngine.getList(_redisId,0,10,function(chResultSet){
 
                         var _tempRedisIdArr = _redisId.split(":");
                         var _tempPostId = _tempRedisIdArr[2];
@@ -67,7 +65,6 @@ var NotificationController ={
 
                         _notifications[_tempPostId+_tempNotificationType]['sender_count'] = chResultSet.result_count;
 
-                        console.log(chResultSet.result_count)
                         var _res = chResultSet.result;
                         var x = 0;
                         for(var i = 0; i < _res.length; i++){
@@ -82,7 +79,6 @@ var NotificationController ={
 
                             if(typeof _res[i] === 'object'){
 
-                                //console.log(user_id+"========="+_res[i].commented_by.user_id);console.log(user_id !== _res[i].commented_by.user_id);
                                 if(user_id !== _res[i].commented_by.user_id){
                                     x++;
                                     if(_notifications[_tempPostId+_tempNotificationType]['senders'].indexOf(_res[i].commented_by.user_id) == -1){
@@ -104,7 +100,6 @@ var NotificationController ={
 
                             } else{
 
-                                //console.log(user_id+"========="+_res[i].toString());console.log(user_id !== _res[i].toString());
                                 if(user_id !== _res[i].toString()){
                                     x++;
                                     if(_notifications[_tempPostId+_tempNotificationType]['senders'].indexOf(_res[i].toString()) == -1){
@@ -145,7 +140,6 @@ var NotificationController ={
                                 };
                                 //Find User from Elastic search
                                 ES.search(query,function(csResultSet){
-                                    //console.log(csResultSet.result[0])
                                     _postOwners[_postOwnerId] = {
                                         name: csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name']+"'s",
                                         user_name: csResultSet.result[0]['user_name']
@@ -161,11 +155,7 @@ var NotificationController ={
                     },
                     function getSenders(callBack){
 
-                        //console.log("getSenders");
-
                         _async.each(_notificationSenderIds,function(_notificationSenderId, callBack){
-
-                            //console.log(_notificationSenders[_notificationSenderId])
 
                             if(typeof _notificationSenders[_notificationSenderId] == 'undefined'){
                                 var query={
@@ -174,7 +164,7 @@ var NotificationController ={
                                 };
                                 //Find User from Elastic search
                                 ES.search(query,function(csResultSet){
-                                    //console.log(csResultSet)
+
                                     _notificationSenders[_notificationSenderId] = {
                                         name : csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
                                         profile_image : csResultSet.result[0]['images']['profile_image']['http_url']
@@ -200,18 +190,12 @@ var NotificationController ={
             },
 
             function finalizeData(callBack){
-                //console.log("finalizeData")
-                //console.log(_notificationSenders)
+
                 for (var key in _notifications) {
 
-
                     var obj = _notifications[key];
-                    console.log(obj)
 
                     if(obj.senders.length > 0){
-
-                        //console.log(obj.senders[0])
-                        //console.log(_notificationSenders[obj.senders[0]])
 
                         var _data = {
                             post_id:obj.post_id,
@@ -253,7 +237,6 @@ var NotificationController ={
 
             }
         ],function(err){
-            //console.log(_formattedNotificationData);
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 unreadCount:_unreadCount,
@@ -270,9 +253,7 @@ var NotificationController ={
             _async = require('async'),
             _data = {read_status:true},
             _notification_ids = [],
-            user_id = Util.getCurrentSession(req).id;console.log(user_id);
-
-        console.log(req.body)
+            user_id = Util.getCurrentSession(req).id;
 
         if(typeof req.body.post_id != 'undefined' && typeof req.body.notification_type != 'undefined'){
             _async.waterfall([
@@ -280,7 +261,6 @@ var NotificationController ={
                     var _criteria = {notified_post:req.body.post_id, notification_type:req.body.notification_type};
                     Notification.getNotifications(_criteria, function(res){
                         for(var i = 0; i < res.result.length; i++){
-                            console.log(res.result[i]._id)
                             _notification_ids.push(res.result[i]._id)
                         }
                         callBack(null);
@@ -288,7 +268,6 @@ var NotificationController ={
                 },
                 function updateNotifications(callBack){
                     _async.each(_notification_ids,function(_notificationId, callBack){
-                        console.log(_notificationId);
 
                         var _criteria = {notification_id:Util.toObjectId(_notificationId), recipient:Util.toObjectId(user_id)};
 
@@ -322,8 +301,176 @@ var NotificationController ={
     },
 
     getDetails:function(req,res){
-        console.log("=== getDetails ===");console.log(req)
-        console.log(req.query);
+
+        var post_id = req.query.post_id,
+            notification_type = req.query.notification_type,
+            Post = require('mongoose').model('Post'),
+            _async = require('async'),
+            user_id = Util.getCurrentSession(req).id,
+            criteria = {_id:Util.toObjectId(post_id)},
+            _postData = {},
+            _notificationData = {},
+            _notificationSenderIds = [],
+            _notificationSenders = {},
+            _formattedData = {},
+            created_at = new Date(),
+            redis_id = "post:"+notification_type+":"+post_id;
+
+        _async.waterfall([
+            function getPostDetails(callback){
+                Post.db_getPost(criteria, function(result){
+                    _postData = result.post;
+                    callback(null);
+                });
+            },
+            function getNotificationData(callback){
+                CacheEngine.getList(redis_id,0,10,function(chResultSet){
+
+                    _notificationData['sender_count'] = chResultSet.result_count;
+                    _notificationData['senders'] = [];
+
+                    var _res = chResultSet.result;
+                    var x = 0;
+                    for(var i = 0; i < _res.length; i++){
+
+                        if(x > 2){
+                            break;
+                        }
+
+                        var _senderCount = _notificationData['sender_count'];
+                        _senderCount--;
+                        _notificationData['sender_count'] = _senderCount;
+
+                        if(typeof _res[i] === 'object'){
+
+                            if(user_id !== _res[i].commented_by.user_id){
+                                x++;
+                                if(_notificationData['senders'].indexOf(_res[i].commented_by.user_id) == -1){
+                                    _notificationData['senders'].push(_res[i].commented_by.user_id);
+                                }
+
+                                if(_notificationSenderIds.indexOf(_res[i].commented_by.user_id) == -1){
+
+                                    _notificationSenderIds.push(_res[i].commented_by.user_id);
+
+                                    _notificationSenders[_res[i].commented_by.user_id] = {
+                                        name : _res[i].commented_by.first_name+" "+_res[i].commented_by.last_name,
+                                        profile_image : _res[i].commented_by.images.profile_image.http_url
+                                    }
+
+                                }
+
+                            }
+
+                        } else{
+
+                            if(user_id !== _res[i].toString()){
+                                x++;
+                                if(_notificationData['senders'].indexOf(_res[i].toString()) == -1){
+                                    _notificationData['senders'].push(_res[i].toString());
+                                }
+
+                                if(_notificationSenderIds.indexOf(_res[i].toString()) == -1){
+                                    _notificationSenderIds.push(_res[i].toString());
+
+                                }
+                            }
+
+                        }
+                    }
+                    callback(null);
+                });
+            },
+            function getSenders(callBack){
+
+                _async.each(_notificationSenderIds,function(_notificationSenderId, callBack){
+
+                    if(typeof _notificationSenders[_notificationSenderId] == 'undefined'){
+                        var query={
+                            q:"user_id:"+_notificationSenderId.toString(),
+                            index:'idx_usr'
+                        };
+                        //Find User from Elastic search
+                        ES.search(query,function(csResultSet){
+
+                            _notificationSenders[_notificationSenderId] = {
+                                name : csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
+                                profile_image : csResultSet.result[0]['images']['profile_image']['http_url']
+                            }
+                            callBack(null);
+                        });
+                    }else{
+                        callBack(null);
+                    }
+
+
+                },function(err){
+                    callBack(null)
+
+                });
+
+            },
+            function finalizeData(callBack){
+
+                    if(_notificationData.senders.length > 0){
+
+                        var postOwnerName = "";
+                        if(_postData.created_by.user_id == user_id){
+                            postOwnerName = "your"
+                        }else{
+                            postOwnerName = _postData.created_by.first_name+" "+_postData.created_by.last_name
+                        }
+
+                        var _data = {
+                            post_id:_postData.post_id,
+                            notification_type:notification_type,
+                            read_status:false,
+                            created_at:DateTime.explainDate(created_at),
+                            post_owner_username:_postData.created_by.user_name,
+                            post_owner_name:postOwnerName,
+                            sender_profile_picture:_notificationSenders[_notificationData.senders[0]]['profile_image'],
+                            sender_name:_notificationSenders[_notificationData.senders[0]]['name'],
+                            sender_count:_notificationData.sender_count
+                        };
+
+                        if(_notificationData.senders.length == 2){
+                            if(_notificationData.sender_count == 0){
+                                _data['sender_name'] += ' and ';
+                            }else{
+                                _data['sender_name'] += ', ';
+                            }
+                            _data['sender_name'] += _notificationSenders[_notificationData.senders[1]]['name'];
+                        }
+
+                        if(_notificationData.senders.length == 3){
+                            _data['sender_name'] += ', '+ _notificationSenders[_notificationData.senders[1]]['name'];
+                            if(obj.sender_count == 0){
+                                _data['sender_name'] += ' and ';
+                            }else{
+                                _data['sender_name'] += ', ';
+                            }
+                            _data['sender_name'] += _notificationSenders[_notificationData.senders[2]]['name'];
+                        }
+
+                        _formattedData = _data;
+
+                    }
+
+
+                callBack(null);
+
+            }
+
+        ],function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                data:_formattedData
+
+            };
+            res.status(200).json(outPut);
+        });
+
+
     },
 
     getNotificationCount:function(req,res){

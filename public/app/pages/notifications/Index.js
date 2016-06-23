@@ -37,97 +37,76 @@ export default class Index extends React.Component{
         let _this = this;
 
         Socket.listenToNotification(function(data){
-            console.log("Got Notification in notification")
             if(data.user != _this.state.loggedUser.user_name){
 
-                console.log(data)
-
                 var cur_post_id = data.data.post_id;
-
-                console.log(cur_post_id)
 
                 _this.state.notificationCount++;
                 let _existingNotifications = _this.state.notifications;
                 let _newNotifications = [];
-                let _curNotification = {};
+                let _oldNotification = {}, _newNotification = {};
                 let _alreadyExist = false;
-                console.log("existing notification length = "+_existingNotifications.length);
 
                 for(var j = _existingNotifications.length - 1; j >= 0; j--){
-                    console.log(j);
-
                     if(_existingNotifications[j].post_id == data.data.post_id && _existingNotifications[j].notification_type == data.data.notification_type){
-                        _alreadyExist = 2;
-                        _curNotification = _existingNotifications[j];
-                    }else if(_existingNotifications[j].post_id == data.data.post_id && _existingNotifications[j].notification_type != data.data.notification_type){
-                        _alreadyExist = 1;
-                        _curNotification = _existingNotifications[j];
-                        _newNotifications.unshift(_existingNotifications[j]);
-                    }
-                    else{
+                        _alreadyExist = true;
+                        _oldNotification = _existingNotifications[j];
+                    } else{
                         _newNotifications.unshift(_existingNotifications[j]);
                     }
                 }
 
-                console.log("_newNotifications === 1 === > ")
-                console.log(_newNotifications);
+                if(_alreadyExist == true){
 
-                if(_alreadyExist == 2){
-                    console.log(_curNotification)
-                    console.log("New notification Already exist in the list... Going to change the data");
-                    _curNotification.sender_profile_picture = data.data.notification_sender.profile_image;
-                    let _sender = _curNotification.sender_name;
-                    _curNotification.sender_name = data.data.notification_sender.first_name+" "+data.data.notification_sender.last_name;
-                    let _senderFirstArray = _sender.split("and");
+                    let _oldsender = _oldNotification.sender_name;
+                    let _newsender = data.data.notification_sender.first_name+" "+data.data.notification_sender.last_name;
+                    let _oldSenderCount = _oldNotification.sender_count;
+
+                    let _senderFirstArray = _oldsender.split("and");
+
                     if(_senderFirstArray.length > 1){
                         let _senderSecondArray = _senderFirstArray[0].trim().split(",");
                         if(_senderSecondArray.length > 1){
-                            _curNotification.sender_count++;
-                            _curNotification.sender_name += ", "+_senderSecondArray[0].trim()+" and "+_senderSecondArray[1].trim();
+                            _oldSenderCount++;
+                            _newsender += ", "+_senderSecondArray[0].trim()+" and "+_senderSecondArray[1].trim();
                         } else{
-                            _curNotification.sender_name += " and "+_senderSecondArray[0].trim();
+                            _newsender += " and "+_senderSecondArray[0].trim();
                         }
                     } else{
-                        _curNotification.sender_name += " and "+_senderFirstArray[0].trim();
+                        _newsender += " and "+_senderFirstArray[0].trim();
                     }
-                    console.log("_curNotification === 1 === > ")
-                    console.log(_curNotification)
-                    _newNotifications.unshift(_curNotification);
-                }else if(_alreadyExist == 1) {
-                    console.log(_curNotification)
-                    console.log("New notification post exist in the list... Going to change the data");
-                    _curNotification.sender_profile_picture = data.data.notification_sender.profile_image;
-                    _curNotification.sender_name = data.data.notification_sender.first_name+" "+data.data.notification_sender.last_name;
-                    _curNotification.notification_type = data.data.notification_type;
-                    console.log("_curNotification === 2 === > ")
-                    console.log(_curNotification)
-                    _newNotifications.unshift(_curNotification);
 
-                }else {
-                    console.log("New notification not exist... going to get the details from server")
-                    console.log(_this.state.loggedUser.token);console.log(cur_post_id)
+                    let _createdAt = _oldNotification.created_at;
+                    _createdAt['time_a_go'] = 'Just Now';
+
+                    _newNotification = {
+                        post_id:_oldNotification.post_id,
+                        notification_type:_oldNotification.notification_type,
+                        read_status:false,
+                        created_at:_createdAt,
+                        post_owner_username:_oldNotification.post_owner_username,
+                        post_owner_name:_oldNotification.post_owner_name,
+                        sender_profile_picture:data.data.notification_sender.profile_image,
+                        sender_name:_newsender,
+                        sender_count:_oldSenderCount
+                    };
+                    _newNotifications.unshift(_newNotification);
+                }else{
                     $.ajax({
                         url: '/notifications/get-details',
                         method: "GET",
                         dataType: "JSON",
-                        data: {post_id:cur_post_id},
+                        data: {post_id:data.data.post_id, notification_type:data.data.notification_type},
                         headers: { 'prg-auth-header':_this.state.loggedUser.token }
                     }).done( function (data, text) {
-                        console.log(data);
                         if(data.status.code == 200){
-                            //_this.setState({notificationCount:data.unreadCount});
-                            //_this.setState({notifications:data.notifications});
+                            _newNotifications.unshift(data.data);
                         }
                     }.bind(_this));
 
                 }
-                console.log("_newNotifications === 2 === > ")
-                console.log(_newNotifications);
 
                 _this.setState({notifications:_newNotifications});
-
-                console.log("_this.state.notifications === > ")
-                console.log(_this.state.notifications)
 
             }
 
@@ -148,7 +127,6 @@ export default class Index extends React.Component{
             if(data.status.code == 200){
                 this.setState({notificationCount:data.unreadCount});
                 this.setState({notifications:data.notifications});
-                console.log(this.state.notifications);
             }
         }.bind(this));
 
