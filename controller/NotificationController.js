@@ -14,35 +14,42 @@ var NotificationController ={
             _async = require('async'),
             user_id = Util.getCurrentSession(req).id,
             criteria = {recipient:Util.toObjectId(user_id)},
-            _postOwnerIds = [], _notificationSenderIds = [], _postOwners = {}, _notificationSenders = {}, _notifications = {}, _redisIds = [],
-            _unreadCount = 0, _formattedNotificationData = [], _unreadNotificationIds = [];
+            _notifications = {}, _redisIds = [], notifications = {},
+            _unreadCount = 0, _formattedNotificationData = [], _postIds = [], _userIds = [], _users = {}, _postData = {};
+
+        //_postOwnerIds = [], _notificationSenderIds = [], _postOwners = {}, _notificationSenders = {},
 
         _async.waterfall([
             function getNotifications(callBack){
+
                 NotificationRecipient.getRecipientNotifications(criteria, days, function(resultSet){
-                    var notifications = resultSet.notifications;
-                    var _types = [];
+                    notifications = resultSet.notifications;
+                    var _types = [], _type = '';
 
                     for(var i = 0; i < notifications.length; i++){
 
-                        var _type = notifications[i]['post_id']+notifications[i]['notification_type'];
+                        if(notifications[i]['notification_type'] == Notifications.BIRTHDAY){
+                            _type = notifications[i]['notification_type']
+                        } else{
+                            _type = notifications[i]['post_id']+notifications[i]['notification_type'];
+                            _redisIds.push("post:"+notifications[i]['notification_type']+":"+notifications[i]['post_id']);
+                            if(_postIds.indexOf(notifications[i]['post_id'].toString()) == -1){
+                                _postIds.push(notifications[i]['post_id'].toString());
+                            }
+                        }
+
                         if(_types.indexOf(_type) == -1){
                             _types.push(_type)
-                            _notifications[notifications[i]['post_id']+notifications[i]['notification_type']] = {
+                            _notifications[_type] = {
                                 post_id:notifications[i]['post_id'],
                                 notification_type:notifications[i]['notification_type'],
                                 read_status:notifications[i]['read_status'],
-                                post_owner:notifications[i]['post_owner'],
+                                post_owner:null,
                                 created_at:notifications[i]['created_at'],
                                 senders:[],
-                                sender_count:0
+                                sender_count:0,
+                                notification_ids:[]
                             };
-
-                            _redisIds.push("post:"+notifications[i]['notification_type']+":"+notifications[i]['post_id']);
-                        }
-
-                        if(_postOwnerIds.indexOf(notifications[i]['post_owner'].toString()) == -1){
-                            _postOwnerIds.push(notifications[i]['post_owner'].toString());
                         }
 
                         if(notifications[i]['read_status'] == false){
@@ -52,6 +59,54 @@ var NotificationController ={
                     }
                     callBack(null)
                 });
+            },
+            function getPostData(callBack){
+                var Post = require('mongoose').model('Post');
+                _async.each(_postIds, function(_postId, callBack){
+
+                    Post.db_getPostDetailsOnly({_id:_postId}, function(resultPost){
+
+                        _postData[_postId] = {
+                            postOwner:resultPost.post.created_by
+                        };
+                        callBack(null)
+                    });
+                }, function(err){
+                    callBack(null)
+                });
+            },
+            function getDetails(callBack){
+                for(var i = 0; i < notifications.length; i++){
+
+                    var x = 0;
+
+                    if(notifications[i]['notification_type'] == Notifications.BIRTHDAY){
+
+                        if(_notifications[notifications[i]['notification_type']]['senders'].indexOf(notifications[i]['sender_id'].toString()) == -1 && x < 3){
+                            _notifications[notifications[i]['notification_type']]['senders'].push(notifications[i]['sender_id'].toString());
+                            x++;
+
+                            if(_userIds.indexOf(notifications[i]['sender_id'].toString()) == -1){
+                                _userIds.push(notifications[i]['sender_id'].toString());
+                            }
+                        }
+
+                        if(x > 3){
+                            var _senderCount = _notifications[notifications[i]['notification_type']]['sender_count'];
+                            _senderCount++;
+                            _notifications[notifications[i]['notification_type']]['sender_count'] = _senderCount;
+                        }
+
+                    } else{
+                        _notifications[notifications[i]['post_id']+notifications[i]['notification_type']]['post_owner'] = _postData[notifications[i]['post_id']]['postOwner'];
+                        if(_userIds.indexOf(_postData[notifications[i]['post_id']]['postOwner'].toString()) == -1){
+                            _userIds.push(_postData[notifications[i]['post_id']]['postOwner'].toString());
+                        }
+                    }
+
+                }
+                callBack(null)
+
             },
             function getSendersFromRedis(callBack){
 
@@ -85,13 +140,14 @@ var NotificationController ={
                                         _notifications[_tempPostId+_tempNotificationType]['senders'].push(_res[i].commented_by.user_id);
                                     }
 
-                                    if(_notificationSenderIds.indexOf(_res[i].commented_by.user_id) == -1){
+                                    if(_userIds.indexOf(_res[i].commented_by.user_id) == -1){
 
-                                        _notificationSenderIds.push(_res[i].commented_by.user_id);
+                                        _userIds.push(_res[i].commented_by.user_id);
 
-                                        _notificationSenders[_res[i].commented_by.user_id] = {
+                                        _users[_res[i].commented_by.user_id] = {
                                             name : _res[i].commented_by.first_name+" "+_res[i].commented_by.last_name,
-                                            profile_image : _res[i].commented_by.images.profile_image.http_url
+                                            profile_image : _res[i].commented_by.images.profile_image.http_url,
+                                            user_name: _res[i].commented_by.user_name
                                         }
 
                                     }
@@ -106,8 +162,8 @@ var NotificationController ={
                                         _notifications[_tempPostId+_tempNotificationType]['senders'].push(_res[i].toString());
                                     }
 
-                                    if(_notificationSenderIds.indexOf(_res[i].toString()) == -1){
-                                        _notificationSenderIds.push(_res[i].toString());
+                                    if(_userIds.indexOf(_res[i].toString()) == -1){
+                                        _userIds.push(_res[i].toString());
 
                                     }
                                 }
@@ -123,70 +179,32 @@ var NotificationController ={
                 })
             },
             function getUserDetails(callBack){
-                _async.parallel([
-                    function getPostOwners(callBack){
+                _async.each(_userIds,function(_userId, callBack){
 
-                        _async.each(_postOwnerIds,function(_postOwnerId, callBack){
-                            if(_postOwnerId == user_id){
-                                _postOwners[_postOwnerId] = {
-                                    name: "your",
-                                    user_name: Util.getCurrentSession(req).user_name
-                                };
-                                callBack(null);
-                            }else{
-                                var query={
-                                    q:"user_id:"+_postOwnerId.toString(),
-                                    index:'idx_usr'
-                                };
-                                //Find User from Elastic search
-                                ES.search(query,function(csResultSet){
-                                    _postOwners[_postOwnerId] = {
-                                        name: csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name']+"'s",
-                                        user_name: csResultSet.result[0]['user_name']
-                                    };
-                                    callBack(null);
-                                });
+                    if(typeof _users[_userId] == 'undefined'){
+                        var query={
+                            q:"user_id:"+_userId.toString(),
+                            index:'idx_usr'
+                        };
+                        //Find User from Elastic search
+                        ES.search(query,function(csResultSet){
+
+                            _users[_userId] = {
+                                name : csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
+                                profile_image : csResultSet.result[0]['images']['profile_image']['http_url'],
+                                user_name: csResultSet.result[0]['user_name']
                             }
-
-                        },function(err){
-                            callBack(null)
-
+                            callBack(null);
                         });
-                    },
-                    function getSenders(callBack){
-
-                        _async.each(_notificationSenderIds,function(_notificationSenderId, callBack){
-
-                            if(typeof _notificationSenders[_notificationSenderId] == 'undefined'){
-                                var query={
-                                    q:"user_id:"+_notificationSenderId.toString(),
-                                    index:'idx_usr'
-                                };
-                                //Find User from Elastic search
-                                ES.search(query,function(csResultSet){
-
-                                    _notificationSenders[_notificationSenderId] = {
-                                        name : csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
-                                        profile_image : csResultSet.result[0]['images']['profile_image']['http_url']
-                                    }
-                                    callBack(null);
-                                });
-                            }else{
-                                callBack(null);
-                            }
-
-
-                        },function(err){
-                            callBack(null)
-
-                        });
-
+                    }else{
+                        callBack(null);
                     }
 
-                ],function(err){
-                    callBack(null);
-                })
 
+                },function(err){
+                    callBack(null)
+
+                });
             },
 
             function finalizeData(callBack){
@@ -197,16 +215,40 @@ var NotificationController ={
 
                     if(obj.senders.length > 0){
 
+                        var _postOwnerName = "",
+                            _postOwnerUsername = "",
+                            birthdayDay = "";
+
+                        if(obj.notification_type == Notifications.BIRTHDAY){
+                            var createdDate = new Date(obj.created_at);
+                            var diff = Math.floor((new Date() - createdDate) / 1000);
+                            if(diff < 86400){
+                                birthdayDay = "today";
+                            } else{
+                                birthdayDay = "yesterday";
+                            }
+
+                        }else{
+
+                            if(obj.post_owner == user_id){
+                                _postOwnerName = "your";
+                            }else{
+                                _postOwnerName = _users[obj.post_owner]['name']+"'s";
+                            }
+                            _postOwnerUsername = _users[obj.post_owner]['user_name'];
+                        }
+
                         var _data = {
                             post_id:obj.post_id,
                             notification_type:obj.notification_type,
                             read_status:obj.read_status,
                             created_at:DateTime.explainDate(obj.created_at),
-                            post_owner_username:_postOwners[obj.post_owner]['user_name'],
-                            post_owner_name:_postOwners[obj.post_owner]['name'],
-                            sender_profile_picture:_notificationSenders[obj.senders[0]]['profile_image'],
-                            sender_name:_notificationSenders[obj.senders[0]]['name'],
-                            sender_count:obj.sender_count
+                            post_owner_username:_postOwnerUsername,
+                            post_owner_name:_postOwnerName,
+                            sender_profile_picture:_users[obj.senders[0]]['profile_image'],
+                            sender_name:_users[obj.senders[0]]['name'],
+                            sender_count:obj.sender_count,
+                            birthday:birthdayDay
                         };
 
                         if(obj.senders.length == 2){
@@ -215,7 +257,7 @@ var NotificationController ={
                             }else{
                                 _data['sender_name'] += ', ';
                             }
-                            _data['sender_name'] += _notificationSenders[obj.senders[1]]['name'];
+                            _data['sender_name'] += _users[obj.senders[1]]['name'];
                         }
 
                         if(obj.senders.length == 3){
@@ -225,7 +267,7 @@ var NotificationController ={
                             }else{
                                 _data['sender_name'] += ', ';
                             }
-                            _data['sender_name'] += _notificationSenders[obj.senders[2]]['name'];
+                            _data['sender_name'] += _users[obj.senders[2]]['name'];
                         }
 
                         _formattedNotificationData.push(_data)
@@ -254,6 +296,8 @@ var NotificationController ={
             _data = {read_status:true},
             _notification_ids = [],
             user_id = Util.getCurrentSession(req).id;
+
+        console.log(req.body)
 
         if(typeof req.body.post_id != 'undefined' && typeof req.body.notification_type != 'undefined'){
             _async.waterfall([

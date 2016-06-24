@@ -190,15 +190,21 @@ export default class Index extends React.Component{
     }
 
     redirectToNotification(_notification){
-        $.ajax({
-            url: '/notifications/update-notifications',
-            method: "POST",
-            dataType: "JSON",
-            data:{post_id:_notification.post_id, notification_type:_notification.notification_type},
-            headers: { 'prg-auth-header':this.state.loggedUser.token }
-        }).done( function (data, text) {
-            window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
-        }.bind(this));
+
+        if(_notification.notification_type != 'Birthday'){
+
+            $.ajax({
+                url: '/notifications/update-notifications',
+                method: "POST",
+                dataType: "JSON",
+                data:{post_id:_notification.post_id, notification_type:_notification.notification_type},
+                headers: { 'prg-auth-header':this.state.loggedUser.token }
+            }).done( function (data, text) {
+                window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
+            }.bind(this));
+
+        }
+
     }
 
     markAllRead(){
@@ -209,7 +215,7 @@ export default class Index extends React.Component{
             dataType: "JSON",
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
-            this.loadNotifications();
+            this.loadNotifications(1);
         }.bind(this));
 
 
@@ -336,9 +342,12 @@ export class Notification extends React.Component{
                         <div className="chat-body">
                             <p className="connection-name">{notification.sender_name}</p>
                             {notification.sender_count>0?<p> and {notification.sender_count} {notification.sender_count == 1? "other" : "others"} </p>:""}
-                            <p className="type-of-action">{notification.notification_type == 'like'?"likes ":"" } {notification.notification_type == 'comment'?"commented on ":"" }
+                            <p className="type-of-action">
+                                {notification.notification_type == 'like'?"likes ":"" }
+                                {notification.notification_type == 'comment'?"commented on ":"" }
                                 {notification.notification_type == 'share'?"shared ":"" }
-                                {notification.post_owner_name} post</p>
+                                {notification.notification_type == 'Birthday'?"has their bithday "+notification.birthday:"" }
+                                {notification.notification_type != 'Birthday'?notification.post_owner_name +"post":null}</p>
                             <p className="chat-date">{notification.created_at.time_a_go}</p>
                         </div>
                     </a>

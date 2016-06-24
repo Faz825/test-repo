@@ -82,17 +82,17 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
                 "notificationData.created_at" : {$gt:new Date(Date.now() - days*24*60*60 * 1000)}
             }
         },
-        {
-            $lookup: {
-                from:"posts",
-                localField:"notificationData.notified_post",
-                foreignField:"_id",
-                as:"postData"
-            }
-        },
-        {
-            $unwind: '$postData'
-        },
+        //{
+        //    $lookup: {
+        //        from:"posts",
+        //        localField:"notificationData.notified_post",
+        //        foreignField:"_id",
+        //        as:"postData"
+        //    }
+        //},
+        //{
+        //    $unwind: '$postData'
+        //},
         {
             $project:{
                 _id:1,
@@ -102,8 +102,8 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
                 created_at:"$notificationData.created_at",
                 notification_type:"$notificationData.notification_type",
                 sender_id:"$notificationData.sender",
-                post_id:"$notificationData.notified_post",
-                post_owner:"$postData.created_by"
+                post_id:"$notificationData.notified_post"
+                //post_owner:"$postData.created_by"
             }
         },
         { $sort:{ "created_at":-1}},

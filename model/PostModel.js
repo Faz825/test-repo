@@ -239,6 +239,25 @@ PostSchema.statics.addShareToRedis = function(postId,data,callback){
 
 }
 
+/**
+ * Get Single Post from Database
+ * @param postId
+ * @param callBack
+ */
+PostSchema.statics.db_getPostDetailsOnly = function(criteria,callBack){
+    var _this = this;
+    _this.findOne(criteria)
+        .exec(function(err,postData){
+            if(!err){
+                callBack({status:200,post:postData});
+                return 0;
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+}
+
 
 /**
  * DATA FORMATTER HELPER FUNCTION WILL DEFINE HERE

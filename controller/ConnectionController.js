@@ -34,6 +34,7 @@ var ConnectionController ={
      * @param res
      */
     getMyConnections:function(req,res){
+        console.log(req.query['q'])
         var Connection = require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
         var criteria = {
             user_id :CurrentSession.id,
