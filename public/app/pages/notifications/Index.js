@@ -24,12 +24,13 @@ export default class Index extends React.Component{
             minutes: "",
             notifications: [],
             notificationCount: 0,
-            seeAllNotifications: false
+            seeAllNotifications: false,
+            days: 1
         };
 
         this.currentTime = new Date();
         this.currentTimeUpdate = this.currentTimeUpdate.bind(this);
-        this.loadNotifications(1);
+        this.loadNotifications(this.state.days);
         this.listenToNotification();
     }
 
@@ -127,6 +128,10 @@ export default class Index extends React.Component{
             if(data.status.code == 200){
                 this.setState({notificationCount:data.unreadCount});
                 this.setState({notifications:data.notifications});
+                if(this.state.notifications.length < 5){
+                    this.state.days++;
+                    this.loadNotifications(this.state.days);
+                }
             }
         }.bind(this));
 
@@ -222,8 +227,9 @@ export default class Index extends React.Component{
     }
 
     allNotifications(){
-        this.loadNotifications(2);
-        this.setState({seeAllNotifications : true});
+        this.state.days++;
+        this.loadNotifications(this.state.days);
+        //this.setState({seeAllNotifications : true});
     }
 
     render() {

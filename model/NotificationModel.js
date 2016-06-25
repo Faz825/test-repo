@@ -26,9 +26,7 @@ var NotificationSchema = new Schema({
         default:null
     },
     created_at:{
-        type:Date,
-        default:new Date()
-
+        type:Date
     }
 },{collection:"notifications"});
 

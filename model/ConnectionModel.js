@@ -393,11 +393,15 @@ ConnectionSchema.statics.getMyConnection = function(criteria,callBack){
     },
     formatted_users = [];
 
+    console.log(JSON.stringify(query))
+
     ES.search(query,function(esResultSet){
 
         if(esResultSet != null){
             _async.each(esResultSet.result,
                 function(result,callBack){
+
+                    console.log(JSON.stringify(result));
 
                     var query={
                         q:"user_id:"+result.user_id,

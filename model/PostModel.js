@@ -82,7 +82,8 @@ var PostSchema = new Schema({
  *
  */
 PostSchema.pre('save', function(next){
-    var now = new Date();
+    console.log("Post pre save");
+    var now = new Date();console.log(now);
     this.updated_at = now;
     if ( !this.created_at ) {
         this.created_at = now;
