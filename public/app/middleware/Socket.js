@@ -39,6 +39,12 @@ class Socket{
         this.socket.on('notification',function(data){
             callback(data);
         })
+
+        this.socket.on('birthday notification',function(data){
+            console.log("birthday notification")
+            console.log(data)
+            callback(data);
+        })
     }
 
 

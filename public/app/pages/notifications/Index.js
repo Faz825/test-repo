@@ -38,80 +38,88 @@ export default class Index extends React.Component{
         let _this = this;
 
         Socket.listenToNotification(function(data){
-            if(data.user != _this.state.loggedUser.user_name){
 
-                var cur_post_id = data.data.post_id;
+            let _existingNotifications = _this.state.notifications;
+            let _newNotifications = [];
+            let _oldNotification = {}, _newNotification = {};
+            let _alreadyExist = false;
 
+            if(data.notification_type == "Birthday"){
                 _this.state.notificationCount++;
-                let _existingNotifications = _this.state.notifications;
-                let _newNotifications = [];
-                let _oldNotification = {}, _newNotification = {};
-                let _alreadyExist = false;
-
-                for(var j = _existingNotifications.length - 1; j >= 0; j--){
-                    if(_existingNotifications[j].post_id == data.data.post_id && _existingNotifications[j].notification_type == data.data.notification_type){
-                        _alreadyExist = true;
-                        _oldNotification = _existingNotifications[j];
-                    } else{
-                        _newNotifications.unshift(_existingNotifications[j]);
-                    }
+                _newNotifications.push(data);
+                for(var j = 0; j < _existingNotifications.length; j++){
+                    _newNotifications.push(_existingNotifications[j]);
                 }
-
-                if(_alreadyExist == true){
-
-                    let _oldsender = _oldNotification.sender_name;
-                    let _newsender = data.data.notification_sender.first_name+" "+data.data.notification_sender.last_name;
-                    let _oldSenderCount = _oldNotification.sender_count;
-
-                    let _senderFirstArray = _oldsender.split("and");
-
-                    if(_senderFirstArray.length > 1){
-                        let _senderSecondArray = _senderFirstArray[0].trim().split(",");
-                        if(_senderSecondArray.length > 1){
-                            _oldSenderCount++;
-                            _newsender += ", "+_senderSecondArray[0].trim()+" and "+_senderSecondArray[1].trim();
-                        } else{
-                            _newsender += " and "+_senderSecondArray[0].trim();
-                        }
-                    } else{
-                        _newsender += " and "+_senderFirstArray[0].trim();
-                    }
-
-                    let _createdAt = _oldNotification.created_at;
-                    _createdAt['time_a_go'] = 'Just Now';
-
-                    _newNotification = {
-                        post_id:_oldNotification.post_id,
-                        notification_type:_oldNotification.notification_type,
-                        read_status:false,
-                        created_at:_createdAt,
-                        post_owner_username:_oldNotification.post_owner_username,
-                        post_owner_name:_oldNotification.post_owner_name,
-                        sender_profile_picture:data.data.notification_sender.profile_image,
-                        sender_name:_newsender,
-                        sender_count:_oldSenderCount
-                    };
-                    _newNotifications.unshift(_newNotification);
-                }else{
-                    $.ajax({
-                        url: '/notifications/get-details',
-                        method: "GET",
-                        dataType: "JSON",
-                        data: {post_id:data.data.post_id, notification_type:data.data.notification_type},
-                        headers: { 'prg-auth-header':_this.state.loggedUser.token }
-                    }).done( function (data, text) {
-                        if(data.status.code == 200){
-                            _newNotifications.unshift(data.data);
-                        }
-                    }.bind(_this));
-
-                }
-
                 _this.setState({notifications:_newNotifications});
+            } else{
+                if(data.user != _this.state.loggedUser.user_name){
+
+                    _this.state.notificationCount++;
+
+                    for(var j = _existingNotifications.length - 1; j >= 0; j--){
+                        if(_existingNotifications[j].post_id == data.data.post_id && _existingNotifications[j].notification_type == data.data.notification_type){
+                            _alreadyExist = true;
+                            _oldNotification = _existingNotifications[j];
+                        } else{
+                            _newNotifications.unshift(_existingNotifications[j]);
+                        }
+                    }
+
+                    if(_alreadyExist == true){
+
+                        let _oldsender = _oldNotification.sender_name;
+                        let _newsender = data.data.notification_sender.first_name+" "+data.data.notification_sender.last_name;
+                        let _oldSenderCount = _oldNotification.sender_count;
+
+                        let _senderFirstArray = _oldsender.split("and");
+
+                        if(_senderFirstArray.length > 1){
+                            let _senderSecondArray = _senderFirstArray[0].trim().split(",");
+                            if(_senderSecondArray.length > 1){
+                                _oldSenderCount++;
+                                _newsender += ", "+_senderSecondArray[0].trim()+" and "+_senderSecondArray[1].trim();
+                            } else{
+                                _newsender += " and "+_senderSecondArray[0].trim();
+                            }
+                        } else{
+                            _newsender += " and "+_senderFirstArray[0].trim();
+                        }
+
+                        let _createdAt = _oldNotification.created_at;
+                        _createdAt['time_a_go'] = 'Just Now';
+
+                        _newNotification = {
+                            post_id:_oldNotification.post_id,
+                            notification_type:_oldNotification.notification_type,
+                            read_status:false,
+                            created_at:_createdAt,
+                            post_owner_username:_oldNotification.post_owner_username,
+                            post_owner_name:_oldNotification.post_owner_name,
+                            sender_profile_picture:data.data.notification_sender.profile_image,
+                            sender_name:_newsender,
+                            sender_count:_oldSenderCount
+                        };
+                        _newNotifications.unshift(_newNotification);
+                    }else{
+                        $.ajax({
+                            url: '/notifications/get-details',
+                            method: "GET",
+                            dataType: "JSON",
+                            data: {post_id:data.data.post_id, notification_type:data.data.notification_type},
+                            headers: { 'prg-auth-header':_this.state.loggedUser.token }
+                        }).done( function (data, text) {
+                            if(data.status.code == 200){
+                                _newNotifications.unshift(data.data);
+                            }
+                        }.bind(_this));
+
+                    }
+
+                    _this.setState({notifications:_newNotifications});
+
+                }
 
             }
-
-
         });
     }
 
@@ -353,7 +361,7 @@ export class Notification extends React.Component{
                                 {notification.notification_type == 'comment'?"commented on ":"" }
                                 {notification.notification_type == 'share'?"shared ":"" }
                                 {notification.notification_type == 'Birthday'?"has their bithday "+notification.birthday:"" }
-                                {notification.notification_type != 'Birthday'?notification.post_owner_name +"post":null}</p>
+                                {notification.notification_type != 'Birthday'?notification.post_owner_name +" post":null}</p>
                             <p className="chat-date">{notification.created_at.time_a_go}</p>
                         </div>
                     </a>
