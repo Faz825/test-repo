@@ -64,6 +64,8 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
 
     var _this = this;
 
+    console.log("getRecipientNotifications")
+
     console.log(criteria)
 
     _this.aggregate([
@@ -120,6 +122,8 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
  * @param callBack
  */
 NotificationRecipientSchema.statics.getRecipientNotificationsLimit = function(criteria,skip,limit,callBack){
+
+    console.log("getRecipientNotificationsLimit")
 
     var _this = this;
 

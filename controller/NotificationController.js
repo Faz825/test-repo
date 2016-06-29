@@ -8,8 +8,8 @@ var NotificationController ={
 
     getNotifications:function(req,res){
 
-        var days = req.query.days;
-        var pg = req.query.pg;
+        var days = req.query.days; console.log("Days = "+days);
+        var pg = req.query.pg;console.log("pg = "+pg);
 
         var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             _async = require('async'),
@@ -21,9 +21,10 @@ var NotificationController ={
 
         _async.waterfall([
             function getNotificationCount(callBack){
+                console.log("getNotificationCount")
 
                 if(typeof days != 'undefined'){
-
+                    console.log("days defined so call count functions")
                     _async.parallel([
                         function(callBack){
                             NotificationRecipient.getCount(criteria,function(result){
@@ -52,8 +53,10 @@ var NotificationController ={
 
             },
             function getTodayNotifications(callBack){
+                console.log("getTodayNotifications")
 
                 if(typeof days != 'undefined'){
+                    console.log("days defined so get todays notifications")
 
                     NotificationRecipient.getRecipientNotifications(criteria, days, function(resultSet){
 
@@ -103,9 +106,12 @@ var NotificationController ={
                 }
             },
             function getNotifications(callBack){
+                console.log("getNotifications")
 
                 if(_noOfNotifications < 5){
-
+                    console.log("_noOfNotifications < 5");
+                    console.log(skip);
+                    console.log(limit);
                     NotificationRecipient.getRecipientNotificationsLimit(criteria,skip,limit,function(resultSet){
                         notifications = resultSet.notifications;
                         var _types = [], _type = '';
@@ -380,6 +386,8 @@ var NotificationController ={
             _data = {read_status:true},
             _notification_ids = [],
             user_id = Util.getCurrentSession(req).id;
+
+        console.log(req.body)
 
         if(typeof req.body.post_id != 'undefined' && typeof req.body.notification_type != 'undefined'){
             _async.waterfall([
