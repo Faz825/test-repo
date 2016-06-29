@@ -125,6 +125,7 @@ export class ProfileInfo extends React.Component{
         let desigFieldLength = designation.length;
         let officeFieldLength = working_at.length;
         let uname = this.props.uname;
+
         this.state = {
             profileImgSrc : profileImg,
             jobPostition : designation,
@@ -264,7 +265,7 @@ export class ProfileInfo extends React.Component{
                                                 <span className="combine-text">at</span>
                                                 <input type="text" name="workplace" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.officeFieldSize} value={this.props.dt.cur_working_at} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
                                                 {
-                                                    (this.loggedUser)?
+                                                    (!this.props.readOnly)?
                                                         (!this.state.saveEdit)?
                                                         <span className="fa fa-pencil-square-o" onClick={this.editOccupation.bind(this)}></span>
                                                         :

@@ -69,6 +69,8 @@ export default class Intro extends React.Component{
     };
 
     render(){
+        let loggedUser = Session.getSession('prg_lg');
+        let read_only = (loggedUser.id == this.props.user.user_id)?false:true;
         return (
             <div className="ps-section">
                 <div className="pg-section-container">
@@ -77,7 +79,7 @@ export default class Intro extends React.Component{
                     </div>
                     <div className="intro-wrapper">
                         {
-                            (!(this.state.isFormVisible || this.props.user.introduction))?
+                            (!read_only && !(this.state.isFormVisible || this.props.user.introduction))?
                             <div className="add-intro clearfix">
                                 <p className="add-intro-text" onClick={this.openForm.bind(this)}><i className="fa fa-plus"></i>Describe who you are</p>
                             </div>
@@ -87,13 +89,14 @@ export default class Intro extends React.Component{
                         {
                             (this.props.user.introduction && !this.state.isFormVisible)?
                             <div className="intro-holder">
-                                <p>{this.props.user.introduction}<i className="fa fa-pencil-square-o" onClick={this.openForm.bind(this)}></i></p>
+                                <p>{this.props.user.introduction}
+                                    {(!read_only)?<i className="fa fa-pencil-square-o" onClick={this.openForm.bind(this)}></i>:null}</p>
                             </div>
                             :
                             null
                         }
                         {
-                            (this.state.isFormVisible)?
+                            (!read_only && this.state.isFormVisible)?
                             <IntroForm introText={this.props.user.introduction} onFormClose={this.onFormCancel.bind(this)} formSave={this.onFormSave.bind(this)} />
                             :
                             null

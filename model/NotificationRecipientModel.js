@@ -82,6 +82,60 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
                 "notificationData.created_at" : {$gt:new Date(Date.now() - days*24*60*60 * 1000)}
             }
         },
+        {
+            $project:{
+                _id:1,
+                notification_id:1,
+                recipient_id:"$recipient",
+                read_status:1,
+                created_at:"$notificationData.created_at",
+                notification_type:"$notificationData.notification_type",
+                sender_id:"$notificationData.sender",
+                post_id:"$notificationData.notified_post"
+                //post_owner:"$postData.created_by"
+            }
+        },
+        { $sort:{ "created_at":-1}}
+
+    ], function(err, resultSet){
+        if(!err){
+
+            callBack({
+                status:200,
+                notifications:resultSet
+
+            });
+        }else {
+            console.log("Server Error --------")
+            callBack({status: 400, error: err});
+        }
+    });
+
+
+};
+
+/**
+ * Get notifications based on criteria
+ * @param criteria
+ * @param callBack
+ */
+NotificationRecipientSchema.statics.getRecipientNotificationsLimit = function(criteria,skip,limit,callBack){
+
+    var _this = this;
+
+    console.log(criteria)
+
+    _this.aggregate([
+        { $match:criteria},
+        {
+            $lookup:{
+                from:"notifications",
+                localField:"notification_id",
+                foreignField:"_id",
+                as:"notificationData"
+            }
+        },
+        { $unwind: '$notificationData'},
         //{
         //    $lookup: {
         //        from:"posts",
@@ -107,6 +161,8 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
             }
         },
         { $sort:{ "created_at":-1}},
+        { $skip:skip},
+        { $limit:limit},
 
     ], function(err, resultSet){
         if(!err){
@@ -155,10 +211,9 @@ NotificationRecipientSchema.statics.updateRecipientNotification = function(crite
  * @param criteria
  * @param callBack
  */
-NotificationRecipientSchema.statics.getUnreadCount = function(criteria,callBack){
+NotificationRecipientSchema.statics.getCount = function(criteria,callBack){
 
-    this.find(criteria).exec(function(err,resultSet){
-
+    this.count(criteria).exec(function(err,resultSet){
 
         if(!err){
             callBack({

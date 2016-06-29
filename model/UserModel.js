@@ -346,7 +346,7 @@ UserSchema.statics.saveUpdates=function(userId,data,callBack){
 
     _this.update({_id:userId},
         {$set:data},function(err,resultSet){
-            console.log(resultSet);
+
             if(!err){
                 callBack({
                     status:200

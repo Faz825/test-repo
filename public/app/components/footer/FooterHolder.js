@@ -1,6 +1,5 @@
 import React from 'react'
 import Session  from '../../middleware/Session';
-import SecretaryThumbnail from '../elements/FooterSecretaryThumbnail';
 import Socket  from '../../middleware/Socket';
 
 export default class FooterHolder extends React.Component{
@@ -35,12 +34,17 @@ export default class FooterHolder extends React.Component{
 
         Socket.listenToNotification(function(data){
             console.log("Got Notification from footer")
-            if(data.user != _this.state.loggedUser.user_name){
-                console.log("Increase")
-                let _notCount = _this.state.notificationCount;
-                _notCount++;
-                _this.setState({notificationCount:_notCount});
+            if(data.notification_type == "Birthday"){
+                _this.state.notificationCount++;
+            }else{
+                if(data.user != _this.state.loggedUser.user_name){
+                    console.log("Increase")
+                    let _notCount = _this.state.notificationCount;
+                    _notCount++;
+                    _this.setState({notificationCount:_notCount});
+                }
             }
+
         });
     }
 
@@ -56,13 +60,14 @@ export default class FooterHolder extends React.Component{
         return (
             <div className="row row-clr pg-footer-wrapper">
                 <div className="pg-footer-left-options-panel">
-                    <div className="col-xs-2 pgs-secratery-img">
-                        <a href="/notifications">
-                            <img src={_secretary_image} alt="Secretary" className="img-responsive" />
-                            {notificationCount>0?<span className="counter">{notificationCount}</span>:null}
-                        </a>
-                    </div>
+                    <a href="/notifications">
+                        <div className="col-xs-2 pgs-secratery-img">
 
+                                <img src={_secretary_image} alt="Secretary" className="img-responsive" />
+                                {notificationCount>0?<span className="counter">{notificationCount}</span>:null}
+
+                        </div>
+                    </a>
                     <div className="pg-footer-left-options">
                         <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/pg-home-v6_03.png" alt=""
                                                                              className="img-responsive"/></a>

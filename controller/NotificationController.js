@@ -9,56 +9,136 @@ var NotificationController ={
     getNotifications:function(req,res){
 
         var days = req.query.days;
+        var pg = req.query.pg;
 
         var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             _async = require('async'),
             user_id = Util.getCurrentSession(req).id,
             criteria = {recipient:Util.toObjectId(user_id)},
+            skip = (pg - 1)*Config.NOTIFICATION_RESULT_PER_PAGE, limit = Config.NOTIFICATION_RESULT_PER_PAGE,
             _notifications = {}, _redisIds = [], notifications = {},
-            _unreadCount = 0, _formattedNotificationData = [], _postIds = [], _userIds = [], _users = {}, _postData = {};
-
-        //_postOwnerIds = [], _notificationSenderIds = [], _postOwners = {}, _notificationSenders = {},
+            _unreadCount = 0, _formattedNotificationData = [], _postIds = [], _userIds = [], _users = {}, _postData = {}, _totalNotifications = 0, outPut = {}, _noOfNotifications = 0;
 
         _async.waterfall([
-            function getNotifications(callBack){
+            function getNotificationCount(callBack){
 
-                NotificationRecipient.getRecipientNotifications(criteria, days, function(resultSet){
-                    notifications = resultSet.notifications;
-                    var _types = [], _type = '';
+                if(typeof days != 'undefined'){
 
-                    for(var i = 0; i < notifications.length; i++){
+                    _async.parallel([
+                        function(callBack){
+                            NotificationRecipient.getCount(criteria,function(result){
+                                _totalNotifications = result.result;
+                                outPut['header'] ={
+                                    total_result:_totalNotifications,
+                                    result_per_page:Config.NOTIFICATION_RESULT_PER_PAGE,
+                                    total_pages:Math.ceil(_totalNotifications/Config.NOTIFICATION_RESULT_PER_PAGE)
+                                };
+                                callBack(null);
+                            });
+                        },
+                        function(callBack){
+                            var _unreadCriteria = {recipient:Util.toObjectId(user_id), read_status:false};
+                            NotificationRecipient.getCount(_unreadCriteria,function(result){
+                                _unreadCount = result.result;
+                                callBack(null);
+                            });
+                        }
+                    ], function(err){
+                        callBack(null);
+                    });
+                }else{
+                    callBack(null);
+                }
 
-                        if(notifications[i]['notification_type'] == Notifications.BIRTHDAY){
-                            _type = notifications[i]['notification_type']
-                        } else{
-                            _type = notifications[i]['post_id']+notifications[i]['notification_type'];
-                            _redisIds.push("post:"+notifications[i]['notification_type']+":"+notifications[i]['post_id']);
-                            if(_postIds.indexOf(notifications[i]['post_id'].toString()) == -1){
-                                _postIds.push(notifications[i]['post_id'].toString());
+            },
+            function getTodayNotifications(callBack){
+
+                if(typeof days != 'undefined'){
+
+                    NotificationRecipient.getRecipientNotifications(criteria, days, function(resultSet){
+
+                        notifications = resultSet.notifications;
+
+                        var _types = [], _type = '';
+
+                        for(var i = 0; i < notifications.length; i++){
+
+                            if(notifications[i]['notification_type'] == Notifications.BIRTHDAY){
+                                _type = notifications[i]['notification_type']
+                            } else{
+                                _type = notifications[i]['post_id']+notifications[i]['notification_type'];
+                                _redisIds.push("post:"+notifications[i]['notification_type']+":"+notifications[i]['post_id']);
+                                if(_postIds.indexOf(notifications[i]['post_id'].toString()) == -1){
+                                    _postIds.push(notifications[i]['post_id'].toString());
+                                }
+                            }
+
+                            if(_types.indexOf(_type) == -1){
+                                _types.push(_type)
+                                _notifications[_type] = {
+                                    post_id:notifications[i]['post_id'],
+                                    notification_type:notifications[i]['notification_type'],
+                                    read_status:notifications[i]['read_status'],
+                                    post_owner:null,
+                                    created_at:notifications[i]['created_at'],
+                                    senders:[],
+                                    sender_count:0,
+                                    notification_ids:[]
+                                };
+                                _noOfNotifications++;
                             }
                         }
+                        _totalNotifications = _totalNotifications - notifications.length;
+                        outPut['header'] ={
+                            total_result:_totalNotifications,
+                            result_per_page:Config.NOTIFICATION_RESULT_PER_PAGE,
+                            total_pages:Math.ceil(_totalNotifications/Config.NOTIFICATION_RESULT_PER_PAGE)
+                        };
+                        callBack(null);
 
-                        if(_types.indexOf(_type) == -1){
-                            _types.push(_type)
-                            _notifications[_type] = {
-                                post_id:notifications[i]['post_id'],
-                                notification_type:notifications[i]['notification_type'],
-                                read_status:notifications[i]['read_status'],
-                                post_owner:null,
-                                created_at:notifications[i]['created_at'],
-                                senders:[],
-                                sender_count:0,
-                                notification_ids:[]
-                            };
+                    });
+
+                } else{
+                    callBack(null);
+                }
+            },
+            function getNotifications(callBack){
+
+                if(_noOfNotifications < 5){
+
+                    NotificationRecipient.getRecipientNotificationsLimit(criteria,skip,limit,function(resultSet){
+                        notifications = resultSet.notifications;
+                        var _types = [], _type = '';
+
+                        for(var i = 0; i < notifications.length; i++){
+
+                            if(notifications[i]['notification_type'] == Notifications.BIRTHDAY){
+                                _type = notifications[i]['notification_type']
+                            } else{
+                                _type = notifications[i]['post_id']+notifications[i]['notification_type'];
+                                _redisIds.push("post:"+notifications[i]['notification_type']+":"+notifications[i]['post_id']);
+                                if(_postIds.indexOf(notifications[i]['post_id'].toString()) == -1){
+                                    _postIds.push(notifications[i]['post_id'].toString());
+                                }
+                            }
+
+                            if(_types.indexOf(_type) == -1){
+                                _types.push(_type)
+                                _notifications[_type] = {
+                                    post_id:notifications[i]['post_id'],
+                                    notification_type:notifications[i]['notification_type'],
+                                    read_status:notifications[i]['read_status'],
+                                    post_owner:null,
+                                    created_at:notifications[i]['created_at'],
+                                    senders:[],
+                                    sender_count:0,
+                                    notification_ids:[]
+                                };
+                            }
                         }
-
-                        if(notifications[i]['read_status'] == false){
-                            _unreadCount++;
-                        }
-
-                    }
-                    callBack(null)
-                });
+                        callBack(null);
+                    });
+                }
             },
             function getPostData(callBack){
                 var Post = require('mongoose').model('Post');
@@ -279,11 +359,15 @@ var NotificationController ={
 
             }
         ],function(err){
-            var outPut ={
-                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                unreadCount:_unreadCount,
-                notifications:_formattedNotificationData
-            }
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['unreadCount'] = _unreadCount;
+            outPut['notifications'] = _formattedNotificationData;
+            //outPut ={
+            //    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+            //    unreadCount:_unreadCount,
+            //    notifications:_formattedNotificationData
+            //}
+
             res.status(200).json(outPut);
         });
 
@@ -296,8 +380,6 @@ var NotificationController ={
             _data = {read_status:true},
             _notification_ids = [],
             user_id = Util.getCurrentSession(req).id;
-
-        console.log(req.body)
 
         if(typeof req.body.post_id != 'undefined' && typeof req.body.notification_type != 'undefined'){
             _async.waterfall([
@@ -523,10 +605,10 @@ var NotificationController ={
             user_id = Util.getCurrentSession(req).id,
             criteria = {recipient:Util.toObjectId(user_id),read_status:false};
 
-        NotificationRecipient.getUnreadCount(criteria,function(result){
+        NotificationRecipient.getCount(criteria,function(result){
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                count:result.result.length
+                count:result.result
             };
             res.status(200).json(outPut);
         })
