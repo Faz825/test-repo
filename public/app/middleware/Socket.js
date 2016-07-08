@@ -10,7 +10,9 @@ class Socket{
     constructor() {
         this.loggedUser = Session.getSession('prg_lg');
         this.socket = io.connect("//notification.proglobe.loc/");
-        //this.socket = io.connect("http://52.33.180.95:3200/");
+        //this.socket = io.connect("https://dev-notification.proglobe.us/");//dev
+        //this.socket = io.connect("https://notification.proglobe.us/");//prod
+
     }
 
     connect(){
@@ -36,7 +38,9 @@ class Socket{
     }
 
     listenToNotification(callback){
+
         this.socket.on('notification',function(data){
+            console.log("notification"); console.log(data);
             callback(data);
         });
 
