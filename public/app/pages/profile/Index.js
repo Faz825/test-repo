@@ -43,14 +43,15 @@ export default class Index extends React.Component{
         return  this.props.params.uname;
     }
     onPostSubmitSuccess(data){
-
         let _posts = this.state.posts;
         _posts.unshift(data);
-
-
         this.setState({posts:_posts});
-
-
+    }
+    onPostDeleteSuccess(index){
+        console.log("onPostDeleteSuccess")
+        let _posts = this.state.posts;
+        _posts.splice(index,1);
+        this.setState({posts:_posts});
     }
     loadPosts(page){
 
@@ -111,6 +112,13 @@ export default class Index extends React.Component{
         });
     };
 
+    onLikeSuccess(index){
+        console.log("onLikeSuccess")
+        let _posts = this.state.posts;
+        _posts[index].is_i_liked=true;
+        this.setState({posts:_posts});
+    }
+
 
 
     render(){
@@ -140,7 +148,9 @@ export default class Index extends React.Component{
                                                 uname = {this.state.uname}/>
                                 <ListPostsElement posts={this.state.posts}
                                                   uname = {this.state.uname}
-                                                  onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}/>
+                                                  onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                                  onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
+                                                  onLikeSuccess = {this.onLikeSuccess.bind(this)}/>
                             </div>
                             <div className="col-xs-6"></div>
                         </div>

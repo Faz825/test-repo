@@ -10,12 +10,12 @@ var  mongoose = require('mongoose'),
 
 GLOBAL.CommentConfig ={
     CACHE_PREFIX:"post:comment:"
-}
+};
 
 var CommentSchema = new Schema({
     post_id:{
         type: Schema.ObjectId,
-        ref: 'Post',
+        ref: 'Post'
     },
     user_id:{
         type: Schema.ObjectId,
@@ -75,7 +75,7 @@ CommentSchema.statics.addComment = function (comment,callBack) {
         }
     })
 
-}
+};
 
 
 /**
@@ -92,9 +92,14 @@ CommentSchema.statics.getComments = function(postId,page,callBack){
     var _end_index      =  (Config.RESULT_PER_PAGE*(_page+1) -1);
 
     CacheEngine.getList(_cache_key,_start_index,_end_index,function(chResultSet){
-        callBack(_this.formatCommentList(chResultSet.result));
+        console.log(JSON.stringify(chResultSet.result))
+        var _res = {
+            formattedResult:_this.formatCommentList(chResultSet.result),
+            unformattedResult:chResultSet.result
+        };
+        callBack(_res);
     });
-}
+};
 /**
  * Get Comments count
  * @param postId
@@ -106,7 +111,7 @@ CommentSchema.statics.getCommentCount = function(postId,callBack){
     CacheEngine.getListCount(_cache_key,function(chResultCount){
         callBack(chResultCount);
     });
-}
+};
 
 /**
  * Add to Cache
@@ -118,8 +123,7 @@ CommentSchema.statics.addToCache=function(postId,data){
     CacheEngine.addBottomToList(_cache_key,data,function(outData){
 
     });
-
-}
+};
 
 CommentSchema.statics.formatCommentList = function(comments){
     var temp =[]
@@ -131,12 +135,85 @@ CommentSchema.statics.formatCommentList = function(comments){
             commented_by:comments[a].commented_by,
             date:DateTime.explainDate(comments[a].created_at),
             attachment:comments[a].attachment
-
         })
     }
 
     return temp;
-}
+};
+
+
+/**
+ * delete comment from db
+ * @param comments
+ */
+CommentSchema.statics.deleteComment = function(criteria, callBack){
+    console.log("CommentSchema.statics.deleteComment")
+
+    this.remove(criteria).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    })
+
+};
+
+
+/**
+ * delete a comment from cache
+ * @param postId
+ * @param data
+ */
+CommentSchema.statics.deleteFromCache = function(postId,data,callback){
+    console.log("CommentSchema.statics.deleteFromCache")
+    var _cache_key = CommentConfig.CACHE_PREFIX+postId;
+    CacheEngine.deleteFromList(_cache_key,data,function(outData){
+        callback(outData)
+    });
+
+};
+
+
+/**
+ * get a comment from db
+ * @param comments
+ */
+CommentSchema.statics.getCommentCountDB = function(criteria, callBack){
+    console.log("CommentSchema.statics.getCommentCountDB")
+
+    this.count(criteria).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    })
+
+};
+
+CommentSchema.statics.deleteCache = function(postId, callback){
+    var _cache_key = CommentConfig.CACHE_PREFIX+postId;
+    CacheEngine.deleteCache(_cache_key,function(outData){
+        callback(null);
+    });
+};
+
+
 
 
 

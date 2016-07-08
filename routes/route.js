@@ -235,10 +235,12 @@ router.post('/work-experience/update', UserController.updateWorkExperience);
 router.post('/post/composer', PostController.addPost);
 router.post('/post/share', PostController.sharePost);
 router.post('/post/profile-image-post', PostController.profileImagePost);
+router.post('/post/delete', PostController.deletePost);
 
 
 router.post('/comment/composer', CommentController.addComment);
 router.get('/pull/comments', CommentController.getComment);
+router.post('/comment/delete', CommentController.deleteComment);
 
 
 router.post('/skill-info/save', UserController.saveSkillInfo);

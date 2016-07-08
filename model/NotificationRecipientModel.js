@@ -235,5 +235,31 @@ NotificationRecipientSchema.statics.getCount = function(criteria,callBack){
 };
 
 
+/**
+ * delete notifications based on criteria
+ * @param criteria
+ * @param callBack
+ */
+NotificationRecipientSchema.statics.deleteNotificationRecipients = function(criteria,callBack){
+    console.log("NotificationRecipientSchema.statics.deleteNotificationRecipients")
+
+    this.remove(criteria).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    })
+
+};
+
+
 
 mongoose.model('NotificationRecipient',NotificationRecipientSchema);

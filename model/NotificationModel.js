@@ -92,6 +92,57 @@ NotificationSchema.statics.getNotifications = function(criteria,callBack){
 };
 
 
+/**
+ * Get notifications based on criteria
+ * @param criteria
+ * @param callBack
+ */
+NotificationSchema.statics.getFirstNotification = function(criteria,callBack){
+    console.log("NotificationSchema.statics.getFirstNotification")
+
+    this.findOne(criteria).sort({created_at:1}).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    })
+
+};
+
+/**
+ * delete notifications based on criteria
+ * @param criteria
+ * @param callBack
+ */
+NotificationSchema.statics.deleteNotification = function(criteria,callBack){
+    console.log("NotificationSchema.statics.deleteNotification")
+
+    this.remove(criteria).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    })
+
+};
+
+
 
 
 mongoose.model('Notification',NotificationSchema);

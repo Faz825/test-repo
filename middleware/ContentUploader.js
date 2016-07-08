@@ -294,6 +294,31 @@ var ContentUploader ={
 
         });
 
+    },
+
+    deleteFromCDN:function(payload, callback){
+        console.log("deleteFromCDN")
+
+        var deleteParam = {
+            Bucket: Config.CDN_BUCKET_NAME.slice(0,-1), //this.getUploadPath(payload.entity_id),
+            Key: Config.CDN_UPLOAD_PATH+payload.entity_id+"/"+payload.file_name
+        };
+        console.log(deleteParam)
+        this.s3.deleteObject(deleteParam, function(err, data) {
+            if (err){
+                console.log(err);
+                callback(err)
+            }
+            else {
+                console.log('delete', data);
+                callback(null);
+            }
+        });
+
+
+
+        //callback();
+
     }
 
 

@@ -142,10 +142,213 @@ var PostController ={
             return 0;
         });
 
+    },
+
+    /**
+     * delete post
+     * @param req
+     * @param res
+     */
+    deletePost:function(req,res){
+        console.log("deletePost")
+        var post_id = req.body.__post_id;console.log(post_id);
+
+        var outPut = {};
+        var Comment = require('mongoose').model('Comment'),
+            Like = require('mongoose').model('Like'),
+            Post = require('mongoose').model('Post'),
+            CurrentSession = Util.getCurrentSession(req),
+            _async = require('async'),
+            SubscribedPost = require('mongoose').model('SubscribedPost'),
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient');
+        var _unsubscribeUsers = [], _post = {};
+
+        _async.waterfall([
+
+            function deleteAllRecordsFromDB(callback){
+                console.log("deleteAllRecordsFromDB")
+
+                _async.parallel([
+                    //delete likes
+                    function(callback){
+                        console.log("delete likes")
+                        var _criteria = {post_id:Util.toObjectId(post_id)};
+                        Like.deleteLike(_criteria,function(result){
+                            callback(null);
+                        })
+                    },
+                    //delete comments
+                    function(callback){
+                        console.log("delete comments")
+                        var _criteria = {post_id:Util.toObjectId(post_id)};
+                        Comment.deleteComment(_criteria,function(result){
+                            callback(null);
+                        })
+                    },
+                    //delete subscription
+                    function(callback){
+                        console.log("delete subscription")
+                        var _criteria = {post_id:Util.toObjectId(post_id)};
+                        SubscribedPost.getSubscribedUsers(_criteria, function(result){
+                            for(var i = 0; i < result.users.length; i++){
+                                _unsubscribeUsers.push(result.users[i].user_id);
+                            }
+                            SubscribedPost.deleteSubscribedUsers(_criteria, function(result){
+                                callback(null)
+                            })
+                        })
+                    },
+                    //delete notification
+                    function(callback){
+                        console.log("delete notification")
+                        var _criteria = {notified_post:Util.toObjectId(post_id)};
+                        Notification.getNotifications(_criteria, function(result){
+                            var _notifications = result.result;
+                            _async.each(_notifications, function(notification, callback){
+                                var _notificationCriteria = {notification_id:Util.toObjectId(notification._id)};
+                                NotificationRecipient.deleteNotificationRecipients(_notificationCriteria,function(result){
+                                    callback(null);
+                                })
+                            });
+                            callback(null);
+                        });
+                    },
+                    //delete post
+                    function(callback){
+                        console.log("delete post")
+                        var _criteria = {notified_post:Util.toObjectId(post_id)};
+                        Post.deletePost(_criteria, function(result){
+                            callback(null);
+                        });
+                    }
+                ],function(err){
+                    callback(null);
+                })
+            },
+            function deleteUploads(callback){
+                console.log("deleteUploads")
+
+                _async.parallel([
+                    // delete post uploads
+                    function(callback){
+                        console.log("delete post uploads")
+
+                        var payLoad ={
+                            q:"post_id:"+post_id
+                        };
+
+                        Post.getPostFromCache(CurrentSession.id,payLoad,function(resultSet){
+                            _post = resultSet[0];
+                            if(typeof _post.has_attachment != 'undefined' && _post.has_attachment){
+                                console.log("has attachment")
+                                _async.each(_post.upload, function(upload,callback){
+                                    console.log(upload);
+                                    ContentUploader.deleteFromCDN(upload, function(result){
+                                        callback(null);
+                                    })
+                                })
+                                callback(null);
+                            }else{
+                                callback(null);
+                            }
+                        });
+
+                    },
+                    // delete comments uploads
+                    function(callback){
+                        console.log("delete comments uploads")
+                        var _redisId = "post:comment:"+post_id,
+                            _totalComments = 0,
+                            _comments = [];
+
+                        _async.waterfall([
+                            function(callback){
+                                CacheEngine.getList(_redisId,0,1,function(chResultSet){
+                                    _totalComments = chResultSet.result_count;
+                                    callback(null);
+                                });
+                            },
+                            function(callback){
+                                CacheEngine.getList(_redisId,0,_totalComments,function(chResultSet){
+                                    _comments = chResultSet.result;
+                                    callback(null);
+                                });
+                            },
+                            function(callback){
+                                _async.each(_comments,function(comment,callback){
+                                    if(typeof comment.attachment != 'undefined' && comment.attachment != '' && comment.attachment != null){
+                                        ContentUploader.deleteFromCDN(comment.attachment, function(result){
+                                            callback(null);
+                                        })
+                                    } else{
+                                        callback(null);
+                                    }
+                                });
+                                callback(null);
+                            }
+                        ],function(err){
+                            callback(null)
+                        })
+                    }
+
+                ],function(err){
+                    callback(null);
+                });
+
+            },
+            function deleteFromCache(callback){
+                console.log("deleteFromCache")
+
+                console.log(_post.visible_users)
+
+                _async.parallel([
+
+                    // delete post from cache
+                    function(callback){
+                        var payLoad ={
+                            q:post_id
+                        };
+
+                        _async.each(_post.visible_users, function(visible_user,callback){
+                            Post.deletePostFromCache(visible_user,payLoad,function(resultSet) {
+                                callback(null);
+                            });
+                        });
+                        callback(null);
+                    },
+                    // delete all likes of this post from cache
+                    function(callback){
+                        Like.deleteCache(post_id,function(){
+                            callback(null);
+                        })
+                    },
+                    // delete all shares of this post from cache
+                    function(callback){
+                        Post.deleteShareFromRedis(post_id,function(){
+                            callback(null)
+                        })
+                    },
+                    // delete all comments of this post from cache
+                    function(callback){
+                        Comment.deleteCache(post_id,function(){
+                            callback(null);
+                        })
+                    }
+
+                ],function(err){
+                    callback(null);
+                })
+
+            }
+
+        ],function(err){
+            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['unsubscribeUsers'] = _unsubscribeUsers;
+            res.status(200).send(outPut);
+            return 0;
+        })
     }
-
-
-
 };
 
 module.exports = PostController;

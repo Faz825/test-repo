@@ -60,6 +60,35 @@ export default class CommentElement extends React.Component{
         }
     }
 
+    onCommentDelete(unformattedComment){
+        console.log("onCommentDelete");
+        console.log(unformattedComment);
+
+        $.ajax({
+            url: '/comment/delete',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            data:{data:JSON.stringify(unformattedComment)},
+            success: function (data, text) {
+                if (data.status.code == 200) {
+                    console.log(data);
+                    if(data.unsubscribe){
+                        let _unsubscribeData = {
+                            post_id:this.state.postId
+                        };
+                        Socket.unsubscribe(_unsubscribeData);
+                    }
+                    this.props.onCommentDeleteSuccess(this.state.postId);
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(status);
+                console.log(error);
+            }
+        });
+    }
+
     render(){
 
         let opt={
@@ -73,7 +102,9 @@ export default class CommentElement extends React.Component{
             return (<div> Loading..... </div>);
         }
         const comments = this.props.comments.map((comment,key)=>{
-            return (<CommentItem comment={comment} key={key}/>)
+            let unformattedComment = this.props.unformattedComments[key];
+            return (<CommentItem comment={comment} key={key} unformattedComment={unformattedComment} loggedUser={this.state.loggedUser} onCommentDelete = {this.onCommentDelete.bind(this)}/>)
+
         });
 
         return (
@@ -98,13 +129,15 @@ export default class CommentElement extends React.Component{
  * @returns {XML}
  * @constructor
  */
-const CommentItem =({comment}) =>{
+const CommentItem =({comment,unformattedComment,loggedUser,onCommentDelete}) =>{
 
+    let _loggedUser = loggedUser;
     let _profile = comment.commented_by
     let _profile_image = (typeof _profile.images.profile_image != 'undefined')?_profile.images.profile_image.http_url:"";
     let commented_by = _profile.first_name +" "+ _profile.last_name;
     return(
         <div className="row-clr pg-comment-row">
+            {_loggedUser.id == _profile.user_id?<i className="fa fa-times pg-comment-delete-icon" onClick={(event)=>{onCommentDelete(unformattedComment)}}/>:null}
             <div className="col-xs-12 pg-comment-row-inner">
                 <div className="pg-comment-user-pro-pic">
                     <img src={_profile_image} alt={commented_by} className="img-responsive"/>

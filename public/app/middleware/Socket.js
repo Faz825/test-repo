@@ -9,8 +9,8 @@ class Socket{
 
     constructor() {
         this.loggedUser = Session.getSession('prg_lg');
-        //this.socket = io.connect("//notification.proglobe.loc/");
-        this.socket = io.connect("http://52.33.180.95:3200/");
+        this.socket = io.connect("//notification.proglobe.loc/");
+        //this.socket = io.connect("http://52.33.180.95:3200/");
     }
 
     connect(){
@@ -22,7 +22,7 @@ class Socket{
         var _data = {
             user:this.loggedUser.user_name,
             data:data
-        }
+        };
         this.socket.emit('subscribe channel', _data);
     }
 
@@ -31,14 +31,14 @@ class Socket{
         var _data = {
             user:this.loggedUser.user_name,
             data:data
-        }
+        };
         this.socket.emit('send notification', _data);
     }
 
     listenToNotification(callback){
         this.socket.on('notification',function(data){
             callback(data);
-        })
+        });
 
         this.socket.on('birthday notification',function(data){
             console.log("birthday notification")
@@ -47,7 +47,22 @@ class Socket{
         })
     }
 
+    unsubscribe(data){
+        console.log("unsubscribe");console.log(data)
+        var _data = {
+            user:this.loggedUser.user_name,
+            data:data
+        };
+        this.socket.emit('unsubscribe channel', _data);
+    }
 
+    unsubscribeUsers(data){
+        console.log("unsubscribeUsers");console.log(data)
+        var _data = {
+            data:data
+        };
+        this.socket.emit('unsubscribe users channel', _data);
+    }
 
 
 }

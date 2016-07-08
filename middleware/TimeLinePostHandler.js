@@ -138,7 +138,7 @@ var TimeLinePostHandler ={
             SubscribedPost = require('mongoose').model('SubscribedPost'),
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient'),
-            _post = postData;
+            _post = postData; console.log(_post);
         _async.waterfall([
             //GET FRIEND LIST BASED ON POST OWNER
             function getPostVisibleUsers(callBack){
@@ -265,6 +265,7 @@ var TimeLinePostHandler ={
 
 
                         _post.shared_post =selected_post;
+                        _post.is_i_liked = false;
                         _post.upload = [];
 
                     }

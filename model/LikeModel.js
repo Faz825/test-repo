@@ -12,14 +12,13 @@ var  mongoose = require('mongoose'),
 GLOBAL.LikeConfig ={
     CACHE_PREFIX:"post:like:",
     RESULT_PER_PAGE:100
-
-}
+};
 
 
 var LikeSchema = new Schema({
     post_id:{
         type: Schema.ObjectId,
-        ref: 'Post',
+        ref: 'Post'
     },
     user_id:{
         type: Schema.ObjectId,
@@ -71,7 +70,7 @@ LikeSchema.statics.addLike = function(likeData,callBack){
     });
 
 
-}
+};
 
 /**
  * Get Liked Users
@@ -130,7 +129,7 @@ LikeSchema.statics.getLikedUsers = function(userId,postId,page,callBack){
                 callBack(liked_users,liked_user_ids);
             })
     });
-}
+};
 
 
 /**
@@ -143,15 +142,37 @@ LikeSchema.statics.addToCache=function(postId,data){
     CacheEngine.addBottomToList(_cache_key,data,function(outData){
     });
 
-}
+};
 
 
-LikeSchema.statics.deleteCache = function(postId){
+LikeSchema.statics.deleteCache = function(postId, callback){
     var _cache_key = LikeConfig.CACHE_PREFIX+postId;
     CacheEngine.deleteCache(_cache_key,function(outData){
+        callback(null)
     });
+};
 
-}
+/**
+ * delete all likes from selected post
+ * @param likes
+ * @param callBack
+ */
+LikeSchema.statics.deleteLike = function(criteria,callBack){
+    this.remove(criteria).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    })
+};
 
 
 

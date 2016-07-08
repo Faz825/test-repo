@@ -192,6 +192,19 @@ var CacheEngine ={
             }
 
         });
+    },
+
+    deleteFromList:function(key,data,callback){
+
+        this._cacheClient.lrem(key, 1, data, function(err, result){
+            if( err ){
+                console.log(err);
+                callback(err);
+            }else{
+                console.log("Delete from LIST");
+                callback(result);
+            }
+        })
     }
 };
 

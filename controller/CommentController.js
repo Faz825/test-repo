@@ -39,7 +39,7 @@ var CommentController ={
             comment:req.body.__content
         };
 
-        var _commentData = [];
+        var _commentData = {};
 
         _async.waterfall([
 
@@ -58,8 +58,10 @@ var CommentController ={
             //COPY CONTENT TO CDN
             function copyToCDN(callBack){
 
+                console.log("copyToCDN")
 
-                _commentData['upload'] = [];
+
+                _commentData['upload'] = {};
                 if(typeof req.body.__img != 'undefined' && req.body.__img != ""){
 
                     var data ={
@@ -71,6 +73,7 @@ var CommentController ={
                     }
 
                     ContentUploader.uploadFile(data,function (payLoad) {
+                        console.log(payLoad)
                         _commentData['upload']= payLoad;
                         callBack(null)
                     });
@@ -196,6 +199,100 @@ var CommentController ={
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['comments']  = resultSet
             res.status(200).send(outPut);
+        });
+
+    },
+
+    deleteComment:function(req,res){
+        var commentData = JSON.parse(req.body.data);
+        var commentDataString = req.body.data;
+        var outPut = {};
+        var Comment = require('mongoose').model('Comment'),
+            CurrentSession = Util.getCurrentSession(req),
+            _async = require('async'),
+            SubscribedPost = require('mongoose').model('SubscribedPost'),
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            unsubscribe = false;
+
+        _async.waterfall([
+
+            function deleteCommentFromDb(callback){
+                console.log("deleteCommentFromDb")
+                var _criteria = {_id:Util.toObjectId(commentData.comment_id)};
+                Comment.deleteComment(_criteria,function(result){
+                    callback(null);
+                })
+            },
+            function deleteUploads(callback){
+                console.log("deleteUploads")
+                if(typeof commentData.attachment != 'undefined' && commentData.attachment != '' && commentData.attachment != null){
+                    ContentUploader.deleteFromCDN(commentData.attachment, function(result){
+                        callback(null);
+                    })
+                } else{
+                    callback(null);
+                }
+            },
+            function deleteCommentFromCache(callback){
+                console.log("deleteCommentFromCache")
+                Comment.deleteFromCache(commentData.post_id, commentDataString, function(result){
+                    callback(null);
+                });
+            },
+            function deleteSubscription(callback){
+                console.log("deleteSubscription")
+                var Post = require('mongoose').model('Post');
+
+                Post.db_getPostDetailsOnly({_id:commentData.post_id}, function(resultPost){
+                    if(resultPost.post.created_by != CurrentSession.id){
+                        var _criteria = {post_id:Util.toObjectId(commentData.post_id),user_id:Util.toObjectId(CurrentSession.id)};
+                        Comment.getCommentCountDB(_criteria,function(result){
+                            if(result.result>0){
+                                callback(null)
+                            }else{
+                                SubscribedPost.deleteSubscribedUsers(_criteria, function(result){
+                                    unsubscribe = true;
+                                    callback(null)
+                                })
+                            }
+                        })
+                    }else{
+                        callback(null)
+                    }
+                });
+            },
+            function deleteNotification(callback){
+                console.log("deleteNotification")
+                var _ts = new Date(commentData.created_at).getTime(),
+                    _tsls = _ts+10000;
+                var _criteria = {
+                    notified_post:Util.toObjectId(commentData.post_id),
+                    sender:Util.toObjectId(CurrentSession.id),
+                    notification_type:"comment",
+                    created_at:{$gt:new Date(_ts), $lt:new Date(_tsls)}
+                };
+
+                Notification.getFirstNotification(_criteria,function(result){
+                    if(result.result != null){
+                        var _notificationId = result.result._id;
+                        var _recipientCriteria = {notification_id:_notificationId}
+                        NotificationRecipient.deleteNotificationRecipients(_recipientCriteria, function(result){
+                            var _notificationCriteria = {_id:_notificationId}
+                            Notification.deleteNotification(_notificationCriteria, function(result){
+                                callback(null)
+                            })
+                        });
+                    }else{
+                        callback(null)
+                    }
+                });
+            }
+        ], function(err){
+            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['unsubscribe'] = unsubscribe;
+            res.status(200).send(outPut);
+            return 0;
         });
 
     }

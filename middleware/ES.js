@@ -71,7 +71,6 @@ var ES = {
         this.esClient.search(search_param).then(function (resp) {
             callBack(_this.formatSearchResult(resp));
         }, function (err) {
-
             console.trace(err.message);
             callBack(null)
         });
@@ -87,6 +86,22 @@ var ES = {
         }
 
         return _tmp;
+    },
+    delete:function(payload, callback){
+
+        var _esData = {
+            index:payload.index,
+            type:payload.type,
+            id:payload.id
+        };
+
+        this.esClient.delete(_esData).then(function (resp) {
+            callback(null);
+        }, function (err) {
+            console.trace(err.message);
+            callback(null)
+        });
+
     }
 
 };

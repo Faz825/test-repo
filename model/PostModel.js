@@ -246,6 +246,7 @@ PostSchema.statics.addShareToRedis = function(postId,data,callback){
  * @param callBack
  */
 PostSchema.statics.db_getPostDetailsOnly = function(criteria,callBack){
+    console.log("PostSchema.statics.db_getPostDetailsOnly")
     var _this = this;
     _this.findOne(criteria)
         .exec(function(err,postData){
@@ -258,6 +259,102 @@ PostSchema.statics.db_getPostDetailsOnly = function(criteria,callBack){
             }
         });
 }
+
+
+/**
+ * Delete Post from Database
+ * @param postId
+ * @param callBack
+ */
+PostSchema.statics.deletePost = function(criteria,callBack){
+    this.remove(criteria).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    });
+}
+
+
+
+/**
+ * 2 4 | 4 6
+ * Get Post From Cache based on Post Id
+ * @param userId
+ * @param callBack
+ */
+PostSchema.statics.getPostFromCache= function(userId,payload,callBack){
+    var _this = this;
+
+    var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+userId;
+
+    var query={
+        q:payload.q,
+        index:_cache_key
+    };
+
+    //Find User from Elastic search
+    ES.search(query,function(csResultSet){
+        if(csResultSet == null){
+            callBack(null);
+        }else{
+            callBack(csResultSet.result);
+        }
+
+    });
+
+}
+
+
+/**
+ * 2 4 | 4 6
+ * Delete Post From Cache based on Post Id
+ * @param userId
+ * @param callBack
+ */
+PostSchema.statics.deletePostFromCache= function(userId,payload,callBack){
+
+    var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+userId;
+
+    var query={
+        id:payload.q,
+        type: 'posts',
+        index:_cache_key
+    };
+
+    //Find User from Elastic search
+    ES.delete(query,function(csResultSet){
+        //if(csResultSet == null){
+        //    callBack(null);
+        //}else{
+        //    callBack(csResultSet.result);
+        //}
+        callBack(null);
+
+    });
+
+}
+
+
+/**
+ *
+ */
+PostSchema.statics.deleteShareFromRedis = function(postId,callback){
+    var _cache_key = PostConfig.SHARE_PREFIX+postId;
+    CacheEngine.deleteCache(_cache_key,function(outData){
+        callback(null)
+    });
+
+}
+
 
 
 /**

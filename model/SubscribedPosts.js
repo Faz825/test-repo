@@ -65,7 +65,7 @@ SubscribedPostSchema.statics.saveSubscribe = function(new_subscription,callBack)
 };
 
 /**
- * Get notifications based on criteria
+ * Get subscribed users based on criteria
  * @param criteria
  * @param callBack
  */
@@ -83,6 +83,42 @@ SubscribedPostSchema.statics.getSubscribedUsers = function(criteria,callBack){
         }
     })
 
+};
+
+
+/**
+ * delete subscribed users based on criteria
+ * @param criteria
+ * @param callBack
+ */
+SubscribedPostSchema.statics.deleteSubscribedUsers = function(criteria,callBack){
+    console.log("SubscribedPostSchema.statics.deleteSubscribedUsers")
+
+    //var _this = this;
+    //
+    //_this.findOneAndRemove(criteria,function(err,resultSet){
+    //    if(!err){
+    //        callBack({status:200});
+    //    }else{
+    //        console.log("Server Error --------");
+    //        callBack({status:400,error:err});
+    //    }
+    //});
+
+    this.remove(criteria).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    })
 
 };
 

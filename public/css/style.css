@@ -994,7 +994,7 @@ input[type=number]::-webkit-outer-spin-button {
 	padding: 4px 10px;
 	display: block;
 	color: #fff;
-	background: #61B3DE;
+	background: #e82107;
 	border-radius: 999px;
 }
 
@@ -3536,4 +3536,16 @@ textarea{
 /* To change the image cropper background */
 .dialog--jss-0-0 .cropper-bg{
 	background: #fff;
+}
+
+.pg-status-delete-icon{
+	float: right;
+	color:#ccc;
+}
+
+.pg-comment-delete-icon{
+	float: right;
+	color:#ccc;
+	margin-right: 5px;
+	margin-top: 5px;
 }

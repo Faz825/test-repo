@@ -42,8 +42,16 @@ export default class Index extends React.Component{
         this.setState({posts:_posts});
     }
 
+    onPostDeleteSuccess(index){
+        console.log("onPostDeleteSuccess")
+        let _posts = this.state.posts;
+        _posts.splice(index,1);
+        this.setState({posts:_posts});
+    }
+
     loadPosts(page){
 
+        console.log("calling loadPosts ")
         let user = Session.getSession('prg_lg');
         let _this =  this;
         $.ajax({
@@ -208,6 +216,13 @@ export default class Index extends React.Component{
         }
     }
 
+    onLikeSuccess(index){
+        console.log("onLikeSuccess")
+        let _posts = this.state.posts;
+        _posts[index].is_i_liked=true;
+        this.setState({posts:_posts});
+    }
+
     render(){
         let _this = this;
         const {uname,posts,display_news_articles}= this.state;
@@ -236,7 +251,9 @@ export default class Index extends React.Component{
                                                 uname = {uname}/>
                                 <ListPostsElement posts={posts}
                                                   uname = {uname}
-                                                  onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}/>
+                                                  onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}
+                                                  onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
+                                                  onLikeSuccess = {this.onLikeSuccess.bind(this)}/>
                             </div>
                             <div className="col-xs-6"></div>
                         </div>
