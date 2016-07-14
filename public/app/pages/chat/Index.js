@@ -23,6 +23,9 @@ export default class Index extends React.Component{
         super(props);
 
         //bit6 will work on https
+        if(Session.getSession('prg_lg') == null){
+            window.location.href = "/";
+        }
         if (window.location.protocol == 'http:' ) {
             var url_arr = window.location.href.split('http');
             window.location.href = 'https'+url_arr[1];

@@ -78,6 +78,18 @@ export default class AboutYou extends React.Component{
         this.props.onPreviousStep()
     }
 
+    isValidDate(dob){
+        var dob_arr = dob.split("-");
+        var presumedDate = new Date(dob_arr[2], parseInt(dob_arr[0]-1), dob_arr[1]);
+
+        if (presumedDate.getDate() != dob_arr[1]){
+            return false;
+        }
+        else{
+            return true;
+        }
+
+    }
 
 
     traversObject(){
@@ -85,6 +97,9 @@ export default class AboutYou extends React.Component{
         for(let elm in this.formData){
             if(elm == "dob" && this.formData[elm]==""){
                 _error[elm] = Alert.ENTER_DOB;
+            }
+            if(elm == "dob" &&  !this.isValidDate(this.formData[elm])){
+                _error[elm] = Alert.INVALID_DOB;
             }
 
             if(elm == "country" && this.formData[elm] == ""){

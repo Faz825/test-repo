@@ -46,7 +46,6 @@
 	        if (c.indexOf(nameEQ) === 0) return JSON.parse(decodeURIComponent(c.substring(nameEQ.length, c.length)));
 	    }
 	    return null;
-   
 	}
 	destroy(key){
 		

@@ -9,10 +9,16 @@ import Lib from '../../middleware/Lib';
 export default class Index extends React.Component{
     constructor(props){
         super(props);
+        if(Session.getSession('prg_lg') == null){
+            window.location.href = "/";
+        }
+
         this.state ={
             friend_requests:[],
             friend_suggestions:[],
-            my_connections:[]
+            my_connections:[],
+            show_request_skip:false,
+            show_suggestion_skip:false
         };
 
         this.loggedUser = Session.getSession('prg_lg');
@@ -44,6 +50,11 @@ export default class Index extends React.Component{
                         _tmp_req_cons.push(this.allFriendRequest[a]);
                     }
 
+                }
+                if(data.req_cons.length > 3){
+                    this.setState({show_request_skip:true})
+                }else{
+                    this.setState({show_request_skip:false})
                 }
 
                 this.setState({friend_requests:_tmp_req_cons})
@@ -120,6 +131,11 @@ export default class Index extends React.Component{
                     }
 
                 }
+
+                if( data.connections.length > 3){
+                    this.setState({show_suggestion_skip:true})
+                }
+
                 this.setState({friend_suggestions:_tmp_suggestions});
 
             }
@@ -166,7 +182,9 @@ export default class Index extends React.Component{
         const {
             friend_requests,
             friend_suggestions,
-            my_connections
+            my_connections,
+            show_request_skip,
+            show_suggestion_skip
             }=this.state;
 
 
@@ -188,7 +206,8 @@ export default class Index extends React.Component{
                             <FriendRequests friend_requests={friend_requests}
                                             onAcceptFriendRequestSuccess ={this.onAcceptFriendRequestSuccess.bind(this)}
                                             onFriendRequestSkip = {this.onFriendRequestSkip.bind(this)}
-                                            loggedUser = {this.loggedUser}/>
+                                            loggedUser = {this.loggedUser}
+                                            show_request_skip = {show_request_skip}/>
                             :null
                     }
 
@@ -197,7 +216,8 @@ export default class Index extends React.Component{
                             <FriendSuggestions friend_suggestions = {friend_suggestions}
                                                loggedUser = {this.loggedUser}
                                                onAddFriendSuccess={this.onAddFriendSuccess.bind(this)}
-                                               onFriendSuggestionSkip = {this.onFriendSuggestionSkip.bind(this)}/>
+                                               onFriendSuggestionSkip = {this.onFriendSuggestionSkip.bind(this)}
+                                               show_suggestion_skip = {show_suggestion_skip}/>
                             :null
                     }
 
@@ -260,6 +280,7 @@ export class FriendRequests extends React.Component{
                 <UserBlockTileView user = {friend}
                                    onAccept = {user=>_this.acceptFriendRequest(user)}
                                    onSkip = {user=>_this.skipRequest(user,_current_block_ids)}
+                                   showSkip = {_this.props.show_request_skip}
                                    key = {key}/>
             );
         });
@@ -329,6 +350,7 @@ export class FriendSuggestions  extends React.Component{
                 <UserBlockTileView user = {friend}
                                    onAdd = {user=>_this.onAddFriend(user)}
                                    onSkip = {user=>_this.skipRequest(user,_current_block_ids)}
+                                   showSkip = {_this.props.show_suggestion_skip}
                                    key = {key}/>
 
 

@@ -132,8 +132,8 @@ class Signup extends React.Component {
     }
 
     clearValidations(){
+        this.setState({invalidElements:{}, error : {}});
         this.formData = {};
-        this.setState({invalidElements:{}, fieldValue : ""});
     }
 
 	render(){
@@ -205,7 +205,7 @@ class Signup extends React.Component {
                                     </div>
                                     {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
                                     <div className="row">
-                                        <Button type="reset" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
+                                        <Button type="reset" size="6" classes="pgs-sign-submit-cancel" value="clear" />
                                         <Button type="submit" size="6" classes="pgs-sign-submit" value="next" />
                                     </div>
                                 </form>

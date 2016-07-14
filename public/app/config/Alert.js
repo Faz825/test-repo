@@ -11,6 +11,7 @@ const Alert = {
 	"FILL_EMPTY_REQUIRED_FIELDS" : "Please fill the empty required fields",
 	"PLEASE_SELECT_SECRETARY"    : "Please select your secretary to proceed",
 	"ENTER_DOB"                  : "Please enter your 'Date of Birth'",
+	"INVALID_DOB"				 : "Please enter valid 'Date of Birth'",
 	"ENTER_DATE_GRADUATION"      : "Please enter your 'Date of Graduation'",
 	"ENTER_SCHOOL_NAME"          : "Please enter your 'School Name'",
 	"ENTER_CUR_JOB"              : "Please enter your 'Current Job'",

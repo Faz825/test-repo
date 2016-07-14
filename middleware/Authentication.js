@@ -5,6 +5,8 @@
 
 exports.Authentication= function(req,res,next){
 
+    console.log(req.originalUrl)
+
 	/**
 	 * Pass public URLs from the route
 	 */
@@ -16,14 +18,23 @@ exports.Authentication= function(req,res,next){
     }
 
 	var origURL =  String(req.originalUrl).split('?')[0];
+
+    if(notAuthURLs.indexOf(origURL) >= 0){
+        if(typeof  req.session.user != 'undefined'  ){
+            res.redirect('/');
+            return;
+        } else{
+            res.render('index');
+            return;
+        }
+    }
+
     if (AccessAllow.indexOf(origURL) >= 0) {
         res.render('index');
         return;
     }
 
-
-
-    if(typeof  req.session.user != 'undefined'  ){
+    if(typeof req.session.user != 'undefined'  ){
         if(String(req.originalUrl).indexOf('logout') != -1){
 
             req.session.destroy(function(err){
@@ -34,6 +45,14 @@ exports.Authentication= function(req,res,next){
             });
             return ;
         }
+        //else{
+        //    for (var i = 0; i < authURLS.length; i++) {
+        //        if (req.originalUrl.indexOf(authURLS[i]) >= 0) {
+        //            res.render('index');
+        //            return;
+        //        }
+        //    }
+        //}
 
         next();
         return;
@@ -41,6 +60,15 @@ exports.Authentication= function(req,res,next){
 
 
     }else{
+
+        console.log("ELSE")
+
+        //for (var i = 0; i < authURLS.length; i++) {
+        //    if (req.originalUrl.indexOf(authURLS[i]) >= 0) {
+        //        res.redirect('/');
+        //        return;
+        //    }
+        //}
 
         var _out_put= {
             status:'success',

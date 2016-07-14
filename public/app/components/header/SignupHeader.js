@@ -30,7 +30,8 @@ export default class Header extends React.Component {
             signinURL:'/doSignin',
             validateAlert: "",
             invalidElements :{},
-            fieldValue : ""
+            fieldValue : "",
+            rememberMe : Session.getSession("prg_rm")?Session.getSession("prg_rm").rememberMe:false
         };
 
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
@@ -66,6 +67,11 @@ export default class Header extends React.Component {
 
     }
 
+    onCheck(){
+        let rememberMe = this.state.rememberMe;
+        this.setState({rememberMe : !rememberMe});
+    }
+
     submitData(e){
         e.preventDefault();
         let _this = this;
@@ -91,6 +97,10 @@ export default class Header extends React.Component {
                     if (data.status.code === 200) {
                         _this.setState({validateAlert: ""});
                         Session.createSession("prg_lg", data.user);
+                        if(_this.state.rememberMe){
+                            Session.createSession("prg_rm", {rememberMe:_this.state.rememberMe});
+                        }
+
                         if(data.user.status == 7){
                             location.href = "/";
                         }else{
@@ -115,7 +125,9 @@ export default class Header extends React.Component {
                 <div className="container-fluid pg-custom-container">
                     <div className="row">
                         <div className="col-xs-2 logoHolder">
-                            <Logo url ="/images/logo.png" />
+                            <a href="/">
+                                <Logo url ="/images/logo.png" />
+                            </a>
                         </div>
                         <div className="col-xs-6 pgs-main-nav-area">
                             <div className="row row-clr pgs-main-nav-area-inner">
@@ -157,7 +169,10 @@ export default class Header extends React.Component {
                                                 validate={this.state.invalidElements.uname}
                                                 error_message={this.state.error.uname}/>
                                     <div className="checkbox">
-                                        <input type="checkbox" id="rememberMe" />
+                                        <input type="checkbox"
+                                               id="rememberMe"
+                                               name="rememberMe"
+                                               checked={this.state.rememberMe} onChange={this.onCheck.bind(this)}/>
                                         <label htmlFor="rememberMe">Remember Me</label>
                                     </div>
                                 </div>

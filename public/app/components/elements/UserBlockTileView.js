@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-const UserBlockTileView =({user,onAccept,onAdd,onSkip})=>{
+const UserBlockTileView =({user,onAccept,onAdd,onSkip,showSkip})=>{
 
 
     const user_profile_image = (typeof user.images.profile_image.http_url != 'undefined' )? user.images.profile_image.http_url : "images/"+user.images.profile_image.file_name,
@@ -61,10 +61,13 @@ const UserBlockTileView =({user,onAccept,onAdd,onSkip})=>{
                             :null
 
                     }
+                    {
+                        (showSkip)?<a href="javascript:void(0)"
+                                      className="pg-fr-bot-btn pg-skip-btn"
+                                      onClick={()=>onSkip(user)}>Skip</a>
+                            :null
+                    }
 
-                    <a href="javascript:void(0)"
-                       className="pg-fr-bot-btn pg-skip-btn"
-                       onClick={()=>onSkip(user)}>Skip</a>
 
                 </div>
             </div>

@@ -11,16 +11,18 @@ import AddPostElement from '../../components/timeline/AddPostElement';
 import ListPostsElement from '../../components/timeline/ListPostsElement'
 import Session  from '../../middleware/Session';
 import _ from 'lodash';
+import Lib from '../../middleware/Lib';
+
 export default class Index extends React.Component{
 
 
     constructor(props) {
         super(props);
-        //notification will work on http
-        //if (window.location.protocol == 'https:' ) {
-        //    var url_arr = window.location.href.split('https');
-        //    window.location.href = 'http'+url_arr[1];
-        //}
+
+        if(Session.getSession('prg_lg') == null){
+            window.location.href = "/";
+        }
+
         this.state={
             loggedUser:Session.getSession('prg_lg'),
             uname:this.getUrl(),
@@ -117,6 +119,25 @@ export default class Index extends React.Component{
         let _posts = this.state.posts;
         _posts[index].is_i_liked=true;
         this.setState({posts:_posts});
+    }
+
+    componentDidMount(){
+        window.setInterval(function () {
+            this.updatePostTime();
+        }.bind(this), 10000);
+    }
+
+    updatePostTime(){
+        let _posts = this.state.posts;
+        let _updatedPosts = [];
+        for(var i = 0; i < _posts.length; i++){
+            var data = _posts[i];
+            var _timeAgo = Lib.timeAgo(data.date.time_stamp)
+            data.date.time_a_go = _timeAgo;
+            _updatedPosts.push(data);
+        }
+
+        this.setState({posts:_updatedPosts});
     }
 
 

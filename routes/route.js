@@ -57,44 +57,85 @@ var TestPostController          = require('../test/TestPostController'),
  */
 GLOBAL.publicURLs = ['/images','/css','/web','/fonts','/js'];
 
+
+/**
+ * This urls should be outside login. if user logged-in can't see these pages
+ */
+GLOBAL.notAuthURLs = ['/sign-up','/forgot-password','/change-password-invalid','/changed-password']
+
 /**
  *This URLs will be normal URL that execute out side the authentication component.
  * this URL can be accessed through web browser without login
  */
 GLOBAL.AccessAllow = [
-
-    '/','/sign-up','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
-    '/profile-image','/done','/cache-check','/collage-and-job','/profile','/test/:id','/forgot-password','/change-password-invalid','/changed-password',
-	'/news-feed','/news','/chat','/notes','/notifications'
-
+    '/','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
+    '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
+    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post'
 
 ];
-
 
 /**
  * Actual Routes Implementation without Authentication
  */
 router.post('/doSignup',UserController.doSignup);
 router.get('/secretaries',SecretaryController.getSeretaries);
-
 router.get('/cache-check/:key',SecretaryController.cacheCheck);
-
 router.post('/doSignin', UserController.doSignin);
-
 router.post('/forgot-password/request/', UserController.forgotPassword);
 router.get('/forgot-password/reset/:token', UserController.validateToken);
 router.get('/change-password/:token', DefaultController.index);
 router.post('/change-password/:token', UserController.resetPassword);
-
-router.get('/chat/:chatWith', DefaultController.index);
-
-
 router.get('/life-event/categories', LifeEventController.getLifeEventCategories);
 router.get('/life-events', LifeEventController.getLifeEvents);
 
+router.get('/education-info/save', UserController.addEducationDetail);
+router.get('/educations/:uname',UserController.retrieveEducationDetail);
+router.get('/education-info/delete', UserController.deleteEducationDetail);
+router.get('/work-experiences/:uname', UserController.retrieveWorkExperience);
+router.get('/user/skills/:uname', UserController.getSkills);
+
+// Skills CRUD
+router.get('/skills/save', SkillController.addSkills);
+router.get('/skills', SkillController.getSkills);
+router.get('/skill/:id', SkillController.getSkillById);
+router.get('/skills/update', SkillController.updateSkill);
+router.get('/skills/delete', SkillController.deleteSkill);
+//User's skill add / delete
+router.post('/collage-and-job/save',UserController.addCollageAndJob);
+//News Category / Channel & News Add / Get All & Delete
+router.post('/news/add-category', NewsController.addNewsCategory);
+router.get('/news/delete-category', NewsController.deleteNewsCategory);
+router.post('/news/add-channel', NewsController.addNewsChannel);
+router.get('/news/delete-channel', NewsController.deleteNewsChannel);
+router.post('/news/add-news', NewsController.addNews);
+router.get('/news/get-news/:category/:channel', NewsController.getNews);
+router.get('/news/delete-news', NewsController.deleteNews);
+router.get('/news/news-categories', NewsController.allNewsCategories);
+router.get('/get-profile/:uname',UserController.getProfile);
+router.get('/news-info/delete-category', UserController.deleteNewsCategory);
+router.get('/news-info/add-channel', UserController.addNewsChannel);
+router.get('/news-info/get-channels/:category', UserController.getNewsChannels);
+router.get('/news-info/delete-channel', UserController.deleteNewsChannel);
+router.post('/news-info/save-article', UserController.saveArticle);
+router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle);
+router.get('/pull/posts', PostController.getPost);
+
+router.get('/news-feed', DefaultController.index);
+router.get('/notifications', DefaultController.index);
+router.get('/news', DefaultController.index);
+router.get('/chat', DefaultController.index);
 router.get('/chat/:chatWith', DefaultController.index);
+router.get('/notes', DefaultController.index);
 router.get('/notes/new-note/:notebook_id', DefaultController.index);
 router.get('/notes/edit-note/:note_id', DefaultController.index);
+router.get('/connections', DefaultController.index);
+router.get('/profile/:name', DefaultController.index);
+router.get('/profile/:name/:post', DefaultController.index);
+
+
+
+
+
 
 
 
@@ -109,99 +150,22 @@ router.get('/test/send-mail', TestController.sendMailTest);
 router.get('/test/get-profile/:id', TestController.getProfile);
 router.get('/test/get-education/:uname', TestController.retrieveEducationDetail);
 router.get('/test/get-workexp/:uname', TestController.retrieveWorkExperience);
-
 router.post('/test/add-post/:id', TestPostController.addPost);
 router.get('/test/get-post/:id/:page', TestPostController.ch_getPost);
-
 router.get('/test/es/create-index/:id', TestController.esCreateIndex);
 router.get('/test/es/search', TestController.esSearch);
-
 router.get('/test/get-connections/:id', TestConnectionController.getConnection);
-
 router.get('/test/get-friend-requests/:id', TestConnectionController.getFriendRequests);
-
 router.post('/test/accept-friend-requests/:id', TestConnectionController.acceptFriendRequest);
-
-
-
-
 router.get('/test/my-connections/:id/:q',TestConnectionController.myConnections);
-
-
 router.post('/test/session',TestSessionController.addToSession);
 router.get('/test/get-session',TestSessionController.getSession);
 router.post('/test/logout',TestSessionController.logout);
-
-
-
 router.get('/test/save-notification', TestController.saveNotification);
 router.get('/test/get-notifications', TestController.getNotifications);
 router.get('/test/update-notification', TestController.updateNotification);
-
-
 router.post('/test/comment/add/:id', TestCommentController.addComment);
 router.get('/test/comment/get/:id', TestCommentController.getComment);
-
-router.get('/education-info/save', UserController.addEducationDetail);
-router.get('/educations/:uname',UserController.retrieveEducationDetail);
-router.get('/education-info/delete', UserController.deleteEducationDetail);
-
-
-router.get('/work-experiences/:uname', UserController.retrieveWorkExperience);
-
-router.get('/user/skills/:uname', UserController.getSkills);
-// Skills CRUD
-router.get('/skills/save', SkillController.addSkills);
-router.get('/skills', SkillController.getSkills);
-router.get('/skill/:id', SkillController.getSkillById);
-router.get('/skills/update', SkillController.updateSkill);
-router.get('/skills/delete', SkillController.deleteSkill);
-
-
-
-//User's skill add / delete
-router.post('/collage-and-job/save',UserController.addCollageAndJob);
-
-
-//News Category / Channel & News Add / Get All & Delete
-router.post('/news/add-category', NewsController.addNewsCategory);
-router.get('/news/delete-category', NewsController.deleteNewsCategory);
-
-router.post('/news/add-channel', NewsController.addNewsChannel);
-
-router.get('/news/delete-channel', NewsController.deleteNewsChannel);
-
-router.post('/news/add-news', NewsController.addNews);
-router.get('/news/get-news/:category/:channel', NewsController.getNews);
-router.get('/news/delete-news', NewsController.deleteNews);
-router.get('/news/news-categories', NewsController.allNewsCategories);
-
-
-router.get('/profile/:name', DefaultController.index);
-router.get('/profile/:name/:post', DefaultController.index);
-router.get('/get-profile/:uname',UserController.getProfile);
-
-
-
-
-
-router.get('/news-info/delete-category', UserController.deleteNewsCategory);
-
-router.get('/news-info/add-channel', UserController.addNewsChannel);
-router.get('/news-info/get-channels/:category', UserController.getNewsChannels);
-router.get('/news-info/delete-channel', UserController.deleteNewsChannel);
-
-
-router.post('/news-info/save-article', UserController.saveArticle);
-
-router.get('/news-info/delete-saved-articles', UserController.deleteSavedArticle);
-
-
-//CONNECTIONS
-router.get('/connections', DefaultController.index);
-
-router.get('/pull/posts', PostController.getPost);
-
 
 /**
  * Push All Rqurst through oAuth
@@ -212,6 +176,8 @@ router.all('/*',oAuth.Authentication);
 /**
  * Implement Actual Routes that need to Authenticate
  */
+
+
 
 router.post('/secretary/save',UserController.saveSecretary);
 router.post('/general-info/save',UserController.saveGeneralInfo);

@@ -97,4 +97,27 @@ UsersSavedArticleSchema.statics.deleteSavedArticle=function(criteria, callBack){
 
 };
 
+
+/**
+ * check user already saved the article
+ * @param criteria
+ * @param callBack
+ */
+UsersSavedArticleSchema.statics.checkSavedArticle = function(criteria,callBack){
+
+    this.count(criteria).exec(function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            callBack({status:400,error:err});
+        }
+    })
+};
+
+
+
 mongoose.model('UsersSavedArticle',UsersSavedArticleSchema);

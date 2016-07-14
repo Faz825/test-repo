@@ -8,15 +8,15 @@ import ListPostsElement from '../../components/timeline/ListPostsElement';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Session  from '../../middleware/Session';
+import Lib from '../../middleware/Lib';
 
 export default class Index extends React.Component{
     constructor(props) {
         super(props);
-        //notification will work on http
-        //if (window.location.protocol == 'https:' ) {
-        //    var url_arr = window.location.href.split('https');
-        //    window.location.href = 'http'+url_arr[1];
-        //}
+        if(Session.getSession('prg_lg') == null){
+            window.location.href = "/";
+        }
+
         let user =  Session.getSession('prg_lg');
         this.state={
             uname:user.user_name,
@@ -31,9 +31,9 @@ export default class Index extends React.Component{
         this.loadPosts(0);
         this.loadNewsArticles();
         this.current_date = this.getCurrentDate();
-
         this.selectedArtical = this.selectedArtical.bind(this);
         this.onSaveArticleIconClick = this.onSaveArticleIconClick.bind(this);
+        this.updatePostTime = this.updatePostTime.bind(this);
     }
 
     onPostSubmitSuccess(data){
@@ -43,15 +43,12 @@ export default class Index extends React.Component{
     }
 
     onPostDeleteSuccess(index){
-        console.log("onPostDeleteSuccess")
         let _posts = this.state.posts;
         _posts.splice(index,1);
         this.setState({posts:_posts});
     }
 
     loadPosts(page){
-
-        console.log("calling loadPosts ")
         let user = Session.getSession('prg_lg');
         let _this =  this;
         $.ajax({
@@ -84,6 +81,27 @@ export default class Index extends React.Component{
         }
         this.setState({display_articles_index:_dis_art_in});
         this.setState({display_news_articles:_dis_art});
+    }
+
+    componentDidMount(){
+        window.setInterval(function () {
+            this.updatePostTime();
+        }.bind(this), 10000);
+    }
+
+    updatePostTime(){
+
+        let _posts = this.state.posts;
+        let _updatedPosts = [];
+        for(var i = 0; i < _posts.length; i++){
+            var data = _posts[i];
+            var _timeAgo = Lib.timeAgo(data.date.time_stamp)
+            data.date.time_a_go = _timeAgo;
+            _updatedPosts.push(data);
+        }
+
+        this.setState({posts:_updatedPosts});
+
     }
 
     loadNewsArticles(){
@@ -136,6 +154,19 @@ export default class Index extends React.Component{
     saveArticle(){
         let _this = this;
         if(!this.state.popupData.isSaved){
+
+            let dis_articles = this.state.display_news_articles;
+            for(let i=0; i<dis_articles.length; i++){
+                if(dis_articles[i].channel === this.state.popupData.channel && dis_articles[i].article_date === this.state.popupData.article_date && dis_articles[i].heading === this.state.popupData.heading){
+                    dis_articles[i].isSaved = 1;
+                    this.setState({display_news_articles:dis_articles});
+                    let _index = this.state.display_articles_index[i];
+                    let _news_art = this.state.news_articles;
+                    _news_art[_index].isSaved = 1;
+                    this.setState({news_articles:_news_art});
+                }
+            }
+
             let loggedUser = Session.getSession('prg_lg');
             $.ajax({
                 url: '/news/articles/save',
@@ -146,19 +177,7 @@ export default class Index extends React.Component{
             }).done( function (data, text) {
                 if(data.status.code == 200){
                     this.setState({isShowingModal: false});
-
-                    let dis_articles = this.state.display_news_articles;
-                    for(let i=0; i<dis_articles.length; i++){
-                        if(dis_articles[i].channel === this.state.popupData.channel && dis_articles[i].article_date === this.state.popupData.article_date && dis_articles[i].heading === this.state.popupData.heading){
-                            dis_articles[i].isSaved = 1;
-                            this.setState({display_news_articles:dis_articles});
-                            let _index = this.state.display_articles_index[i];
-                            let _news_art = this.state.news_articles;
-                            _news_art[_index].isSaved = 1;
-                            this.setState({news_articles:_news_art});
-                            this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
-                        }
-                    }
+                    this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
                 }
             }.bind(this));
         }
@@ -217,7 +236,6 @@ export default class Index extends React.Component{
     }
 
     onLikeSuccess(index){
-        console.log("onLikeSuccess")
         let _posts = this.state.posts;
         _posts[index].is_i_liked=true;
         this.setState({posts:_posts});

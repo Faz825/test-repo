@@ -459,10 +459,13 @@ var NewsController ={
             channel:req.body.channel
         };
 
+        var checkForAvailability = false;
+
         _async.waterfall([
             function saveArticle(callBack){
                 SavedArticle.findSavedArticle(criteria,function(resultSet){
                     if(resultSet.news_list.length>0){
+                        checkForAvailability = true;
                         callBack(null, resultSet.news_list[0]._id);
                     }else{
                         SavedArticle.saveArticle(req.body,function(resultSet){
@@ -470,16 +473,30 @@ var NewsController ={
                         });
                     }
                 });
-
             },
             function saveUsersArticle(article_id,callBack){
                 var data = {
                     user_id:CurrentSession.id,
                     article:article_id
+                };
+                if(checkForAvailability){
+
+                    UsersSavedArticle.checkSavedArticle(data, function(resultSet){
+
+                        if(resultSet.result == 0){
+                            UsersSavedArticle.saveArticle(data, function(resultSet){
+                                callBack(null);
+                            });
+                        }else{
+                            callBack(null);
+                        }
+
+                    })
+                }else{
+                    UsersSavedArticle.saveArticle(data, function(resultSet){
+                        callBack(null);
+                    });
                 }
-                UsersSavedArticle.saveArticle(data, function(resultSet){
-                    callBack(null);
-                });
             }
 
         ],function(err){

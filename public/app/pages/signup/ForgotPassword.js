@@ -14,7 +14,7 @@ let errorStyles = {
 let successStyles = {
     color         : "#3C763D",
     fontSize      : "0.8em",
-    textTransform : "capitalize",
+    textTransform : "none",
     margin        : '0 0 15px',
     display       : "inline-block"
 }
@@ -85,6 +85,9 @@ export default class ForgotPassword extends React.Component{
             if(elm == "email" && this.formData[elm] == "" ){
                 _error[elm] = Alert.EMPTY_EMAIL_ID;
             }
+            if(elm == "email" &&  !this.isValidEmail(this.formData[elm])){
+                _error[elm] = Alert.INVALID_EMAIL;
+            }
         }
        return _error;
     }
@@ -94,6 +97,13 @@ export default class ForgotPassword extends React.Component{
 
         let er = this.traversObject();
         this.setState({error:er})
+    }
+
+    resetData(e){
+        this.setState({invalidElements:{}, error:{}});
+        this.formData = {};
+        window.location.href = '/';
+
     }
 
     render() {
@@ -109,7 +119,7 @@ export default class ForgotPassword extends React.Component{
                                     <p>send you password reset instructions</p>
                                 </div>
                                 <div className="row row-clr pgs-middle-sign-wrapper-inner-form">
-                                    <form method="get" onSubmit={this.submitData.bind(this)}>
+                                    <form method="get" onSubmit={this.submitData.bind(this)} onReset={this.resetData.bind(this)}>
                                         <div className="row">
                                             <EmailField name="email"
                                                         size="12"
@@ -125,7 +135,7 @@ export default class ForgotPassword extends React.Component{
                                         {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
                                         {this.state.successAlert ? <p className="form-validation-alert" style={successStyles} >{this.state.successAlert}</p> : null}
                                         <div className="row">
-                                            <Button type="button" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
+                                            <Button type="reset" size="6" classes="pgs-sign-submit-cancel" value="cancel" />
                                             <Button type="submit" size="6" classes="pgs-sign-submit" value="send email" />
                                         </div>
                                     </form>

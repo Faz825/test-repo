@@ -231,6 +231,7 @@ export class WorkPlaceForm extends React.Component{
     }
 
     onFieldChange(e){
+
         let _fieldName = e.target.name;
         let _fieldValue = e.target.value;
         let _workData = this.state.formData;
@@ -238,6 +239,10 @@ export class WorkPlaceForm extends React.Component{
         if(_fieldName == "currentPlc"){
             _fieldValue = (_workData.currentPlc)? "" : "yes";
         }
+        //if(_fieldName == "description"){
+        //    _fieldValue = _fieldValue.replace(/\r?\n/g, <br />);
+        //
+        //}
 
         _workData[_fieldName] = _fieldValue;
         this.setState({formData : _workData});
