@@ -96,9 +96,10 @@ export class TextPostElement extends React.Component{
         this.submitPost = this.submitPost.bind(this);
         this.selectImage = this.selectImage.bind(this);
         this.handleAjaxSuccess = this.handleAjaxSuccess.bind(this);
-
+        this.removeImage = this.removeImage.bind(this);
     }
     submitPost(event){
+        console.log("submitPost")
         let _this = this;
 
         this.setState({emptyPostWarningIsVisible : false,btnEnabled:false});
@@ -218,6 +219,8 @@ export class TextPostElement extends React.Component{
 
 
     selectImage(e){
+
+        console.log("selectImage "+this.state.imgUploadInstID)
         let _this = this;
         let imgSrc;
         let data = this.state.imgList;
@@ -250,6 +253,7 @@ export class TextPostElement extends React.Component{
         this.setState({imgUploadInstID : ++imgUploadInst});
     }
     uploadHandler(uploadContent){
+        console.log("uploadHandler "+this.state.imgUploadInstID)
         let loggedUser = Session.getSession('prg_lg'),
             uploadedFiles = this.state.uploadedFiles,
             instID = this.state.imgUploadInstID;
@@ -278,14 +282,10 @@ export class TextPostElement extends React.Component{
 
         }).done(function (data, text) {
             if (data.status.code == 200) {
+                console.log(data.upload)
                 for(var a=0;a<uploadedFiles.length;a++){
                     if(uploadedFiles[a].upload_img.id == instID){
                         if(uploadedFiles[a].upload_img[instID].imgID == data.upload.upload_index){
-                            var _image_file ={
-                                show_loader:false,
-                                http_url:data.upload.http_url
-                            }
-
                             uploadedFiles[a].show_loader = false;
                             uploadedFiles[a].http_url = data.upload.http_url;
 
@@ -324,18 +324,24 @@ export class TextPostElement extends React.Component{
         this.setState({lifeEventId:selectedLifeEvent})
 
     }
+    removeImage(index){
+        console.log("removeImage " +index)
+
+    }
     render(){
         let full_name = this.loggedUser.first_name +" "+ this.loggedUser.last_name;
         let proImg = (this.loggedUser.profile_image != '')? this.loggedUser.profile_image : "/images/default_profile_image.png";
         let opt = {
             style:{display:"block"}};
         let uploaded_files = this.state.uploadedFiles.map((file,key)=>{
+
             return (
                 <div className="pg-newsfeed-post-upload-image" key={key}>
                     {
                         (file.show_loader)?
                             <ProgressBar />
-                            :<img src = {file.http_url}/>
+                            :<div className="post-img-holder"><img src = {file.http_url}/>
+                        <i className="fa fa-times close-icon post-img-close" onClick={key => this.removeImage(key)}></i></div>
 
                     }
                 </div>

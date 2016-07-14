@@ -3549,3 +3549,15 @@ textarea{
 	margin-right: 5px;
 	margin-top: 5px;
 }
+
+.post-img-holder{
+	position: relative;
+}
+
+.post-img-close{
+	float: right;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	cursor: pointer;
+}
