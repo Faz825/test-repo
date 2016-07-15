@@ -71,8 +71,21 @@ export default class GlobalSearch extends React.Component{
     }
 
     renderSuggestion(suggestion) {
+        let img = suggestion.images.profile_image.http_url;
+
+        if (typeof img == 'undefined'){
+            img = "/images/default-profile-pic.png";
+        }
+
         return (
-            <a href="javascript:void(0)" onClick={()=>this.loadProfile(suggestion.user_name)}><span id={suggestion.user_id}>{suggestion.first_name+" "+suggestion.last_name}</span></a>
+            <a href="javascript:void(0)" onClick={()=>this.loadProfile(suggestion.user_name)}>
+                <div className="suggestion" id={suggestion.user_id}>
+                    <div className="img-holder">
+                        <img src={img} alt={suggestion.first_name} className="img-responsive" />
+                    </div>
+                    <span>{suggestion.first_name+" "+suggestion.last_name}</span>
+                </div>
+            </a>
         );
     }
 
@@ -98,7 +111,7 @@ export default class GlobalSearch extends React.Component{
                                  getSuggestionValue={this.getSuggestionValue}
                                  renderSuggestion={this.renderSuggestion}
                                  inputProps={inputProps} />
-                    <a href="#"><img className="img-responsive" alt="search" src="/images/pg-home-v6_17.png" /></a>
+                             <a href="#"><img className="img-responsive search-icon" alt="search" src="/images/pg-home-v6_17.png" /></a>
                 </div>
             </div>
 

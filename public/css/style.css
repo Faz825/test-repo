@@ -166,7 +166,7 @@ a:focus{
 	padding: 10px 18px;
 	position: relative;
 }
-.pg-header-search input {
+.pg-header-search .react-autosuggest__container .react-autosuggest__input {
 	background-color: transparent;
 	border: medium none;
 	color: #9dadbd;
@@ -176,7 +176,32 @@ a:focus{
 	width: 100%;
 	outline: none;
 }
-.pg-header-search img {
+.pg-header-search #react-whatever-1{
+	top: 48px;
+	width: 100%;
+}
+.pg-header-search #react-whatever-1 a:hover{
+	text-decoration: none;
+}
+.pg-header-search #react-whatever-1 .suggestion{
+	overflow: hidden;
+	position: relative;
+}
+.pg-header-search #react-whatever-1 .suggestion .img-holder{
+	width: 30px;
+	height: 30px;
+	margin-right: 15px;
+	float: left;
+}
+.pg-header-search #react-whatever-1 .suggestion span{
+	float: left;
+	margin-top: 8px;
+	line-height: 1;
+	text-transform: capitalize;
+	font: 12px 'montserratregular', sans-serif;
+	color: #2d5164;
+}
+.pg-header-search .search-icon {
 	position: absolute;
 	right: 18px;
 	top: 14px;
@@ -1125,6 +1150,26 @@ input[type=number]::-webkit-outer-spin-button {
 	padding-top: 0px;
 	margin: 0 0 30px;
 	position: relative;
+}
+#pg-profile-banner-area .action-btn{
+	position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    padding: 10px;
+	text-transform: none;
+	font: 10px 'montserratregular', sans-serif;
+    color: #2d5164;
+	cursor: pointer;
+}
+#pg-profile-banner-area .action-btn:focus,
+#pg-profile-banner-area .action-btn:hover{
+	text-decoration: none;
+}
+#pg-profile-banner-area .action-btn .fa-plus{
+	margin: 0 5px;
 }
 .pg-profile-cover-banner{
 	width: 100%;

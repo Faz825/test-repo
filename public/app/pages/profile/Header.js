@@ -127,13 +127,13 @@ export class ConnectionStatus extends React.Component{
         {
             return(
                 (this.props.connectionStatus != 0)?
-                    (this.props.connectionStatus == 1) ? <a>Request Pending</a> :
+                    (this.props.connectionStatus == 1) ? <a className="action-btn">Request Pending</a> :
                         (this.props.connectionStatus == 2) ? <a href="javascript:void(0)"
                                                                 onClick={ () => this.props.onAcceptFriendRequest(this.props.usrId) }
-                                                                className="pg-fr-bot-btn pg-accept-btn">Accept</a> :
+                                                                className="pg-fr-bot-btn action-btn">Accept</a> :
                             (this.props.connectionStatus == 3) ? <a href="javascript:void(0)"
                                                                     onClick={ () => this.props.onAddFriend(this.props.usrId) }
-                                                                    className="pg-fr-bot-btn pg-accept-btn">Add as a Connection</a> : null
+                                                                    className="pg-fr-bot-btn action-btn"><i className="fa fa-plus" aria-hidden="true"></i>Add as a Connection</a> : null
                     : null
             )
         }

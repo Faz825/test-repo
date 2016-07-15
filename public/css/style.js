@@ -231,7 +231,7 @@ export default StyleSheet.create({
         "paddingLeft": 18,
         "position": "relative"
     },
-    "pg-header-search input": {
+    "pg-header-search react-autosuggest__container react-autosuggest__input": {
         "backgroundColor": "transparent",
         "border": "medium none",
         "color": "#9dadbd",
@@ -247,7 +247,32 @@ export default StyleSheet.create({
         "width": "100%",
         "outline": "none"
     },
-    "pg-header-search img": {
+    "pg-header-search react-whatever-1": {
+        "top": 48,
+        "width": "100%"
+    },
+    "pg-header-search react-whatever-1 a:hover": {
+        "textDecoration": "none"
+    },
+    "pg-header-search react-whatever-1 suggestion": {
+        "overflow": "hidden",
+        "position": "relative"
+    },
+    "pg-header-search react-whatever-1 suggestion img-holder": {
+        "width": 30,
+        "height": 30,
+        "marginRight": 15,
+        "float": "left"
+    },
+    "pg-header-search react-whatever-1 suggestion span": {
+        "float": "left",
+        "marginTop": 8,
+        "lineHeight": 1,
+        "textTransform": "capitalize",
+        "font": "12px 'montserratregular', sans-serif",
+        "color": "#2d5164"
+    },
+    "pg-header-search search-icon": {
         "position": "absolute",
         "right": 18,
         "top": 14
@@ -1391,8 +1416,7 @@ export default StyleSheet.create({
         "zIndex": 100,
         "height": 110,
         "backgroundColor": "#eceef1",
-        "boxShadow": "2px 1px 8px -2px #000",
-        "display": "none"
+        "boxShadow": "2px 1px 8px -2px #000"
     },
     "pg-footer-left-options-panel": {
         "width": 110,
@@ -1451,6 +1475,19 @@ export default StyleSheet.create({
         "paddingLeft": 0,
         "width": 80,
         "background": "#ECF6FC"
+    },
+    "pg-footer-left-options-panel pgs-secratery-img counter": {
+        "position": "absolute",
+        "top": 2,
+        "right": 4,
+        "paddingTop": 4,
+        "paddingRight": 10,
+        "paddingBottom": 4,
+        "paddingLeft": 10,
+        "display": "block",
+        "color": "#fff",
+        "background": "#e82107",
+        "borderRadius": 999
     },
     "pg-footer-left-options-panel pgs-secratery-img img": {
         "height": "auto",
@@ -1556,6 +1593,34 @@ export default StyleSheet.create({
         "marginBottom": 30,
         "marginLeft": 0,
         "position": "relative"
+    },
+    "pg-profile-banner-area action-btn": {
+        "position": "absolute",
+        "top": 20,
+        "left": 20,
+        "zIndex": 100,
+        "background": "rgba(255, 255, 255, 0.8)",
+        "borderRadius": 4,
+        "paddingTop": 10,
+        "paddingRight": 10,
+        "paddingBottom": 10,
+        "paddingLeft": 10,
+        "textTransform": "none",
+        "font": "10px 'montserratregular', sans-serif",
+        "color": "#2d5164",
+        "cursor": "pointer"
+    },
+    "pg-profile-banner-area action-btn:focus": {
+        "textDecoration": "none"
+    },
+    "pg-profile-banner-area action-btn:hover": {
+        "textDecoration": "none"
+    },
+    "pg-profile-banner-area action-btn fa-plus": {
+        "marginTop": 0,
+        "marginRight": 5,
+        "marginBottom": 0,
+        "marginLeft": 5
     },
     "pg-profile-cover-banner": {
         "width": "100%",
@@ -4250,5 +4315,25 @@ export default StyleSheet.create({
     },
     "dialog--jss-0-0 cropper-bg": {
         "background": "#fff"
+    },
+    "pg-status-delete-icon": {
+        "float": "right",
+        "color": "#ccc"
+    },
+    "pg-comment-delete-icon": {
+        "float": "right",
+        "color": "#ccc",
+        "marginRight": 5,
+        "marginTop": 5
+    },
+    "post-img-holder": {
+        "position": "relative"
+    },
+    "post-img-close": {
+        "float": "right",
+        "position": "absolute",
+        "top": 5,
+        "right": 5,
+        "cursor": "pointer"
     }
 });
