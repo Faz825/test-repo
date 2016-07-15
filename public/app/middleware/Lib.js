@@ -111,4 +111,8 @@ export default class Lib{
             return date.getDate().toString() + " " + months[date.getMonth()] + ", " + date.getFullYear();
         }
     }
+
+    static escapeRegexCharacters(str) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
 }

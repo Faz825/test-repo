@@ -5,8 +5,6 @@
 
 exports.Authentication= function(req,res,next){
 
-    console.log(req.originalUrl)
-
 	/**
 	 * Pass public URLs from the route
 	 */
@@ -45,31 +43,9 @@ exports.Authentication= function(req,res,next){
             });
             return ;
         }
-        //else{
-        //    for (var i = 0; i < authURLS.length; i++) {
-        //        if (req.originalUrl.indexOf(authURLS[i]) >= 0) {
-        //            res.render('index');
-        //            return;
-        //        }
-        //    }
-        //}
-
         next();
         return;
-
-
-
     }else{
-
-        console.log("ELSE")
-
-        //for (var i = 0; i < authURLS.length; i++) {
-        //    if (req.originalUrl.indexOf(authURLS[i]) >= 0) {
-        //        res.redirect('/');
-        //        return;
-        //    }
-        //}
-
         var _out_put= {
             status:'success',
             message:Alert.INVALID_TOKEN

@@ -71,7 +71,6 @@ GLOBAL.AccessAllow = [
     '/','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
     '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post'
-
 ];
 
 /**
@@ -87,6 +86,8 @@ router.get('/change-password/:token', DefaultController.index);
 router.post('/change-password/:token', UserController.resetPassword);
 router.get('/life-event/categories', LifeEventController.getLifeEventCategories);
 router.get('/life-events', LifeEventController.getLifeEvents);
+router.get('/get-users/:name', UserController.getUserSuggestions);
+router.get('/check-connection/:uname', ConnectionController.checkConnection);
 
 router.get('/education-info/save', UserController.addEducationDetail);
 router.get('/educations/:uname',UserController.retrieveEducationDetail);
@@ -131,14 +132,6 @@ router.get('/notes/edit-note/:note_id', DefaultController.index);
 router.get('/connections', DefaultController.index);
 router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
-
-
-
-
-
-
-
-
 
 /**
  * Implement All Test Routs from there

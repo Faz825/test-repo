@@ -37,14 +37,7 @@ export default class Header extends React.Component {
                             <Logo url ="/images/logo.png" />
                         </a>
                       </div>
-                      <div className="col-xs-7">
-                        <div className="row row-clr pg-header-search">
-                          <input type="text" placeholder="Search..." />
-                          <a href="#">
-                            <img className="img-responsive" alt="search" src="/images/pg-home-v6_17.png" />
-                          </a>
-                        </div>
-                      </div>
+                        <GlobalSearch/>
                       <span className="col-xs-1"></span>
                       <div className="col-xs-2 pg-header-options">
                         <a href="/news-feed" className="dropDown-holder">

@@ -32,6 +32,9 @@ export default class Header extends Component {
             <div className="row row-clr" id="pg-profile-banner-area">
                 <CoverImage dt={this.props.user} readOnly={read_only}/>
                 <ConnectionIndicator dt ={this.props.user}  readOnly={read_only}/>
+                <ConnectionStatus connectionStatus={this.props.connectionStatus} onAddFriend = {this.props.onAddFriend}
+                                  onAcceptFriendRequest = {this.props.onAcceptFriendRequest}
+                                  usrId={this.props.usrId}/>
                 <ProfileInfo dt={this.props.user} readOnly={read_only} loadExperiences={this.props.loadExperiences} uname={this.props.uname} loadProfileData={this.props.loadProfileData}/>
             </div>
         )
@@ -111,6 +114,31 @@ const ConnectionIndicator =(props)=> {
             </div>
     );
 };
+
+
+export class ConnectionStatus extends React.Component{
+    constructor(props){
+        super(props);
+
+        //0-already connected (nothing to display), 1-request sent (Display "Request Pending" label), 2-request received (Display "Accept" button), 3-can send request (Display "Add as a Connection" button)
+    }
+
+    render(){
+        {
+            return(
+                (this.props.connectionStatus != 0)?
+                    (this.props.connectionStatus == 1) ? <a>Request Pending</a> :
+                        (this.props.connectionStatus == 2) ? <a href="javascript:void(0)"
+                                                                onClick={ () => this.props.onAcceptFriendRequest(this.props.usrId) }
+                                                                className="pg-fr-bot-btn pg-accept-btn">Accept</a> :
+                            (this.props.connectionStatus == 3) ? <a href="javascript:void(0)"
+                                                                    onClick={ () => this.props.onAddFriend(this.props.usrId) }
+                                                                    className="pg-fr-bot-btn pg-accept-btn">Add as a Connection</a> : null
+                    : null
+            )
+        }
+    }
+}
 
 /**
  * Profile General in formations

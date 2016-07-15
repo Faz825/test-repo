@@ -223,6 +223,78 @@ var ConnectionController ={
             }
 
         });
+    },
+
+    checkConnection:function(req,res){
+
+        var User = require('mongoose').model('User'),
+            Connection = require('mongoose').model('Connection'),
+            _async = require('async'),
+            CurrentSession = Util.getCurrentSession(req),
+            outPut = {},
+            _alreadyConnected = false, _alreadyRequestSent = false, _alreadyRequestReceived = false, _otherUserId = null;
+
+        _async.waterfall([
+                function getOtherUserDetails(callback){
+                    var query={
+                        q:"user_name:"+req.params['uname'],
+                        index:'idx_usr'
+                    };
+                    //Find User from Elastic search
+                    ES.search(query,function(csResultSet){
+                        _otherUserId = csResultSet.result[0]['user_id'];
+                        callback(null);
+                    });
+                },
+                function checkAlreadyConnected(callback){
+                    var criteria = {
+                        user_id :CurrentSession.id,
+                        q:'user_name:'+req.params['uname']
+                    };
+
+                    Connection.getMyConnectionData(criteria,function(resultSet){
+                        console.log(resultSet);
+                        if(resultSet.results.length > 0){
+                            _alreadyConnected = true;
+                        }
+                        callback(null);
+                    })
+                },
+                function checkAlreadyRequested(callback){
+                    if(_alreadyConnected == false){
+                        Connection.checkRequestSentReceived(CurrentSession.id, _otherUserId,function(resultSet){
+                            if(resultSet.length > 0){
+                                console.log(resultSet[0].connected_with);
+                                if(resultSet[0].user_id.toString() == CurrentSession.id){
+                                    _alreadyRequestSent = true;
+                                }
+                                if(resultSet[0].connected_with.toString() == CurrentSession.id){
+                                    _alreadyRequestReceived = true;
+                                }
+                                callback(null)
+                            }else{
+                                callback(null)
+                            }
+                        });
+                    } else{
+                        callback(null)
+                    }
+                }
+
+
+
+            ],function(err){
+                var outPut = {
+                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                    alreadyConnected:_alreadyConnected,
+                    alreadyRequestSent:_alreadyRequestSent,
+                    alreadyRequestReceived:_alreadyRequestReceived,
+                    profile_user_id:_otherUserId
+                };
+                res.status(200).send(outPut);
+                return 0;
+            }
+        );
     }
 
 }

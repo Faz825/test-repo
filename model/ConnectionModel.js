@@ -393,15 +393,11 @@ ConnectionSchema.statics.getMyConnection = function(criteria,callBack){
     },
     formatted_users = [];
 
-    console.log(JSON.stringify(query))
-
     ES.search(query,function(esResultSet){
 
         if(esResultSet != null){
             _async.each(esResultSet.result,
                 function(result,callBack){
-
-                    console.log(JSON.stringify(result));
 
                     var query={
                         q:"user_id:"+result.user_id,
@@ -496,7 +492,62 @@ ConnectionSchema.statics.getFriendSuggestion = function(criteria,callBack){
 
 
 
+};
+
+ConnectionSchema.statics.getMyConnectionData = function(criteria,callBack){
+    var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString(),
+        _async = require('async');
+
+    var query={
+            q:criteria.q,
+            index:_cache_key
+        },
+        formatted_users = [];
+
+    ES.search(query,function(esResultSet){
+
+        if(esResultSet != null){
+
+            formatted_users = esResultSet.result;
+            callBack({result_count:formatted_users.length,results:formatted_users})
+
+
+        }else{
+            callBack({result_count:0,results:[]})
+        }
+
+    });
+};
+
+
+/**
+ * Get Request Count
+ * @param userId
+ * @param callBack
+ */
+ConnectionSchema.statics.checkRequestSentReceived = function(i,other,callBack){
+    var _this = this;
+
+    var criteria = {
+        status:ConnectionStatus.REQUEST_SENT,
+        $or:[
+            {$and:[{user_id:Util.toObjectId(i)},{connected_with:Util.toObjectId(other)}]},
+            {$and:[{user_id:Util.toObjectId(other)},{connected_with:Util.toObjectId(i)}]}
+        ]
+    };
+
+    _this.find(criteria)
+        .exec(function(err,result){
+            if(!err){
+                callBack(result);
+            }else{
+                console.log("Server Error --------");
+                console.log(err);
+                callBack(null);
+            }
+        });
 }
+
 
 
 String.prototype.toObjectId = function() {

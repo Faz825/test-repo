@@ -102,6 +102,33 @@ var ES = {
             callback(null)
         });
 
+    },
+    searchData:function(payload, callback){
+        var search_param ={
+                body: {
+                    query: {
+                        match: {
+                            first_name:payload.q}
+
+
+                    }
+                },
+                from:0,
+                size:1000
+            },
+            _this = this;
+
+        if(typeof payload.index != "undefined"){
+            search_param['index'] = payload.index
+        }
+
+        this.esClient.search(search_param).then(function (resp) {
+            callback(_this.formatSearchResult(resp));
+        }, function (err) {
+            console.trace(err.message);
+            callback(null)
+        });
+
     }
 
 };

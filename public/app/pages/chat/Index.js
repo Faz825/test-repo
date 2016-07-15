@@ -564,12 +564,10 @@ export class RightMenu extends React.Component{
         this.renderSuggestion = this.renderSuggestion.bind(this);
     }
 
-    escapeRegexCharacters(str) {
-        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
+
 
     getSuggestions(value, data) {
-        const escapedValue = this.escapeRegexCharacters(value.trim());
+        const escapedValue = Lib.escapeRegexCharacters(value.trim());
         if (escapedValue === '') {
             return [];
         }

@@ -15,7 +15,6 @@ import Lib from '../../middleware/Lib';
 
 export default class Index extends React.Component{
 
-
     constructor(props) {
         super(props);
 
@@ -29,14 +28,88 @@ export default class Index extends React.Component{
             user:{},
             data:{},
             posts:[],
-            post_id:this.getPostId()
+            post_id:this.getPostId(),
+            connectionStatus:0, //0-already connected (nothing to display), 1-request sent (Display "Request Pending" label), 2-request received (Display "Accept" button), 3-can send request (Display "Add as a Connection" button)
+            usrId:null
         };
+        if(this.state.loggedUser.user_name != this.state.uname){
+            this.checkConnection(this.state.uname);
+        }
         this.loadExperiences = this.loadExperiences.bind(this);
         this.loadProfileData = this.loadProfileData.bind(this);
+        this.checkConnection = this.checkConnection.bind(this);
+        this.onAddFriend = this.onAddFriend.bind(this);
         this.loadExperiences();
         this.loadProfileData();
         this.loadPosts(0);
-        console.log(this.state.post_id)
+    }
+
+    onAcceptFriendRequest(user_id){
+        $.ajax({
+            url: '/connection/accept',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.loggedUser.token },
+            data:{ sender_id: user_id},
+
+        }).done(function(data){
+            if(data.status.code == 200){
+                this.setState({connectionStatus:0});
+            }
+        }.bind(this));
+
+    }
+
+    onAddFriend(user_id){
+        let _connectedUsers = [];
+        _connectedUsers.push(user_id)
+        $.ajax({
+            url: '/connection/send-request',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            data:{ connected_users: JSON.stringify(_connectedUsers)},
+
+        }).done(function(data){
+            if(data.status.code == 200){
+                this.setState({connectionStatus:1});
+            }
+        }.bind(this));
+
+    }
+
+    checkConnection(uname){
+        $.ajax({
+            url: '/check-connection/'+uname,
+            method: "GET",
+            dataType: "JSON",
+            success: function (data, text) {
+                console.log(data);
+                if(data.status.code == 200){
+                    var _connectionStatus = 0;
+
+                    if(!data.alreadyConnected){
+                        if(data.alreadyRequestSent){
+                            _connectionStatus = 1;
+                        } else if(data.alreadyRequestReceived){
+                            _connectionStatus = 2;
+                        } else{
+                            _connectionStatus = 3;
+                        }
+                    }
+
+                    this.setState({
+                        connectionStatus:_connectionStatus,
+                        usrId:data.profile_user_id
+                    });
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(status);
+                console.log(error);
+            }.bind(this)
+        });
+
     }
     getPostId(){
         return  this.props.params.post;
@@ -50,7 +123,6 @@ export default class Index extends React.Component{
         this.setState({posts:_posts});
     }
     onPostDeleteSuccess(index){
-        console.log("onPostDeleteSuccess")
         let _posts = this.state.posts;
         _posts.splice(index,1);
         this.setState({posts:_posts});
@@ -115,7 +187,6 @@ export default class Index extends React.Component{
     };
 
     onLikeSuccess(index){
-        console.log("onLikeSuccess")
         let _posts = this.state.posts;
         _posts[index].is_i_liked=true;
         this.setState({posts:_posts});
@@ -146,7 +217,15 @@ export default class Index extends React.Component{
         let profileName = this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name;
         return (
             <div id="pg-profile-page" className="loggedUserView pg-page">
-                <Header uname={this.state.uname} user={this.state.user} loadExperiences={this.loadExperiences} loadProfileData={this.loadProfileData}/>
+                <Header
+                    uname={this.state.uname}
+                    user={this.state.user}
+                    loadExperiences={this.loadExperiences}
+                    loadProfileData={this.loadProfileData}
+                    connectionStatus={this.state.connectionStatus}
+                    onAddFriend = {this.onAddFriend}
+                    onAcceptFriendRequest = {this.onAcceptFriendRequest}
+                    usrId={this.state.usrId}/>
                 <div className="row row-clr">
                     <div className="container-fluid">
                         <div className="col-xs-10 col-xs-offset-1" id="middle-content-wrapper">

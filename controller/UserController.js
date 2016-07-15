@@ -1591,6 +1591,92 @@ var UserControler ={
 
 
 
+    /**
+     * Load Connections
+     * @param req
+     * @param res
+     */
+    getUserSuggestions:function(req,res){
+        var User = require('mongoose').model('User'),
+            Connection = require('mongoose').model('Connection'),
+            _async = require('async'),
+            CurrentSession = Util.getCurrentSession(req),
+            outPut = {},
+            my_connections = [], all_users = [], suggested_users = [], unique_ids = [];
+
+        _async.waterfall([
+                function getData(callback){
+
+                    _async.parallel([
+                        function getMyConnection(callback){
+
+                            var criteria = {
+                                user_id :CurrentSession.id,
+                                q:'+first_name:'+req.params['name']+'*'
+                            }
+
+                            Connection.getMyConnectionData(criteria,function(resultSet){
+                                //console.log("=======================")
+                                //console.log(resultSet)
+                                my_connections = resultSet.results;
+                                callback(null);
+                            })
+
+                        },
+                        function getAllUsers(callback){
+                            var user_id = CurrentSession.id;
+                            var q = '+first_name:'+req.params['name']+'*';
+
+                            User.getAllUsers(q, user_id, function(resultSet){
+                                //console.log("=======================")
+                                //console.log(resultSet)
+                                all_users = resultSet.users;
+                                callback(null);
+                            })
+
+                        },
+
+                    ], function(err){
+                        callback(null)
+                    })
+
+                },
+                function finalizeData(callback){
+                    for(var i = 0; i < my_connections.length; i++){
+                        if(unique_ids.indexOf(my_connections[i].user_id) == -1){
+                            unique_ids.push(my_connections[i].user_id);
+                            suggested_users.push(my_connections[i]);
+                        }
+                    }
+                    for(var j = 0; j < all_users.length; j++){
+                        if(unique_ids.indexOf(all_users[j].user_id) == -1){
+                            unique_ids.push(all_users[j].user_id);
+                            suggested_users.push(all_users[j]);
+                        }
+                    }
+
+                    console.log(suggested_users);
+
+                    callback(null)
+                }
+
+
+
+            ],function(err){
+                var outPut = {
+                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                    suggested_users:suggested_users
+                };
+                res.status(200).send(outPut);
+                return 0;
+            }
+        );
+
+    }
+
+
+
+
 
 };
 

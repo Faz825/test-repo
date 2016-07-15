@@ -1,6 +1,7 @@
 import React from 'react';
 import Session  from '../../middleware/Session';
 import Autosuggest from 'react-autosuggest';
+import Lib from '../../middleware/Lib';
 
 export default class SkillsAndInterests extends React.Component{
     constructor(props){
@@ -106,12 +107,8 @@ export default class SkillsAndInterests extends React.Component{
     }
 }
 
-function escapeRegexCharacters(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 function getSuggestions(value, data) {
-  const escapedValue = escapeRegexCharacters(value.trim());
+  const escapedValue = Lib.escapeRegexCharacters(value.trim());
   if (escapedValue === '') {
     return [];
   }
