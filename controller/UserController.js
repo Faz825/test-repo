@@ -1612,11 +1612,12 @@ var UserControler ={
 
                             var criteria = {
                                 user_id :CurrentSession.id,
-                                q:'+first_name:'+req.params['name']+'*'
+                                q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*'
+                                //q:req.params['name']+'*'
                             }
 
                             Connection.getMyConnectionData(criteria,function(resultSet){
-                                //console.log("=======================")
+                                //console.log("=======================Connections==============")
                                 //console.log(resultSet)
                                 my_connections = resultSet.results;
                                 callback(null);
@@ -1625,10 +1626,11 @@ var UserControler ={
                         },
                         function getAllUsers(callback){
                             var user_id = CurrentSession.id;
-                            var q = '+first_name:'+req.params['name']+'*';
+                            //var q = '+first_name:'+req.params['name']+'*';
+                            var q = 'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*';
 
                             User.getAllUsers(q, user_id, function(resultSet){
-                                //console.log("=======================")
+                                //console.log("=======================All Users=======================")
                                 //console.log(resultSet)
                                 all_users = resultSet.users;
                                 callback(null);
@@ -1655,7 +1657,7 @@ var UserControler ={
                         }
                     }
 
-                    console.log(suggested_users);
+                    //console.log(suggested_users);
 
                     callback(null)
                 }

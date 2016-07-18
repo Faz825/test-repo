@@ -39,6 +39,7 @@ export default class Index extends React.Component{
         this.loadProfileData = this.loadProfileData.bind(this);
         this.checkConnection = this.checkConnection.bind(this);
         this.onAddFriend = this.onAddFriend.bind(this);
+        this.onAcceptFriendRequest = this.onAcceptFriendRequest.bind(this);
         this.loadExperiences();
         this.loadProfileData();
         this.loadPosts(0);
@@ -49,7 +50,7 @@ export default class Index extends React.Component{
             url: '/connection/accept',
             method: "POST",
             dataType: "JSON",
-            headers: { 'prg-auth-header':this.loggedUser.token },
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
             data:{ sender_id: user_id},
 
         }).done(function(data){

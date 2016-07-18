@@ -9,8 +9,8 @@ class Socket{
 
     constructor() {
         this.loggedUser = Session.getSession('prg_lg');
-        this.socket = io.connect("//notification.proglobe.loc/");
-        //this.socket = io.connect("https://dev-notification.proglobe.us/");//dev
+        //this.socket = io.connect("//notification.proglobe.loc/");
+        this.socket = io.connect("https://dev-notification.proglobe.us/");//dev
         //this.socket = io.connect("https://notification.proglobe.us/");//prod
 
     }
@@ -20,7 +20,7 @@ class Socket{
     }
 
     subscribe(data){
-        console.log("subscribe");console.log(data)
+        //console.log("subscribe");console.log(data)
         var _data = {
             user:this.loggedUser.user_name,
             data:data
@@ -29,7 +29,7 @@ class Socket{
     }
 
     sendNotification(data){
-        console.log("sendNotification");console.log(data)
+        //console.log("sendNotification");console.log(data)
         var _data = {
             user:this.loggedUser.user_name,
             data:data
@@ -40,19 +40,19 @@ class Socket{
     listenToNotification(callback){
 
         this.socket.on('notification',function(data){
-            console.log("notification"); console.log(data);
+            //console.log("notification"); console.log(data);
             callback(data);
         });
 
         this.socket.on('birthday notification',function(data){
-            console.log("birthday notification")
-            console.log(data)
+            //console.log("birthday notification")
+            //console.log(data)
             callback(data);
         })
     }
 
     unsubscribe(data){
-        console.log("unsubscribe");console.log(data)
+        //console.log("unsubscribe");console.log(data)
         var _data = {
             user:this.loggedUser.user_name,
             data:data
@@ -61,7 +61,7 @@ class Socket{
     }
 
     unsubscribeUsers(data){
-        console.log("unsubscribeUsers");console.log(data)
+        //console.log("unsubscribeUsers");console.log(data)
         var _data = {
             data:data
         };

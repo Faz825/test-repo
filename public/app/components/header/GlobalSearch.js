@@ -28,7 +28,7 @@ export default class GlobalSearch extends React.Component{
         if (escapedValue === '') {
             return [];
         }
-        const regex = new RegExp('^' + escapedValue, 'i');
+        const regex = new RegExp(escapedValue, 'i');
         return data.filter(data => regex.test(data.first_name+" "+data.last_name));
     }
 
@@ -90,7 +90,6 @@ export default class GlobalSearch extends React.Component{
     }
 
     loadProfile(user_name){
-        console.log("loadProfile" + user_name)
         window.location.href ='/profile/'+user_name
     }
 
