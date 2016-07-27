@@ -10,7 +10,8 @@ GLOBAL.UploadMeta ={
 
     TIME_LINE_IMAGE:"time_line_image",
     TIME_LINE_VIDEO:"post_video",
-    COMMENT_IMAGE:"comment_image"
+    COMMENT_IMAGE:"comment_image",
+    TIME_LINE_VIDEO_IMAGE:"post_video_image",
 
 
 

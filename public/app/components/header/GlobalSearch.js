@@ -36,7 +36,27 @@ export default class GlobalSearch extends React.Component{
 
         this.setState({ value: newValue });
 
-        if(newValue.length > 0 && this.users.length < 10){
+        if(newValue.length == 1){
+            $.ajax({
+                url: '/get-users/'+newValue,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.users = data.suggested_users;
+                        this.setState({
+                            suggestions: this.getSuggestions(newValue, this.users),
+                            suggestionsList : this.getSuggestions(newValue, this.users)
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        } else if(newValue.length > 1 && this.users.length < 10){
             $.ajax({
                 url: '/get-users/'+newValue,
                 method: "GET",

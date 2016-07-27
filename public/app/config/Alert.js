@@ -25,7 +25,8 @@ const Alert = {
 	"EMPTY_NOTEBOOK_NAME"     	 : "Please enter notebook name",
 	"INVALID_COLOR"     		 : "Please pick a color for this notebook",
 	"EMPTY_NOTE_TITLE"     		 : "Please enter note title",
-	"EMPTY_INTRODUCTION"		 : "Please enter introduction"
+	"EMPTY_INTRODUCTION"		 : "Please enter introduction",
+	"VIDEO_FILE_SIZE_EXCEED" 	 : "File must be less than 150MB"
 }
 
 

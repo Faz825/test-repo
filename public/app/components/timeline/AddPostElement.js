@@ -9,8 +9,18 @@ import Lib    from '../../middleware/Lib';
 import ListPostsElement from './ListPostsElement';
 import ProgressBar from '../elements/ProgressBar';
 import {Alert} from '../../config/Alert';
+import {Config} from '../../config/Config';
 import Geosuggest from 'react-geosuggest';
 import Autosuggest from 'react-autosuggest';
+
+let errorStyles = {
+    color         : "#ed0909",
+    fontSize      : "0.8em",
+    textTransform : "capitalize",
+    margin        : '0 0 15px',
+    display       : "block"
+};
+
 export default class AddPostElement extends React.Component{
 
     constructor(props){
@@ -88,8 +98,9 @@ export class TextPostElement extends React.Component{
             isLocationPanelOpen     :false,
             location                :"",
             imgUploadInstID         : 0,
-            lifeEventId             :""
-
+            lifeEventId             :"",
+            percent_completed : 0,
+            video_err : ""
         }
         this.loggedUser = Session.getSession('prg_lg');
         this.isValidToSubmit = false;
@@ -227,10 +238,17 @@ export class TextPostElement extends React.Component{
         let imgUploadInst = this.state.imgUploadInstID;
 
         for(var i = 0; i< e.target.files.length; i++){
-            _readImage(e.target.files[i],'file_'+i);
+            console.log(i);console.log(e.target.files[i])
+            let type = e.target.files[i].type;
+            if(type.indexOf("image/") != -1){
+                _readImage(e.target.files[i],'file_'+i);
+            } else if (type.indexOf("video/") != -1){
+                this.uploadVideo(e.target.files[i],'file_'+i,this.state.imgUploadInstID);
+            }
         }
 
         function _readImage(file,upload_index){
+            console.log("_readImage")
             var reader = new FileReader();
             reader.onload = (function(dataArr,context) {
 
@@ -240,7 +258,8 @@ export class TextPostElement extends React.Component{
                     var payLoad ={
                         image_name:imgSrc,
                         upload_id:context.props.uuid,
-                        upload_index:upload_index
+                        upload_index:upload_index,
+                        upload_type:"image"
                     }
                     context.uploadHandler(payLoad, imgUploadInst);
                 };
@@ -250,8 +269,85 @@ export class TextPostElement extends React.Component{
             reader.readAsDataURL(file);
         }
 
-        this.setState({imgUploadInstID : ++imgUploadInst});
+        _this.setState({imgUploadInstID : ++imgUploadInst});
     }
+
+    uploadVideo(file,upload_index,imgUploadInst){
+        console.log("uploadVideo")
+
+        let _this = this;
+        var socket = io.connect(Config.PROGLOBE_APP);
+        var reader = new FileReader();
+        var file_name = file.name;
+        var file_size = file.size;
+
+        if(file_size > 150000000){ //Should be less than 150MB
+            this.setState({video_err:Alert.VIDEO_FILE_SIZE_EXCEED});
+            return 0;
+        }
+
+        this.setState({video_err:""});
+        let uploadedFiles = _this.state.uploadedFiles,
+            instID = imgUploadInst;
+
+        var _image_file ={
+            show_loader:true,
+            http_url:null
+        }
+
+        _image_file['upload_img'] = {};
+        _image_file['upload_img']['id'] = instID;
+        _image_file['upload_img'][instID]={
+            'imgID':upload_index
+        };
+        _image_file['upload_img']['type'] = "video";
+
+        uploadedFiles.push(_image_file);
+        _this.setState({uploadedFiles:uploadedFiles,btnEnabled:false});
+
+        reader.onload = function(evnt){
+            socket.emit('upload', { name : file_name, data : evnt.target.result });
+        }
+
+        var payLoad ={
+            upload_id:_this.props.uuid,
+            upload_index:upload_index,
+            upload_type:"video"
+        };
+
+        console.log(payLoad);
+
+        socket.emit('start', { name : file_name, size : file_size, data:payLoad });
+
+        socket.on('more_data', function (data){
+            _this.updateBar(data['percent'], file_size);
+            var place = data['place'] * 524288; //The Next Blocks Starting Position
+            var newFile; //The Variable that will hold the new Block of Data
+            if(file.slice){
+                newFile = file.slice(place, place + Math.min(524288, (file_size-place)));
+            }else if(file.webkitSlice){
+                newFile = file.webkitSlice(place, place + Math.min(524288, (file_size-place)));
+            } else{
+                newFile = file.mozSlice(place, place + Math.min(524288, (file_size-place)));
+            }
+            reader.readAsBinaryString(newFile);
+        });
+
+        socket.on('finished', function(data){
+            console.log("Finished");
+            console.log(data)
+            _this.setState({btnEnabled:true});
+
+        });
+
+
+    }
+
+    updateBar(percent, file_size){
+        var percentage = (Math.round(percent*100)/100);
+        this.setState({percent_completed : percentage});
+    }
+
     uploadHandler(uploadContent){
         console.log("uploadHandler "+this.state.imgUploadInstID)
         let loggedUser = Session.getSession('prg_lg'),
@@ -268,6 +364,7 @@ export class TextPostElement extends React.Component{
         _image_file['upload_img'][instID]={
             'imgID':uploadContent.upload_index
         };
+        _image_file['upload_img']['type'] = uploadContent.upload_type;
 
 
         uploadedFiles.push(_image_file);
@@ -339,10 +436,9 @@ export class TextPostElement extends React.Component{
                 <div className="pg-newsfeed-post-upload-image" key={key}>
                     {
                         (file.show_loader)?
-                            <ProgressBar />
+                        (file.upload_img.type == "video")?<ProgressBar progressType="bar" percentage={this.state.percent_completed}/>:<ProgressBar />
                             :<div className="post-img-holder"><img src = {file.http_url}/>
                         <i className="fa fa-times close-icon post-img-close" onClick={key => this.removeImage(key)}></i></div>
-
                     }
                 </div>
             )
@@ -380,6 +476,7 @@ export class TextPostElement extends React.Component{
                 </div>
                 <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
                     {uploaded_files}
+                    <p className="form-validation-alert" style={errorStyles}>{this.state.video_err}</p>
                 </div>
                 {
                     (this.state.emptyPostWarningIsVisible)?

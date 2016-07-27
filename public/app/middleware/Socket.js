@@ -3,14 +3,15 @@
  */
 
 import Session  from './Session.js';
+import {Config} from '../config/Config.js'
 
 class Socket{
 
 
     constructor() {
         this.loggedUser = Session.getSession('prg_lg');
-        //this.socket = io.connect("//notification.proglobe.loc/");
-        this.socket = io.connect("https://dev-notification.proglobe.us/");//dev
+        this.socket = io.connect(Config.PROGLOBE_NOTIFICATION_APP);
+        //this.socket = io.connect("https://dev-notification.proglobe.us/");//dev
         //this.socket = io.connect("https://notification.proglobe.us/");//prod
 
     }
