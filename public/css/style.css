@@ -3606,3 +3606,12 @@ textarea{
 	right: 5px;
 	cursor: pointer;
 }
+
+.post-video-play{
+	float: right;
+	position: absolute;
+	top: 20px;
+	right: 40px;
+	cursor: pointer;
+	color: white;
+}

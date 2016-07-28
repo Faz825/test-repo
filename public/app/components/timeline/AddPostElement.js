@@ -110,7 +110,6 @@ export class TextPostElement extends React.Component{
         this.removeImage = this.removeImage.bind(this);
     }
     submitPost(event){
-        console.log("submitPost")
         let _this = this;
 
         this.setState({emptyPostWarningIsVisible : false,btnEnabled:false});
@@ -164,7 +163,6 @@ export class TextPostElement extends React.Component{
                 isOwnPost:true
             };
 
-            console.log("New Post Subscribe")
             Socket.subscribe(_data);
 
             this.props.afterPostSubmit(data.post)
@@ -231,14 +229,12 @@ export class TextPostElement extends React.Component{
 
     selectImage(e){
 
-        console.log("selectImage "+this.state.imgUploadInstID)
         let _this = this;
         let imgSrc;
         let data = this.state.imgList;
         let imgUploadInst = this.state.imgUploadInstID;
 
         for(var i = 0; i< e.target.files.length; i++){
-            console.log(i);console.log(e.target.files[i])
             let type = e.target.files[i].type;
             if(type.indexOf("image/") != -1){
                 _readImage(e.target.files[i],'file_'+i);
@@ -248,7 +244,6 @@ export class TextPostElement extends React.Component{
         }
 
         function _readImage(file,upload_index){
-            console.log("_readImage")
             var reader = new FileReader();
             reader.onload = (function(dataArr,context) {
 
@@ -273,7 +268,6 @@ export class TextPostElement extends React.Component{
     }
 
     uploadVideo(file,upload_index,imgUploadInst){
-        console.log("uploadVideo")
 
         let _this = this;
         var socket = io.connect(Config.PROGLOBE_APP);
@@ -315,8 +309,6 @@ export class TextPostElement extends React.Component{
             upload_type:"video"
         };
 
-        console.log(payLoad);
-
         socket.emit('start', { name : file_name, size : file_size, data:payLoad });
 
         socket.on('more_data', function (data){
@@ -334,9 +326,20 @@ export class TextPostElement extends React.Component{
         });
 
         socket.on('finished', function(data){
-            console.log("Finished");
-            console.log(data)
-            _this.setState({btnEnabled:true});
+
+            for(var a=0;a<uploadedFiles.length;a++){
+                if(uploadedFiles[a].upload_img.id == instID){
+                    if(uploadedFiles[a].upload_img[instID].imgID == data.video_upload.upload_index){
+                        uploadedFiles[a].show_loader = false;
+                        uploadedFiles[a].http_url = data.video_upload.thumb_http_url;
+                        uploadedFiles[a].isVideo = true;
+                    }
+                }
+            }
+
+            let file_ids = _this.state.fileIds;
+            file_ids.push(data.video_upload.file_id)
+            _this.setState({uploadedFiles:uploadedFiles,file_ids:file_ids,post_type:"AP",btnEnabled:true});
 
         });
 
@@ -349,7 +352,6 @@ export class TextPostElement extends React.Component{
     }
 
     uploadHandler(uploadContent){
-        console.log("uploadHandler "+this.state.imgUploadInstID)
         let loggedUser = Session.getSession('prg_lg'),
             uploadedFiles = this.state.uploadedFiles,
             instID = this.state.imgUploadInstID;
@@ -379,12 +381,12 @@ export class TextPostElement extends React.Component{
 
         }).done(function (data, text) {
             if (data.status.code == 200) {
-                console.log(data.upload)
                 for(var a=0;a<uploadedFiles.length;a++){
                     if(uploadedFiles[a].upload_img.id == instID){
                         if(uploadedFiles[a].upload_img[instID].imgID == data.upload.upload_index){
                             uploadedFiles[a].show_loader = false;
                             uploadedFiles[a].http_url = data.upload.http_url;
+                            uploadedFiles[a].isVideo = false;
 
                         }
                     }
@@ -438,6 +440,9 @@ export class TextPostElement extends React.Component{
                         (file.show_loader)?
                         (file.upload_img.type == "video")?<ProgressBar progressType="bar" percentage={this.state.percent_completed}/>:<ProgressBar />
                             :<div className="post-img-holder"><img src = {file.http_url}/>
+                            {
+                                (file.upload_img.type == "video")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true"></i>:null
+                            }
                         <i className="fa fa-times close-icon post-img-close" onClick={key => this.removeImage(key)}></i></div>
                     }
                 </div>

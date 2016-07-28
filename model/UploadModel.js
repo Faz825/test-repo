@@ -53,6 +53,15 @@ var UploadSchema = new Schema({
         trim:true,
         default:null
     },
+    thumb_name:{
+        type:String,//physical file name
+        trim:true
+    },
+    thumb_type:{
+        type:String,//image/jpg,image/png
+        trim:true,
+        default:null
+    },
     is_default:{
         type:Number,
         default:0
@@ -96,6 +105,8 @@ UploadSchema.statics.saveOnDb = function(payLoad,callBack){
     content.title        = payLoad.content_title;
     content.created_at   = this.created_at;
     content.updated_at   = this.updated_at;
+    content.thumb_name = payLoad.thumb_file_name;
+    content.thumb_type = payLoad.thumb_file_type;
 
 
     _upload.update({

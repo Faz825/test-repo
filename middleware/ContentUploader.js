@@ -87,7 +87,6 @@ var ContentUploader ={
      * @param callBack
      */
     uploadToCDN:function(payLoad,callBack){
-        console.log("uploadToCDN")
 
         var binaryData = Util.decodeBase64Image(payLoad.file_name),
             uuid = require('node-uuid');
@@ -96,7 +95,7 @@ var ContentUploader ={
             file_id = uuid.v1();
 
 
-        var _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+payLoad.entity_id+"/"+newFileName;console.log(_http_url)
+        var _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+payLoad.entity_id+"/"+newFileName;
 
         this.s3.putObject({
             Bucket: this.getUploadPath(payLoad.entity_id),
@@ -184,14 +183,12 @@ var ContentUploader ={
      * @param callBack
      */
     tempUpload : function(payLoad,callBack){
-        console.log("tempUpload")
         var _async = require('async'),
             Upload = require('mongoose').model('Upload'),
             _this = this;
 
         _async.waterfall([
             function uploadFile(callBack){
-                console.log("uploadFile")
 
                 _this.uploadToCDN(payLoad,function(cdnReturn){
                     if(cdnReturn.status == 200){
@@ -203,7 +200,6 @@ var ContentUploader ={
                 });
             },
             function saveCache(cdnReturn,callBack){
-                console.log("saveCache")
                 if(cdnReturn != null && cdnReturn.status == 200){
 
                     var _cacheKey = payLoad.entity_tag+payLoad.entity_id;
@@ -252,44 +248,103 @@ var ContentUploader ={
         var _async = require('async'),
             Upload = require('mongoose').model('Upload'),
             _this = this,
-            upload_data = [];
+            upload_data = [],
+            toBucket =  _this.getUploadPath(payLoad.post_id),
+            fromBucket = _this.getUploadPath(payLoad.entity_id);
 
         this.getUploadFromTemp(payLoad,function(tmpUploads){
 
+            console.log("ContentUploader - copyFromTempToDb - getUploadFromTemp - tmpUploads - ")
+            console.log(tmpUploads)
+
             _async.each(tmpUploads,
                 function(upload,callBack){
-
-
-                    var params = {
-                        Bucket : _this.getUploadPath(payLoad.post_id),
-                        CopySource : _this.getUploadPath(payLoad.entity_id)+"/"+upload.file_name,
-                        Key : upload.file_name,
-                        ACL : 'public-read',
-                    };
+                    console.log("UPLOAD ==> ")
+                    console.log(upload)
 
                     upload['entity_id'] = Util.toObjectId(payLoad.post_id);
 
-                    _this.s3.copyObject(params, function(err, data) {
-                        if (!err)
+                    _async.waterfall([
+
+                        function copyVideoToActualBucket(callback){
+
+                            console.log("copyVideoToActualBucket - params - ")
+
+                            var params = {
+                                Bucket : toBucket,
+                                CopySource : fromBucket+"/"+upload.file_name,
+                                Key : upload.file_name,
+                                ACL : 'public-read'
+                            };
+
+                            console.log(params)
+
+                            _this.s3.copyObject(params, function(err, data) {
+                                if (!err)
+                                {
+                                    callback(null)
+                                }
+                                else {
+                                    callback(null);
+                                    console.log(err); // successful response
+                                }
+                            });
+
+                        },
+                        function copyThumbnailToActualBucket(callback){
+
+                            console.log("copyThumbnailToActualBucket - paramsThumb - ")
+
+                            if(typeof upload.thumb_file_name != 'undefined' && upload.thumb_file_name != null){
+                                var paramsThumb = {
+                                    Bucket : toBucket,
+                                    CopySource : fromBucket+"/"+upload.thumb_file_name,
+                                    Key : upload.thumb_file_name,
+                                    ACL : 'public-read'
+                                };
+
+                                console.log(paramsThumb)
+
+                                _this.s3.copyObject(paramsThumb, function(err, data) {
+                                    if (!err)
+                                    {
+                                        callback(null);
+                                    }
+                                    else {
+                                        callback(null);
+                                        console.log(err); // successful response
+                                    }
+                                });
+                            } else{
+                                callback(null);
+                            }
+
+                        },
+                        function saveDataToDB(callback){
+
+                            console.log("saveDataToDB")
+
                             //Add to Database
                             Upload.saveOnDb(upload,function(dbResultSet){
                                 var _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+upload.entity_id+"/"+upload.file_name;
+                                var _thumb_http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+upload.entity_id+"/"+upload.thumb_file_name;
                                 upload_data.push({
                                     entity_id:upload.entity_id,
                                     file_name:upload.file_name,
                                     file_type:upload.file_type,
-                                    http_url:_http_url
-
+                                    http_url:_http_url,
+                                    thumb_file_name:upload.thumb_file_name,
+                                    thumb_file_type:upload.thumb_file_type,
+                                    thumb_http_url:_thumb_http_url
                                 });
-                                callBack();
+                                callback();
                             });
-                        else {
-                            callBack();
-                            console.log(err); // successful response
+
                         }
+
+                    ],function(err){
+                        callBack()
                     });
-
-
                 },
                 function(err){
                     callBack(upload_data)
@@ -301,13 +356,12 @@ var ContentUploader ={
     },
 
     deleteFromCDN:function(payload, callback){
-        console.log("deleteFromCDN")
 
         var deleteParam = {
             Bucket: Config.CDN_BUCKET_NAME.slice(0,-1), //this.getUploadPath(payload.entity_id),
             Key: Config.CDN_UPLOAD_PATH+payload.entity_id+"/"+payload.file_name
         };
-        console.log(deleteParam)
+
         this.s3.deleteObject(deleteParam, function(err, data) {
             if (err){
                 console.log(err);
@@ -334,19 +388,16 @@ var ContentUploader ={
      * @param callBack
      */
     tempVideoUpload : function(payLoad,callBack){
-        console.log("tempVideoUpload")
+
         var _async = require('async'),
             Upload = require('mongoose').model('Upload'),
             _this = this;
 
-        console.log("payLoad ===> ")
-        console.log(payLoad)
-
         _async.waterfall([
             function uploadFile(callBack){
-                console.log("uploadFile")
 
                 _this.uploadVideoToCDN(payLoad,function(cdnReturn){
+
                     if(cdnReturn.status == 200){
                         callBack(null,cdnReturn);
                     }else{
@@ -356,7 +407,7 @@ var ContentUploader ={
                 });
             },
             function saveCache(cdnReturn,callBack){
-                console.log("saveCache")
+
                 if(cdnReturn != null && cdnReturn.status == 200){
 
                     var _cacheKey = payLoad.entity_tag+payLoad.entity_id;
@@ -398,56 +449,92 @@ var ContentUploader ={
      */
     uploadVideoToCDN:function(payLoad,callBack){
 
-        console.log("uploadVideoToCDN")
-
         var uuid = require('node-uuid');
         var fs = require('fs');
+        var _async = require('async');
 
-        var name = payLoad.file_name;console.log(name)
-        var arr = name.split(".");
-        var type = arr[arr.length-1];console.log(type);
-        //var nameWithoutEx = "";
-        //for(var i=0; i<arr.length-1;i++){
-        //    nameWithoutEx += arr[i];
-        //}
+        var file_id = uuid.v1();
+        var bucket = this.getUploadPath(payLoad.entity_id);
+        var _upload_meta = {};
+        var _this = this;
 
-        var newFileName = uuid.v1() + "_"+payLoad.entity_tag+"."+type,
-            file_id = uuid.v1(),
-            videoBody = fs.createReadStream('temp/'+payLoad.file_name);console.log(videoBody)
+        _async.waterfall([
+
+            function uploadVideo(callBack){
+
+                var name = payLoad.file_name;
+                var arr = name.split(".");
+                var type = arr[arr.length-1];
+                var newFileName = file_id + "_"+payLoad.entity_tag+"."+type;
+                var videoBody = fs.createReadStream('temp/'+payLoad.file_name);
+                var _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+payLoad.entity_id+"/"+newFileName;
 
 
-        var _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+payLoad.entity_id+"/"+newFileName;console.log(_http_url)
+                _this.s3.putObject({
+                    Bucket: bucket,
+                    Key: newFileName,
+                    Body: videoBody,
+                    ACL: 'public-read'
 
-        this.s3.putObject({
-            Bucket: this.getUploadPath(payLoad.entity_id),
-            Key: newFileName,
-            Body: videoBody,
-            ACL: 'public-read'
+                }, function (err, data) {
 
-        }, function (err, data) {
-            console.log("here");
-            if (!err) {
-                var _upload_meta = {
-                    entity_id:payLoad.entity_id,
-                    entity_tag:payLoad.entity_tag,
-                    upload_index:payLoad.upload_index,
-                    file_id:file_id,
-                    file_name: newFileName,
-                    file_type: type,
-                    is_default:payLoad.is_default,
-                    content_title:payLoad.content_title,
-                    http_url:_http_url
+                    if (!err) {
+                        _upload_meta = {
+                            entity_id:payLoad.entity_id,
+                            entity_tag:payLoad.entity_tag,
+                            upload_index:payLoad.upload_index,
+                            file_id:file_id,
+                            file_name: newFileName,
+                            file_type: type,
+                            is_default:payLoad.is_default,
+                            content_title:payLoad.content_title,
+                            http_url:_http_url
+                        };
+                        callBack(null);
+                    }else{
+                        console.log("UPLOAD ERROR")
+                        console.log(err)
+                        callBack(null);
+                    }
+                });
 
-                }
-                callBack({status:200,upload_meta:_upload_meta});
-                return 0;
-            }else{
-                console.log("UPLOAD ERROR")
-                console.log(err)
-                callBack({status:400,error:err});
-                return 0;
+            },
+            function uploadThumbnailImage(callBack){
+
+                var name = payLoad.thumbnail_image;
+                var arr = name.split(".");
+                var type = arr[arr.length-1];
+                var newFileName = file_id + "_"+payLoad.entity_tag+"."+type;
+                var videoBody = fs.createReadStream('temp/'+payLoad.thumbnail_image);
+                var _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+payLoad.entity_id+"/"+newFileName;
+
+                _this.s3.putObject({
+                    Bucket: bucket,
+                    Key: newFileName,
+                    Body: videoBody,
+                    ACL: 'public-read'
+
+                }, function (err, data) {
+                    if (!err) {
+                        _upload_meta['thumb_file_name'] = newFileName;
+                        _upload_meta['thumb_file_type'] = type;
+                        _upload_meta['thumb_http_url'] = _http_url;
+                        callBack(null);
+                    }else{
+                        console.log("UPLOAD ERROR")
+                        console.log(err)
+                        callBack(null);
+                    }
+                });
+
             }
-        });
+
+        ], function(err){
+            callBack({status:200, upload_meta:_upload_meta});
+
+        })
+
+
     },
 
 
@@ -508,7 +595,7 @@ var ContentUploader ={
                         var _async = require('async');
 
                         var arr = name.split(".");
-                        var type = arr[arr.length-1];console.log(type);
+                        var type = arr[arr.length-1];
                         var nameWithoutEx = "";
                         for(var i=0; i<arr.length-1;i++){
                             nameWithoutEx += arr[i];
@@ -518,7 +605,7 @@ var ContentUploader ={
                         _async.waterfall([
 
                             function convertVideo(callback){
-                                console.log("convertVideo")
+
                                 try {
 
                                     var process = new ffmpeg('temp/'+name);
@@ -541,7 +628,6 @@ var ContentUploader ={
                                         console.log('Error: ' + err);
                                     });
                                 } catch (e) {
-                                    console.log("catch");
                                     console.log(e.code);
                                     console.log(e.msg);
                                 } finally{
@@ -550,39 +636,25 @@ var ContentUploader ={
                             },
                             function uploadVideoToCDN(callback){
                                 //Upload video to CDN
-                                console.log("uploadVideoToCDN")
 
                                 var data ={
                                     content_title:"Post Video",
                                     file_name:nameWithoutEx+'.mp4',
                                     entity_id:files[name]['upload_id'],
-                                    entity_tag:UploadMeta.TIME_LINE_VIDEO,
-                                    upload_index:files[name]['upload_index']
+                                    entity_tag:UploadMeta.TIME_LINE_IMAGE,
+                                    upload_index:files[name]['upload_index'],
+                                    thumbnail_image:nameWithoutEx+'_1.jpg'
                                 };
                                 ContentUploader.tempVideoUpload(data,function(resultSet){
                                     finalData['video_upload'] = resultSet;
                                     callback(null)
                                 });
-                                callback(null)
-                            },
-                            function uploadThumbnailToCDN(callback){
-                                //Upload Thumbnail image to CDN
-                                console.log("uploadThumbnailToCDN")
-                                var data ={
-                                    content_title:"Post Video Thumbnail Image",
-                                    file_name:nameWithoutEx+'_1.jpg',
-                                    entity_id:files[name]['upload_id'],
-                                    entity_tag:UploadMeta.TIME_LINE_VIDEO_IMAGE,
-                                    upload_index:files[name]['upload_index']
-                                };
 
-                                ContentUploader.tempVideoUpload(data,function(resultSet){
-                                    finalData['thumb_image_upload'] = resultSet;
-                                    callback(null)
-                                });
                             }
 
                         ],function(err){
+                            fs.unlink("temp/" + nameWithoutEx+'.mp4');
+                            fs.unlink("temp/" + nameWithoutEx+'_1.jpg');
                             socket.emit('finished', finalData);
                         });
                     });
@@ -607,9 +679,5 @@ var ContentUploader ={
         });
     }
 
-
-
-
-
-}
+};
 module.exports = ContentUploader;

@@ -28,6 +28,8 @@ var PostController ={
             life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:"",
             shared_post:""
         };
+        console.log("PostController - addPost - data - ")
+        console.log(data)
 
         TimeLinePostHandler.addNewPost(data,function(resultSet){
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);

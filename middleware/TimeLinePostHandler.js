@@ -81,6 +81,9 @@ var TimeLinePostHandler ={
                        entity_tag:UploadMeta.TIME_LINE_IMAGE,
                        post_id: _post.post_id
                     };
+
+                    console.log("TimeLinePostHandler - addNewPost - copyToCDN - payLoad - ")
+                    console.log(payLoad)
                     ContentUploader.copyFromTempToDb(payLoad,function(uploadData){
                         _post['upload']= uploadData;
                         callBack(null)

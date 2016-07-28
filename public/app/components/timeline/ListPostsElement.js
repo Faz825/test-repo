@@ -51,7 +51,9 @@ class SinglePost extends React.Component{
             isShowingModal:false,
             iniTextisVisible:false,
             text:"",
-            shareBtnEnabled:true
+            shareBtnEnabled:true,
+            isShowingVideoModal:false,
+            videoUrl:""
         };
         this.loggedUser= Session.getSession('prg_lg');
 
@@ -77,7 +79,6 @@ class SinglePost extends React.Component{
     }
 
     onLikeClick(index){
-        console.log(index)
 
         let _this =  this;
         $.ajax({
@@ -145,7 +146,7 @@ class SinglePost extends React.Component{
         this.loadComment();
     }
     handleClose() {
-        this.setState({isShowingModal: false});
+        this.setState({isShowingModal: false, isShowingVideoModal:false});
     }
     onContentAdd(event){
         let _text  = Lib.sanitize(event.target.innerHTML);
@@ -191,8 +192,6 @@ class SinglePost extends React.Component{
 
                     _this.props.onPostSubmitSuccess(data.post);
 
-                    console.log(data.post)
-
                     //if(post_data.__own == _this.loggedUser.id ){
                     //    _this.props.onPostSubmitSuccess(data.post);
                     //
@@ -224,9 +223,33 @@ class SinglePost extends React.Component{
 
         }
     }
+
+    onVideoPlay(upload){
+        this.setState({isShowingVideoModal:true, videoUrl:upload.http_url})
+    }
+
+    getVideoPopup(){
+
+        return(
+            <div>
+                {this.state.isShowingVideoModal &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
+                        <div className="share-popup-holder">
+                            <video width="100%" height="440" controls>
+                                <source src={this.state.videoUrl} type="video/mp4"/>
+                            </video>
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
+
+    }
+
     onPostDelete(post, index){
-        console.log("onPostDelete");
-        console.log(index)
 
         $.ajax({
             url: '/post/delete',
@@ -235,9 +258,7 @@ class SinglePost extends React.Component{
             data:{__post_id:post.post_id},
             headers: { 'prg-auth-header':this.loggedUser.token },
         }).done(function (data, text) {
-            console.log(data)
             if(data.status.code == 200){
-                console.log(data.unsubscribeUsers)
                 let _unsubscribeData = {
                     post_id:post.post_id,
                     unsubscribedUsers:data.unsubscribeUsers
@@ -276,9 +297,17 @@ class SinglePost extends React.Component{
 
         var uploaded_files = _post.upload.map((upload,key)=>{
             if(key <= 3){
+                let _url = "";
+                if(upload.file_type == "mp4"){
+                    _url = upload.thumb_http_url;
+                } else{
+                    _url = upload.http_url
+                }
                 return (
                     <div className={img_div_class} key={key}>
-                        <img src = {upload.http_url}/>
+                        <img src = {_url}/>{
+                        (upload.file_type == "mp4")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true"></i>:null
+                    }
                         {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
                     </div>
                 )
@@ -346,12 +375,19 @@ class SinglePost extends React.Component{
         let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
             _profile.images.profile_image.http_url:"";
 
-
         var uploaded_files = _post.upload.map((upload,key)=>{
             if(key <= 3){
+                let _url = "";
+                if(upload.file_type == "mp4"){
+                    _url = upload.thumb_http_url;
+                } else{
+                    _url = upload.http_url
+                }
                 return (
                     <div className={img_div_class} key={key}>
-                        <img src = {upload.http_url}/>
+                        <img src = {_url}/>{
+                        (upload.file_type == "mp4")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true" onClick = {(event)=>{this.onVideoPlay(upload)}}></i>:null
+                    }
                         {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
                     </div>
                 )
@@ -427,6 +463,7 @@ class SinglePost extends React.Component{
                         }
 
                         {this.getPopup()}
+                        {this.getVideoPopup()}
                     </div>
                 </div>
             </div>
