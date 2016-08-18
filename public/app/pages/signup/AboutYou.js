@@ -105,6 +105,10 @@ export default class AboutYou extends React.Component{
             if(elm == "country" && this.formData[elm] == ""){
                 _error[elm] = Alert.ENTER_COUNTRY;
             }
+
+            if(elm == "zip" && this.formData[elm] == "" && this.formData['country'] == 'United States'){
+                _error[elm] = Alert.ENTER_ZIP_CODE;
+            }
         }
        return _error;
     }

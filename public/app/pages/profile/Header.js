@@ -318,7 +318,7 @@ export class ProfileInfo extends React.Component{
                                     </div>
                                 </div>
                                 <div className="col-xs-5 pg-profile-detail-live">
-                                    <h3 className="text-center">Lives in {this.props.dt.country}</h3>
+                                    <h3 className="text-center">Lives in {this.props.dt.city_details}</h3>
                                 </div>
                             </div>
                         </div>

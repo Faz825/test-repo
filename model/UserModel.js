@@ -6,7 +6,8 @@
 var  mongoose = require('mongoose'),
      Schema   = mongoose.Schema,
      bCrypt	  = require('bcrypt-nodejs'),
-     uuid = require('node-uuid');
+     uuid = require('node-uuid'),
+     cities = require('cities');
 
 /**
  * Global Configuration for the user schema
@@ -949,10 +950,35 @@ UserSchema.statics.formatUser=function(userObject,showOptions){
 
         }
 
+        if(typeof userObject.zip_code != 'undefined' && userObject.zip_code) {
+            _temp_user['city_details'] =[];
+            if(userObject.country == 'United States') {
+                _temp_user['city_details'] = this.getCityByZip(userObject.zip_code);
+            } else {
+                _temp_user['city_details'] = userObject.country;
+            }
+
+        }
+
         return _temp_user
     }
 
     return null;
+}
+
+/**
+ * Get US City By Zip Code
+ * @param zipCode
+ */
+UserSchema.statics.getCityByZip = function(zipCode){
+    /*var _data = {};
+    cities.zip_lookup(zipCode, function(result) {
+        _data =  result;
+        console.log(result);
+    });
+    console.log("gotten city data 1 >" +_data.city);*/
+    return cities.zip_lookup(zipCode).city;
+
 }
 
 /**
