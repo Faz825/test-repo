@@ -253,7 +253,7 @@ export default class Index extends React.Component{
 
                             <div className="col-xs-6" id="newsfeed-middle-container-right-col">
                                 <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
-                                                uname = {this.state.uname} profileUsr={this.state.user}/>
+                                                uname = {this.state.uname} profileUsr={this.state.user} connectionStatus={this.state.connectionStatus} />
                                 <ListPostsElement posts={this.state.posts}
                                                   uname = {this.state.uname}
                                                   onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
