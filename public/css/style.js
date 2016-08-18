@@ -1656,7 +1656,7 @@ export default StyleSheet.create({
         "paddingRight": 5,
         "paddingTop": 5
     },
-    "pg-pro-share-btn p": {
+    "pg-pro-share-btn a": {
         "display": "inline-block",
         "verticalAlign": "top",
         "font": "8px 'montserratregular', sans-serif",
@@ -1665,6 +1665,12 @@ export default StyleSheet.create({
         "marginRight": 0,
         "marginBottom": 0,
         "marginLeft": 0
+    },
+    "pg-pro-share-btn a:hover": {
+        "textDecoration": "none"
+    },
+    "pg-pro-share-btn a:focus": {
+        "textDecoration": "none"
     },
     "pg-pro-share-btn pg-pro-share-btn-txt": {
         "color": "#2d5164",

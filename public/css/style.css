@@ -1203,12 +1203,16 @@ input[type=number]::-webkit-outer-spin-button {
 	padding-right: 5px;
 	padding-top: 5px;
 }
-#pg-pro-share-btn p {
+#pg-pro-share-btn a {
 	display: inline-block;
 	vertical-align: top;
 	font: 8px 'montserratregular', sans-serif;
 	color: #2d5164;
 	margin: 0 0px;
+}
+#pg-pro-share-btn a:hover,
+#pg-pro-share-btn a:focus{
+	text-decoration: none;
 }
 #pg-pro-share-btn .pg-pro-share-btn-txt {
 	color: #2d5164;

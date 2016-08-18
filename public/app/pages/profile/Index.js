@@ -29,6 +29,7 @@ export default class Index extends React.Component{
             data:{},
             posts:[],
             post_id:this.getPostId(),
+            profileOwnerID: "",
             connectionStatus:0, //0-already connected (nothing to display), 1-request sent (Display "Request Pending" label), 2-request received (Display "Accept" button), 3-can send request (Display "Add as a Connection" button)
             usrId:null
         };
@@ -101,7 +102,8 @@ export default class Index extends React.Component{
 
                     this.setState({
                         connectionStatus:_connectionStatus,
-                        usrId:data.profile_user_id
+                        usrId:data.profile_user_id,
+                        profileOwnerID: data.profile_user_id
                     });
                 }
             }.bind(this),
@@ -212,10 +214,15 @@ export default class Index extends React.Component{
         this.setState({posts:_updatedPosts});
     }
 
-
-
     render(){
-        let profileName = this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name;
+        let profileName;
+
+        if(this.state.profileOwnerID){
+            profileName = this.state.user.first_name + " " + this.state.user.last_name;
+        }else{
+            profileName = this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name;
+        }
+
         return (
             <div id="pg-profile-page" className="loggedUserView pg-page">
                 <Header
@@ -246,7 +253,7 @@ export default class Index extends React.Component{
 
                             <div className="col-xs-6" id="newsfeed-middle-container-right-col">
                                 <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
-                                                uname = {this.state.uname}/>
+                                                uname = {this.state.uname} profileUsr={this.state.user}/>
                                 <ListPostsElement posts={this.state.posts}
                                                   uname = {this.state.uname}
                                                   onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
