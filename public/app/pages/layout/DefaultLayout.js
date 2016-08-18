@@ -15,7 +15,6 @@ const DefaultLayout = (props) =>{
                 {"name": "News", "link" : "/news", "imgName": "nav-ico-1"},
                 {"name": "Notes", "link" : "/notes", "imgName": "nav-ico-2"},
                 {"name": "Desktop", "link" : "/desktop", "imgName": "nav-ico-3"},
-                {"name": "Smart Mail", "link" : "/email", "imgName": "nav-ico-4"},
                 {"name": "Pro Calendar", "link" : "/calender-weeks", "imgName": "nav-ico-5"}
               ]
             }}/>
@@ -24,7 +23,6 @@ const DefaultLayout = (props) =>{
                 {"name": "Connections", "link" : "/connections", "imgName": "nav-ico-6"},
                 {"name": "Chats/Video", "link" : "/chat", "imgName": "nav-ico-7"},
                 {"name": "interests", "link" : "/interests", "imgName": "nav-ico-8"},
-                {"name": "Recruiting", "link" : "/find-job", "imgName": "nav-ico-9"},
                 {"name": "Pro Networks", "link" : "/professional-networks", "imgName": "nav-ico-10"}
               ]
             }}/>

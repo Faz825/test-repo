@@ -8,10 +8,7 @@ const {width, height, scale} = Dimensions.get("window"),
 export default StyleSheet.create({
     "body": {
         "WebkitFontSmoothing": "antialiased",
-        "backgroundImage": "url(../images/site-background.png)",
-        "backgroundSize": "cover",
-        "backgroundRepeat": "no-repeat",
-        "backgroundAttachment": "fixed"
+        "background": "#F0EFEF"
     },
     "row": {
         "paddingBottom": 0
@@ -677,10 +674,25 @@ export default StyleSheet.create({
         "paddingRight": 0,
         "paddingBottom": 24,
         "paddingLeft": 0,
-        "borderBottom": "2px solid #e0e2e5"
+        "borderBottom": "2px solid #e0e2e5",
+        "height": "calc((100vh - 180px)/4)",
+        "position": "relative"
+    },
+    "pg-nav-item-wrapper:last-child": {
+        "borderBottom": 0
     },
     "pg-nav-item-wrapper a": {
-        "textDecoration": "none"
+        "textDecoration": "none",
+        "position": "absolute",
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "marginTop": "auto",
+        "marginRight": "auto",
+        "marginBottom": "auto",
+        "marginLeft": "auto",
+        "height": 50
     },
     "pg-nav-item-wrapper a:hover": {
         "textDecoration": "none"
@@ -1832,7 +1844,7 @@ export default StyleSheet.create({
         "left": 10
     },
     "profile-middle-container-left-col": {
-        "marginTop": 0,
+        "marginTop": 15,
         "backgroundColor": "#fff",
         "WebkitBorderRadius": 5,
         "MozBorderRadius": 5,
@@ -2784,7 +2796,7 @@ export default StyleSheet.create({
         "width": "90%"
     },
     "pg-news-page-content-item-right-thumbs": {
-        "background": "#f2f6f9",
+        "background": "#F0EFEF",
         "borderLeft": "1px solid #7297aa",
         "paddingTop": 0,
         "paddingRight": 30,
@@ -2794,7 +2806,7 @@ export default StyleSheet.create({
         "borderBottomRightRadius": 4
     },
     "pg-notes-page-content-item-right-thumbs": {
-        "background": "#f2f6f9",
+        "background": "#F0EFEF",
         "borderLeft": "1px solid #7297aa",
         "paddingTop": 0,
         "paddingRight": 30,
@@ -4335,5 +4347,13 @@ export default StyleSheet.create({
         "top": 5,
         "right": 5,
         "cursor": "pointer"
+    },
+    "post-video-play": {
+        "float": "right",
+        "position": "absolute",
+        "top": 20,
+        "right": 40,
+        "cursor": "pointer",
+        "color": "white"
     }
 });

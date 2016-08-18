@@ -793,16 +793,24 @@ export class ComposeMessage extends React.Component{
         }
     }
 
+    onEnter(e){
+        if (e.keyCode == 13) {
+            this.sendMessage(e);
+        }
+    }
+
     render(){
         return(
-            <form onSubmit={this.sendMessage.bind(this)}>
+            <form onSubmit={this.sendMessage.bind(this)} id="chatMsg">
                 <div className="chat-msg-input-holder">
                     {
                         (this.loggedUser.profile_image != null ? <img src={this.loggedUser.profile_image} alt="" width="40" height="40" id="my_profile_img"/>:<img src="/images/default-profile-pic.png" alt="" width="40" height="40" id="my_profile_img"/>)
                     }
                     <div className="msg-input">
-                        <textarea className="form-control" placeholder="New Message..." name="msg" value={(this.state.formData.msg)?this.state.formData.msg:''}
-                                  onChange={(event)=>{ this.elementChangeHandler(event)}}></textarea>
+                        <textarea className="form-control" placeholder="New Message..." name="msg"      value={(this.state.formData.msg)?this.state.formData.msg:''}
+                        onChange={(event)=>{ this.elementChangeHandler(event)}}
+                        onKeyDown={(event)=>{this.onEnter(event)}}
+                        ></textarea>
                     </div>
                     {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
                 </div>
