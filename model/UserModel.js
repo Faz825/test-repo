@@ -954,11 +954,13 @@ UserSchema.statics.formatUser=function(userObject,showOptions){
             _temp_user['city_details'] =[];
             if(userObject.country == 'United States') {
                 var cityByZip = this.getCityByZip(userObject.zip_code);
-                _temp_user['city_details'] = cityByZip != 'undefined' &&  cityByZip != '' ? cityByZip : userObject.country;
+                _temp_user['city_details'] = cityByZip ? cityByZip : userObject.country;
             } else {
                 _temp_user['city_details'] = userObject.country;
             }
 
+        } else {
+            _temp_user['city_details'] = userObject.country;
         }
 
         return _temp_user
@@ -972,14 +974,15 @@ UserSchema.statics.formatUser=function(userObject,showOptions){
  * @param zipCode
  */
 UserSchema.statics.getCityByZip = function(zipCode){
-    /*var _data = {};
-    cities.zip_lookup(zipCode, function(result) {
-        _data =  result;
-        console.log(result);
-    });
-    console.log("gotten city data 1 >" +_data.city);*/
-    return cities.zip_lookup(zipCode).city;
-
+    var cityObject = cities.zip_lookup(zipCode);
+    if(typeof cityObject == 'undefined' || cityObject == '' || cityObject == null) {
+        return null;
+    }
+    var city = cityObject.city
+    if(typeof city == 'undefined' || city == '' || city == null) {
+        return null;
+    }
+    return city;
 }
 
 /**
