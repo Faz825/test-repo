@@ -953,7 +953,8 @@ UserSchema.statics.formatUser=function(userObject,showOptions){
         if(typeof userObject.zip_code != 'undefined' && userObject.zip_code) {
             _temp_user['city_details'] =[];
             if(userObject.country == 'United States') {
-                _temp_user['city_details'] = this.getCityByZip(userObject.zip_code);
+                _temp_user['city_details'] = this.getCityByZip(userObject.zip_code) != 'undefined' &&  this.getCityByZip(userObject.zip_code) != '' ?
+                    this.getCityByZip(userObject.zip_code) : userObject.country;
             } else {
                 _temp_user['city_details'] = userObject.country;
             }
