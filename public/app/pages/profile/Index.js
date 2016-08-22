@@ -86,7 +86,7 @@ export default class Index extends React.Component{
             method: "GET",
             dataType: "JSON",
             success: function (data, text) {
-                console.log(data);
+                //console.log(data);
                 if(data.status.code == 200){
                     var _connectionStatus = 0;
 

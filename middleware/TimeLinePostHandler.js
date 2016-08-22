@@ -39,6 +39,7 @@ var TimeLinePostHandler ={
                 //Add to list it is Friend only for me
                 else if(parseInt(_post.post_visible_mode) == PostVisibleMode.ONLY_MY){
                     _post.visible_users.push(_post.created_by);
+                    _post.visible_users.push(_post.post_owned_by);
                     callBack(null)
                 }
 
@@ -100,19 +101,45 @@ var TimeLinePostHandler ={
             },
             function finalizedPost(callBack){
 
-                var query={
-                    q:_post.created_by.toString(),
-                    index:'idx_usr'
-                };
+                if(_post.post_owned_by !== 'undefined') {
+                    var query = {
+                        q: "user_id:" + _post.created_by.toString(),
+                        index: 'idx_usr'
+                    };
+                    var profile_query = {
+                        q: "user_id:" + _post.post_owned_by.toString(),
+                        index: 'idx_usr'
+                    };
 
-                _post['date'] = DateTime.explainDate(_post.created_at);
-                //Find User from Elastic search
-                ES.search(query,function(csResultSet){
-                    delete _post['created_by'];
-                    _post['created_by'] = csResultSet.result[0];
-                    callBack(null);
+                    _post['date'] = DateTime.explainDate(_post.created_at);
+                    //Find User from Elastic search
+                    ES.search(query, function (csResultSet) {
+                        delete _post['created_by'];
+                        _post['created_by'] = csResultSet.result[0];
 
-                });
+                        ES.search(profile_query, function (csResultSet) {
+                            delete _post['post_owned_by'];
+                            _post['post_owned_by'] = csResultSet.result[0];
+
+                            callBack(null);
+
+                        });
+
+                    });
+                }else{
+                    var query = {
+                        q: "user_id:" + _post.created_by.toString(),
+                        index: 'idx_usr'
+                    };
+
+                    _post['date'] = DateTime.explainDate(_post.created_at);
+                    //Find User from Elastic search
+                    ES.search(query, function (csResultSet) {
+                        delete _post['created_by'];
+                        _post['created_by'] = csResultSet.result[0];
+                        callBack(null);
+                    });
+                }
             }
 
         ],function(err,resultSet){
@@ -283,18 +310,42 @@ var TimeLinePostHandler ={
             },
             function finalizedPost(callBack){
                 console.log("finalizedPost")
-                var query={
-                    q:"user_id:"+_post.created_by.toString(),
-                    index:'idx_usr'
-                };
-                _post['date'] = DateTime.explainDate(_post.created_at)
-                //Find User from Elastic search
-                ES.search(query,function(csResultSet){
-                    delete _post['created_by'];
-                    _post['created_by'] = csResultSet.result[0];
-                    callBack(null);
 
-                });
+                if(_post.post_owned_by !== 'undefined') {
+                    var query = {
+                        q: "user_id:" + _post.created_by.toString(),
+                        index: 'idx_usr'
+                    };
+                    var profile_query = {
+                        q: "user_id:" + _post.post_owned_by.toString(),
+                        index: 'idx_usr'
+                    };
+                    _post['date'] = DateTime.explainDate(_post.created_at)
+                    //Find User from Elastic search
+                    ES.search(query, function (csResultSet) {
+                        delete _post['created_by'];
+                        _post['created_by'] = csResultSet.result[0];
+                        ES.search(profile_query, function (csResultSet) {
+                            delete _post['post_owned_by'];
+                            _post['post_owned_by'] = csResultSet.result[0];
+
+                            callBack(null);
+
+                        });
+                    });
+                }else{
+                    var query = {
+                        q: "user_id:" + _post.created_by.toString(),
+                        index: 'idx_usr'
+                    };
+                    _post['date'] = DateTime.explainDate(_post.created_at)
+                    //Find User from Elastic search
+                    ES.search(query, function (csResultSet) {
+                        delete _post['created_by'];
+                        _post['created_by'] = csResultSet.result[0];
+                        callBack(null);
+                    });
+                }
             }
 
         ],function(err,resultSet){
@@ -409,19 +460,43 @@ var TimeLinePostHandler ={
             },
             function finalizedPost(callBack){
 
-                var query={
-                    q:_post.created_by.toString(),
-                    index:'idx_usr'
-                };
+                if(_post.post_owned_by !== 'undefined') {
+                    var query = {
+                        q: "user_id:" + _post.created_by.toString(),
+                        index: 'idx_usr'
+                    };
+                    var profile_query = {
+                        q: "user_id:" + _post.post_owned_by.toString(),
+                        index: 'idx_usr'
+                    };
 
-                _post['date'] = DateTime.explainDate(_post.created_at)
-                //Find User from Elastic search
-                ES.search(query,function(csResultSet){
-                    delete _post['created_by'];
-                    _post['created_by'] = csResultSet.result[0];
-                    callBack(null);
+                    _post['date'] = DateTime.explainDate(_post.created_at)
+                    //Find User from Elastic search
+                    ES.search(query, function (csResultSet) {
+                        delete _post['created_by'];
+                        _post['created_by'] = csResultSet.result[0];
+                        ES.search(profile_query, function (csResultSet) {
+                            delete _post['post_owned_by'];
+                            _post['post_owned_by'] = csResultSet.result[0];
 
-                });
+                            callBack(null);
+
+                        });
+                    });
+                }else{
+                    var query = {
+                        q: "user_id:" + _post.created_by.toString(),
+                        index: 'idx_usr'
+                    };
+
+                    _post['date'] = DateTime.explainDate(_post.created_at)
+                    //Find User from Elastic search
+                    ES.search(query, function (csResultSet) {
+                        delete _post['created_by'];
+                        _post['created_by'] = csResultSet.result[0];
+                        callBack(null);
+                    });
+                }
             }
 
         ],function(err,resultSet){

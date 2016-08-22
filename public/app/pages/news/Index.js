@@ -243,7 +243,9 @@ export default class Index extends React.Component{
 
     render(){
         let _this = this;
+        let user = Session.getSession('prg_lg');
         const {uname,posts,display_news_articles}= this.state;
+
         return(
             <div id="pg-newsfeed-page" className="pg-page">
                 <div className="row row-clr">
@@ -266,8 +268,8 @@ export default class Index extends React.Component{
                                     </div>
                                 </div>
                                 <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
-                                                uname = {uname}/>
-                                <ListPostsElement posts={posts}
+                                                uname = {uname} profileUsr={user} connectionStatus={this.state.connectionStatus}/>
+                                <ListPostsElement posts={this.state.posts}
                                                   uname = {uname}
                                                   onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}
                                                   onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}

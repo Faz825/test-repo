@@ -40,6 +40,11 @@ var PostSchema = new Schema({
         ref: 'User',
         default:null
     },
+    post_owned_by:{
+        type: Schema.ObjectId,
+        ref: 'User',
+        default:null
+    },
     page_link:{
         type:String,
         trim:true,
@@ -102,6 +107,7 @@ PostSchema.statics.addNew = function(post,callBack){
     _post.has_attachment = post.has_attachment;
     _post.content = post.content;
     _post.created_by = Util.toObjectId(post.created_by);
+    _post.post_owned_by = Util.toObjectId(post.post_owned_by);
     _post.page_link = post.page_link;
     _post.post_visible_mode = post.post_visible_mode;
     _post.visible_users = post.visible_users;
@@ -202,6 +208,9 @@ PostSchema.statics.db_getPost = function(criteria,callBack){
 
                 //Find User from ElasticSearch
                 ES.search(query,function(csResultSet){
+
+                    //console.log("DB Get Post");
+                    //console.log(csResultSet);
 
                     var _postData = {
                         post_id:postData._id.toString(),
@@ -378,6 +387,7 @@ PostSchema.statics.postList=function(userId,posts,callBack){
 
     _async.each(posts,
         function(post,callBack){
+            //console.log(post);
             var _post = _this.formatPost(post),
             _created_date = _post.date.time_stamp;
 
@@ -395,28 +405,56 @@ PostSchema.statics.postList=function(userId,posts,callBack){
             Comment.getCommentCount(_post.post_id,function(commentCount){
                 _post['comment_count'] = commentCount;
 
+                if(post.post_owned_by !== 'undefined'){
+                    //Find User from Elastic search
+                    var profile_query={
+                        q:"user_id:"+post.post_owned_by.toString(),
+                        index:'idx_usr'
+                    };
+                    var query={
+                        q:"user_id:"+post.created_by.toString(),
+                        index:'idx_usr'
+                    };
+                    ES.search(query,function(csResultSet){
+                        _post['created_by'] = csResultSet.result[0];
 
-                var query={
-                    q:"user_id:"+post.created_by.toString(),
-                    index:'idx_usr'
-                };
-                //Find User from Elastic search
-                ES.search(query,function(csResultSet){
-                    _post['created_by'] = csResultSet.result[0];
+                        ES.search(profile_query,function(csResultSet){
+                            delete _post['post_owned_by'];
+                            _post['post_owned_by'] = csResultSet.result[0];
 
-                    Like.getLikedUsers(userId,_post.post_id,0,function(likedUsers,likedUserIds){
+                            Like.getLikedUsers(userId,_post.post_id,0,function(likedUsers,likedUserIds){
 
-                        _post['like_count'] = likedUsers.length;
-                        _post['liked_user'] = likedUsers;
-                        _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1)?0:1;
+                                _post['like_count'] = likedUsers.length;
+                                _post['liked_user'] = likedUsers;
+                                _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1)?0:1;
 
-                        data_by_date[_created_date].push(_post) ;
+                                data_by_date[_created_date].push(_post) ;
 
-                        callBack();
-                    })
+                                callBack();
+                            })
 
+                        });
+                    });
+                }else {
+                    //Find User from Elastic search
+                    var query = {
+                        q: "user_id:" + post.created_by.toString(),
+                        index: 'idx_usr'
+                    };
+                    ES.search(query, function (csResultSet) {
+                        _post['created_by'] = csResultSet.result[0];
+                        Like.getLikedUsers(userId, _post.post_id, 0, function (likedUsers, likedUserIds) {
 
-                });
+                            _post['like_count'] = likedUsers.length;
+                            _post['liked_user'] = likedUsers;
+                            _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1) ? 0 : 1;
+
+                            data_by_date[_created_date].push(_post);
+
+                            callBack();
+                        })
+                    });
+                }
 
             });
 
@@ -452,6 +490,7 @@ PostSchema.statics.formatPost=function(postData){
         post_mode:postData.post_mode,
         content:(postData.content)?postData.content:"",
         created_by:postData.created_by,
+        post_owned_by:postData.post_owned_by,
         post_visible_mode:postData.post_visible_mode,
         date:DateTime.explainDate(postData.created_at),
         location:(postData.location)?postData.location:"",

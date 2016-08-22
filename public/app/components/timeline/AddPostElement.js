@@ -62,17 +62,16 @@ export default class AddPostElement extends React.Component{
 
     render(){
         let logged_user = Session.getSession('prg_lg');
-        if(this.props.uname != logged_user.user_name){
+        if(this.props.uname != logged_user.user_name && this.props.connectionStatus != 0){
             return (<div />)
         }
-
-
         return (
             <div className="pg-timeline-white-box pg-round-border pg-box-shadow">
                 <div className="row row-clr pg-newsfeed-section" id="pg-newsfeed-post-section">
 
                     <TextPostElement  afterPostSubmit = {this.afterPostSubmit.bind(this)}
                                       uuid={this.state.uuid}
+                                      profileUsr = {this.props.profileUsr}
                         />
                 </div>
             </div>
@@ -135,6 +134,13 @@ export class TextPostElement extends React.Component{
             this.isValidToSubmit = true;
             _pay_load['__lf_evt'] =this.state.lifeEventId;
             _pay_load['__post_type'] ="LE";
+        }
+
+        if(this.loggedUser.user_name !== this.props.profileUsr.user_name) {
+            _pay_load['__on_friends_wall'] = true;
+            _pay_load['__profile_user_id'] = this.props.profileUsr.user_id;
+        } else {
+            _pay_load['__on_friends_wall'] = false;
         }
 
         if(this.isValidToSubmit){

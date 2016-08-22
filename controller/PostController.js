@@ -13,12 +13,12 @@ var PostController ={
     addPost:function(req,res){
 
         var outPut ={},CurrentSession = Util.getCurrentSession(req);
-
         var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
         var data ={
             has_attachment:(typeof req.body.__hs_attachment != 'undefined')?req.body.__hs_attachment:false,
             content:(typeof req.body.__content != 'undefined')?req.body.__content :"",
-            created_by:CurrentSession.id,
+            created_by:(req.body.__on_friends_wall === 'true')?req.body.__profile_user_id :CurrentSession.id,
+            post_owned_by:CurrentSession.id,
             page_link:(typeof req.body.page_link != 'undefined')?req.body.page_link :"",
             post_visible_mode:PostVisibleMode.PUBLIC,
             post_mode:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostConfig.NORMAL_POST,
@@ -28,9 +28,7 @@ var PostController ={
             life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:"",
             shared_post:""
         };
-        console.log("PostController - addPost - data - ")
-        console.log(data)
-
+        console.log("PostController - addPost - data - ");
         TimeLinePostHandler.addNewPost(data,function(resultSet){
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['post']      = resultSet;
@@ -69,7 +67,6 @@ var PostController ={
 
                 var outPut ={};
 
-
                 if(resultSet == null){
                     outPut['status']    = ApiHelper.getMessage(200, Alert.LIST_EMPTY, Alert.SUCCESS);
                     outPut['posts']     = [];
@@ -78,7 +75,6 @@ var PostController ={
                 }
                 outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
                 outPut['posts']      =resultSet;
-
                 res.status(200).send(outPut);
                 return 0;
             });
@@ -96,6 +92,7 @@ var PostController ={
         var data ={
             content:req.body.__content,
             created_by:CurrentSession.id,
+            post_owned_by:CurrentSession.id,
             shared_post_id:req.body.__pid,
             post_visible_mode:PostVisibleMode.PUBLIC,
             post_mode:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostConfig.SHARED_POST,
@@ -126,6 +123,7 @@ var PostController ={
             has_attachment:(typeof req.body.__hs_attachment != 'undefined')?req.body.__hs_attachment:false,
             content:(typeof req.body.__content != 'undefined')?req.body.__content :"",
             created_by:CurrentSession.id,
+            post_owned_by:CurrentSession.id,
             page_link:(typeof req.body.page_link != 'undefined')?req.body.page_link :"",
             post_visible_mode:PostVisibleMode.PUBLIC,
             post_mode:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostConfig.NORMAL_POST,

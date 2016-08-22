@@ -400,10 +400,14 @@ class SinglePost extends React.Component{
                     {this.loggedUser.id == _profile.user_id?<i className="fa fa-times pg-status-delete-icon" onClick={(event)=>{this.onPostDelete(_post,_postIndex)}}/>:null}
                     <div className="row row-clr pg-newsfeed-section-common-content-post-info">
                         <div className="pg-user-pro-pic">
-                            <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
+                            <PostProfilePic post={_post}
+                                            profile={_profile}/>
                         </div>
                         <div className="pg-user-pro-info">
-                            <h5 className="pg-newsfeed-profile-name"><span className="pro-name">{_profile.first_name + " " + _profile.last_name + " "}</span>
+                            <h5 className="pg-newsfeed-profile-name">
+
+                                <PostOwner post={_post}
+                                            profile={_profile}/>
 
                                 <SharedPostTitle post={_post}
                                                  loggedUser={this.loggedUser}/>
@@ -580,7 +584,7 @@ const SharedPostTitle = ({loggedUser,post}) =>{
             (post.created_by.user_id == post.shared_post.created_by.user_id)?
                 <span className="own-post-share">shared own post</span>
                 :   <span className="post-owner-name">
-                        <i className="fa fa-caret-right"></i>
+                        <span className="shared-text">shared</span>
                         <span className="pro-name">
                             {" "+post.shared_post.created_by.first_name + " " + post.shared_post.created_by.last_name}
                         </span>'s post
@@ -607,6 +611,46 @@ const PostContentBody = ({loggedUser,post})=>{
 
 };
 
+const PostOwner = ({post,profile}) => {
+
+    if(post.post_owned_by != "undefined"){
+        return (
+            (post.created_by.user_id == post.post_owned_by.user_id)?
+                <span className="pro-name">{profile.first_name + " " + profile.last_name + " "} </span>
+                :
+                <span className="post-owner-name">
+                    <span className="pro-name">
+                  {post.post_owned_by.first_name + " " + post.post_owned_by.last_name + " "}
+                    </span>
+                    <i className="fa fa-caret-right"></i>
+                    <span className="pro-name">
+                        {" " + post.created_by.first_name + " " + post.created_by.last_name}
+                    </span>
+                </span>
+        );
+    }else{
+        return(
+            <span className="pro-name">{profile.first_name + " " + profile.last_name + " "} </span>
+        );
+    }
+
+};
+
+const PostProfilePic = ({post,profile}) => {
+    if(post.post_owned_by != "undefined"){
+        return (
+            (post.created_by.user_id == post.post_owned_by.user_id)?
+                <img src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
+                :
+                <img src={post.post_owned_by.images.profile_image.http_url} alt={post.post_owned_by.first_name + " " + post.post_owned_by.last_name} className="img-responsive"/>
+        );
+    }else{
+        return(
+            <img src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
+        );
+    }
+
+};
 
 export const LocationPostTitle = ({loggedUser,post})=>{
     if(post.post_mode == "LP"){
