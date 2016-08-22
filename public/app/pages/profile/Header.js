@@ -104,14 +104,23 @@ const ConnectionIndicator =(props)=> {
         "width": "102px",
         "textTransform": "uppercase"
     }
+
     return (
         <div id="pg-pro-share-btn" style={_style}>
             <img src="/images/Share-copy.png" alt="" />
-                <a href="/connections">
-                    <span className="pg-pro-share-btn-txt">{props.dt.connection_count}</span>
-                    Connections
-                </a>
-            </div>
+                {
+                    (props.readOnly)?
+                        <p>
+                            <span className="pg-pro-share-btn-txt">{props.dt.connection_count}</span>
+                            Connections
+                        </p>
+                    :
+                        <a href="/connections">
+                            <span className="pg-pro-share-btn-txt">{props.dt.connection_count}</span>
+                            Connections
+                        </a>
+                }
+        </div>
     );
 };
 
@@ -284,13 +293,15 @@ export class ProfileInfo extends React.Component{
             <div className="row row-clr row-rel">
                 <div id="pg-profile-pic-detail-wrapper">
                     <div className="col-xs-10 col-xs-offset-1">
-                        <div className="row">
+                        <div className="row block-wrapper">
                             <div className="col-xs-5 pg-profile-detail-work">
                                 {
                                     (this.state.jobPostition || this.state.office)?
                                             <div className="curr-job-holder">
+                                                <p className={(!this.state.saveEdit)? "designation-text" : "designation-text editable"} >{this.state.jobPostition}</p>
                                                 <input type="text" name="designation" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.desigFieldSize} value={this.props.dt.cur_designation} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
                                                 <span className="combine-text">at</span>
+                                                <p className={(!this.state.saveEdit)? "office-text" : "office-text editable"} >{this.state.office}</p>
                                                 <input type="text" name="workplace" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.officeFieldSize} value={this.props.dt.cur_working_at} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
                                                 {
                                                     (!this.props.readOnly)?
@@ -306,7 +317,7 @@ export class ProfileInfo extends React.Component{
                                     null
                                 }
                             </div>
-                            <div className="col-xs-2">
+                            <div className="col-xs-2 profile-img-holder">
                                 <div className="row pg-profile-mid-wrapper">
                                     <h1 className="pg-profile-detail-name text-center">{full_name}</h1>
                                     <div className="proImgHolder">
@@ -316,14 +327,14 @@ export class ProfileInfo extends React.Component{
                                         {(this.props.readOnly)? null : <ProfileImageUploader profileImgSrc={this.state.profileImgSrc} imgUpdated={this.profileImgUpdated} /> }
                                     </div>
                                     </div>
-                                </div>
-                                <div className="col-xs-5 pg-profile-detail-live">
-                                    <h3 className="text-center">Lives in {this.props.dt.city_details}</h3>
-                                </div>
+                            </div>
+                            <div className="col-xs-5 pg-profile-detail-live">
+                                <h3 className="text-center">Lives in {this.props.dt.city_details}</h3>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
         );
     }
 }

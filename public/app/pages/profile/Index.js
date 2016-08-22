@@ -236,7 +236,7 @@ export default class Index extends React.Component{
                     usrId={this.state.usrId}/>
                 <div className="row row-clr">
                     <div className="container-fluid">
-                        <div className="col-xs-10 col-xs-offset-1" id="middle-content-wrapper">
+                        <div className="profile-content-container" id="middle-content-wrapper">
                             <div className="col-xs-6" id="profile-middle-container-left-col">
                                 <div id="pg-profile-middle-container-left-col-details">
                                     <div className="row row-clr pg-profile-content">

@@ -101,7 +101,7 @@ var TimeLinePostHandler ={
             },
             function finalizedPost(callBack){
 
-                if(_post.post_owned_by !== 'undefined') {
+                if(_post.post_owned_by !== undefined) {
                     var query = {
                         q: "user_id:" + _post.created_by.toString(),
                         index: 'idx_usr'
@@ -311,7 +311,7 @@ var TimeLinePostHandler ={
             function finalizedPost(callBack){
                 console.log("finalizedPost")
 
-                if(_post.post_owned_by !== 'undefined') {
+                if(_post.post_owned_by !== undefined) {
                     var query = {
                         q: "user_id:" + _post.created_by.toString(),
                         index: 'idx_usr'
@@ -460,7 +460,7 @@ var TimeLinePostHandler ={
             },
             function finalizedPost(callBack){
 
-                if(_post.post_owned_by !== 'undefined') {
+                if(_post.post_owned_by !== undefined) {
                     var query = {
                         q: "user_id:" + _post.created_by.toString(),
                         index: 'idx_usr'

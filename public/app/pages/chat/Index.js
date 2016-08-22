@@ -683,7 +683,7 @@ export class ChatList extends React.Component{
 
         return (
             <div className="conv-holder col-sm-4">
-                <Scrollbars style={{ height: 486 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
+                <Scrollbars autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
                     <div id="chatList">
                         {convs}
                     </div>
@@ -739,7 +739,7 @@ export class MessageList extends React.Component{
 
         return (
             <div className="chat-view">
-                <Scrollbars ref="msgScrollBar" style={{ height: 335 }} autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
+                <Scrollbars ref="msgScrollBar" autoHide={true} autoHideTimeout={1000} autoHideDuration={200}>
                     <div id="msgListRow">
                         <div className="col-xs-12">
                             <div id="msgList">

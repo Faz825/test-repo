@@ -405,7 +405,7 @@ PostSchema.statics.postList=function(userId,posts,callBack){
             Comment.getCommentCount(_post.post_id,function(commentCount){
                 _post['comment_count'] = commentCount;
 
-                if(post.post_owned_by !== 'undefined'){
+                if(post.post_owned_by !== undefined){
                     //Find User from Elastic search
                     var profile_query={
                         q:"user_id:"+post.post_owned_by.toString(),

@@ -1203,7 +1203,8 @@ input[type=number]::-webkit-outer-spin-button {
 	padding-right: 5px;
 	padding-top: 5px;
 }
-#pg-pro-share-btn a {
+#pg-pro-share-btn a,
+#pg-pro-share-btn p {
 	display: inline-block;
 	vertical-align: top;
 	font: 8px 'montserratregular', sans-serif;
@@ -1230,6 +1231,15 @@ input[type=number]::-webkit-outer-spin-button {
 	left: 0;
 	padding: 0;
 }
+#pg-profile-pic-detail-wrapper .block-wrapper{
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#pg-profile-pic-detail-wrapper .block-wrapper .profile-img-holder{
+	align-self: baseline;
+}
 .pg-profile-mid-wrapper {
 	position: absolute;
 	bottom: -72px;
@@ -1254,19 +1264,36 @@ input[type=number]::-webkit-outer-spin-button {
 .curr-job-holder{
 	margin-top: 10px;
 }
-.curr-job-holder .job-data,
-.curr-job-holder .job-data:focus,
-.curr-job-holder .job-data:hover{
+.curr-job-holder .job-data{
+	display: none;
+}
+.curr-job-holder .job-data.editable,
+.curr-job-holder .job-data.editable:focus,
+.curr-job-holder .job-data.editable:hover{
+	display: inline-block;
 	background: none;
 	border-radius: 0;
 	border: none;
-	max-width: 40%;
+	max-width: 100%;
+	width: auto;
 	text-transform: capitalize;
 	color: #fff;
 	font: 18px 'montserratregular', sans-serif;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+.curr-job-holder .designation-text,
+.curr-job-holder .office-text{
+	text-transform: capitalize;
+	color: #fff;
+	font: 18px 'montserratregular', sans-serif;
+	display: inline-block;
+	margin: 0 5px 5px 0;
+}
+.curr-job-holder .designation-text.editable,
+.curr-job-holder .office-text.editable{
+	display: none;
 }
 .curr-job-holder .job-data.editable{
 	border-bottom: 1px solid #fff;
@@ -1356,6 +1383,11 @@ input[type=number]::-webkit-outer-spin-button {
 	border-radius: 5px;
 	padding: 10px 15px;
 	box-shadow: 0px 0px 7px -2px #000;
+}
+.profile-content-container{
+	margin: 0 auto;
+    width: 98%;
+    max-width: 1024px;
 }
 .pg-body-item{
 	border-bottom: 1px dashed #e9f0f4;
@@ -2601,14 +2633,12 @@ textarea{
 }
 
 .pg-middle-chat-screen-area .container{
-	max-width: 940px;
-	width: calc(100% - 100px);
+	width: 100%;
 	padding-top: 0;
 }
 
 .pg-middle-chat-screen-area .chat-window{
 	background: #fff;
-	margin-top: 20px;
 }
 
 .chat-window.container{
@@ -2743,7 +2773,7 @@ textarea{
 }
 
 .chat-body{
-	max-height: 486px;
+	height: calc(100vh - 318px);
 	overflow: hidden;
 	z-index: 0;
 }
@@ -2751,6 +2781,7 @@ textarea{
 .chat-body .conv-holder{
 	padding: 0;
 	border-right: 1px solid #dee6eb;
+	height: 100%;
 }
 
 .conv-holder .msg-holder{
@@ -2759,6 +2790,7 @@ textarea{
 	position: relative;
 	cursor: pointer;
 	border-bottom: 1px solid #dee6eb;
+	height: 62px;
 }
 
 .conv-holder .msg-holder a{
@@ -2812,6 +2844,10 @@ textarea{
 
 .chat-msg-holder{
 	padding: 30px 30px 10px;
+}
+
+.chat-msg-holder .chat-view{
+	height: 52vh;
 }
 
 .chat-msg-holder .chat-view .chat-block{
@@ -3024,6 +3060,7 @@ textarea{
 	border-bottom: 1px solid #dee6eb;
 	background: #fff;
 	background: #f2f6f9;
+	height: 70px;
 }
 
 .chat-notification-header .msg-holder.read{
@@ -3260,7 +3297,7 @@ textarea{
 	.curr-job-holder .combine-text{
 		margin: 0 8px;
 	}
-	
+
 }
 
 @media (max-width: 1200px){
@@ -3319,6 +3356,16 @@ textarea{
 
 	.curr-job-holder .combine-text{
 		margin: 0 8px;
+	}
+
+	.chat-msg-holder .chat-view{
+		height: calc(52vh - 87px);
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1023px){
+	.chat-msg-holder .chat-view {
+	    height: 62vh;
 	}
 }
 

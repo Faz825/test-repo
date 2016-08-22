@@ -613,7 +613,7 @@ const PostContentBody = ({loggedUser,post})=>{
 
 const PostOwner = ({post,profile}) => {
 
-    if(post.post_owned_by != "undefined"){
+    if(post.post_owned_by != undefined){
         return (
             (post.created_by.user_id == post.post_owned_by.user_id)?
                 <span className="pro-name">{profile.first_name + " " + profile.last_name + " "} </span>
@@ -637,7 +637,7 @@ const PostOwner = ({post,profile}) => {
 };
 
 const PostProfilePic = ({post,profile}) => {
-    if(post.post_owned_by != "undefined"){
+    if(post.post_owned_by != undefined){
         return (
             (post.created_by.user_id == post.post_owned_by.user_id)?
                 <img src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>

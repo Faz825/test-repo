@@ -1666,6 +1666,16 @@ export default StyleSheet.create({
         "marginBottom": 0,
         "marginLeft": 0
     },
+    "pg-pro-share-btn p": {
+        "display": "inline-block",
+        "verticalAlign": "top",
+        "font": "8px 'montserratregular', sans-serif",
+        "color": "#2d5164",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
     "pg-pro-share-btn a:hover": {
         "textDecoration": "none"
     },
@@ -1693,6 +1703,14 @@ export default StyleSheet.create({
         "paddingRight": 0,
         "paddingBottom": 0,
         "paddingLeft": 0
+    },
+    "pg-profile-pic-detail-wrapper block-wrapper": {
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center"
+    },
+    "pg-profile-pic-detail-wrapper block-wrapper profile-img-holder": {
+        "alignSelf": "baseline"
     },
     "pg-profile-mid-wrapper": {
         "position": "absolute",
@@ -1722,43 +1740,76 @@ export default StyleSheet.create({
         "marginTop": 10
     },
     "curr-job-holder job-data": {
-        "background": "none",
-        "borderRadius": 0,
-        "border": "none",
-        "maxWidth": "40%",
-        "textTransform": "capitalize",
-        "color": "#fff",
-        "font": "18px 'montserratregular', sans-serif",
-        "whiteSpace": "nowrap",
-        "overflow": "hidden",
-        "textOverflow": "ellipsis"
-    },
-    "curr-job-holder job-data:focus": {
-        "background": "none",
-        "borderRadius": 0,
-        "border": "none",
-        "maxWidth": "40%",
-        "textTransform": "capitalize",
-        "color": "#fff",
-        "font": "18px 'montserratregular', sans-serif",
-        "whiteSpace": "nowrap",
-        "overflow": "hidden",
-        "textOverflow": "ellipsis"
-    },
-    "curr-job-holder job-data:hover": {
-        "background": "none",
-        "borderRadius": 0,
-        "border": "none",
-        "maxWidth": "40%",
-        "textTransform": "capitalize",
-        "color": "#fff",
-        "font": "18px 'montserratregular', sans-serif",
-        "whiteSpace": "nowrap",
-        "overflow": "hidden",
-        "textOverflow": "ellipsis"
+        "display": "none"
     },
     "curr-job-holder job-dataeditable": {
+        "display": "inline-block",
+        "background": "none",
+        "borderRadius": 0,
+        "border": "none",
+        "maxWidth": "100%",
+        "width": "auto",
+        "textTransform": "capitalize",
+        "color": "#fff",
+        "font": "18px 'montserratregular', sans-serif",
+        "whiteSpace": "nowrap",
+        "overflow": "hidden",
+        "textOverflow": "ellipsis",
         "borderBottom": "1px solid #fff"
+    },
+    "curr-job-holder job-dataeditable:focus": {
+        "display": "inline-block",
+        "background": "none",
+        "borderRadius": 0,
+        "border": "none",
+        "maxWidth": "100%",
+        "width": "auto",
+        "textTransform": "capitalize",
+        "color": "#fff",
+        "font": "18px 'montserratregular', sans-serif",
+        "whiteSpace": "nowrap",
+        "overflow": "hidden",
+        "textOverflow": "ellipsis"
+    },
+    "curr-job-holder job-dataeditable:hover": {
+        "display": "inline-block",
+        "background": "none",
+        "borderRadius": 0,
+        "border": "none",
+        "maxWidth": "100%",
+        "width": "auto",
+        "textTransform": "capitalize",
+        "color": "#fff",
+        "font": "18px 'montserratregular', sans-serif",
+        "whiteSpace": "nowrap",
+        "overflow": "hidden",
+        "textOverflow": "ellipsis"
+    },
+    "curr-job-holder designation-text": {
+        "textTransform": "capitalize",
+        "color": "#fff",
+        "font": "18px 'montserratregular', sans-serif",
+        "display": "inline-block",
+        "marginTop": 0,
+        "marginRight": 5,
+        "marginBottom": 5,
+        "marginLeft": 0
+    },
+    "curr-job-holder office-text": {
+        "textTransform": "capitalize",
+        "color": "#fff",
+        "font": "18px 'montserratregular', sans-serif",
+        "display": "inline-block",
+        "marginTop": 0,
+        "marginRight": 5,
+        "marginBottom": 5,
+        "marginLeft": 0
+    },
+    "curr-job-holder designation-texteditable": {
+        "display": "none"
+    },
+    "curr-job-holder office-texteditable": {
+        "display": "none"
     },
     "curr-job-holder combine-text": {
         "color": "#fff",
@@ -1860,6 +1911,14 @@ export default StyleSheet.create({
         "paddingBottom": 10,
         "paddingLeft": 15,
         "boxShadow": "0px 0px 7px -2px #000"
+    },
+    "profile-content-container": {
+        "marginTop": 0,
+        "marginRight": "auto",
+        "marginBottom": 0,
+        "marginLeft": "auto",
+        "width": "98%",
+        "maxWidth": 1024
     },
     "pg-body-item": {
         "borderBottom": "1px dashed #e9f0f4",
@@ -3341,13 +3400,11 @@ export default StyleSheet.create({
         "textTransform": "uppercase"
     },
     "pg-middle-chat-screen-area container": {
-        "maxWidth": 940,
-        "width": "calc(100% - 100px)",
+        "width": "100%",
         "paddingTop": 0
     },
     "pg-middle-chat-screen-area chat-window": {
-        "background": "#fff",
-        "marginTop": 20
+        "background": "#fff"
     },
     "chat-windowcontainer": {
         "paddingTop": 0,
@@ -3480,7 +3537,7 @@ export default StyleSheet.create({
         "color": "#9fafbe"
     },
     "chat-body": {
-        "maxHeight": 486,
+        "height": "calc(100vh - 318px)",
         "overflow": "hidden",
         "zIndex": 0
     },
@@ -3489,7 +3546,8 @@ export default StyleSheet.create({
         "paddingRight": 0,
         "paddingBottom": 0,
         "paddingLeft": 0,
-        "borderRight": "1px solid #dee6eb"
+        "borderRight": "1px solid #dee6eb",
+        "height": "100%"
     },
     "conv-holder msg-holder": {
         "paddingTop": 0,
@@ -3499,7 +3557,8 @@ export default StyleSheet.create({
         "overflow": "hidden",
         "position": "relative",
         "cursor": "pointer",
-        "borderBottom": "1px solid #dee6eb"
+        "borderBottom": "1px solid #dee6eb",
+        "height": 62
     },
     "conv-holder msg-holder a": {
         "display": "block",
@@ -3557,6 +3616,9 @@ export default StyleSheet.create({
         "paddingRight": 30,
         "paddingBottom": 10,
         "paddingLeft": 30
+    },
+    "chat-msg-holder chat-view": {
+        "height": 52 * vh
     },
     "chat-msg-holder chat-view chat-block": {
         "overflow": "hidden",
@@ -3769,7 +3831,8 @@ export default StyleSheet.create({
         "position": "relative",
         "cursor": "pointer",
         "borderBottom": "1px solid #dee6eb",
-        "background": "#f2f6f9"
+        "background": "#f2f6f9",
+        "height": 70
     },
     "chat-notification-header msg-holderread": {
         "background": "#fff"
