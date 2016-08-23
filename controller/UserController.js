@@ -175,7 +175,7 @@ var UserControler ={
         var generalInfo ={
             dob:req.body.dob,
             country:req.body.country,
-            zip:req.body.zip,
+            zip_code:req.body.zip,
             status:3
         }
         var CurrentSession = Util.getCurrentSession(req);
@@ -194,7 +194,7 @@ var UserControler ={
             CurrentSession['status']        = 3;
             CurrentSession['country']       = req.body.country;
             CurrentSession['dob']           = req.body.dob;
-            CurrentSession['zip']           = req.body.zip;
+            CurrentSession['zip_code']           = req.body.zip;
             Util.addToSession(req,CurrentSession)
             var _out_put = {
                 status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.INFO),
