@@ -260,7 +260,10 @@ export default class Index extends React.Component{
             dataType: "JSON",
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
-            this.loadNotifications();
+            for (var i = 0; i < this.elementsList.length; i++){
+                this.elementsList[i].read_status = true;
+            }
+            this.setState({eleList: this.elementsList});
         }.bind(this));
 
 
