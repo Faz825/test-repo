@@ -1497,7 +1497,7 @@ input[type=number]::-webkit-outer-spin-button {
 	cursor: pointer;
 }
 .pg-main-header-field {
-	font: 11px 'montserratsemi_bold', sans-serif;
+	font: 12px 'montserratsemi_bold', sans-serif;
 	line-height: 12px;
 	color: #61b3de;
 	margin: 0 0 0px;

@@ -2039,7 +2039,7 @@ export default StyleSheet.create({
         "cursor": "pointer"
     },
     "pg-main-header-field": {
-        "font": "11px 'montserratsemi_bold', sans-serif",
+        "font": "12px 'montserratsemi_bold', sans-serif",
         "lineHeight": 12,
         "color": "#61b3de",
         "marginTop": 0,
