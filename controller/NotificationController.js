@@ -144,6 +144,9 @@ var NotificationController ={
                         }
                         callBack(null);
                     });
+                } else{
+                    console.log("_noOfNotifications > 5");
+                    callBack(null);
                 }
             },
             function getPostData(callBack){

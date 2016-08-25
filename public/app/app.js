@@ -18,6 +18,8 @@ import NewsSettings from './pages/news/NewsSettings';
 import ChatIndex from './pages/chat/Index';
 import NewsIndex from './pages/news/Index';
 import NotesIndex from './pages/notes/Index';
+import FoldersIndex from './pages/folders/Index';
+import DocIndex from './pages/doc/Index';
 import NotificationsIndex from './pages/notifications/Index';
 
 
@@ -74,6 +76,18 @@ let rootRoute =(
 		 */
 
         <Route name="notifications" path="/notifications" component={NotificationsIndex}/>
+
+        /**
+		 * Folders
+		 */
+
+        <Route name="folders" path="/folders" component={FoldersIndex}/>
+
+        /**
+		 * Docs
+		 */
+
+        <Route name="doc" path="/doc" component={DocIndex}/>
 
 	</Route>
 );

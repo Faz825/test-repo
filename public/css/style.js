@@ -2861,7 +2861,7 @@ export default StyleSheet.create({
         "width": "90%"
     },
     "pg-news-page-content-item-right-thumbs": {
-        "background": "#F0EFEF",
+        "background": "#F2F6F9",
         "borderLeft": "1px solid #7297aa",
         "paddingTop": 0,
         "paddingRight": 30,
@@ -2871,7 +2871,7 @@ export default StyleSheet.create({
         "borderBottomRightRadius": 4
     },
     "pg-notes-page-content-item-right-thumbs": {
-        "background": "#F0EFEF",
+        "background": "#F2F6F9",
         "borderLeft": "1px solid #7297aa",
         "paddingTop": 0,
         "paddingRight": 30,
@@ -4077,6 +4077,14 @@ export default StyleSheet.create({
     },
     "notifi-inner-wrapper box-header-wrapper pg-top-mark-setings": {
         "textAlign": "right"
+    },
+    "chat-popup-holder": {
+        "width": "calc(100% - 220px)",
+        "height": 320,
+        "position": "fixed",
+        "bottom": 110,
+        "left": 110,
+        "zIndex": 1
     },
     "middle-content-wrapper": {
         "minWidth": 500

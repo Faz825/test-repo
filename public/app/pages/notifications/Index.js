@@ -23,7 +23,8 @@ export default class Index extends React.Component{
             notifications: [],
             notificationCount: 0,
             seeAllNotifications: false,
-            resultHeader:[]
+            resultHeader:[],
+            eleList:[]
         };
 
         this.currentTime = new Date();
@@ -41,7 +42,7 @@ export default class Index extends React.Component{
 
         Socket.listenToNotification(function(data){
 
-            let _existingNotifications = _this.elementsList;
+            let _existingNotifications = _this.state.eleList;
             let _newNotifications = [];
             let _oldNotification = {}, _newNotification = {};
             let _alreadyExist = false;
@@ -52,7 +53,8 @@ export default class Index extends React.Component{
                 for(var j = 0; j < _existingNotifications.length; j++){
                     _newNotifications.push(_existingNotifications[j]);
                 }
-                _this.elementsList = _newNotifications;
+                //_this.state.eleList = _newNotifications;
+                this.setState({eleList: _newNotifications});
                 //_this.setState({notifications:_newNotifications});
             } else{
                 if(data.user != _this.state.loggedUser.user_name){
@@ -119,7 +121,8 @@ export default class Index extends React.Component{
                     }
 
                     //_this.setState({notifications:_newNotifications});
-                    _this.elementsList = _newNotifications;
+                    //_this.elementsList = _newNotifications;
+                    this.setState({eleList: _newNotifications});
                 }
 
             }
@@ -151,8 +154,9 @@ export default class Index extends React.Component{
                 for(var i = 0; i < this.state.notifications.length; i++){
                     this.elementsList.push(this.state.notifications[i]);
                 }
-                console.log(this.elementsList);
+                this.setState({eleList: this.elementsList});
                 console.log(this.state.notifications);
+                console.log(this.state.eleList);
             }
         }.bind(this));
 
@@ -241,7 +245,7 @@ export default class Index extends React.Component{
 
                 if (this.currentPage <= this.state.resultHeader.total_pages){
                     this.currentPage = this.currentPage+1;
-                    this.loadNotifications()
+                    this.loadNotifications();
                 }
             }
         }
@@ -256,7 +260,7 @@ export default class Index extends React.Component{
             dataType: "JSON",
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
-            this.loadNotifications(1);
+            this.loadNotifications();
         }.bind(this));
 
 
@@ -272,6 +276,7 @@ export default class Index extends React.Component{
     render() {
         let loggedUser = this.state.loggedUser;
         let _secretary_image = loggedUser.secretary_image_url;
+        let elementsList = this.state.eleList;
 
         let partOfDay = "PM";
         let greating;
@@ -323,21 +328,21 @@ export default class Index extends React.Component{
                                             </div>
                                         </div>
                                         <div className="box-body-wrapper">
-                                            {this.elementsList.length > 5?
+                                            {elementsList.length > 5?
                                                 <Scrollbars style={{ height: 360 }} onScroll={this.handleScroll}>
                                                     <div className="chat-notification-header" id="unread_chat_list">
-                                                        <Notification notifications = {this.elementsList} clickNotification = {this.redirectToNotification.bind(this)}/>
+                                                        <Notification notifications = {elementsList} clickNotification = {this.redirectToNotification.bind(this)}/>
                                                     </div>
                                                 </Scrollbars>
                                                 :
-                                                this.elementsList.length > 0 ?
+                                                elementsList.length > 0 ?
                                                     <div className="chat-notification-header" id="unread_chat_list">
-                                                        <Notification notifications = {this.elementsList} clickNotification = {this.redirectToNotification.bind(this)}/>
+                                                        <Notification notifications = {elementsList} clickNotification = {this.redirectToNotification.bind(this)}/>
                                                     </div>
                                                     :
                                                     null
                                             }
-                                            {this.elementsList.length > 0 && !this.state.seeAllNotifications?
+                                            {elementsList.length > 0 && !this.state.seeAllNotifications?
                                                 <div className="row row-clr pg-secratery-chat-box-see-all">
                                                     <p onClick={this.allNotifications.bind(this)}>See all</p>
                                                 </div>

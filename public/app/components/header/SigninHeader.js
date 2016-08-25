@@ -62,10 +62,10 @@ export default class Header extends React.Component {
                                 </Scrollbars>
                             </div>
                         </div>
-                        <a href="#" className="dropDown-holder">
-                          <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_13.png" alt="" />
-                          <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_05.png" alt="" />
-                        </a>
+                        <div className="dropDown-holder">
+                            <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_13.png" alt="" />
+                            <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_05.png" alt="" />
+                        </div>
                       </div>
                     </div>
                   </div>

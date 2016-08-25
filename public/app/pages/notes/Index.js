@@ -69,7 +69,11 @@ export default class Index extends React.Component {
                     this.setState({isDefault: 1});
                     this.addNoteBook();
                 } else{
-                    this.setState({notes:data.notes});
+                    let notebooks = data.notes;
+                    let myNoteBook = notebooks[notebooks.length - 1];
+                    notebooks.pop();
+                    notebooks.splice(0,0,myNoteBook);
+                    this.setState({notes: notebooks});
                 }
             }
         }.bind(this));
@@ -236,7 +240,15 @@ export default class Index extends React.Component {
 
     onTitleEdit(e){
         let noteText = e.target.value;
-        this.setState({editNoteTitle : noteText})
+        if (noteText == "") {
+            let noteContent = this.state.editNote.replace(/(<([^>]+)>)/ig,"");
+            if (noteContent.length > 1) {
+                noteText = noteContent.slice(1,30);
+            }else{
+                noteText = "Note Title";
+            }
+        }
+        this.setState({editNoteTitle : noteText});
     }
 
     getNoteData(value){
@@ -257,6 +269,7 @@ export default class Index extends React.Component {
         if(this.state.editNoteTitle != this.state.staticNoteTitle || this.state.editNote != this.state.staticNote){
             if(this.state.noteAddEdit == 1){
                 clearInterval(this.saveInterval);
+
                 let _note = {
                     noteName:this.state.editNoteTitle,
                     noteContent:this.state.editNote,
@@ -293,7 +306,6 @@ export default class Index extends React.Component {
                 }).done( function (data, text) {
                 }.bind(this));
             }
-
         }
 
     }
@@ -363,6 +375,7 @@ export class NoteCategory extends React.Component{
         super(props);
         this.state={
         };
+
     }
 
     render() {
@@ -373,6 +386,7 @@ export class NoteCategory extends React.Component{
         if (notebooks.length <= 0) {
             return <div />
         }
+
         let _noteBooks = notebooks.map(function(notebook,key){
             return (
                 <div className="row row-clr pg-notes-page-content-item pg-box-shadow" key={key}>
@@ -431,6 +445,10 @@ export class NoteThumb extends React.Component{
         let _notebook = this.props.catID;
 
         let _firstSetNotes = _notes.map(function(note,key){
+            let name = note.note_name;
+            if (name.length > 30) {
+                name = name.substring(0,30)+'...';
+            }
             if(key < 4) {
                 return (
                     <div className="note-holder" id={note.note_id} key={key}>
@@ -442,7 +460,7 @@ export class NoteThumb extends React.Component{
                                     <p className="time-created">{note.updated_at.createdTime}</p>
                                 </div>
                                 <div className="note-title-holder">
-                                    <p className="note-title">{note.note_name}</p>
+                                    <p className="note-title">{name}</p>
                                 </div>
                             </a>
                             <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>
@@ -454,6 +472,10 @@ export class NoteThumb extends React.Component{
         });
 
         let _allNotes = _notes.map(function(note,key){
+            let name = note.note_name;
+            if (name.length > 30) {
+                name = name.substring(0,30)+'...';
+            }
             if(key >= 4) {
                 return (
                     <div className="note-holder" id={note.note_id} key={key}>
@@ -465,7 +487,7 @@ export class NoteThumb extends React.Component{
                                     <p className="time-created">{note.updated_at.createdTime}</p>
                                 </div>
                                 <div className="note-title-holder">
-                                    <p className="note-title">{note.note_name}</p>
+                                    <p className="note-title">{name}</p>
                                 </div>
                             </a>
                             <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>

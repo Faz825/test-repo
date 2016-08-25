@@ -12,18 +12,18 @@ const DefaultLayout = (props) =>{
       <div className="row row-clr pg-full-wrapper">
             <SigninHeader />
             <SidebarNav side="left" menuItems={{items:[
-                {"name": "News", "link" : "/news", "imgName": "nav-ico-1"},
                 {"name": "Notes", "link" : "/notes", "imgName": "nav-ico-2"},
-                {"name": "Desktop", "link" : "/desktop", "imgName": "nav-ico-3"},
+                {"name": "Folders", "link" : "/folders", "imgName": "folder-icon"},
+                {"name": "Doc", "link" : "/doc", "imgName": "document-icon"},
                 {"name": "Pro Calendar", "link" : "/calender-weeks", "imgName": "nav-ico-5"}
               ]
             }}/>
 
             <SidebarNav side="right" menuItems={{items:[
-                {"name": "Connections", "link" : "/connections", "imgName": "nav-ico-6"},
-                {"name": "Chats/Video", "link" : "/chat", "imgName": "nav-ico-7"},
+                {"name": "News", "link" : "/news", "imgName": "nav-ico-1"},
                 {"name": "interests", "link" : "/interests", "imgName": "nav-ico-8"},
-                {"name": "Pro Networks", "link" : "/professional-networks", "imgName": "nav-ico-10"}
+                {"name": "Groups", "link" : "/professional-networks", "imgName": "nav-ico-10"},
+                {"name": "Call Center", "link" : "/chat", "imgName": "call-center-icon"}
               ]
             }}/>
             <div className="row row-clr pg-middle-sign-wrapper">

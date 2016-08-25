@@ -70,7 +70,7 @@ GLOBAL.notAuthURLs = ['/sign-up','/forgot-password','/change-password-invalid','
 GLOBAL.AccessAllow = [
     '/','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
-    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post'
+    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post','/folders','/doc'
 ];
 
 /**

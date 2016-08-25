@@ -2159,7 +2159,7 @@ textarea{
 }
 .pg-news-page-content-item-right-thumbs,
 .pg-notes-page-content-item-right-thumbs{
-	background: #F0EFEF;
+	background: #F2F6F9;
 	border-left: 1px solid #7297aa;
 	padding: 0 30px;
 	border-top-right-radius: 4px;
@@ -3281,6 +3281,16 @@ textarea{
 
 .notifi-inner-wrapper .box-header-wrapper .pg-top-mark-setings{
 	text-align: right;
+}
+
+/* Chat bubble */
+.chat-popup-holder{
+	width: calc(100% - 220px);
+	height: 320px;
+	position: fixed;
+	bottom: 110px;
+	left: 110px;
+	z-index: 1;
 }
 
 /* Large Screen */
