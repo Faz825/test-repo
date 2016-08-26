@@ -35,9 +35,12 @@ class Chat{
         var me = Session.getSession('prg_lg');
         loadMyConnections(me.token);
 
+        /**
+         * below change has been moved to SignupHeader Component
+         */
         // A conversation has changed
         b6.on('conversation', function(c, op) {
-            onConversationChange(c, op);
+        //    onConversationChange(c, op);
         });
 
         // Incoming call from another user

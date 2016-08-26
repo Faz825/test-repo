@@ -3284,13 +3284,15 @@ textarea{
 }
 
 /* Chat bubble */
-.chat-popup-holder{
-	width: calc(100% - 220px);
-	height: 320px;
+
+.chat-popup{
+	width: 300px;
+	margin-right: 15px;
+	height: 360px;
 	position: fixed;
 	bottom: 110px;
 	left: 110px;
-	z-index: 1;
+	background: #fff;
 }
 
 /* Large Screen */
