@@ -2703,7 +2703,7 @@ export default StyleSheet.create({
     "pg-news-page-content-itempg-box-shadow": {
         "boxShadow": "0px 1px 5px -1px #000",
         "display": "flex",
-        "marginBottom": 25,
+        "marginBottom": 40,
         "cursor": "pointer",
         "paddingTop": 0,
         "paddingRight": 0,
@@ -2713,7 +2713,7 @@ export default StyleSheet.create({
     "pg-notes-page-content-itempg-box-shadow": {
         "boxShadow": "0px 1px 5px -1px #000",
         "display": "flex",
-        "marginBottom": 25,
+        "marginBottom": 40,
         "cursor": "default",
         "paddingTop": 0,
         "paddingRight": 0,
@@ -4085,6 +4085,69 @@ export default StyleSheet.create({
         "bottom": 110,
         "left": 110,
         "zIndex": 1
+    },
+    "share-icon": {
+        "position": "absolute",
+        "bottom": 10,
+        "right": 10
+    },
+    "share-icon fa": {
+        "color": "#fff"
+    },
+    "popup-holder": {
+        "maxWidth": 500,
+        "width": 500,
+        "background": "#e8eef2",
+        "borderRadius": 5
+    },
+    "popup-holder popover-content": {
+        "background": "#e8eef2",
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
+    "popup-holder header-holder": {
+        "paddingTop": 10,
+        "paddingRight": 20,
+        "paddingBottom": 10,
+        "paddingLeft": 20
+    },
+    "popup-holder header-holder title": {
+        "fontSize": 1.143,
+        "marginTop": 7,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 50,
+        "float": "left",
+        "color": "#2d5164",
+        "fontWeight": 600
+    },
+    "popup-holder header-holder form-group": {
+        "width": 160,
+        "height": 25,
+        "float": "right"
+    },
+    "popup-holder popup-body-holder user-block": {
+        "paddingTop": 12,
+        "paddingRight": 23,
+        "paddingBottom": 12,
+        "paddingLeft": 23
+    },
+    "popup-body-holder user-block img-holder": {
+        "float": "left"
+    },
+    "popup-body-holder user-block user-details": {
+        "float": "left"
+    },
+    "popup-body-holder user-block permission": {
+        "float": "left"
+    },
+    "popup-body-holder user-details user-name": {
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 5,
+        "marginLeft": 0
     },
     "middle-content-wrapper": {
         "minWidth": 500

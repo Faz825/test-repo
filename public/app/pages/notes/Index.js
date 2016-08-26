@@ -2,12 +2,14 @@
  * This is notes index class that handle all
  */
 import React from 'react';
+import ReactDom from 'react-dom';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Session from '../../middleware/Session';
 import {Alert} from '../../config/Alert';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Lib    from '../../middleware/Lib';
 import RichTextEditor from '../../components/elements/RichTextEditor';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 
 let errorStyles = {
     color         : "#ed0909",
@@ -243,7 +245,7 @@ export default class Index extends React.Component {
         if (noteText == "") {
             let noteContent = this.state.editNote.replace(/(<([^>]+)>)/ig,"");
             if (noteContent.length > 1) {
-                noteText = noteContent.slice(1,30);
+                noteText = noteContent.slice(0,30);
             }else{
                 noteText = "Note Title";
             }
@@ -266,12 +268,23 @@ export default class Index extends React.Component {
     saveNote(){
         let _this = this;
 
-        if(this.state.editNoteTitle != this.state.staticNoteTitle || this.state.editNote != this.state.staticNote){
+        let noteTitle = this.state.editNoteTitle;
+        if(noteTitle == "Note Title"){
+            let noteContent = this.state.editNote.replace(/(<([^>]+)>)/ig,"");
+            if (noteContent.length > 1) {
+                noteTitle = noteContent.slice(0,30);
+            }else{
+                noteTitle = "Note Title";
+            }
+        }
+        this.setState({editNoteTitle : noteTitle});
+
+        if(noteTitle != this.state.staticNoteTitle || this.state.editNote != this.state.staticNote){
             if(this.state.noteAddEdit == 1){
                 clearInterval(this.saveInterval);
 
                 let _note = {
-                    noteName:this.state.editNoteTitle,
+                    noteName:noteTitle,
                     noteContent:this.state.editNote,
                     notebookId:this.state.notebookId
                 };
@@ -290,7 +303,7 @@ export default class Index extends React.Component {
                 }.bind(this));
             } else if(this.state.noteAddEdit == 2){
                 let _note = {
-                    noteName:this.state.editNoteTitle,
+                    noteName:noteTitle,
                     noteContent:this.state.editNote,
                     noteId:this.state.editNoteId
                 };
@@ -373,8 +386,13 @@ export default class Index extends React.Component {
 export class NoteCategory extends React.Component{
     constructor(props) {
         super(props);
-        this.state={
+
+        this.handleClick = e => {
+            console.log(e.target);
+            this.setState({ target: e.target, show: !this.state.show });
         };
+
+        this.state = { show: false };
 
     }
 
@@ -386,8 +404,13 @@ export class NoteCategory extends React.Component{
         if (notebooks.length <= 0) {
             return <div />
         }
-
+        let i = 0;
         let _noteBooks = notebooks.map(function(notebook,key){
+            let i = (
+                <Popover id="popover-contained"  positionTop="150px" className="popup-holder">
+                    <SharePopup note={notebook.notebook_name}/>
+                </Popover>
+            );
             return (
                 <div className="row row-clr pg-notes-page-content-item pg-box-shadow" key={key}>
                     <div className="col-xs-2 note-cat-thumb" style={{backgroundColor : notebook.notebook_color}}>
@@ -395,6 +418,14 @@ export class NoteCategory extends React.Component{
                             <span className="cat-icon"></span>
                             <h3 className="cat-title">{notebook.notebook_name}</h3>
                         </div>
+                        {
+                            (notebook.notebook_name != "My Notes")?
+                            <OverlayTrigger container={this} trigger="click" placement="right" overlay={i}>
+                                <span className="share-icon"><i className="fa fa-share-alt"></i></span>
+                            </OverlayTrigger>
+                            :
+                            null
+                        }
                     </div>
                     <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
                         <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm} showNotePopup={showNotePopup}/>
@@ -409,6 +440,40 @@ export class NoteCategory extends React.Component{
             </div>
         );
 
+    }
+}
+
+export class SharePopup extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state={}
+    }
+
+    render(){
+        return(
+            <div className="share-popup-holder">
+                <div className="header-holder clearfix">
+                    <h3 className="title">People on this note book</h3>
+                    <div className="form-group">
+                        <input type="text" className="form-control" placeholder="Search.." id="search" />
+                    </div>
+                </div>
+                <div className="popup-body-holder">
+                    <div className="user-block clearfix">
+                        <div className="img-holder">
+                            <img src="images/chat-1.png" alt="User"/>
+                        </div>
+                        <div className="user-details">
+                            <h3 className="user-name">Leonard Green</h3>
+                            <p className="more-info">University of California, Berkeley</p>
+                        </div>
+                        <div className="permission">
+                            <p>(Owner)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
     }
 }
 

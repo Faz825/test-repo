@@ -2045,7 +2045,7 @@ textarea{
 	box-shadow: 0px 1px 5px -1px #000;
 	display: -webkit-flex;
 	display: flex;
-	margin-bottom: 25px;
+	margin-bottom: 40px;
 	cursor: pointer;
 	padding: 0;
 }
@@ -3293,6 +3293,61 @@ textarea{
 	bottom: 110px;
 	left: 110px;
 	background: #fff;
+}
+
+/* Note Share popup */
+.share-icon{
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+}
+
+.share-icon .fa{
+	color: #fff;
+}
+
+.popup-holder{
+	max-width: 500px;
+	width: 500px;
+	background: #e8eef2;
+	border-radius: 5px;
+}
+
+.popup-holder .popover-content{
+	background: #e8eef2;
+	padding: 0;
+}
+
+.popup-holder .header-holder{
+	padding: 10px 20px;
+}
+
+.popup-holder .header-holder .title{
+	font-size: 1.143em;
+	margin: 7px 0 0 50px;
+	float: left;
+	color: #2d5164;
+    font-weight: 600;
+}
+
+.popup-holder .header-holder .form-group{
+	width: 160px;
+	height: 25px;
+	float: right;
+}
+
+.popup-holder .popup-body-holder .user-block{
+	padding: 12px 23px;
+}
+
+.popup-body-holder .user-block .img-holder,
+.popup-body-holder .user-block .user-details,
+.popup-body-holder .user-block .permission{
+	float: left;
+}
+
+.popup-body-holder .user-details .user-name{
+	margin: 0 0 5px;
 }
 
 /* Large Screen */
