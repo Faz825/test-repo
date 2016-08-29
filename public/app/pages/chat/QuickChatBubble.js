@@ -26,14 +26,62 @@ export default class QuickChatBubble extends React.Component{
         this.state ={
             chatWith:this.props.chatData.title,
             userLoggedIn : Session.getSession('prg_lg'),
-            messages:this.props.messages,
+            messages:[],
             uri:'usr:proglobe'+this.props.chatData.title
         };
 
+        this.messages = [];
+
     };
+
+    componentDidMount() {
+        for (let m in this.props.messages) {
+            if (this.props.chatData.title == this.props.messages[m].msg_title) {
+                this.messages.push(this.props.messages[m].message[0]);
+            }
+        }
+        this.setState({messages:this.messages});
+    }
+
+    componentWillReceiveProps() {
+        this.messages = [];
+        for (let m in this.props.messages) {
+            if (this.props.chatData.title == this.props.messages[m].msg_title) {
+                this.messages.push(this.props.messages[m].message[0]);
+            }
+        }
+        this.setState({messages:{}});
+        this.setState({messages:this.messages});
+    }
 
     onbubbleClosed(data){
         this.props.bubbleClosed(data.title);
+    }
+
+    sendMsg(msg){
+        let messageBody = {
+            message: msg,
+            title: this.props.chatData.title,
+            uri: this.state.uri
+        }
+        this.props.sendMyMessage(messageBody);
+    }
+
+    doVideoCall(){
+
+        let callBody = {
+            title: this.props.chatData.title,
+            uri: this.state.uri
+        }
+        this.props.doVideoCall(callBody);
+    }
+
+    doAudioCall(){
+        let callBody = {
+            title: this.props.chatData.title,
+            uri: this.state.uri
+        }
+        this.props.doAudioCall(callBody);
     }
 
 
@@ -48,11 +96,16 @@ export default class QuickChatBubble extends React.Component{
         return (
             <div className="chat-popup col-sm-4">
                 <div className="row inner-wrapper">
-                    <ChatHeader conv={this.props.chatData} bubbleClose={this.onbubbleClosed.bind(this)}/>
+                    <ChatHeader
+                        conv={this.props.chatData}
+                        bubbleClose={this.onbubbleClosed.bind(this)}
+                        doAudioCall = {this.doAudioCall.bind(this)}
+                        doVideoCall = {this.doVideoCall.bind(this)}
+                        />
                     <MessageList
                         loggedUser = {userLoggedIn}
                         messages = {messages}/>
-                    <ComposeMessage />
+                    <ComposeMessage sendChat={this.sendMsg.bind(this)}/>
                 </div>
             </div>
         );
@@ -83,8 +136,8 @@ export class ChatHeader extends React.Component{
                 </div>
                 <div className="call-opts-wrapper clearfix">
                     <div className="chat-opts">
-                        <span className="video-call icon"><i className="fa fa-video-camera" aria-hidden="true"></i></span>
-                        <span className="phone-call icon"><i className="fa fa-phone" aria-hidden="true"></i></span>
+                        <span className="video-call icon"  onClick={this.props.doVideoCall}><i className="fa fa-video-camera" aria-hidden="true"></i></span>
+                        <span className="phone-call icon"  onClick={this.props.doAudioCall}><i className="fa fa-phone" aria-hidden="true"></i></span>
                     </div>
                     <p className="all-media">All Media</p>
                 </div>
@@ -176,11 +229,9 @@ export class ComposeMessage extends React.Component{
     sendMessage(e){
         e.preventDefault();
         let _this = this;
-        if(typeof this.props.chatWith == 'undefined' || this.props.chatWith == 'new'){
-            this.setState({validateAlert: Alert.EMPTY_RECEIVER+"send message"});
-            return 0;
-        } else if(!this.state.formData['msg'] || this.state.formData['msg'] == "") {
+        if(!this.state.formData['msg'] || this.state.formData['msg'] == "") {
             this.setState({validateAlert: Alert.EMPTY_MESSAGE});
+            return 0;
         } else{
             let msg = this.state.formData.msg;
             this.setState({formData: {}});

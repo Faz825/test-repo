@@ -192,19 +192,25 @@ export class ConversationList extends React.Component{
                         //Update Conversation data
                         var stamp = Lib.getRelativeTime(c.updated);
                         var latestText = '';
+                        var mId = '';
                         var lastMsg = c.getLastMessage();
                         if (lastMsg) {
                             // Show the text from the latest conversation
+
                             if (lastMsg.content)
                                 latestText = lastMsg.content;
                             // If no text, but has an attachment, show the mime type
                             else if (lastMsg.data && lastMsg.data.type) {
                                 latestText = lastMsg.data.type;
                             }
+                            if(lastMsg.data && lastMsg.data.id) {
+                                mId = lastMsg.data.id;
+                            }
                         }
 
                         conv.date = stamp;
                         conv.latestMsg = latestText;
+                        conv.message_id = "msg__m" + mId;
 
                         cons = this.state.conversations;
                         cons.push(conv);
