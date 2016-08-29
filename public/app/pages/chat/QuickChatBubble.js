@@ -32,6 +32,10 @@ export default class QuickChatBubble extends React.Component{
 
     };
 
+    onbubbleClosed(data){
+        this.props.bubbleClosed(data.title);
+    }
+
 
     render() {
     //console.log("before rendering messages----555");
@@ -44,12 +48,11 @@ export default class QuickChatBubble extends React.Component{
         return (
             <div className="chat-popup col-sm-4">
                 <div className="row inner-wrapper">
-                    <ChatHeader conv={this.props.chatData}/>
-                    <div>
-                        <MessageList
-                            loggedUser = {userLoggedIn}
-                            messages = {messages}/>
-                    </div>
+                    <ChatHeader conv={this.props.chatData} bubbleClose={this.onbubbleClosed.bind(this)}/>
+                    <MessageList
+                        loggedUser = {userLoggedIn}
+                        messages = {messages}/>
+                    <ComposeMessage />
                 </div>
             </div>
         );
@@ -63,12 +66,30 @@ export class ChatHeader extends React.Component{
         super(props)
         this.state ={};
     }
+
+    onCloseClick(){
+        this.props.bubbleClose(this.props.conv);
+    }
+
     render() {
+        let user = this.props.conv.user;
         return (
-            <div className="">
-                <div className="chat-pro-img col-sm-4">
-                    <img src={this.props.conv.user.images.profile_image.http_url}/>
-                    <span className="connection-name">{this.props.conv.user.first_name + " " + this.props.conv.user.last_name}</span>
+            <div className="header-wrapper">
+                <div className="chat-user-header clearfix">
+                    <div className="chat-pro-img">
+                        <img src={user.images.profile_image.http_url} alt={user.first_name + " " + user.last_name} />
+                    </div>
+                    <h3 className="connection-name">{user.first_name + " " + user.last_name}</h3>
+                </div>
+                <div className="call-opts-wrapper clearfix">
+                    <div className="chat-opts">
+                        <span className="video-call icon"><i className="fa fa-video-camera" aria-hidden="true"></i></span>
+                        <span className="phone-call icon"><i className="fa fa-phone" aria-hidden="true"></i></span>
+                    </div>
+                    <p className="all-media">All Media</p>
+                </div>
+                <div className="bubble-opts-holder">
+                    <span className="close icon" onClick={this.onCloseClick.bind(this)}><i className="fa fa-times" aria-hidden="true"></i></span>
                 </div>
             </div>
         )
@@ -116,11 +137,13 @@ export class MessageList extends React.Component{
 
         return (
             <div className="chat-view">
-                <div id="msgListRow">
-                    <div id="msgList">
-                        {convs}
+                <Scrollbars ref="msgScrollBar" autoHide={true} autoHideTimeout={1000} autoHideDuration={200} height={170}>
+                    <div id="msgListRow">
+                        <div id="msgList">
+                            {convs}
+                        </div>
                     </div>
-                </div>
+                </Scrollbars>
             </div>
         )
     }
@@ -176,27 +199,20 @@ export class ComposeMessage extends React.Component{
         return(
             <form onSubmit={this.sendMessage.bind(this)} id="chatMsg">
                 <div className="chat-msg-input-holder">
-                    {
-                        (this.loggedUser.profile_image != null ? <img src={this.loggedUser.profile_image} alt="" width="40" height="40" id="my_profile_img"/>:<img src="/images/default-profile-pic.png" alt="" width="40" height="40" id="my_profile_img"/>)
-                    }
                     <div className="msg-input">
                         <textarea className="form-control" placeholder="New Message..." name="msg"      value={(this.state.formData.msg)?this.state.formData.msg:''}
                                   onChange={(event)=>{ this.elementChangeHandler(event)}}
                                   onKeyDown={(event)=>{this.onEnter(event)}}
                             ></textarea>
                     </div>
-                    {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
                 </div>
                 <div className="chat-msg-options-holder">
                     <div className="send-msg">
-                        <span className="send-msg-helper-text">Press enter to send</span>
                         <button type="submit" className="btn btn-default send-btn">Send</button>
                     </div>
                 </div>
+                {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
             </form>
         )
     }
 }
-
-
-

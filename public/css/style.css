@@ -3284,15 +3284,142 @@ textarea{
 }
 
 /* Chat bubble */
-
-.chat-popup{
-	width: 300px;
-	margin-right: 15px;
-	height: 360px;
+.bubble-holder{
 	position: fixed;
 	bottom: 110px;
 	left: 110px;
+}
+
+.chat-popup{
+	width: 250px;
+	margin: 0 0 0 15px;
+	height: 282px;
 	background: #fff;
+	box-shadow: 0 0 50px -20px #000;
+}
+
+.chat-popup .header-wrapper{
+	padding: 10px;
+	position: relative;
+	border-bottom: 1px solid #dee6eb;
+}
+
+.header-wrapper .bubble-opts-holder{
+	position: absolute;
+	top: 3px;
+    right: 4px;
+}
+
+.bubble-opts-holder .close{
+	font-size: 1em;
+}
+
+.chat-popup .header-wrapper .chat-pro-img{
+	float: left;
+	margin-right: 10px;
+}
+
+.header-wrapper .chat-pro-img img{
+	width: 22px;
+	height: 22px;
+}
+
+.header-wrapper .connection-name{
+	font-family: 'montserratsemi_bold', sans-serif;
+	text-transform: capitalize;
+	color: #2d5164;
+	font-size: 1em;
+	float: left;
+	margin: 5px 0 0;
+}
+
+.header-wrapper .icon{
+	color: #a8bfcd;
+}
+
+.header-wrapper .call-opts-wrapper{
+	margin: 10px 0 0;
+}
+
+.header-wrapper .call-opts-wrapper .chat-opts{
+	float: left;
+}
+
+.header-wrapper .call-opts-wrapper .icon{
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+.call-opts-wrapper .icon:last-child{
+	margin: 0;
+}
+
+.call-opts-wrapper .all-media{
+	float: right;
+	cursor: pointer;
+	color: #61b3de;
+	font-size: 0.714em;
+	margin: 5px 0 0;
+	text-transform: uppercase;
+}
+
+.chat-popup .chat-block {
+    overflow: hidden;
+    margin-bottom: 10px;
+    padding-bottom: 18px;
+	width: 100%;
+}
+
+.chat-popup .chat-view{
+	background: #f2f6f9;
+	height: 170px;
+}
+
+.chat-popup .chat-view .sender{
+	float: right;
+	padding: 5px;
+}
+
+.chat-popup .chat-view .receiver{
+	float: left;
+	padding: 5px;
+}
+
+.chat-popup #chatMsg{
+	border-top: 1px solid #dee6eb;
+	position: relative;
+}
+
+.chat-popup #chatMsg .chat-msg-input-holder{
+	width: 75%;
+	float: left;
+	border: none;
+	background: none;
+	overflow: visible;
+}
+
+.chat-popup #chatMsg .chat-msg-input-holder .msg-input{
+	width: 100%;
+	float: none;
+}
+
+.chat-popup #chatMsg .form-validation-alert{
+	position: absolute;
+	top: -15px;
+	left: 5px;
+}
+
+.chat-popup #chatMsg .chat-msg-input-holder .form-control{
+	height: 25px;
+	min-height: 0;
+}
+
+.chat-popup #chatMsg .chat-msg-options-holder{
+	float: right;
+}
+
+.chat-popup #chatMsg .send-msg{
+	margin: 7px 5px 0 0;
 }
 
 /* Note Share popup */
