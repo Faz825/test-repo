@@ -19,11 +19,50 @@ export default class DefaultLayout extends React.Component{
             chatBubble:[]
         }
 
+        this.quickChatUsers = [];
+
     }
 
-    loadQuickChat(val){
-        //console.log(val);
-        this.setState({chatBubble:val});
+    loadQuickChat(conv){
+
+        var chatExists = false;
+        if(this.quickChatUsers.length > 0) {
+            for(let con in this.quickChatUsers){
+                if(this.quickChatUsers[con].title == conv.title){
+                    chatExists = true;
+                }
+            }
+        }
+
+        if(!chatExists) {
+            this.quickChatUsers.push(conv);
+            this.setState({chatBubble:this.quickChatUsers});
+        }
+    }
+
+    closeChatBubble(title) {
+
+        let bbList = this.state.chatBubble;
+        if (typeof bbList != 'undefined' && bbList.length > 0) {
+            let index = this.getBubbleIndex(title);
+            if(index > -1) {
+                bbList.splice(index, 1);
+            }
+            console.log(bbList);
+            this.quickChatUsers = [];
+            this.quickChatUsers = bbList;
+            this.setState({chatBubble:this.quickChatUsers});
+        }
+    }
+
+    getBubbleIndex(title) {
+        let bbList = this.state.chatBubble;
+        for (let my_con in bbList) {
+            if (title == bbList[my_con].title) {
+                return my_con;
+            }
+        }
+        return -1
     }
 
     render(){
@@ -55,7 +94,7 @@ export default class DefaultLayout extends React.Component{
                 </div>
                 <FooterHolder />
                 <InCallPane />
-                <QuickChatHandler chatList={this.state.chatBubble}/>
+                <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)}/>
             </div>
         );
     }
@@ -85,35 +124,15 @@ export class QuickChatHandler extends React.Component{
         this.messages = [];
         this.checkChatWith = this.getUrl();
         this.initChat(this.b6);
-        //this.loadChat(this.state.chatWith);
         this.loadMyConnections();
 
-        //this.bubbleList = this.props.chatList;
-        //this.loadInitialChat(this.bubbleList);
+        this.onBubbleClose = this.onBubbleClose.bind(this);
 
     };
 
-    //loadInitialChat(list) {
-    //
-    //    let _this = this;
-    //
-    //    for (let my_con in list) {
-    //        let msg = {
-    //            id: list[my_con].message_id,
-    //            cssClass: 'receiver chat-block',
-    //            text: list[my_con].latestMsg
-    //        };
-    //        let m_messages = {
-    //            msg_title: list[my_con].title,
-    //            message: [msg]
-    //        };
-    //        _this.messages.push(m_messages);
-    //    }
-    //    console.log("loading initial chat message========");
-    //    console.log(_this.messages);
-    //    _this.setState({messages: _this.messages});
-    //
-    //}
+    componentWillReceiveProps() {
+        this.setState({bubbleList: this.props.chatList});
+    }
 
     initChat(b6){
         let _this = this;
@@ -169,7 +188,7 @@ export class QuickChatHandler extends React.Component{
     }
 
     onConversationChange(c,op,b6){
-        //console.log("loading bubble conversations ------- 555");
+
         let conv = {};
 
         let tabId = this.tabDomIdForConversation(c);
@@ -183,6 +202,8 @@ export class QuickChatHandler extends React.Component{
         let proglobe_title = b6.getNameFromIdentity(c.id);
         let proglobe_title_array = proglobe_title.split('proglobe');
         let title = proglobe_title_array[1];
+
+        //console.log("conversation chaged to > " + title);
 
         // New conversation
         if (op > 0) {
@@ -238,7 +259,6 @@ export class QuickChatHandler extends React.Component{
                                         this.setState({chatWith : conv.title});
                                         this.setState({chatWithUserName:conv.user.first_name+" "+conv.user.last_name});
                                         this.setState({uri : 'usr:proglobe'+conv.title});
-                                        //window.history.pushState('Chat','Chat','/chat/'+conv.title);
                                     }
                                 } else{
                                     this.conversations.push(conv);
@@ -249,7 +269,6 @@ export class QuickChatHandler extends React.Component{
                                     this.setState({chatWith : conv.title});
                                     this.setState({chatWithUserName:conv.user.first_name+" "+conv.user.last_name});
                                     this.setState({uri : 'usr:proglobe'+conv.title});
-                                    //window.history.pushState('Chat','Chat','/chat/'+conv.title);
                                 }
                             }
 
@@ -317,7 +336,6 @@ export class QuickChatHandler extends React.Component{
                         this.setState({chatWith : current_conv.title});
                         this.setState({chatWithUserName:current_conv.user.first_name+" "+current_conv.user.last_name});
                         this.setState({uri : 'usr:proglobe'+current_conv.title});
-                        //window.history.pushState('Chat','Chat','/chat/'+current_conv.title);
                     }
                 }
             }
@@ -361,11 +379,13 @@ export class QuickChatHandler extends React.Component{
             this.msgDivIds.push(divId);
             let cssClass = m.incoming() ? 'receiver chat-block' : 'sender chat-block';
 
-            if(typeof this.checkChatWith != 'undefined' && this.checkChatWith != 'new'){
-                if (convId == this.state.uri) {
-                    // Mark this new message as read since it is on the screen
-                    if (m.incoming()) {
-                        b6.markMessageAsRead(m);
+            if (typeof this.props.chatList != 'undefined' && this.props.chatList.length > 0) {
+                for (let my_con in this.props.chatList) {
+                    let usr_title = "usr:" + this.props.chatList[my_con].proglobeTitle;
+                    if (convId == usr_title) {
+                        if (m.incoming()) {
+                            b6.markMessageAsRead(m);
+                        }
                     }
                 }
             }
@@ -397,32 +417,6 @@ export class QuickChatHandler extends React.Component{
                 }
             }
 
-
-            //let my_name = '';
-            //let my_prof_img = '/images/default-profile-pic.png';
-            //let other_name = '';
-            //let other_prof_img = '/images/default-profile-pic.png';
-            //
-            //if (this.state.userLoggedIn != null) {
-            //    my_name = this.state.userLoggedIn['first_name'] + " " + this.state.userLoggedIn['last_name'];
-            //    if (this.state.userLoggedIn['profile_image'] != null) {
-            //        my_prof_img = this.state.userLoggedIn['profile_image'];
-            //    }
-            //}
-            //
-            //let other_array = m.other.split('proglobe');
-            //let other = other_array[1];
-            //
-            //if (this.convUsers != null && this.convUsers[other] != null) {
-            //    other_name = this.convUsers[other]['first_name'] + ' ' + this.convUsers[other]['last_name'];
-            //    if (this.convUsers[other]['images'] != null && this.convUsers[other]['images']['profile_image'] != null) {
-            //        other_prof_img = this.convUsers[other]['images']['profile_image']['http_url']
-            //    }
-            //}
-            //
-            //var display_name = m.incoming() ? other_name : my_name;
-            //var display_prof_img = m.incoming() ? other_prof_img : my_prof_img;
-
             var updated = false;
             let m_messages = {
                 msg_title: title,
@@ -435,47 +429,6 @@ export class QuickChatHandler extends React.Component{
             };
 
             this.messages = this.state.messages;
-
-            //console.log(msg);
-            //if (typeof this.bubbleList != 'undefined' && this.bubbleList.length > 0) {
-            //    for (let my_con in this.bubbleList) {
-            //        if (title === this.bubbleList[my_con].title) {
-            //            if (typeof this.messages != 'undefined' && this.messages != null) {
-            //                for (let msgs in this.messages) {
-            //                    if (msgs.title === title) {
-            //                        this.messages[msgs].message.push(msg);
-            //                        updated = true;
-            //                    }
-            //                }
-            //                if (!updated) {
-            //                    m_messages.message.push(msg);
-            //                    this.messages.push(m_messages);
-            //                }
-            //            } else {
-            //                m_messages.message.push(msg);
-            //                this.messages.push(m_messages);
-            //            }
-            //
-            //            //console.log(this.messages);
-            //        }
-            //    }
-            //} else {
-            //    if (typeof this.messages != 'undefined' && this.messages != null) {
-            //        for (let msgs in this.messages) {
-            //            if (msgs.title === title) {
-            //                this.messages[msgs].message.push(msg);
-            //                updated = true;
-            //            }
-            //        }
-            //        if (!updated) {
-            //            m_messages.message.push(msg);
-            //            this.messages.push(m_messages);
-            //        }
-            //    } else {
-            //        m_messages.message.push(msg);
-            //        this.messages.push(m_messages);
-            //    }
-            //}
 
             if (typeof this.messages != 'undefined' && this.messages != null) {
                 for (let msgs in this.messages) {
@@ -493,187 +446,13 @@ export class QuickChatHandler extends React.Component{
                 this.messages.push(m_messages);
             }
 
-            //var updated = false;
-            //for(let con in this.messages){
-            //    if(this.messages[con].id == msgsId){
-            //        this.messages[con].messages.push(msg);
-            //        updated = true;
-            //    }
-            //}
-            //if(!updated) {
-            //    this.messages.push(msg);
-            //}
-            //console.log(this.messages);
-            this.setState({messages:this.messages});
-        }
-
-    }
-
-
-    onMessageChange2(m, op, b6) {
-
-
-        if (op < 0 || Object.keys(m).length > 7) {
-            return;
-        }
-
-
-        let convId = m.getConversationId();
-        let c = b6.getConversation(convId);
-        let msgsId = this.msgsDomIdForConversation(c);
-        let divId = this.domIdForMessage(m);
-
-        let proglobe_title = b6.getNameFromIdentity(c.id);
-        let proglobe_title_array = proglobe_title.split('proglobe');
-        let title = proglobe_title_array[1];
-
-        console.log("message title> " + title);
-        console.log(this.state.bubbleList);
-
-        if (this.msgDivIds.indexOf(divId) == -1) {
-
-            this.msgDivIds.push(divId);
-            let cssClass = m.incoming() ? 'receiver chat-block' : 'sender chat-block';
-
-
-            if (typeof this.checkChatWith != 'undefined' && this.checkChatWith != 'new') {
-                if (convId == this.state.uri) {
-                    // Mark this new message as read since it is on the screen
-                    if (m.incoming()) {
-                        b6.markMessageAsRead(m);
-                    }
-                }
+            if (typeof this.state.bubbleList != 'undefined' && this.state.bubbleList.length > 0) {
+                this.setState({messages:this.messages});
             }
-
-            // Message content to show
-            let text = m.content;
-
-            // This is a call history item
-            if (m.isCall()) {
-                let ch = m.channel();
-                let r = [];
-                if (ch & bit6.Message.AUDIO) {
-                    r.push('Audio');
-                }
-                if (ch & bit6.Message.VIDEO) {
-                    r.push('Video');
-                }
-                if (ch & bit6.Message.DATA) {
-                    if (r.length === 0) {
-                        r.push('Data');
-                    }
-                }
-                text = r.join(' + ') + ' Call';
-                if (m.data && m.data.duration) {
-                    let dur = m.data.duration;
-                    let mins = Math.floor(dur / 60);
-                    let secs = dur % 60;
-                    text += ' - ' + (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
-                }
-            }
-
-            console.log("last message> " + text);
-            //let my_name = '';
-            //let my_prof_img = '/images/default-profile-pic.png';
-            //let other_name = '';
-            //let other_prof_img = '/images/default-profile-pic.png';
-            //
-            //if (this.state.userLoggedIn != null) {
-            //    my_name = this.state.userLoggedIn['first_name'] + " " + this.state.userLoggedIn['last_name'];
-            //    if (this.state.userLoggedIn['profile_image'] != null) {
-            //        my_prof_img = this.state.userLoggedIn['profile_image'];
-            //    }
-            //}
-            //
-            //let other_array = m.other.split('proglobe');
-            //let other = other_array[1];
-            //
-            //if (this.convUsers != null && this.convUsers[other] != null) {
-            //    other_name = this.convUsers[other]['first_name'] + ' ' + this.convUsers[other]['last_name'];
-            //    if (this.convUsers[other]['images'] != null && this.convUsers[other]['images']['profile_image'] != null) {
-            //        other_prof_img = this.convUsers[other]['images']['profile_image']['http_url']
-            //    }
-            //}
-            //
-            //var display_name = m.incoming() ? other_name : my_name;
-            //var display_prof_img = m.incoming() ? other_prof_img : my_prof_img;
-
-
-            var updated = false;
-            let m_messages = {
-                msg_title: title,
-                message: []
-            };
-            let msg = {
-                id: divId.substring(1),
-                cssClass: cssClass,
-                text: text
-            };
-
-            this.messages = this.state.messages;
-
-            console.log(msg);
-            if (typeof this.state.bubbleList != 'undefined') {
-                for (let my_con in this.state.bubbleList) {
-                    if (title === this.state.bubbleList[my_con].title) {
-                        if (typeof this.messages != 'undefined' && this.messages != null) {
-                            for (let msgs in this.messages) {
-                                if (msgs.title === title) {
-                                    this.messages[msgs].message.push(msg);
-                                    updated = true;
-                                }
-                            }
-                            if (!updated) {
-                                m_messages.message.push(msg);
-                                this.messages.push(m_messages);
-                            }
-                        } else {
-                            m_messages.message.push(msg);
-                            this.messages.push(m_messages);
-                        }
-
-                        //console.log(this.messages);
-                    }
-                }
-            } else {
-                if (typeof this.messages != 'undefined' && this.messages != null) {
-                    for (let msgs in this.messages) {
-                        if (msgs.title === title) {
-                            this.messages[msgs].message.push(msg);
-                            updated = true;
-                        }
-                    }
-                    if (!updated) {
-                        m_messages.message.push(msg);
-                        this.messages.push(m_messages);
-                    }
-                } else {
-                    m_messages.message.push(msg);
-                    this.messages.push(m_messages);
-                }
-            }
-
-
-
-            /*for(let con in this.messages){
-             if(this.messages[con].id == msgsId){
-             this.messages[con].messages.push(msg);
-             updated = true;
-             }
-             }
-             if(!updated) {
-             this.messages.push(msg);
-             }*/
-
-
-            console.log("B4 adding to messages---------");
-            console.log(this.messages);
-            this.setState({messages: this.messages});
 
         }
 
     }
-
 
     loadMyConnections(){
         $.ajax({
@@ -686,22 +465,6 @@ export class QuickChatHandler extends React.Component{
                 this.setState({my_connections:data.my_con});
             }
         }.bind(this));
-    }
-
-    loadChat(chatWith){
-        if(chatWith != 'undefined' && chatWith != 'new'){
-            this.checkChatWith = chatWith;
-            $.ajax({
-                url: '/get-profile/' + chatWith,
-                method: "GET",
-                dataType: "JSON"
-            }).done(function(data){
-                if (data.status.code == 200 && data.profile_data != null) {
-                    this.setState({chatWithUserName:data.profile_data.first_name+" "+data.profile_data.last_name});
-                    this.makeConversationRead(this.state.uri);
-                }
-            }.bind(this));
-        }
     }
 
     loadRoute(url){
@@ -729,12 +492,6 @@ export class QuickChatHandler extends React.Component{
 
     sendChat(msgObj){
 
-        //console.log(msgObj);
-
-        //var conv = Chat.b6.getConversation(msgObj.uri);
-        //console.log(conv);
-
-        //this.makeConversationRead(msgObj.uri);
         Chat.b6.compose(msgObj.uri).text(msgObj.message).send(function(err) {
             if (err) {
                 console.log('error', err);
@@ -747,35 +504,10 @@ export class QuickChatHandler extends React.Component{
     };
 
     doVideoCall(callObj){
-
-        let _this = this;
-
-        //if(typeof _this.state.chatWith == 'undefined' || this.state.chatWith == 'new'){
-        //    _this.setState({validateAlert: Alert.EMPTY_RECEIVER+"make audio call"});
-        //    return 0;
-        //} else{
-        //    _this.setState({validateAlert: ""});
-        //    this.checkChatWith = this.getUrl();
-        //    this.makeConversationRead(this.state.uri);
-        //    Chat.startOutgoingCall(this.state.uri, true);
-        //}
-
         Chat.startOutgoingCall(callObj.uri, true);
     };
 
     doAudioCall(callObj){
-
-        let _this = this;
-
-        //if(typeof _this.state.chatWith == 'undefined' || this.state.chatWith == 'new'){
-        //    _this.setState({validateAlert: Alert.EMPTY_RECEIVER+"make video call"});
-        //    return 0;
-        //} else{
-        //    _this.setState({validateAlert: ""});
-        //    this.checkChatWith = this.getUrl();
-        //    this.makeConversationRead(this.state.uri);
-        //    Chat.startOutgoingCall(this.state.uri, false);
-        //}
         Chat.startOutgoingCall(callObj.uri, false);
     };
 
@@ -794,22 +526,7 @@ export class QuickChatHandler extends React.Component{
     };
 
     onBubbleClose(title){
-        let _this = this;
-        var index = -1;
-        var bbList = _this.props.chatList;
-        if (typeof bbList != 'undefined') {
-            for (let my_con in bbList) {
-                if (title === bbList[my_con].title) {
-                    index = bbList.indexOf(my_con);
-                }
-            }
-        }
-         if(index > -1) {
-             bbList.splice(index, 1);
-         }
-
-        _this.setState({bubbleList:{}});
-        _this.setState({bubbleList:bbList});
+        this.props.bubClose(title);
     };
 
 
@@ -817,7 +534,7 @@ export class QuickChatHandler extends React.Component{
 
         let _this =  this;
 
-        if(this.props.chatList == 'undifined' || this.props.chatList == null ){
+        if(typeof this.props.chatList == 'undefined' || this.props.chatList.length == 0 ){
             return (<div />)
         }
 

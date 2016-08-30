@@ -51,25 +51,7 @@ export default class Header extends React.Component {
     }
 
     initiateQuickChat(conv) {
-
-        //var thisRoute = this.context.location.pathname;
-        //console.log(thisRoute);
-
-        console.log("convasation loading-----");
-        console.log(conv);
-        var chatExists = false;
-        if(this.quickChatUsers.length > 0) {
-            for(let con in this.quickChatUsers){
-                if(this.quickChatUsers[con].title == conv.title){
-                    chatExists = true;
-                }
-            }
-        }
-
-        if(!chatExists) {
-            this.quickChatUsers.push(conv);
-            this.props.quickChat(this.quickChatUsers);
-        }
+        this.props.quickChat(conv);
     }
 
     render(){
@@ -130,6 +112,7 @@ export class ConversationList extends React.Component{
         this.b6 = Chat.b6;
         this.initChat(this.b6);
         this.unreadConversationCount = [];
+        this.unreadConversationTitles = [];
         this.unreadCount = 0;
         this.conv_ids = [];
         this.convUsers = [];
@@ -152,7 +135,6 @@ export class ConversationList extends React.Component{
 
         // Conversation deleted
         if (op < 0) {
-            //notificationDiv.remove();
             return
         }
 
@@ -282,6 +264,37 @@ export class ConversationList extends React.Component{
         return '#notification__' + c.domId();
     }
 
+    onLoadQuickChat(conv) {
+
+        this.props.loadQuickChat(conv);
+
+        if(this.unreadCount > 0){
+
+            let convId = "usr:" + conv.proglobeTitle;
+            let index = this.getUnreadIndex(convId);
+
+            if(index > -1) {
+
+                let c = this.b6.getConversation(convId);
+
+                if (this.b6.markConversationAsRead(c) > 0) {
+                    this.unreadConversationCount.splice(index,1);
+                    this.unreadCount--;
+                    if(this.unreadCount <= 0){
+                        $("#unread_chat_count_header").html('');
+                    } else {
+                        $("#unread_chat_count_header").html('<span class="total">' + this.unreadCount + '</span>');
+                    }
+                }
+            }
+        }
+    }
+
+    getUnreadIndex(convId) {
+        let index = this.unreadConversationCount.indexOf(convId);
+        return index;
+    }
+
     render() {
         let _this = this;
         let convs = this.state.conversations.map(function(conv,key){
@@ -289,7 +302,7 @@ export class ConversationList extends React.Component{
 
             return (
                 <div className={_classNames} key={key}>
-                    <a href="javascript:void(0)" onClick={()=>_this.props.loadQuickChat(conv)}>
+                    <a href="javascript:void(0)" onClick={()=>_this.onLoadQuickChat(conv)}>
                         <div className="chat-pro-img">
                             <img src={conv.user.images.profile_image.http_url}/>
                         </div>

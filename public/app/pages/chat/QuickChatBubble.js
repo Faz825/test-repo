@@ -56,6 +56,16 @@ export default class QuickChatBubble extends React.Component{
 
     onbubbleClosed(data){
         this.props.bubbleClosed(data.title);
+
+        //for(let key in this.refs) {
+        //    if(key == data.title){
+        //        console.log("going to unmount node");
+        //        const unmountNode = this.refs[key];
+        //        console.log(unmountNode);
+        //        let unmount = ReactDom.unmountComponentAtNode(unmountNode);
+        //        console.log(unmount);
+        //    }
+        //}
     }
 
     sendMsg(msg){
@@ -86,15 +96,13 @@ export default class QuickChatBubble extends React.Component{
 
 
     render() {
-    //console.log("before rendering messages----555");
-    //console.log(this.props.messages);
         const {
             userLoggedIn,
             messages
             }=this.state;
 
         return (
-            <div className="chat-popup col-sm-4">
+            <div className="chat-popup col-sm-4" ref={this.props.chatData.title}>
                 <div className="row inner-wrapper">
                     <ChatHeader
                         conv={this.props.chatData}
@@ -156,8 +164,6 @@ export class MessageList extends React.Component{
         this.loggedUser = this.props.loggedUser;
     }
     render() {
-        //console.log('going to show messages------- 1');
-        //console.log(this.props.messages);
         if(Object.keys(this.refs).length > 0){
 
             for(var key in this.refs){
@@ -171,15 +177,6 @@ export class MessageList extends React.Component{
 
         let _this = this;
         let convs = this.props.messages.map(function(conv,key){
-
-            //let msgs = conv.messages.map(function(msg,key){
-            //    let cssClass = 'chat-block '+msg.cssClass;
-            //    return (
-            //        <div className={cssClass} key={key}>
-            //            <div className="chat-msg-body"><span className="user-name">{msg.display_name}</span><p className="chat-msg">{msg.text}</p></div>
-            //        </div>
-            //    );
-            //});
 
             return (
                 <div className={conv.cssClass} key={key}>
