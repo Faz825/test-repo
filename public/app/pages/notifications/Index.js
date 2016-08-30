@@ -7,6 +7,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import Session  from '../../middleware/Session';
 import Socket  from '../../middleware/Socket';
 import SecretaryThumbnail from '../../components/elements/SecretaryThumbnail';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 
 export default class Index extends React.Component{
     constructor(props){
@@ -24,7 +25,11 @@ export default class Index extends React.Component{
             notificationCount: 0,
             seeAllNotifications: false,
             resultHeader:[],
-            eleList:[]
+            eleList:[],
+            telNumber: "",
+            selectedOpt: "",
+            customHours: "",
+            customMins: ""
         };
 
         this.currentTime = new Date();
@@ -276,6 +281,67 @@ export default class Index extends React.Component{
         this.loadNotifications();
     }
 
+    elementChangeHandler(e){
+        let userNum = this.state.telNumber;
+        if (e.keyCode === 38 || e.keyCode === 40) {
+            e.preventDefault();
+        }else{
+            userNum = e.target.value.substring(0,10);
+            this.setState({telNumber : userNum});
+        }
+    }
+
+    onSelect(e){
+        let checkbox = e.target.name;
+        this.setState({selectedOpt : checkbox});
+    }
+
+    onTimeChange(e){
+        let timeField = e.target.name;
+        let timeFieldValue = e.target.value;
+
+        if(timeField == "hours"){
+            if(timeFieldValue <= "24"){
+                timeFieldValue = e.target.value.substring(0,2);
+                this.setState({customHours: timeFieldValue});
+            }
+        }
+
+        if(timeField == "mins"){
+            if(timeFieldValue <= "60"){
+                timeFieldValue = e.target.value.substring(0,2);
+                this.setState({customMins: timeFieldValue});
+            }
+        }
+
+    }
+
+    onTimeSave(){
+        this.refs.overlay.hide();
+        if(this.state.telNumber.length == 0){
+            alert("Add Contact Number");
+        }else if(this.state.selectedOpt.length == 0){
+            alert("Choose options");
+            if(this.state.selectedOpt == "custom"){
+                if(this.state.customHours == "" || this.state.customMins == ""){
+                    alert("Add Custom Time");
+                }
+            }
+        }else{
+            let obj = {
+                __phone_number: this.state.telNumber,
+                __notification_mode: this.state.selectedOpt,
+                __custom_time: {
+                    hh : this.state.customHours,
+                    mm : this.state.customMins
+                }
+            };
+
+            console.log(obj);
+        }
+
+    }
+
     render() {
         let loggedUser = this.state.loggedUser;
         let _secretary_image = loggedUser.secretary_image_url;
@@ -285,6 +351,7 @@ export default class Index extends React.Component{
         let greating;
         let h = this.currentTime.getHours();
         let date = this.currentDate();
+        let _this = this;
 
         if(h < 12){
             partOfDay = "AM";
@@ -300,12 +367,52 @@ export default class Index extends React.Component{
             notificationCount
             }=this.state;
 
+        let popover = (
+            <Popover id="popover-trigger-click-root-close" className="notifications popover-holder">
+                <div className="inner-wrapper clearfix">
+                    <div className="number-block option-block">
+                        <input type="number" value={this.state.telNumber} onChange={(event)=>{ this.elementChangeHandler(event)}} placeholder="Enter your contact number" className="form-control" name="tel" />
+                        <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </div>
+                    <div className={(this.state.selectedOpt == "now")? "option-block active" : "option-block" }>
+                        <input type="checkbox" value="now" id="check-now" name="now" onChange={(event)=>{ this.onSelect(event)}}
+                            checked={(this.state.selectedOpt == "now")? true : false }
+                            />
+                        <label htmlFor="check-now">Now</label>
+                    </div>
+                    <div className={(this.state.selectedOpt == "morning")? "option-block active" : "option-block" }>
+                        <input type="checkbox" value="morning" id="check-morning" name="morning" onChange={(event)=>{ this.onSelect(event)}}
+                            checked={(this.state.selectedOpt == "morning")? true : false }
+                            />
+                        <label htmlFor="check-morning">Every Morning</label>
+                    </div>
+                    <div className={(this.state.selectedOpt == "custom")? "custom-block option-block active" : "custom-block option-block" }>
+                        <div className="custom-header">
+                            <input type="checkbox" value="custom" id="check-custom" name="custom" onChange={(event)=>{ this.onSelect(event)}}
+                                checked={(this.state.selectedOpt == "custom")? true : false }
+                                />
+                            <label htmlFor="check-custom">Custom</label>
+                        </div>
+                        <div className="time-holder">
+                            <div className="field-holder">
+                                <input type="number" name="hours" min="1" max="24" className="form-control" value={this.state.customHours} placeholder="HH" onChange={(event)=>{this.onTimeChange(event)}} />
+                            </div>
+                            <div className="field-holder">
+                                <input type="number" name="mins" min="0" max="60" className="form-control" value={this.state.customMins} placeholder="MM" onChange={(event)=>{this.onTimeChange(event)}} />
+                            </div>
+                        </div>
+                    </div>
+                    <button className="btn btn-default save-btn" onClick={_this.onTimeSave.bind(this)}>Save</button>
+                </div>
+            </Popover>
+        );
+
         return (
             <div className="notificationsHolder container-fluid">
                 <div className="row row-clr pg-news-page-content">
                     <div className="row row-clr">
                         <div className="col-xs-10 col-xs-offset-1">
-                            <div className="row">
+                            <div className="row notification-header">
                                 <div className="pg-middle-content-top-middle-secretary">
                                     <SecretaryThumbnail url={_secretary_image}/>
                                 </div>
@@ -314,6 +421,9 @@ export default class Index extends React.Component{
                                     <p className="user-date">{date[2] + "," + date[1] + " " + date[3] + ", " + date[0]}</p>
                                     <p className="greeting-and-notifi">{greating + " " + loggedUser.first_name } {notificationCount > 0 ? ", you have "+notificationCount+" Notifications":""}</p>
                                 </div>
+                                <OverlayTrigger rootClose trigger="click" placement="bottom" overlay={popover} ref="overlay">
+                                    <button className="btn btn-default">Text me to do's</button>
+                                </OverlayTrigger>
                             </div>
                             <div className="row notification-box-holder">
                                 <div className="col-sm-4 notification-box">

@@ -16,6 +16,11 @@ body {
 	margin-right: 0px !important;
 }
 
+.pg-middle-sign-wrapper{
+	position: relative;
+	z-index: 1;
+}
+
 .pg-middle-sign-wrapper > .container-fluid{
 	padding: 0;
 	min-height: 80vh;
@@ -3288,6 +3293,7 @@ textarea{
 	position: fixed;
 	bottom: 110px;
 	left: 110px;
+	z-index: 2;
 }
 
 .chat-popup{
@@ -3420,6 +3426,164 @@ textarea{
 
 .chat-popup #chatMsg .send-msg{
 	margin: 7px 5px 0 0;
+}
+
+/* Notifications popover */
+.notification-header{
+	position: relative;
+}
+
+.notification-header .btn-default{
+	background: #61b3de;
+	padding: 10px 15px;
+	text-transform: uppercase;
+	color: #fff;
+	border-radius: 5px;
+	font-family: 'montserratsemi_bold', sans-serif;
+	font-size: 0.714em;
+	position: absolute;
+	top: 20px;
+	left: 0;
+}
+
+.notifications.popover-holder{
+	max-width: 366px;
+	width: 366px;
+	margin-left: 9%;
+}
+
+.notifications.popover-holder .arrow{
+	left: 10% !important;
+}
+
+.popover-holder .inner-wrapper{
+	padding: 30px 32px;
+}
+
+.notifications.popover-holder .popover-content{
+	padding: 0;
+}
+
+.notifications .popover-content .option-block{
+	padding: 10px 15px;
+	border: 1px solid #d7e2ea;
+	margin-bottom: 10px;
+	border-radius: 5px;
+	position: relative;
+}
+
+.notifications .popover-content .option-block.active{
+	border-color: #61b3de;
+	-webkit-box-shadow: 0px 2px 18px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 2px 18px -2px rgba(0,0,0,0.75);
+	box-shadow: 0px 2px 18px -2px rgba(0,0,0,0.75);
+}
+
+.notifications .popover-content .custom-block{
+	padding: 0;
+}
+
+.notifications .custom-block .custom-header{
+	padding: 10px 15px;
+	border-bottom: 1px solid #dee6eb;
+}
+
+.notifications .custom-block .time-holder{
+	background: #f2f6f9;
+	padding: 15px 0;
+	text-align: center;
+	display: none;
+}
+
+.notifications .option-block.active .time-holder{
+	display: block;
+}
+
+.custom-block .time-holder .field-holder{
+	display: inline-block;
+}
+
+.custom-block .time-holder .field-holder:first-child:after{
+	content: ":";
+	display: inline-block;
+	margin: 0 10px;
+	color: #7795a8;
+}
+
+.custom-block .time-holder .field-holder input{
+	text-align: center;
+	border-radius: 5px;
+	border-color: #d6e1ea;
+	padding: 8px 15px;
+	background: #fff;
+	text-transform: uppercase;
+	box-shadow: none;
+	display: inline-block;
+	width: 70px;
+}
+
+.popover-content .number-block .form-control,
+.popover-content .number-block .form-control:focus{
+	border: none;
+	box-shadow: none;
+	color: #2d5164;
+	font-size: 0.857em;
+}
+
+.popover-content .number-block .fa{
+	position: absolute;
+	top: 20px;
+	right: 22px;
+}
+
+.popover-content .option-block input[type="checkbox"]{
+	display: none;
+}
+
+.popover-content .option-block label{
+	position: relative;
+	padding-left: 38px;
+	text-transform: capitalize;
+	font-size: 1em;
+	color: #2d5164;
+	cursor: pointer;
+	margin: 0;
+	line-height: 1.7;
+}
+
+.popover-content .option-block label:before{
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 22px;
+	height: 22px;
+	border: 2px solid #dee6eb;
+	border-radius: 5px;
+}
+
+.popover-content .option-block input[type="checkbox"]:checked + label:before{
+	content: "\f00c";
+	font-family: 'fontAwesome';
+	width: 22px;
+	height: 22px;
+	text-align: center;
+	background: #61b3de;
+	border-radius: 5px;
+	border: none;
+	line-height: 1.6;
+	color: #fff;
+}
+
+.popover-content .save-btn{
+	float: right;
+	background: #61b3de;
+	text-transform: uppercase;
+	color: #fff;
+	padding: 12px 44px;
+	font-size: 0.929em;
+	line-height: 1;
+	margin-top: 10px;
 }
 
 /* Note Share popup */
