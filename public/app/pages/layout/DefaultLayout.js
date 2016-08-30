@@ -25,6 +25,10 @@ export default class DefaultLayout extends React.Component{
 
     loadQuickChat(conv){
 
+        if(typeof this.quickChatUsers.length != 'undefined' && this.quickChatUsers.length >= 3) {
+            return;
+        }
+
         var chatExists = false;
         if(this.quickChatUsers.length > 0) {
             for(let con in this.quickChatUsers){
