@@ -1674,6 +1674,52 @@ var UserControler ={
             }
         );
 
+    },
+
+
+    /**
+     * Load User Connections
+     * @param req
+     * @param res
+     */
+    getUserConnections:function(req,res){
+        var User = require('mongoose').model('User'),
+            Connection = require('mongoose').model('Connection'),
+            _async = require('async'),
+            CurrentSession = Util.getCurrentSession(req),
+            outPut = {},
+            my_connections = [];
+
+        _async.waterfall([
+
+            function getConnectedUsers(callback) {
+                var criteria = {
+                    user_id :CurrentSession.id,
+                    q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*'
+                    //q:req.params['name']+'*'
+                }
+
+                Connection.getMyConnectionData(criteria,function(resultSet){
+                    //console.log("=======================Connections==============")
+                    //console.log(resultSet)
+                    my_connections = resultSet.results;
+
+                    callback(null, my_connections);
+                })
+            }
+
+        ], function (err, resultSet) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            var outPut = {
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                users: resultSet
+            }
+            res.status(200).json(outPut);
+        });
+
     }
 
 

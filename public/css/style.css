@@ -3701,6 +3701,15 @@ textarea{
 	margin-left: 21px;
 }
 
+.popup-body-holder .user-block .img-holder{
+	width: 41px;
+	height: 41px;
+}
+.popup-body-holder .user-block .img-holder img{
+	width: 100%;
+	height: auto;
+}
+
 .popup-body-holder .user-block .permission{
 	font-size: 0.857em;
 	color: #2d5164;
@@ -3790,7 +3799,7 @@ textarea{
 }
 
 .popup-holder .footer-holder .add-new{
-	float: left;
+	float: right;
 }
 .popup-holder .footer-holder .add-new button{
 	color: #2d5164;
@@ -3798,7 +3807,7 @@ textarea{
 }
 
 .popup-holder .footer-holder .see-all{
-	float: right;
+	text-align: center;
 }
 .popup-holder .footer-holder .see-all button{
 	color: #2d5164;

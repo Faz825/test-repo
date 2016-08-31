@@ -408,7 +408,7 @@ export class NoteCategory extends React.Component{
         let _noteBooks = notebooks.map(function(notebook,key){
             let i = (
                 <Popover id="popover-contained"  positionTop="150px" className="popup-holder">
-                    <SharePopup note={notebook.notebook_name}/>
+                    <SharePopup note={notebook.notebook_name} notebookId={notebook.notebook_id}/>
                 </Popover>
             );
             return (
@@ -453,7 +453,7 @@ export class SharePopup extends React.Component{
 
         let i = (
             <Popover id="popover-contained"  positionTop="150px" className="popup-holder add-new">
-                <SharePopupNewUsr />
+                <SharePopupNewUsr notebookId={this.props.notebookId}/>
             </Popover>
         );
 
@@ -479,7 +479,9 @@ export class SharePopup extends React.Component{
                         </div>
                     </div>
 
-                    <SharedUsers />
+                    <Scrollbars style={{ height: 135 }} onScroll={this.handleScroll}>
+                        <SharedUsers />
+                    </Scrollbars>
 
                 </div>
                 <div className="footer-holder clearfix">
@@ -500,52 +502,97 @@ export class SharePopup extends React.Component{
 export class SharePopupNewUsr extends React.Component{
     constructor(props) {
         super(props);
-        this.state={}
+        this.state={
+            value: '',
+            suggestions: []
+        };
+
+        this.onChange = this.onChange.bind(this);
+        this.shareNote = this.shareNote.bind(this);
+    }
+
+    onChange(event) {
+        var newValue = event.target.value;
+        this.setState({ value: newValue });
+
+        if(newValue.length >= 1){
+            $.ajax({
+                url: '/get-connected-users/'+newValue,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.setState({
+                            suggestions: data.users
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        }else{
+            this.setState({
+                suggestions: []
+            });
+        }
+    }
+
+    shareNote(){
+        let notebook_id = this.props.notebookId;
+        console.log(notebook_id);
     }
 
     render() {
+
+        const { value, suggestions } = this.state;
+        let render_obj = this;
+
+        let _suggestions = suggestions.map(function(suggestion,key){
+            if(suggestions.length <= 0){
+                return <div/>
+            }
+            return(
+                <div className="user-block clearfix" key={key}>
+                    <div className="img-holder">
+                        <img src={suggestion.images.profile_image.http_url} alt="User"/>
+                    </div>
+                    <div className="user-details">
+                        <h3 className="user-name">{suggestion.first_name} {suggestion.last_name}</h3>
+                    </div>
+                    <div className="action">
+                        <button className="btn-add" onClick={render_obj.shareNote}>
+                            <i className="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div className="separator"></div>
+                </div>
+            );
+        });
+
         return (
             <div>
                 <div className="share-popup-holder">
                     <div className="header-holder clearfix">
                         <div className="form-group">
-                            <input type="text" className="form-control" placeholder="Type Name to Add" id="type-to-add" />
+                            <input type="text" className="form-control" placeholder="Type Name to Add" id="type-to-add" onChange={this.onChange}/>
                         </div>
                     </div>
-                    <div className="popup-body-holder add-new">
-                        <div className="user-block clearfix">
-                            <div className="img-holder">
-                                <img src="images/chat-1.png" alt="User"/>
-                            </div>
-                            <div className="user-details">
-                                <h3 className="user-name">Leonard Green</h3>
-                            </div>
-                            <div className="action">
-                                <button className="btn-add">
-                                    <i className="fa fa-plus" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                            <div className="separator"></div>
+
+                    <Scrollbars style={{ height: 135 }} onScroll={this.handleScroll}>
+                        <div className="popup-body-holder add-new">
+                        {_suggestions}
                         </div>
-                        <div className="user-block clearfix">
-                            <div className="img-holder">
-                                <img src="images/chat-1.png" alt="User"/>
-                            </div>
-                            <div className="user-details">
-                                <h3 className="user-name">Leonard Green</h3>
-                            </div>
-                            <div className="action">
-                                <button className="btn-add">
-                                    <i className="fa fa-plus" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                            <div className="separator"></div>
-                        </div>
-                    </div>
+                    </Scrollbars>
+
                 </div>
             </div>
         )
     }
+
+
 }
 
 export class SharedUsers extends React.Component{
