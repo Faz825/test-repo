@@ -450,6 +450,13 @@ export class SharePopup extends React.Component{
     }
 
     render(){
+
+        let i = (
+            <Popover id="popover-contained"  positionTop="150px" className="popup-holder add-new">
+                <SharePopupNewUsr />
+            </Popover>
+        );
+
         return(
             <div className="share-popup-holder">
                 <div className="header-holder clearfix">
@@ -467,9 +474,129 @@ export class SharePopup extends React.Component{
                             <h3 className="user-name">Leonard Green</h3>
                             <p className="more-info">University of California, Berkeley</p>
                         </div>
-                        <div className="permission">
+                        <div className="permission owner">
                             <p>(Owner)</p>
                         </div>
+                    </div>
+
+                    <SharedUsers />
+
+                </div>
+                <div className="footer-holder clearfix">
+                    <div className="add-new">
+                        <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
+                            <button className="btn-link">Add New</button>
+                        </OverlayTrigger>
+                    </div>
+                    <div className="see-all">
+                        <button className="btn-link">See All</button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+export class SharePopupNewUsr extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state={}
+    }
+
+    render() {
+        return (
+            <div>
+                <div className="share-popup-holder">
+                    <div className="header-holder clearfix">
+                        <div className="form-group">
+                            <input type="text" className="form-control" placeholder="Type Name to Add" id="type-to-add" />
+                        </div>
+                    </div>
+                    <div className="popup-body-holder add-new">
+                        <div className="user-block clearfix">
+                            <div className="img-holder">
+                                <img src="images/chat-1.png" alt="User"/>
+                            </div>
+                            <div className="user-details">
+                                <h3 className="user-name">Leonard Green</h3>
+                            </div>
+                            <div className="action">
+                                <button className="btn-add">
+                                    <i className="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div className="separator"></div>
+                        </div>
+                        <div className="user-block clearfix">
+                            <div className="img-holder">
+                                <img src="images/chat-1.png" alt="User"/>
+                            </div>
+                            <div className="user-details">
+                                <h3 className="user-name">Leonard Green</h3>
+                            </div>
+                            <div className="action">
+                                <button className="btn-add">
+                                    <i className="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div className="separator"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+export class SharedUsers extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state={}
+    }
+
+    render() {
+        return (
+            <div>
+                <div className="user-block shared clearfix">
+                    <div className="separator"></div>
+                    <div className="img-holder">
+                        <img src="images/chat-1.png" alt="User"/>
+                    </div>
+                    <div className="user-details">
+                        <h3 className="user-name shared">Leonard Green</h3>
+                        <p className="more-info shared">University of California, Berkeley</p>
+                    </div>
+                    <div className="action">
+                        <button className="btn-remove">
+                            <i className="fa fa-minus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div className="permission">
+                        <select className="pg-custom-input">
+                            <option value="read-only">Read Only</option>
+                            <option value="read-write">Read/Write</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="user-block shared clearfix">
+                    <div className="separator"></div>
+                    <div className="img-holder">
+                        <img src="images/chat-1.png" alt="User"/>
+                    </div>
+                    <div className="user-details">
+                        <h3 className="user-name shared">Leonard Green</h3>
+                        <p className="more-info shared">University of California, Berkeley</p>
+                    </div>
+                    <div className="action">
+                        <button className="btn-remove">
+                            <i className="fa fa-minus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div className="permission">
+                        <select className="pg-custom-input">
+                            <option value="read-only">Read Only</option>
+                            <option value="read-write">Read/Write</option>
+                        </select>
                     </div>
                 </div>
             </div>
