@@ -3637,6 +3637,7 @@ textarea{
 
 .popup-holder.bottom .arrow:after{
 	border-style: solid;
+	border-bottom-color: #ecf0f3;
 }
 
 .popup-holder .popover-content{
