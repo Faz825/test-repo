@@ -26,6 +26,7 @@ export default class DefaultLayout extends React.Component{
     loadQuickChat(conv){
 
         if(typeof this.quickChatUsers.length != 'undefined' && this.quickChatUsers.length >= 3) {
+            alert("Max. number of simultaneous chat bubbles allowed are 3.");
             return;
         }
 
@@ -564,7 +565,3 @@ export class QuickChatHandler extends React.Component{
 
     }
 }
-
-
-
-
