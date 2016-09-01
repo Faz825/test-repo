@@ -12,6 +12,16 @@ export default class DefaultLayout extends React.Component{
     constructor(props){
         super(props);
 
+        //bit6 will work on https
+        if(Session.getSession('prg_lg') == null){
+            window.location.href = "/";
+        }
+        if (window.location.protocol == 'http:' ) {
+            var url_arr = window.location.href.split('http');
+            window.location.href = 'https'+url_arr[1];
+        }
+
+
         this.state={
             chatBubble:[]
         }
@@ -23,7 +33,7 @@ export default class DefaultLayout extends React.Component{
     loadQuickChat(conv){
 
         if(typeof this.quickChatUsers.length != 'undefined' && this.quickChatUsers.length >= 3) {
-            alert("Max. number of simultaneous chat bubbles allowed are 3.");
+            alert("Maximum quick chat window limit is reached.");
             return;
         }
 
