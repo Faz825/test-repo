@@ -248,24 +248,24 @@ export default StyleSheet.create({
         "width": "100%",
         "outline": "none"
     },
-    "pg-header-search react-whatever-1": {
+    "pg-header-search react-autowhatever-1": {
         "top": 48,
         "width": "100%"
     },
-    "pg-header-search react-whatever-1 a:hover": {
+    "pg-header-search react-autowhatever-1 a:hover": {
         "textDecoration": "none"
     },
-    "pg-header-search react-whatever-1 suggestion": {
+    "pg-header-search react-autowhatever-1 suggestion": {
         "overflow": "hidden",
         "position": "relative"
     },
-    "pg-header-search react-whatever-1 suggestion img-holder": {
+    "pg-header-search react-autowhatever-1 suggestion img-holder": {
         "width": 30,
         "height": 30,
         "marginRight": 15,
         "float": "left"
     },
-    "pg-header-search react-whatever-1 suggestion span": {
+    "pg-header-search react-autowhatever-1 suggestion span": {
         "float": "left",
         "marginTop": 8,
         "lineHeight": 1,
@@ -2366,7 +2366,7 @@ export default StyleSheet.create({
         "position": "relative",
         "zIndex": 1
     },
-    "react-whatever-1": {
+    "react-autowhatever-1": {
         "position": "absolute",
         "width": "70%",
         "top": 23,
@@ -2380,7 +2380,7 @@ export default StyleSheet.create({
         "paddingBottom": 0,
         "paddingLeft": 0
     },
-    "react-whatever-1 li": {
+    "react-autowhatever-1 li": {
         "listStyleType": "none",
         "paddingTop": 8,
         "paddingRight": 5,
@@ -2390,15 +2390,15 @@ export default StyleSheet.create({
         "cursor": "pointer",
         "background": "#fff"
     },
-    "react-whatever-1 li:hover": {
+    "react-autowhatever-1 li:hover": {
         "color": "#fff",
         "background": "#61b3de"
     },
-    "react-whatever-1 react-autosuggest__suggestion--focused": {
+    "react-autowhatever-1 react-autosuggest__suggestion--focused": {
         "color": "#fff",
         "background": "#61b3de"
     },
-    "react-whatever-1 react-autosuggest__suggestion-container": {
+    "react-autowhatever-1 react-autosuggest__suggestion-container": {
         "zIndex": 9999
     },
     "pg-inline-item-btn": {
@@ -3476,7 +3476,7 @@ export default StyleSheet.create({
         "width": "60%",
         "position": "relative"
     },
-    "chat-person-options react-autosuggest__container  react-whatever-1": {
+    "chat-person-options react-autosuggest__container  react-autowhatever-1": {
         "top": 24
     },
     "chat-person-options connection-name p": {
@@ -4172,6 +4172,9 @@ export default StyleSheet.create({
         "paddingBottom": 18,
         "width": "100%"
     },
+    "chat-popup msgList": {
+        "overflow": "hidden"
+    },
     "chat-popup chat-view": {
         "background": "#f2f6f9",
         "height": 170
@@ -4405,13 +4408,49 @@ export default StyleSheet.create({
         "color": "#fff"
     },
     "popup-holder": {
+        "marginLeft": "20px !important",
+        "marginTop": 154,
         "maxWidth": 500,
         "width": 500,
         "background": "#e8eef2",
         "borderRadius": 5
     },
+    "popup-holderadd-new": {
+        "marginTop": "20px !important",
+        "marginLeft": "0 !important",
+        "maxWidth": 340,
+        "width": 340
+    },
+    "popup-holderright arrow": {
+        "marginTop": -157,
+        "marginLeft": -6,
+        "width": 20,
+        "height": 19,
+        "backgroundRepeat": "no-repeat",
+        "backgroundImage": "url(../images/popover_arrow.png)",
+        "borderStyle": "none"
+    },
+    "popup-holderright arrow:after": {
+        "borderStyle": "none"
+    },
+    "popup-holderbottom arrow": {
+        "marginTop": 0,
+        "marginLeft": 11,
+        "width": 0,
+        "height": 0,
+        "backgroundImage": "none"
+    },
+    "popup-holderbottom arrow:after": {
+        "borderStyle": "solid"
+    },
     "popup-holder popover-content": {
         "background": "#e8eef2",
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
+    "popup-holder popover-content share-popup-holder": {
         "paddingTop": 0,
         "paddingRight": 0,
         "paddingBottom": 0,
@@ -4438,26 +4477,147 @@ export default StyleSheet.create({
         "height": 25,
         "float": "right"
     },
+    "popup-holderadd-new header-holder form-group": {
+        "marginTop": 5,
+        "float": "left"
+    },
     "popup-holder popup-body-holder user-block": {
         "paddingTop": 12,
         "paddingRight": 23,
         "paddingBottom": 12,
-        "paddingLeft": 23
+        "paddingLeft": 23,
+        "position": "relative"
+    },
+    "popup-holder popup-body-holder user-blockshared separator": {
+        "position": "absolute",
+        "top": 0,
+        "left": 10,
+        "width": "96%",
+        "borderTop": "1px solid #dfe7ed"
+    },
+    "popup-holderadd-new popup-body-holder user-block separator": {
+        "position": "absolute",
+        "bottom": 0,
+        "left": 10,
+        "width": "96%",
+        "borderTop": "1px solid #dfe7ed"
     },
     "popup-body-holder user-block img-holder": {
-        "float": "left"
+        "float": "left",
+        "width": 41,
+        "height": 41
     },
     "popup-body-holder user-block user-details": {
-        "float": "left"
+        "float": "left",
+        "marginLeft": 21
+    },
+    "popup-body-holder user-block img-holder img": {
+        "width": "100%",
+        "height": "auto"
     },
     "popup-body-holder user-block permission": {
-        "float": "left"
+        "fontSize": 0.857,
+        "color": "#2d5164"
+    },
+    "popup-body-holder user-block permissionowner": {
+        "marginRight": 120,
+        "float": "right",
+        "fontSize": 0.857,
+        "color": "#2d5164"
+    },
+    "popup-body-holder user-blockshared permission": {
+        "marginTop": 8,
+        "marginRight": 85
+    },
+    "popup-body-holder user-blockshared permission select": {
+        "background": "transparent",
+        "boxShadow": "none",
+        "border": "none",
+        "float": "right",
+        "font": "11px 'montserratsemi_bold', sans-serif",
+        "outline": "none",
+        "color": "#2d5164"
+    },
+    "popup-body-holder user-block action": {
+        "marginTop": 5,
+        "marginRight": 20,
+        "float": "right",
+        "fontSize": 0.857,
+        "color": "#2d5164"
+    },
+    "popup-body-holderadd-new user-block action": {
+        "marginRight": 0
+    },
+    "popup-body-holder user-block action btn-remove": {
+        "paddingTop": 3,
+        "paddingRight": 10,
+        "paddingBottom": 3,
+        "paddingLeft": 10,
+        "border": "none",
+        "borderRadius": "100%",
+        "backgroundColor": "#FFFFFF",
+        "boxShadow": "0px 1px 5px -1px #000",
+        "outline": "none"
+    },
+    "popup-body-holder user-block action btn-add": {
+        "paddingTop": 3,
+        "paddingRight": 10,
+        "paddingBottom": 3,
+        "paddingLeft": 10,
+        "border": "none",
+        "borderRadius": "100%",
+        "backgroundColor": "#FFFFFF",
+        "boxShadow": "0px 1px 5px -1px #000",
+        "outline": "none"
+    },
+    "popup-body-holder user-block action btn-remove fa-minus": {
+        "color": "#61b3de",
+        "marginTop": 6
+    },
+    "popup-body-holder user-block action btn-add fa-plus": {
+        "color": "#61b3de",
+        "marginTop": 6
     },
     "popup-body-holder user-details user-name": {
         "marginTop": 0,
         "marginRight": 0,
         "marginBottom": 5,
+        "marginLeft": 0,
+        "fontSize": 1,
+        "color": "#2d5164"
+    },
+    "popup-body-holderadd-new user-details user-name": {
+        "marginTop": 10,
+        "marginRight": 0,
+        "marginBottom": 5,
         "marginLeft": 0
+    },
+    "popup-body-holder user-details more-info": {
+        "fontSize": 0.714,
+        "color": "#2d5164"
+    },
+    "popup-holder footer-holder": {
+        "width": "100%",
+        "paddingTop": 12,
+        "paddingRight": 15,
+        "paddingBottom": 12,
+        "paddingLeft": 15,
+        "fontSize": 0.857,
+        "backgroundColor": "#cedae2"
+    },
+    "popup-holder footer-holder add-new": {
+        "float": "right"
+    },
+    "popup-holder footer-holder add-new button": {
+        "color": "#2d5164",
+        "outline": "none"
+    },
+    "popup-holder footer-holder see-all": {
+        "textAlign": "center"
+    },
+    "popup-holder footer-holder see-all button": {
+        "color": "#2d5164",
+        "outline": "none"
     },
     "middle-content-wrapper": {
         "minWidth": 500
