@@ -6,8 +6,6 @@ import FooterHolder from '../../components/footer/FooterHolder'
 import Session  from '../../middleware/Session';
 import Dashboard  from '../dashboard/Dashboard';
 import InCallPane  from '../chat/InCallPane';
-//import QuickChatBubble from '../../components/chat/QuickChatBubble'
-//import QuickChat from '../chat/QuickChat'
 import QuickChatBubble from '../chat/QuickChatBubble'
 import Chat from '../../middleware/Chat';
 
@@ -53,7 +51,6 @@ export default class DefaultLayout extends React.Component{
             if(index > -1) {
                 bbList.splice(index, 1);
             }
-            console.log(bbList);
             this.quickChatUsers = [];
             this.quickChatUsers = bbList;
             this.setState({chatBubble:this.quickChatUsers});
@@ -437,7 +434,7 @@ export class QuickChatHandler extends React.Component{
 
             if (typeof this.messages != 'undefined' && this.messages != null) {
                 for (let msgs in this.messages) {
-                    if (msgs.title === title) {
+                    if (msgs.msg_title === title) {
                         this.messages[msgs].message.push(msg);
                         updated = true;
                     }
