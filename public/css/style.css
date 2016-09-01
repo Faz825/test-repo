@@ -3376,6 +3376,10 @@ textarea{
 	width: 100%;
 }
 
+.chat-popup #msgList{
+    overflow: hidden;
+}
+
 .chat-popup .chat-view{
 	background: #f2f6f9;
 	height: 170px;

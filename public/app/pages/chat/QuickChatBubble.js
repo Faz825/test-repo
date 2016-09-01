@@ -170,18 +170,21 @@ export class MessageList extends React.Component{
         this.state ={};
         this.loggedUser = this.props.loggedUser;
     }
-    render() {
+
+    componentDidUpdate(){
         if(Object.keys(this.refs).length > 0){
 
             for(var key in this.refs){
                 if(key == "msgScrollBar"){
                     const scrollbars = this.refs[key];
                     const scrollHeight = scrollbars.getScrollHeight();
-                    scrollbars.scrollTop(scrollHeight);
+                    scrollbars.scrollToBottom(scrollHeight);
                 }
             }
         }
+    }
 
+    render() {
         let _this = this;
         let convs = this.props.messages.map(function(conv,key){
 
@@ -194,7 +197,7 @@ export class MessageList extends React.Component{
 
         return (
             <div className="chat-view">
-                <Scrollbars ref="msgScrollBar" autoHide={true} autoHideTimeout={1000} autoHideDuration={200} height={170}>
+                <Scrollbars ref="msgScrollBar" autoHide={true} autoHideTimeout={1000} autoHideDuration={200} >
                     <div id="msgListRow">
                         <div id="msgList">
                             {convs}
@@ -262,7 +265,7 @@ export class ComposeMessage extends React.Component{
             <form onSubmit={this.sendMessage.bind(this)} id="chatMsg">
                 <div className="chat-msg-input-holder">
                     <div className="msg-input">
-                        <textarea className="form-control" placeholder="New Message..." name="msg"      value={(this.state.formData.msg)?this.state.formData.msg:''}
+                        <textarea className="form-control" placeholder="New Message..." name="msg" value={(this.state.formData.msg)?this.state.formData.msg:''}
                                   onChange={(event)=>{ this.elementChangeHandler(event)}}
                                   onKeyDown={(event)=>{this.onEnter(event)}}
                             ></textarea>
