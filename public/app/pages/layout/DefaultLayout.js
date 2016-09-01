@@ -132,8 +132,8 @@ export class QuickChatHandler extends React.Component{
 
     };
 
-    componentWillReceiveProps() {
-        this.setState({bubbleList: this.props.chatList});
+    componentWillReceiveProps(nextProps) {
+        this.setState({bubbleList: nextProps.chatList});
     }
 
     initChat(b6){
