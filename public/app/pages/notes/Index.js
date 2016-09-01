@@ -581,11 +581,9 @@ export class SharePopupNewUsr extends React.Component{
                         </div>
                     </div>
 
-                    <Scrollbars style={{ height: 135 }} onScroll={this.handleScroll}>
-                        <div className="popup-body-holder add-new">
-                        {_suggestions}
-                        </div>
-                    </Scrollbars>
+                    <div className="popup-body-holder add-new">
+                    {_suggestions}
+                    </div>
 
                 </div>
             </div>
