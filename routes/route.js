@@ -17,6 +17,7 @@ require('../model/NewsModel');
 require('../model/SavedArticleModel');
 require('../model/NotificationModel');
 require('../model/NotificationRecipientModel');
+require('../model/NotificationSMSModel');
 require('../model/CommentModel');
 require('../model/LifeEventModel');
 require('../model/LifeEventCategoryModel');
@@ -41,7 +42,8 @@ var DefaultController   = require('../controller/DefaultController'),
     ConnectionController = require('../controller/ConnectionController'),
     LikeController      =  require('../controller/LikeController'),
     NotesController     = require('../controller/NotesController'),
-    NotificationController     = require('../controller/NotificationController');
+    NotificationController     = require('../controller/NotificationController'),
+    NotificationSMSController     = require('../controller/NotificationSMSController');
 
 
 
@@ -70,7 +72,7 @@ GLOBAL.notAuthURLs = ['/sign-up','/forgot-password','/change-password-invalid','
 GLOBAL.AccessAllow = [
     '/','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
-    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post','/folders','/doc'
+    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/'
 ];
 
 /**
@@ -133,6 +135,8 @@ router.get('/connections', DefaultController.index);
 router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
 
+router.get('/get-connected-users/:name', UserController.getUserConnections);
+
 /**
  * Implement All Test Routs from there
  */
@@ -159,6 +163,7 @@ router.get('/test/get-notifications', TestController.getNotifications);
 router.get('/test/update-notification', TestController.updateNotification);
 router.post('/test/comment/add/:id', TestCommentController.addComment);
 router.get('/test/comment/get/:id', TestCommentController.getComment);
+router.post('/test/set-notification-sms', NotificationSMSController.setNotificationSMS);
 
 /**
  * Push All Rqurst through oAuth
@@ -239,6 +244,7 @@ router.post('/introduction/update', UserController.updateIntroduction);
 router.get('/introduction/:uname',UserController.retrieveIntroduction);
 router.get('/notifications/get-notifications',NotificationController.getNotifications);
 router.post('/notifications/update-notifications',NotificationController.updateNotifications);
+router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);
 router.get('/notifications/get-details',NotificationController.getDetails);
 router.get('/notifications/get-notification-count',NotificationController.getNotificationCount);
 

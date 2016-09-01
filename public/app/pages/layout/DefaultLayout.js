@@ -6,8 +6,6 @@ import FooterHolder from '../../components/footer/FooterHolder'
 import Session  from '../../middleware/Session';
 import Dashboard  from '../dashboard/Dashboard';
 import InCallPane  from '../chat/InCallPane';
-//import QuickChatBubble from '../../components/chat/QuickChatBubble'
-//import QuickChat from '../chat/QuickChat'
 import QuickChatBubble from '../chat/QuickChatBubble'
 import Chat from '../../middleware/Chat';
 
@@ -26,6 +24,7 @@ export default class DefaultLayout extends React.Component{
     loadQuickChat(conv){
 
         if(typeof this.quickChatUsers.length != 'undefined' && this.quickChatUsers.length >= 3) {
+            alert("Max. number of simultaneous chat bubbles allowed are 3.");
             return;
         }
 
@@ -52,7 +51,6 @@ export default class DefaultLayout extends React.Component{
             if(index > -1) {
                 bbList.splice(index, 1);
             }
-            console.log(bbList);
             this.quickChatUsers = [];
             this.quickChatUsers = bbList;
             this.setState({chatBubble:this.quickChatUsers});
@@ -134,8 +132,8 @@ export class QuickChatHandler extends React.Component{
 
     };
 
-    componentWillReceiveProps() {
-        this.setState({bubbleList: this.props.chatList});
+    componentWillReceiveProps(nextProps) {
+        this.setState({bubbleList: nextProps.chatList});
     }
 
     initChat(b6){
@@ -436,7 +434,7 @@ export class QuickChatHandler extends React.Component{
 
             if (typeof this.messages != 'undefined' && this.messages != null) {
                 for (let msgs in this.messages) {
-                    if (msgs.title === title) {
+                    if (msgs.msg_title === title) {
                         this.messages[msgs].message.push(msg);
                         updated = true;
                     }
@@ -564,7 +562,3 @@ export class QuickChatHandler extends React.Component{
 
     }
 }
-
-
-
-

@@ -182,24 +182,24 @@ a:focus{
 	width: 100%;
 	outline: none;
 }
-.pg-header-search #react-whatever-1{
+.pg-header-search #react-autowhatever-1{
 	top: 48px;
 	width: 100%;
 }
-.pg-header-search #react-whatever-1 a:hover{
+.pg-header-search #react-autowhatever-1 a:hover{
 	text-decoration: none;
 }
-.pg-header-search #react-whatever-1 .suggestion{
+.pg-header-search #react-autowhatever-1 .suggestion{
 	overflow: hidden;
 	position: relative;
 }
-.pg-header-search #react-whatever-1 .suggestion .img-holder{
+.pg-header-search #react-autowhatever-1 .suggestion .img-holder{
 	width: 30px;
 	height: 30px;
 	margin-right: 15px;
 	float: left;
 }
-.pg-header-search #react-whatever-1 .suggestion span{
+.pg-header-search #react-autowhatever-1 .suggestion span{
 	float: left;
 	margin-top: 8px;
 	line-height: 1;
@@ -1777,7 +1777,7 @@ textarea{
 	position: relative;
 	z-index: 1;
 }
-#react-whatever-1{
+#react-autowhatever-1{
 	position: absolute;
 	width: 70%;
 	top : 23px;
@@ -1785,19 +1785,19 @@ textarea{
 	margin: 0;
 	padding: 0;
 }
-#react-whatever-1 li{
+#react-autowhatever-1 li{
 	list-style-type: none;
 	padding: 8px 5px;
 	border-bottom: 1px solid #dee6eb;
 	cursor: pointer;
 	background: #fff;
 }
-#react-whatever-1 li:hover,
-#react-whatever-1 .react-autosuggest__suggestion--focused{
+#react-autowhatever-1 li:hover,
+#react-autowhatever-1 .react-autosuggest__suggestion--focused{
 	color: #fff;
 	background: #61b3de;
 }
-#react-whatever-1 .react-autosuggest__suggestion-container{
+#react-autowhatever-1 .react-autosuggest__suggestion-container{
 	z-index: 9999;
 }
 .pg-inline-item-btn{
@@ -2711,7 +2711,7 @@ textarea{
 	position: relative;
 }
 
-.chat-person-options .react-autosuggest__container  #react-whatever-1{
+.chat-person-options .react-autosuggest__container  #react-autowhatever-1{
 	top: 24px;
 }
 
@@ -3376,6 +3376,10 @@ textarea{
 	width: 100%;
 }
 
+.chat-popup #msgList{
+    overflow: hidden;
+}
+
 .chat-popup .chat-view{
 	background: #f2f6f9;
 	height: 170px;
@@ -3598,14 +3602,54 @@ textarea{
 }
 
 .popup-holder{
+	margin-left: 20px !important;
+	margin-top: 154px;
 	max-width: 500px;
 	width: 500px;
 	background: #e8eef2;
 	border-radius: 5px;
 }
 
+.popup-holder.add-new{
+	margin-top: 20px !important;
+	margin-left: 0 !important;
+	max-width: 340px;
+	width: 340px;
+}
+
+.popup-holder.right .arrow{
+	margin-top: -157px;
+	margin-left: -6px;
+	width: 20px;
+	height: 19px;
+	background-repeat: no-repeat;
+	background-image: url(../images/popover_arrow.png);
+	border-style: none;
+}
+
+.popup-holder.right .arrow:after{
+	border-style: none;
+}
+
+.popup-holder.bottom .arrow{
+	margin-top: 0;
+	margin-left: 11px;
+	width: 0;
+	height: 0;
+	background-image: none;
+}
+
+.popup-holder.bottom .arrow:after{
+	border-style: solid;
+	border-bottom-color: #ecf0f3;
+}
+
 .popup-holder .popover-content{
 	background: #e8eef2;
+	padding: 0;
+}
+
+.popup-holder .popover-content .share-popup-holder{
 	padding: 0;
 }
 
@@ -3627,18 +3671,152 @@ textarea{
 	float: right;
 }
 
+.popup-holder.add-new .header-holder .form-group{
+	margin-top: 5px;
+	float: left;
+}
+
 .popup-holder .popup-body-holder .user-block{
 	padding: 12px 23px;
+	position: relative;
+}
+
+.popup-holder .popup-body-holder .user-block.shared .separator{
+	position: absolute;
+	top: 0;
+	left: 10px;
+	width: 96%;
+	border-top: 1px solid #dfe7ed;
+}
+
+.popup-holder.add-new .popup-body-holder .user-block .separator{
+	position: absolute;
+	bottom: 0;
+	left: 10px;
+	width: 96%;
+	border-top: 1px solid #dfe7ed;
 }
 
 .popup-body-holder .user-block .img-holder,
-.popup-body-holder .user-block .user-details,
-.popup-body-holder .user-block .permission{
+.popup-body-holder .user-block .user-details{
 	float: left;
+}
+
+.popup-body-holder .user-block .user-details{
+	margin-left: 21px;
+}
+
+.popup-body-holder .user-block .img-holder{
+	width: 41px;
+	height: 41px;
+}
+.popup-body-holder .user-block .img-holder img{
+	width: 100%;
+	height: auto;
+}
+
+.popup-body-holder .user-block .permission{
+	font-size: 0.857em;
+	color: #2d5164;
+}
+
+.popup-body-holder .user-block .permission.owner{
+	margin-right: 120px;
+	float: right;
+	font-size: 0.857em;
+	color: #2d5164;
+}
+
+.popup-body-holder .user-block.shared .permission{
+	margin-top: 8px;
+	margin-right: 85px;
+}
+
+.popup-body-holder .user-block.shared .permission select{
+	background: transparent;
+	box-shadow: none;
+	border: none;
+	float: right;
+	font: 11px 'montserratsemi_bold', sans-serif;
+	outline: none;
+	color: #2d5164;
+}
+
+.popup-body-holder .user-block .action{
+	margin-top: 5px;
+	margin-right: 20px;
+	float: right;
+	font-size: 0.857em;
+	color: #2d5164;
+}
+
+.popup-body-holder.add-new .user-block .action{
+	margin-right: 0;
+}
+
+.popup-body-holder .user-block .action .btn-remove{
+	padding: 3px 10px;
+	border: none;
+	border-radius: 100%;
+	background-color: #FFFFFF;
+	box-shadow: 0px 1px 5px -1px #000;
+	outline: none;
+}
+
+.popup-body-holder .user-block .action .btn-add{
+	padding: 3px 10px;
+	border: none;
+	border-radius: 100%;
+	background-color: #FFFFFF;
+	box-shadow: 0px 1px 5px -1px #000;
+	outline: none;
+}
+
+.popup-body-holder .user-block .action .btn-remove .fa-minus{
+	color: #61b3de;
+	margin-top: 6px;
+}
+.popup-body-holder .user-block .action .btn-add .fa-plus{
+	color: #61b3de;
+	margin-top: 6px;
 }
 
 .popup-body-holder .user-details .user-name{
 	margin: 0 0 5px;
+	font-size: 1.00em;
+	color: #2d5164;
+}
+
+.popup-body-holder.add-new .user-details .user-name{
+	margin: 10px 0 5px;
+}
+
+.popup-body-holder .user-details .more-info{
+	font-size: 0.714em;
+	color: #2d5164;
+}
+
+.popup-holder .footer-holder{
+	width: 100%;
+	padding: 12px 15px;
+	font-size: 0.857em;
+	background-color: #cedae2;
+}
+
+.popup-holder .footer-holder .add-new{
+	float: right;
+}
+.popup-holder .footer-holder .add-new button{
+	color: #2d5164;
+	outline: none;
+}
+
+.popup-holder .footer-holder .see-all{
+	text-align: center;
+}
+.popup-holder .footer-holder .see-all button{
+	color: #2d5164;
+	outline: none;
 }
 
 /* Large Screen */
