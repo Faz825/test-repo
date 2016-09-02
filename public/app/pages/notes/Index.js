@@ -420,7 +420,7 @@ export class NoteCategory extends React.Component{
                         </div>
                         {
                             (notebook.notebook_name != "My Notes")?
-                            <OverlayTrigger container={this} trigger="click" placement="right" overlay={i}>
+                            <OverlayTrigger rootClose container={this} trigger="click" placement="right" overlay={i}>
                                 <span className="share-icon"><i className="fa fa-share-alt"></i></span>
                             </OverlayTrigger>
                             :

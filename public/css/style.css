@@ -2777,7 +2777,7 @@ textarea{
 	color: #9fafbe;
 }
 
-.chat-body{
+.pg-middle-chat-screen-area .chat-body{
 	height: calc(100vh - 318px);
 	overflow: hidden;
 	z-index: 0;
@@ -3053,10 +3053,6 @@ textarea{
 	cursor: default;
 }
 
-.chat-notification-wrapper-opened{
-
-}
-
 .chat-notification-header .msg-holder{
 	padding: 0;
 	overflow: hidden;
@@ -3284,8 +3280,46 @@ textarea{
 	margin-right: 5px;
 }
 
+#NotificationList .msg-holder{
+	height: auto;
+    min-height: 70px;
+}
+
 .notifi-inner-wrapper .box-header-wrapper .pg-top-mark-setings{
 	text-align: right;
+}
+
+.notifi-inner-wrapper .notification-body{
+	float: left;
+	width: 80%;
+}
+
+.notifi-inner-wrapper .notification-body .connection-name,
+.notifi-inner-wrapper .notification-body .extra-cont{
+	font: 0.8em "montserratregular", sans-serif;
+	color: #61b3de;
+	display: block;
+	margin-bottom: 2px;
+}
+
+.notifi-inner-wrapper .notification-body .msg{
+	margin: 5px 0 0;
+	font: 0.8em 'montserratsemi_bold', sans-serif;
+}
+
+.notifi-inner-wrapper .notification-body .chat-date{
+	font: 0.6em 'montserratsemi_bold', sans-serif;
+	position: absolute;
+	right: 10px;
+	bottom: 0;
+	color: #7795a8;
+}
+
+.notifi-inner-wrapper .notification-body .type-of-action{
+	font: 11px 'montserratregular', sans-serif;
+    color: #2d5164;
+    margin-top: -1px;
+	font-size: 0.7em;
 }
 
 /* Chat bubble */
@@ -3374,10 +3408,6 @@ textarea{
     margin-bottom: 10px;
     padding-bottom: 18px;
 	width: 100%;
-}
-
-.chat-popup #msgList{
-    overflow: hidden;
 }
 
 .chat-popup .chat-view{
@@ -3507,6 +3537,10 @@ textarea{
 	display: inline-block;
 }
 
+.custom-block .time-holder .day-period{
+	margin-left: 10px;
+}
+
 .custom-block .time-holder .field-holder:first-child:after{
 	content: ":";
 	display: inline-block;
@@ -3518,12 +3552,13 @@ textarea{
 	text-align: center;
 	border-radius: 5px;
 	border-color: #d6e1ea;
-	padding: 8px 15px;
+	padding: 8px 10px;
 	background: #fff;
 	text-transform: uppercase;
 	box-shadow: none;
 	display: inline-block;
 	width: 70px;
+	font-size: 0.85em;
 }
 
 .popover-content .number-block .form-control,
@@ -3641,7 +3676,6 @@ textarea{
 
 .popup-holder.bottom .arrow:after{
 	border-style: solid;
-	border-bottom-color: #ecf0f3;
 }
 
 .popup-holder .popover-content{

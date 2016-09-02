@@ -133,22 +133,22 @@ export default class Header extends React.Component {
                             <div className="row row-clr pgs-main-nav-area-inner">
                                 <ul>
                                     <li>
-                                        <Link to="/about">
+                                        <Link to="/">
                                             About Proglobe
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to="/how-it-works">
+                                        <Link to="/">
                                             How it works
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to="/the-team">
+                                        <Link to="/">
                                             The Team
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to="/contact-us">
+                                        <Link to="/">
                                             Contact us
                                         </Link>
                                     </li>
