@@ -2558,6 +2558,9 @@ export default StyleSheet.create({
     "pg-notes-page-content-item note-cat-thumb": {
         "background": "url(../images/pg-notes-view-all.png) #5ebdaa repeat-y -3px top"
     },
+    "pg-notes-page-content-item note-cat-thumbmy-notebook": {
+        "backgroundColor": "#62b3de !important"
+    },
     "color-picker": {
         "textAlign": "center",
         "float": "left",
@@ -2834,6 +2837,34 @@ export default StyleSheet.create({
         "background": "url(\"../images/news/health-icon.png\") no-repeat",
         "width": 41,
         "height": 41
+    },
+    "pg-notes-page-content-item my-notebook cat-icon-holder": {
+        "width": 95,
+        "height": 128
+    },
+    "pg-notes-page-content-item my-notebook cat-icon-holder cat-icon": {
+        "background": "url(\"../images/my-notes.png\") no-repeat",
+        "width": 80,
+        "height": 128
+    },
+    "pg-notes-page-content-item my-notebook cat-title": {
+        "font": "12px 'montserratsemi_bold', sans-serif",
+        "color": "#fff",
+        "paddingTop": 12,
+        "paddingRight": 12,
+        "paddingBottom": 12,
+        "paddingLeft": 12,
+        "border": "1px solid #fff",
+        "display": "inline-block",
+        "textDecoration": "none",
+        "position": "absolute",
+        "top": "20%",
+        "left": 0,
+        "right": 0,
+        "marginTop": "auto",
+        "marginRight": "auto",
+        "marginBottom": "auto",
+        "marginLeft": "auto"
     },
     "pg-news-page-content-item-left-thumb cat-title": {
         "font": "1em 'montserratsemi_bold', sans-serif",
