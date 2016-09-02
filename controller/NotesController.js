@@ -176,6 +176,27 @@ var NotesController ={
             }
         });
 
+    },
+
+    shareNoteBook:function(req,res){
+
+        var NoteBook = require('mongoose').model('NoteBook');
+
+        var criteria = {
+            _id:req.body.noteBookId
+        };
+
+        var updateData = {
+            shared_users:req.body.sharedUsers,
+        };
+
+        NoteBook.shareNoteBook(criteria,updateData,function(resultSet){
+            if(resultSet.status == 200){
+                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+            }else{
+                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            }
+        });
     }
 
 };

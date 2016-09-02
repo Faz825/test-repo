@@ -16,6 +16,11 @@ body {
 	margin-right: 0px !important;
 }
 
+.pg-middle-sign-wrapper{
+	position: relative;
+	z-index: 1;
+}
+
 .pg-middle-sign-wrapper > .container-fluid{
 	padding: 0;
 	min-height: 80vh;
@@ -177,24 +182,24 @@ a:focus{
 	width: 100%;
 	outline: none;
 }
-.pg-header-search #react-whatever-1{
+.pg-header-search #react-autowhatever-1{
 	top: 48px;
 	width: 100%;
 }
-.pg-header-search #react-whatever-1 a:hover{
+.pg-header-search #react-autowhatever-1 a:hover{
 	text-decoration: none;
 }
-.pg-header-search #react-whatever-1 .suggestion{
+.pg-header-search #react-autowhatever-1 .suggestion{
 	overflow: hidden;
 	position: relative;
 }
-.pg-header-search #react-whatever-1 .suggestion .img-holder{
+.pg-header-search #react-autowhatever-1 .suggestion .img-holder{
 	width: 30px;
 	height: 30px;
 	margin-right: 15px;
 	float: left;
 }
-.pg-header-search #react-whatever-1 .suggestion span{
+.pg-header-search #react-autowhatever-1 .suggestion span{
 	float: left;
 	margin-top: 8px;
 	line-height: 1;
@@ -1772,7 +1777,7 @@ textarea{
 	position: relative;
 	z-index: 1;
 }
-#react-whatever-1{
+#react-autowhatever-1{
 	position: absolute;
 	width: 70%;
 	top : 23px;
@@ -1780,19 +1785,19 @@ textarea{
 	margin: 0;
 	padding: 0;
 }
-#react-whatever-1 li{
+#react-autowhatever-1 li{
 	list-style-type: none;
 	padding: 8px 5px;
 	border-bottom: 1px solid #dee6eb;
 	cursor: pointer;
 	background: #fff;
 }
-#react-whatever-1 li:hover,
-#react-whatever-1 .react-autosuggest__suggestion--focused{
+#react-autowhatever-1 li:hover,
+#react-autowhatever-1 .react-autosuggest__suggestion--focused{
 	color: #fff;
 	background: #61b3de;
 }
-#react-whatever-1 .react-autosuggest__suggestion-container{
+#react-autowhatever-1 .react-autosuggest__suggestion-container{
 	z-index: 9999;
 }
 .pg-inline-item-btn{
@@ -1909,9 +1914,15 @@ textarea{
 .pg-news-page-content .pg-news-page-header{
 	margin-bottom: 25px;
 }
+
 .pg-notes-page-content-item .note-cat-thumb{
 	background: url(../images/pg-notes-view-all.png) #5ebdaa repeat-y -3px top;
 }
+
+.pg-notes-page-content-item .note-cat-thumb.my-notebook{
+	background-color: #62b3de !important;
+}
+
 .color-picker{
 	text-align: center;
 	float: left;
@@ -2045,7 +2056,7 @@ textarea{
 	box-shadow: 0px 1px 5px -1px #000;
 	display: -webkit-flex;
 	display: flex;
-	margin-bottom: 25px;
+	margin-bottom: 40px;
 	cursor: pointer;
 	padding: 0;
 }
@@ -2142,6 +2153,31 @@ textarea{
 	width: 41px;
 	height: 41px;
 }
+.pg-notes-page-content-item .my-notebook .cat-icon-holder{
+	width: 95px;
+	height: 128px;
+}
+
+.pg-notes-page-content-item .my-notebook .cat-icon-holder .cat-icon{
+	background: url("../images/my-notes.png") no-repeat;
+	width: 80px;
+	height: 128px;
+}
+
+.pg-notes-page-content-item .my-notebook .cat-title{
+	font: 12px 'montserratsemi_bold', sans-serif;
+    color: #fff;
+    padding: 12px 12px;
+    border: 1px solid #fff;
+    display: inline-block;
+    text-decoration: none;
+	position: absolute;
+	top: 20%;
+	left: 0;
+	right: 0;
+	margin: auto;;
+}
+
 .pg-news-page-content-item-left-thumb .cat-title,
 .pg-notes-page-content-item .note-cat-thumb .cat-title{
 	font: 1em 'montserratsemi_bold', sans-serif;
@@ -2706,7 +2742,7 @@ textarea{
 	position: relative;
 }
 
-.chat-person-options .react-autosuggest__container  #react-whatever-1{
+.chat-person-options .react-autosuggest__container  #react-autowhatever-1{
 	top: 24px;
 }
 
@@ -2772,7 +2808,7 @@ textarea{
 	color: #9fafbe;
 }
 
-.chat-body{
+.pg-middle-chat-screen-area .chat-body{
 	height: calc(100vh - 318px);
 	overflow: hidden;
 	z-index: 0;
@@ -3048,10 +3084,6 @@ textarea{
 	cursor: default;
 }
 
-.chat-notification-wrapper-opened{
-
-}
-
 .chat-notification-header .msg-holder{
 	padding: 0;
 	overflow: hidden;
@@ -3279,18 +3311,577 @@ textarea{
 	margin-right: 5px;
 }
 
+#NotificationList .msg-holder{
+	height: auto;
+    min-height: 70px;
+}
+
 .notifi-inner-wrapper .box-header-wrapper .pg-top-mark-setings{
 	text-align: right;
 }
 
+.notifi-inner-wrapper .notification-body{
+	float: left;
+	width: 80%;
+}
+
+.notifi-inner-wrapper .notification-body .connection-name,
+.notifi-inner-wrapper .notification-body .extra-cont{
+	font: 0.8em "montserratregular", sans-serif;
+	color: #61b3de;
+	display: block;
+	margin-bottom: 2px;
+}
+
+.notifi-inner-wrapper .notification-body .msg{
+	margin: 5px 0 0;
+	font: 0.8em 'montserratsemi_bold', sans-serif;
+}
+
+.notifi-inner-wrapper .notification-body .chat-date{
+	font: 0.6em 'montserratsemi_bold', sans-serif;
+	position: absolute;
+	right: 10px;
+	bottom: 0;
+	color: #7795a8;
+}
+
+.notifi-inner-wrapper .notification-body .type-of-action{
+	font: 11px 'montserratregular', sans-serif;
+    color: #2d5164;
+    margin-top: -1px;
+	font-size: 0.7em;
+}
+
 /* Chat bubble */
-.chat-popup-holder{
-	width: calc(100% - 220px);
-	height: 320px;
+.bubble-holder{
 	position: fixed;
 	bottom: 110px;
 	left: 110px;
-	z-index: 1;
+	z-index: 2;
+}
+
+.chat-popup{
+	width: 250px;
+	margin: 0 0 0 15px;
+	height: 282px;
+	background: #fff;
+	box-shadow: 0 0 50px -20px #000;
+}
+
+.chat-popup .header-wrapper{
+	padding: 10px;
+	position: relative;
+	border-bottom: 1px solid #dee6eb;
+}
+
+.header-wrapper .bubble-opts-holder{
+	position: absolute;
+	top: 3px;
+    right: 4px;
+}
+
+.bubble-opts-holder .close{
+	font-size: 1em;
+}
+
+.chat-popup .header-wrapper .chat-pro-img{
+	float: left;
+	margin-right: 10px;
+}
+
+.header-wrapper .chat-pro-img img{
+	width: 22px;
+	height: 22px;
+}
+
+.header-wrapper .connection-name{
+	font-family: 'montserratsemi_bold', sans-serif;
+	text-transform: capitalize;
+	color: #2d5164;
+	font-size: 1em;
+	float: left;
+	margin: 5px 0 0;
+}
+
+.header-wrapper .icon{
+	color: #a8bfcd;
+}
+
+.header-wrapper .call-opts-wrapper{
+	margin: 10px 0 0;
+}
+
+.header-wrapper .call-opts-wrapper .chat-opts{
+	float: left;
+}
+
+.header-wrapper .call-opts-wrapper .icon{
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+.call-opts-wrapper .icon:last-child{
+	margin: 0;
+}
+
+.call-opts-wrapper .all-media{
+	float: right;
+	cursor: pointer;
+	color: #61b3de;
+	font-size: 0.714em;
+	margin: 5px 0 0;
+	text-transform: uppercase;
+}
+
+.chat-popup .chat-block {
+    overflow: hidden;
+    margin-bottom: 10px;
+    padding-bottom: 18px;
+	width: 100%;
+}
+
+.chat-popup .chat-view{
+	background: #f2f6f9;
+	height: 170px;
+}
+
+.chat-popup .chat-view .sender{
+	float: right;
+	padding: 5px;
+}
+
+.chat-popup .chat-view .receiver{
+	float: left;
+	padding: 5px;
+}
+
+.chat-popup #chatMsg{
+	border-top: 1px solid #dee6eb;
+	position: relative;
+}
+
+.chat-popup #chatMsg .chat-msg-input-holder{
+	width: 75%;
+	float: left;
+	border: none;
+	background: none;
+	overflow: visible;
+}
+
+.chat-popup #chatMsg .chat-msg-input-holder .msg-input{
+	width: 100%;
+	float: none;
+}
+
+.chat-popup #chatMsg .form-validation-alert{
+	position: absolute;
+	top: -15px;
+	left: 5px;
+}
+
+.chat-popup #chatMsg .chat-msg-input-holder .form-control{
+	height: 25px;
+	min-height: 0;
+}
+
+.chat-popup #chatMsg .chat-msg-options-holder{
+	float: right;
+}
+
+.chat-popup #chatMsg .send-msg{
+	margin: 7px 5px 0 0;
+}
+
+/* Notifications popover */
+.notification-header{
+	position: relative;
+}
+
+.notification-header .btn-default{
+	background: #61b3de;
+	padding: 10px 15px;
+	text-transform: uppercase;
+	color: #fff;
+	border-radius: 5px;
+	font-family: 'montserratsemi_bold', sans-serif;
+	font-size: 0.714em;
+	position: absolute;
+	top: 20px;
+	left: 0;
+}
+
+.notifications.popover-holder{
+	max-width: 366px;
+	width: 366px;
+	margin-left: 9%;
+}
+
+.notifications.popover-holder .arrow{
+	left: 10% !important;
+}
+
+.popover-holder .inner-wrapper{
+	padding: 30px 32px;
+}
+
+.notifications.popover-holder .popover-content{
+	padding: 0;
+}
+
+.notifications .popover-content .option-block{
+	padding: 10px 15px;
+	border: 1px solid #d7e2ea;
+	margin-bottom: 10px;
+	border-radius: 5px;
+	position: relative;
+}
+
+.notifications .popover-content .option-block.active{
+	border-color: #61b3de;
+	-webkit-box-shadow: 0px 2px 18px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 2px 18px -2px rgba(0,0,0,0.75);
+	box-shadow: 0px 2px 18px -2px rgba(0,0,0,0.75);
+}
+
+.notifications .popover-content .custom-block{
+	padding: 0;
+}
+
+.notifications .custom-block .custom-header{
+	padding: 10px 15px;
+	border-bottom: 1px solid #dee6eb;
+}
+
+.notifications .custom-block .time-holder{
+	background: #f2f6f9;
+	padding: 15px 0;
+	text-align: center;
+	display: none;
+}
+
+.notifications .option-block.active .time-holder{
+	display: block;
+}
+
+.custom-block .time-holder .field-holder{
+	display: inline-block;
+}
+
+.custom-block .time-holder .day-period{
+	margin-left: 10px;
+}
+
+.custom-block .time-holder .field-holder:first-child:after{
+	content: ":";
+	display: inline-block;
+	margin: 0 10px;
+	color: #7795a8;
+}
+
+.custom-block .time-holder .field-holder input{
+	text-align: center;
+	border-radius: 5px;
+	border-color: #d6e1ea;
+	padding: 8px 10px;
+	background: #fff;
+	text-transform: uppercase;
+	box-shadow: none;
+	display: inline-block;
+	width: 70px;
+	font-size: 0.85em;
+}
+
+.popover-content .number-block .form-control,
+.popover-content .number-block .form-control:focus{
+	border: none;
+	box-shadow: none;
+	color: #2d5164;
+	font-size: 0.857em;
+}
+
+.popover-content .number-block .fa{
+	position: absolute;
+	top: 20px;
+	right: 22px;
+}
+
+.popover-content .option-block input[type="checkbox"]{
+	display: none;
+}
+
+.popover-content .option-block label{
+	position: relative;
+	padding-left: 38px;
+	text-transform: capitalize;
+	font-size: 1em;
+	color: #2d5164;
+	cursor: pointer;
+	margin: 0;
+	line-height: 1.7;
+}
+
+.popover-content .option-block label:before{
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 22px;
+	height: 22px;
+	border: 2px solid #dee6eb;
+	border-radius: 5px;
+}
+
+.popover-content .option-block input[type="checkbox"]:checked + label:before{
+	content: "\f00c";
+	font-family: 'fontAwesome';
+	width: 22px;
+	height: 22px;
+	text-align: center;
+	background: #61b3de;
+	border-radius: 5px;
+	border: none;
+	line-height: 1.6;
+	color: #fff;
+}
+
+.popover-content .save-btn{
+	float: right;
+	background: #61b3de;
+	text-transform: uppercase;
+	color: #fff;
+	padding: 12px 44px;
+	font-size: 0.929em;
+	line-height: 1;
+	margin-top: 10px;
+}
+
+/* Note Share popup */
+.share-icon{
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+}
+
+.share-icon .fa{
+	color: #fff;
+}
+
+.popup-holder{
+	margin-left: 20px !important;
+	margin-top: 154px;
+	max-width: 500px;
+	width: 500px;
+	background: #e8eef2;
+	border-radius: 5px;
+}
+
+.popup-holder.add-new{
+	margin-top: 20px !important;
+	margin-left: 0 !important;
+	max-width: 340px;
+	width: 340px;
+}
+
+.popup-holder.right .arrow{
+	margin-top: -157px;
+	margin-left: -6px;
+	width: 20px;
+	height: 19px;
+	background-repeat: no-repeat;
+	background-image: url(../images/popover_arrow.png);
+	border-style: none;
+}
+
+.popup-holder.right .arrow:after{
+	border-style: none;
+}
+
+.popup-holder.bottom .arrow{
+	margin-top: 0;
+	margin-left: 11px;
+	width: 0;
+	height: 0;
+	background-image: none;
+}
+
+.popup-holder.bottom .arrow:after{
+	border-style: solid;
+}
+
+.popup-holder .popover-content{
+	background: #e8eef2;
+	padding: 0;
+}
+
+.popup-holder .popover-content .share-popup-holder{
+	padding: 0;
+}
+
+.popup-holder .header-holder{
+	padding: 10px 20px;
+}
+
+.popup-holder .header-holder .title{
+	font-size: 1.143em;
+	margin: 7px 0 0 50px;
+	float: left;
+	color: #2d5164;
+    font-weight: 600;
+}
+
+.popup-holder .header-holder .form-group{
+	width: 160px;
+	height: 25px;
+	float: right;
+}
+
+.popup-holder.add-new .header-holder .form-group{
+	margin-top: 5px;
+	float: left;
+}
+
+.popup-holder .popup-body-holder .user-block{
+	padding: 12px 23px;
+	position: relative;
+}
+
+.popup-holder .popup-body-holder .user-block.shared .separator{
+	position: absolute;
+	top: 0;
+	left: 10px;
+	width: 96%;
+	border-top: 1px solid #dfe7ed;
+}
+
+.popup-holder.add-new .popup-body-holder .user-block .separator{
+	position: absolute;
+	bottom: 0;
+	left: 10px;
+	width: 96%;
+	border-top: 1px solid #dfe7ed;
+}
+
+.popup-body-holder .user-block .img-holder,
+.popup-body-holder .user-block .user-details{
+	float: left;
+}
+
+.popup-body-holder .user-block .user-details{
+	margin-left: 21px;
+}
+
+.popup-body-holder .user-block .img-holder{
+	width: 41px;
+	height: 41px;
+}
+.popup-body-holder .user-block .img-holder img{
+	width: 100%;
+	height: auto;
+}
+
+.popup-body-holder .user-block .permission{
+	font-size: 0.857em;
+	color: #2d5164;
+}
+
+.popup-body-holder .user-block .permission.owner{
+	margin-right: 120px;
+	float: right;
+	font-size: 0.857em;
+	color: #2d5164;
+}
+
+.popup-body-holder .user-block.shared .permission{
+	margin-top: 8px;
+	margin-right: 85px;
+}
+
+.popup-body-holder .user-block.shared .permission select{
+	background: transparent;
+	box-shadow: none;
+	border: none;
+	float: right;
+	font: 11px 'montserratsemi_bold', sans-serif;
+	outline: none;
+	color: #2d5164;
+}
+
+.popup-body-holder .user-block .action{
+	margin-top: 5px;
+	margin-right: 20px;
+	float: right;
+	font-size: 0.857em;
+	color: #2d5164;
+}
+
+.popup-body-holder.add-new .user-block .action{
+	margin-right: 0;
+}
+
+.popup-body-holder .user-block .action .btn-remove{
+	padding: 3px 10px;
+	border: none;
+	border-radius: 100%;
+	background-color: #FFFFFF;
+	box-shadow: 0px 1px 5px -1px #000;
+	outline: none;
+}
+
+.popup-body-holder .user-block .action .btn-add{
+	padding: 3px 10px;
+	border: none;
+	border-radius: 100%;
+	background-color: #FFFFFF;
+	box-shadow: 0px 1px 5px -1px #000;
+	outline: none;
+}
+
+.popup-body-holder .user-block .action .btn-remove .fa-minus{
+	color: #61b3de;
+	margin-top: 6px;
+}
+.popup-body-holder .user-block .action .btn-add .fa-plus{
+	color: #61b3de;
+	margin-top: 6px;
+}
+
+.popup-body-holder .user-details .user-name{
+	margin: 0 0 5px;
+	font-size: 1.00em;
+	color: #2d5164;
+}
+
+.popup-body-holder.add-new .user-details .user-name{
+	margin: 10px 0 5px;
+}
+
+.popup-body-holder .user-details .more-info{
+	font-size: 0.714em;
+	color: #2d5164;
+}
+
+.popup-holder .footer-holder{
+	width: 100%;
+	padding: 12px 15px;
+	font-size: 0.857em;
+	background-color: #cedae2;
+}
+
+.popup-holder .footer-holder .add-new{
+	float: right;
+}
+.popup-holder .footer-holder .add-new button{
+	color: #2d5164;
+	outline: none;
+}
+
+.popup-holder .footer-holder .see-all{
+	text-align: center;
+}
+.popup-holder .footer-holder .see-all button{
+	color: #2d5164;
+	outline: none;
 }
 
 /* Large Screen */

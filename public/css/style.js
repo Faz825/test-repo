@@ -17,6 +17,10 @@ export default StyleSheet.create({
         "marginLeft": "0px !important",
         "marginRight": "0px !important"
     },
+    "pg-middle-sign-wrapper": {
+        "position": "relative",
+        "zIndex": 1
+    },
     "pg-middle-sign-wrapper > container-fluid": {
         "paddingTop": 0,
         "paddingRight": 0,
@@ -244,24 +248,24 @@ export default StyleSheet.create({
         "width": "100%",
         "outline": "none"
     },
-    "pg-header-search react-whatever-1": {
+    "pg-header-search react-autowhatever-1": {
         "top": 48,
         "width": "100%"
     },
-    "pg-header-search react-whatever-1 a:hover": {
+    "pg-header-search react-autowhatever-1 a:hover": {
         "textDecoration": "none"
     },
-    "pg-header-search react-whatever-1 suggestion": {
+    "pg-header-search react-autowhatever-1 suggestion": {
         "overflow": "hidden",
         "position": "relative"
     },
-    "pg-header-search react-whatever-1 suggestion img-holder": {
+    "pg-header-search react-autowhatever-1 suggestion img-holder": {
         "width": 30,
         "height": 30,
         "marginRight": 15,
         "float": "left"
     },
-    "pg-header-search react-whatever-1 suggestion span": {
+    "pg-header-search react-autowhatever-1 suggestion span": {
         "float": "left",
         "marginTop": 8,
         "lineHeight": 1,
@@ -2362,7 +2366,7 @@ export default StyleSheet.create({
         "position": "relative",
         "zIndex": 1
     },
-    "react-whatever-1": {
+    "react-autowhatever-1": {
         "position": "absolute",
         "width": "70%",
         "top": 23,
@@ -2376,7 +2380,7 @@ export default StyleSheet.create({
         "paddingBottom": 0,
         "paddingLeft": 0
     },
-    "react-whatever-1 li": {
+    "react-autowhatever-1 li": {
         "listStyleType": "none",
         "paddingTop": 8,
         "paddingRight": 5,
@@ -2386,15 +2390,15 @@ export default StyleSheet.create({
         "cursor": "pointer",
         "background": "#fff"
     },
-    "react-whatever-1 li:hover": {
+    "react-autowhatever-1 li:hover": {
         "color": "#fff",
         "background": "#61b3de"
     },
-    "react-whatever-1 react-autosuggest__suggestion--focused": {
+    "react-autowhatever-1 react-autosuggest__suggestion--focused": {
         "color": "#fff",
         "background": "#61b3de"
     },
-    "react-whatever-1 react-autosuggest__suggestion-container": {
+    "react-autowhatever-1 react-autosuggest__suggestion-container": {
         "zIndex": 9999
     },
     "pg-inline-item-btn": {
@@ -2554,6 +2558,9 @@ export default StyleSheet.create({
     "pg-notes-page-content-item note-cat-thumb": {
         "background": "url(../images/pg-notes-view-all.png) #5ebdaa repeat-y -3px top"
     },
+    "pg-notes-page-content-item note-cat-thumbmy-notebook": {
+        "backgroundColor": "#62b3de !important"
+    },
     "color-picker": {
         "textAlign": "center",
         "float": "left",
@@ -2703,7 +2710,7 @@ export default StyleSheet.create({
     "pg-news-page-content-itempg-box-shadow": {
         "boxShadow": "0px 1px 5px -1px #000",
         "display": "flex",
-        "marginBottom": 25,
+        "marginBottom": 40,
         "cursor": "pointer",
         "paddingTop": 0,
         "paddingRight": 0,
@@ -2713,7 +2720,7 @@ export default StyleSheet.create({
     "pg-notes-page-content-itempg-box-shadow": {
         "boxShadow": "0px 1px 5px -1px #000",
         "display": "flex",
-        "marginBottom": 25,
+        "marginBottom": 40,
         "cursor": "default",
         "paddingTop": 0,
         "paddingRight": 0,
@@ -2830,6 +2837,34 @@ export default StyleSheet.create({
         "background": "url(\"../images/news/health-icon.png\") no-repeat",
         "width": 41,
         "height": 41
+    },
+    "pg-notes-page-content-item my-notebook cat-icon-holder": {
+        "width": 95,
+        "height": 128
+    },
+    "pg-notes-page-content-item my-notebook cat-icon-holder cat-icon": {
+        "background": "url(\"../images/my-notes.png\") no-repeat",
+        "width": 80,
+        "height": 128
+    },
+    "pg-notes-page-content-item my-notebook cat-title": {
+        "font": "12px 'montserratsemi_bold', sans-serif",
+        "color": "#fff",
+        "paddingTop": 12,
+        "paddingRight": 12,
+        "paddingBottom": 12,
+        "paddingLeft": 12,
+        "border": "1px solid #fff",
+        "display": "inline-block",
+        "textDecoration": "none",
+        "position": "absolute",
+        "top": "20%",
+        "left": 0,
+        "right": 0,
+        "marginTop": "auto",
+        "marginRight": "auto",
+        "marginBottom": "auto",
+        "marginLeft": "auto"
     },
     "pg-news-page-content-item-left-thumb cat-title": {
         "font": "1em 'montserratsemi_bold', sans-serif",
@@ -3472,7 +3507,7 @@ export default StyleSheet.create({
         "width": "60%",
         "position": "relative"
     },
-    "chat-person-options react-autosuggest__container  react-whatever-1": {
+    "chat-person-options react-autosuggest__container  react-autowhatever-1": {
         "top": 24
     },
     "chat-person-options connection-name p": {
@@ -3536,7 +3571,7 @@ export default StyleSheet.create({
         "float": "right",
         "color": "#9fafbe"
     },
-    "chat-body": {
+    "pg-middle-chat-screen-area chat-body": {
         "height": "calc(100vh - 318px)",
         "overflow": "hidden",
         "zIndex": 0
@@ -3821,7 +3856,6 @@ export default StyleSheet.create({
         "zIndex": 100,
         "cursor": "default"
     },
-    "chat-notification-wrapper-opened": {},
     "chat-notification-header msg-holder": {
         "paddingTop": 0,
         "paddingRight": 0,
@@ -4075,16 +4109,586 @@ export default StyleSheet.create({
     "box-header-wrapper notifi-sub-link fa": {
         "marginRight": 5
     },
+    "NotificationList msg-holder": {
+        "height": "auto",
+        "minHeight": 70
+    },
     "notifi-inner-wrapper box-header-wrapper pg-top-mark-setings": {
         "textAlign": "right"
     },
-    "chat-popup-holder": {
-        "width": "calc(100% - 220px)",
-        "height": 320,
+    "notifi-inner-wrapper notification-body": {
+        "float": "left",
+        "width": "80%"
+    },
+    "notifi-inner-wrapper notification-body connection-name": {
+        "font": "0.8em \"montserratregular\", sans-serif",
+        "color": "#61b3de",
+        "display": "block",
+        "marginBottom": 2
+    },
+    "notifi-inner-wrapper notification-body extra-cont": {
+        "font": "0.8em \"montserratregular\", sans-serif",
+        "color": "#61b3de",
+        "display": "block",
+        "marginBottom": 2
+    },
+    "notifi-inner-wrapper notification-body msg": {
+        "marginTop": 5,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "font": "0.8em 'montserratsemi_bold', sans-serif"
+    },
+    "notifi-inner-wrapper notification-body chat-date": {
+        "font": "0.6em 'montserratsemi_bold', sans-serif",
+        "position": "absolute",
+        "right": 10,
+        "bottom": 0,
+        "color": "#7795a8"
+    },
+    "notifi-inner-wrapper notification-body type-of-action": {
+        "font": "11px 'montserratregular', sans-serif",
+        "color": "#2d5164",
+        "marginTop": -1,
+        "fontSize": 0.7
+    },
+    "bubble-holder": {
         "position": "fixed",
         "bottom": 110,
         "left": 110,
-        "zIndex": 1
+        "zIndex": 2
+    },
+    "chat-popup": {
+        "width": 250,
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 15,
+        "height": 282,
+        "background": "#fff",
+        "boxShadow": "0 0 50px -20px #000"
+    },
+    "chat-popup header-wrapper": {
+        "paddingTop": 10,
+        "paddingRight": 10,
+        "paddingBottom": 10,
+        "paddingLeft": 10,
+        "position": "relative",
+        "borderBottom": "1px solid #dee6eb"
+    },
+    "header-wrapper bubble-opts-holder": {
+        "position": "absolute",
+        "top": 3,
+        "right": 4
+    },
+    "bubble-opts-holder close": {
+        "fontSize": 1
+    },
+    "chat-popup header-wrapper chat-pro-img": {
+        "float": "left",
+        "marginRight": 10
+    },
+    "header-wrapper chat-pro-img img": {
+        "width": 22,
+        "height": 22
+    },
+    "header-wrapper connection-name": {
+        "fontFamily": "'montserratsemi_bold', sans-serif",
+        "textTransform": "capitalize",
+        "color": "#2d5164",
+        "fontSize": 1,
+        "float": "left",
+        "marginTop": 5,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "header-wrapper icon": {
+        "color": "#a8bfcd"
+    },
+    "header-wrapper call-opts-wrapper": {
+        "marginTop": 10,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "header-wrapper call-opts-wrapper chat-opts": {
+        "float": "left"
+    },
+    "header-wrapper call-opts-wrapper icon": {
+        "marginRight": 10,
+        "cursor": "pointer"
+    },
+    "call-opts-wrapper icon:last-child": {
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "call-opts-wrapper all-media": {
+        "float": "right",
+        "cursor": "pointer",
+        "color": "#61b3de",
+        "fontSize": 0.714,
+        "marginTop": 5,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "textTransform": "uppercase"
+    },
+    "chat-popup chat-block": {
+        "overflow": "hidden",
+        "marginBottom": 10,
+        "paddingBottom": 18,
+        "width": "100%"
+    },
+    "chat-popup chat-view": {
+        "background": "#f2f6f9",
+        "height": 170
+    },
+    "chat-popup chat-view sender": {
+        "float": "right",
+        "paddingTop": 5,
+        "paddingRight": 5,
+        "paddingBottom": 5,
+        "paddingLeft": 5
+    },
+    "chat-popup chat-view receiver": {
+        "float": "left",
+        "paddingTop": 5,
+        "paddingRight": 5,
+        "paddingBottom": 5,
+        "paddingLeft": 5
+    },
+    "chat-popup chatMsg": {
+        "borderTop": "1px solid #dee6eb",
+        "position": "relative"
+    },
+    "chat-popup chatMsg chat-msg-input-holder": {
+        "width": "75%",
+        "float": "left",
+        "border": "none",
+        "background": "none",
+        "overflow": "visible"
+    },
+    "chat-popup chatMsg chat-msg-input-holder msg-input": {
+        "width": "100%",
+        "float": "none"
+    },
+    "chat-popup chatMsg form-validation-alert": {
+        "position": "absolute",
+        "top": -15,
+        "left": 5
+    },
+    "chat-popup chatMsg chat-msg-input-holder form-control": {
+        "height": 25,
+        "minHeight": 0
+    },
+    "chat-popup chatMsg chat-msg-options-holder": {
+        "float": "right"
+    },
+    "chat-popup chatMsg send-msg": {
+        "marginTop": 7,
+        "marginRight": 5,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "notification-header": {
+        "position": "relative"
+    },
+    "notification-header btn-default": {
+        "background": "#61b3de",
+        "paddingTop": 10,
+        "paddingRight": 15,
+        "paddingBottom": 10,
+        "paddingLeft": 15,
+        "textTransform": "uppercase",
+        "color": "#fff",
+        "borderRadius": 5,
+        "fontFamily": "'montserratsemi_bold', sans-serif",
+        "fontSize": 0.714,
+        "position": "absolute",
+        "top": 20,
+        "left": 0
+    },
+    "notificationspopover-holder": {
+        "maxWidth": 366,
+        "width": 366,
+        "marginLeft": "9%"
+    },
+    "notificationspopover-holder arrow": {
+        "left": "10% !important"
+    },
+    "popover-holder inner-wrapper": {
+        "paddingTop": 30,
+        "paddingRight": 32,
+        "paddingBottom": 30,
+        "paddingLeft": 32
+    },
+    "notificationspopover-holder popover-content": {
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
+    "notifications popover-content option-block": {
+        "paddingTop": 10,
+        "paddingRight": 15,
+        "paddingBottom": 10,
+        "paddingLeft": 15,
+        "border": "1px solid #d7e2ea",
+        "marginBottom": 10,
+        "borderRadius": 5,
+        "position": "relative"
+    },
+    "notifications popover-content option-blockactive": {
+        "borderColor": "#61b3de",
+        "WebkitBoxShadow": "0px 2px 18px -2px rgba(0,0,0,0.75)",
+        "MozBoxShadow": "0px 2px 18px -2px rgba(0,0,0,0.75)",
+        "boxShadow": "0px 2px 18px -2px rgba(0,0,0,0.75)"
+    },
+    "notifications popover-content custom-block": {
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
+    "notifications custom-block custom-header": {
+        "paddingTop": 10,
+        "paddingRight": 15,
+        "paddingBottom": 10,
+        "paddingLeft": 15,
+        "borderBottom": "1px solid #dee6eb"
+    },
+    "notifications custom-block time-holder": {
+        "background": "#f2f6f9",
+        "paddingTop": 15,
+        "paddingRight": 0,
+        "paddingBottom": 15,
+        "paddingLeft": 0,
+        "textAlign": "center",
+        "display": "none"
+    },
+    "notifications option-blockactive time-holder": {
+        "display": "block"
+    },
+    "custom-block time-holder field-holder": {
+        "display": "inline-block"
+    },
+    "custom-block time-holder day-period": {
+        "marginLeft": 10
+    },
+    "custom-block time-holder field-holder:first-child:after": {
+        "content": "\":\"",
+        "display": "inline-block",
+        "marginTop": 0,
+        "marginRight": 10,
+        "marginBottom": 0,
+        "marginLeft": 10,
+        "color": "#7795a8"
+    },
+    "custom-block time-holder field-holder input": {
+        "textAlign": "center",
+        "borderRadius": 5,
+        "borderColor": "#d6e1ea",
+        "paddingTop": 8,
+        "paddingRight": 10,
+        "paddingBottom": 8,
+        "paddingLeft": 10,
+        "background": "#fff",
+        "textTransform": "uppercase",
+        "boxShadow": "none",
+        "display": "inline-block",
+        "width": 70,
+        "fontSize": 0.85
+    },
+    "popover-content number-block form-control": {
+        "border": "none",
+        "boxShadow": "none",
+        "color": "#2d5164",
+        "fontSize": 0.857
+    },
+    "popover-content number-block form-control:focus": {
+        "border": "none",
+        "boxShadow": "none",
+        "color": "#2d5164",
+        "fontSize": 0.857
+    },
+    "popover-content number-block fa": {
+        "position": "absolute",
+        "top": 20,
+        "right": 22
+    },
+    "popover-content option-block input[type=\"checkbox\"]": {
+        "display": "none"
+    },
+    "popover-content option-block label": {
+        "position": "relative",
+        "paddingLeft": 38,
+        "textTransform": "capitalize",
+        "fontSize": 1,
+        "color": "#2d5164",
+        "cursor": "pointer",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "lineHeight": 1.7
+    },
+    "popover-content option-block label:before": {
+        "content": "\"\"",
+        "position": "absolute",
+        "top": 0,
+        "left": 0,
+        "width": 22,
+        "height": 22,
+        "border": "2px solid #dee6eb",
+        "borderRadius": 5
+    },
+    "popover-content option-block input[type=\"checkbox\"]:checked + label:before": {
+        "content": "\"\\f00c\"",
+        "fontFamily": "'fontAwesome'",
+        "width": 22,
+        "height": 22,
+        "textAlign": "center",
+        "background": "#61b3de",
+        "borderRadius": 5,
+        "border": "none",
+        "lineHeight": 1.6,
+        "color": "#fff"
+    },
+    "popover-content save-btn": {
+        "float": "right",
+        "background": "#61b3de",
+        "textTransform": "uppercase",
+        "color": "#fff",
+        "paddingTop": 12,
+        "paddingRight": 44,
+        "paddingBottom": 12,
+        "paddingLeft": 44,
+        "fontSize": 0.929,
+        "lineHeight": 1,
+        "marginTop": 10
+    },
+    "share-icon": {
+        "position": "absolute",
+        "bottom": 10,
+        "right": 10
+    },
+    "share-icon fa": {
+        "color": "#fff"
+    },
+    "popup-holder": {
+        "marginLeft": "20px !important",
+        "marginTop": 154,
+        "maxWidth": 500,
+        "width": 500,
+        "background": "#e8eef2",
+        "borderRadius": 5
+    },
+    "popup-holderadd-new": {
+        "marginTop": "20px !important",
+        "marginLeft": "0 !important",
+        "maxWidth": 340,
+        "width": 340
+    },
+    "popup-holderright arrow": {
+        "marginTop": -157,
+        "marginLeft": -6,
+        "width": 20,
+        "height": 19,
+        "backgroundRepeat": "no-repeat",
+        "backgroundImage": "url(../images/popover_arrow.png)",
+        "borderStyle": "none"
+    },
+    "popup-holderright arrow:after": {
+        "borderStyle": "none"
+    },
+    "popup-holderbottom arrow": {
+        "marginTop": 0,
+        "marginLeft": 11,
+        "width": 0,
+        "height": 0,
+        "backgroundImage": "none"
+    },
+    "popup-holderbottom arrow:after": {
+        "borderStyle": "solid"
+    },
+    "popup-holder popover-content": {
+        "background": "#e8eef2",
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
+    "popup-holder popover-content share-popup-holder": {
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
+    "popup-holder header-holder": {
+        "paddingTop": 10,
+        "paddingRight": 20,
+        "paddingBottom": 10,
+        "paddingLeft": 20
+    },
+    "popup-holder header-holder title": {
+        "fontSize": 1.143,
+        "marginTop": 7,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 50,
+        "float": "left",
+        "color": "#2d5164",
+        "fontWeight": 600
+    },
+    "popup-holder header-holder form-group": {
+        "width": 160,
+        "height": 25,
+        "float": "right"
+    },
+    "popup-holderadd-new header-holder form-group": {
+        "marginTop": 5,
+        "float": "left"
+    },
+    "popup-holder popup-body-holder user-block": {
+        "paddingTop": 12,
+        "paddingRight": 23,
+        "paddingBottom": 12,
+        "paddingLeft": 23,
+        "position": "relative"
+    },
+    "popup-holder popup-body-holder user-blockshared separator": {
+        "position": "absolute",
+        "top": 0,
+        "left": 10,
+        "width": "96%",
+        "borderTop": "1px solid #dfe7ed"
+    },
+    "popup-holderadd-new popup-body-holder user-block separator": {
+        "position": "absolute",
+        "bottom": 0,
+        "left": 10,
+        "width": "96%",
+        "borderTop": "1px solid #dfe7ed"
+    },
+    "popup-body-holder user-block img-holder": {
+        "float": "left",
+        "width": 41,
+        "height": 41
+    },
+    "popup-body-holder user-block user-details": {
+        "float": "left",
+        "marginLeft": 21
+    },
+    "popup-body-holder user-block img-holder img": {
+        "width": "100%",
+        "height": "auto"
+    },
+    "popup-body-holder user-block permission": {
+        "fontSize": 0.857,
+        "color": "#2d5164"
+    },
+    "popup-body-holder user-block permissionowner": {
+        "marginRight": 120,
+        "float": "right",
+        "fontSize": 0.857,
+        "color": "#2d5164"
+    },
+    "popup-body-holder user-blockshared permission": {
+        "marginTop": 8,
+        "marginRight": 85
+    },
+    "popup-body-holder user-blockshared permission select": {
+        "background": "transparent",
+        "boxShadow": "none",
+        "border": "none",
+        "float": "right",
+        "font": "11px 'montserratsemi_bold', sans-serif",
+        "outline": "none",
+        "color": "#2d5164"
+    },
+    "popup-body-holder user-block action": {
+        "marginTop": 5,
+        "marginRight": 20,
+        "float": "right",
+        "fontSize": 0.857,
+        "color": "#2d5164"
+    },
+    "popup-body-holderadd-new user-block action": {
+        "marginRight": 0
+    },
+    "popup-body-holder user-block action btn-remove": {
+        "paddingTop": 3,
+        "paddingRight": 10,
+        "paddingBottom": 3,
+        "paddingLeft": 10,
+        "border": "none",
+        "borderRadius": "100%",
+        "backgroundColor": "#FFFFFF",
+        "boxShadow": "0px 1px 5px -1px #000",
+        "outline": "none"
+    },
+    "popup-body-holder user-block action btn-add": {
+        "paddingTop": 3,
+        "paddingRight": 10,
+        "paddingBottom": 3,
+        "paddingLeft": 10,
+        "border": "none",
+        "borderRadius": "100%",
+        "backgroundColor": "#FFFFFF",
+        "boxShadow": "0px 1px 5px -1px #000",
+        "outline": "none"
+    },
+    "popup-body-holder user-block action btn-remove fa-minus": {
+        "color": "#61b3de",
+        "marginTop": 6
+    },
+    "popup-body-holder user-block action btn-add fa-plus": {
+        "color": "#61b3de",
+        "marginTop": 6
+    },
+    "popup-body-holder user-details user-name": {
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 5,
+        "marginLeft": 0,
+        "fontSize": 1,
+        "color": "#2d5164"
+    },
+    "popup-body-holderadd-new user-details user-name": {
+        "marginTop": 10,
+        "marginRight": 0,
+        "marginBottom": 5,
+        "marginLeft": 0
+    },
+    "popup-body-holder user-details more-info": {
+        "fontSize": 0.714,
+        "color": "#2d5164"
+    },
+    "popup-holder footer-holder": {
+        "width": "100%",
+        "paddingTop": 12,
+        "paddingRight": 15,
+        "paddingBottom": 12,
+        "paddingLeft": 15,
+        "fontSize": 0.857,
+        "backgroundColor": "#cedae2"
+    },
+    "popup-holder footer-holder add-new": {
+        "float": "right"
+    },
+    "popup-holder footer-holder add-new button": {
+        "color": "#2d5164",
+        "outline": "none"
+    },
+    "popup-holder footer-holder see-all": {
+        "textAlign": "center"
+    },
+    "popup-holder footer-holder see-all button": {
+        "color": "#2d5164",
+        "outline": "none"
     },
     "middle-content-wrapper": {
         "minWidth": 500
