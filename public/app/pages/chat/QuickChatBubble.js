@@ -43,10 +43,11 @@ export default class QuickChatBubble extends React.Component{
         this.setState({messages:this.messages});
     }
 
-    componentWillReceiveProps() {
+    componentWillReceiveProps(nextProps) {
+
         this.messages = [];
         for (let m in this.props.messages) {
-            if (this.props.chatData.title == this.props.messages[m].msg_title) {
+            if (nextProps.chatData.title == this.props.messages[m].msg_title) {
                 this.messages.push(this.props.messages[m].message[0]);
             }
         }
@@ -54,27 +55,32 @@ export default class QuickChatBubble extends React.Component{
         this.setState({messages:this.messages});
     }
 
+    //shouldComponentUpdate(nextProps, nextState) {
+    //    if (this.props.conv.title !== nextProps.conv.title) {
+    //        this.messages = [];
+    //        for (let m in this.props.messages) {
+    //            if (nextProps.conv.title == this.props.messages[m].msg_title) {
+    //                this.messages.push(this.props.messages[m].message[0]);
+    //            }
+    //        }
+    //        this.setState({messages: this.messages});
+    //    }
+    //    return this.props.conv.title !== nextProps.conv.title;
+    //}
+
     onbubbleClosed(data){
         this.props.bubbleClosed(data.title);
 
         //for(let key in this.refs) {
         //    if(key == data.title){
-        //        console.log("going to unmount node");
         //        const unmountNode = this.refs[key];
-        //        console.log(unmountNode);
         //        let unmount = ReactDom.unmountComponentAtNode(unmountNode);
-        //        console.log(unmount);
         //    }
         //}
     }
 
     sendMsg(msg){
-        let messageBody = {
-            message: msg,
-            title: this.props.chatData.title,
-            uri: this.state.uri
-        }
-        this.props.sendMyMessage(messageBody);
+        this.props.sendMyMessage(msg);
     }
 
     doVideoCall(){
@@ -111,9 +117,10 @@ export default class QuickChatBubble extends React.Component{
                         doVideoCall = {this.doVideoCall.bind(this)}
                         />
                     <MessageList
+                        conv={this.props.chatData}
                         loggedUser = {userLoggedIn}
                         messages = {messages}/>
-                    <ComposeMessage sendChat={this.sendMsg.bind(this)}/>
+                    <ComposeMessage sendChat={this.sendMsg.bind(this)} conv={this.props.chatData}/>
                 </div>
             </div>
         );
@@ -209,26 +216,41 @@ export class ComposeMessage extends React.Component{
         this.loggedUser = this.props.loggedUser;
         this.state = {
             validateAlert: "",
-            formData: {},
-            msgText: ""
+            formData: {}
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
     }
 
     elementChangeHandler(event){
-        this.setState({msgText : event.target.value});
+
+        this.state.formData['msg'] = event.target.value;
+
+        let _error = "";
+        if(this.state.formData['msg'] == ""){
+            _error = Alert.EMPTY_MESSAGE;
+        }
+        this.setState({validateAlert:_error})
+
     }
 
     sendMessage(e){
         e.preventDefault();
-        if(this.state.msgText.match(/^\s*$/)) {
+        let _this = this;
+        if(!this.state.formData['msg'] || this.state.formData['msg'] == "") {
             this.setState({validateAlert: Alert.EMPTY_MESSAGE});
             return 0;
         } else{
-            let msg = this.state.msgText;
-            this.setState({msgText: ""});
+
+            let msg = this.state.formData.msg;
+            let messageBody = {
+                message: msg,
+                title: this.props.conv.title,
+                uri: 'usr:proglobe'+this.props.conv.title
+            }
+
+            this.setState({formData: {}});
             this.setState({validateAlert: ""});
-            this.props.sendChat(msg);
+            this.props.sendChat(messageBody);
         }
     }
 
@@ -243,7 +265,7 @@ export class ComposeMessage extends React.Component{
             <form onSubmit={this.sendMessage.bind(this)} id="chatMsg">
                 <div className="chat-msg-input-holder">
                     <div className="msg-input">
-                        <textarea className="form-control" placeholder="New Message..." name="msg"  value={this.state.msgText}
+                        <textarea className="form-control" placeholder="New Message..." name="msg" value={(this.state.formData.msg)?this.state.formData.msg:''}
                                   onChange={(event)=>{ this.elementChangeHandler(event)}}
                                   onKeyDown={(event)=>{this.onEnter(event)}}
                             ></textarea>
