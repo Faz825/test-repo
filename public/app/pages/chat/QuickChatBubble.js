@@ -241,8 +241,7 @@ export class ComposeMessage extends React.Component{
                 uri: 'usr:proglobe'+this.props.conv.title
             }
 
-            this.setState({msgText: {}});
-            this.setState({validateAlert: ""});
+            this.setState({msgText: "", validateAlert : ""});
             this.props.sendChat(messageBody);
         }
     }
