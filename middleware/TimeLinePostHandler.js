@@ -180,7 +180,16 @@ var TimeLinePostHandler ={
                     var Connection = require('mongoose').model('Connection'),
                         status =[ConnectionStatus.REQUEST_ACCEPTED];
                     Connection.getFriends(_post.created_by,status,function(myFriendIds){
+
+                        if(_post.friends_post_sharing && myFriendIds.friends_ids.length > 0) {
+                            var index = myFriendIds.friends_ids.indexOf(_post.post_owner);
+                            if(index != -1) {
+                                myFriendIds.friends_ids.splice(index, 1);
+                            }
+                        }
+
                         _post.visible_users = myFriendIds.friends_ids;
+
                         _post.visible_users.push(_post.created_by);
                         callBack(null)
                     });

@@ -190,7 +190,9 @@ class SinglePost extends React.Component{
 
                     Socket.sendNotification(_notificationData);
 
-                    _this.props.onPostSubmitSuccess(data.post);
+                    if(!data.post.friends_post_sharing) {
+                        _this.props.onPostSubmitSuccess(data.post);
+                    }
 
                     //if(post_data.__own == _this.loggedUser.id ){
                     //    _this.props.onPostSubmitSuccess(data.post);

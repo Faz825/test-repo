@@ -3540,7 +3540,7 @@ export default StyleSheet.create({
         "float": "right",
         "color": "#9fafbe"
     },
-    "chat-body": {
+    "pg-middle-chat-screen-area chat-body": {
         "height": "calc(100vh - 318px)",
         "overflow": "hidden",
         "zIndex": 0
@@ -3825,7 +3825,6 @@ export default StyleSheet.create({
         "zIndex": 100,
         "cursor": "default"
     },
-    "chat-notification-wrapper-opened": {},
     "chat-notification-header msg-holder": {
         "paddingTop": 0,
         "paddingRight": 0,
@@ -4079,8 +4078,48 @@ export default StyleSheet.create({
     "box-header-wrapper notifi-sub-link fa": {
         "marginRight": 5
     },
+    "NotificationList msg-holder": {
+        "height": "auto",
+        "minHeight": 70
+    },
     "notifi-inner-wrapper box-header-wrapper pg-top-mark-setings": {
         "textAlign": "right"
+    },
+    "notifi-inner-wrapper notification-body": {
+        "float": "left",
+        "width": "80%"
+    },
+    "notifi-inner-wrapper notification-body connection-name": {
+        "font": "0.8em \"montserratregular\", sans-serif",
+        "color": "#61b3de",
+        "display": "block",
+        "marginBottom": 2
+    },
+    "notifi-inner-wrapper notification-body extra-cont": {
+        "font": "0.8em \"montserratregular\", sans-serif",
+        "color": "#61b3de",
+        "display": "block",
+        "marginBottom": 2
+    },
+    "notifi-inner-wrapper notification-body msg": {
+        "marginTop": 5,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "font": "0.8em 'montserratsemi_bold', sans-serif"
+    },
+    "notifi-inner-wrapper notification-body chat-date": {
+        "font": "0.6em 'montserratsemi_bold', sans-serif",
+        "position": "absolute",
+        "right": 10,
+        "bottom": 0,
+        "color": "#7795a8"
+    },
+    "notifi-inner-wrapper notification-body type-of-action": {
+        "font": "11px 'montserratregular', sans-serif",
+        "color": "#2d5164",
+        "marginTop": -1,
+        "fontSize": 0.7
     },
     "bubble-holder": {
         "position": "fixed",
@@ -4171,9 +4210,6 @@ export default StyleSheet.create({
         "marginBottom": 10,
         "paddingBottom": 18,
         "width": "100%"
-    },
-    "chat-popup msgList": {
-        "overflow": "hidden"
     },
     "chat-popup chat-view": {
         "background": "#f2f6f9",
@@ -4308,6 +4344,9 @@ export default StyleSheet.create({
     "custom-block time-holder field-holder": {
         "display": "inline-block"
     },
+    "custom-block time-holder day-period": {
+        "marginLeft": 10
+    },
     "custom-block time-holder field-holder:first-child:after": {
         "content": "\":\"",
         "display": "inline-block",
@@ -4322,14 +4361,15 @@ export default StyleSheet.create({
         "borderRadius": 5,
         "borderColor": "#d6e1ea",
         "paddingTop": 8,
-        "paddingRight": 15,
+        "paddingRight": 10,
         "paddingBottom": 8,
-        "paddingLeft": 15,
+        "paddingLeft": 10,
         "background": "#fff",
         "textTransform": "uppercase",
         "boxShadow": "none",
         "display": "inline-block",
-        "width": 70
+        "width": 70,
+        "fontSize": 0.85
     },
     "popover-content number-block form-control": {
         "border": "none",

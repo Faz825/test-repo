@@ -216,40 +216,32 @@ export class ComposeMessage extends React.Component{
         this.loggedUser = this.props.loggedUser;
         this.state = {
             validateAlert: "",
-            formData: {}
+            formData: {},
+            msgText: ""
         };
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
     }
 
     elementChangeHandler(event){
-
-        this.state.formData['msg'] = event.target.value;
-
-        let _error = "";
-        if(this.state.formData['msg'] == ""){
-            _error = Alert.EMPTY_MESSAGE;
-        }
-        this.setState({validateAlert:_error})
-
+        this.setState({msgText : event.target.value});
     }
 
     sendMessage(e){
         e.preventDefault();
         let _this = this;
-        if(!this.state.formData['msg'] || this.state.formData['msg'] == "") {
+        if(this.state.msgText.match(/^\s*$/)) {
             this.setState({validateAlert: Alert.EMPTY_MESSAGE});
             return 0;
         } else{
 
-            let msg = this.state.formData.msg;
+            let msg = this.state.msgText;
             let messageBody = {
                 message: msg,
                 title: this.props.conv.title,
                 uri: 'usr:proglobe'+this.props.conv.title
             }
 
-            this.setState({formData: {}});
-            this.setState({validateAlert: ""});
+            this.setState({msgText: "", validateAlert : ""});
             this.props.sendChat(messageBody);
         }
     }
@@ -265,7 +257,7 @@ export class ComposeMessage extends React.Component{
             <form onSubmit={this.sendMessage.bind(this)} id="chatMsg">
                 <div className="chat-msg-input-holder">
                     <div className="msg-input">
-                        <textarea className="form-control" placeholder="New Message..." name="msg" value={(this.state.formData.msg)?this.state.formData.msg:''}
+                        <textarea className="form-control" placeholder="New Message..." name="msg" value={this.state.msgText}
                                   onChange={(event)=>{ this.elementChangeHandler(event)}}
                                   onKeyDown={(event)=>{this.onEnter(event)}}
                             ></textarea>
