@@ -1914,9 +1914,15 @@ textarea{
 .pg-news-page-content .pg-news-page-header{
 	margin-bottom: 25px;
 }
+
 .pg-notes-page-content-item .note-cat-thumb{
 	background: url(../images/pg-notes-view-all.png) #5ebdaa repeat-y -3px top;
 }
+
+.pg-notes-page-content-item .note-cat-thumb.my-notebook{
+	background-color: #62b3de !important;
+}
+
 .color-picker{
 	text-align: center;
 	float: left;
@@ -2147,6 +2153,31 @@ textarea{
 	width: 41px;
 	height: 41px;
 }
+.pg-notes-page-content-item .my-notebook .cat-icon-holder{
+	width: 95px;
+	height: 128px;
+}
+
+.pg-notes-page-content-item .my-notebook .cat-icon-holder .cat-icon{
+	background: url("../images/my-notes.png") no-repeat;
+	width: 80px;
+	height: 128px;
+}
+
+.pg-notes-page-content-item .my-notebook .cat-title{
+	font: 12px 'montserratsemi_bold', sans-serif;
+    color: #fff;
+    padding: 12px 12px;
+    border: 1px solid #fff;
+    display: inline-block;
+    text-decoration: none;
+	position: absolute;
+	top: 20%;
+	left: 0;
+	right: 0;
+	margin: auto;;
+}
+
 .pg-news-page-content-item-left-thumb .cat-title,
 .pg-notes-page-content-item .note-cat-thumb .cat-title{
 	font: 1em 'montserratsemi_bold', sans-serif;
