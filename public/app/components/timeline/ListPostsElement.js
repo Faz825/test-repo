@@ -530,18 +530,16 @@ const LikeSummery=({likes,visibility}) =>{
         opt['style'] ={display:"block"}
     }
 
-
-
     return (
         <div className="row pg-newsfeed-common-content-like-status" {...opt}>
             <div className="col-xs-12">
                 <p className="pg-newsfeed-common-content-like-status-paragraph">
-                    <a href={"/profile/"+likes[0]} className="pg-newsfeed-common-content-like-status-profile-links">{likes[0].name}</a>
+                    <a href="javascript:void(0)" className="pg-newsfeed-common-content-like-status-profile-links">{likes[0].name}</a>
                     {
                         (likes.length == 2)?
-                            <a href={"/profile/"+likes[1]} className="pg-newsfeed-common-content-like-status-profile-links"> and  {likes[1].name}</a>
+                            <a href="javascript:void(0)" className="pg-newsfeed-common-content-like-status-profile-links"> and  {likes[1].name}</a>
                             :(likes.length > 2)?
-                                <a href="#" className="pg-newsfeed-common-content-like-status-profile-links"> and {likes.length}</a>
+                                <a href="javascript:void(0)" className="pg-newsfeed-common-content-like-status-profile-links"> and {likes.length}</a>
                             :null
 
                     } like this...

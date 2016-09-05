@@ -41,10 +41,14 @@ a:focus{
 	width: 100%;
 	z-index: 400;
 }
-.pg-top-navigation .pg-custom-container{
+.pg-top-navigation .container-fluid{
 	padding: 0;
 	margin: 0 auto;
 	width: calc(100% - 220px);
+}
+
+.signup-header .pg-custom-container{
+	padding: 0;
 }
 
 .pg-logo-wrapper {
@@ -557,6 +561,15 @@ a:focus{
 /*About You page*/
 
 .pgs-middle-about-wrapper {height: 100vh; padding-top:130px;padding-bottom: 50px;position: relative;z-index: 500; background-color: rgba(0, 0, 0, 0.6);}
+
+/*@media
+(-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+    .pgs-middle-about-wrapper > .container{
+		-webkit-transform: scale(0.75);
+		transform: scale(0.75);
+	}
+}*/
 
 .pgs-sign-left-arrow {position:absolute;left:-9px;top:-8px;}
 
@@ -3323,6 +3336,21 @@ textarea{
 .notifi-inner-wrapper .notification-body{
 	float: left;
 	width: 80%;
+}
+
+.notifi-inner-wrapper .btn-default{
+	background: #61b3de;
+	padding: 7px 12px;
+	text-transform: uppercase;
+	color: #fff;
+	border-radius: 5px;
+	font-family: 'montserratsemi_bold', sans-serif;
+	font-size: 0.6em;
+	display: inline-block;
+}
+
+.notifi-inner-wrapper .btn-default.reject{
+	background: #e82107;
 }
 
 .notifi-inner-wrapper .notification-body .connection-name,

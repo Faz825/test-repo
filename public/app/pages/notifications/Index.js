@@ -523,6 +523,8 @@ export class Notification extends React.Component{
                                 {notification.notification_type == 'Birthday'?"has their bithday "+notification.birthday:"" }
                                 {notification.notification_type != 'Birthday'?notification.post_owner_name +" post":null}</p>
                             <p className="chat-date">{notification.created_at.time_a_go}</p>
+                            <button className="btn btn-default">Accept</button>
+                            <button className="btn btn-default reject">Decline</button>
                         </div>
                     </a>
                 </div>
