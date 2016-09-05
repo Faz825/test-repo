@@ -60,7 +60,18 @@ var NotesController ={
             NoteBook = require('mongoose').model('NoteBook');
 
         var user_id = Util.getCurrentSession(req).id;
-        var criteria = {user_id:Util.toObjectId(user_id)};
+        var criteria = {
+            $or:[
+                {user_id:Util.toObjectId(user_id)},
+                {
+                   shared_users: {
+                       $elemMatch: {
+                           user_id: user_id
+                       }
+                   }
+                }
+            ]
+        };
 
         _async.waterfall([
             function getNotebooks(callBack){
@@ -69,41 +80,76 @@ var NotesController ={
                 });
             },
             function getNotes(notebooks,callBack){
-                Note.getNotes(criteria,function(resultSet){
-                    var notes = resultSet.notes;
-                    var _notes = [];
-                    var _notebook_ids = [];
+                var _notes = [];
+                _async.eachSeries(notebooks, function(notebook, callback){
+                    console.log(notebook._id+' '+notebook.name);
 
-                    for(var a = 0; a<notebooks.length; a++){
-                        var _notebook = {
-                            notebook_id:notebooks[a]._id,
-                            notebook_name:notebooks[a].name,
-                            notebook_color:notebooks[a].color,
-                            notes:[]
-                        };
-                        _notebook_ids.push(notebooks[a]._id.toString());
-                        _notes.push(_notebook);
-                    }
+                    var _notebook = {
+                        notebook_id:notebook._id,
+                        notebook_name:notebook.name,
+                        notebook_color:notebook.color,
+                        notebook_user:notebook.user_id,
+                        notes:[]
+                    }, notes_criteria = {
+                        notebook_id: Util.toObjectId(notebook._id)
+                    };
 
-                    for(var b = 0; b<notes.length; b++){
+                    console.log(notes_criteria.notebook_id);
 
-                        if(notes[b].notebook_id != null) {
-                            var _index = _notebook_ids.indexOf(notes[b].notebook_id.toString());//console.log(_index)
-                            if (_index != -1) {
-                                var _note = {
-                                    note_id: notes[b]._id,
-                                    note_name: notes[b].name,
-                                    note_content: notes[b].content,
-                                    updated_at: DateTime.noteCreatedDate(notes[b].updated_at)
-                                };
-                                _notes[_index].notes.push(_note)
-                            }
+                    Note.getNotes(notes_criteria,function(resultSet){
+                        var notes_set = resultSet.notes;
+                        for(var inc = 0; inc < notes_set.length; inc++){
+                            var _note = {
+                                note_id: notes_set[inc]._id,
+                                note_name: notes_set[inc].name,
+                                note_content: notes_set[inc].content,
+                                updated_at: DateTime.noteCreatedDate(notes_set[inc].updated_at)
+                            };
+                            _notebook.notes[inc] = _note;
                         }
-
-                    }
-
+                        _notes.push(_notebook);
+                        callback();
+                    });
+                },function(err){
                     callBack(null,_notes);
                 });
+
+                // Note.getNotes(criteria,function(resultSet){
+                //     var notes = resultSet.notes;
+                //     var _notes = [];
+                //     var _notebook_ids = [];
+                //
+                //     for(var a = 0; a<notebooks.length; a++){
+                //         var _notebook = {
+                //             notebook_id:notebooks[a]._id,
+                //             notebook_name:notebooks[a].name,
+                //             notebook_color:notebooks[a].color,
+                //             notebook_user:notebooks[a].user_id,
+                //             notes:[]
+                //         };
+                //         _notebook_ids.push(notebooks[a]._id.toString());
+                //         _notes.push(_notebook);
+                //     }
+                //
+                //     for(var b = 0; b<notes.length; b++){
+                //
+                //         if(notes[b].notebook_id != null) {
+                //             var _index = _notebook_ids.indexOf(notes[b].notebook_id.toString());//console.log(_index)
+                //             if (_index != -1) {
+                //                 var _note = {
+                //                     note_id: notes[b]._id,
+                //                     note_name: notes[b].name,
+                //                     note_content: notes[b].content,
+                //                     updated_at: DateTime.noteCreatedDate(notes[b].updated_at)
+                //                 };
+                //                 _notes[_index].notes.push(_note)
+                //             }
+                //         }
+                //
+                //     }
+                //
+                //     callBack(null,_notes);
+                // });
             }
 
         ],function(err,resultSet){
@@ -180,23 +226,52 @@ var NotesController ={
 
     shareNoteBook:function(req,res){
 
-        var NoteBook = require('mongoose').model('NoteBook');
+        var _async = require('async'),
+            NoteBook = require('mongoose').model('NoteBook'),
+            CurrentSession = Util.getCurrentSession(req);
 
-        var criteria = {
-            _id:req.body.noteBookId
+        var noteBookId = req.body.noteBookId;
+        var _sharingUser = {
+            user_id: req.body.userId,
+            shared_type: NoteBookSharedMode.READ_WRITE
         };
 
-        var updateData = {
-            shared_users:req.body.sharedUsers,
-        };
+        _async.waterfall([
 
-        NoteBook.shareNoteBook(criteria,updateData,function(resultSet){
-            if(resultSet.status == 200){
-                res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
-            }else{
-                res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+            function getNoteBook(callBack) {
+                var noteBook = NoteBook.getNotebookById(noteBookId, function (resultSet) {
+                    callBack(null, resultSet);
+                });
+            },
+            function shareNoteBook(resultSet, callBack) {
+                var sharedUsers = resultSet.shared_users;
+                sharedUsers.push(_sharingUser);
+
+                var _sharedUsers = {
+                    shared_users: sharedUsers
+                }
+
+                NoteBook.shareNoteBook(noteBookId,_sharedUsers,function(resultSet){
+                    if(resultSet.status == 200){
+                        res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+                    }else{
+                        res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+                    }
+                });
             }
+
+        ], function (err, resultSet) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            var outPut = {
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                notes: resultSet
+            }
+            res.status(200).json(outPut);
         });
+
     }
 
 };

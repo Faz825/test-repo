@@ -405,11 +405,11 @@ export class NoteCategory extends React.Component{
             return <div />
         }
         let i = 0;
-        console.log(notebooks);
+
         let _noteBooks = notebooks.map(function(notebook,key){
             let i = (
                 <Popover id="popover-contained"  positionTop="150px" className="popup-holder">
-                    <SharePopup note={notebook.notebook_name} notebookId={notebook.notebook_id}/>
+                    <SharePopup notebook={notebook}/>
                 </Popover>
             );
             return (
@@ -448,13 +448,17 @@ export class SharePopup extends React.Component{
     constructor(props) {
         super(props);
         this.state={}
+
+        console.log(this.props.notebook);
     }
 
     render(){
 
+        let _notebook = this.props.notebook;
+
         let i = (
             <Popover id="popover-contained"  positionTop="150px" className="popup-holder add-new">
-                <SharePopupNewUsr notebookId={this.props.notebookId}/>
+                <SharePopupNewUsr notebook={_notebook}/>
             </Popover>
         );
 
@@ -472,8 +476,8 @@ export class SharePopup extends React.Component{
                             <img src="images/chat-1.png" alt="User"/>
                         </div>
                         <div className="user-details">
-                            <h3 className="user-name">Leonard Green</h3>
-                            <p className="more-info">University of California, Berkeley</p>
+                            <h3 className="user-name">{_notebook.first_name} {_notebook.last_name}</h3>
+                            <p className="more-info">{_notebook.cur_working_at} at {_notebook.cur_designation}</p>
                         </div>
                         <div className="permission owner">
                             <p>(Owner)</p>
@@ -541,15 +545,33 @@ export class SharePopupNewUsr extends React.Component{
         }
     }
 
-    shareNote(){
-        let notebook_id = this.props.notebookId;
-        console.log(notebook_id);
+    shareNote(user){
+
+        let loggedUser = Session.getSession('prg_lg');
+        let notebook = this.props.notebook;
+        let _noteBook = {
+            noteBookId:notebook.notebook_id,
+            userId:user
+        };
+
+        $.ajax({
+            url: '/notes/share-notebook',
+            method: "POST",
+            dataType: "JSON",
+            data:_noteBook,
+            headers: { 'prg-auth-header':loggedUser.token }
+        }).done( function (data, text) {
+            if(data.code == 200){
+
+            }
+        }.bind(this));
+
     }
 
     render() {
 
         const { value, suggestions } = this.state;
-        let render_obj = this;
+        let _this = this;
 
         let _suggestions = suggestions.map(function(suggestion,key){
             if(suggestions.length <= 0){
@@ -564,7 +586,7 @@ export class SharePopupNewUsr extends React.Component{
                         <h3 className="user-name">{suggestion.first_name} {suggestion.last_name}</h3>
                     </div>
                     <div className="action">
-                        <button className="btn-add" onClick={render_obj.shareNote}>
+                        <button className="btn-add" onClick={()=>_this.shareNote(suggestion.user_id)}>
                             <i className="fa fa-plus" aria-hidden="true"></i>
                         </button>
                     </div>

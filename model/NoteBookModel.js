@@ -8,6 +8,10 @@ var  mongoose = require('mongoose'),
     Schema   = mongoose.Schema,
     uuid = require('node-uuid');
 
+GLOBAL.NoteBookSharedMode = {
+    READ_ONLY: 1,
+    READ_WRITE: 2
+};
 
 var NoteBookSchema = new Schema({
     name:{
@@ -27,6 +31,7 @@ var NoteBookSchema = new Schema({
         ref: 'User',
         default:null
     },
+    shared_users:[],
     created_at:{
         type:Date
     },
@@ -73,6 +78,26 @@ NoteBookSchema.statics.addNewNoteBook = function(NotebookData,callBack){
     });
 
 };
+/**
+ * Share Notebook
+ */
+NoteBookSchema.statics.shareNoteBook = function(noteBookId,sharedCriteria,callBack){
+
+    var _this = this;
+    _this.update({_id:noteBookId},
+        {$set:sharedCriteria},function(err,resultSet){
+
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
 
 
 /**
@@ -93,6 +118,30 @@ NoteBookSchema.statics.getNotebooks = function(criteria,callBack){
             callBack({status:400,error:err});
         }
     })
+
+};
+
+/**
+ * Get Notebook By Id
+ */
+NoteBookSchema.statics.getNotebookById = function(id,callBack){
+
+    var _this = this;
+
+    _this.findOne({_id: id}).exec(function (err, resultSet) {
+        if (!err) {
+            console.log(resultSet);
+            if (resultSet == null) {
+                callBack(null);
+                return;
+            }
+
+            callBack(resultSet);
+        } else {
+            console.log(err)
+            callBack({status: 400, error: err})
+        }
+    });
 
 };
 

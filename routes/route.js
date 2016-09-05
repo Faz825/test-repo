@@ -235,6 +235,7 @@ router.get('/news/saved/articles', NewsController.getSavedArticles);
 router.post('/like/composer', LikeController.doLike);
 
 router.post('/notes/add-notebook', NotesController.addNoteBook);
+router.post('/notes/share-notebook', NotesController.shareNoteBook);
 router.post('/notes/add-note', NotesController.addNote);
 router.get('/notes/get-notes', NotesController.getNotes);
 router.get('/notes/get-note/:note_id', NotesController.getNote);
