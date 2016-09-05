@@ -405,6 +405,7 @@ export class NoteCategory extends React.Component{
             return <div />
         }
         let i = 0;
+        console.log(notebooks);
         let _noteBooks = notebooks.map(function(notebook,key){
             let i = (
                 <Popover id="popover-contained"  positionTop="150px" className="popup-holder">
@@ -413,14 +414,14 @@ export class NoteCategory extends React.Component{
             );
             return (
                 <div className="row row-clr pg-notes-page-content-item pg-box-shadow" key={key}>
-                    <div className="col-xs-2 note-cat-thumb" style={{backgroundColor : notebook.notebook_color}}>
+                    <div className={notebook.notebook_name == "My Notes" ? "col-xs-2 note-cat-thumb my-notebook" : "col-xs-2 note-cat-thumb"} style={{backgroundColor : notebook.notebook_color}}>
                         <div className="cat-icon-holder">
                             <span className="cat-icon"></span>
                             <h3 className="cat-title">{notebook.notebook_name}</h3>
                         </div>
                         {
                             (notebook.notebook_name != "My Notes")?
-                            <OverlayTrigger container={this} trigger="click" placement="right" overlay={i}>
+                            <OverlayTrigger rootClose container={this} trigger="click" placement="right" overlay={i}>
                                 <span className="share-icon"><i className="fa fa-share-alt"></i></span>
                             </OverlayTrigger>
                             :

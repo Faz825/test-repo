@@ -301,14 +301,14 @@ export default class Index extends React.Component{
         let timeFieldValue = e.target.value;
 
         if(timeField == "hours"){
-            if(timeFieldValue <= "24"){
+            if(timeFieldValue <= 24){
                 timeFieldValue = e.target.value.substring(0,2);
                 this.setState({customHours: timeFieldValue});
             }
         }
 
         if(timeField == "mins"){
-            if(timeFieldValue <= "60"){
+            if(timeFieldValue <= 60){
                 timeFieldValue = e.target.value.substring(0,2);
                 this.setState({customMins: timeFieldValue});
             }
@@ -323,7 +323,7 @@ export default class Index extends React.Component{
         }else if(this.state.selectedOpt.length == 0){
             alert("Choose options");
             if(this.state.selectedOpt == "custom"){
-                if(this.state.customHours == "" || this.state.customMins == ""){
+                if(this.state.customHours == "" && this.state.customMins == ""){
                     alert("Add Custom Time");
                 }
             }
@@ -333,13 +333,21 @@ export default class Index extends React.Component{
                 __notification_mode: this.state.selectedOpt,
                 __custom_time: {
                     hh : this.state.customHours,
-                    mm : this.state.customMins
+                    mm : this.state.customMins,
+                    period : this.refs.timePeriod.value
                 }
             };
 
             console.log(obj);
         }
 
+    }
+
+    onPopoverOpen(){
+        let currH = this.state.hours;
+        let currM = this.state.minutes;
+
+        this.setState({customHours: currH, customMins: currM});
     }
 
     render() {
@@ -395,10 +403,16 @@ export default class Index extends React.Component{
                         </div>
                         <div className="time-holder">
                             <div className="field-holder">
-                                <input type="number" name="hours" min="1" max="24" className="form-control" value={this.state.customHours} placeholder="HH" onChange={(event)=>{this.onTimeChange(event)}} />
+                                <input type="number" name="hours" min="1" max="24" className="form-control" value={this.state.customHours} placeholder="Hour" onChange={(event)=>{this.onTimeChange(event)}} />
                             </div>
                             <div className="field-holder">
-                                <input type="number" name="mins" min="0" max="60" className="form-control" value={this.state.customMins} placeholder="MM" onChange={(event)=>{this.onTimeChange(event)}} />
+                                <input type="number" name="mins" min="0" max="60" className="form-control" value={this.state.customMins} placeholder="Minute" onChange={(event)=>{this.onTimeChange(event)}} />
+                            </div>
+                            <div className="field-holder day-period">
+                                <select name="periods" className="form-control" ref="timePeriod">
+                                    <option value="am" selected={partOfDay == "AM"}>AM</option>
+                                    <option value="pm" selected={partOfDay == "PM"}>PM</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -421,7 +435,7 @@ export default class Index extends React.Component{
                                     <p className="user-date">{date[2] + "," + date[1] + " " + date[3] + ", " + date[0]}</p>
                                     <p className="greeting-and-notifi">{greating + " " + loggedUser.first_name } {notificationCount > 0 ? ", you have "+notificationCount+" Notifications":""}</p>
                                 </div>
-                                <OverlayTrigger rootClose trigger="click" placement="bottom" overlay={popover} ref="overlay">
+                                <OverlayTrigger onEntered={this.onPopoverOpen.bind(this)} rootClose trigger="click" placement="bottom" overlay={popover} ref="overlay">
                                     <button className="btn btn-default">Text me to do's</button>
                                 </OverlayTrigger>
                             </div>
@@ -499,9 +513,9 @@ export class Notification extends React.Component{
                         <div className="chat-pro-img">
                             <img src={notification.sender_profile_picture}/>
                         </div>
-                        <div className="chat-body">
+                        <div className="notification-body">
                             <p className="connection-name">{notification.sender_name}</p>
-                            {notification.sender_count>0?<p> and {notification.sender_count} {notification.sender_count == 1? "other" : "others"} </p>:""}
+                            {notification.sender_count>0?<p className="extra-cont"> and {notification.sender_count} {notification.sender_count == 1? "other" : "others"} </p>:""}
                             <p className="type-of-action">
                                 {notification.notification_type == 'like'?"likes ":"" }
                                 {notification.notification_type == 'comment'?"commented on ":"" }
