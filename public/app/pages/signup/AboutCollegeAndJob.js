@@ -93,7 +93,7 @@ export default class AboutCollegeAndJob extends React.Component{
 
         let defaultVals = this.loggedUser;
 		return (
-			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper">
+			<div className="row row-clr pgs-middle-sign-wrapper pgs-middle-about-wrapper large-container">
             	<div className="container">
                     <div className="col-xs-8 pgs-middle-sign-wrapper-inner">
                     	<div className="row signupContentHolder">

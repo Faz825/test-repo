@@ -46,7 +46,7 @@ export default StyleSheet.create({
         "width": "100%",
         "zIndex": 400
     },
-    "pg-top-navigation pg-custom-container": {
+    "pg-top-navigation container-fluid": {
         "paddingTop": 0,
         "paddingRight": 0,
         "paddingBottom": 0,
@@ -56,6 +56,12 @@ export default StyleSheet.create({
         "marginBottom": 0,
         "marginLeft": "auto",
         "width": "calc(100% - 220px)"
+    },
+    "signup-header pg-custom-container": {
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
     },
     "pg-logo-wrapper": {},
     "pgs-main-nav-area ul": {
@@ -279,13 +285,18 @@ export default StyleSheet.create({
         "top": 14
     },
     "pg-header-options": {
-        "paddingLeft": 0,
-        "paddingTop": 8
+        "paddingTop": 8,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
     },
     "pg-header-options dropDown-holder": {
         "display": "inline-block",
         "marginRight": 7,
         "verticalAlign": "top"
+    },
+    "pg-header-options dropDown-holder:last-child": {
+        "marginRight": 0
     },
     "pg-header-options a:last-child": {
         "marginRight": 0
@@ -4119,6 +4130,22 @@ export default StyleSheet.create({
     "notifi-inner-wrapper notification-body": {
         "float": "left",
         "width": "80%"
+    },
+    "notifi-inner-wrapper btn-default": {
+        "background": "#61b3de",
+        "paddingTop": 7,
+        "paddingRight": 12,
+        "paddingBottom": 7,
+        "paddingLeft": 12,
+        "textTransform": "uppercase",
+        "color": "#fff",
+        "borderRadius": 5,
+        "fontFamily": "'montserratsemi_bold', sans-serif",
+        "fontSize": 0.6,
+        "display": "inline-block"
+    },
+    "notifi-inner-wrapper btn-defaultreject": {
+        "background": "#e82107"
     },
     "notifi-inner-wrapper notification-body connection-name": {
         "font": "0.8em \"montserratregular\", sans-serif",
