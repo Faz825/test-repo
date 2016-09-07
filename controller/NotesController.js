@@ -235,7 +235,8 @@ var NotesController ={
         var noteBookId = req.body.noteBookId;
         var _sharingUser = {
             user_id: req.body.userId,
-            shared_type: NoteBookSharedMode.READ_WRITE
+            shared_type: NoteBookSharedMode.READ_WRITE,
+            status: NoteBookSharedRequest.REQUEST_PENDING
         };
         var notifyUsers = [];
 
@@ -256,11 +257,6 @@ var NotesController ={
                 }
 
                 NoteBook.shareNoteBook(noteBookId,_sharedUsers,function(resultSet){
-                    //if(resultSet.status == 200){
-                    //    res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
-                    //}else{
-                    //    res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
-                    //}
                     callBack(null);
                 });
 
@@ -287,9 +283,6 @@ var NotesController ={
                 }
             },
             function notifyingUsers(notification_id, callBack){
-                console.log("going to save notification receipients >>>>>>>>");
-                console.log(notification_id);
-                console.log(notifyUsers);
                 var userList = [];
                 for(var i = 0; notifyUsers.length > i; i++) {
                     userList.push(notifyUsers[i].user_id);
