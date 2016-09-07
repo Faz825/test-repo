@@ -335,7 +335,6 @@ var NotesController ={
                             var notebook_list = resultSet.result[0].notebooks;
 
                             notebook_list.push(noteBookId);
-                            console.log(notebook_list);
                             var query={
                                     q:"user_id:"+req.body.userId.toString()
                                 },
@@ -355,7 +354,6 @@ var NotesController ={
                                 user_id: req.body.userId,
                                 notebooks: [noteBookId]
                             };
-                            console.log(data.notebooks);
                             NoteBook.ch_shareNoteBookCreateIndex(req.body.userId,data, function(esResultSet){
                                callBack(null);
                             });
