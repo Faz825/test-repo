@@ -663,6 +663,52 @@ var NotificationController ={
                 NoteBook.updateSharedNotebook(criteria, _udata, function(res){
                     callBack(null);
                 });
+            },
+            function updateESSharedStatus(callBack){
+                if(req.body.status == 'REQUEST_REJECTED'){
+
+                    _async.waterfall([
+                        function getSharedNoteBooks(callBack){
+                            var query={
+                                q:"_id:"+user_id
+                            };
+                            NoteBook.ch_getSharedNoteBooks(user_id, query, function (esResultSet){
+                                callBack(null, esResultSet);
+                            });
+
+                        },
+                        function ch_shareNoteBook(resultSet, callBack) {
+                            if(resultSet != null){
+                                var notebook_list = resultSet.result[0].notebooks;
+
+                                for(var inc = 0; inc < notebook_list.length; inc++){
+                                    if(req.body.notebook_id.toString() == notebook_list[inc]){
+                                        notebook_list.splice(inc, 1);
+                                    }
+                                }
+                                
+                                var query={
+                                        q:"user_id:"+user_id
+                                    },
+                                    data = {
+                                        user_id: user_id,
+                                        notebooks: notebook_list
+                                    };
+
+                                NoteBook.ch_shareNoteBookUpdateIndex(user_id,data, function(esResultSet){
+                                    callBack(null);
+                                });
+                            }else {
+                                callBack(null);
+                            }
+                        }
+                    ], function (err, resultSet) {
+                        callBack(null);
+                    });
+
+                }else{
+                    callBack(null);
+                }
             }
         ],function(err){
             var outPut ={

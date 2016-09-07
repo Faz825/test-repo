@@ -57,6 +57,7 @@ var NotesController ={
 
         var Note = require('mongoose').model('Notes'),
             _async = require('async'),
+            grep = require('grep-from-array'),
             NoteBook = require('mongoose').model('NoteBook'),
             CurrentSession = Util.getCurrentSession(req),
             _this = this;
@@ -179,6 +180,7 @@ var NotesController ={
                                     notebook_name:notebook.name,
                                     notebook_color:notebook.color,
                                     notebook_user:notebook.user_id,
+                                    notebook_shared_users:notebook.shared_users,
                                     notebook_updated_at:notebook.updated_at,
                                     is_shared: true,
                                     notes:[]
@@ -186,20 +188,26 @@ var NotesController ={
                                     notebook_id: Util.toObjectId(notebook._id)
                                 };
 
-                                Note.getNotes(notes_criteria,function(resultSet){
-                                    var notes_set = resultSet.notes;
-                                    for(var inc = 0; inc < notes_set.length; inc++){
-                                        var _note = {
-                                            note_id: notes_set[inc]._id,
-                                            note_name: notes_set[inc].name,
-                                            note_content: notes_set[inc].content,
-                                            updated_at: DateTime.noteCreatedDate(notes_set[inc].updated_at)
-                                        };
-                                        _notebook.notes[inc] = _note;
-                                    }
-                                    _notes.push(_notebook);
+                                var notebook_sharedUser = grep(_notebook.notebook_shared_users, function(e){ return e.user_id == user_id; });
+                                console.log(notebook_sharedUser);
+                                if(notebook_sharedUser.length > 0 && notebook_sharedUser[0].status == NoteBookSharedRequest.REQUEST_ACCEPTED){
+                                    Note.getNotes(notes_criteria,function(resultSet){
+                                        var notes_set = resultSet.notes;
+                                        for(var inc = 0; inc < notes_set.length; inc++){
+                                            var _note = {
+                                                note_id: notes_set[inc]._id,
+                                                note_name: notes_set[inc].name,
+                                                note_content: notes_set[inc].content,
+                                                updated_at: DateTime.noteCreatedDate(notes_set[inc].updated_at)
+                                            };
+                                            _notebook.notes[inc] = _note;
+                                        }
+                                        _notes.push(_notebook);
+                                        callBack(null);
+                                    });
+                                }else{
                                     callBack(null);
-                                });
+                                }
                             }
                         ],function(err){
                             callBack(null);
@@ -299,11 +307,7 @@ var NotesController ={
             NotificationRecipient = require('mongoose').model('NotificationRecipient');
 
         var noteBookId = req.body.noteBookId;
-        var _sharingUser = {
-            user_id: req.body.userId,
-            shared_type: NoteBookSharedMode.READ_WRITE,
-            status: NoteBookSharedRequest.REQUEST_PENDING
-        };
+
         var notifyUsers = [];
 
         _async.waterfall([
@@ -331,7 +335,7 @@ var NotesController ={
                             var notebook_list = resultSet.result[0].notebooks;
 
                             notebook_list.push(noteBookId);
-
+                            console.log(notebook_list);
                             var query={
                                     q:"user_id:"+req.body.userId.toString()
                                 },
@@ -351,7 +355,7 @@ var NotesController ={
                                 user_id: req.body.userId,
                                 notebooks: [noteBookId]
                             };
-
+                            console.log(data.notebooks);
                             NoteBook.ch_shareNoteBookCreateIndex(req.body.userId,data, function(esResultSet){
                                callBack(null);
                             });
@@ -361,7 +365,7 @@ var NotesController ={
                         var _sharingUser = {
                             user_id: req.body.userId,
                             shared_type: NoteBookSharedMode.READ_WRITE,
-                            request_status: NoteBookSharedRequest.REQUEST_PENDING
+                            status: NoteBookSharedRequest.REQUEST_PENDING
                         };
                         sharedUsers.push(_sharingUser);
 
