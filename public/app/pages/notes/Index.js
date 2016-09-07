@@ -64,6 +64,7 @@ export default class Index extends React.Component {
             dataType: "JSON",
             headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
+            console.log(data);
             if(data.status.code == 200){
                 if(data.notes.length == 0){
                     this.setState({catNameValue: "My Notes"});
@@ -72,9 +73,10 @@ export default class Index extends React.Component {
                     this.addNoteBook();
                 } else{
                     let notebooks = data.notes;
-                    let myNoteBook = notebooks[notebooks.length - 1];
-                    notebooks.pop();
-                    notebooks.splice(0,0,myNoteBook);
+                    console.log(notebooks);
+                    // let myNoteBook = notebooks[notebooks.length - 1];
+                    // notebooks.pop();
+                    // notebooks.splice(0,0,myNoteBook);
                     this.setState({notes: notebooks});
                 }
             }

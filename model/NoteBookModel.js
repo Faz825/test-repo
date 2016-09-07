@@ -8,9 +8,17 @@ var  mongoose = require('mongoose'),
     Schema   = mongoose.Schema,
     uuid = require('node-uuid');
 
+GLOBAL.NoteBookConfig={
+    CACHE_PREFIX :"shared_notebooks:"
+};
 GLOBAL.NoteBookSharedMode = {
     READ_ONLY: 1,
     READ_WRITE: 2
+};
+GLOBAL.NoteBookSharedRequest = {
+    REQUEST_PENDING: 1,
+    REQUEST_REJECTED: 2,
+    REQUEST_ACCEPTED: 3
 };
 
 GLOBAL.NoteBookSharedRequest = {
@@ -84,8 +92,49 @@ NoteBookSchema.statics.addNewNoteBook = function(NotebookData,callBack){
     });
 
 };
+
 /**
- * Share Notebook
+ * Share Notebook | Cache based on User
+ * {Create Index}
+ */
+NoteBookSchema.statics.ch_shareNoteBookCreateIndex = function(userId,data,callBack){
+
+    var _cache_key = "idx_notebook:"+NoteBookConfig.CACHE_PREFIX+userId;
+    var payLoad={
+        index:_cache_key,
+        id:data.user_id.toString(),
+        type: 'shared_notebooks',
+        data:data
+    }
+
+    ES.createIndex(payLoad,function(resultSet){
+        callBack(resultSet)
+    });
+
+};
+
+/**
+ * Share Notebook | Cache based on User
+ * {Update Notebook List}
+ */
+NoteBookSchema.statics.ch_shareNoteBookUpdateIndex = function(userId,data,callBack){
+
+    var _cache_key = "idx_notebook:"+NoteBookConfig.CACHE_PREFIX+userId;
+    var payLoad={
+        index:_cache_key,
+        id:data.user_id.toString(),
+        type: 'shared_notebooks',
+        data:data
+    }
+
+    ES.update(payLoad,function(resultSet){
+        callBack(resultSet)
+    });
+
+};
+
+/**
+ * Share Notebook | DB
  */
 NoteBookSchema.statics.shareNoteBook = function(noteBookId,sharedCriteria,callBack){
 
@@ -105,9 +154,34 @@ NoteBookSchema.statics.shareNoteBook = function(noteBookId,sharedCriteria,callBa
 
 };
 
+/**
+ * Get Notebook | Get shared notebook to user
+ */
+NoteBookSchema.statics.ch_getSharedNoteBooks = function(userId,payload,callBack){
+
+    var _this = this;
+    var _cache_key = "idx_notebook:"+NoteBookConfig.CACHE_PREFIX+userId;
+
+    var query={
+        q:payload.q,
+        index:_cache_key
+    };
+
+    //Find User from Elastic search
+    ES.search(query,function(csResultSet){
+        if(csResultSet == null){
+            callBack(null);
+        }else{
+            callBack(csResultSet);
+        }
+
+    });
+
+};
+
 
 /**
- * Get Notebooks
+ * Get Notebooks | DB
  */
 NoteBookSchema.statics.getNotebooks = function(criteria,callBack){
 

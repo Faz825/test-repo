@@ -52,6 +52,37 @@ var ES = {
 
         });
     },
+    /**
+     *
+     * @param callBack
+     */
+    update:function(payLoad,callBack){
+
+        var _esData = {
+            index:payLoad.index,
+            type:payLoad.type,
+            id:payLoad.id
+        };
+
+        if(typeof payLoad.tag_fields != 'undefined' ){
+            _esData['tags'] = [];
+            for(var i=0;i< payLoad.tag_fields.length;i++){
+
+                _esData['tags'].push(payLoad.data[payLoad.tag_fields[i]]);
+            }
+        }
+
+        _esData['body'] = {doc: payLoad.data};
+        this.esClient.update(_esData, function (error, response) {
+            if(error)
+                console.log(error);
+
+
+            callBack(response);
+
+
+        });
+    },
     /***
      *
      * @param payLoad
