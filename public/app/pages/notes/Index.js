@@ -66,7 +66,8 @@ export default class Index extends React.Component {
         }).done( function (data, text) {
             console.log(data);
             if(data.status.code == 200){
-                if(data.notes.length == 0){
+                console.log(data.notes.length);
+                if(data.notes.length == 0 || data.notes[0] == null){
                     this.setState({catNameValue: "My Notes"});
                     this.setState({catColor: "#0272ae"});
                     this.setState({isDefault: 1});

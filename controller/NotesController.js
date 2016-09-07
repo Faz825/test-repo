@@ -61,9 +61,9 @@ var NotesController ={
             CurrentSession = Util.getCurrentSession(req),
             _this = this;
 
-        var user_id = Util.getCurrentSession(req).id;
+        var user_id = CurrentSession.id;
         var criteria = {user_id:Util.toObjectId(user_id)};
-        var my_note = {};
+        var my_note;
 
         _async.waterfall([
             function getNotebooks(callBack){
@@ -316,8 +316,6 @@ var NotesController ={
             function shareNoteBook(resultSet, callBack) {
                 var sharedUsers = resultSet.shared_users;
                 notifyUsers = resultSet.shared_users;
-                sharedUsers.push(_sharingUser);
-
                 _async.waterfall([
                     function getSharedNoteBooks(callBack){
                         var query={
@@ -343,8 +341,6 @@ var NotesController ={
                                 };
 
                             NoteBook.ch_shareNoteBookUpdateIndex(req.body.userId,data, function(esResultSet){
-                                console.log('idx_notebook updated');
-                                console.log(esResultSet);
                                 callBack(null);
                             });
                         }else{
@@ -373,7 +369,11 @@ var NotesController ={
                             shared_users: sharedUsers
                         }
 
-                NoteBook.shareNoteBook(noteBookId,_sharedUsers,function(resultSet){
+                        NoteBook.shareNoteBook(noteBookId,_sharedUsers,function(resultSet){
+                            callBack(null);
+                        });
+                    }
+                ], function (err, resultSet) {
                     callBack(null);
                 });
 
@@ -418,13 +418,6 @@ var NotesController ={
                 } else{
                     callBack(null);
                 }
-                        NoteBook.shareNoteBook(noteBookId,_sharedUsers,function(resultSet){
-                            callBack(null);
-                        });
-                    }
-                ], function (err, resultSet) {
-                    callBack(null);
-                });
             }
 
         ], function (err, resultSet) {
