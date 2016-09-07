@@ -565,14 +565,23 @@ a:focus{
 
 .pgs-middle-about-wrapper {height: 100vh; padding-top:130px;padding-bottom: 50px;position: relative;z-index: 500; background-color: rgba(0, 0, 0, 0.6);}
 
-@media
-(-webkit-min-device-pixel-ratio: 2),
-(min-resolution: 192dpi) {
+@media only screen and (-webkit-min-device-pixel-ratio: 1.3),
+only screen and (-o-min-device-pixel-ratio: 13/10),
+only screen and (min-resolution: 120dpi){
 	.pgs-middle-about-wrapper.large-container{
-		padding-top: 5%;
+		padding-top: 4%;
 	}
 
-    .pgs-middle-about-wrapper.large-container > .container{
+	.pgs-middle-about-wrapper.large-container.connections{
+		padding-top: 20px;
+	}
+
+	.pgs-middle-about-wrapper.large-container > .container{
+		-webkit-transform: scale(0.85);
+		transform: scale(0.85);
+	}
+
+	.pgs-middle-about-wrapper.large-container.connections > .container{
 		-webkit-transform: scale(0.75);
 		transform: scale(0.75);
 	}

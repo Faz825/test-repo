@@ -228,13 +228,16 @@ var NotesController ={
 
         var _async = require('async'),
             NoteBook = require('mongoose').model('NoteBook'),
-            CurrentSession = Util.getCurrentSession(req);
+            CurrentSession = Util.getCurrentSession(req),
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient');
 
         var noteBookId = req.body.noteBookId;
         var _sharingUser = {
             user_id: req.body.userId,
             shared_type: NoteBookSharedMode.READ_WRITE
         };
+        var notifyUsers = [];
 
         _async.waterfall([
 
@@ -245,6 +248,7 @@ var NotesController ={
             },
             function shareNoteBook(resultSet, callBack) {
                 var sharedUsers = resultSet.shared_users;
+                notifyUsers = resultSet.shared_users;
                 sharedUsers.push(_sharingUser);
 
                 var _sharedUsers = {
@@ -252,12 +256,58 @@ var NotesController ={
                 }
 
                 NoteBook.shareNoteBook(noteBookId,_sharedUsers,function(resultSet){
-                    if(resultSet.status == 200){
-                        res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
-                    }else{
-                        res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
-                    }
+                    //if(resultSet.status == 200){
+                    //    res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
+                    //}else{
+                    //    res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
+                    //}
+                    callBack(null);
                 });
+
+            },
+            function addNotification(callBack){
+
+                if(notifyUsers.length > 0){
+
+                    var _data = {
+                        sender:CurrentSession.id,
+                        notification_type:Notifications.SHARE_NOTEBOOK,
+                        notified_notebook:noteBookId
+                    }
+                    Notification.saveNotification(_data, function(res){
+                        if(res.status == 200){
+                            //_commentData['notification_id'] = res.result._id;
+                            callBack(null,res.result._id);
+                        }
+
+                    });
+
+                } else{
+                    callBack(null);
+                }
+            },
+            function notifyingUsers(notification_id, callBack){
+                console.log("going to save notification receipients >>>>>>>>");
+                console.log(notification_id);
+                console.log(notifyUsers);
+                var userList = [];
+                for(var i = 0; notifyUsers.length > i; i++) {
+                    userList.push(notifyUsers[i].user_id);
+                }
+                console.log(userList);
+                if(typeof notification_id != 'undefined' && userList.length > 0){
+
+                    var _data = {
+                        notification_id:notification_id,
+                        recipients:userList
+                    };
+                    NotificationRecipient.saveRecipients(_data, function(res){
+                        callBack(null);
+                    })
+
+                } else{
+                    callBack(null);
+                }
             }
 
         ], function (err, resultSet) {

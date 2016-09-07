@@ -245,6 +245,7 @@ router.post('/introduction/update', UserController.updateIntroduction);
 router.get('/introduction/:uname',UserController.retrieveIntroduction);
 router.get('/notifications/get-notifications',NotificationController.getNotifications);
 router.post('/notifications/update-notifications',NotificationController.updateNotifications);
+router.post('/notifications/notebook-update',NotificationController.updateNotebookNotifications);
 router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);
 router.get('/notifications/get-details',NotificationController.getDetails);
 router.get('/notifications/get-notification-count',NotificationController.getNotificationCount);

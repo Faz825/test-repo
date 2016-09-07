@@ -13,6 +13,12 @@ GLOBAL.NoteBookSharedMode = {
     READ_WRITE: 2
 };
 
+GLOBAL.NoteBookSharedRequest = {
+    REQUEST_PENDING: 1,
+    REQUEST_REJECTED: 2,
+    REQUEST_ACCEPTED: 3
+};
+
 var NoteBookSchema = new Schema({
     name:{
         type:String,
@@ -143,6 +149,29 @@ NoteBookSchema.statics.getNotebookById = function(id,callBack){
         }
     });
 
+};
+
+/**
+ * Update Shared Notebook
+ * @param criteria
+ * @param data
+ * @param callBack
+ */
+NoteBookSchema.statics.updateSharedNotebook = function(criteria, data, callBack){
+
+    var _this = this;
+
+    _this.update(criteria, data, {multi:true}, function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                console.log(err)
+                callBack({status:400,error:err});
+            }
+        });
 };
 
 

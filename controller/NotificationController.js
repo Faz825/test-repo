@@ -66,7 +66,7 @@ var NotificationController ={
 
                         for(var i = 0; i < notifications.length; i++){
 
-                            if(notifications[i]['notification_type'] == Notifications.BIRTHDAY){
+                            if(notifications[i]['notification_type'] == Notifications.BIRTHDAY || notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK){
                                 _type = notifications[i]['notification_type']
                             } else{
                                 _type = notifications[i]['post_id']+notifications[i]['notification_type'];
@@ -80,13 +80,15 @@ var NotificationController ={
                                 _types.push(_type)
                                 _notifications[_type] = {
                                     post_id:notifications[i]['post_id'],
+                                    notebook_id:notifications[i]['notebook_id'],
                                     notification_type:notifications[i]['notification_type'],
                                     read_status:notifications[i]['read_status'],
                                     post_owner:null,
                                     created_at:notifications[i]['created_at'],
                                     senders:[],
                                     sender_count:0,
-                                    notification_ids:[]
+                                    notification_ids:[],
+                                    notification_id:notifications[i]['notification_id']
                                 };
                                 _noOfNotifications++;
                             }
@@ -118,7 +120,7 @@ var NotificationController ={
 
                         for(var i = 0; i < notifications.length; i++){
 
-                            if(notifications[i]['notification_type'] == Notifications.BIRTHDAY){
+                            if(notifications[i]['notification_type'] == Notifications.BIRTHDAY || notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK){
                                 _type = notifications[i]['notification_type']
                             } else{
                                 _type = notifications[i]['post_id']+notifications[i]['notification_type'];
@@ -132,13 +134,15 @@ var NotificationController ={
                                 _types.push(_type)
                                 _notifications[_type] = {
                                     post_id:notifications[i]['post_id'],
+                                    notebook_id:notifications[i]['notebook_id'],
                                     notification_type:notifications[i]['notification_type'],
                                     read_status:notifications[i]['read_status'],
                                     post_owner:null,
                                     created_at:notifications[i]['created_at'],
                                     senders:[],
                                     sender_count:0,
-                                    notification_ids:[]
+                                    notification_ids:[],
+                                    notification_id:notifications[i]['notification_id']
                                 };
                             }
                         }
@@ -169,7 +173,7 @@ var NotificationController ={
 
                     var x = 0;
 
-                    if(notifications[i]['notification_type'] == Notifications.BIRTHDAY){
+                    if(notifications[i]['notification_type'] == Notifications.BIRTHDAY || notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK){
 
                         if(_notifications[notifications[i]['notification_type']]['senders'].indexOf(notifications[i]['sender_id'].toString()) == -1 && x < 3){
                             _notifications[notifications[i]['notification_type']]['senders'].push(notifications[i]['sender_id'].toString());
@@ -317,7 +321,7 @@ var NotificationController ={
                                 birthdayDay = "yesterday";
                             }
 
-                        }else{
+                        }else if(obj.notification_type != Notifications.SHARE_NOTEBOOK){
 
                             if(obj.post_owner == user_id){
                                 _postOwnerName = "your";
@@ -337,7 +341,9 @@ var NotificationController ={
                             sender_profile_picture:_users[obj.senders[0]]['profile_image'],
                             sender_name:_users[obj.senders[0]]['name'],
                             sender_count:obj.sender_count,
-                            birthday:birthdayDay
+                            birthday:birthdayDay,
+                            notebook_id:obj.notebook_id,
+                            notification_id:obj.notification_id
                         };
 
                         if(obj.senders.length == 2){
@@ -620,6 +626,47 @@ var NotificationController ={
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 count:result.result
+            };
+            res.status(200).json(outPut);
+        })
+
+
+    },
+    updateNotebookNotifications: function(req,res){
+
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            Notification = require('mongoose').model('Notification'),
+            NoteBook = require('mongoose').model('NoteBook'),
+            _async = require('async'),
+            _data = {read_status:true},
+            user_id = Util.getCurrentSession(req).id;
+
+        _async.parallel([
+            function updateNotifications(callBack){
+                var _criteria = {notification_id:Util.toObjectId(req.body.notification_id), recipient:Util.toObjectId(user_id)};
+                NotificationRecipient.updateRecipientNotification(_criteria, _data, function(res){
+                    callBack(null);
+                });
+            },
+            function updateSharedStatus(callBack) {
+                var shared_status = req.body.status == 'REQUEST_REJECTED' ?
+                    NoteBookSharedRequest.REQUEST_REJECTED : NoteBookSharedRequest.REQUEST_ACCEPTED;
+
+                var _udata = {
+                    'shared_users.$.status':shared_status
+                };
+                var criteria = {
+                    _id:Util.toObjectId(req.body.notebook_id),
+                    'shared_users.user_id':user_id
+                };
+
+                NoteBook.updateSharedNotebook(criteria, _udata, function(res){
+                    callBack(null);
+                });
+            }
+        ],function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
             };
             res.status(200).json(outPut);
         })

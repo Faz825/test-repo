@@ -52,7 +52,7 @@ export default class Index extends React.Component{
             let _oldNotification = {}, _newNotification = {};
             let _alreadyExist = false;
 
-            if(data.notification_type == "Birthday"){
+            if(data.notification_type == "Birthday" || data.notification_type == "share_notebook"){
                 _this.state.notificationCount++;
                 _newNotifications.push(data);
                 for(var j = 0; j < _existingNotifications.length; j++){
@@ -226,7 +226,7 @@ export default class Index extends React.Component{
 
     redirectToNotification(_notification){
 
-        if(_notification.notification_type != 'Birthday'){
+        if(_notification.notification_type != 'Birthday' && _notification.notification_type != "share_notebook"){
 
             $.ajax({
                 url: '/notifications/update-notifications',
@@ -350,6 +350,28 @@ export default class Index extends React.Component{
         this.setState({customHours: currH, customMins: currM});
     }
 
+    onUpdateSharedNoteBook(notification, stt) {
+
+        if(typeof notification.notebook_id != 'undefined' && notification.notification_type == "share_notebook"){
+
+                $.ajax({
+                url: '/notifications/notebook-update',
+                method: "POST",
+                dataType: "JSON",
+                data:{notebook_id:notification.notebook_id, notification_type:notification.notification_type, notification_id:notification.notification_id, status:stt},
+                headers: { 'prg-auth-header':this.state.loggedUser.token }
+            }).done( function (data, text) {
+
+                    if(stt == 'REQUEST_REJECTED') {
+                        window.location.reload();
+                    } else {
+                        window.location.href = '/notes';
+                    }
+
+            }.bind(this));
+        }
+    }
+
     render() {
         let loggedUser = this.state.loggedUser;
         let _secretary_image = loggedUser.secretary_image_url;
@@ -458,13 +480,17 @@ export default class Index extends React.Component{
                                             {elementsList.length > 5?
                                                 <Scrollbars style={{ height: 360 }} onScroll={this.handleScroll}>
                                                     <div className="chat-notification-header" id="unread_chat_list">
-                                                        <Notification notifications = {elementsList} clickNotification = {this.redirectToNotification.bind(this)}/>
+                                                        <Notification notifications = {elementsList}
+                                                                      clickNotification = {this.redirectToNotification.bind(this)}
+                                                                      updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)}/>
                                                     </div>
                                                 </Scrollbars>
                                                 :
                                                 elementsList.length > 0 ?
                                                     <div className="chat-notification-header" id="unread_chat_list">
-                                                        <Notification notifications = {elementsList} clickNotification = {this.redirectToNotification.bind(this)}/>
+                                                        <Notification notifications = {elementsList}
+                                                                      clickNotification = {this.redirectToNotification.bind(this)}
+                                                                      updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)}/>
                                                     </div>
                                                     :
                                                     null
@@ -521,10 +547,14 @@ export class Notification extends React.Component{
                                 {notification.notification_type == 'comment'?"commented on ":"" }
                                 {notification.notification_type == 'share'?"shared ":"" }
                                 {notification.notification_type == 'Birthday'?"has their bithday "+notification.birthday:"" }
-                                {notification.notification_type != 'Birthday'?notification.post_owner_name +" post":null}</p>
+                                {notification.notification_type != 'Birthday' && notification.notification_type != 'share_notebook'?notification.post_owner_name +" post":null}
+                                {notification.notification_type == 'share_notebook' ? notification.post_owner_name +" shared a notebook":null}
+                            </p>
                             <p className="chat-date">{notification.created_at.time_a_go}</p>
-                            <button className="btn btn-default">Accept</button>
-                            <button className="btn btn-default reject">Decline</button>
+
+                            {notification.notification_type == 'share_notebook'  && !notification.read_status ? <button className="btn btn-default" onClick={()=>_this.props.updateNoteBook(notification, 'REQUEST_ACCEPTED')}>Accept</button> : null}
+                            {notification.notification_type == 'share_notebook'  && !notification.read_status ? <button className="btn btn-default reject" onClick={()=>_this.props.updateNoteBook(notification, 'REQUEST_REJECTED')}>Decline</button> : null}
+
                         </div>
                     </a>
                 </div>
