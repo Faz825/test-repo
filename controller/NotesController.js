@@ -57,21 +57,13 @@ var NotesController ={
 
         var Note = require('mongoose').model('Notes'),
             _async = require('async'),
-            NoteBook = require('mongoose').model('NoteBook');
+            NoteBook = require('mongoose').model('NoteBook'),
+            CurrentSession = Util.getCurrentSession(req),
+            _this = this;
 
         var user_id = Util.getCurrentSession(req).id;
-        var criteria = {
-            $or:[
-                {user_id:Util.toObjectId(user_id)},
-                {
-                   shared_users: {
-                       $elemMatch: {
-                           user_id: user_id
-                       }
-                   }
-                }
-            ]
-        };
+        var criteria = {user_id:Util.toObjectId(user_id)};
+        var my_note = {};
 
         _async.waterfall([
             function getNotebooks(callBack){
@@ -79,22 +71,20 @@ var NotesController ={
                     callBack(null,resultSet.notebooks);
                 });
             },
-            function getNotes(notebooks,callBack){
+            function getNotesDB(notebooks,callBack){
                 var _notes = [];
-                _async.eachSeries(notebooks, function(notebook, callback){
-                    console.log(notebook._id+' '+notebook.name);
-
+                _async.eachSeries(notebooks, function(notebook, callBack){
                     var _notebook = {
                         notebook_id:notebook._id,
                         notebook_name:notebook.name,
                         notebook_color:notebook.color,
                         notebook_user:notebook.user_id,
+                        notebook_updated_at:notebook.updated_at,
+                        is_shared: false,
                         notes:[]
                     }, notes_criteria = {
                         notebook_id: Util.toObjectId(notebook._id)
                     };
-
-                    console.log(notes_criteria.notebook_id);
 
                     Note.getNotes(notes_criteria,function(resultSet){
                         var notes_set = resultSet.notes;
@@ -107,8 +97,13 @@ var NotesController ={
                             };
                             _notebook.notes[inc] = _note;
                         }
-                        _notes.push(_notebook);
-                        callback();
+                        if(_notebook.notebook_name == 'My Notes'){
+                            my_note = _notebook;
+                        }else {
+                            _notes.push(_notebook);
+                        }
+
+                        callBack(null);
                     });
                 },function(err){
                     callBack(null,_notes);
@@ -150,12 +145,83 @@ var NotesController ={
                 //
                 //     callBack(null,_notes);
                 // });
+            },
+            function getSharedNoteBooks(resultSet, callBack){
+                var user_id = CurrentSession.id;
+
+                var query={
+                    q:"_id:"+user_id.toString()
+                };
+                NoteBook.ch_getSharedNoteBooks(user_id, query, function (esResultSet){
+                    callBack(null, {
+                        user_notes: resultSet,
+                        shared_notes: esResultSet
+                    });
+                });
+
+            },
+            function getSharedNotes(resultSet, callBack){
+
+                if(resultSet.shared_notes != null){
+                    var sharedNoteList = resultSet.shared_notes.result[0].notebooks;
+                    var _notes = (resultSet.user_notes != null)? resultSet.user_notes: [];
+                    _async.eachSeries(sharedNoteList, function(notebook, callBack){
+                        console.log(notebook);
+                        _async.waterfall([
+                            function getNotebooks(callBack){
+                                NoteBook.getNotebookById(notebook,function(resultSet){
+                                    callBack(null,resultSet);
+                                });
+                            },
+                            function getNotesDB(notebook,callBack){
+                                var _notebook = {
+                                    notebook_id:notebook._id,
+                                    notebook_name:notebook.name,
+                                    notebook_color:notebook.color,
+                                    notebook_user:notebook.user_id,
+                                    notebook_updated_at:notebook.updated_at,
+                                    is_shared: true,
+                                    notes:[]
+                                }, notes_criteria = {
+                                    notebook_id: Util.toObjectId(notebook._id)
+                                };
+
+                                Note.getNotes(notes_criteria,function(resultSet){
+                                    var notes_set = resultSet.notes;
+                                    for(var inc = 0; inc < notes_set.length; inc++){
+                                        var _note = {
+                                            note_id: notes_set[inc]._id,
+                                            note_name: notes_set[inc].name,
+                                            note_content: notes_set[inc].content,
+                                            updated_at: DateTime.noteCreatedDate(notes_set[inc].updated_at)
+                                        };
+                                        _notebook.notes[inc] = _note;
+                                    }
+                                    _notes.push(_notebook);
+                                    callBack(null);
+                                });
+                            }
+                        ],function(err){
+                            callBack(null);
+                        });
+
+                    },function(err){
+                        callBack(null, _notes);
+                    });
+
+                }else {
+                    callBack(null, resultSet.user_notes);
+                }
             }
 
         ],function(err,resultSet){
+
+            var sorted_resultSet  = Util.sortByKeyDES(resultSet, 'notebook_updated_at');
+            sorted_resultSet.unshift(my_note);
+
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                notes:resultSet
+                notes:sorted_resultSet
             }
             res.status(200).json(outPut);
         });
@@ -252,9 +318,60 @@ var NotesController ={
                 notifyUsers = resultSet.shared_users;
                 sharedUsers.push(_sharingUser);
 
-                var _sharedUsers = {
-                    shared_users: sharedUsers
-                }
+                _async.waterfall([
+                    function getSharedNoteBooks(callBack){
+                        var query={
+                            q:"_id:"+req.body.userId.toString()
+                        };
+                        NoteBook.ch_getSharedNoteBooks(req.body.userId, query, function (esResultSet){
+                            callBack(null, esResultSet);
+                        });
+
+                    },
+                    function ch_shareNoteBook(resultSet, callBack) {
+                        if(resultSet != null){
+                            var notebook_list = resultSet.result[0].notebooks;
+
+                            notebook_list.push(noteBookId);
+
+                            var query={
+                                    q:"user_id:"+req.body.userId.toString()
+                                },
+                                data = {
+                                    user_id: req.body.userId,
+                                    notebooks: notebook_list
+                                };
+
+                            NoteBook.ch_shareNoteBookUpdateIndex(req.body.userId,data, function(esResultSet){
+                                console.log('idx_notebook updated');
+                                console.log(esResultSet);
+                                callBack(null);
+                            });
+                        }else{
+                            var query={
+                                q:"user_id:"+req.body.userId.toString()
+                            },
+                            data = {
+                                user_id: req.body.userId,
+                                notebooks: [noteBookId]
+                            };
+
+                            NoteBook.ch_shareNoteBookCreateIndex(req.body.userId,data, function(esResultSet){
+                               callBack(null);
+                            });
+                        }
+                    },
+                    function saveInDB(callBack){
+                        var _sharingUser = {
+                            user_id: req.body.userId,
+                            shared_type: NoteBookSharedMode.READ_WRITE,
+                            request_status: NoteBookSharedRequest.REQUEST_PENDING
+                        };
+                        sharedUsers.push(_sharingUser);
+
+                        var _sharedUsers = {
+                            shared_users: sharedUsers
+                        }
 
                 NoteBook.shareNoteBook(noteBookId,_sharedUsers,function(resultSet){
                     callBack(null);
@@ -301,6 +418,13 @@ var NotesController ={
                 } else{
                     callBack(null);
                 }
+                        NoteBook.shareNoteBook(noteBookId,_sharedUsers,function(resultSet){
+                            callBack(null);
+                        });
+                    }
+                ], function (err, resultSet) {
+                    callBack(null);
+                });
             }
 
         ], function (err, resultSet) {
