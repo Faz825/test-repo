@@ -452,6 +452,209 @@ var NotesController ={
             res.status(200).json(outPut);
         });
 
+    },
+
+    /**
+     * get shared users for a notebook
+     * @param req
+     * @param res
+     */
+    getNoteBookSharedUsers:function(req,res){
+
+        console.log("about to get shared users ----");
+        var _async = require('async'),
+            NoteBook = require('mongoose').model('NoteBook'),
+            CurrentSession = Util.getCurrentSession(req),
+            noteBookId = req.body.notebook_id;
+
+        var dataArray = [];
+
+        console.log(noteBookId);
+        _async.waterfall([
+            function getNotebook(callBack){
+                NoteBook.getNotebookById(noteBookId,function(resultSet){
+                    callBack(null,resultSet);
+                });
+            },
+            function getSharedUsers(resultSet, callBack) {
+                var sharedUsers = resultSet.shared_users;
+                console.log(resultSet.shared_users);
+
+
+                _async.each(sharedUsers, function(sharedUser, callBack){
+
+                    console.log(sharedUser);
+
+                    if(sharedUser.status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
+                        var query={
+                            q:"user_id:"+sharedUser.user_id.toString(),
+                            index:'idx_usr'
+                        };
+                        //Find User from Elastic search
+                        ES.search(query,function(csResultSet){
+                            console.log(csResultSet);
+                            var usrObj = {
+                                user_id:sharedUser.user_id,
+                                notebook_id:noteBookId,
+                                shared_type:sharedUser.shared_type,
+                                shared_status:sharedUser.status,
+                                user_name:csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
+                                profile_image:csResultSet.result[0]['images']['profile_image']['http_url']
+                            };
+                            dataArray.push(usrObj);
+                            callBack(null);
+                        });
+                    }else{
+                        callBack(null);
+                    }
+
+                },function(err){
+                    callBack(null);
+                });
+
+            }
+        ],function(err){
+            console.log("finally ---");
+            console.log(dataArray);
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                results: dataArray
+            };
+            res.status(200).json(outPut);
+        })
+    },
+
+    /**
+     * notebook owner changing the edit permission of a notebook to a shared user
+     * @param req
+     * @param res
+     */
+    updateNoteBookSharedPermissions:function(req,res){
+
+        var NoteBook = require('mongoose').model('NoteBook'),
+            _async = require('async'),
+            own_user_id = Util.getCurrentSession(req).id;
+
+        var shared_type = req.body.shared_type == 2 ? NoteBookSharedMode.READ_WRITE : NoteBookSharedMode.READ_ONLY,
+            notebook_id = req.body.notebook_id,
+            shared_user_id = req.body.user_id;
+
+        var _udata = {
+            'shared_users.$.shared_type':shared_type
+        };
+        var criteria = {
+            _id:Util.toObjectId(notebook_id),
+            user_id:Util.toObjectId(own_user_id),
+            'shared_users.user_id':shared_user_id
+        };
+
+        NoteBook.updateSharedNotebook(criteria, _udata, function(result){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
+            res.status(200).json(outPut);
+        });
+
+
+    },
+
+    /**
+     * notebook owner can remove shared users from db and ES
+     * @param req
+     * @param res
+     */
+    removeSharedNoteBookUser:function(req,res){
+
+        var NoteBook = require('mongoose').model('NoteBook'),
+            _async = require('async'),
+            own_user_id = Util.getCurrentSession(req).id,
+            _arrIndex = require('array-index-of-property');
+
+
+        var notebook_id = req.body.notebook_id,
+            shared_user_id = req.body.user_id;
+        var sharedUsers = [];
+        var oldSharedUserList = [];
+
+        _async.waterfall([
+            function getNotebook(callBack){
+
+                //var criteria = {
+                //    _id:Util.toObjectId(req.body.notebook_id),
+                //    user_id:Util.toObjectId(own_user_id),
+                //    'shared_users.user_id':shared_user_id
+                //};
+                //
+                //NoteBook.getNotebooks(notebook_id,function(resultSet){
+                //    callBack(null,resultSet);
+                //});
+
+                NoteBook.getNotebookById(notebook_id,function(resultSet){
+                    callBack(null,resultSet);
+                });
+            },
+            function getSharedUsers(resultSet, callBack) {
+                console.log("yeah yeah");
+                console.log(resultSet);
+                if(typeof resultSet != 'undefined' && resultSet != null) {
+                    sharedUsers = resultSet.shared_users;
+                    oldSharedUserList = resultSet.shared_users;
+                    console.log("first - 01");
+                    console.log(sharedUsers);
+                    var index = sharedUsers.indexOfProperty('user_id', shared_user_id);
+                    sharedUsers.splice(index, 1);
+
+                    console.log("first - 02");
+                    console.log(sharedUsers);
+
+                    callBack(null, true);
+
+                } else {
+                    callBack(null, false);
+                }
+            },
+            function updateFilteredList(status, callBack) {
+                console.log("about to remove user");
+                console.log(sharedUsers);
+                console.log(status);
+
+
+                if(status) {
+
+                    //_async.([
+                    //
+                    //], function(err) {
+                    //
+                    //})
+
+                    var _udata = {
+                        'shared_users':sharedUsers
+                    };
+                    var criteria = {
+                        _id:Util.toObjectId(notebook_id),
+                        user_id:Util.toObjectId(own_user_id),
+                        'shared_users.user_id':shared_user_id
+                    };
+
+                    NoteBook.updateSharedNotebook(criteria, _udata, function(result){
+                        callBack(null, true);
+                    });
+                } else {
+                    callBack(null, false);
+                }
+
+            }
+        ],function(err, status){
+            console.log("finally ---" + status);
+
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                update_status:status
+            };
+            res.status(200).json(outPut);
+        })
+
+
     }
 
 };

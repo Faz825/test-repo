@@ -160,8 +160,6 @@ export default class Index extends React.Component{
                     this.elementsList.push(this.state.notifications[i]);
                 }
                 this.setState({eleList: this.elementsList});
-                console.log(this.state.notifications);
-                console.log(this.state.eleList);
             }
         }.bind(this));
 

@@ -482,7 +482,74 @@ export class NoteCategory extends React.Component{
 export class SharePopup extends React.Component{
     constructor(props) {
         super(props);
-        this.state={}
+        this.state={
+            loggedUser:Session.getSession('prg_lg'),
+            sharedUsers:[]
+        }
+        this.sharedUsers = [];
+        this.loadSharedUsers();
+        this.onPermissionChanged = this.onPermissionChanged.bind(this);
+        this.onRemoveSharedUser = this.onRemoveSharedUser.bind(this);
+    }
+
+    loadSharedUsers() {
+        console.log("now getting shared users - - ");
+        $.ajax({
+            url: '/notebook/shared-users',
+            method: "POST",
+            dataType: "JSON",
+            data:{notebook_id:this.props.notebook.notebook_id},
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200) {
+                this.sharedUsers = data.results;
+                this.setState({sharedUsers:data.results});
+            }
+        }.bind(this));
+
+
+    }
+    onPermissionChanged(e, user) {
+
+        let _fieldValue = e.target.value;
+
+        console.log(user);
+        console.log(_fieldValue);
+
+        if(user.shared_type != _fieldValue) {
+            $.ajax({
+                url: '/notebook/shared-permission/change',
+                method: "POST",
+                dataType: "JSON",
+                data:{notebook_id:user.notebook_id, shared_type:_fieldValue, user_id:user.user_id},
+                headers: { 'prg-auth-header':this.state.loggedUser.token }
+            }).done(function (data, text) {
+                if(data.status.code == 200) {
+                    console.log("done updating permissions -----");
+                    this.loadSharedUsers();
+                }
+            }.bind(this));
+        }
+    }
+
+    onRemoveSharedUser(user) {
+        console.log("about to remove shared user ---");
+        console.log(user);
+
+        $.ajax({
+            url: '/notebook/shared-user/remove',
+            method: "POST",
+            dataType: "JSON",
+            data:{notebook_id:user.notebook_id, user_id:user.user_id},
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200) {
+                console.log("done removing shared user -----");
+                if(data.update_status) {
+                    this.loadSharedUsers();
+                }
+            }
+        }.bind(this));
     }
 
     render(){
@@ -506,11 +573,10 @@ export class SharePopup extends React.Component{
                 <div className="popup-body-holder">
                     <div className="user-block clearfix">
                         <div className="img-holder">
-                            <img src="images/chat-1.png" alt="User"/>
+                            <img src={this.state.loggedUser.profile_image} alt="User"/>
                         </div>
                         <div className="user-details">
-                            <h3 className="user-name">{_notebook.first_name} {_notebook.last_name}</h3>
-                            <p className="more-info">{_notebook.cur_working_at} at {_notebook.cur_designation}</p>
+                            <h3 className="user-name">{this.state.loggedUser.first_name} {this.state.loggedUser.last_name}</h3>
                         </div>
                         <div className="permission owner">
                             <p>(Owner)</p>
@@ -518,7 +584,9 @@ export class SharePopup extends React.Component{
                     </div>
 
                     <Scrollbars style={{ height: 135 }} onScroll={this.handleScroll}>
-                        <SharedUsers />
+                        <SharedUsers sharedUserList={this.state.sharedUsers}
+                                     changePermissions={this.onPermissionChanged.bind(this)}
+                                     removeSharedUser={this.onRemoveSharedUser.bind(this)}/>
                     </Scrollbars>
 
                 </div>
@@ -656,57 +724,53 @@ export class SharePopupNewUsr extends React.Component{
 
 }
 
-export class SharedUsers extends React.Component{
+export class SharedUsers extends React.Component {
     constructor(props) {
         super(props);
-        this.state={}
+        this.state={
+            sharedUsers: this.props.sharedUserList
+        }
+
     }
 
+
     render() {
+
+        console.log("in SharedUsers rendering-----");
+        console.log(this.state.sharedUsers);
+        console.log(this.props.sharedUserList);
+        let _this = this;
+
+        let _allUsers = this.props.sharedUserList.map(function(user,key){
+
+            return (
+                <div className="user-block shared clearfix" key={key}>
+                    <div className="separator"></div>
+                    <div className="img-holder">
+                        <img src={user.profile_image} alt="User"/>
+                    </div>
+                    <div className="user-details">
+                        <h3 className="user-name shared">{user.user_name}</h3>
+                        <p className="more-info shared">University of California, Berkeley</p>
+                    </div>
+                    <div className="action">
+                        <button className="btn-remove" onClick={()=>_this.props.removeSharedUser(user)}>
+                            <i className="fa fa-minus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div className="permission">
+                        <select className="pg-custom-input" onChange={(event)=>_this.props.changePermissions(event, user)} value={user.shared_type}>
+                            <option value="1">Read Only</option>
+                            <option value="2">Read/Write</option>
+                        </select>
+                    </div>
+                </div>
+            )
+        });
+
         return (
             <div>
-                <div className="user-block shared clearfix">
-                    <div className="separator"></div>
-                    <div className="img-holder">
-                        <img src="images/chat-1.png" alt="User"/>
-                    </div>
-                    <div className="user-details">
-                        <h3 className="user-name shared">Leonard Green</h3>
-                        <p className="more-info shared">University of California, Berkeley</p>
-                    </div>
-                    <div className="action">
-                        <button className="btn-remove">
-                            <i className="fa fa-minus" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div className="permission">
-                        <select className="pg-custom-input">
-                            <option value="read-only">Read Only</option>
-                            <option value="read-write">Read/Write</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="user-block shared clearfix">
-                    <div className="separator"></div>
-                    <div className="img-holder">
-                        <img src="images/chat-1.png" alt="User"/>
-                    </div>
-                    <div className="user-details">
-                        <h3 className="user-name shared">Leonard Green</h3>
-                        <p className="more-info shared">University of California, Berkeley</p>
-                    </div>
-                    <div className="action">
-                        <button className="btn-remove">
-                            <i className="fa fa-minus" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div className="permission">
-                        <select className="pg-custom-input">
-                            <option value="read-only">Read Only</option>
-                            <option value="read-write">Read/Write</option>
-                        </select>
-                    </div>
-                </div>
+                {_allUsers}
             </div>
         )
     }
