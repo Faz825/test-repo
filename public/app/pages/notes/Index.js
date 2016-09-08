@@ -425,7 +425,11 @@ export class NoteCategory extends React.Component{
                         {
                             (notebook.notebook_name != "My Notes")?
                             <OverlayTrigger rootClose container={this} trigger="click" placement="right" overlay={i}>
-                                <span className="share-icon"><i className="fa fa-share-alt"></i></span>
+                                {
+                                    (notebook.notebook_shared_users.length > 0) ?
+                                    <span className="share-icon"><i className="fa fa-users"></i></span> :
+                                        <span className="share-icon"><i className="fa fa-share-alt"></i></span>
+                                }
                             </OverlayTrigger>
                             :
                             null
