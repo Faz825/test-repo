@@ -2232,6 +2232,7 @@ textarea{
 }
 .pg-notes-page-content-item-right-thumbs .note-thumb-wrapper{
 	overflow: hidden;
+	min-height: 175px;
 }
 .pg-col-20,
 .pg-notes-item-main-row .note-holder{

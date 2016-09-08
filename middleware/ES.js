@@ -133,6 +133,21 @@ var ES = {
             callback(null)
         });
 
+    },
+    isIndexExists:function (payload, callback) {
+        var _esData = {
+            index:payload.index,
+            type:payload.type,
+            id:payload.id
+        }
+
+        this.esClient.exists(_esData, function (error, exists) {
+            if (exists === true) {
+                callback(true);
+            } else {
+                callback(false);
+            }
+        });
     }
 
 };

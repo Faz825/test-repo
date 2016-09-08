@@ -42,7 +42,8 @@ export default class Index extends React.Component {
             editNote:"",
             staticNoteTitle:"",
             staticNote:"",
-            noteAddEdit:0 // 1 - add, 2 - edit
+            noteAddEdit:0, // 1 - add, 2 - edit
+            notebookObj: null
         };
         this.saveInterval = null;
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
@@ -64,9 +65,7 @@ export default class Index extends React.Component {
             dataType: "JSON",
             headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
-            console.log(data);
             if(data.status.code == 200){
-                console.log(data.notes.length);
                 if(data.notes.length == 0 || data.notes[0] == null){
                     this.setState({catNameValue: "My Notes"});
                     this.setState({catColor: "#0272ae"});
@@ -74,7 +73,6 @@ export default class Index extends React.Component {
                     this.addNoteBook();
                 } else{
                     let notebooks = data.notes;
-                    console.log(notebooks);
                     // let myNoteBook = notebooks[notebooks.length - 1];
                     // notebooks.pop();
                     // notebooks.splice(0,0,myNoteBook);
@@ -226,18 +224,18 @@ export default class Index extends React.Component {
         }.bind(this));
     }
 
-    showNotePopup(notebook_id, note){
+    showNotePopup(notebook_id, note, notebook_obj){
 
         let _this = this;
 
         if(note == null){
-            this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1, editNoteTitle : "Note Title", editNote : ""});
+            this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1, editNoteTitle : "Note Title", editNote : "", notebookObj:notebook_obj});
             this.saveInterval = setInterval(function(){_this.saveNote()}, 1000);
         } else{
             let editNoteId = note.note_id;
             let editNoteTitle = note.note_name;
             let editNote = note.note_content;
-            this.setState({isShowingNoteModal:true, noteAddEdit:2, editNoteId:editNoteId, editNoteTitle:editNoteTitle, editNote:editNote, staticNoteTitle:editNoteTitle, staticNote:editNote});
+            this.setState({isShowingNoteModal:true, noteAddEdit:2, editNoteId:editNoteId, editNoteTitle:editNoteTitle, editNote:editNote, staticNoteTitle:editNoteTitle, staticNote:editNote, notebookObj:notebook_obj});
             this.saveInterval = setInterval(function(){_this.saveNote()}, 1000);
         }
 
@@ -270,7 +268,7 @@ export default class Index extends React.Component {
 
     saveNote(){
         let _this = this;
-
+        let _notes_read_write = 2;
         let noteTitle = this.state.editNoteTitle;
         if(noteTitle == "Note Title"){
             let noteContent = this.state.editNote.replace(/(<([^>]+)>)/ig,"");
@@ -305,22 +303,41 @@ export default class Index extends React.Component {
                     this.saveInterval = setInterval(function(){_this.saveNote()}, 1000);
                 }.bind(this));
             } else if(this.state.noteAddEdit == 2){
-                let _note = {
-                    noteName:noteTitle,
-                    noteContent:this.state.editNote,
-                    noteId:this.state.editNoteId
-                };
+                if(this.state.notebookObj == null) {
+                    let _note = {
+                        noteName: noteTitle,
+                        noteContent: this.state.editNote,
+                        noteId: this.state.editNoteId
+                    };
 
-                let loggedUser = Session.getSession('prg_lg');
+                    let loggedUser = Session.getSession('prg_lg');
 
-                $.ajax({
-                    url: '/notes/update-note',
-                    method: "POST",
-                    dataType: "JSON",
-                    data:_note,
-                    headers: { 'prg-auth-header':loggedUser.token }
-                }).done( function (data, text) {
-                }.bind(this));
+                    $.ajax({
+                        url: '/notes/update-note',
+                        method: "POST",
+                        dataType: "JSON",
+                        data: _note,
+                        headers: {'prg-auth-header': loggedUser.token}
+                    }).done(function (data, text) {
+                    }.bind(this));
+                }else if(this.state.notebookObj.shared_privacy == _notes_read_write){
+                    let _note = {
+                        noteName: noteTitle,
+                        noteContent: this.state.editNote,
+                        noteId: this.state.editNoteId
+                    };
+
+                    let loggedUser = Session.getSession('prg_lg');
+
+                    $.ajax({
+                        url: '/notes/update-note',
+                        method: "POST",
+                        dataType: "JSON",
+                        data: _note,
+                        headers: {'prg-auth-header': loggedUser.token}
+                    }).done(function (data, text) {
+                    }.bind(this));
+                }
             }
         }
 
@@ -395,8 +412,19 @@ export class NoteCategory extends React.Component{
             this.setState({ target: e.target, show: !this.state.show });
         };
 
-        this.state = { show: false };
+        this.state = {
+            show: false ,
+            sharedStatus: false
+        };
 
+        this.userAdded = this.userAdded.bind(this);
+
+    }
+
+    userAdded(){
+        this.setState({
+            sharedStatus: true
+        });
     }
 
     render() {
@@ -412,7 +440,7 @@ export class NoteCategory extends React.Component{
         let _noteBooks = notebooks.map(function(notebook,key){
             let i = (
                 <Popover id="popover-contained"  positionTop="150px" className="popup-holder">
-                    <SharePopup notebook={notebook}/>
+                    <SharePopup notebook={notebook} onUserAdd={_this.userAdded} />
                 </Popover>
             );
             return (
@@ -426,8 +454,8 @@ export class NoteCategory extends React.Component{
                             (notebook.notebook_name != "My Notes")?
                             <OverlayTrigger rootClose container={this} trigger="click" placement="right" overlay={i}>
                                 {
-                                    (notebook.notebook_shared_users.length > 0) ?
-                                    <span className="share-icon"><i className="fa fa-users"></i></span> :
+                                    (notebook.notebook_shared_users.length > 0 || _this.state.sharedStatus) ?
+                                        <span className="share-icon"><i className="fa fa-users"></i></span> :
                                         <span className="share-icon"><i className="fa fa-share-alt"></i></span>
                                 }
                             </OverlayTrigger>
@@ -436,7 +464,7 @@ export class NoteCategory extends React.Component{
                         }
                     </div>
                     <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
-                        <NoteThumb catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm} showNotePopup={showNotePopup}/>
+                        <NoteThumb noteBook={notebook} catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm} showNotePopup={showNotePopup}/>
                     </div>
                 </div>
             );
@@ -455,8 +483,6 @@ export class SharePopup extends React.Component{
     constructor(props) {
         super(props);
         this.state={}
-
-        console.log(this.props.notebook);
     }
 
     render(){
@@ -465,7 +491,7 @@ export class SharePopup extends React.Component{
 
         let i = (
             <Popover id="popover-contained"  positionTop="150px" className="popup-holder add-new">
-                <SharePopupNewUsr notebook={_notebook}/>
+                <SharePopupNewUsr notebook={_notebook} onShareuser={this.props.onUserAdd}/>
             </Popover>
         );
 
@@ -533,7 +559,6 @@ export class SharePopupNewUsr extends React.Component{
     loadNewUsers() {
         let notebook = this.props.notebook;
         let value = this.state.addNewUserValue;
-        console.log(value);
         if(value.length >= 1){
             $.ajax({
                 url: '/get-connected-users/'+notebook.notebook_id+'/'+value,
@@ -577,6 +602,7 @@ export class SharePopupNewUsr extends React.Component{
         }).done( function (data, text) {
             if(data.status.code == 200){
                 this.loadNewUsers();
+                this.props.onShareuser();
             }
         }.bind(this));
 
@@ -696,11 +722,11 @@ export class NoteThumb extends React.Component{
     }
 
     addNewNote(notebook_id){
-        this.props.showNotePopup(notebook_id,null);
+        this.props.showNotePopup(notebook_id,null, null);
     }
 
-    editNote(notebook_id, note){
-        this.props.showNotePopup(notebook_id,note);
+    editNote(notebook_id, note, notebook_obj){
+        this.props.showNotePopup(notebook_id,note, notebook_obj);
     }
 
     showConfirm(note_id){
@@ -715,8 +741,11 @@ export class NoteThumb extends React.Component{
     render(){
 
         let _this = this;
+        let _notebook_props = this.props.noteBook;
         let _notes = this.props.catData;
         let _notebook = this.props.catID;
+
+        let _notes_read_write = 2;
 
         let _firstSetNotes = _notes.map(function(note,key){
             let name = note.note_name;
@@ -727,7 +756,7 @@ export class NoteThumb extends React.Component{
                 return (
                     <div className="note-holder" id={note.note_id} key={key}>
                         <div className="row-clear note">
-                            <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note)}>
+                            <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note,_notebook_props)}>
                                 <div className="time-wrapper">
                                     <p className="date-created">{note.updated_at.createdDate}</p>
 
@@ -754,7 +783,7 @@ export class NoteThumb extends React.Component{
                 return (
                     <div className="note-holder" id={note.note_id} key={key}>
                         <div className="row-clear note">
-                            <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note)}>
+                            <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note,_notebook_props)}>
                                 <div className="time-wrapper">
                                     <p className="date-created">{note.updated_at.createdDate}</p>
 
@@ -775,15 +804,18 @@ export class NoteThumb extends React.Component{
         return(
             <div className="pg-notes-item-main-row">
                 <div className="note-thumb-wrapper">
-                    <div className="note-holder">
-                        <div className="row-clear add-new-note note">
-                            <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
-                        </div>
-                    </div>
+                    {
+                        (_notebook_props.shared_privacy == _notes_read_write)? <div className="note-holder">
+                            <div className="row-clear add-new-note note">
+                                <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
+                            </div>
+                        </div>:null
+                    }
                     {_firstSetNotes}
                     {
                         (this.state.allNotesAreVisible)? _allNotes : null
                     }
+
                 </div>
                 {(_notes.length > 4) ? <div className="show-more-btn" onClick={this.showMoreNotes.bind(this)}>{this.state.allNotesAreVisible? "Show Less" : "Show More"}</div> : null}
             </div>

@@ -21,11 +21,6 @@ GLOBAL.NoteBookSharedRequest = {
     REQUEST_ACCEPTED: 3
 };
 
-GLOBAL.NoteBookSharedRequest = {
-    REQUEST_PENDING: 1,
-    REQUEST_REJECTED: 2,
-    REQUEST_ACCEPTED: 3
-};
 
 var NoteBookSchema = new Schema({
     name:{

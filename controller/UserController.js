@@ -1682,7 +1682,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    getUserConnections:function(req,res){
+    getNotesSharedUsers:function(req,res){
         var User = require('mongoose').model('User'),
             NoteBook = require('mongoose').model('NoteBook'),
             Connection = require('mongoose').model('Connection'),

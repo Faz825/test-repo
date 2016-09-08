@@ -135,7 +135,7 @@ router.get('/connections', DefaultController.index);
 router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
 
-router.get('/get-connected-users/:notebook/:name', UserController.getUserConnections);
+router.get('/get-connected-users/:notebook/:name', UserController.getNotesSharedUsers);
 
 /**
  * Implement All Test Routs from there
