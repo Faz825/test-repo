@@ -512,20 +512,27 @@ export class SharePopupNewUsr extends React.Component{
         super(props);
         this.state={
             value: '',
-            suggestions: []
+            suggestions: [],
+            addNewUserValue: ''
         };
 
-        this.onChange = this.onChange.bind(this);
+        this.loadNewUsers = this.loadNewUsers.bind(this);
         this.shareNote = this.shareNote.bind(this);
+        this._handleAddNewUser = this._handleAddNewUser.bind(this);
     }
 
-    onChange(event) {
-        var newValue = event.target.value;
-        this.setState({ value: newValue });
+    _handleAddNewUser (e){
+        this.state.addNewUserValue = e.target.value;
+        this.loadNewUsers();
+    }
 
-        if(newValue.length >= 1){
+    loadNewUsers() {
+        let notebook = this.props.notebook;
+        let value = this.state.addNewUserValue;
+        console.log(value);
+        if(value.length >= 1){
             $.ajax({
-                url: '/get-connected-users/'+newValue,
+                url: '/get-connected-users/'+notebook.notebook_id+'/'+value,
                 method: "GET",
                 dataType: "JSON",
                 success: function (data, text) {
@@ -564,8 +571,8 @@ export class SharePopupNewUsr extends React.Component{
             data:_noteBook,
             headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
-            if(data.code == 200){
-
+            if(data.status.code == 200){
+                this.loadNewUsers();
             }
         }.bind(this));
 
@@ -603,7 +610,7 @@ export class SharePopupNewUsr extends React.Component{
                 <div className="share-popup-holder">
                     <div className="header-holder clearfix">
                         <div className="form-group">
-                            <input type="text" className="form-control" placeholder="Type Name to Add" id="type-to-add" onChange={this.onChange}/>
+                            <input type="text" className="form-control" placeholder="Type Name to Add" id="type-to-add" value={this.state.addNewUserValue} onChange={this._handleAddNewUser}/>
                         </div>
                     </div>
 

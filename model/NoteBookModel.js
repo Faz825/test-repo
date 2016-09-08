@@ -210,7 +210,6 @@ NoteBookSchema.statics.getNotebookById = function(id,callBack){
 
     _this.findOne({_id: id}).exec(function (err, resultSet) {
         if (!err) {
-            console.log(resultSet);
             if (resultSet == null) {
                 callBack(null);
                 return;

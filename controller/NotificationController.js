@@ -680,13 +680,9 @@ var NotificationController ={
                         function ch_shareNoteBook(resultSet, callBack) {
                             if(resultSet != null){
                                 var notebook_list = resultSet.result[0].notebooks;
+                                var index = notebook_list.indexOf(req.body.notebook_id.toString());
+                                notebook_list.splice(index, 1);
 
-                                for(var inc = 0; inc < notebook_list.length; inc++){
-                                    if(req.body.notebook_id.toString() == notebook_list[inc]){
-                                        notebook_list.splice(inc, 1);
-                                    }
-                                }
-                                
                                 var query={
                                         q:"user_id:"+user_id
                                     },

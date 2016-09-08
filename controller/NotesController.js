@@ -80,8 +80,9 @@ var NotesController ={
                         notebook_name:notebook.name,
                         notebook_color:notebook.color,
                         notebook_user:notebook.user_id,
+                        notebook_shared_users:notebook.shared_users,
                         notebook_updated_at:notebook.updated_at,
-                        is_shared: false,
+                        is_shared: true,
                         notes:[]
                     }, notes_criteria = {
                         notebook_id: Util.toObjectId(notebook._id)
