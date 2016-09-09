@@ -10,6 +10,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import Lib    from '../../middleware/Lib';
 import RichTextEditor from '../../components/elements/RichTextEditor';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
+import Socket  from '../../middleware/Socket';
 
 let errorStyles = {
     color         : "#ed0909",
@@ -723,6 +724,15 @@ export class SharePopupNewUsr extends React.Component{
             headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200){
+
+                let _notificationData = {
+                    notebook_id:notebook.notebook_id,
+                    notification_type:"share_notebook",
+                    notification_sender:loggedUser
+                };
+
+                Socket.sendNotification(_notificationData);
+
                 this.loadNewUsers();
                 this.props.onShareuser();
             }

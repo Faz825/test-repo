@@ -52,16 +52,21 @@ export default class Index extends React.Component{
             let _oldNotification = {}, _newNotification = {};
             let _alreadyExist = false;
 
-            if(data.notification_type == "Birthday" || data.notification_type == "share_notebook"){
+            if(data.notification_type == "Birthday") {
                 _this.state.notificationCount++;
                 _newNotifications.push(data);
-                for(var j = 0; j < _existingNotifications.length; j++){
+                for (var j = 0; j < _existingNotifications.length; j++) {
                     _newNotifications.push(_existingNotifications[j]);
                 }
                 //_this.state.eleList = _newNotifications;
                 this.setState({eleList: _newNotifications});
                 //_this.setState({notifications:_newNotifications});
-            } else{
+
+            } else if(data.notification_type == "share_notebook") {
+                console.log("shared notification received ----------- ");
+                console.log(data);
+
+            } else {
                 if(data.user != _this.state.loggedUser.user_name){
 
                     _this.state.notificationCount++;

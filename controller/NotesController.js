@@ -216,9 +216,10 @@ var NotesController ={
 
                                 var notebook_sharedUser = grep(_notebook.notebook_shared_users, function(e){ return e.user_id == user_id; });
 
-                                _notebook.shared_privacy = notebook_sharedUser[0].shared_type;
-
                                 if(notebook_sharedUser.length > 0 && notebook_sharedUser[0].status == NoteBookSharedRequest.REQUEST_ACCEPTED){
+
+                                    _notebook.shared_privacy = notebook_sharedUser[0].shared_type;
+
                                     Note.getNotes(notes_criteria,function(resultSet){
                                         var notes_set = resultSet.notes;
                                         for(var inc = 0; inc < notes_set.length; inc++){
@@ -374,19 +375,23 @@ var NotesController ={
                     function ch_shareNoteBook(resultSet, callBack) {
                         if(resultSet != null){
                             var notebook_list = resultSet.result[0].notebooks;
+                            var index_a = notebook_list.indexOf(noteBookId);
+                            if(index_a == -1) { //in any case if the notebook id exists in the shared list not adding it again
+                                notebook_list.push(noteBookId);
+                                var query={
+                                        q:"user_id:"+req.body.userId.toString()
+                                    },
+                                    data = {
+                                        user_id: req.body.userId,
+                                        notebooks: notebook_list
+                                    };
 
-                            notebook_list.push(noteBookId);
-                            var query={
-                                    q:"user_id:"+req.body.userId.toString()
-                                },
-                                data = {
-                                    user_id: req.body.userId,
-                                    notebooks: notebook_list
-                                };
-
-                            NoteBook.ch_shareNoteBookUpdateIndex(req.body.userId,data, function(esResultSet){
+                                NoteBook.ch_shareNoteBookUpdateIndex(req.body.userId,data, function(esResultSet){
+                                    callBack(null);
+                                });
+                            } else {
                                 callBack(null);
-                            });
+                            }
                         }else{
                             var query={
                                 q:"user_id:"+req.body.userId.toString()
@@ -601,35 +606,16 @@ var NotesController ={
 
         _async.waterfall([
             function getNotebook(callBack){
-
-                //var criteria = {
-                //    _id:Util.toObjectId(req.body.notebook_id),
-                //    user_id:Util.toObjectId(own_user_id),
-                //    'shared_users.user_id':shared_user_id
-                //};
-                //
-                //NoteBook.getNotebooks(notebook_id,function(resultSet){
-                //    callBack(null,resultSet);
-                //});
-
                 NoteBook.getNotebookById(notebook_id,function(resultSet){
                     callBack(null,resultSet);
                 });
             },
             function getSharedUsers(resultSet, callBack) {
-                console.log("yeah yeah");
-                console.log(resultSet);
                 if(typeof resultSet != 'undefined' && resultSet != null) {
                     sharedUsers = resultSet.shared_users;
                     oldSharedUserList = resultSet.shared_users;
-                    console.log("first - 01");
-                    console.log(sharedUsers);
                     var index = sharedUsers.indexOfProperty('user_id', shared_user_id);
                     sharedUsers.splice(index, 1);
-
-                    console.log("first - 02");
-                    console.log(sharedUsers);
-
                     callBack(null, true);
 
                 } else {
@@ -637,39 +623,85 @@ var NotesController ={
                 }
             },
             function updateFilteredList(status, callBack) {
-                console.log("about to remove user");
-                console.log(sharedUsers);
-                console.log(status);
-
 
                 if(status) {
 
-                    //_async.([
-                    //
-                    //], function(err) {
-                    //
-                    //})
+                    _async.waterfall([
+                        function isESIndexExists(callBack){
+                            var _cache_key = "idx_notebook:"+NoteBookConfig.CACHE_PREFIX+shared_user_id.toString();
+                            var query={
+                                q:"_id:" + shared_user_id.toString(),
+                                index:_cache_key
+                            };
+                            ES.isIndexExists(query, function (esResultSet){
+                                callBack(null, esResultSet);
+                            });
+                        },
+                        function getSharedNoteBooks(resultSet, callBack){
+                            if(resultSet) {
+                                var query = {
+                                    q: "_id:" + shared_user_id.toString()
+                                };
+                                NoteBook.ch_getSharedNoteBooks(shared_user_id, query, function (esResultSet) {
+                                    callBack(null, esResultSet);
+                                });
+                            }else{
+                                callBack(null, null);
+                            }
+                        },
+                        function ch_shareNoteBook(resultSet, callBack) {
+                            if(resultSet != null && typeof resultSet != 'undefined'){
+                                var notebook_list = resultSet.result[0].notebooks;
 
-                    var _udata = {
-                        'shared_users':sharedUsers
-                    };
-                    var criteria = {
-                        _id:Util.toObjectId(notebook_id),
-                        user_id:Util.toObjectId(own_user_id),
-                        'shared_users.user_id':shared_user_id
-                    };
+                                if(notebook_list.length > 0) {
+                                    var index_n = notebook_list.indexOf(notebook_id);
+                                    if(index_n != -1) {
+                                        notebook_list.splice(index_n, 1);
+                                        var query={
+                                                q:"user_id:"+shared_user_id.toString()
+                                            },
+                                            data = {
+                                                user_id: shared_user_id,
+                                                notebooks: notebook_list
+                                            };
 
-                    NoteBook.updateSharedNotebook(criteria, _udata, function(result){
-                        callBack(null, true);
+                                        NoteBook.ch_shareNoteBookUpdateIndex(shared_user_id,data, function(esResultSet){
+                                            callBack(null);
+                                        });
+                                    } else {
+                                        callBack(null);
+                                    }
+                                } else {
+                                    callBack(null);
+                                }
+                            }else{
+                                callBack(null);
+                            }
+                        },
+                        function updateInDB(callBack){
+                            var _udata = {
+                                'shared_users':sharedUsers
+                            };
+                            var criteria = {
+                                _id:Util.toObjectId(notebook_id),
+                                user_id:Util.toObjectId(own_user_id),
+                                'shared_users.user_id':shared_user_id
+                            };
+
+                            NoteBook.updateSharedNotebook(criteria, _udata, function(result){
+                                callBack(null, true);
+                            });
+                        }
+                    ], function (err, resultSet) {
+                        callBack(null, resultSet);
                     });
+
                 } else {
                     callBack(null, false);
                 }
 
             }
         ],function(err, status){
-            console.log("finally ---" + status);
-
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 update_status:status
