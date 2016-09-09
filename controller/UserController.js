@@ -1678,7 +1678,7 @@ var UserControler ={
 
 
     /**
-     * Load User Connections
+     * Load User Connections for Shared Notebooks
      * @param req
      * @param res
      */
@@ -1750,7 +1750,7 @@ var UserControler ={
     },
 
     /**
-     * Load User Connections
+     * Filter User Connections
      * @param req
      * @param res
      */
@@ -1770,16 +1770,16 @@ var UserControler ={
 
             function getConnectedUsers(callback) {
                 var criteria = {
-                    user_id :CurrentSession.id,
-                    q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*'
+                    q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*',
+                    index:'idx_usr',
                     //q:req.params['name']+'*'
                 }
                 var notebookId = req.params['notebook'];
-                Connection.getMyConnectionData(criteria,function(resultSet){
+                ES.search(criteria,function(esResultSet){
                     //console.log("=======================Connections==============")
                     //console.log(resultSet)
-                    my_connections = resultSet.results;
-
+                    my_connections = esResultSet.result;
+                    console.log(my_connections);
                     _async.waterfall([
                         function getSharedUsers(callback){
 

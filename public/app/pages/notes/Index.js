@@ -606,20 +606,36 @@ export class SharePopup extends React.Component{
                     </div>
                 </div>
                 <div className="popup-body-holder">
-                    <div className="user-block clearfix">
-                        <div className="img-holder">
-                            <img src={this.state.loggedUser.profile_image} alt="User"/>
-                        </div>
-                        <div className="user-details">
-                            <h3 className="user-name">{this.state.loggedUser.first_name} {this.state.loggedUser.last_name}</h3>
-                        </div>
-                        <div className="permission owner">
-                            <p>(Owner)</p>
-                        </div>
-                    </div>
+
+                    {
+                        (_notebook.owned_by == 'me')?
+                            <div className="user-block clearfix">
+                                <div className="img-holder">
+                                    <img src={this.state.loggedUser.profile_image} alt="User"/>
+                                </div>
+                                <div className="user-details">
+                                    <h3 className="user-name">{this.state.loggedUser.first_name} {this.state.loggedUser.last_name}</h3>
+                                </div>
+                                <div className="permission owner">
+                                    <p>(Owner)</p>
+                                </div>
+                            </div> :
+                            <div className="user-block clearfix">
+                                <div className="img-holder">
+                                    <img src={_notebook.notebook_user.profile_image} alt="User"/>
+                                </div>
+                                <div className="user-details">
+                                    <h3 className="user-name">{_notebook.notebook_user.user_name}</h3>
+                                </div>
+                                <div className="permission owner">
+                                    <p>(Owner)</p>
+                                </div>
+                            </div>
+                    }
 
                     <Scrollbars style={{ height: 135 }} onScroll={this.handleScroll}>
-                        <SharedUsers sharedUserList={this.state.sharedUsers}
+                        <SharedUsers notebook={_notebook}
+                                     sharedUserList={this.state.sharedUsers}
                                      changePermissions={this.onPermissionChanged.bind(this)}
                                      removeSharedUser={this.onRemoveSharedUser.bind(this)}/>
                     </Scrollbars>
@@ -762,7 +778,7 @@ export class SharePopupNewUsr extends React.Component{
 
 }
 
-export class SharedUsers extends React.Component {
+export class  SharedUsers extends React.Component {
     constructor(props) {
         super(props);
         this.state={
@@ -778,7 +794,7 @@ export class SharedUsers extends React.Component {
         console.log(this.state.sharedUsers);
         console.log(this.props.sharedUserList);
         let _this = this;
-
+        let _notebook = this.props.notebook;
         let _allUsers = this.props.sharedUserList.map(function(user,key){
 
             return (
@@ -791,17 +807,22 @@ export class SharedUsers extends React.Component {
                         <h3 className="user-name shared">{user.user_name}</h3>
                         <p className="more-info shared">University of California, Berkeley</p>
                     </div>
-                    <div className="action">
-                        <button className="btn-remove" onClick={()=>_this.props.removeSharedUser(user)}>
-                            <i className="fa fa-minus" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div className="permission">
-                        <select className="pg-custom-input" onChange={(event)=>_this.props.changePermissions(event, user)} value={user.shared_type}>
-                            <option value="1">Read Only</option>
-                            <option value="2">Read/Write</option>
-                        </select>
-                    </div>
+                    {
+                        (_notebook.owned_by == 'me')?
+                        <div>
+                            <div className="action">
+                                <button className="btn-remove" onClick={()=>_this.props.removeSharedUser(user)}>
+                                    <i className="fa fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            < div className="permission">
+                            <select className="pg-custom-input" onChange={(event)=>_this.props.changePermissions(event, user)} value={user.shared_type}>
+                                <option value="1">Read Only</option>
+                                <option value="2">Read/Write</option>
+                            </select>
+                            </div>
+                        </div> : null
+                    }
                 </div>
             )
         });

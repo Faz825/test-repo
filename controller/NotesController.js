@@ -56,6 +56,7 @@ var NotesController ={
     getNotes:function(req,res){
 
         var Note = require('mongoose').model('Notes'),
+            User = require('mongoose').model('User'),
             _async = require('async'),
             grep = require('grep-from-array'),
             NoteBook = require('mongoose').model('NoteBook'),
@@ -170,19 +171,39 @@ var NotesController ={
                     var sharedNoteList = resultSet.shared_notes.result[0].notebooks;
                     var _notes = (resultSet.user_notes != null)? resultSet.user_notes: [];
                     _async.eachSeries(sharedNoteList, function(notebook, callBack){
-                        console.log(notebook);
                         _async.waterfall([
                             function getNotebooks(callBack){
                                 NoteBook.getNotebookById(notebook,function(resultSet){
                                     callBack(null,resultSet);
                                 });
                             },
-                            function getNotesDB(notebook,callBack){
+                            function getUserES(resultSet, callBack){
+                                var query={
+                                    q:"user_id:"+resultSet.user_id.toString(),
+                                    index:'idx_usr'
+                                };
+                                //Find User from Elastic search
+                                ES.search(query,function(csResultSet){
+                                    var usrObj = {
+                                        user_id:resultSet.user_id,
+                                        user_name:csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
+                                        profile_image:csResultSet.result[0]['images']['profile_image']['http_url']
+                                    };
+                                    callBack(null, {
+                                        notebook: resultSet,
+                                        user: usrObj
+                                    });
+                                });
+                            },
+                            function getNotesDB(resultSet,callBack){
+
+                                var notebook = resultSet.notebook;
+
                                 var _notebook = {
                                     notebook_id:notebook._id,
                                     notebook_name:notebook.name,
                                     notebook_color:notebook.color,
-                                    notebook_user:notebook.user_id,
+                                    notebook_user:resultSet.user,
                                     notebook_shared_users:notebook.shared_users,
                                     notebook_updated_at:notebook.updated_at,
                                     is_shared: true,
