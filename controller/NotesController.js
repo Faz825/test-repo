@@ -82,8 +82,9 @@ var NotesController ={
                         notebook_user:notebook.user_id,
                         notebook_shared_users:notebook.shared_users,
                         notebook_updated_at:notebook.updated_at,
-                        is_shared: false,
+                        is_shared: (notebook.shared_users.length > 0)? true:false,
                         shared_privacy: NoteBookSharedMode.READ_WRITE,
+                        owned_by: 'me',
                         notes:[]
                     }, notes_criteria = {
                         notebook_id: Util.toObjectId(notebook._id)
@@ -186,6 +187,7 @@ var NotesController ={
                                     notebook_updated_at:notebook.updated_at,
                                     is_shared: true,
                                     shared_privacy: NoteBookSharedMode.READ_ONLY,
+                                    owned_by: 'another',
                                     notes:[]
                                 }, notes_criteria = {
                                     notebook_id: Util.toObjectId(notebook._id)

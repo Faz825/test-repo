@@ -4247,6 +4247,16 @@ textarea{
 	margin: 12px 0 5px;
 }
 
+.editor-popup-holder .btn.btn-read-only{
+	float: right;
+	font: 11px 'montserratsemi_bold', sans-serif;
+	color: #fff;
+	background-color: #de6178;
+	text-transform: uppercase;
+	border: none;
+	margin: 12px 0 5px;
+}
+
 .rich-editor-holder .quill-toolbar{
 	position: fixed;
 	margin: 0 5px;

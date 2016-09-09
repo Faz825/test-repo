@@ -72,7 +72,7 @@ GLOBAL.notAuthURLs = ['/sign-up','/forgot-password','/change-password-invalid','
 GLOBAL.AccessAllow = [
     '/','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
-    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/:notebook/:name'
+    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name'
 ];
 
 /**
@@ -136,6 +136,7 @@ router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
 
 router.get('/get-connected-users/:notebook/:name', UserController.getNotesSharedUsers);
+router.get('/filter-shared-users/:notebook/:name', UserController.filterNoteBookSharedUsers);
 
 /**
  * Implement All Test Routs from there

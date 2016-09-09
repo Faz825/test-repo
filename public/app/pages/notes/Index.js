@@ -344,6 +344,7 @@ export default class Index extends React.Component {
     }
 
     getNotePopup(){
+        let _notes_read_write = 2;
         return(
             <div>
                 {this.state.isShowingNoteModal &&
@@ -366,7 +367,13 @@ export default class Index extends React.Component {
                             <Scrollbars style={{ height: 420 }}>
                                 <RichTextEditor note={this.state.editNote} noteText={this.getNoteData} />
                             </Scrollbars>
-                            <button className="btn btn-default" onClick={this.closeNotePopup.bind(this)}>Save note</button>
+                            {
+                                (this.state.notebookObj == null) ?
+                                    <button className="btn btn-default" onClick={this.closeNotePopup.bind(this)}>Save note</button> :
+                                (this.state.notebookObj.shared_privacy == _notes_read_write) ?
+                                    <button className="btn btn-default" onClick={this.closeNotePopup.bind(this)}>Save note</button> :
+                                    <button className="btn btn-read-only" onClick={this.closeNotePopup.bind(this)}>Read Only Access</button>
+                            }
                         </div>
                     </ModalDialog>
                 </ModalContainer>
@@ -454,7 +461,7 @@ export class NoteCategory extends React.Component{
                             (notebook.notebook_name != "My Notes")?
                             <OverlayTrigger rootClose container={this} trigger="click" placement="right" overlay={i}>
                                 {
-                                    (notebook.notebook_shared_users.length > 0 || _this.state.sharedStatus) ?
+                                    (notebook.is_shared) ?
                                         <span className="share-icon"><i className="fa fa-users"></i></span> :
                                         <span className="share-icon"><i className="fa fa-share-alt"></i></span>
                                 }
@@ -509,6 +516,34 @@ export class SharePopup extends React.Component{
 
 
     }
+
+    filterSharedUsers(notebook_id, event) {
+
+        let value = event.target.value;
+
+        if(value.length >= 1){
+            $.ajax({
+                url: '/filter-shared-users/'+notebook_id+'/'+value,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.setState({
+                            sharedUsers: data.users
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        }else{
+            this.loadSharedUsers();
+        }
+    }
+
     onPermissionChanged(e, user) {
 
         let _fieldValue = e.target.value;
@@ -567,7 +602,7 @@ export class SharePopup extends React.Component{
                 <div className="header-holder clearfix">
                     <h3 className="title">People on this note book</h3>
                     <div className="form-group">
-                        <input type="text" className="form-control" placeholder="Search.." id="search" />
+                        <input type="text" className="form-control" placeholder="Search.." id="search" onChange={(event)=>this.filterSharedUsers(_notebook.notebook_id, event)}/>
                     </div>
                 </div>
                 <div className="popup-body-holder">
@@ -591,11 +626,14 @@ export class SharePopup extends React.Component{
 
                 </div>
                 <div className="footer-holder clearfix">
-                    <div className="add-new">
-                        <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
-                            <button className="btn-link">Add New</button>
-                        </OverlayTrigger>
-                    </div>
+                    {
+                        (_notebook.owned_by == 'me')?
+                        <div className="add-new">
+                            <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
+                                <button className="btn-link">Add New</button>
+                            </OverlayTrigger>
+                        </div> : null
+                    }
                     <div className="see-all">
                         <button className="btn-link">See All</button>
                     </div>
