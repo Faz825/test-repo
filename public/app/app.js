@@ -21,6 +21,7 @@ import NotesIndex from './pages/notes/Index';
 import FoldersIndex from './pages/folders/Index';
 import DocIndex from './pages/doc/Index';
 import NotificationsIndex from './pages/notifications/Index';
+import WorkmodeIndex from './pages/workmode/Index';
 
 
 let rootRoute =(
@@ -88,6 +89,12 @@ let rootRoute =(
 		 */
 
         <Route name="doc" path="/doc" component={DocIndex}/>
+
+        /**
+		 * Workmode
+		 */
+
+        <Route name="workmode" path="/work-mode" component={WorkmodeIndex}/>
 
 	</Route>
 );

@@ -4717,6 +4717,305 @@ export default StyleSheet.create({
         "color": "#2d5164",
         "outline": "none"
     },
+    "pg-workmode-page": {
+        "marginTop": 70,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "work-mode-container inner-wrapper": {
+        "marginTop": 15,
+        "marginRight": 0,
+        "marginBottom": 15,
+        "marginLeft": 0,
+        "paddingTop": 15,
+        "paddingRight": 45,
+        "paddingBottom": 15,
+        "paddingLeft": 45,
+        "background": "#f2f6f9",
+        "borderRadius": 5,
+        "WebkitBoxShadow": "0px 0px 5px 0px rgba(0,0,0,0.75)",
+        "MozBoxShadow": "0px 0px 5px 0px rgba(0,0,0,0.75)",
+        "boxShadow": "0px 0px 5px 0px rgba(0,0,0,0.75)"
+    },
+    "work-mode-container inner-wrapper header-section": {
+        "textAlign": "center",
+        "marginBottom": 20
+    },
+    "work-mode-container inner-wrapper section-text": {
+        "fontSize": 1.429,
+        "fontFamily": "\"montserratregular\", sans-serif",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "textTransform": "uppercase",
+        "position": "relative",
+        "paddingTop": 5,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 55,
+        "display": "inline-block"
+    },
+    "work-mode-container header-section section-text:before": {
+        "content": "\"\"",
+        "position": "absolute",
+        "top": 0,
+        "left": 0,
+        "width": 35,
+        "height": 29,
+        "background": "url(\"../images/wm-icons.png\") no-repeat center top"
+    },
+    "work-mode-container opt-wrapper opt-block": {
+        "paddingTop": 12,
+        "paddingRight": 32,
+        "paddingBottom": 12,
+        "paddingLeft": 32,
+        "borderRadius": 5,
+        "background": "#fff",
+        "border": "1px solid #d8e2eb",
+        "marginBottom": 10
+    },
+    "opt-wrapper field-holder": {
+        "float": "left",
+        "marginTop": 5,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 15
+    },
+    "work-mode-container opt-wrapper opt-block icon": {
+        "float": "left",
+        "width": 35,
+        "height": 30,
+        "background": "url(\"../images/wm-icons.png\") no-repeat"
+    },
+    "work-mode-container opt-wrapper opt-block bar-block": {
+        "backgroundPosition": "center bottom"
+    },
+    "work-mode-container opt-wrapper opt-block newsfeed-block": {
+        "backgroundPosition": "center -165px"
+    },
+    "work-mode-container opt-wrapper opt-block voice-video-block": {
+        "backgroundPosition": "center -39px"
+    },
+    "work-mode-container opt-wrapper opt-block msg-block": {
+        "backgroundPosition": "center -202px"
+    },
+    "work-mode-container opt-wrapper opt-block notifications-block": {
+        "backgroundPosition": "center -81px"
+    },
+    "work-mode-container opt-wrapper opt-block all-block": {
+        "backgroundPosition": "center -119px"
+    },
+    "opt-wrapper field-holder label": {
+        "fontSize": 1,
+        "fontFamily": "\"montserratregular\", sans-serif",
+        "textTransform": "capitalize",
+        "color": "#2d5164",
+        "cursor": "pointer",
+        "position": "relative",
+        "paddingLeft": 38,
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "lineHeight": 1.7
+    },
+    "opt-wrapper field-holder input[type=\"checkbox\"]": {
+        "display": "none"
+    },
+    "opt-wrapper field-holder label:before": {
+        "content": "\"\"",
+        "position": "absolute",
+        "top": 0,
+        "left": 0,
+        "width": 22,
+        "height": 22,
+        "border": "2px solid #dee6eb",
+        "borderRadius": 5
+    },
+    "opt-wrapper field-holder input[type=\"checkbox\"]:checked + label:before": {
+        "content": "\"\\f00c\"",
+        "fontFamily": "'fontAwesome'",
+        "width": 22,
+        "height": 22,
+        "textAlign": "center",
+        "background": "#61b3de",
+        "borderRadius": 5,
+        "border": "none",
+        "lineHeight": 1.6,
+        "color": "#fff"
+    },
+    "time-holder inner-wrapper": {
+        "background": "#fff",
+        "boxShadow": "none",
+        "border": "2px solid #61b3de",
+        "paddingTop": 18,
+        "paddingRight": 12,
+        "paddingBottom": 18,
+        "paddingLeft": 12
+    },
+    "time-holder section-title": {
+        "fontFamily": "'montserratsemi_bold', sans-serif",
+        "fontSize": 1,
+        "marginTop": 10,
+        "marginRight": 0,
+        "marginBottom": 18,
+        "marginLeft": 0
+    },
+    "time-holder opt-holder": {
+        "overflow": "hidden"
+    },
+    "time-holder opt-block": {
+        "float": "left",
+        "marginRight": 30
+    },
+    "time-holder opt-block:last-child": {
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "time-holder opt-holder field-holder label": {
+        "fontSize": 0.9,
+        "fontFamily": "\"montserratregular\", sans-serif",
+        "textTransform": "capitalize",
+        "color": "#7694a2",
+        "cursor": "pointer"
+    },
+    "time-holder opt-holder input[type=\"checkbox\"]": {
+        "display": "none"
+    },
+    "time-holder opt-holder label": {
+        "position": "relative",
+        "paddingLeft": 32,
+        "textTransform": "capitalize",
+        "fontSize": 1,
+        "color": "#2d5164",
+        "cursor": "pointer",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "lineHeight": 1.7
+    },
+    "time-holder opt-holder label:before": {
+        "content": "\"\"",
+        "position": "absolute",
+        "top": 0,
+        "left": 0,
+        "width": 22,
+        "height": 22,
+        "border": "2px solid #dee6eb",
+        "borderRadius": 5
+    },
+    "time-holder opt-holder input[type=\"checkbox\"]:checked + label:before": {
+        "content": "\"\\f00c\"",
+        "fontFamily": "'fontAwesome'",
+        "width": 22,
+        "height": 22,
+        "textAlign": "center",
+        "background": "#61b3de",
+        "borderRadius": 5,
+        "border": "none",
+        "lineHeight": 1.6,
+        "color": "#fff"
+    },
+    "time-holder time-wrapper": {
+        "position": "relative",
+        "paddingBottom": 25,
+        "paddingRight": "10%"
+    },
+    "time-holder time-wrapper:after": {
+        "content": "\"\"",
+        "width": 1,
+        "height": "100%",
+        "background": "#d7e2ea",
+        "position": "absolute",
+        "top": 0,
+        "right": 0
+    },
+    "time-holder date-holder": {
+        "position": "relative",
+        "paddingLeft": "10%"
+    },
+    "time-holder date-holder:before": {
+        "content": "\"OR\"",
+        "position": "absolute",
+        "top": 35,
+        "left": -7,
+        "width": 15,
+        "height": 18,
+        "background": "#ffffff",
+        "color": "#7795a8",
+        "fontSize": 0.643,
+        "lineHeight": 2,
+        "fontFamily": "'montserratsemi_bold', sans-serif"
+    },
+    "time-holder date-holder field-holder": {
+        "float": "left",
+        "marginRight": 10,
+        "position": "relative"
+    },
+    "date-holder field-holder fa": {
+        "position": "absolute",
+        "right": 6,
+        "bottom": 8,
+        "fontSize": 0.8,
+        "color": "#a2b1c0"
+    },
+    "time-holder date-holder field-holder:last-child": {
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "date-holder field-holder field-label": {
+        "display": "block",
+        "textTransform": "uppercase",
+        "color": "#7795a8",
+        "fontSize": 0.7,
+        "fontFamily": "'montserratsemi_bold', sans-serif",
+        "marginBottom": 5
+    },
+    "date-holder field-holder form-control": {
+        "width": 48,
+        "height": 26,
+        "borderRadius": 5,
+        "borderColor": "#d7e2ea",
+        "fontSize": 0.714,
+        "color": "#2d5164",
+        "fontFamily": "\"montserratregular\", sans-serif"
+    },
+    "date-holder field-holder selectform-control": {
+        "paddingTop": 5,
+        "paddingRight": 5,
+        "paddingBottom": 5,
+        "paddingLeft": 5,
+        "width": 56
+    },
+    "date-holder field-holder react-datepicker__input-container input": {
+        "width": 96
+    },
+    "time-holder btn-holder": {
+        "float": "left",
+        "width": "100%",
+        "textAlign": "right",
+        "marginTop": 20
+    },
+    "time-holder btn-holder set-btn": {
+        "background": "#a4becd",
+        "color": "#fff",
+        "textTransform": "uppercase",
+        "fontSize": 0.857,
+        "fontFamily": "\"montserratregular\", sans-serif",
+        "paddingTop": 10,
+        "paddingRight": 32,
+        "paddingBottom": 10,
+        "paddingLeft": 32,
+        "border": "none"
+    },
+    "inner-wrapper btn-holder": {},
     "middle-content-wrapper": {
         "minWidth": 500
     },
