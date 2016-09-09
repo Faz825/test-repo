@@ -1678,14 +1678,17 @@ var UserControler ={
 
 
     /**
-     * Load User Connections
+     * Load User Connections for Shared Notebooks
      * @param req
      * @param res
      */
-    getUserConnections:function(req,res){
+    getNotesSharedUsers:function(req,res){
         var User = require('mongoose').model('User'),
+            NoteBook = require('mongoose').model('NoteBook'),
             Connection = require('mongoose').model('Connection'),
             _async = require('async'),
+            grep = require('grep-from-array'),
+            _arrIndex = require('array-index-of-property'),
             CurrentSession = Util.getCurrentSession(req),
             outPut = {},
             my_connections = [];
@@ -1698,14 +1701,121 @@ var UserControler ={
                     q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*'
                     //q:req.params['name']+'*'
                 }
-
+                var notebookId = req.params['notebook'];
                 Connection.getMyConnectionData(criteria,function(resultSet){
                     //console.log("=======================Connections==============")
                     //console.log(resultSet)
                     my_connections = resultSet.results;
 
-                    callback(null, my_connections);
+                    _async.waterfall([
+                        function getSharedUsers(callback){
+
+                            NoteBook.getNotebookById(notebookId,function(resultSet){
+
+                                var _notebookSharedUsers = resultSet.shared_users;
+                                if(_notebookSharedUsers != null){
+                                    for( var inc = 0; inc < _notebookSharedUsers.length; inc++){
+                                        var  _user = grep(my_connections, function(e){ return e.user_id == _notebookSharedUsers[inc].user_id; });
+                                        if(_user.length == 1){
+                                            var index = my_connections.indexOfProperty('user_id', _user[0].user_id);
+                                            my_connections.splice(index, 1);
+                                        }
+                                    }
+                                }
+
+                                callback(null);
+                            });
+
+                        }
+                    ], function (err, resultSet) {
+                        callback(null, my_connections);
+                    });
+
                 })
+
+            }
+
+        ], function (err, resultSet) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            var outPut = {
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                users: resultSet
+            }
+            res.status(200).json(outPut);
+        });
+
+    },
+
+    /**
+     * Filter User Connections
+     * @param req
+     * @param res
+     */
+    filterNoteBookSharedUsers:function(req,res){
+        var User = require('mongoose').model('User'),
+            NoteBook = require('mongoose').model('NoteBook'),
+            Connection = require('mongoose').model('Connection'),
+            _async = require('async'),
+            grep = require('grep-from-array'),
+            _arrIndex = require('array-index-of-property'),
+            CurrentSession = Util.getCurrentSession(req),
+            outPut = {},
+            my_connections = [],
+            shared_users = [];
+
+        _async.waterfall([
+
+            function getConnectedUsers(callback) {
+                var criteria = {
+                    q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*',
+                    index:'idx_usr',
+                    //q:req.params['name']+'*'
+                }
+                var notebookId = req.params['notebook'];
+                ES.search(criteria,function(esResultSet){
+                    //console.log("=======================Connections==============")
+                    //console.log(resultSet)
+                    my_connections = esResultSet.result;
+                    console.log(my_connections);
+                    _async.waterfall([
+                        function getSharedUsers(callback){
+
+                            NoteBook.getNotebookById(notebookId,function(resultSet){
+
+                                var _notebookSharedUsers = resultSet.shared_users;
+                                if(_notebookSharedUsers != null){
+                                    for( var inc = 0; inc < _notebookSharedUsers.length; inc++){
+                                        var  _user = grep(my_connections, function(e){ return e.user_id == _notebookSharedUsers[inc].user_id; });
+                                        if(_user.length == 1){
+                                            var index = my_connections.indexOfProperty('user_id', _user[0].user_id);
+                                            if(_notebookSharedUsers[inc].status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
+                                                var usrObj = {
+                                                    user_id: my_connections[index].user_id,
+                                                    notebook_id: notebookId,
+                                                    shared_type: my_connections[index].shared_type,
+                                                    shared_status: _notebookSharedUsers[inc].status,
+                                                    user_name: my_connections[index].first_name + " " + my_connections[index].last_name,
+                                                    profile_image: my_connections[index].images.profile_image.http_url
+                                                };
+                                                shared_users.push(usrObj);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                callback(null);
+                            });
+
+                        }
+                    ], function (err, resultSet) {
+                        callback(null, shared_users);
+                    });
+
+                })
+
             }
 
         ], function (err, resultSet) {

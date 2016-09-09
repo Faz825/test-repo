@@ -72,7 +72,7 @@ GLOBAL.notAuthURLs = ['/sign-up','/forgot-password','/change-password-invalid','
 GLOBAL.AccessAllow = [
     '/','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
-    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode'
+    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode', '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name'
 ];
 
 /**
@@ -135,7 +135,8 @@ router.get('/connections', DefaultController.index);
 router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
 
-router.get('/get-connected-users/:name', UserController.getUserConnections);
+router.get('/get-connected-users/:notebook/:name', UserController.getNotesSharedUsers);
+router.get('/filter-shared-users/:notebook/:name', UserController.filterNoteBookSharedUsers);
 
 /**
  * Implement All Test Routs from there
@@ -239,6 +240,9 @@ router.post('/notes/share-notebook', NotesController.shareNoteBook);
 router.post('/notes/add-note', NotesController.addNote);
 router.get('/notes/get-notes', NotesController.getNotes);
 router.get('/notes/get-note/:note_id', NotesController.getNote);
+router.post('/notebook/shared-users', NotesController.getNoteBookSharedUsers);
+router.post('/notebook/shared-permission/change', NotesController.updateNoteBookSharedPermissions);
+router.post('/notebook/shared-user/remove', NotesController.removeSharedNoteBookUser);
 router.post('/notes/update-note', NotesController.updateNote);
 router.post('/notes/delete-note', NotesController.deleteNote);
 router.post('/introduction/update', UserController.updateIntroduction);

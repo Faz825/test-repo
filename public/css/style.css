@@ -2232,6 +2232,7 @@ textarea{
 }
 .pg-notes-page-content-item-right-thumbs .note-thumb-wrapper{
 	overflow: hidden;
+	min-height: 175px;
 }
 .pg-col-20,
 .pg-notes-item-main-row .note-holder{
@@ -4551,6 +4552,16 @@ textarea{
 	font: 11px 'montserratsemi_bold', sans-serif;
 	color: #fff;
 	background-color: #61b3de;
+	text-transform: uppercase;
+	border: none;
+	margin: 12px 0 5px;
+}
+
+.editor-popup-holder .btn.btn-read-only{
+	float: right;
+	font: 11px 'montserratsemi_bold', sans-serif;
+	color: #fff;
+	background-color: #de6178;
 	text-transform: uppercase;
 	border: none;
 	margin: 12px 0 5px;
