@@ -3714,7 +3714,6 @@ textarea{
 
 .popup-holder{
 	margin-left: 20px !important;
-	margin-top: 154px;
 	max-width: 500px;
 	width: 500px;
 	background: #e8eef2;
@@ -3728,30 +3727,13 @@ textarea{
 	width: 340px;
 }
 
-.popup-holder.right .arrow{
-	margin-top: -157px;
-	margin-left: -6px;
-	width: 20px;
-	height: 19px;
-	background-repeat: no-repeat;
-	background-image: url(../images/popover_arrow.png);
-	border-style: none;
-}
-
 .popup-holder.right .arrow:after{
-	border-style: none;
-}
-
-.popup-holder.bottom .arrow{
-	margin-top: 0;
-	margin-left: 11px;
-	width: 0;
-	height: 0;
-	background-image: none;
+	border-right-color: #e8eef2;
 }
 
 .popup-holder.bottom .arrow:after{
-	border-style: solid;
+	border-bottom-color: #e8eef2;
+	border-right-color: transparent;
 }
 
 .popup-holder .popover-content{
