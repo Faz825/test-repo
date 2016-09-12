@@ -113,6 +113,9 @@ NoteSchema.statics.getNotes = function(criteria,callBack){
     //});
 
     _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
+
+        console.log(resultSet.name);
+
         if(!err){
             callBack({
                 status:200,

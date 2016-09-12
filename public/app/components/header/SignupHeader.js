@@ -135,8 +135,8 @@ export default class Header extends React.Component {
 
 	render(){
 		return(
-            <div className="row row-clr pg-top-navigation">
-                <div className="container-fluid pg-custom-container">
+            <div className="row row-clr pg-top-navigation signup-header">
+                <div className="container pg-custom-container">
                     <div className="row">
                         <div className="col-xs-2 logoHolder">
                             <a href="/">

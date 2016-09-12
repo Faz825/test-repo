@@ -72,7 +72,7 @@ GLOBAL.notAuthURLs = ['/sign-up','/forgot-password','/change-password-invalid','
 GLOBAL.AccessAllow = [
     '/','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
-    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/'
+    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode', '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name'
 ];
 
 /**
@@ -135,7 +135,8 @@ router.get('/connections', DefaultController.index);
 router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
 
-router.get('/get-connected-users/:name', UserController.getUserConnections);
+router.get('/get-connected-users/:notebook/:name', UserController.getNotesSharedUsers);
+router.get('/filter-shared-users/:notebook/:name', UserController.filterNoteBookSharedUsers);
 
 /**
  * Implement All Test Routs from there
@@ -235,15 +236,20 @@ router.get('/news/saved/articles', NewsController.getSavedArticles);
 router.post('/like/composer', LikeController.doLike);
 
 router.post('/notes/add-notebook', NotesController.addNoteBook);
+router.post('/notes/share-notebook', NotesController.shareNoteBook);
 router.post('/notes/add-note', NotesController.addNote);
 router.get('/notes/get-notes', NotesController.getNotes);
 router.get('/notes/get-note/:note_id', NotesController.getNote);
+router.post('/notebook/shared-users', NotesController.getNoteBookSharedUsers);
+router.post('/notebook/shared-permission/change', NotesController.updateNoteBookSharedPermissions);
+router.post('/notebook/shared-user/remove', NotesController.removeSharedNoteBookUser);
 router.post('/notes/update-note', NotesController.updateNote);
 router.post('/notes/delete-note', NotesController.deleteNote);
 router.post('/introduction/update', UserController.updateIntroduction);
 router.get('/introduction/:uname',UserController.retrieveIntroduction);
 router.get('/notifications/get-notifications',NotificationController.getNotifications);
 router.post('/notifications/update-notifications',NotificationController.updateNotifications);
+router.post('/notifications/notebook-update',NotificationController.updateNotebookNotifications);
 router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);
 router.get('/notifications/get-details',NotificationController.getDetails);
 router.get('/notifications/get-notification-count',NotificationController.getNotificationCount);

@@ -95,7 +95,7 @@ export default class FooterHolder extends React.Component{
 
                 <div className="pg-footer-right-options-panel">
                     <div className="pg-footer-right-options-panel-inner">
-                        <a href="workmode.html" onClick={event=>onLinkClick(event)}>
+                        <a href="/work-mode" onClick={event=>onLinkClick(event)}>
                             <img src="/images/footer-right-image.png" alt="Logo" className="img-responsive"/>
 
                             <p>Work Mode</p>
