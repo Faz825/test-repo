@@ -38,6 +38,16 @@ class Socket{
         this.socket.emit('send notification', _data);
     }
 
+    sendNotebookNotification(data){
+        console.log("sendNotebookNotification");
+        console.log(data)
+        var _data = {
+            user:this.loggedUser.user_name,
+            data:data
+        };
+        this.socket.emit('notebook share notification', _data);
+    }
+
     listenToNotification(callback){
 
         this.socket.on('notification',function(data){

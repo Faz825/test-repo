@@ -63,7 +63,7 @@ export default class Index extends React.Component{
                 //_this.setState({notifications:_newNotifications});
 
             } else if(data.notification_type == "share_notebook") {
-                console.log("shared notification received ----------- ");
+                console.log("notebook shared notification received ----------- ");
                 console.log(data);
 
             } else {

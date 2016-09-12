@@ -730,10 +730,11 @@ export class SharePopupNewUsr extends React.Component{
                 let _notificationData = {
                     notebook_id:notebook.notebook_id,
                     notification_type:"share_notebook",
-                    notification_sender:loggedUser
+                    notification_sender:loggedUser,
+                    notification_receiver:user.user_name
                 };
 
-                Socket.sendNotification(_notificationData);
+                Socket.sendNotebookNotification(_notificationData);
 
                 this.loadNewUsers();
                 this.props.onShareuser();
@@ -760,7 +761,7 @@ export class SharePopupNewUsr extends React.Component{
                         <h3 className="user-name">{suggestion.first_name} {suggestion.last_name}</h3>
                     </div>
                     <div className="action">
-                        <button className="btn-add" onClick={()=>_this.shareNote(suggestion.user_id)}>
+                        <button className="btn-add" onClick={()=>_this.shareNote(suggestion)}>
                             <i className="fa fa-plus" aria-hidden="true"></i>
                         </button>
                     </div>
