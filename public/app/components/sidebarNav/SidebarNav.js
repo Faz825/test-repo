@@ -16,13 +16,20 @@ export default class SidebarNav extends React.Component{
 		//TODO::
 		// if side right & blockRight true need to hide
 		return(
-				<div className={"row row-clr pg-"+this.props.side+"-nav-wrapper"}>
-					<div className="bx-wrapper">
-						<div className="bx-viewport">
-									{menuItems}
-          	</div>
-          </div>
-        </div>
+			<div>
+				{
+					(this.props.blockRight)?
+					null
+					:
+					<div className={"row row-clr pg-"+this.props.side+"-nav-wrapper"}>
+						<div className="bx-wrapper">
+							<div className="bx-viewport">
+								{menuItems}
+							</div>
+						</div>
+					</div>
+				}
+			</div>
 		);
 	}
 }

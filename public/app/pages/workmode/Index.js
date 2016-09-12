@@ -18,7 +18,9 @@ export default class Index extends React.Component{
             customHours: this.cH,
             customMins: this.cM,
             selectedTimeOpt: 0,
-            blockedMode: ""
+            blockedMode: "",
+            timeBlockIsVisible: true,
+            timePeriod: this.tPeriod
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -63,7 +65,6 @@ export default class Index extends React.Component{
     onBlockedModeSelect(e){
         let checkbox = e.target.value;
         let hasCheckedIndex = this.selectedList.indexOf(checkbox);
-        console.log(hasCheckedIndex);
 
         if (hasCheckedIndex > -1) {
             this.selectedList.splice(hasCheckedIndex, 1);
@@ -83,19 +84,27 @@ export default class Index extends React.Component{
     }
 
     onWorkModeSet(){
-        let data = {
-            mode : this.selectedList,
-            time : this.state.selectedTimeOpt,
-            date : {
-                day : this.formatDate,
-                hh : this.state.customHours,
-                mm : this.state.customMins,
-                period : this.refs.timePeriod.value
+        let data;
+
+        if (this.selectedList.length >= 1) {
+            if(this.formatDate == undefined){
+                console.log("not set");
+                this.formatDate = Moment().format("MMM DD");
             }
+            data = {
+                mode : this.selectedList,
+                time : this.state.selectedTimeOpt,
+                date : {
+                    day : this.formatDate,
+                    hh : this.state.customHours,
+                    mm : this.state.customMins,
+                    period : this.state.timePeriod
+                }
+            }
+        }else{
+            alert("Please Select Work Mode");
         }
-
         console.log(data);
-
 
         let _startTime = new Date().getTime();
         let howLong = 0;
@@ -123,13 +132,26 @@ export default class Index extends React.Component{
         Session.createSession("prg_wm",_wm);
     }
 
+    onTimeSummeryClick(){
+        this.setState({timeBlockIsVisible: true});
+    }
+
+    onTimeSet(){
+        this.setState({timeBlockIsVisible: false});
+    }
+
+    onPeriodChange(e){
+        let selectedPeriod = e.target.value;
+        this.setState({timePeriod: selectedPeriod});
+    }
+
     render(){
         return(
             <div id="pg-workmode-page" className="pg-page">
                 <div className="container">
                     <div className="row">
                         <div className="work-mode-container col-sm-10 col-sm-offset-1">
-                            <div className="inner-wrapper">
+                            <div className="inner-wrapper clearfix">
                                 <div className="header-section">
                                     <h2 className="section-text">Work Mode</h2>
                                 </div>
@@ -183,62 +205,69 @@ export default class Index extends React.Component{
                                         </div>
                                     </div>
                                 </div>
-                                <div className="time-holder">
-                                    <div className="inner-wrapper clearfix">
-                                        <div className="time-wrapper col-sm-6">
-                                            <h3 className="section-title">Set a fixed time for next,</h3>
-                                            <div className="opt-holder">
-                                                <div className="opt-block clearfix">
-                                                    <input type="checkbox" value="30" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                        checked={(this.state.selectedTimeOpt == 30)? true : false} />
-                                                    <label htmlFor="min-check">30 Mins</label>
+                                {
+                                    (this.state.timeBlockIsVisible)?
+                                        <div className="time-holder">
+                                            <div className="inner-wrapper clearfix">
+                                                <div className="time-wrapper col-sm-6">
+                                                    <h3 className="section-title">Set a fixed time for next,</h3>
+                                                    <div className="opt-holder">
+                                                        <div className="opt-block clearfix">
+                                                            <input type="checkbox" value="30" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                                checked={(this.state.selectedTimeOpt == 30)? true : false} />
+                                                            <label htmlFor="min-check">30 Mins</label>
+                                                        </div>
+                                                        <div className="opt-block clearfix">
+                                                            <input type="checkbox" value="60" id="one-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                                checked={(this.state.selectedTimeOpt == 60)? true : false}/>
+                                                            <label htmlFor="one-hour-check">1 Hour</label>
+                                                        </div>
+                                                        <div className="opt-block clearfix">
+                                                            <input type="checkbox" value="180" id="three-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                                checked={(this.state.selectedTimeOpt == 180)? true : false}/>
+                                                            <label htmlFor="three-hour-check">3 Hour</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="opt-block clearfix">
-                                                    <input type="checkbox" value="60" id="one-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                        checked={(this.state.selectedTimeOpt == 60)? true : false}/>
-                                                    <label htmlFor="one-hour-check">1 Hour</label>
+                                                <div className="date-holder col-sm-6">
+                                                    <h3 className="section-title">Set time till</h3>
+                                                    <div className="date-field-holder clearfix">
+                                                        <div className="field-holder">
+                                                            <span className="field-label">Day</span>
+                                                            <DatePicker
+                                                                selected={this.state.startDate}
+                                                                onChange={this.handleChange}
+                                                                dateFormat="MMM DD"
+                                                                className="form-control" />
+                                                            <i className="fa fa-calendar" aria-hidden="true"></i>
+                                                        </div>
+                                                        <div className="field-holder">
+                                                            <span className="field-label">HR</span>
+                                                            <input type="number" name="hours" min="1" max="24" className="form-control" value={this.state.customHours} placeholder="Hour" onChange={(event)=>{this.onTimeChange(event)}}/>
+                                                        </div>
+                                                        <div className="field-holder">
+                                                            <span className="field-label">MIN</span>
+                                                            <input type="number" name="mins" min="0" max="60" className="form-control" value={this.state.customMins} placeholder="Minute" onChange={(event)=>{this.onTimeChange(event)}}/>
+                                                        </div>
+                                                        <div className="field-holder day-period">
+                                                            <span className="field-label">Period</span>
+                                                            <select name="periods" className="form-control" value={this.state.timePeriod} onChange={this.onPeriodChange.bind(this)}>
+                                                                <option value="AM">AM</option>
+                                                                <option value="PM">PM</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="opt-block clearfix">
-                                                    <input type="checkbox" value="180" id="three-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                        checked={(this.state.selectedTimeOpt == 180)? true : false}/>
-                                                    <label htmlFor="three-hour-check">3 Hour</label>
+                                                <div className="btn-holder">
+                                                    <button className="btn btn-default set-btn" onClick={this.onTimeSet.bind(this)}>Set</button>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="date-holder col-sm-6">
-                                            <h3 className="section-title">Set time till</h3>
-                                            <div className="date-field-holder clearfix">
-                                                <div className="field-holder">
-                                                    <span className="field-label">Day</span>
-                                                    <DatePicker
-                                                        selected={this.state.startDate}
-                                                        onChange={this.handleChange}
-                                                        dateFormat="MMM DD"
-                                                        className="form-control" />
-                                                    <i className="fa fa-calendar" aria-hidden="true"></i>
-                                                </div>
-                                                <div className="field-holder">
-                                                    <span className="field-label">HR</span>
-                                                    <input type="number" name="hours" min="1" max="24" className="form-control" value={this.state.customHours} placeholder="Hour" onChange={(event)=>{this.onTimeChange(event)}}/>
-                                                </div>
-                                                <div className="field-holder">
-                                                    <span className="field-label">MIN</span>
-                                                    <input type="number" name="mins" min="0" max="60" className="form-control" value={this.state.customMins} placeholder="Minute" onChange={(event)=>{this.onTimeChange(event)}}/>
-                                                </div>
-                                                <div className="field-holder day-period">
-                                                    <span className="field-label">Period</span>
-                                                    <select name="periods" className="form-control" ref="timePeriod">
-                                                        <option value="am" selected={this.tPeriod == "AM"}>AM</option>
-                                                        <option value="pm" selected={this.tPeriod == "PM"}>PM</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                    :
+                                        <div className="mode-notice" onClick={this.onTimeSummeryClick.bind(this)}>
+                                            <h3 className="title">Work Mode on for next 1hrs 30mins</h3>
                                         </div>
-                                        <div className="btn-holder">
-                                            <button className="btn btn-default set-btn">Set</button>
-                                        </div>
-                                    </div>
-                                </div>
+                                }
                                 <div className="btn-holder">
                                     <button className="btn btn-default submit" onClick={this.onWorkModeSet.bind(this)}>GO!</button>
                                 </div>
