@@ -59,7 +59,7 @@ export default class Index extends React.Component{
     }
 
     checkWorkMode(){
-        console.log("checkWorkMode from NewsFeed")
+        //console.log("checkWorkMode from NewsFeed")
         if(Session.getSession('prg_wm') != null){
             let _currentTime = new Date().getTime();
             let _finishTime = Session.getSession('prg_wm').endTime;
@@ -74,6 +74,7 @@ export default class Index extends React.Component{
                 this.loadNewsArticles();
             }
         } else{
+            this.setState({blockNewsFeed:false})
             clearInterval(this.checkWorkModeInterval);
             this.checkWorkModeInterval = null;
             this.loadPosts(0);
@@ -130,7 +131,9 @@ export default class Index extends React.Component{
 
     componentDidMount(){
         window.setInterval(function () {
-            this.updatePostTime();
+            if(this.state.blockNewsFeed == false){
+                this.updatePostTime();
+            }
         }.bind(this), 10000);
     }
 

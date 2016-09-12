@@ -62,7 +62,7 @@ export default class DefaultLayout extends React.Component{
     }
 
     checkWorkMode(){
-        console.log("checkWorkMode from Default Layout")
+        //console.log("checkWorkMode from Default Layout")
         if(Session.getSession('prg_wm') != null){
             let _currentTime = new Date().getTime();
             let _finishTime = Session.getSession('prg_wm').endTime;
