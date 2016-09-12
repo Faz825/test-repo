@@ -17,6 +17,24 @@ export default class Index extends React.Component{
             window.location.href = "/";
         }
 
+        let _newsFeed = false;
+        this.checkWorkModeInterval = null;
+
+        if(Session.getSession('prg_wm') != null){
+            let _currentTime = new Date().getTime();
+            let _finishTime = Session.getSession('prg_wm').endTime;
+
+            if (_currentTime > _finishTime){
+                Session.destroy("prg_wm");
+            } else{
+                let _this = this;
+                _newsFeed = Session.getSession('prg_wm').newsFeed;
+                if(_newsFeed == true){
+                    this.checkWorkModeInterval = setInterval(function(){_this.checkWorkMode()}, 1000);
+                }
+            }
+        }
+
         let user =  Session.getSession('prg_lg');
         this.state={
             uname:user.user_name,
@@ -25,15 +43,42 @@ export default class Index extends React.Component{
             display_news_articles:[],
             display_articles_index:[],
             isShowingModal : false,
-            popupData : {}
+            popupData : {},
+            blockNewsFeed:_newsFeed
         };
         this.refreshInterval = null;
-        this.loadPosts(0);
-        this.loadNewsArticles();
         this.current_date = this.getCurrentDate();
         this.selectedArtical = this.selectedArtical.bind(this);
         this.onSaveArticleIconClick = this.onSaveArticleIconClick.bind(this);
         this.updatePostTime = this.updatePostTime.bind(this);
+
+        if(this.state.blockNewsFeed == false){
+            this.loadPosts(0);
+            this.loadNewsArticles();
+        }
+    }
+
+    checkWorkMode(){
+        console.log("checkWorkMode from NewsFeed")
+        if(Session.getSession('prg_wm') != null){
+            let _currentTime = new Date().getTime();
+            let _finishTime = Session.getSession('prg_wm').endTime;
+
+            if (_currentTime > _finishTime){
+                console.log("TIME UP from NewsFeed")
+                this.setState({blockNewsFeed:false})
+                Session.destroy("prg_wm");
+                clearInterval(this.checkWorkModeInterval);
+                this.checkWorkModeInterval = null;
+                this.loadPosts(0);
+                this.loadNewsArticles();
+            }
+        } else{
+            clearInterval(this.checkWorkModeInterval);
+            this.checkWorkModeInterval = null;
+            this.loadPosts(0);
+            this.loadNewsArticles();
+        }
     }
 
     onPostSubmitSuccess(data){
@@ -245,6 +290,10 @@ export default class Index extends React.Component{
         let _this = this;
         let user = Session.getSession('prg_lg');
         const {uname,posts,display_news_articles}= this.state;
+
+        console.log("=====NEWSFEED======"+this.state.blockNewsFeed)
+        //TODO::
+        // if blockNewsFeed true need to blur the screen and show secretary image
 
         return(
             <div id="pg-newsfeed-page" className="pg-page">

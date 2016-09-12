@@ -24,6 +24,7 @@ export default class ProfileImg extends React.Component{
     }
     logout(){
         Session.destroy("prg_lg");
+        Session.destroy("prg_wm");
         $.ajax({
             url: '/logout',
             method: "GET",

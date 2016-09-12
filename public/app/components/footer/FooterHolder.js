@@ -57,6 +57,10 @@ export default class FooterHolder extends React.Component{
             notificationCount
             }=this.state;
 
+        console.log("=====Footer Holder======"+this.props.blockBottom)
+        //TODO::
+        // if blockBottom true need to hide
+
         return (
             <div className="row row-clr pg-footer-wrapper">
                 <div className="pg-footer-left-options-panel">

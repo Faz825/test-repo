@@ -100,6 +100,20 @@ export default class Header extends React.Component {
                         if(_this.state.rememberMe){
                             Session.createSession("prg_rm", {rememberMe:_this.state.rememberMe});
                         }
+                        //Need to remove after WorkMode UI implemented
+                        var _startTime = new Date().getTime();
+                        var _endTime = _startTime+(2*60*1000);
+                        var _wm = {
+                            rightBottom:true,
+                            newsFeed:true,
+                            calls:true,
+                            messages:true,
+                            socialNotifications:true,
+                            startTimer:_startTime,
+                            howLong:2*60*1000,
+                            endTime:_endTime
+                        };
+                        Session.createSession("prg_wm",_wm);
 
                         if(data.user.status == 7){
                             location.href = "/";
