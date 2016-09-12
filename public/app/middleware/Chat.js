@@ -46,6 +46,11 @@ class Chat{
         // Incoming call from another user
         b6.on('incomingCall', function(c) {
 
+            console.log("======incomingCall======");
+            console.log(c);
+
+
+
             attachCallEvents(c);
             var cf = b6.getNameFromIdentity(c.other);
 
@@ -89,6 +94,7 @@ class Chat{
         // c - Dialog - call controller. null for a local video feed
         // op - operation. 1 - add, 0 - update, -1 - remove
         b6.on('video', function(v, c, op) {
+            console.log("Video");
             var vc = $('#videoContainer');
             if (op < 0) {
                 vc[0].removeChild(v);
@@ -298,6 +304,8 @@ class Chat{
 
         this.startOutgoingCall = function(to, video){
 
+            console.log("startOutgoingCall")
+
             // Outgoing call params
             var opts = {
                 audio: audioCall,
@@ -313,12 +321,16 @@ class Chat{
 
         // Attach call state events to a RtcDialog
         function attachCallEvents(c) {
+
+            console.log("startOutgoingCall")
             // Call progress
             c.on('progress', function() {
+                console.log("progress")
                 showInCallName();
             });
             // Number of video feeds/elements changed
             c.on('videos', function () {
+                console.log("videos")
                 var container = $('#videoContainer');
                 var elems = container.children();
                 $('#incomingCallAlert').modal('hide');
@@ -326,6 +338,7 @@ class Chat{
             });
             // Call answered
             c.on('answer', function() {
+                console.log("answer")
                 $('#incomingCallAlert').modal('hide');
                 $('#onCall').text("on call")
                 $('#clock').show();
@@ -336,11 +349,13 @@ class Chat{
             });
             // Error during the call
             c.on('error', function() {
+                console.log("error")
                 $('#incomingCallAlert').modal('hide');
                 $('#detailPane').addClass('hidden');
             });
             // Call ended
             c.on('end', function() {
+                console.log("end")
                 showInCallName();
                 // No more dialogs?
                 if (b6.dialogs.length === 0) {
@@ -365,6 +380,7 @@ class Chat{
         }
 
         function updateInCallUI(c, opts) {
+            console.log("updateInCallUI")
             showInCallName();
             $('#detailPane').removeClass('hidden');
             // Do not show video feeds area for audio-only call
@@ -375,6 +391,7 @@ class Chat{
 
         // Show all the call participants
         function showInCallName() {
+            console.log("showInCallName")
             var s = '';
             for(var i in b6.dialogs) {
                 var d = b6.dialogs[i];
@@ -408,6 +425,7 @@ class Chat{
 
         // 'Answer Incoming Call' click
         this.answerCall = function(opts){
+            console.log("answerCall")
             $('#incomingCallAlert').modal('hide');
             var d = $('#incomingCall').data();
             // Call controller
@@ -420,6 +438,7 @@ class Chat{
 
         // 'Reject Incoming Call' click
         this.rejectCall = function(){
+            console.log("rejectCall")
             var d = $('#incomingCall').data();
             // Call controller
             if (d && d.dialog) {
@@ -430,6 +449,7 @@ class Chat{
 
         // 'Call Hangup' click
         this.hangupCall = function(){
+            console.log("hangupCall")
             // Hangup all active calls
             var x = b6.dialogs.slice();
             for (var i in x) {
