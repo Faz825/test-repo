@@ -715,7 +715,7 @@ export class SharePopupNewUsr extends React.Component{
         let notebook = this.props.notebook;
         let _noteBook = {
             noteBookId:notebook.notebook_id,
-            userId:user
+            userId:user.user_id
         };
 
         $.ajax({
