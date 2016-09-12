@@ -106,6 +106,8 @@ export default class Index extends React.Component {
             this.setState({validateAlert:Alert.EMPTY_NOTEBOOK_NAME})
         } else if(this.state.catColor == ""){
             this.setState({validateAlert:Alert.INVALID_COLOR})
+        } else if(this.state.catNameValue == "My Notes"){
+            this.setState({validateAlert:Alert.NOTEBOOK_NAME_ERROR})
         } else{
             let _noteBook = {
                 notebookName:this.state.catNameValue,

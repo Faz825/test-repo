@@ -22,22 +22,31 @@ export default class Index extends React.Component{
 
         this.handleChange = this.handleChange.bind(this);
         this.formatDate;
+        this.selectedList = [];
 
     }
 
     onTimeChange(e){
         let timeField = e.target.name;
         let timeFieldValue = e.target.value;
+        let currSpinerH = this.state.customHours;
+        let currSpinerM = this.state.customMins;
 
         if(timeField == "hours"){
-            if(timeFieldValue <= 24){
+            if(timeFieldValue <= 12){
                 timeFieldValue = e.target.value.substring(0,2);
                 this.setState({customHours: timeFieldValue});
             }
         }
 
         if(timeField == "mins"){
-            if(timeFieldValue <= 60){
+            if(timeFieldValue == 60){
+                timeFieldValue = e.target.value.substring(0,2);
+                currSpinerH = parseInt(currSpinerH) + 1;
+                this.setState({customMins: 0, customHours: currSpinerH});
+            }
+
+            if(timeFieldValue <= 59){
                 timeFieldValue = e.target.value.substring(0,2);
                 this.setState({customMins: timeFieldValue});
             }
@@ -52,7 +61,16 @@ export default class Index extends React.Component{
 
     onBlockedModeSelect(e){
         let checkbox = e.target.value;
-        this.setState({blockedMode : checkbox});
+        let hasCheckedIndex = this.selectedList.indexOf(checkbox);
+        console.log(hasCheckedIndex);
+
+        if (hasCheckedIndex > -1) {
+            this.selectedList.splice(hasCheckedIndex, 1);
+        }else{
+            this.selectedList.push(checkbox);
+        }
+
+        this.setState({blockedMode : this.selectedList});
     }
 
     handleChange(date) {
@@ -65,7 +83,7 @@ export default class Index extends React.Component{
 
     onWorkModeSet(){
         let data = {
-            mode : this.state.blockedMode,
+            mode : this.selectedList,
             time : this.state.selectedTimeOpt,
             date : {
                 day : this.formatDate,
@@ -88,12 +106,12 @@ export default class Index extends React.Component{
                                 <div className="header-section">
                                     <h2 className="section-text">Work Mode</h2>
                                 </div>
-                                <div className="opt-wrapper">
+                                <div className="opt-wrapper" ref="modeSelector">
                                     <div className="opt-block clearfix">
                                         <span className="icon bar-block"></span>
                                         <div className="field-holder">
                                             <input type="checkbox" value="bars" id="bar-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                                checked={(this.state.blockedMode == "bars" || this.state.blockedMode == "all")? true : false } />
+                                            checked={(this.selectedList.includes("bars") || this.selectedList.includes("all"))? true : false } />
                                             <label htmlFor="bar-block-check">Block Right Bar + Bottom Bar</label>
                                         </div>
                                     </div>
@@ -101,7 +119,7 @@ export default class Index extends React.Component{
                                         <span className="icon newsfeed-block"></span>
                                         <div className="field-holder">
                                             <input type="checkbox" value="newsfeed" id="newsfeed-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                                checked={(this.state.blockedMode == "newsfeed" || this.state.blockedMode == "all")? true : false }/>
+                                            checked={(this.selectedList.includes("newsfeed") || this.selectedList.includes("all") )? true : false } />
                                             <label htmlFor="newsfeed-block-check">Block Newsfeed Temporarily</label>
                                         </div>
                                     </div>
@@ -109,7 +127,7 @@ export default class Index extends React.Component{
                                         <span className="icon voice-video-block"></span>
                                         <div className="field-holder">
                                             <input type="checkbox" value="calls" id="calls-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                                checked={(this.state.blockedMode == "calls" || this.state.blockedMode == "all")? true : false }/>
+                                            checked={(this.selectedList.includes("calls") || this.selectedList.includes("all"))? true : false } />
                                             <label htmlFor="calls-block-check">Block Voice / Video Calls</label>
                                         </div>
                                     </div>
@@ -117,7 +135,7 @@ export default class Index extends React.Component{
                                         <span className="icon msg-block"></span>
                                         <div className="field-holder">
                                             <input type="checkbox" value="msg" id="msg-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                                checked={(this.state.blockedMode == "msg" || this.state.blockedMode == "all")? true : false }/>
+                                            checked={(this.selectedList.includes("msg") || this.selectedList.includes("all"))? true : false } />
                                             <label htmlFor="msg-block-check">Block Messages</label>
                                         </div>
                                     </div>
@@ -125,7 +143,7 @@ export default class Index extends React.Component{
                                         <span className="icon notifications-block"></span>
                                         <div className="field-holder">
                                             <input type="checkbox" value="notifications" id="notifications-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                                checked={(this.state.blockedMode == "notifications" || this.state.blockedMode == "all")? true : false }/>
+                                            checked={(this.selectedList.includes("notifications") || this.selectedList.includes("all"))? true : false } />
                                             <label htmlFor="notifications-block-check">Block Social Notifications</label>
                                         </div>
                                     </div>
@@ -133,7 +151,7 @@ export default class Index extends React.Component{
                                         <span className="icon all-block"></span>
                                         <div className="field-holder">
                                             <input type="checkbox" value="all" id="all-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                                checked={(this.state.blockedMode == "all")? true : false }/>
+                                            checked={(this.selectedList.includes("all"))? true : false } />
                                             <label htmlFor="all-block-check">Block All</label>
                                         </div>
                                     </div>
