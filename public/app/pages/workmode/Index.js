@@ -1,6 +1,7 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
 import Moment from 'moment';
+import Session  from '../../middleware/Session';
 
 require('react-datepicker/dist/react-datepicker.css');
 
@@ -16,7 +17,7 @@ export default class Index extends React.Component{
             startDate: Moment(),
             customHours: this.cH,
             customMins: this.cM,
-            selectedTimeOpt: "",
+            selectedTimeOpt: 0,
             blockedMode: ""
         };
 
@@ -94,6 +95,32 @@ export default class Index extends React.Component{
         }
 
         console.log(data);
+
+
+        let _startTime = new Date().getTime();
+        let howLong = 0;
+        if(data.time != 0){
+            howLong = data.time*60*1000;
+        } else{
+            console.log("time not selected");
+            howLong = 60*60*1000; // need to change according to selected datetime
+        }
+
+        Session.destroy("prg_wm");
+
+        let _endTime = _startTime+howLong;
+        let _wm = {
+            rightBottom:(data.mode.indexOf("bars") != -1 || data.mode.indexOf("all") != -1)?true:false,
+            newsFeed:(data.mode.indexOf("newsfeed") != -1 || data.mode.indexOf("all") != -1)?true:false,
+            calls:(data.mode.indexOf("calls") != -1 || data.mode.indexOf("all") != -1)?true:false,
+            messages:(data.mode.indexOf("msg") != -1 || data.mode.indexOf("all") != -1)?true:false,
+            socialNotifications:(data.mode.indexOf("notifications") != -1 || data.mode.indexOf("all") != -1)?true:false,
+            startTimer:_startTime,
+            howLong:howLong,
+            endTime:_endTime
+        };
+        console.log(_wm);
+        Session.createSession("prg_wm",_wm);
     }
 
     render(){
@@ -162,18 +189,18 @@ export default class Index extends React.Component{
                                             <h3 className="section-title">Set a fixed time for next,</h3>
                                             <div className="opt-holder">
                                                 <div className="opt-block clearfix">
-                                                    <input type="checkbox" value="30m" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                        checked={(this.state.selectedTimeOpt == "30m")? true : false} />
+                                                    <input type="checkbox" value="30" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                        checked={(this.state.selectedTimeOpt == 30)? true : false} />
                                                     <label htmlFor="min-check">30 Mins</label>
                                                 </div>
                                                 <div className="opt-block clearfix">
-                                                    <input type="checkbox" value="1h" id="one-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                        checked={(this.state.selectedTimeOpt == "1h")? true : false}/>
+                                                    <input type="checkbox" value="60" id="one-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                        checked={(this.state.selectedTimeOpt == 60)? true : false}/>
                                                     <label htmlFor="one-hour-check">1 Hour</label>
                                                 </div>
                                                 <div className="opt-block clearfix">
-                                                    <input type="checkbox" value="3h" id="three-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                        checked={(this.state.selectedTimeOpt == "3h")? true : false}/>
+                                                    <input type="checkbox" value="180" id="three-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                        checked={(this.state.selectedTimeOpt == 180)? true : false}/>
                                                     <label htmlFor="three-hour-check">3 Hour</label>
                                                 </div>
                                             </div>
