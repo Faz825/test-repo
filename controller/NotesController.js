@@ -353,8 +353,9 @@ var NotesController ={
                     function isESIndexExists(callBack){
                         var _cache_key = "idx_notebook:"+NoteBookConfig.CACHE_PREFIX+req.body.userId.toString();
                         var query={
-                            q:"_id:" + req.body.userId.toString(),
-                            index:_cache_key
+                            index:_cache_key,
+                            id:req.body.userId.toString(),
+                            type: 'shared_notebooks',
                         };
                         ES.isIndexExists(query, function (esResultSet){
                             callBack(null, esResultSet);
