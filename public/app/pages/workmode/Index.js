@@ -79,7 +79,7 @@ export default class Index extends React.Component{
           startDate: date
         });
 
-        this.formatDate = date.format("MMM DD");
+        this.formatDate = date.format("YYYY-MM-DD");
     }
 
     onWorkModeSet(){
@@ -104,6 +104,10 @@ export default class Index extends React.Component{
         } else{
             console.log("time not selected");
             howLong = 60*60*1000; // need to change according to selected datetime
+
+            let now = Moment().format('YYYY-MM-DD HH:mm a');
+            let toFormat = Moment(data.date.day + ' ' + data.date.hh + ':' + data.date.mm +' ' + data.date.period, "YYYY-MM-DD HH:mm a");
+            console.log(toFormat.diff(now));
         }
 
         Session.destroy("prg_wm");
