@@ -72,6 +72,7 @@ export default class AddPostElement extends React.Component{
                     <TextPostElement  afterPostSubmit = {this.afterPostSubmit.bind(this)}
                                       uuid={this.state.uuid}
                                       profileUsr = {this.props.profileUsr}
+                                      workModeStyles = {this.props.workModeStyles}
                         />
                 </div>
             </div>
@@ -474,7 +475,7 @@ export class TextPostElement extends React.Component{
                                 <div id="input" contentEditable={true}
                                      onFocus={this.showPostFooterPanel.bind(this)}
                                      onBlur={this.hidePostFooterPanel.bind(this)}
-                                     className="containable-div"
+                                     className={"containable-div "+this.props.workModeStyles}
                                      onInput={(event)=>{this.onContentAdd(event)}}></div>
                                 {
                                     (this.state.iniTextisVisible) ?
