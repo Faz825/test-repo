@@ -57,7 +57,7 @@ export default class FooterHolder extends React.Component{
             notificationCount
             }=this.state;
 
-        console.log("=====Footer Holder======"+this.props.blockBottom)
+        //console.log("=====Footer Holder======"+this.props.blockBottom)
         //TODO::
         // if blockBottom true need to hide
 

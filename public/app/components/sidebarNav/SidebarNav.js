@@ -12,7 +12,7 @@ export default class SidebarNav extends React.Component{
 				return (	<SidebarMenuItem item={menuobject} key={key} />)
 
 		});
-		console.log("=====SidebarNav======"+this.props.blockRight)
+		//console.log("=====SidebarNav======"+this.props.blockRight)
 		//TODO::
 		// if side right & blockRight true need to hide
 		return(

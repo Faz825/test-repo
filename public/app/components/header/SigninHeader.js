@@ -128,6 +128,27 @@ export class ConversationList extends React.Component{
         });
     }
 
+    checkWorkMode(){
+
+        console.log("checkWorkMode");
+
+        let _messages = false;
+
+        if(Session.getSession('prg_wm') != null){
+            let _currentTime = new Date().getTime();
+            let _finishTime = Session.getSession('prg_wm').endTime;
+
+            if (_currentTime > _finishTime){
+                Session.destroy("prg_wm");
+            } else{
+                _messages = Session.getSession('prg_wm').messages;
+            }
+        }
+
+        return _messages;
+
+    }
+
     // Update Conversation View
     onConversationChange(c, op, b6) {
         let conv = {};
@@ -142,6 +163,8 @@ export class ConversationList extends React.Component{
         var proglobe_title = b6.getNameFromIdentity(c.id);
         var proglobe_title_array = proglobe_title.split('proglobe');
         var title = proglobe_title_array[1];
+
+        let _blockMessages = this.checkWorkMode(); console.log(_blockMessages);
 
 
         // New conversation
@@ -203,9 +226,11 @@ export class ConversationList extends React.Component{
                             this.unreadConversationCount.push(c.id);
                         }
 
-                        if(this.unreadCount > 0){
+                        if(this.unreadCount > 0 && _blockMessages){
+                            console.log("230")
                             $("#unread_chat_count_header").html('<span class="total">'+this.unreadCount+'</span>');
                         } else{
+                            console.log("233")
                             $("#unread_chat_count_header").html('');
                         }
 
@@ -251,9 +276,13 @@ export class ConversationList extends React.Component{
                 this.unreadConversationCount.push(c.id);
             }
 
-            if(this.unreadCount > 0){
+
+
+            if(this.unreadCount > 0 && _blockMessages){
+                console.log("282")
                 $("#unread_chat_count_header").html('<span class="total">'+this.unreadCount+'</span>');
             } else{
+                console.log("285")
                 $("#unread_chat_count_header").html('');
             }
         }
@@ -280,9 +309,11 @@ export class ConversationList extends React.Component{
                 if (this.b6.markConversationAsRead(c) > 0) {
                     this.unreadConversationCount.splice(index,1);
                     this.unreadCount--;
-                    if(this.unreadCount <= 0){
+                    if(this.unreadCount <= 0 || _blockMessages){
+                        console.log("313")
                         $("#unread_chat_count_header").html('');
                     } else {
+                        console.log("316")
                         $("#unread_chat_count_header").html('<span class="total">' + this.unreadCount + '</span>');
                     }
                 }

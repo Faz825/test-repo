@@ -101,6 +101,23 @@ export default class Header extends React.Component {
                             Session.createSession("prg_rm", {rememberMe:_this.state.rememberMe});
                         }
 
+                        //let _startTime = new Date().getTime();
+                        //let howLong = 3*60*1000;
+                        //let _endTime = _startTime+howLong;
+                        //
+                        //var _wm = {
+                        //    rightBottom:true,
+                        //    newsFeed:true,
+                        //    //calls:true,
+                        //    //messages:(data.mode.indexOf("msg") != -1 || data.mode.indexOf("all") != -1)?true:false,
+                        //    //socialNotifications:(data.mode.indexOf("notifications") != -1 || data.mode.indexOf("all") != -1)?true:false,
+                        //    startTimer:_startTime,
+                        //    howLong:howLong,
+                        //    endTime:_endTime
+                        //};
+                        //console.log(_wm);
+                        //Session.createSession("prg_wm",_wm);
+
                         if(data.user.status == 7){
                             location.href = "/";
                         }else{

@@ -85,7 +85,40 @@ export default class Index extends React.Component{
 
     onWorkModeSet(e){
 
-        //e.preventDefault();
+        //let _startTime = new Date().getTime();
+        //let howLong = 3*60*1000;
+        //let _endTime = _startTime+howLong;
+        //
+        //var _wm = {
+        //    rightBottom:true,
+        //    newsFeed:true,
+        //    //calls:true,
+        //    //messages:(data.mode.indexOf("msg") != -1 || data.mode.indexOf("all") != -1)?true:false,
+        //    //socialNotifications:(data.mode.indexOf("notifications") != -1 || data.mode.indexOf("all") != -1)?true:false,
+        //    startTimer:_startTime,
+        //    howLong:howLong,
+        //    endTime:_endTime
+        //};
+        //console.log(_wm);
+        //Session.createSession("prg_wm",_wm);
+
+        //$.ajax({
+        //    url: "/dummy",
+        //    method: "POST",
+        //    data: this.formData,
+        //    dataType: "JSON",
+        //
+        //    success: function (data, text) {
+        //
+        //        if (data.status.code === 200) {
+        //
+        //        }
+        //
+        //    },
+        //    error: function (request, status, error) {
+        //
+        //    }
+        //});
 
         let data;
 
@@ -108,8 +141,6 @@ export default class Index extends React.Component{
             alert("Please Select Work Mode");
         }
         console.log(data);
-
-        Session.destroy("prg_rm");
 
         let _startTime = new Date().getTime();
         let howLong = 0;
@@ -140,7 +171,10 @@ export default class Index extends React.Component{
         };
         console.log(_wm);
         Session.createSession("prg_wm",_wm);
-        location.reload();
+
+        //it must be at the end. because to create session form must get posted
+        //e.preventDefault(); //can uncomment if we find a way to hide footer & right bar without refresh.
+
     }
 
     onTimeSummeryClick(){
@@ -162,7 +196,7 @@ export default class Index extends React.Component{
                 <div className="container">
                     <div className="row">
                         <div className="work-mode-container col-sm-10 col-sm-offset-1">
-                            <form onSubmit={this.onWorkModeSet.bind(this)}>
+                            <form method="post" onSubmit={this.onWorkModeSet.bind(this)}>
                             <div className="inner-wrapper clearfix">
                                 <div className="header-section">
                                     <h2 className="section-text">Work Mode</h2>
@@ -225,8 +259,8 @@ export default class Index extends React.Component{
                                                     <h3 className="section-title">Set a fixed time for next,</h3>
                                                     <div className="opt-holder">
                                                         <div className="opt-block clearfix">
-                                                            <input type="checkbox" value="3" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                                checked={(this.state.selectedTimeOpt == 3)? true : false} />
+                                                            <input type="checkbox" value="30" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                                checked={(this.state.selectedTimeOpt == 30)? true : false} />
                                                             <label htmlFor="min-check">30 Mins</label>
                                                         </div>
                                                         <div className="opt-block clearfix">

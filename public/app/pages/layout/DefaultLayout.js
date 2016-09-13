@@ -48,7 +48,7 @@ export default class DefaultLayout extends React.Component{
             }
         }
 
-        console.log(Session.getSession('prg_wm'));
+        //console.log(Session.getSession('prg_wm'));
 
         this.state={
             chatBubble:[],

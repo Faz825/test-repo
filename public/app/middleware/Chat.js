@@ -43,49 +43,97 @@ class Chat{
         //    onConversationChange(c, op);
         });
 
+
+
+        function checkWorkMode(){
+
+            console.log("checkWorkMode");
+
+            let _calls = false;
+
+            if(Session.getSession('prg_wm') != null){
+                let _currentTime = new Date().getTime();
+                let _finishTime = Session.getSession('prg_wm').endTime;
+
+                if (_currentTime > _finishTime){
+                    Session.destroy("prg_wm");
+                } else{
+                    _calls = Session.getSession('prg_wm').calls;
+                }
+            }
+
+            return _calls;
+
+        }
+
+        var _this = this;
+
         // Incoming call from another user
         b6.on('incomingCall', function(c) {
 
             console.log("======incomingCall======");
             console.log(c);
 
+            var _blockCall = checkWorkMode();
+            console.log("_blockCall ==> "+_blockCall);
 
+            if(!_blockCall){
 
-            attachCallEvents(c);
-            var cf = b6.getNameFromIdentity(c.other);
+                console.log("No need to block call")
 
-            var title_array = cf.split('proglobe');
-            var title = title_array[1];
+                attachCallEvents(c);
+                var cf = b6.getNameFromIdentity(c.other);
 
-            $.ajax({
-                url: '/get-profile/'+title,
-                method: "GET",
-                dataType: "JSON",
-                success: function (data, text) {
+                var title_array = cf.split('proglobe');
+                var title = title_array[1];
 
-                    if (data.status.code == 200 && data.profile_data != null) {
+                $.ajax({
+                    url: '/get-profile/'+title,
+                    method: "GET",
+                    dataType: "JSON",
+                    success: function (data, text) {
 
-                        incomingCallUser[title] = data.profile_data;
+                        if (data.status.code == 200 && data.profile_data != null) {
 
-                        var incomingCallUserName = data.profile_data['first_name']+" "+data.profile_data['last_name'] + ' is ' + (c.options.video ? 'video ' : '') + 'calling...';
-                        $('#incomingCallFrom').text(incomingCallUserName);
+                            incomingCallUser[title] = data.profile_data;
 
-                        var incomingCallProfilePicture = "/images/default-profile-pic.png";
-                        if (data.profile_data['images'] != null && data.profile_data['images']['profile_image'] != null) {
-                            incomingCallProfilePicture = data.profile_data['images']['profile_image']['http_url'];
+                            var incomingCallUserName = data.profile_data['first_name']+" "+data.profile_data['last_name'] + ' is ' + (c.options.video ? 'video ' : '') + 'calling...';
+                            $('#incomingCallFrom').text(incomingCallUserName);
+
+                            var incomingCallProfilePicture = "/images/default-profile-pic.png";
+                            if (data.profile_data['images'] != null && data.profile_data['images']['profile_image'] != null) {
+                                incomingCallProfilePicture = data.profile_data['images']['profile_image']['http_url'];
+                            }
+                            $("#incoming_call_alert_other_profile_image").attr('src', incomingCallProfilePicture);
+
+                            $('#incomingCall')
+                                .data({'dialog': c})
+                                .show();
+
+                            $('#incomingCallAlert').modal('show');
+
                         }
-                        $("#incoming_call_alert_other_profile_image").attr('src', incomingCallProfilePicture);
-
-                        $('#incomingCall')
-                            .data({'dialog': c})
-                            .show();
-
-                        $('#incomingCallAlert').modal('show');
 
                     }
+                });
 
-                }
-            });
+            } else{
+
+                console.log("Need to block call. Need to send message to receiver. Need to send notification to caller");
+                _this.hangupCall({workmode:true});
+
+                let _uri = c.other; console.log(_uri);
+                let _msg = "On work mode";
+
+                _this.b6.compose(_uri).text(_msg).send(function(err) {
+                    if (err) {
+                        console.log('error', err);
+                    }
+                    else {
+                        console.log("msg sent");
+                    }
+                });
+            }
 
         });
 
@@ -235,6 +283,7 @@ class Chat{
                             }
 
                             if(unreadCount > 0){
+                                console
                                 $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
                             } else{
                                 $("#unread_chat_count_header").html('');
@@ -500,6 +549,7 @@ class Chat{
                 unreadConversationCount.splice(unreadConversationCount.indexOf(conv_id),1);
             }
             if(unreadCount > 0){
+                console.log("updating unread count from middleware chat")
                 $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
             } else{
                 $("#unread_chat_count_header").html('');

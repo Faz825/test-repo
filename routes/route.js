@@ -82,6 +82,7 @@ router.post('/doSignup',UserController.doSignup);
 router.get('/secretaries',SecretaryController.getSeretaries);
 router.get('/cache-check/:key',SecretaryController.cacheCheck);
 router.post('/doSignin', UserController.doSignin);
+router.post('/dummy', DefaultController.dummy);
 router.post('/forgot-password/request/', UserController.forgotPassword);
 router.get('/forgot-password/reset/:token', UserController.validateToken);
 router.get('/change-password/:token', DefaultController.index);
