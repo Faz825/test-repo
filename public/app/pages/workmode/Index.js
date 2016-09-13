@@ -83,7 +83,10 @@ export default class Index extends React.Component{
         this.formatDate = date.format("YYYY-MM-DD");
     }
 
-    onWorkModeSet(){
+    onWorkModeSet(e){
+
+        //e.preventDefault();
+
         let data;
 
         if (this.selectedList.length >= 1) {
@@ -106,23 +109,26 @@ export default class Index extends React.Component{
         }
         console.log(data);
 
+        Session.destroy("prg_rm");
+
         let _startTime = new Date().getTime();
         let howLong = 0;
+        let _endTime = _startTime+howLong;
+
         if(data.time != 0){
             howLong = data.time*60*1000;
+            _endTime = _startTime+howLong;
         } else{
             console.log("time not selected");
-            howLong = 60*60*1000; // need to change according to selected datetime
 
             let now = Moment().format('YYYY-MM-DD HH:mm a');
             let toFormat = Moment(data.date.day + ' ' + data.date.hh + ':' + data.date.mm +' ' + data.date.period, "YYYY-MM-DD HH:mm a");
+            howLong = toFormat.diff(now);
             console.log(toFormat.diff(now));
+            _endTime = _startTime+howLong;
         }
 
-        Session.destroy("prg_wm");
-
-        let _endTime = _startTime+howLong;
-        let _wm = {
+        var _wm = {
             rightBottom:(data.mode.indexOf("bars") != -1 || data.mode.indexOf("all") != -1)?true:false,
             newsFeed:(data.mode.indexOf("newsfeed") != -1 || data.mode.indexOf("all") != -1)?true:false,
             calls:(data.mode.indexOf("calls") != -1 || data.mode.indexOf("all") != -1)?true:false,
@@ -134,6 +140,7 @@ export default class Index extends React.Component{
         };
         console.log(_wm);
         Session.createSession("prg_wm",_wm);
+        location.reload();
     }
 
     onTimeSummeryClick(){
@@ -155,6 +162,7 @@ export default class Index extends React.Component{
                 <div className="container">
                     <div className="row">
                         <div className="work-mode-container col-sm-10 col-sm-offset-1">
+                            <form onSubmit={this.onWorkModeSet.bind(this)}>
                             <div className="inner-wrapper clearfix">
                                 <div className="header-section">
                                     <h2 className="section-text">Work Mode</h2>
@@ -217,8 +225,8 @@ export default class Index extends React.Component{
                                                     <h3 className="section-title">Set a fixed time for next,</h3>
                                                     <div className="opt-holder">
                                                         <div className="opt-block clearfix">
-                                                            <input type="checkbox" value="30" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                                checked={(this.state.selectedTimeOpt == 30)? true : false} />
+                                                            <input type="checkbox" value="3" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                                checked={(this.state.selectedTimeOpt == 3)? true : false} />
                                                             <label htmlFor="min-check">30 Mins</label>
                                                         </div>
                                                         <div className="opt-block clearfix">
@@ -273,9 +281,10 @@ export default class Index extends React.Component{
                                         </div>
                                 }
                                 <div className="btn-holder">
-                                    <button className="btn btn-default submit" onClick={this.onWorkModeSet.bind(this)}>GO!</button>
+                                    <button type="submit" className="btn btn-default submit" >GO!</button>
                                 </div>
                             </div>
+                                </form>
                         </div>
                     </div>
                 </div>

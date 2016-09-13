@@ -25,7 +25,8 @@
 		}
 	}
 	createSession(key,value){
-		value = JSON.stringify(value);
+		console.log("createSession")
+		value = JSON.stringify(value);console.log(value);
 		var expires;
 
 	    if (this.exdays) {
@@ -48,6 +49,7 @@
 	    return null;
 	}
 	destroy(key){
+		console.log("destroy");
 		
 		this.exdays = -1;
 		this.createSession(key, "");
