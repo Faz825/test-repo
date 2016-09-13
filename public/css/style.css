@@ -3562,6 +3562,10 @@ textarea{
 	margin-left: 9%;
 }
 
+.popover.right>.arrow {
+    top: 90px!important;
+}
+
 .notifications.popover-holder .arrow{
 	left: 10% !important;
 }
@@ -3766,6 +3770,11 @@ textarea{
 .popup-holder.add-new .header-holder .form-group{
 	margin-top: 5px;
 	float: left;
+}
+
+.popup-holder .popup-body-holder .shared-users-container{
+	max-height: 135px;
+	overflow: hidden;
 }
 
 .popup-holder .popup-body-holder .user-block{

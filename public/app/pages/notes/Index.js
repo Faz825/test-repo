@@ -525,12 +525,31 @@ export class SharePopup extends React.Component{
         super(props);
         this.state={
             loggedUser:Session.getSession('prg_lg'),
-            sharedUsers:[]
+            sharedUsers:[],
+            seeAllSharedUsers:false,
+            scrollProp: 'hidden'
         }
         this.sharedUsers = [];
         this.loadSharedUsers();
         this.onPermissionChanged = this.onPermissionChanged.bind(this);
         this.onRemoveSharedUser = this.onRemoveSharedUser.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
+        this.allSharedUsers = this.allSharedUsers.bind(this);
+    }
+
+    handleScroll() {
+        if(this.state.seeAllSharedUsers){
+            this.setState({scrollProp : 'scroll'});
+        }else{
+            this.setState({scrollProp : 'hidden'});
+        }
+
+    }
+
+    allSharedUsers(){
+        this.setState({seeAllSharedUsers : true}, function (){
+            this.handleScroll();
+        });
     }
 
     loadSharedUsers() {
@@ -667,12 +686,13 @@ export class SharePopup extends React.Component{
                             </div>
                     }
 
-                    <Scrollbars style={{ height: 135 }} onScroll={this.handleScroll}>
+                    {/*<Scrollbars style={{ height: 75 }}>*/}
                         <SharedUsers notebook={_notebook}
                                      sharedUserList={this.state.sharedUsers}
                                      changePermissions={this.onPermissionChanged.bind(this)}
-                                     removeSharedUser={this.onRemoveSharedUser.bind(this)}/>
-                    </Scrollbars>
+                                     removeSharedUser={this.onRemoveSharedUser.bind(this)}
+                                     scrollProp={this.state.scrollProp}/>
+                    {/*</Scrollbars>*/}
 
                 </div>
                 <div className="footer-holder clearfix">
@@ -685,7 +705,7 @@ export class SharePopup extends React.Component{
                         </div> : null
                     }
                     <div className="see-all">
-                        <button className="btn-link">See All</button>
+                        <button className="btn-link" onClick={this.allSharedUsers.bind(this)}>See All</button>
                     </div>
                 </div>
             </div>
@@ -872,7 +892,7 @@ export class  SharedUsers extends React.Component {
         });
 
         return (
-            <div>
+            <div className="shared-users-container" style={{overflowY: this.props.scrollProp}}>
                 {_allUsers}
             </div>
         )
