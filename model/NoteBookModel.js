@@ -94,7 +94,7 @@ NoteBookSchema.statics.addNewNoteBook = function(NotebookData,callBack){
  */
 NoteBookSchema.statics.ch_shareNoteBookCreateIndex = function(userId,data,callBack){
 
-    var _cache_key = "idx_notebook:"+NoteBookConfig.CACHE_PREFIX+userId;
+    var _cache_key = "idx_user:"+NoteBookConfig.CACHE_PREFIX+userId;
     var payLoad={
         index:_cache_key,
         id:data.user_id.toString(),
@@ -114,7 +114,7 @@ NoteBookSchema.statics.ch_shareNoteBookCreateIndex = function(userId,data,callBa
  */
 NoteBookSchema.statics.ch_shareNoteBookUpdateIndex = function(userId,data,callBack){
 
-    var _cache_key = "idx_notebook:"+NoteBookConfig.CACHE_PREFIX+userId;
+    var _cache_key = "idx_user:"+NoteBookConfig.CACHE_PREFIX+userId;
     var payLoad={
         index:_cache_key,
         id:data.user_id.toString(),
@@ -155,7 +155,7 @@ NoteBookSchema.statics.shareNoteBook = function(noteBookId,sharedCriteria,callBa
 NoteBookSchema.statics.ch_getSharedNoteBooks = function(userId,payload,callBack){
 
     var _this = this;
-    var _cache_key = "idx_notebook:"+NoteBookConfig.CACHE_PREFIX+userId;
+    var _cache_key = "idx_user:"+NoteBookConfig.CACHE_PREFIX+userId;
 
     var query={
         q:payload.q,
