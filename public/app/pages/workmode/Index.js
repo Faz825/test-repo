@@ -12,6 +12,16 @@ export default class Index extends React.Component{
         this.tPeriod = Moment().format("A");
         this.cH = Moment().format("hh");
         this.cM = Moment().format("mm");
+        let _sesData = Session.getSession('prg_wm');
+        let _startTime = new Date().getTime();
+        let _endTime;
+        let timeLeft;
+        if(_sesData){
+            _endTime = _sesData.endTime;
+            timeLeft = _endTime - _startTime;
+            timeLeft =  Moment.utc(timeLeft).format("DD HH mm");
+        }
+        let isVisible = (timeLeft)? false : true;
 
         this.state={
             startDate: Moment(),
@@ -19,9 +29,9 @@ export default class Index extends React.Component{
             customMins: this.cM,
             selectedTimeOpt: 0,
             blockedMode: "",
-            timeBlockIsVisible: true,
+            timeBlockIsVisible: isVisible,
             timePeriod: this.tPeriod,
-            remainingTime: ""
+            remainingTime: timeLeft
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -113,7 +123,7 @@ export default class Index extends React.Component{
         let _endTime = _startTime+howLong;
 
         if(data.time != 0){
-                howLong = data.time*60*1000;
+            howLong = data.time*60*1000;
             _endTime = _startTime+howLong;
         } else{
             console.log("time not selected");
@@ -124,6 +134,8 @@ export default class Index extends React.Component{
             console.log(howLong);
             _endTime = _startTime+howLong;
         }
+
+
 
         var _wm = {
             rightBottom:(data.mode.indexOf("bars") != -1 || data.mode.indexOf("all") != -1)?true:false,
@@ -136,11 +148,13 @@ export default class Index extends React.Component{
             endTime:_endTime
         };
         console.log(_wm);
+
         Session.createSession("prg_wm",_wm);
 
         //it must be at the end. because to create session form must get posted
         //e.preventDefault(); //can uncomment if we find a way to hide footer & right bar without refresh.
 
+        location.reload();
     }
 
     onTimeSummeryClick(){
@@ -179,20 +193,23 @@ export default class Index extends React.Component{
 
     render(){
         let timeLeft = this.state.remainingTime;
-        timeLeft = timeLeft.split(" ");
-        let days = timeLeft[0];
-        let hrs = timeLeft[1];
-        let mins = timeLeft[2];
-        if(days == "01"){
-            days = "";
-        }else{
-            days = days+"'days ";
-        }
+        let days, hrs, mins;
+        if (timeLeft) {
+            timeLeft = timeLeft.split(" ");
+            days = timeLeft[0];
+            hrs = timeLeft[1];
+            mins = timeLeft[2];
+            if(days == "01"){
+                days = "";
+            }else{
+                days = days+"'days ";
+            }
 
-        if(hrs == "0"){
-            hrs = "";
-        }else{
-            hrs = hrs+"'hours ";
+            if(hrs == "0"){
+                hrs = "";
+            }else{
+                hrs = hrs+"'hours ";
+            }
         }
 
         return(
@@ -322,7 +339,7 @@ export default class Index extends React.Component{
                                     <button type="submit" className="btn btn-default submit" >GO!</button>
                                 </div>
                             </div>
-                                </form>
+                            </form>
                         </div>
                     </div>
                 </div>
