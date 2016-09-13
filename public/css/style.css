@@ -3562,6 +3562,10 @@ textarea{
 	margin-left: 9%;
 }
 
+.popover.right>.arrow {
+    top: 90px!important;
+}
+
 .notifications.popover-holder .arrow{
 	left: 10% !important;
 }
@@ -3766,6 +3770,11 @@ textarea{
 .popup-holder.add-new .header-holder .form-group{
 	margin-top: 5px;
 	float: left;
+}
+
+.popup-holder .popup-body-holder .shared-users-container{
+	max-height: 135px;
+	overflow: hidden;
 }
 
 .popup-holder .popup-body-holder .user-block{
@@ -4245,6 +4254,19 @@ textarea{
 	text-transform: uppercase;
 	font-family: "montserratregular", sans-serif;
 	font-size: 0.95em;
+}
+
+/* News feed overlay */
+#pg-newsfeed-page{
+	position: relative;
+}
+
+#pg-newsfeed-page .workmode-overlay-holder{
+	width: calc(100vw - 237px);
+    height: calc(100vh - 180px);
+    position: fixed;
+    background: rgba(0, 0, 0, 0.7);
+    top: 70px;
 }
 
 /* Large Screen */

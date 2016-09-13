@@ -5035,6 +5035,16 @@ export default StyleSheet.create({
         "fontFamily": "\"montserratregular\", sans-serif",
         "fontSize": 0.95
     },
+    "pg-newsfeed-page": {
+        "position": "relative"
+    },
+    "pg-newsfeed-page workmode-overlay-holder": {
+        "width": "calc(100vw - 237px)",
+        "height": "calc(100vh - 180px)",
+        "position": "fixed",
+        "background": "rgba(0, 0, 0, 0.7)",
+        "top": 70
+    },
     "middle-content-wrapper": {
         "minWidth": 500
     },

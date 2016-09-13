@@ -292,7 +292,9 @@ export default class Index extends React.Component{
     render(){
         let _this = this;
         let user = Session.getSession('prg_lg');
+        let _secretary_image = user.secretary_image_url;
         const {uname,posts,display_news_articles}= this.state;
+        console.log(user);
 
         console.log("=====NEWSFEED======"+this.state.blockNewsFeed)
         //TODO::
@@ -328,6 +330,18 @@ export default class Index extends React.Component{
                                                   onLikeSuccess = {this.onLikeSuccess.bind(this)}/>
                             </div>
                             <div className="col-xs-6"></div>
+                        </div>
+                    </div>
+                    <div className="workmode-overlay-holder">
+                        <div className="row">
+                            <div className="container">
+                                <div className="secretary-holder">
+                                    <img src={_secretary_image} alt="Secretary" className="img-responsive" />
+                                </div>
+                                <div className="msg-holder">
+                                    <h3>{user.first_name + " " + user.last_name}, Don't get distracted, get back to work!</h3>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -49,6 +49,7 @@ export default class Index extends React.Component {
         this.saveInterval = null;
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
         this.addNoteBook = this.addNoteBook.bind(this);
+        this.addDefaultNoteBook = this.addDefaultNoteBook.bind(this);
         this.colorPicker = this.colorPicker.bind(this);
         this.getNoteData = this.getNoteData.bind(this);
         this.closeNotePopup = this.closeNotePopup.bind(this);
@@ -66,12 +67,13 @@ export default class Index extends React.Component {
             dataType: "JSON",
             headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
+            console.log(data);
             if(data.status.code == 200){
                 if(data.notes.length == 0 || data.notes[0] == null){
                     this.setState({catNameValue: "My Notes"});
                     this.setState({catColor: "#0272ae"});
                     this.setState({isDefault: 1});
-                    this.addNoteBook();
+                    this.addDefaultNoteBook();
                 } else{
                     let notebooks = data.notes;
                     // let myNoteBook = notebooks[notebooks.length - 1];
@@ -134,6 +136,35 @@ export default class Index extends React.Component {
                 }
             }.bind(this));
         }
+
+    }
+
+    addDefaultNoteBook(){
+
+        let _noteBook = {
+            notebookName:this.state.catNameValue,
+            notebookColor:this.state.catColor,
+            isDefault:this.state.isDefault
+        };
+
+        let loggedUser = Session.getSession('prg_lg');
+
+        $.ajax({
+            url: '/notes/add-notebook',
+            method: "POST",
+            dataType: "JSON",
+            data:_noteBook,
+            headers: { 'prg-auth-header':loggedUser.token }
+        }).done( function (data, text) {
+            if(data.code == 200){
+                this.loadNotes();
+                this.setState({catNameValue: ""});
+                this.setState({catColor: ""});
+                this.setState({isDefault: 0});
+                this.setState({validateAlert:""});
+                this.setState({isShowingModal: false});
+            }
+        }.bind(this));
 
     }
 
@@ -494,12 +525,31 @@ export class SharePopup extends React.Component{
         super(props);
         this.state={
             loggedUser:Session.getSession('prg_lg'),
-            sharedUsers:[]
+            sharedUsers:[],
+            seeAllSharedUsers:false,
+            scrollProp: 'hidden'
         }
         this.sharedUsers = [];
         this.loadSharedUsers();
         this.onPermissionChanged = this.onPermissionChanged.bind(this);
         this.onRemoveSharedUser = this.onRemoveSharedUser.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
+        this.allSharedUsers = this.allSharedUsers.bind(this);
+    }
+
+    handleScroll() {
+        if(this.state.seeAllSharedUsers){
+            this.setState({scrollProp : 'scroll'});
+        }else{
+            this.setState({scrollProp : 'hidden'});
+        }
+
+    }
+
+    allSharedUsers(){
+        this.setState({seeAllSharedUsers : true}, function (){
+            this.handleScroll();
+        });
     }
 
     loadSharedUsers() {
@@ -636,12 +686,13 @@ export class SharePopup extends React.Component{
                             </div>
                     }
 
-                    <Scrollbars style={{ height: 135 }} onScroll={this.handleScroll}>
+                    {/*<Scrollbars style={{ height: 75 }}>*/}
                         <SharedUsers notebook={_notebook}
                                      sharedUserList={this.state.sharedUsers}
                                      changePermissions={this.onPermissionChanged.bind(this)}
-                                     removeSharedUser={this.onRemoveSharedUser.bind(this)}/>
-                    </Scrollbars>
+                                     removeSharedUser={this.onRemoveSharedUser.bind(this)}
+                                     scrollProp={this.state.scrollProp}/>
+                    {/*</Scrollbars>*/}
 
                 </div>
                 <div className="footer-holder clearfix">
@@ -654,7 +705,7 @@ export class SharePopup extends React.Component{
                         </div> : null
                     }
                     <div className="see-all">
-                        <button className="btn-link">See All</button>
+                        <button className="btn-link" onClick={this.allSharedUsers.bind(this)}>See All</button>
                     </div>
                 </div>
             </div>
@@ -841,7 +892,7 @@ export class  SharedUsers extends React.Component {
         });
 
         return (
-            <div>
+            <div className="shared-users-container" style={{overflowY: this.props.scrollProp}}>
                 {_allUsers}
             </div>
         )
