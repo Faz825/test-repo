@@ -49,6 +49,7 @@ export default class Index extends React.Component {
         this.saveInterval = null;
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
         this.addNoteBook = this.addNoteBook.bind(this);
+        this.addDefaultNoteBook = this.addDefaultNoteBook.bind(this);
         this.colorPicker = this.colorPicker.bind(this);
         this.getNoteData = this.getNoteData.bind(this);
         this.closeNotePopup = this.closeNotePopup.bind(this);
@@ -66,12 +67,13 @@ export default class Index extends React.Component {
             dataType: "JSON",
             headers: { 'prg-auth-header':loggedUser.token }
         }).done( function (data, text) {
+            console.log(data);
             if(data.status.code == 200){
                 if(data.notes.length == 0 || data.notes[0] == null){
                     this.setState({catNameValue: "My Notes"});
                     this.setState({catColor: "#0272ae"});
                     this.setState({isDefault: 1});
-                    this.addNoteBook();
+                    this.addDefaultNoteBook();
                 } else{
                     let notebooks = data.notes;
                     // let myNoteBook = notebooks[notebooks.length - 1];
@@ -134,6 +136,35 @@ export default class Index extends React.Component {
                 }
             }.bind(this));
         }
+
+    }
+
+    addDefaultNoteBook(){
+
+        let _noteBook = {
+            notebookName:this.state.catNameValue,
+            notebookColor:this.state.catColor,
+            isDefault:this.state.isDefault
+        };
+
+        let loggedUser = Session.getSession('prg_lg');
+
+        $.ajax({
+            url: '/notes/add-notebook',
+            method: "POST",
+            dataType: "JSON",
+            data:_noteBook,
+            headers: { 'prg-auth-header':loggedUser.token }
+        }).done( function (data, text) {
+            if(data.code == 200){
+                this.loadNotes();
+                this.setState({catNameValue: ""});
+                this.setState({catColor: ""});
+                this.setState({isDefault: 0});
+                this.setState({validateAlert:""});
+                this.setState({isShowingModal: false});
+            }
+        }.bind(this));
 
     }
 
