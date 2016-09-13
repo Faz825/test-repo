@@ -4217,8 +4217,34 @@ textarea{
 	border: none;
 }
 
-.inner-wrapper .btn-holder{
+.work-mode-container .mode-notice{
+	float: left;
+	background: #f8fbfc;
+	border: 1px solid #d6e1ea;
+	border-radius: 5px;
+	padding: 12px 14px;
+	cursor: pointer;
+}
 
+.work-mode-container .mode-notice .title{
+	font-family: "montserratregular", sans-serif;
+	color: #7694a2;
+	font-size: 1em;
+	margin: 0;
+}
+
+.inner-wrapper .btn-holder{
+	float: right;
+}
+
+.inner-wrapper .btn-holder .submit{
+	background: #61b3de;
+	border: 0;
+	padding: 12px 40px;
+	color: #fff;
+	text-transform: uppercase;
+	font-family: "montserratregular", sans-serif;
+	font-size: 0.95em;
 }
 
 /* Large Screen */

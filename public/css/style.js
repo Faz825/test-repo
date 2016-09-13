@@ -2927,7 +2927,8 @@ export default StyleSheet.create({
         "borderBottomRightRadius": 4
     },
     "pg-notes-page-content-item-right-thumbs note-thumb-wrapper": {
-        "overflow": "hidden"
+        "overflow": "hidden",
+        "minHeight": 175
     },
     "pg-col-20": {
         "width": "20%",
@@ -4507,7 +4508,6 @@ export default StyleSheet.create({
     },
     "popup-holder": {
         "marginLeft": "20px !important",
-        "marginTop": 154,
         "maxWidth": 500,
         "width": 500,
         "background": "#e8eef2",
@@ -4519,27 +4519,12 @@ export default StyleSheet.create({
         "maxWidth": 340,
         "width": 340
     },
-    "popup-holderright arrow": {
-        "marginTop": -157,
-        "marginLeft": -6,
-        "width": 20,
-        "height": 19,
-        "backgroundRepeat": "no-repeat",
-        "backgroundImage": "url(../images/popover_arrow.png)",
-        "borderStyle": "none"
-    },
     "popup-holderright arrow:after": {
-        "borderStyle": "none"
-    },
-    "popup-holderbottom arrow": {
-        "marginTop": 0,
-        "marginLeft": 11,
-        "width": 0,
-        "height": 0,
-        "backgroundImage": "none"
+        "borderRightColor": "#e8eef2"
     },
     "popup-holderbottom arrow:after": {
-        "borderStyle": "solid"
+        "borderBottomColor": "#e8eef2",
+        "borderRightColor": "transparent"
     },
     "popup-holder popover-content": {
         "background": "#e8eef2",
@@ -5015,7 +5000,41 @@ export default StyleSheet.create({
         "paddingLeft": 32,
         "border": "none"
     },
-    "inner-wrapper btn-holder": {},
+    "work-mode-container mode-notice": {
+        "float": "left",
+        "background": "#f8fbfc",
+        "border": "1px solid #d6e1ea",
+        "borderRadius": 5,
+        "paddingTop": 12,
+        "paddingRight": 14,
+        "paddingBottom": 12,
+        "paddingLeft": 14,
+        "cursor": "pointer"
+    },
+    "work-mode-container mode-notice title": {
+        "fontFamily": "\"montserratregular\", sans-serif",
+        "color": "#7694a2",
+        "fontSize": 1,
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "inner-wrapper btn-holder": {
+        "float": "right"
+    },
+    "inner-wrapper btn-holder submit": {
+        "background": "#61b3de",
+        "border": 0,
+        "paddingTop": 12,
+        "paddingRight": 40,
+        "paddingBottom": 12,
+        "paddingLeft": 40,
+        "color": "#fff",
+        "textTransform": "uppercase",
+        "fontFamily": "\"montserratregular\", sans-serif",
+        "fontSize": 0.95
+    },
     "middle-content-wrapper": {
         "minWidth": 500
     },
@@ -5288,6 +5307,18 @@ export default StyleSheet.create({
         "font": "11px 'montserratsemi_bold', sans-serif",
         "color": "#fff",
         "backgroundColor": "#61b3de",
+        "textTransform": "uppercase",
+        "border": "none",
+        "marginTop": 12,
+        "marginRight": 0,
+        "marginBottom": 5,
+        "marginLeft": 0
+    },
+    "editor-popup-holder btnbtn-read-only": {
+        "float": "right",
+        "font": "11px 'montserratsemi_bold', sans-serif",
+        "color": "#fff",
+        "backgroundColor": "#de6178",
         "textTransform": "uppercase",
         "border": "none",
         "marginTop": 12,

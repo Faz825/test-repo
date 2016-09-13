@@ -48,6 +48,8 @@ export default class DefaultLayout extends React.Component{
             }
         }
 
+        console.log(Session.getSession('prg_wm'));
+
         this.state={
             chatBubble:[],
             rightBottom:_rightBottom
@@ -130,7 +132,7 @@ export default class DefaultLayout extends React.Component{
 
     render(){
 
-
+        console.log(this.state.rightBottom);
 
         return(
             <div className="row row-clr pg-full-wrapper">
@@ -162,4 +164,3 @@ export default class DefaultLayout extends React.Component{
         );
     }
 }
-

@@ -62,7 +62,12 @@ export default class FooterHolder extends React.Component{
         // if blockBottom true need to hide
 
         return (
-            <div className="row row-clr pg-footer-wrapper">
+            <div>
+                {
+                    (this.props.blockBottom)?
+                    null
+                    :
+                    <div className="row row-clr pg-footer-wrapper">
                 <div className="pg-footer-left-options-panel">
                     <a href="/notifications">
                         <div className="col-xs-2 pgs-secratery-img">
@@ -103,8 +108,8 @@ export default class FooterHolder extends React.Component{
                     </div>
                 </div>
             </div>
-
-
+                }
+            </div>
 
         );
     }
