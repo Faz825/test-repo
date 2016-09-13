@@ -4256,6 +4256,19 @@ textarea{
 	font-size: 0.95em;
 }
 
+/* News feed overlay */
+#pg-newsfeed-page{
+	position: relative;
+}
+
+#pg-newsfeed-page .workmode-overlay-holder{
+	width: calc(100vw - 237px);
+    height: calc(100vh - 180px);
+    position: fixed;
+    background: rgba(0, 0, 0, 0.7);
+    top: 70px;
+}
+
 /* Large Screen */
 @media (min-width: 1200px) {
 

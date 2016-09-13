@@ -20,7 +20,8 @@ export default class Index extends React.Component{
             selectedTimeOpt: 0,
             blockedMode: "",
             timeBlockIsVisible: true,
-            timePeriod: this.tPeriod
+            timePeriod: this.tPeriod,
+            remainingTime: ""
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -85,14 +86,14 @@ export default class Index extends React.Component{
 
     onWorkModeSet(e){
 
-        //e.preventDefault();
+        e.preventDefault();
 
         let data;
 
         if (this.selectedList.length >= 1) {
             if(this.formatDate == undefined){
                 console.log("not set");
-                this.formatDate = Moment().format("MMM DD");
+                this.formatDate = Moment().format("YYYY-MM-DD");
             }
             data = {
                 mode : this.selectedList,
@@ -116,7 +117,7 @@ export default class Index extends React.Component{
         let _endTime = _startTime+howLong;
 
         if(data.time != 0){
-            howLong = data.time*60*1000;
+                howLong = data.time*60*1000;
             _endTime = _startTime+howLong;
         } else{
             console.log("time not selected");
@@ -124,7 +125,7 @@ export default class Index extends React.Component{
             let now = Moment().format('YYYY-MM-DD HH:mm a');
             let toFormat = Moment(data.date.day + ' ' + data.date.hh + ':' + data.date.mm +' ' + data.date.period, "YYYY-MM-DD HH:mm a");
             howLong = toFormat.diff(now);
-            console.log(toFormat.diff(now));
+            console.log(howLong);
             _endTime = _startTime+howLong;
         }
 
@@ -140,7 +141,7 @@ export default class Index extends React.Component{
         };
         console.log(_wm);
         Session.createSession("prg_wm",_wm);
-        location.reload();
+        //location.reload();
     }
 
     onTimeSummeryClick(){
@@ -148,7 +149,28 @@ export default class Index extends React.Component{
     }
 
     onTimeSet(){
-        this.setState({timeBlockIsVisible: false});
+        let howLong;
+        let timeLeft;
+        let time = this.state.selectedTimeOpt;
+        let _startTime = new Date().getTime();
+        let _endTime;
+
+        if (time != 0) {
+            howLong = time*60*1000;
+            _endTime = Moment().add(howLong, 'ms').format("x");
+            timeLeft = _endTime - _startTime;
+            timeLeft =  Moment.utc(timeLeft).format("DD HH mm");
+        }else{
+            if(this.formatDate == undefined){
+                this.formatDate = Moment().format("YYYY-MM-DD");
+            }
+            let now = Moment().format('YYYY-MM-DD HH:mm a');
+            let toFormat = Moment(this.formatDate + ' ' + this.state.customHours + ':' + this.state.customMins +' ' + this.state.timePeriod, "YYYY-MM-DD HH:mm a");
+            howLong = toFormat.diff(now);
+            timeLeft = Moment.utc(howLong).format("DD HH mm");
+        }
+        this.setState({timeBlockIsVisible: false, remainingTime: timeLeft});
+
     }
 
     onPeriodChange(e){
@@ -157,6 +179,23 @@ export default class Index extends React.Component{
     }
 
     render(){
+        let timeLeft = this.state.remainingTime;
+        timeLeft = timeLeft.split(" ");
+        let days = timeLeft[0];
+        let hrs = timeLeft[1];
+        let mins = timeLeft[2];
+        if(days == "01"){
+            days = "";
+        }else{
+            days = days+"'days ";
+        }
+
+        if(hrs == "0"){
+            hrs = "";
+        }else{
+            hrs = hrs+"'hours ";
+        }
+
         return(
             <div id="pg-workmode-page" className="pg-page">
                 <div className="container">
@@ -225,8 +264,8 @@ export default class Index extends React.Component{
                                                     <h3 className="section-title">Set a fixed time for next,</h3>
                                                     <div className="opt-holder">
                                                         <div className="opt-block clearfix">
-                                                            <input type="checkbox" value="3" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                                checked={(this.state.selectedTimeOpt == 3)? true : false} />
+                                                            <input type="checkbox" value="30" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                                checked={(this.state.selectedTimeOpt == 30)? true : false} />
                                                             <label htmlFor="min-check">30 Mins</label>
                                                         </div>
                                                         <div className="opt-block clearfix">
@@ -271,13 +310,13 @@ export default class Index extends React.Component{
                                                     </div>
                                                 </div>
                                                 <div className="btn-holder">
-                                                    <button className="btn btn-default set-btn" onClick={this.onTimeSet.bind(this)}>Set</button>
+                                                    <button type="button" className="btn btn-default set-btn" onClick={this.onTimeSet.bind(this)}>Set</button>
                                                 </div>
                                             </div>
                                         </div>
                                     :
                                         <div className="mode-notice" onClick={this.onTimeSummeryClick.bind(this)}>
-                                            <h3 className="title">Work Mode on for next 1hrs 30mins</h3>
+                                            <h3 className="title">{"Work Mode on for next " + days + hrs + "and "+ mins+"'minutes" }</h3>
                                         </div>
                                 }
                                 <div className="btn-holder">
