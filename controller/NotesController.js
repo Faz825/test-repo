@@ -151,18 +151,40 @@ var NotesController ={
                 //     callBack(null,_notes);
                 // });
             },
-            function getSharedNoteBooks(resultSet, callBack){
+            function isESIndexExists(resultSet, callBack){
                 var user_id = CurrentSession.id;
-
+                var _cache_key = "idx_user:"+NoteBookConfig.CACHE_PREFIX+user_id;
                 var query={
-                    q:"_id:"+user_id.toString()
+                    index:_cache_key,
+                    id:user_id,
+                    type: 'shared_notebooks',
                 };
-                NoteBook.ch_getSharedNoteBooks(user_id, query, function (esResultSet){
+                ES.isIndexExists(query, function (esResultSet){
                     callBack(null, {
-                        user_notes: resultSet,
-                        shared_notes: esResultSet
+                        notesDb: resultSet,
+                        isExists: esResultSet
                     });
                 });
+            },
+            function getSharedNoteBooks(resultSet, callBack){
+                if(resultSet.isExists) {
+                    var user_id = CurrentSession.id;
+
+                    var query = {
+                        q: "_id:" + user_id.toString()
+                    };
+                    NoteBook.ch_getSharedNoteBooks(user_id, query, function (esResultSet) {
+                        callBack(null, {
+                            user_notes: resultSet.notesDb,
+                            shared_notes: esResultSet
+                        });
+                    });
+                }else{
+                    callBack(null, {
+                        user_notes: resultSet.notesDb,
+                        shared_notes: null
+                    });
+                }
 
             },
             function getSharedNotes(resultSet, callBack){
@@ -351,7 +373,7 @@ var NotesController ={
                 notifyUsers = resultSet.shared_users;
                 _async.waterfall([
                     function isESIndexExists(callBack){
-                        var _cache_key = "idx_notebook:"+NoteBookConfig.CACHE_PREFIX+req.body.userId.toString();
+                        var _cache_key = "idx_user:"+NoteBookConfig.CACHE_PREFIX+req.body.userId.toString();
                         var query={
                             index:_cache_key,
                             id:req.body.userId.toString(),
@@ -629,10 +651,11 @@ var NotesController ={
 
                     _async.waterfall([
                         function isESIndexExists(callBack){
-                            var _cache_key = "idx_notebook:"+NoteBookConfig.CACHE_PREFIX+shared_user_id.toString();
+                            var _cache_key = "idx_user:"+NoteBookConfig.CACHE_PREFIX+shared_user_id.toString();
                             var query={
-                                q:"_id:" + shared_user_id.toString(),
-                                index:_cache_key
+                                index:_cache_key,
+                                id:shared_user_id.toString(),
+                                type: 'shared_notebooks',
                             };
                             ES.isIndexExists(query, function (esResultSet){
                                 callBack(null, esResultSet);
