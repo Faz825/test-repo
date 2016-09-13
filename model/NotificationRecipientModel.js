@@ -87,13 +87,14 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
         {
             $project:{
                 _id:1,
-                notification_id:1,
+                notification_id:"$notification_id",
                 recipient_id:"$recipient",
                 read_status:1,
                 created_at:"$notificationData.created_at",
                 notification_type:"$notificationData.notification_type",
                 sender_id:"$notificationData.sender",
-                post_id:"$notificationData.notified_post"
+                post_id:"$notificationData.notified_post",
+                notebook_id:"$notificationData.notified_notebook"
                 //post_owner:"$postData.created_by"
             }
         },
@@ -154,13 +155,14 @@ NotificationRecipientSchema.statics.getRecipientNotificationsLimit = function(cr
         {
             $project:{
                 _id:1,
-                notification_id:1,
+                notification_id:"$notification_id",
                 recipient_id:"$recipient",
                 read_status:1,
                 created_at:"$notificationData.created_at",
                 notification_type:"$notificationData.notification_type",
                 sender_id:"$notificationData.sender",
-                post_id:"$notificationData.notified_post"
+                post_id:"$notificationData.notified_post",
+                notebook_id:"$notificationData.notified_notebook"
                 //post_owner:"$postData.created_by"
             }
         },

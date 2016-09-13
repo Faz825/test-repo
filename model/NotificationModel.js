@@ -25,6 +25,11 @@ var NotificationSchema = new Schema({
         ref: 'Post',
         default:null
     },
+    notified_notebook:{ // the post that origin user comment / share / like ...
+        type: Schema.ObjectId,
+        ref: 'NoteBook',
+        default:null
+    },
     created_at:{
         type:Date
     }
@@ -50,7 +55,11 @@ NotificationSchema.statics.saveNotification = function(new_notification,callBack
     var notification = new this();
     notification.sender = Util.toObjectId(new_notification.sender);
     notification.notification_type = new_notification.notification_type;
-    notification.notified_post = Util.toObjectId(new_notification.notified_post);
+    if(new_notification.notification_type != Notifications.SHARE_NOTEBOOK) {
+        notification.notified_post = Util.toObjectId(new_notification.notified_post);
+    } else {
+        notification.notified_notebook = Util.toObjectId(new_notification.notified_notebook);
+    }
     notification.save(function(err, result){
         if(!err){
             callBack({

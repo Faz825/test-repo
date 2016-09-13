@@ -66,7 +66,7 @@ var NotificationController ={
 
                         for(var i = 0; i < notifications.length; i++){
 
-                            if(notifications[i]['notification_type'] == Notifications.BIRTHDAY){
+                            if(notifications[i]['notification_type'] == Notifications.BIRTHDAY || notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK){
                                 _type = notifications[i]['notification_type']
                             } else{
                                 _type = notifications[i]['post_id']+notifications[i]['notification_type'];
@@ -75,18 +75,41 @@ var NotificationController ={
                                     _postIds.push(notifications[i]['post_id'].toString());
                                 }
                             }
+                            if(notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK) {
+                                var noteObj = {
+                                    post_id:notifications[i]['post_id'],
+                                    notebook_id:notifications[i]['notebook_id'],
+                                    notification_type:notifications[i]['notification_type'],
+                                    read_status:notifications[i]['read_status'],
+                                    post_owner:null,
+                                    created_at:notifications[i]['created_at'],
+                                    senders:[notifications[i]['sender_id'].toString()],
+                                    sender_count:0,
+                                    notification_ids:[],
+                                    notification_id:notifications[i]['notification_id']
+                                };
+                                if(_types.indexOf(_type) == -1){
+                                    _types.push(_type);
+                                    _notifications[_type] = [noteObj];
+                                } else {
+                                    _notifications[_type].push(noteObj);
+                                }
 
-                            if(_types.indexOf(_type) == -1){
+                                _noOfNotifications++;
+
+                            } else if(_types.indexOf(_type) == -1){
                                 _types.push(_type)
                                 _notifications[_type] = {
                                     post_id:notifications[i]['post_id'],
+                                    notebook_id:'',
                                     notification_type:notifications[i]['notification_type'],
                                     read_status:notifications[i]['read_status'],
                                     post_owner:null,
                                     created_at:notifications[i]['created_at'],
                                     senders:[],
                                     sender_count:0,
-                                    notification_ids:[]
+                                    notification_ids:[],
+                                    notification_id:notifications[i]['notification_id']
                                 };
                                 _noOfNotifications++;
                             }
@@ -118,7 +141,7 @@ var NotificationController ={
 
                         for(var i = 0; i < notifications.length; i++){
 
-                            if(notifications[i]['notification_type'] == Notifications.BIRTHDAY){
+                            if(notifications[i]['notification_type'] == Notifications.BIRTHDAY || notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK){
                                 _type = notifications[i]['notification_type']
                             } else{
                                 _type = notifications[i]['post_id']+notifications[i]['notification_type'];
@@ -128,18 +151,42 @@ var NotificationController ={
                                 }
                             }
 
-                            if(_types.indexOf(_type) == -1){
+                            if(notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK) {
+                                var noteObj = {
+                                    post_id:notifications[i]['post_id'],
+                                    notebook_id:notifications[i]['notebook_id'],
+                                    notification_type:notifications[i]['notification_type'],
+                                    read_status:notifications[i]['read_status'],
+                                    post_owner:null,
+                                    created_at:notifications[i]['created_at'],
+                                    senders:[notifications[i]['sender_id'].toString()],
+                                    sender_count:0,
+                                    notification_ids:[],
+                                    notification_id:notifications[i]['notification_id']
+                                };
+                                if(_types.indexOf(_type) == -1){
+                                    _types.push(_type);
+                                    _notifications[_type] = [noteObj];
+                                } else {
+                                    _notifications[_type].push(noteObj);
+                                }
+                                _noOfNotifications++;
+
+                            } else if(_types.indexOf(_type) == -1){
                                 _types.push(_type)
                                 _notifications[_type] = {
                                     post_id:notifications[i]['post_id'],
+                                    notebook_id:'',
                                     notification_type:notifications[i]['notification_type'],
                                     read_status:notifications[i]['read_status'],
                                     post_owner:null,
                                     created_at:notifications[i]['created_at'],
                                     senders:[],
                                     sender_count:0,
-                                    notification_ids:[]
+                                    notification_ids:[],
+                                    notification_id:notifications[i]['notification_id']
                                 };
+                                _noOfNotifications++;
                             }
                         }
                         callBack(null);
@@ -169,21 +216,26 @@ var NotificationController ={
 
                     var x = 0;
 
-                    if(notifications[i]['notification_type'] == Notifications.BIRTHDAY){
+                    if(notifications[i]['notification_type'] == Notifications.BIRTHDAY) {
 
-                        if(_notifications[notifications[i]['notification_type']]['senders'].indexOf(notifications[i]['sender_id'].toString()) == -1 && x < 3){
+                        if (_notifications[notifications[i]['notification_type']]['senders'].indexOf(notifications[i]['sender_id'].toString()) == -1 && x < 3) {
                             _notifications[notifications[i]['notification_type']]['senders'].push(notifications[i]['sender_id'].toString());
                             x++;
 
-                            if(_userIds.indexOf(notifications[i]['sender_id'].toString()) == -1){
+                            if (_userIds.indexOf(notifications[i]['sender_id'].toString()) == -1) {
                                 _userIds.push(notifications[i]['sender_id'].toString());
                             }
                         }
 
-                        if(x > 3){
+                        if (x > 3) {
                             var _senderCount = _notifications[notifications[i]['notification_type']]['sender_count'];
                             _senderCount++;
                             _notifications[notifications[i]['notification_type']]['sender_count'] = _senderCount;
+                        }
+
+                    } else if(notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK) {
+                        if (_userIds.indexOf(notifications[i]['sender_id'].toString()) == -1) {
+                            _userIds.push(notifications[i]['sender_id'].toString());
                         }
 
                     } else{
@@ -302,68 +354,101 @@ var NotificationController ={
 
                     var obj = _notifications[key];
 
-                    if(obj.senders.length > 0){
+                    if(obj.notification_type != Notifications.SHARE_NOTEBOOK && key != Notifications.SHARE_NOTEBOOK) {
 
-                        var _postOwnerName = "",
-                            _postOwnerUsername = "",
-                            birthdayDay = "";
+                        if(obj.senders.length > 0){
 
-                        if(obj.notification_type == Notifications.BIRTHDAY){
-                            var createdDate = new Date(obj.created_at);
-                            var diff = Math.floor((new Date() - createdDate) / 1000);
-                            if(diff < 86400){
-                                birthdayDay = "today";
-                            } else{
-                                birthdayDay = "yesterday";
+                            var _postOwnerName = "",
+                                _postOwnerUsername = "",
+                                birthdayDay = "";
+
+                            if(obj.notification_type == Notifications.BIRTHDAY){
+                                var createdDate = new Date(obj.created_at);
+                                var diff = Math.floor((new Date() - createdDate) / 1000);
+                                if(diff < 86400){
+                                    birthdayDay = "today";
+                                } else{
+                                    birthdayDay = "yesterday";
+                                }
+
+                            }else if(obj.notification_type != Notifications.SHARE_NOTEBOOK){
+
+                                if(obj.post_owner == user_id){
+                                    _postOwnerName = "your";
+                                }else{
+                                    _postOwnerName = _users[obj.post_owner]['name']+"'s";
+                                }
+                                _postOwnerUsername = _users[obj.post_owner]['user_name'];
                             }
 
-                        }else{
+                            var _data = {
+                                post_id:obj.post_id,
+                                notification_type:obj.notification_type,
+                                read_status:obj.read_status,
+                                created_at:DateTime.explainDate(obj.created_at),
+                                post_owner_username:_postOwnerUsername,
+                                post_owner_name:_postOwnerName,
+                                sender_profile_picture:_users[obj.senders[0]]['profile_image'],
+                                sender_name:_users[obj.senders[0]]['name'],
+                                sender_count:obj.sender_count,
+                                birthday:birthdayDay,
+                                notebook_id:obj.notebook_id,
+                                notification_id:obj.notification_id
+                            };
 
-                            if(obj.post_owner == user_id){
-                                _postOwnerName = "your";
-                            }else{
-                                _postOwnerName = _users[obj.post_owner]['name']+"'s";
+                            if(obj.senders.length == 2){
+                                if(obj.sender_count == 0){
+                                    _data['sender_name'] += ' and ';
+                                }else{
+                                    _data['sender_name'] += ', ';
+                                }
+                                _data['sender_name'] += _users[obj.senders[1]]['name'];
                             }
-                            _postOwnerUsername = _users[obj.post_owner]['user_name'];
+
+                            if(obj.senders.length == 3){
+                                _data['sender_name'] += ', '+ _notificationSenders[obj.senders[1]]['name'];
+                                if(obj.sender_count == 0){
+                                    _data['sender_name'] += ' and ';
+                                }else{
+                                    _data['sender_name'] += ', ';
+                                }
+                                _data['sender_name'] += _users[obj.senders[2]]['name'];
+                            }
+
+                            _formattedNotificationData.push(_data);
+
                         }
+                    } else {
+                        for (var i in obj) {
+                            var _data = {
+                                post_id:obj[i].post_id,
+                                notification_type:obj[i].notification_type,
+                                read_status:obj[i].read_status,
+                                created_at:DateTime.explainDate(obj[i].created_at),
+                                post_owner_username:'   ',
+                                post_owner_name:_users[obj[i].senders[0]]['name'],
+                                sender_profile_picture:_users[obj[i].senders[0]]['profile_image'],
+                                sender_name:_users[obj[i].senders[0]]['name'],
+                                sender_count:obj[i].sender_count,
+                                birthday:'',
+                                notebook_id:obj[i].notebook_id,
+                                notification_id:obj[i].notification_id
+                            };
 
-                        var _data = {
-                            post_id:obj.post_id,
-                            notification_type:obj.notification_type,
-                            read_status:obj.read_status,
-                            created_at:DateTime.explainDate(obj.created_at),
-                            post_owner_username:_postOwnerUsername,
-                            post_owner_name:_postOwnerName,
-                            sender_profile_picture:_users[obj.senders[0]]['profile_image'],
-                            sender_name:_users[obj.senders[0]]['name'],
-                            sender_count:obj.sender_count,
-                            birthday:birthdayDay
-                        };
-
-                        if(obj.senders.length == 2){
-                            if(obj.sender_count == 0){
-                                _data['sender_name'] += ' and ';
-                            }else{
-                                _data['sender_name'] += ', ';
-                            }
-                            _data['sender_name'] += _users[obj.senders[1]]['name'];
+                            _formattedNotificationData.push(_data);
                         }
-
-                        if(obj.senders.length == 3){
-                            _data['sender_name'] += ', '+ _notificationSenders[obj.senders[1]]['name'];
-                            if(obj.sender_count == 0){
-                                _data['sender_name'] += ' and ';
-                            }else{
-                                _data['sender_name'] += ', ';
-                            }
-                            _data['sender_name'] += _users[obj.senders[2]]['name'];
-                        }
-
-                        _formattedNotificationData.push(_data)
 
                     }
 
                 }
+
+                //sorting the list by created date
+                _formattedNotificationData.sort(function(a,b){
+                    // Turn your strings into dates, and then subtract them
+                    // to get a value that is either negative, positive, or zero.
+                    return new Date(b.created_at) - new Date(a.created_at);
+                });
+
                 callBack(null);
 
             }
@@ -371,11 +456,6 @@ var NotificationController ={
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['unreadCount'] = _unreadCount;
             outPut['notifications'] = _formattedNotificationData;
-            //outPut ={
-            //    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-            //    unreadCount:_unreadCount,
-            //    notifications:_formattedNotificationData
-            //}
 
             res.status(200).json(outPut);
         });
@@ -620,6 +700,89 @@ var NotificationController ={
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 count:result.result
+            };
+            res.status(200).json(outPut);
+        })
+
+
+    },
+    updateNotebookNotifications: function(req,res){
+
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            Notification = require('mongoose').model('Notification'),
+            NoteBook = require('mongoose').model('NoteBook'),
+            _async = require('async'),
+            _data = {read_status:true},
+            user_id = Util.getCurrentSession(req).id;
+
+        _async.parallel([
+            function updateNotifications(callBack){
+                var _criteria = {notification_id:Util.toObjectId(req.body.notification_id), recipient:Util.toObjectId(user_id)};
+                NotificationRecipient.updateRecipientNotification(_criteria, _data, function(res){
+                    callBack(null);
+                });
+            },
+            function updateSharedStatus(callBack) {
+                var shared_status = req.body.status == 'REQUEST_REJECTED' ?
+                    NoteBookSharedRequest.REQUEST_REJECTED : NoteBookSharedRequest.REQUEST_ACCEPTED;
+
+                var _udata = {
+                    'shared_users.$.status':shared_status
+                };
+                var criteria = {
+                    _id:Util.toObjectId(req.body.notebook_id),
+                    'shared_users.user_id':user_id
+                };
+
+                NoteBook.updateSharedNotebook(criteria, _udata, function(res){
+                    callBack(null);
+                });
+            },
+            function updateESSharedStatus(callBack){
+                if(req.body.status == 'REQUEST_REJECTED'){
+
+                    _async.waterfall([
+                        function getSharedNoteBooks(callBack){
+                            var query={
+                                q:"_id:"+user_id
+                            };
+                            NoteBook.ch_getSharedNoteBooks(user_id, query, function (esResultSet){
+                                callBack(null, esResultSet);
+                            });
+
+                        },
+                        function ch_shareNoteBook(resultSet, callBack) {
+                            if(resultSet != null){
+                                var notebook_list = resultSet.result[0].notebooks;
+                                var index = notebook_list.indexOf(req.body.notebook_id.toString());
+                                notebook_list.splice(index, 1);
+
+                                var query={
+                                        q:"user_id:"+user_id
+                                    },
+                                    data = {
+                                        user_id: user_id,
+                                        notebooks: notebook_list
+                                    };
+
+                                NoteBook.ch_shareNoteBookUpdateIndex(user_id,data, function(esResultSet){
+                                    callBack(null);
+                                });
+                            }else {
+                                callBack(null);
+                            }
+                        }
+                    ], function (err, resultSet) {
+                        callBack(null);
+                    });
+
+                }else{
+                    callBack(null);
+                }
+            }
+        ],function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
             };
             res.status(200).json(outPut);
         })

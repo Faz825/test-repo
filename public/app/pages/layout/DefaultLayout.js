@@ -21,12 +21,66 @@ export default class DefaultLayout extends React.Component{
             window.location.href = 'https'+url_arr[1];
         }
 
+        let _rightBottom = false;
+        //let _newsFeed = false;
+        //let _calls = false;
+        //let _messages = false;
+        //let _socialNotifications = false;
 
-        this.state={
-            chatBubble:[]
+        this.checkWorkModeInterval = null;
+
+        if(Session.getSession('prg_wm') != null){
+            let _currentTime = new Date().getTime();
+            let _finishTime = Session.getSession('prg_wm').endTime;
+
+            if (_currentTime > _finishTime){
+                Session.destroy("prg_wm");
+            } else{
+                let _this = this;
+                _rightBottom = Session.getSession('prg_wm').rightBottom;
+                //_newsFeed = Session.getSession('prg_wm').newsFeed;
+                //_calls = Session.getSession('prg_wm').calls;
+                //_messages = Session.getSession('prg_wm').messages;
+                //_socialNotifications = Session.getSession('prg_wm').socialNotifications;
+                if(_rightBottom == true){
+                    this.checkWorkModeInterval = setInterval(function(){_this.checkWorkMode()}, 1000);
+                }
+            }
         }
 
+        console.log(Session.getSession('prg_wm'));
+
+        this.state={
+            chatBubble:[],
+            rightBottom:_rightBottom
+            //newsFeed:_newsFeed,
+            //calls:_calls,
+            //messages:_messages,
+            //socialNotifications:_socialNotifications
+        };
+
         this.quickChatUsers = [];
+
+    }
+
+    checkWorkMode(){
+        //console.log("checkWorkMode from Default Layout")
+        if(Session.getSession('prg_wm') != null){
+            let _currentTime = new Date().getTime();
+            let _finishTime = Session.getSession('prg_wm').endTime;
+
+            if (_currentTime > _finishTime){
+                console.log("TIME UP from Default Layout")
+                this.setState({rightBottom:false})
+                Session.destroy("prg_wm");
+                clearInterval(this.checkWorkModeInterval);
+                this.checkWorkModeInterval = null;
+            }
+        } else{
+            this.setState({rightBottom:false});
+            clearInterval(this.checkWorkModeInterval);
+            this.checkWorkModeInterval = null;
+        }
 
     }
 
@@ -78,11 +132,11 @@ export default class DefaultLayout extends React.Component{
 
     render(){
 
-
+        console.log(this.state.rightBottom);
 
         return(
             <div className="row row-clr pg-full-wrapper">
-                <SigninHeader quickChat={this.loadQuickChat.bind(this)} />
+                <SigninHeader quickChat={this.loadQuickChat.bind(this)}/>
                 <SidebarNav side="left" menuItems={{items:[
                   {"name": "Notes", "link" : "/notes", "imgName": "nav-ico-2"},
                   {"name": "Folders", "link" : "/folders", "imgName": "folder-icon"},
@@ -97,17 +151,16 @@ export default class DefaultLayout extends React.Component{
                   {"name": "Groups", "link" : "/professional-networks", "imgName": "nav-ico-10"},
                   {"name": "Call Center", "link" : "/chat", "imgName": "call-center-icon"}
                 ]
-              }}/>
+              }} blockRight={this.state.rightBottom}/>
                 <div className="row row-clr pg-middle-sign-wrapper">
                     <div className="container-fluid pg-custom-container">
                         {this.props.children || <Dashboard />}
                     </div>
                 </div>
-                <FooterHolder />
-                <InCallPane />
+                <FooterHolder blockBottom={this.state.rightBottom}/>
+                <InCallPane/>
                 <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)}/>
             </div>
         );
     }
 }
-
