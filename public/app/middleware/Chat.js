@@ -120,7 +120,7 @@ class Chat{
             } else{
 
                 console.log("Need to block call. Need to send message to receiver. Need to send notification to caller");
-                _this.hangupCall({workmode:true});
+                _this.hangupCall();
 
                 let _uri = c.other; console.log(_uri);
                 let _msg = "On work mode";
@@ -283,7 +283,6 @@ class Chat{
                             }
 
                             if(unreadCount > 0){
-                                console
                                 $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
                             } else{
                                 $("#unread_chat_count_header").html('');

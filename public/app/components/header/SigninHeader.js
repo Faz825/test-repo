@@ -117,6 +117,7 @@ export class ConversationList extends React.Component{
         this.conv_ids = [];
         this.convUsers = [];
         this.quickChatUsers = [];
+        this.notifiedUsers = [];
     }
 
     initChat(b6){
@@ -128,9 +129,11 @@ export class ConversationList extends React.Component{
         });
     }
 
-    checkWorkMode(){
+    componentDidMount(){
+        console.log("ConversationList componentDidMount")
+    }
 
-        console.log("checkWorkMode");
+    checkWorkMode(){
 
         let _messages = false;
 
@@ -164,7 +167,7 @@ export class ConversationList extends React.Component{
         var proglobe_title_array = proglobe_title.split('proglobe');
         var title = proglobe_title_array[1];
 
-        let _blockMessages = this.checkWorkMode(); console.log(_blockMessages);
+        let _blockMessages = this.checkWorkMode();
 
 
         // New conversation
@@ -224,19 +227,56 @@ export class ConversationList extends React.Component{
                         if (c.unread > 0 && this.unreadConversationCount.indexOf(c.id) == -1) {
                             this.unreadCount += 1;
                             this.unreadConversationCount.push(c.id);
+
+                            console.log("------HERE------229")
                         }
 
-                        if(this.unreadCount > 0 && _blockMessages){
-                            console.log("230")
+                        if(this.unreadCount > 0 && !_blockMessages){
+                            console.log("233")
                             $("#unread_chat_count_header").html('<span class="total">'+this.unreadCount+'</span>');
                         } else{
-                            console.log("233")
+                            console.log("236")
                             $("#unread_chat_count_header").html('');
+                        }
+
+                        // IF user is in block messages mode then notify the sender
+
+                        console.log(c)
+
+                        console.log("c.unread ==> ",c.unread);
+                        console.log("_blockMessages ==> ",_blockMessages);
+                        console.log("this.notifiedUsers.indexOf(c.id) ==> ",this.notifiedUsers.indexOf(c.id));
+
+                        if(c.unread > 0 && _blockMessages && this.notifiedUsers.indexOf(c.id) == -1){
+
+                            let _startTime = Session.getSession('prg_wm').startTimer; console.log("_startTime",_startTime);
+                            let _lastMsgTime = c.updated;console.log("_lastMsgTime",_lastMsgTime);
+                            //let _now = new Date().getTime();
+                            //let _1minsb4 = _now - (60*1000);
+
+                            if(_lastMsgTime > _startTime){
+
+
+
+                                let _uri = c.uri; console.log(_uri);
+                                let _msg = "On work mode";
+
+                                b6.compose(_uri).text(_msg).send(function(err) {
+                                    if (err) {
+                                        console.log('error', err);
+                                    }
+                                    else {
+                                        console.log("msg sent");
+                                    }
+                                });
+
+                                this.notifiedUsers.push(c.id);
+
+                            }
                         }
 
                     }
                 }
-
             }
         }
         if(op >= 0 && title != 'undefined'){
@@ -274,15 +314,15 @@ export class ConversationList extends React.Component{
             if (c.unread > 0 && this.unreadConversationCount.indexOf(c.id) == -1) {
                 this.unreadCount += 1;
                 this.unreadConversationCount.push(c.id);
+
+                console.log("------HERE------280")
             }
 
-
-
-            if(this.unreadCount > 0 && _blockMessages){
-                console.log("282")
+            if(this.unreadCount > 0 && !_blockMessages){
+                console.log("286")
                 $("#unread_chat_count_header").html('<span class="total">'+this.unreadCount+'</span>');
             } else{
-                console.log("285")
+                console.log("289")
                 $("#unread_chat_count_header").html('');
             }
         }
@@ -296,6 +336,7 @@ export class ConversationList extends React.Component{
     onLoadQuickChat(conv) {
 
         this.props.loadQuickChat(conv);
+        let _blockMessages = this.checkWorkMode();
 
         if(this.unreadCount > 0){
 
@@ -310,10 +351,10 @@ export class ConversationList extends React.Component{
                     this.unreadConversationCount.splice(index,1);
                     this.unreadCount--;
                     if(this.unreadCount <= 0 || _blockMessages){
-                        console.log("313")
+                        console.log("320")
                         $("#unread_chat_count_header").html('');
                     } else {
-                        console.log("316")
+                        console.log("323")
                         $("#unread_chat_count_header").html('<span class="total">' + this.unreadCount + '</span>');
                     }
                 }
