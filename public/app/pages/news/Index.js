@@ -292,11 +292,14 @@ export default class Index extends React.Component{
     render(){
         let _this = this;
         let user = Session.getSession('prg_lg');
+        let _secretary_image = user.secretary_image_url;
         const {uname,posts,display_news_articles}= this.state;
+        console.log(user);
 
-        console.log("=====NEWSFEED======"+this.state.blockNewsFeed)
+        console.log("=====NEWSFEED======"+this.state.blockNewsFeed);
         //TODO::
         // if blockNewsFeed true need to blur the screen and show secretary image
+        let workmodeClass = (this.state.blockNewsFeed)?"workmode-switched":"";
 
         return(
             <div id="pg-newsfeed-page" className="pg-page">
@@ -319,7 +322,7 @@ export default class Index extends React.Component{
                                         <h3 className="pg-newsfeed-right-title-section-date">{this.current_date}</h3>
                                     </div>
                                 </div>
-                                <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                <AddPostElement workModeStyles={workmodeClass} onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
                                                 uname = {uname} profileUsr={user} connectionStatus={this.state.connectionStatus}/>
                                 <ListPostsElement posts={this.state.posts}
                                                   uname = {uname}
@@ -330,6 +333,23 @@ export default class Index extends React.Component{
                             <div className="col-xs-6"></div>
                         </div>
                     </div>
+                    {
+                        (this.state.blockNewsFeed)?
+                        <div className="workmode-overlay-holder">
+                            <div className="row">
+                                <div className="container">
+                                    <div className="secretary-holder">
+                                        <img src={_secretary_image} alt="Secretary" className="img-responsive"/>
+                                    </div>
+                                    <div className="msg-holder">
+                                        <h3>{user.first_name + " " + user.last_name}, Don't get distracted, get back to
+                                            work!</h3>
+                                        <img className="arrow" src="images/workmode_msg_arrow.png"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> : null
+                    }
                 </div>
             </div>
         )

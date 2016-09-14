@@ -517,6 +517,10 @@
     z-index: 1;
 }
 
+.containable-div.workmode-switched{
+    z-index: 0;
+}
+
 .editerHolder .statusIniText{
     color: #9197a3;
     position: absolute;

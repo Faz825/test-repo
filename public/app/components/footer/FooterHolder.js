@@ -56,59 +56,59 @@ export default class FooterHolder extends React.Component{
         const {
             notificationCount
             }=this.state;
-
-        console.log("=====Footer Holder======"+this.props.blockBottom)
+        let workmodeCSS = (this.props.blockBottom)?" workmode-switched":"";
+        //console.log("=====Footer Holder======"+this.props.blockBottom)
         //TODO::
         // if blockBottom true need to hide
 
         return (
             <div>
-                {
-                    (this.props.blockBottom)?
-                    null
-                    :
-                    <div className="row row-clr pg-footer-wrapper">
-                <div className="pg-footer-left-options-panel">
-                    <a href="/notifications">
-                        <div className="col-xs-2 pgs-secratery-img">
 
-                                <img src={_secretary_image} alt="Secretary" className="img-responsive" />
-                                {notificationCount>0?<span className="counter">{notificationCount}</span>:null}
+                <div className={"row row-clr pg-footer-wrapper "+workmodeCSS}>
+                    <div className="pg-footer-left-options-panel">
+                        <a href="/notifications">
+                            <div className="col-xs-2 pgs-secratery-img">
 
-                        </div>
-                    </a>
-                    <div className="pg-footer-left-options">
-                        <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/pg-home-v6_03.png" alt=""
-                                                                             className="img-responsive"/></a>
-                        <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/pg-home-v6_066.png" alt=""
-                                                                             className="img-responsive"/></a>
-                        <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/pg-home-v6_08.png" alt=""
-                                                                             className="img-responsive"/></a>
-                    </div>
-                </div>
+                                    <img src={_secretary_image} alt="Secretary" className="img-responsive" />
+                                    {notificationCount>0?<span className="counter">{notificationCount}</span>:null}
 
-                <div className="container">
-                    <div className="pg-footer-top-control-panel">
-                        <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/footer-control-ico-1.png"
-                                                                             alt="" className="img-responsive"/>
-                            split</a>
-                        <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/footer-control-ico-2.png"
-                                                                             alt="" className="img-responsive"/>
-                            full</a>
-                    </div>
-                </div>
-
-                <div className="pg-footer-right-options-panel">
-                    <div className="pg-footer-right-options-panel-inner">
-                        <a href="/work-mode" onClick={event=>onLinkClick(event)}>
-                            <img src="/images/footer-right-image.png" alt="Logo" className="img-responsive"/>
-
-                            <p>Work Mode</p>
+                            </div>
                         </a>
+                        <div className="pg-footer-left-options">
+                            <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/pg-home-v6_03.png" alt=""
+                                                                                 className="img-responsive"/></a>
+                            <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/pg-home-v6_066.png" alt=""
+                                                                                 className="img-responsive"/></a>
+                            <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/pg-home-v6_08.png" alt=""
+                                                                                 className="img-responsive"/></a>
+                        </div>
+                    </div>
+                    {
+                        (this.props.blockBottom)?
+                            null
+                            :
+                            <div className="container">
+                                <div className="pg-footer-top-control-panel">
+                                    <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/footer-control-ico-1.png"
+                                                                                         alt="" className="img-responsive"/>
+                                        split</a>
+                                    <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/footer-control-ico-2.png"
+                                                                                         alt="" className="img-responsive"/>
+                                        full</a>
+                                </div>
+                            </div>
+                    }
+                    <div className="pg-footer-right-options-panel">
+                        <div className="pg-footer-right-options-panel-inner">
+                            <a href="/work-mode" onClick={event=>onLinkClick(event)}>
+                                <img src="/images/footer-right-image.png" alt="Logo" className="img-responsive"/>
+
+                                <p>Work Mode</p>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-                }
+
             </div>
 
         );

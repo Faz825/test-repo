@@ -476,6 +476,11 @@ a:focus{
 	top: 70px;
 	z-index: 100;
 }
+
+.pg-right-nav-wrapper.workmode-switched {
+    background-color: transparent;
+}
+
 .pg-nav-item-wrapper {
 	padding: 24px 0px;
 	border-bottom: 2px solid #e0e2e5;
@@ -1002,6 +1007,10 @@ input[type=number]::-webkit-outer-spin-button {
 	height: 110px;
 	background-color: #eceef1;
 	box-shadow: 2px 1px 8px -2px #000;
+}
+.pg-footer-wrapper.workmode-switched {
+    background-color: transparent;
+    box-shadow: none;
 }
 .pg-footer-left-options-panel {
 	width: 110px;
@@ -3562,6 +3571,10 @@ textarea{
 	margin-left: 9%;
 }
 
+.popover.right>.arrow {
+    top: 90px!important;
+}
+
 .notifications.popover-holder .arrow{
 	left: 10% !important;
 }
@@ -3768,6 +3781,11 @@ textarea{
 	float: left;
 }
 
+.popup-holder .popup-body-holder .shared-users-container{
+	max-height: 135px;
+	overflow: hidden;
+}
+
 .popup-holder .popup-body-holder .user-block{
 	padding: 12px 23px;
 	position: relative;
@@ -3914,6 +3932,41 @@ textarea{
 /* Work Mode */
 #pg-workmode-page{
 	margin: 70px 0 0;
+}
+
+.workmode-overlay-holder .container{
+    margin-top: 70px;
+}
+
+.workmode-overlay-holder .secretary-holder{
+    position: relative;
+    float: left;
+}
+
+.workmode-overlay-holder .secretary-holder img{
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px;
+}
+
+.workmode-overlay-holder .msg-holder{
+    position: relative;
+    float: left;
+    margin-left: 25px;
+    background-color: #FFFFFF;
+    padding: 5px 25px;
+    font-size: 16px;
+    border-radius: 0px 20px 20px;
+}
+
+.workmode-overlay-holder .msg-holder h3{
+    font-size: 16px;
+}
+
+.workmode-overlay-holder .msg-holder .arrow{
+    position: absolute;
+    top: 0;
+    left: -9px;
 }
 
 .work-mode-container .inner-wrapper{
@@ -4245,6 +4298,19 @@ textarea{
 	text-transform: uppercase;
 	font-family: "montserratregular", sans-serif;
 	font-size: 0.95em;
+}
+
+/* News feed overlay */
+#pg-newsfeed-page{
+	position: relative;
+}
+
+#pg-newsfeed-page .workmode-overlay-holder{
+	width: calc(100vw - 237px);
+    height: calc(100vh - 180px);
+    position: fixed;
+    background: rgba(0, 0, 0, 0.9);
+    top: 70px;
 }
 
 /* Large Screen */

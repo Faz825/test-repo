@@ -12,6 +12,16 @@ export default class Index extends React.Component{
         this.tPeriod = Moment().format("A");
         this.cH = Moment().format("hh");
         this.cM = Moment().format("mm");
+        let _sesData = Session.getSession('prg_wm');
+        let _startTime = new Date().getTime();
+        let _endTime;
+        let timeLeft;
+        if(_sesData){
+            _endTime = _sesData.endTime;
+            timeLeft = _endTime - _startTime;
+            timeLeft =  Moment.utc(timeLeft).format("DD HH mm");
+        }
+        let isVisible = (timeLeft)? false : true;
 
         this.state={
             startDate: Moment(),
@@ -19,8 +29,9 @@ export default class Index extends React.Component{
             customMins: this.cM,
             selectedTimeOpt: 0,
             blockedMode: "",
-            timeBlockIsVisible: true,
-            timePeriod: this.tPeriod
+            timeBlockIsVisible: isVisible,
+            timePeriod: this.tPeriod,
+            remainingTime: timeLeft
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -85,14 +96,12 @@ export default class Index extends React.Component{
 
     onWorkModeSet(e){
 
-        //e.preventDefault();
-
         let data;
 
         if (this.selectedList.length >= 1) {
             if(this.formatDate == undefined){
                 console.log("not set");
-                this.formatDate = Moment().format("MMM DD");
+                this.formatDate = Moment().format("YYYY-MM-DD");
             }
             data = {
                 mode : this.selectedList,
@@ -109,8 +118,6 @@ export default class Index extends React.Component{
         }
         console.log(data);
 
-        Session.destroy("prg_rm");
-
         let _startTime = new Date().getTime();
         let howLong = 0;
         let _endTime = _startTime+howLong;
@@ -124,9 +131,11 @@ export default class Index extends React.Component{
             let now = Moment().format('YYYY-MM-DD HH:mm a');
             let toFormat = Moment(data.date.day + ' ' + data.date.hh + ':' + data.date.mm +' ' + data.date.period, "YYYY-MM-DD HH:mm a");
             howLong = toFormat.diff(now);
-            console.log(toFormat.diff(now));
+            console.log(howLong);
             _endTime = _startTime+howLong;
         }
+
+
 
         var _wm = {
             rightBottom:(data.mode.indexOf("bars") != -1 || data.mode.indexOf("all") != -1)?true:false,
@@ -139,7 +148,12 @@ export default class Index extends React.Component{
             endTime:_endTime
         };
         console.log(_wm);
+
         Session.createSession("prg_wm",_wm);
+
+        //it must be at the end. because to create session form must get posted
+        //e.preventDefault(); //can uncomment if we find a way to hide footer & right bar without refresh.
+
         location.reload();
     }
 
@@ -148,7 +162,28 @@ export default class Index extends React.Component{
     }
 
     onTimeSet(){
-        this.setState({timeBlockIsVisible: false});
+        let howLong;
+        let timeLeft;
+        let time = this.state.selectedTimeOpt;
+        let _startTime = new Date().getTime();
+        let _endTime;
+
+        if (time != 0) {
+            howLong = time*60*1000;
+            _endTime = Moment().add(howLong, 'ms').format("x");
+            timeLeft = _endTime - _startTime;
+            timeLeft =  Moment.utc(timeLeft).format("DD HH mm");
+        }else{
+            if(this.formatDate == undefined){
+                this.formatDate = Moment().format("YYYY-MM-DD");
+            }
+            let now = Moment().format('YYYY-MM-DD HH:mm a');
+            let toFormat = Moment(this.formatDate + ' ' + this.state.customHours + ':' + this.state.customMins +' ' + this.state.timePeriod, "YYYY-MM-DD HH:mm a");
+            howLong = toFormat.diff(now);
+            timeLeft = Moment.utc(howLong).format("DD HH mm");
+        }
+        this.setState({timeBlockIsVisible: false, remainingTime: timeLeft});
+
     }
 
     onPeriodChange(e){
@@ -157,12 +192,32 @@ export default class Index extends React.Component{
     }
 
     render(){
+        let timeLeft = this.state.remainingTime;
+        let days, hrs, mins;
+        if (timeLeft) {
+            timeLeft = timeLeft.split(" ");
+            days = timeLeft[0];
+            hrs = timeLeft[1];
+            mins = timeLeft[2];
+            if(days == "01"){
+                days = "";
+            }else{
+                days = days+"'days ";
+            }
+
+            if(hrs == "0"){
+                hrs = "";
+            }else{
+                hrs = hrs+"'hours ";
+            }
+        }
+
         return(
             <div id="pg-workmode-page" className="pg-page">
                 <div className="container">
                     <div className="row">
                         <div className="work-mode-container col-sm-10 col-sm-offset-1">
-                            <form onSubmit={this.onWorkModeSet.bind(this)}>
+                            <form method="post" onSubmit={this.onWorkModeSet.bind(this)}>
                             <div className="inner-wrapper clearfix">
                                 <div className="header-section">
                                     <h2 className="section-text">Work Mode</h2>
@@ -225,8 +280,8 @@ export default class Index extends React.Component{
                                                     <h3 className="section-title">Set a fixed time for next,</h3>
                                                     <div className="opt-holder">
                                                         <div className="opt-block clearfix">
-                                                            <input type="checkbox" value="3" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                                checked={(this.state.selectedTimeOpt == 3)? true : false} />
+                                                            <input type="checkbox" value="30" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                                checked={(this.state.selectedTimeOpt == 30)? true : false} />
                                                             <label htmlFor="min-check">30 Mins</label>
                                                         </div>
                                                         <div className="opt-block clearfix">
@@ -271,20 +326,20 @@ export default class Index extends React.Component{
                                                     </div>
                                                 </div>
                                                 <div className="btn-holder">
-                                                    <button className="btn btn-default set-btn" onClick={this.onTimeSet.bind(this)}>Set</button>
+                                                    <button type="button" className="btn btn-default set-btn" onClick={this.onTimeSet.bind(this)}>Set</button>
                                                 </div>
                                             </div>
                                         </div>
                                     :
                                         <div className="mode-notice" onClick={this.onTimeSummeryClick.bind(this)}>
-                                            <h3 className="title">Work Mode on for next 1hrs 30mins</h3>
+                                            <h3 className="title">{"Work Mode on for next " + days + hrs + "and "+ mins+"'minutes" }</h3>
                                         </div>
                                 }
                                 <div className="btn-holder">
                                     <button type="submit" className="btn btn-default submit" >GO!</button>
                                 </div>
                             </div>
-                                </form>
+                            </form>
                         </div>
                     </div>
                 </div>
