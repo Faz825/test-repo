@@ -562,7 +562,6 @@ export class SharePopup extends React.Component{
     }
 
     loadSharedUsers() {
-        console.log("now getting shared users - - ");
         $.ajax({
             url: '/notebook/shared-users',
             method: "POST",
@@ -610,9 +609,6 @@ export class SharePopup extends React.Component{
 
         let _fieldValue = e.target.value;
 
-        console.log(user);
-        console.log(_fieldValue);
-
         if(user.shared_type != _fieldValue) {
             $.ajax({
                 url: '/notebook/shared-permission/change',
@@ -630,8 +626,6 @@ export class SharePopup extends React.Component{
     }
 
     onRemoveSharedUser(user) {
-        console.log("about to remove shared user ---");
-        console.log(user);
 
         $.ajax({
             url: '/notebook/shared-user/remove',
@@ -862,12 +856,8 @@ export class  SharedUsers extends React.Component {
 
     }
 
-
     render() {
 
-        console.log("in SharedUsers rendering-----");
-        console.log(this.state.sharedUsers);
-        console.log(this.props.sharedUserList);
         let _this = this;
         let _notebook = this.props.notebook;
         let _allUsers = this.props.sharedUserList.map(function(user,key){
@@ -880,7 +870,14 @@ export class  SharedUsers extends React.Component {
                     </div>
                     <div className="user-details">
                         <h3 className="user-name shared">{user.user_name}</h3>
-                        <p className="more-info shared">University of California, Berkeley</p>
+
+                        {
+                            (typeof user.school != 'undefined') ?
+                                <p className="more-info shared">{user.school}</p>
+                                :
+                                <p className="more-info shared">{user.company_name}</p>
+                        }
+
                     </div>
                     {
                         (_notebook.owned_by == 'me')?

@@ -522,6 +522,7 @@ var NotesController ={
         // console.log("about to get shared users ----");
         var _async = require('async'),
             NoteBook = require('mongoose').model('NoteBook'),
+            User = require('mongoose').model('User'),
             CurrentSession = Util.getCurrentSession(req),
             noteBookId = req.body.notebook_id;
 
@@ -544,24 +545,56 @@ var NotesController ={
                     // console.log(sharedUser);
 
                     if(sharedUser.status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
-                        var query={
-                            q:"user_id:"+sharedUser.user_id.toString(),
-                            index:'idx_usr'
-                        };
-                        //Find User from Elastic search
-                        ES.search(query,function(csResultSet){
-                            // console.log(csResultSet);
-                            var usrObj = {
-                                user_id:sharedUser.user_id,
-                                notebook_id:noteBookId,
-                                shared_type:sharedUser.shared_type,
-                                shared_status:sharedUser.status,
-                                user_name:csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
-                                profile_image:csResultSet.result[0]['images']['profile_image']['http_url']
-                            };
-                            dataArray.push(usrObj);
+                        var usrObj = {};
+                        _async.waterfall([
+
+                            function getEsSharedUsers(callBack){
+                                var query={
+                                    q:"user_id:"+sharedUser.user_id.toString(),
+                                    index:'idx_usr'
+                                };
+                                //Find User from Elastic search
+                                ES.search(query,function(csResultSet){
+
+                                    usrObj.user_name = csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'];
+                                    usrObj.profile_image = csResultSet.result[0]['images']['profile_image']['http_url'];
+
+                                    callBack(null);
+                                });
+
+                            },
+                            function getSharedUserMoreDetails(callBack) {
+                                var criteria = {_id:sharedUser.user_id.toString()},
+                                    showOptions ={
+                                        w_exp:true,
+                                        edu:true
+                                    };
+
+                                User.getUser(criteria,showOptions,function(resultSet){
+
+                                    usrObj.country = resultSet.user.country;
+                                    usrObj.school = resultSet.user.education_details[0].school;
+                                    usrObj.degree = resultSet.user.education_details[0].degree;
+                                    usrObj.company_name = resultSet.user.working_experiences[0].company_name;
+                                    usrObj.company_location = resultSet.user.working_experiences[0].location;
+                                    callBack(null);
+                                })
+                            },
+                            function finalFunction(callBack) {
+
+                                usrObj.user_id = sharedUser.user_id;
+                                usrObj.notebook_id = noteBookId;
+                                usrObj.shared_type = sharedUser.shared_type;
+                                usrObj.shared_status = sharedUser.status;
+
+                                dataArray.push(usrObj);
+                                callBack(null);
+                            }
+
+                        ], function(err) {
                             callBack(null);
                         });
+
                     }else{
                         callBack(null);
                     }

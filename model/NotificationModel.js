@@ -25,9 +25,14 @@ var NotificationSchema = new Schema({
         ref: 'Post',
         default:null
     },
-    notified_notebook:{ // the post that origin user comment / share / like ...
+    notified_notebook:{ // if a notebook request then notebook id
         type: Schema.ObjectId,
         ref: 'NoteBook',
+        default:null
+    },
+    notification_status:{ // Accept / Reject the invitation ...
+        type:String,
+        trim:true,
         default:null
     },
     created_at:{
@@ -55,10 +60,13 @@ NotificationSchema.statics.saveNotification = function(new_notification,callBack
     var notification = new this();
     notification.sender = Util.toObjectId(new_notification.sender);
     notification.notification_type = new_notification.notification_type;
-    if(new_notification.notification_type != Notifications.SHARE_NOTEBOOK) {
+    if(new_notification.notification_type != Notifications.SHARE_NOTEBOOK
+        && new_notification.notification_type != Notifications.SHARE_NOTEBOOK_RESPONSE) {
         notification.notified_post = Util.toObjectId(new_notification.notified_post);
+        notification.notification_status = "";
     } else {
         notification.notified_notebook = Util.toObjectId(new_notification.notified_notebook);
+        notification.notification_status = new_notification.notification_status;
     }
     notification.save(function(err, result){
         if(!err){
