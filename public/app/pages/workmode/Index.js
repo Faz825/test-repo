@@ -213,10 +213,8 @@ export default class Index extends React.Component{
         }
 
         return(
-            <div id="pg-workmode-page" className="pg-page">
-                <div className="container">
-                    <div className="row">
-                        <div className="work-mode-container col-sm-10 col-sm-offset-1">
+            <div className="container">
+                <div className="work-mode-container col-sm-10 col-sm-offset-1">
                             <form method="post" onSubmit={this.onWorkModeSet.bind(this)}>
                             <div className="inner-wrapper clearfix">
                                 <div className="header-section">
@@ -341,8 +339,6 @@ export default class Index extends React.Component{
                             </div>
                             </form>
                         </div>
-                    </div>
-                </div>
             </div>
         );
     }
