@@ -41,6 +41,7 @@ export default class Index extends React.Component {
             editNoteId:0,
             editNoteTitle:"Note Title",
             editNote:"",
+            isAutoTitled: false,
             staticNoteTitle:"",
             staticNote:"",
             noteAddEdit:0, // 1 - add, 2 - edit
@@ -263,7 +264,7 @@ export default class Index extends React.Component {
         let _this = this;
 
         if(note == null){
-            this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1, editNoteTitle : "Note Title", editNote : "", notebookObj:notebook_obj});
+            this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1, editNoteTitle : "Note Title", editNote : "", notebookObj:notebook_obj, isAutoTitled:true});
             this.saveInterval = setInterval(function(){_this.saveNote()}, 1000);
         } else{
             let editNoteId = note.note_id;
@@ -285,7 +286,7 @@ export default class Index extends React.Component {
                 noteText = "Note Title";
             }
         }
-        this.setState({editNoteTitle : noteText});
+        this.setState({editNoteTitle : noteText, isAutoTitled: false});
     }
 
     getNoteData(value){
@@ -307,7 +308,14 @@ export default class Index extends React.Component {
         if(noteTitle == "Note Title"){
             let noteContent = this.state.editNote.replace(/(<([^>]+)>)/ig,"");
             if (noteContent.length > 1) {
-                noteTitle = noteContent.slice(0,30);
+                noteTitle = noteContent.slice(0,12);
+            }else{
+                noteTitle = "Note Title";
+            }
+        }else if(this.state.isAutoTitled){
+            let noteContent = this.state.editNote.replace(/(<([^>]+)>)/ig,"");
+            if (noteContent.length > 1) {
+                noteTitle = noteContent.slice(0,12);
             }else{
                 noteTitle = "Note Title";
             }
@@ -433,7 +441,8 @@ export default class Index extends React.Component {
                         </div>
                     </div>
                     {
-                        (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} showConfirm={this.showConfirm.bind(this)} showNotePopup={this.showNotePopup.bind(this)}/>:null
+                        (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} showConfirm={this.showConfirm.bind(this)} showNotePopup={this.showNotePopup.bind(this)}
+                            onLoadNotes={this.loadNotes.bind(this)}/>:null
                     }
                     {this.getPopup()}
                     {this.getConfirmationPopup()}
@@ -481,7 +490,7 @@ export class NoteCategory extends React.Component{
         let _noteBooks = notebooks.map(function(notebook,key){
             let i = (
                 <Popover id="popover-contained"  positionTop="150px" className="popup-holder">
-                    <SharePopup notebook={notebook} onUserAdd={_this.userAdded} />
+                    <SharePopup notebook={notebook} onUserAdd={_this.userAdded} onLoadNotes={_this.props.onLoadNotes}/>
                 </Popover>
             );
             return (
@@ -634,6 +643,7 @@ export class SharePopup extends React.Component{
             if(data.status.code == 200) {
                 console.log("done removing shared user -----");
                 if(data.update_status) {
+                    this.props.onLoadNotes();
                     this.loadSharedUsers();
                 }
             }
@@ -646,7 +656,7 @@ export class SharePopup extends React.Component{
 
         let i = (
             <Popover id="popover-contained"  positionTop="150px" className="popup-holder add-new">
-                <SharePopupNewUsr notebook={_notebook} onShareuser={this.props.onUserAdd}/>
+                <SharePopupNewUsr notebook={_notebook} onShareuser={this.props.onUserAdd} onLoadNotes={this.props.onLoadNotes}/>
             </Popover>
         );
 
@@ -788,6 +798,7 @@ export class SharePopupNewUsr extends React.Component{
                 Socket.sendNotebookNotification(_notificationData);
 
                 this.loadNewUsers();
+                this.props.onLoadNotes();
                 this.props.onShareuser();
             }
         }.bind(this));
