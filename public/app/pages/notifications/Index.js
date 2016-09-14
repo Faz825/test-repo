@@ -52,7 +52,13 @@ export default class Index extends React.Component{
             let _oldNotification = {}, _newNotification = {};
             let _alreadyExist = false;
 
-            if(data.notification_type == "Birthday") {
+            let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
+
+
+            if(_notificationType == "share_notebook") {
+                window.location.reload();
+
+            } else if(_notificationType == "Birthday") {
                 _this.state.notificationCount++;
                 _newNotifications.push(data);
                 for (var j = 0; j < _existingNotifications.length; j++) {
@@ -62,9 +68,8 @@ export default class Index extends React.Component{
                 this.setState({eleList: _newNotifications});
                 //_this.setState({notifications:_newNotifications});
 
-            } else if(data.notification_type == "share_notebook") {
-                console.log("notebook shared notification received ----------- ");
-                console.log(data);
+            } else if(_notificationType == "share_notebook_response") {
+                window.location.reload();
 
             } else {
                 if(data.user != _this.state.loggedUser.user_name){
@@ -235,10 +240,16 @@ export default class Index extends React.Component{
                 url: '/notifications/update-notifications',
                 method: "POST",
                 dataType: "JSON",
-                data:{post_id:_notification.post_id, notification_type:_notification.notification_type},
+                data:{post_id:_notification.post_id, notification_type:_notification.notification_type, notification_id:_notification.notification_id},
                 headers: { 'prg-auth-header':this.state.loggedUser.token }
             }).done( function (data, text) {
-                window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
+
+                if(_notification.notification_type == "share_notebook_response") {
+                    window.location.reload();
+                } else {
+                    window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
+                }
+
             }.bind(this));
 
         }
@@ -361,9 +372,18 @@ export default class Index extends React.Component{
                 url: '/notifications/notebook-update',
                 method: "POST",
                 dataType: "JSON",
-                data:{notebook_id:notification.notebook_id, notification_type:notification.notification_type, notification_id:notification.notification_id, status:stt},
+                data:{notebook_id:notification.notebook_id, notification_type:notification.notification_type, notification_id:notification.notification_id, status:stt, updating_user:notification.sender_id},
                 headers: { 'prg-auth-header':this.state.loggedUser.token }
             }).done( function (data, text) {
+
+                    let _notificationData = {
+                        notebook_id:notification.notebook_id,
+                        notification_type:"share_notebook_response",
+                        notification_sender:this.state.loggedUser,
+                        notification_receiver:notification.sender_user_name
+                    };
+
+                    Socket.sendNotebookNotification(_notificationData);
 
                     if(stt == 'REQUEST_REJECTED') {
                         window.location.reload();
@@ -550,8 +570,12 @@ export class Notification extends React.Component{
                                 {notification.notification_type == 'comment'?"commented on ":"" }
                                 {notification.notification_type == 'share'?"shared ":"" }
                                 {notification.notification_type == 'Birthday'?"has their bithday "+notification.birthday:"" }
-                                {notification.notification_type != 'Birthday' && notification.notification_type != 'share_notebook'?notification.post_owner_name +" post":null}
-                                {notification.notification_type == 'share_notebook' ? notification.post_owner_name +" shared a notebook":null}
+                                {notification.notification_type != 'Birthday' &&
+                                    notification.notification_type != 'share_notebook' &&
+                                    notification.notification_type != 'share_notebook_response'
+                                    ? notification.post_owner_name +" post":null}
+                                {notification.notification_type == 'share_notebook' ? notification.post_owner_name +" has invited you to collaborate on a notebook" :null}
+                                {notification.notification_type == 'share_notebook_response' ? notification.post_owner_name + " has " + notification.notification_status + " your notebook invitation" :null}
                             </p>
                             <p className="chat-date">{notification.created_at.time_a_go}</p>
 

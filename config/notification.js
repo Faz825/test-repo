@@ -3,5 +3,6 @@ GLOBAL.Notifications = {
     COMMENT:"comment",
     SHARE:"share",
     BIRTHDAY:"Birthday",
-    SHARE_NOTEBOOK:"share_notebook"
+    SHARE_NOTEBOOK:"share_notebook",
+    SHARE_NOTEBOOK_RESPONSE:"share_notebook_response"
 };
