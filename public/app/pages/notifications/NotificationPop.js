@@ -1,6 +1,7 @@
 import React from "react";
 import Session  from '../../middleware/Session';
 import Socket  from '../../middleware/Socket';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export default class NotificationPop extends React.Component{
     constructor(props){
@@ -201,6 +202,10 @@ export default class NotificationPop extends React.Component{
         }
     }
 
+    onPopupClose(){
+        this.props.onNotifiClose();
+    }
+
     render(){
         let elementsList = this.state.eleList;
         let type = this.state.notifiType;
@@ -221,7 +226,6 @@ export default class NotificationPop extends React.Component{
             notifiTypeTitle = "Productivity Notifications";
             icon = "fa-line-chart";
         }
-        console.log(type);
 
         return(
             <div className="notifi-popup-holder">
@@ -231,10 +235,13 @@ export default class NotificationPop extends React.Component{
                         <span className="notifi-count">(7)</span>
                         <span className="fa fa-angle-left arrow"></span>
                         <span className="fa fa-angle-right arrow"></span>
+                        <span className="close fa fa-times" onClick={this.onPopupClose.bind(this)}></span>
                     </div>
                     <div className="notifications-holder">
-                        <Notification notifications = {elementsList}
-                                      updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)} />
+                        <Scrollbars style={{ height: 318 }}>
+                            <Notification notifications = {elementsList}
+                                updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)} />
+                        </Scrollbars>
                     </div>
                     <div className="all-notifications">
                         <a href="/notifications">See all</a>

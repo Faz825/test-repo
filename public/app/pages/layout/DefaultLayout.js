@@ -152,6 +152,10 @@ export default class DefaultLayout extends React.Component{
         this.setState({notifiType : type});
     }
 
+    onNotifiClose(){
+        this.setState({notifiType : ""});
+    }
+
     render(){
         return(
             <div className="row row-clr pg-full-wrapper">
@@ -188,7 +192,7 @@ export default class DefaultLayout extends React.Component{
                 }
                 {
                     (this.state.notifiType)?
-                        <NotificationPop notifiType={this.state.notifiType}/>
+                        <NotificationPop notifiType={this.state.notifiType} onNotifiClose={this.onNotifiClose.bind(this)}/>
                     :
                         null
                 }
