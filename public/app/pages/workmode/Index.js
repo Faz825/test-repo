@@ -183,7 +183,6 @@ export default class Index extends React.Component{
             timeLeft = Moment.utc(howLong).format("DD HH mm");
         }
         this.setState({timeBlockIsVisible: false, remainingTime: timeLeft});
-
     }
 
     onPeriodChange(e){
@@ -213,132 +212,130 @@ export default class Index extends React.Component{
         }
 
         return(
-            <div className="container">
-                <div className="work-mode-container col-sm-10 col-sm-offset-1">
-                            <form method="post" onSubmit={this.onWorkModeSet.bind(this)}>
-                            <div className="inner-wrapper clearfix">
-                                <div className="header-section">
-                                    <h2 className="section-text">Work Mode</h2>
+            <div className="work-mode-container">
+                <form method="post" onSubmit={this.onWorkModeSet.bind(this)}>
+                    <div className="inner-wrapper clearfix">
+                        <div className="header-section">
+                            <h2 className="section-text">Work Mode</h2>
+                        </div>
+                        <div className="opt-wrapper" ref="modeSelector">
+                            <div className="opt-block clearfix">
+                                <span className="icon bar-block"></span>
+                                <div className="field-holder">
+                                    <input type="checkbox" value="bars" id="bar-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
+                                    checked={(this.selectedList.includes("bars") || this.selectedList.includes("all"))? true : false } />
+                                    <label htmlFor="bar-block-check">Block Right Bar + Bottom Bar</label>
                                 </div>
-                                <div className="opt-wrapper" ref="modeSelector">
-                                    <div className="opt-block clearfix">
-                                        <span className="icon bar-block"></span>
-                                        <div className="field-holder">
-                                            <input type="checkbox" value="bars" id="bar-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                            checked={(this.selectedList.includes("bars") || this.selectedList.includes("all"))? true : false } />
-                                            <label htmlFor="bar-block-check">Block Right Bar + Bottom Bar</label>
-                                        </div>
-                                    </div>
-                                    <div className="opt-block clearfix">
-                                        <span className="icon newsfeed-block"></span>
-                                        <div className="field-holder">
-                                            <input type="checkbox" value="newsfeed" id="newsfeed-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                            checked={(this.selectedList.includes("newsfeed") || this.selectedList.includes("all") )? true : false } />
-                                            <label htmlFor="newsfeed-block-check">Block Newsfeed Temporarily</label>
-                                        </div>
-                                    </div>
-                                    <div className="opt-block clearfix">
-                                        <span className="icon voice-video-block"></span>
-                                        <div className="field-holder">
-                                            <input type="checkbox" value="calls" id="calls-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                            checked={(this.selectedList.includes("calls") || this.selectedList.includes("all"))? true : false } />
-                                            <label htmlFor="calls-block-check">Block Voice / Video Calls</label>
-                                        </div>
-                                    </div>
-                                    <div className="opt-block clearfix">
-                                        <span className="icon msg-block"></span>
-                                        <div className="field-holder">
-                                            <input type="checkbox" value="msg" id="msg-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                            checked={(this.selectedList.includes("msg") || this.selectedList.includes("all"))? true : false } />
-                                            <label htmlFor="msg-block-check">Block Messages</label>
-                                        </div>
-                                    </div>
-                                    <div className="opt-block clearfix">
-                                        <span className="icon notifications-block"></span>
-                                        <div className="field-holder">
-                                            <input type="checkbox" value="notifications" id="notifications-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                            checked={(this.selectedList.includes("notifications") || this.selectedList.includes("all"))? true : false } />
-                                            <label htmlFor="notifications-block-check">Block Social Notifications</label>
-                                        </div>
-                                    </div>
-                                    <div className="opt-block clearfix">
-                                        <span className="icon all-block"></span>
-                                        <div className="field-holder">
-                                            <input type="checkbox" value="all" id="all-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                            checked={(this.selectedList.includes("all"))? true : false } />
-                                            <label htmlFor="all-block-check">Block All</label>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div className="opt-block clearfix">
+                                <span className="icon newsfeed-block"></span>
+                                <div className="field-holder">
+                                    <input type="checkbox" value="newsfeed" id="newsfeed-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
+                                    checked={(this.selectedList.includes("newsfeed") || this.selectedList.includes("all") )? true : false } />
+                                    <label htmlFor="newsfeed-block-check">Block Newsfeed Temporarily</label>
                                 </div>
-                                {
-                                    (this.state.timeBlockIsVisible)?
-                                        <div className="time-holder">
-                                            <div className="inner-wrapper clearfix">
-                                                <div className="time-wrapper col-sm-6">
-                                                    <h3 className="section-title">Set a fixed time for next,</h3>
-                                                    <div className="opt-holder">
-                                                        <div className="opt-block clearfix">
-                                                            <input type="checkbox" value="30" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                                checked={(this.state.selectedTimeOpt == 30)? true : false} />
-                                                            <label htmlFor="min-check">30 Mins</label>
-                                                        </div>
-                                                        <div className="opt-block clearfix">
-                                                            <input type="checkbox" value="60" id="one-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                                checked={(this.state.selectedTimeOpt == 60)? true : false}/>
-                                                            <label htmlFor="one-hour-check">1 Hour</label>
-                                                        </div>
-                                                        <div className="opt-block clearfix">
-                                                            <input type="checkbox" value="180" id="three-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                                checked={(this.state.selectedTimeOpt == 180)? true : false}/>
-                                                            <label htmlFor="three-hour-check">3 Hour</label>
-                                                        </div>
-                                                    </div>
+                            </div>
+                            <div className="opt-block clearfix">
+                                <span className="icon voice-video-block"></span>
+                                <div className="field-holder">
+                                    <input type="checkbox" value="calls" id="calls-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
+                                    checked={(this.selectedList.includes("calls") || this.selectedList.includes("all"))? true : false } />
+                                    <label htmlFor="calls-block-check">Block Voice / Video Calls</label>
+                                </div>
+                            </div>
+                            <div className="opt-block clearfix">
+                                <span className="icon msg-block"></span>
+                                <div className="field-holder">
+                                    <input type="checkbox" value="msg" id="msg-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
+                                    checked={(this.selectedList.includes("msg") || this.selectedList.includes("all"))? true : false } />
+                                    <label htmlFor="msg-block-check">Block Messages</label>
+                                </div>
+                            </div>
+                            <div className="opt-block clearfix">
+                                <span className="icon notifications-block"></span>
+                                <div className="field-holder">
+                                    <input type="checkbox" value="notifications" id="notifications-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
+                                    checked={(this.selectedList.includes("notifications") || this.selectedList.includes("all"))? true : false } />
+                                    <label htmlFor="notifications-block-check">Block Social Notifications</label>
+                                </div>
+                            </div>
+                            <div className="opt-block clearfix">
+                                <span className="icon all-block"></span>
+                                <div className="field-holder">
+                                    <input type="checkbox" value="all" id="all-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
+                                    checked={(this.selectedList.includes("all"))? true : false } />
+                                    <label htmlFor="all-block-check">Block All</label>
+                                </div>
+                            </div>
+                        </div>
+                        {
+                            (this.state.timeBlockIsVisible)?
+                                <div className="time-holder">
+                                    <div className="inner-wrapper clearfix">
+                                        <div className="time-wrapper col-sm-6">
+                                            <h3 className="section-title">Set a fixed time for next,</h3>
+                                            <div className="opt-holder">
+                                                <div className="opt-block clearfix">
+                                                    <input type="checkbox" value="30" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                        checked={(this.state.selectedTimeOpt == 30)? true : false} />
+                                                    <label htmlFor="min-check">30 Mins</label>
                                                 </div>
-                                                <div className="date-holder col-sm-6">
-                                                    <h3 className="section-title">Set time till</h3>
-                                                    <div className="date-field-holder clearfix">
-                                                        <div className="field-holder">
-                                                            <span className="field-label">Day</span>
-                                                            <DatePicker
-                                                                selected={this.state.startDate}
-                                                                onChange={this.handleChange}
-                                                                dateFormat="MMM DD"
-                                                                className="form-control" />
-                                                            <i className="fa fa-calendar" aria-hidden="true"></i>
-                                                        </div>
-                                                        <div className="field-holder">
-                                                            <span className="field-label">HR</span>
-                                                            <input type="number" name="hours" min="1" max="24" className="form-control" value={this.state.customHours} placeholder="Hour" onChange={(event)=>{this.onTimeChange(event)}}/>
-                                                        </div>
-                                                        <div className="field-holder">
-                                                            <span className="field-label">MIN</span>
-                                                            <input type="number" name="mins" min="0" max="60" className="form-control" value={this.state.customMins} placeholder="Minute" onChange={(event)=>{this.onTimeChange(event)}}/>
-                                                        </div>
-                                                        <div className="field-holder day-period">
-                                                            <span className="field-label">Period</span>
-                                                            <select name="periods" className="form-control" value={this.state.timePeriod} onChange={this.onPeriodChange.bind(this)}>
-                                                                <option value="AM">AM</option>
-                                                                <option value="PM">PM</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
+                                                <div className="opt-block clearfix">
+                                                    <input type="checkbox" value="60" id="one-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                        checked={(this.state.selectedTimeOpt == 60)? true : false}/>
+                                                    <label htmlFor="one-hour-check">1 Hour</label>
                                                 </div>
-                                                <div className="btn-holder">
-                                                    <button type="button" className="btn btn-default set-btn" onClick={this.onTimeSet.bind(this)}>Set</button>
+                                                <div className="opt-block clearfix">
+                                                    <input type="checkbox" value="180" id="three-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
+                                                        checked={(this.state.selectedTimeOpt == 180)? true : false}/>
+                                                    <label htmlFor="three-hour-check">3 Hour</label>
                                                 </div>
                                             </div>
                                         </div>
-                                    :
-                                        <div className="mode-notice" onClick={this.onTimeSummeryClick.bind(this)}>
-                                            <h3 className="title">{"Work Mode on for next " + days + hrs + "and "+ mins+"'minutes" }</h3>
+                                        <div className="date-holder col-sm-6">
+                                            <h3 className="section-title">Set time till</h3>
+                                            <div className="date-field-holder clearfix">
+                                                <div className="field-holder">
+                                                    <span className="field-label">Day</span>
+                                                    <DatePicker
+                                                        selected={this.state.startDate}
+                                                        onChange={this.handleChange}
+                                                        dateFormat="MMM DD"
+                                                        className="form-control" />
+                                                    <i className="fa fa-calendar" aria-hidden="true"></i>
+                                                </div>
+                                                <div className="field-holder">
+                                                    <span className="field-label">HR</span>
+                                                    <input type="number" name="hours" min="1" max="24" className="form-control" value={this.state.customHours} placeholder="Hour" onChange={(event)=>{this.onTimeChange(event)}}/>
+                                                </div>
+                                                <div className="field-holder">
+                                                    <span className="field-label">MIN</span>
+                                                    <input type="number" name="mins" min="0" max="60" className="form-control" value={this.state.customMins} placeholder="Minute" onChange={(event)=>{this.onTimeChange(event)}}/>
+                                                </div>
+                                                <div className="field-holder day-period">
+                                                    <span className="field-label">Period</span>
+                                                    <select name="periods" className="form-control" value={this.state.timePeriod} onChange={this.onPeriodChange.bind(this)}>
+                                                        <option value="AM">AM</option>
+                                                        <option value="PM">PM</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                }
-                                <div className="btn-holder">
-                                    <button type="submit" className="btn btn-default submit" >GO!</button>
+                                        <div className="btn-holder">
+                                            <button type="button" className="btn btn-default set-btn" onClick={this.onTimeSet.bind(this)}>Set</button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            </form>
+                            :
+                                <div className="mode-notice" onClick={this.onTimeSummeryClick.bind(this)}>
+                                    <h3 className="title">{"Work Mode on for next " + days + hrs + "and "+ mins+"'minutes" }</h3>
+                                </div>
+                        }
+                        <div className="btn-holder">
+                            <button type="submit" className="btn btn-default submit" >GO!</button>
                         </div>
+                    </div>
+                </form>
             </div>
         );
     }
