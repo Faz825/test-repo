@@ -4341,6 +4341,15 @@ textarea{
 	box-shadow: none;
 }
 
+.workmode-popup-wrapper .fa-times{
+	position: absolute;
+	top: 30px;
+	right: 20px;
+	cursor: pointer;
+	font-size: 1.2em;
+	color: #9dadbd;
+}
+
 .work-mode-container .close-holder{
 	position: absolute;
 	top: 30px;
@@ -4641,12 +4650,30 @@ textarea{
 	.chat-msg-holder .chat-view{
 		height: calc(52vh - 87px);
 	}
+
+	.time-holder .time-wrapper{
+	    padding-right: 0;
+	}
+
+	.time-holder .date-holder{
+		padding-left: 4%;
+	}
+
+	.time-holder .opt-block {
+	    margin-right: 18px;
+	}
+
+	.dialog--jss-0-0.workmode-popup-holder{
+		width: 75% !important;
+	}
+
 }
 
 @media (min-width: 768px) and (max-width: 1023px){
 	.chat-msg-holder .chat-view {
 	    height: 62vh;
 	}
+
 }
 
 /* Text editor */

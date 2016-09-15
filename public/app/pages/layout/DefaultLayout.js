@@ -184,9 +184,12 @@ export default class DefaultLayout extends React.Component{
                 <InCallPane/>
                 {
                     this.state.isShowingModal &&
-                    <ModalContainer onClose={this.handleClose} zIndex={9999}>
+                    <ModalContainer zIndex={9999}>
                         <ModalDialog width="65%" className="workmode-popup-holder">
-                            <WorkMode/>
+                            <div className="workmode-popup-wrapper">
+                                <WorkMode/>
+                                <i className="fa fa-times" aria-hidden="true" onClick={this.handleClose.bind(this)}></i>
+                            </div>
                         </ModalDialog>
                     </ModalContainer>
                 }
