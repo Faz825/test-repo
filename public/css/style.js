@@ -3466,6 +3466,10 @@ export default StyleSheet.create({
         "paddingBottom": 15,
         "paddingTop": 15
     },
+    "q-chat": {
+        "border": "1px solid #c7c1b7",
+        "borderRadius": "4px 4px 0px 0px"
+    },
     "pg-middle-chat-content-header h2": {
         "color": "#fff",
         "font": "20px \"montserratregular\",sans-serif",
@@ -5115,6 +5119,14 @@ export default StyleSheet.create({
         "paddingLeft": 0,
         "background": "none",
         "boxShadow": "none"
+    },
+    "workmode-popup-wrapper fa-times": {
+        "position": "absolute",
+        "top": 30,
+        "right": 20,
+        "cursor": "pointer",
+        "fontSize": 1.2,
+        "color": "#9dadbd"
     },
     "work-mode-container close-holder": {
         "position": "absolute",
