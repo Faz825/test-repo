@@ -769,10 +769,10 @@ export class SharePopupNewUsr extends React.Component{
     }
 
     _handleAddNewUser (e){
-        this.state.addNewUserValue = e.target.value;
-        this.loadNewUsers();
+        this.setState({
+            addNewUserValue: e.target.value
+        }, this.loadNewUsers());
 
-        let value = e.target.value;
     }
 
     loadNewUsers() {
@@ -870,7 +870,7 @@ export class SharePopupNewUsr extends React.Component{
                 <div className="share-popup-holder">
                     <div className="header-holder clearfix">
                         <div className="form-group">
-                            <input type="text" className="form-control" placeholder="Type Name to Add" id="type-to-add" value={this.state.addNewUserValue} onChange={this._handleAddNewUser}/>
+                            <input type="text" className="form-control" placeholder="Type Name to Add" id="type-to-add" onChange={this._handleAddNewUser}/>
                         </div>
                     </div>
 
@@ -921,7 +921,7 @@ export class  SharedUsers extends React.Component {
                     {
                         (_notebook.owned_by == 'me')?
                         <div>
-                            <div className="action">
+                            <div className="action add-new">
                                 <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
                                     <i className="fa fa-minus" aria-hidden="true"></i>
                                 </button>
@@ -1042,7 +1042,7 @@ export class NoteThumb extends React.Component{
                     {
                         (_notebook_props.shared_privacy == _notes_read_write)? <div className="note-holder">
                             <div className="row-clear add-new-note note">
-                                <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
+                                <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new <i className="fa fa-plus" aria-hidden="true"></i></p></a>
                             </div>
                         </div>:null
                     }

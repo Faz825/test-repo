@@ -3796,6 +3796,10 @@ textarea{
 	float: right;
 }
 
+.popup-holder .header-holder .form-group input{
+	height: 30px;
+}
+
 .popup-holder.add-new .header-holder .form-group{
 	margin-top: 5px;
 	float: left;
@@ -3843,6 +3847,7 @@ textarea{
 .popup-body-holder .user-block .img-holder img{
 	width: 100%;
 	height: auto;
+	border-radius: 4px;
 }
 
 .popup-body-holder .user-block .permission{
@@ -3851,6 +3856,7 @@ textarea{
 }
 
 .popup-body-holder .user-block .permission.owner{
+	margin-top: 8px;
 	margin-right: 120px;
 	float: right;
 	font-size: 0.857em;
@@ -3873,7 +3879,7 @@ textarea{
 }
 
 .popup-body-holder .user-block .action{
-	margin-top: 5px;
+	margin-top: 0;
 	margin-right: 20px;
 	float: right;
 	font-size: 0.857em;
@@ -3881,6 +3887,7 @@ textarea{
 }
 
 .popup-body-holder.add-new .user-block .action{
+	margin-top: 5px;
 	margin-right: 0;
 }
 
@@ -3912,7 +3919,7 @@ textarea{
 }
 
 .popup-body-holder .user-details .user-name{
-	margin: 0 0 5px;
+	margin: 5px 0 2px;
 	font-size: 1.00em;
 	color: #2d5164;
 }
@@ -3928,7 +3935,8 @@ textarea{
 
 .popup-holder .footer-holder{
 	width: 100%;
-	padding: 12px 15px;
+	height: 33px;
+	padding: 7px 15px;
 	font-size: 0.857em;
 	background-color: #cedae2;
 }
