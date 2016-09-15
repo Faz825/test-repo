@@ -536,7 +536,9 @@ export class SharePopup extends React.Component{
             loggedUser:Session.getSession('prg_lg'),
             sharedUsers:[],
             seeAllSharedUsers:false,
-            scrollProp: 'hidden'
+            scrollProp: 'hidden',
+            isShowingModal : false,
+            userToRemove: null
         }
         this.sharedUsers = [];
         this.loadSharedUsers();
@@ -544,6 +546,9 @@ export class SharePopup extends React.Component{
         this.onRemoveSharedUser = this.onRemoveSharedUser.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
         this.allSharedUsers = this.allSharedUsers.bind(this);
+        this.getPopupRemoveUser = this.getPopupRemoveUser.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
     handleScroll() {
@@ -625,8 +630,8 @@ export class SharePopup extends React.Component{
         }
     }
 
-    onRemoveSharedUser(user) {
-
+    onRemoveSharedUser() {
+        let user = this.state.userToRemove;
         $.ajax({
             url: '/notebook/shared-user/remove',
             method: "POST",
@@ -642,6 +647,36 @@ export class SharePopup extends React.Component{
                 }
             }
         }.bind(this));
+    }
+
+    handleClick(user) {
+        this.setState({
+            isShowingModal: true,
+            userToRemove: user
+        });
+    }
+
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
+
+    getPopupRemoveUser(){
+        let user = this.state.userToRemove;
+        return(
+            <div>
+                {this.state.isShowingModal &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="35%" style={{marginTop: "-100px"}}>
+                        <div className="col-xs-12 shared-user-r-popup">
+                            <p>Do you want to remove the shared user?</p>
+                            <button className="btn btn-popup" onClick={this.onRemoveSharedUser.bind(this)}>Yes</button>
+                            <button className="btn btn-popup reject">No</button>
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
     }
 
     render(){
@@ -694,9 +729,11 @@ export class SharePopup extends React.Component{
                         <SharedUsers notebook={_notebook}
                                      sharedUserList={this.state.sharedUsers}
                                      changePermissions={this.onPermissionChanged.bind(this)}
-                                     removeSharedUser={this.onRemoveSharedUser.bind(this)}
+                                     removeSharedUser={this.getPopupRemoveUser.bind(this)}
+                                     handleClick={this.handleClick.bind(this)}
                                      scrollProp={this.state.scrollProp}/>
                     {/*</Scrollbars>*/}
+
 
                 </div>
                 <div className="footer-holder clearfix">
@@ -726,15 +763,21 @@ export class SharePopupNewUsr extends React.Component{
             addNewUserValue: ''
         };
 
-        // this.loadNewUsers = this.loadNewUsers.bind(this);
+        this.loadNewUsers = this.loadNewUsers.bind(this);
         this.shareNote = this.shareNote.bind(this);
         this._handleAddNewUser = this._handleAddNewUser.bind(this);
     }
 
     _handleAddNewUser (e){
-        let value = e.target.value;
-        let notebook = this.props.notebook;
+        this.state.addNewUserValue = e.target.value;
+        this.loadNewUsers();
 
+        let value = e.target.value;
+    }
+
+    loadNewUsers() {
+        let notebook = this.props.notebook;
+        let value = this.state.addNewUserValue;
         if(value.length >= 1){
             $.ajax({
                 url: '/get-connected-users/'+notebook.notebook_id+'/'+value,
@@ -759,34 +802,6 @@ export class SharePopupNewUsr extends React.Component{
             });
         }
     }
-
-    // loadNewUsers() {
-    //     let notebook = this.props.notebook;
-    //     let value = this.state.addNewUserValue;
-    //     if(value.length >= 1){
-    //         $.ajax({
-    //             url: '/get-connected-users/'+notebook.notebook_id+'/'+value,
-    //             method: "GET",
-    //             dataType: "JSON",
-    //             success: function (data, text) {
-    //                 if(data.status.code == 200){
-    //                     this.setState({
-    //                         suggestions: data.users
-    //                     });
-    //                 }
-    //             }.bind(this),
-    //             error: function (request, status, error) {
-    //                 console.log(request.responseText);
-    //                 console.log(status);
-    //                 console.log(error);
-    //             }.bind(this)
-    //         });
-    //     }else{
-    //         this.setState({
-    //             suggestions: []
-    //         });
-    //     }
-    // }
 
     shareNote(user){
 
@@ -855,7 +870,7 @@ export class SharePopupNewUsr extends React.Component{
                 <div className="share-popup-holder">
                     <div className="header-holder clearfix">
                         <div className="form-group">
-                            <input type="text" className="form-control" placeholder="Type Name to Add" id="type-to-add" onChange={(event)=>this._handleAddNewUser(event)}/>
+                            <input type="text" className="form-control" placeholder="Type Name to Add" id="type-to-add" value={this.state.addNewUserValue} onChange={this._handleAddNewUser}/>
                         </div>
                     </div>
 
@@ -907,7 +922,7 @@ export class  SharedUsers extends React.Component {
                         (_notebook.owned_by == 'me')?
                         <div>
                             <div className="action">
-                                <button className="btn-remove" onClick={()=>_this.props.removeSharedUser(user)}>
+                                <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
                                     <i className="fa fa-minus" aria-hidden="true"></i>
                                 </button>
                             </div>
@@ -919,6 +934,7 @@ export class  SharedUsers extends React.Component {
                             </div>
                         </div> : null
                     }
+                    {_this.props.removeSharedUser()}
                 </div>
             )
         });

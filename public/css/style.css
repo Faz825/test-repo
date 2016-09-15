@@ -1961,6 +1961,26 @@ textarea{
 	background-color: #62b3de !important;
 }
 
+.shared-user-r-popup{
+	text-align: center;
+}
+
+.shared-user-r-popup .btn-popup{
+	margin-left:5px;
+	margin-right:5px;
+	background: #61b3de;
+	padding: 7px 12px;
+	text-transform: uppercase;
+	color: #fff;
+	border-radius: 5px;
+	font-family: 'montserratsemi_bold', sans-serif;
+	font-size: 0.6em;
+	display: inline-block;
+}
+.shared-user-r-popup .btn-popup.reject{
+	background: #e82107;
+}
+
 .color-picker{
 	text-align: center;
 	float: left;
