@@ -741,7 +741,7 @@ export class SharePopup extends React.Component{
                         (_notebook.owned_by == 'me')?
                         <div className="add-new">
                             <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
-                                <button className="btn-link">Add New</button>
+                                <button className="btn-link">+ Add New</button>
                             </OverlayTrigger>
                         </div> : null
                     }
@@ -1042,7 +1042,7 @@ export class NoteThumb extends React.Component{
                     {
                         (_notebook_props.shared_privacy == _notes_read_write)? <div className="note-holder">
                             <div className="row-clear add-new-note note">
-                                <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new <i className="fa fa-plus" aria-hidden="true"></i></p></a>
+                                <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
                             </div>
                         </div>:null
                     }
