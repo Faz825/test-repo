@@ -76,6 +76,13 @@ var NotesController ={
             function getNotesDB(notebooks,callBack){
                 var _notes = [];
                 _async.eachSeries(notebooks, function(notebook, callBack){
+                    var _acceptedSharedUsers = 0
+                    for(var inc = 0; inc < notebook.shared_users.length; inc++){
+                        if(notebook.shared_users[inc].status == NoteBookSharedRequest.REQUEST_ACCEPTED){
+                            _acceptedSharedUsers++;
+                        }
+                    }
+
                     var _notebook = {
                         notebook_id:notebook._id,
                         notebook_name:notebook.name,
@@ -83,7 +90,7 @@ var NotesController ={
                         notebook_user:notebook.user_id,
                         notebook_shared_users:notebook.shared_users,
                         notebook_updated_at:notebook.updated_at,
-                        is_shared: (notebook.shared_users.length > 0)? true:false,
+                        is_shared: (_acceptedSharedUsers > 0)? true:false,
                         shared_privacy: NoteBookSharedMode.READ_WRITE,
                         owned_by: 'me',
                         notes:[]
@@ -475,7 +482,7 @@ var NotesController ={
                 for(var i = 0; notifyUsers.length > i; i++) {
                     userList.push(notifyUsers[i].user_id);
                 }
-                console.log(userList);
+
                 if(typeof notification_id != 'undefined' && userList.length > 0){
 
                     var _data = {
@@ -512,7 +519,7 @@ var NotesController ={
      */
     getNoteBookSharedUsers:function(req,res){
 
-        console.log("about to get shared users ----");
+        // console.log("about to get shared users ----");
         var _async = require('async'),
             NoteBook = require('mongoose').model('NoteBook'),
             User = require('mongoose').model('User'),
@@ -521,6 +528,7 @@ var NotesController ={
 
         var dataArray = [];
 
+        // console.log(noteBookId);
         _async.waterfall([
             function getNotebook(callBack){
                 NoteBook.getNotebookById(noteBookId,function(resultSet){
@@ -529,8 +537,12 @@ var NotesController ={
             },
             function getSharedUsers(resultSet, callBack) {
                 var sharedUsers = resultSet.shared_users;
+                // console.log(resultSet.shared_users);
+
 
                 _async.each(sharedUsers, function(sharedUser, callBack){
+
+                    // console.log(sharedUser);
 
                     if(sharedUser.status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
                         var usrObj = {};
@@ -593,6 +605,8 @@ var NotesController ={
 
             }
         ],function(err){
+            // console.log("finally ---");
+            // console.log(dataArray);
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 results: dataArray

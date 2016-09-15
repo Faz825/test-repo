@@ -684,6 +684,9 @@ export default StyleSheet.create({
         "top": 70,
         "zIndex": 100
     },
+    "pg-right-nav-wrapperworkmode-switched": {
+        "backgroundColor": "transparent"
+    },
     "pg-nav-item-wrapper": {
         "paddingTop": 24,
         "paddingRight": 0,
@@ -1444,6 +1447,10 @@ export default StyleSheet.create({
         "height": 110,
         "backgroundColor": "#eceef1",
         "boxShadow": "2px 1px 8px -2px #000"
+    },
+    "pg-footer-wrapperworkmode-switched": {
+        "backgroundColor": "transparent",
+        "boxShadow": "none"
     },
     "pg-footer-left-options-panel": {
         "width": 110,
@@ -4344,6 +4351,9 @@ export default StyleSheet.create({
         "width": 366,
         "marginLeft": "9%"
     },
+    "popoverright>arrow": {
+        "top": "90px!important"
+    },
     "notificationspopover-holder arrow": {
         "left": "10% !important"
     },
@@ -4564,6 +4574,10 @@ export default StyleSheet.create({
         "marginTop": 5,
         "float": "left"
     },
+    "popup-holder popup-body-holder shared-users-container": {
+        "maxHeight": 135,
+        "overflow": "hidden"
+    },
     "popup-holder popup-body-holder user-block": {
         "paddingTop": 12,
         "paddingRight": 23,
@@ -4702,11 +4716,37 @@ export default StyleSheet.create({
         "color": "#2d5164",
         "outline": "none"
     },
-    "pg-workmode-page": {
-        "marginTop": 70,
-        "marginRight": 0,
-        "marginBottom": 0,
-        "marginLeft": 0
+    "workmode-overlay-holder container": {
+        "marginTop": 70
+    },
+    "workmode-overlay-holder secretary-holder": {
+        "position": "relative",
+        "float": "left"
+    },
+    "workmode-overlay-holder secretary-holder img": {
+        "WebkitBorderRadius": 5,
+        "MozBorderRadius": 5,
+        "borderRadius": 5
+    },
+    "workmode-overlay-holder msg-holder": {
+        "position": "relative",
+        "float": "left",
+        "marginLeft": 25,
+        "backgroundColor": "#FFFFFF",
+        "paddingTop": 5,
+        "paddingRight": 25,
+        "paddingBottom": 5,
+        "paddingLeft": 25,
+        "fontSize": 16,
+        "borderRadius": "0px 20px 20px"
+    },
+    "workmode-overlay-holder msg-holder h3": {
+        "fontSize": 16
+    },
+    "workmode-overlay-holder msg-holder arrow": {
+        "position": "absolute",
+        "top": 0,
+        "left": -9
     },
     "work-mode-container inner-wrapper": {
         "marginTop": 15,
@@ -5042,7 +5082,7 @@ export default StyleSheet.create({
         "width": "calc(100vw - 237px)",
         "height": "calc(100vh - 180px)",
         "position": "fixed",
-        "background": "rgba(0, 0, 0, 0.7)",
+        "background": "rgba(0, 0, 0, 0.9)",
         "top": 70
     },
     "middle-content-wrapper": {

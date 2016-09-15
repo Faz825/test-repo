@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import SignupIndex from '../signup/Index';
 import SigninHeader from '../../components/header/SigninHeader'
 import SidebarNav from '../../components/sidebarNav/SidebarNav'
@@ -6,7 +6,9 @@ import FooterHolder from '../../components/footer/FooterHolder'
 import Session  from '../../middleware/Session';
 import Dashboard  from '../dashboard/Dashboard';
 import InCallPane  from '../chat/InCallPane';
-import QuickChatHandler from '../chat/QuickChatHandler'
+import QuickChatHandler from '../chat/QuickChatHandler';
+import WorkMode from '../workmode/Index';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 
 export default class DefaultLayout extends React.Component{
     constructor(props){
@@ -52,7 +54,8 @@ export default class DefaultLayout extends React.Component{
 
         this.state={
             chatBubble:[],
-            rightBottom:_rightBottom
+            rightBottom:_rightBottom,
+            isShowingModal: false
             //newsFeed:_newsFeed,
             //calls:_calls,
             //messages:_messages,
@@ -60,7 +63,8 @@ export default class DefaultLayout extends React.Component{
         };
 
         this.quickChatUsers = [];
-
+        this.handleClick = this.handleClick.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
     checkWorkMode(){
@@ -130,6 +134,18 @@ export default class DefaultLayout extends React.Component{
         return -1
     }
 
+    handleClick() {
+        this.setState({isShowingModal: true});
+    }
+
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
+
+    onWorkmodeClick(){
+        this.handleClick();
+    }
+
     render(){
 
         console.log(this.state.rightBottom);
@@ -157,8 +173,16 @@ export default class DefaultLayout extends React.Component{
                         {this.props.children || <Dashboard />}
                     </div>
                 </div>
-                <FooterHolder blockBottom={this.state.rightBottom}/>
+                <FooterHolder blockBottom={this.state.rightBottom} onWorkmodeClick={this.onWorkmodeClick.bind(this)}/>
                 <InCallPane/>
+                {
+                    this.state.isShowingModal &&
+                    <ModalContainer onClose={this.handleClose} zIndex={9999}>
+                        <ModalDialog>
+                            <WorkMode/>
+                        </ModalDialog>
+                    </ModalContainer>
+                }
                 <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)}/>
             </div>
         );

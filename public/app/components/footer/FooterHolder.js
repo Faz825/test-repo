@@ -48,6 +48,10 @@ export default class FooterHolder extends React.Component{
         });
     }
 
+    onWorkmodeClick(){
+        this.props.onWorkmodeClick();
+    }
+
     render() {
         let _sesData = Session.getSession('prg_lg');
 
@@ -68,10 +72,8 @@ export default class FooterHolder extends React.Component{
                     <div className="pg-footer-left-options-panel">
                         <a href="/notifications">
                             <div className="col-xs-2 pgs-secratery-img">
-
-                                    <img src={_secretary_image} alt="Secretary" className="img-responsive" />
-                                    {notificationCount>0?<span className="counter">{notificationCount}</span>:null}
-
+                                <img src={_secretary_image} alt="Secretary" className="img-responsive" />
+                                {notificationCount>0?<span className="counter">{notificationCount}</span>:null}
                             </div>
                         </a>
                         <div className="pg-footer-left-options">
@@ -99,16 +101,13 @@ export default class FooterHolder extends React.Component{
                             </div>
                     }
                     <div className="pg-footer-right-options-panel">
-                        <div className="pg-footer-right-options-panel-inner">
-                            <a href="/work-mode" onClick={event=>onLinkClick(event)}>
-                                <img src="/images/footer-right-image.png" alt="Logo" className="img-responsive"/>
-
-                                <p>Work Mode</p>
-                            </a>
+                        <div className="pg-footer-right-options-panel-inner" onClick={this.onWorkmodeClick.bind(this)}>
+                            <img src="/images/footer-right-image.png" alt="Logo" className="img-responsive"/>
+                            <p>Work Mode</p>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
 
         );
