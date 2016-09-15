@@ -202,10 +202,6 @@ export default class NotificationPop extends React.Component{
         }
     }
 
-    onPopupClose(){
-        this.props.onNotifiClose();
-    }
-
     render(){
         let elementsList = this.state.eleList;
         let type = this.state.notifiType;
@@ -235,7 +231,7 @@ export default class NotificationPop extends React.Component{
                         <span className="notifi-count">(7)</span>
                         <span className="fa fa-angle-left arrow"></span>
                         <span className="fa fa-angle-right arrow"></span>
-                        <span className="close fa fa-times" onClick={this.onPopupClose.bind(this)}></span>
+                        <span className="close fa fa-times" onClick={() => this.props.onNotifiClose()}></span>
                     </div>
                     <div className="notifications-holder">
                         <Scrollbars style={{ height: 318 }}>
@@ -273,7 +269,7 @@ export class Notification extends React.Component{
             }
             return (
                 <div className={_classNames} key={key}>
-                    <a href="javascript:void(0)" onClick={()=>_this.props.clickNotification(notification)}>
+                    <a href="/notifications">
                         <div className="chat-pro-img">
                             <img src={notification.sender_profile_picture}/>
                         </div>
