@@ -236,21 +236,31 @@ export default class Index extends React.Component{
 
         if(_notification.notification_type != 'Birthday' && _notification.notification_type != "share_notebook"){
 
-            $.ajax({
-                url: '/notifications/update-notifications',
-                method: "POST",
-                dataType: "JSON",
-                data:{post_id:_notification.post_id, notification_type:_notification.notification_type, notification_id:_notification.notification_id},
-                headers: { 'prg-auth-header':this.state.loggedUser.token }
-            }).done( function (data, text) {
+            if(!_notification.read_status) {
+                $.ajax({
+                    url: '/notifications/update-notifications',
+                    method: "POST",
+                    dataType: "JSON",
+                    data:{post_id:_notification.post_id, notification_type:_notification.notification_type, notification_id:_notification.notification_id},
+                    headers: { 'prg-auth-header':this.state.loggedUser.token }
+                }).done( function (data, text) {
 
-                if(_notification.notification_type == "share_notebook_response") {
-                    window.location.reload();
-                } else {
+                    if(_notification.notification_type == "share_notebook_response") {
+                        window.location.reload();
+                    } else {
+                        window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
+                    }
+
+                }.bind(this));
+
+            } else {
+
+                if(_notification.notification_type != "share_notebook_response") {
                     window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
                 }
+            }
 
-            }.bind(this));
+
 
         }
 
@@ -366,7 +376,7 @@ export default class Index extends React.Component{
 
     onUpdateSharedNoteBook(notification, stt) {
 
-        if(typeof notification.notebook_id != 'undefined' && notification.notification_type == "share_notebook"){
+        if(typeof notification.notebook_id != 'undefined' && notification.notification_type == "share_notebook" && !notification.read_status){
 
                 $.ajax({
                 url: '/notifications/notebook-update',
@@ -574,8 +584,8 @@ export class Notification extends React.Component{
                                     notification.notification_type != 'share_notebook' &&
                                     notification.notification_type != 'share_notebook_response'
                                     ? notification.post_owner_name +" post":null}
-                                {notification.notification_type == 'share_notebook' ? notification.post_owner_name +" has invited you to collaborate on a notebook" :null}
-                                {notification.notification_type == 'share_notebook_response' ? notification.post_owner_name + " has " + notification.notification_status + " your notebook invitation" :null}
+                                {notification.notification_type == 'share_notebook' ? notification.post_owner_name +" has invited you to collaborate on " + notification.notebook_name :null}
+                                {notification.notification_type == 'share_notebook_response' ? notification.post_owner_name + " has " + notification.notification_status + " your invitation to collaborate on " + notification.notebook_name :null}
                             </p>
                             <p className="chat-date">{notification.created_at.time_a_go}</p>
 
