@@ -14,12 +14,16 @@ export default class Index extends React.Component{
         this.cM = Moment().format("mm");
         let _sesData = Session.getSession('prg_wm');
         let _startTime = new Date().getTime();
+        let _sesStartTime;
+        let _sesHowLong;
         let _endTime;
         let timeLeft;
         if(_sesData){
             _endTime = _sesData.endTime;
             timeLeft = _endTime - _startTime;
             timeLeft =  Moment.utc(timeLeft).format("DD HH mm");
+            _sesStartTime = _sesData.startTimer;
+            _sesHowLong = _sesData.howLong;
         }
         let isVisible = (timeLeft)? false : true;
 
@@ -31,12 +35,26 @@ export default class Index extends React.Component{
             blockedMode: "",
             timeBlockIsVisible: isVisible,
             timePeriod: this.tPeriod,
-            remainingTime: timeLeft
+            remainingTime: timeLeft,
+            sesStartTime:_sesStartTime,
+            sesHowLong:_sesHowLong,
+            sesEndTime:_endTime
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.formatDate;
         this.selectedList = [];
+
+        if(Session.getSession('prg_wm') != null){
+
+            if(Session.getSession('prg_wm').rightBottom){this.selectedList.push("bars")}
+            if(Session.getSession('prg_wm').newsFeed){this.selectedList.push("newsfeed")}
+            if(Session.getSession('prg_wm').calls){this.selectedList.push("calls")}
+            if(Session.getSession('prg_wm').messages){this.selectedList.push("msg")}
+            if(Session.getSession('prg_wm').socialNotifications){this.selectedList.push("notifications")}
+            if(this.selectedList.length == 5){this.selectedList.push("all")}
+
+        }
 
     }
 
@@ -94,6 +112,11 @@ export default class Index extends React.Component{
         this.formatDate = date.format("YYYY-MM-DD");
     }
 
+    onCancelTimeClick(){
+        console.log("onCancelTimeClick")
+
+    }
+
     onWorkModeSet(e){
 
         let data;
@@ -114,13 +137,21 @@ export default class Index extends React.Component{
                 }
             }
         }else{
+            e.preventDefault();
             alert("Please Select Work Mode");
+            return false;
         }
         console.log(data);
 
         let _startTime = new Date().getTime();
         let howLong = 0;
         let _endTime = _startTime+howLong;
+
+        if(Session.getSession('prg_wm') != null){
+
+        }
+
+
 
         if(data.time != 0){
             howLong = data.time*60*1000;
@@ -152,7 +183,7 @@ export default class Index extends React.Component{
         Session.createSession("prg_wm",_wm);
 
         //it must be at the end. because to create session form must get posted
-        //e.preventDefault(); //can uncomment if we find a way to hide footer & right bar without refresh.
+        e.preventDefault(); //can uncomment if we find a way to hide footer & right bar without refresh.
 
         location.reload();
     }
@@ -329,9 +360,13 @@ export default class Index extends React.Component{
                                             </div>
                                         </div>
                                     :
-                                        <div className="mode-notice" onClick={this.onTimeSummeryClick.bind(this)}>
-                                            <h3 className="title">{"Work Mode on for next " + days + hrs + "and "+ mins+"'minutes" }</h3>
+                                        <div className="mode-notice">
+                                            <div onClick={this.onTimeSummeryClick.bind(this)}>
+                                                <h3 className="title">{"Work Mode on for next " + days + hrs + "and "+ mins+"'minutes" }</h3>
+                                            </div>
+                                            <div><span className="close icon" onClick={this.onCancelTimeClick.bind(this)}><i className="fa fa-times" aria-hidden="true"></i></span></div>
                                         </div>
+
                                 }
                                 <div className="btn-holder">
                                     <button type="submit" className="btn btn-default submit" >GO!</button>
