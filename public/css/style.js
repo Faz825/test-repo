@@ -293,7 +293,8 @@ export default StyleSheet.create({
     "pg-header-options dropDown-holder": {
         "display": "inline-block",
         "marginRight": 7,
-        "verticalAlign": "top"
+        "verticalAlign": "top",
+        "cursor": "pointer"
     },
     "pg-header-options dropDown-holder:last-child": {
         "marginRight": 0
@@ -1535,9 +1536,9 @@ export default StyleSheet.create({
         "backgroundColor": "#59afe1",
         "height": "100%",
         "paddingTop": 0,
-        "paddingRight": 9,
+        "paddingRight": 0,
         "paddingBottom": 0,
-        "paddingLeft": 9,
+        "paddingLeft": 0,
         "position": "absolute",
         "right": 0,
         "top": 0
@@ -2578,6 +2579,27 @@ export default StyleSheet.create({
     },
     "pg-notes-page-content-item note-cat-thumbmy-notebook": {
         "backgroundColor": "#62b3de !important"
+    },
+    "shared-user-r-popup": {
+        "textAlign": "center"
+    },
+    "shared-user-r-popup btn-popup": {
+        "marginLeft": 5,
+        "marginRight": 5,
+        "background": "#61b3de",
+        "paddingTop": 7,
+        "paddingRight": 12,
+        "paddingBottom": 7,
+        "paddingLeft": 12,
+        "textTransform": "uppercase",
+        "color": "#fff",
+        "borderRadius": 5,
+        "fontFamily": "'montserratsemi_bold', sans-serif",
+        "fontSize": 0.6,
+        "display": "inline-block"
+    },
+    "shared-user-r-popup btn-popupreject": {
+        "background": "#e82107"
     },
     "color-picker": {
         "textAlign": "center",
@@ -4511,7 +4533,8 @@ export default StyleSheet.create({
     "share-icon": {
         "position": "absolute",
         "bottom": 10,
-        "right": 10
+        "right": 10,
+        "cursor": "pointer"
     },
     "share-icon fa": {
         "color": "#fff"
@@ -4570,6 +4593,9 @@ export default StyleSheet.create({
         "height": 25,
         "float": "right"
     },
+    "popup-holder header-holder form-group input": {
+        "height": 30
+    },
     "popup-holderadd-new header-holder form-group": {
         "marginTop": 5,
         "float": "left"
@@ -4610,13 +4636,15 @@ export default StyleSheet.create({
     },
     "popup-body-holder user-block img-holder img": {
         "width": "100%",
-        "height": "auto"
+        "height": "auto",
+        "borderRadius": 4
     },
     "popup-body-holder user-block permission": {
         "fontSize": 0.857,
         "color": "#2d5164"
     },
     "popup-body-holder user-block permissionowner": {
+        "marginTop": 8,
         "marginRight": 120,
         "float": "right",
         "fontSize": 0.857,
@@ -4636,13 +4664,14 @@ export default StyleSheet.create({
         "color": "#2d5164"
     },
     "popup-body-holder user-block action": {
-        "marginTop": 5,
+        "marginTop": 0,
         "marginRight": 20,
         "float": "right",
         "fontSize": 0.857,
         "color": "#2d5164"
     },
     "popup-body-holderadd-new user-block action": {
+        "marginTop": 5,
         "marginRight": 0
     },
     "popup-body-holder user-block action btn-remove": {
@@ -4676,9 +4705,9 @@ export default StyleSheet.create({
         "marginTop": 6
     },
     "popup-body-holder user-details user-name": {
-        "marginTop": 0,
+        "marginTop": 5,
         "marginRight": 0,
-        "marginBottom": 5,
+        "marginBottom": 2,
         "marginLeft": 0,
         "fontSize": 1,
         "color": "#2d5164"
@@ -4695,9 +4724,10 @@ export default StyleSheet.create({
     },
     "popup-holder footer-holder": {
         "width": "100%",
-        "paddingTop": 12,
+        "height": 33,
+        "paddingTop": 7,
         "paddingRight": 15,
-        "paddingBottom": 12,
+        "paddingBottom": 7,
         "paddingLeft": 15,
         "fontSize": 0.857,
         "backgroundColor": "#cedae2"
@@ -4708,6 +4738,9 @@ export default StyleSheet.create({
     "popup-holder footer-holder add-new button": {
         "color": "#2d5164",
         "outline": "none"
+    },
+    "popup-holder footer-holder btn-link": {
+        "textDecoration": "none"
     },
     "popup-holder footer-holder see-all": {
         "textAlign": "center"
@@ -5075,15 +5108,205 @@ export default StyleSheet.create({
         "fontFamily": "\"montserratregular\", sans-serif",
         "fontSize": 0.95
     },
+    "dialog--jss-0-0workmode-popup-holder": {
+        "paddingTop": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0,
+        "background": "none",
+        "boxShadow": "none"
+    },
+    "work-mode-container close-holder": {
+        "position": "absolute",
+        "top": 30,
+        "right": 35,
+        "zIndex": 1
+    },
+    "work-mode-container form": {
+        "position": "relative",
+        "zIndex": 0
+    },
+    "workmode-popup-holder closeButton--jss-0-1": {
+        "left": "auto",
+        "right": 18,
+        "zIndex": 10000,
+        "position": "relative",
+        "float": "right",
+        "top": 27,
+        "width": 12,
+        "height": 20,
+        "cursor": "pointer"
+    },
+    "workmode-popup-holder closeButton--jss-0-1:hover": {
+        "transform": "none",
+        "textDecoration": "none"
+    },
+    "workmode-popup-holder closeButton--jss-0-1:before": {
+        "content": "\"\\f00d\"",
+        "fontFamily": "\"FontAwesome\"",
+        "color": "#a4becd",
+        "fontSize": 1.3
+    },
+    "workmode-popup-holder closeButton--jss-0-1 svg": {
+        "display": "none"
+    },
     "pg-newsfeed-page": {
         "position": "relative"
     },
     "pg-newsfeed-page workmode-overlay-holder": {
-        "width": "calc(100vw - 237px)",
+        "width": "calc(100vw - 220px)",
         "height": "calc(100vh - 180px)",
         "position": "fixed",
         "background": "rgba(0, 0, 0, 0.9)",
         "top": 70
+    },
+    "pg-footer-left-options-panel notifi-type-holder": {
+        "borderBottom": "1px solid #F2F6F9",
+        "cursor": "pointer",
+        "textAlign": "center",
+        "position": "relative"
+    },
+    "pg-footer-left-options-panel notifi-type-holder:last-child": {
+        "border": "none"
+    },
+    "pg-footer-left-options-panel notifi-type-holder fa": {
+        "color": "#fff",
+        "paddingTop": 11,
+        "paddingRight": 7,
+        "paddingBottom": 11,
+        "paddingLeft": 7
+    },
+    "pg-footer-left-options-panel notifi-type-holder notifi-counter": {
+        "color": "#E82107",
+        "position": "absolute",
+        "bottom": 0,
+        "right": 3,
+        "fontSize": 0.7
+    },
+    "notifi-popup-holder": {
+        "position": "fixed",
+        "bottom": 130,
+        "left": 120,
+        "width": 300,
+        "height": 400,
+        "background": "#fff",
+        "zIndex": 3,
+        "WebkitBoxShadow": "0px 2px 18px 0px rgba(0,0,0,0.75)",
+        "MozBoxShadow": "0px 2px 18px 0px rgba(0,0,0,0.75)",
+        "boxShadow": "0px 2px 18px 0px rgba(0,0,0,0.75)",
+        "borderRadius": 3
+    },
+    "notifi-popup-holder inner-wrapper": {
+        "position": "relative"
+    },
+    "notifi-popup-holder inner-wrapper:after": {
+        "content": "\"\"",
+        "position": "absolute",
+        "left": 0,
+        "bottom": -20,
+        "width": 16,
+        "height": 16,
+        "background": "url(../images/notify-arrow.png) no-repeat 0 0"
+    },
+    "notifi-popup-holder header-holder": {
+        "paddingTop": 15,
+        "paddingRight": 15,
+        "paddingBottom": 15,
+        "paddingLeft": 15,
+        "position": "relative",
+        "textAlign": "center",
+        "borderBottom": "1px solid #ECEEF1"
+    },
+    "notifi-popup-holder header-holder close": {
+        "position": "absolute",
+        "top": 5,
+        "right": 5,
+        "cursor": "pointer",
+        "color": "#000",
+        "fontSize": 0.8,
+        "opacity": 0.3
+    },
+    "notifi-popup-holder header-holder close:hover": {
+        "opacity": 1
+    },
+    "notifi-popup-holder header-holder section-title": {
+        "fontFamily": "\"montserratregular\", sans-serif",
+        "display": "inline-block",
+        "marginTop": 3,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "fontSize": 1.05,
+        "position": "relative",
+        "paddingLeft": 25
+    },
+    "header-holder section-title fa": {
+        "position": "absolute",
+        "top": 1,
+        "left": 0,
+        "color": "#61B3DE"
+    },
+    "notifi-popup-holder header-holder notifi-count": {
+        "display": "inline-block",
+        "color": "#E94834",
+        "marginLeft": 5,
+        "fontSize": 0.8
+    },
+    "notifi-popup-holder header-holder arrow": {
+        "position": "absolute",
+        "top": 15,
+        "color": "#9ABFE3",
+        "cursor": "pointer",
+        "fontSize": 1.5,
+        "opacity": 0.7
+    },
+    "notifi-popup-holder header-holder arrow:hover": {
+        "opacity": 1
+    },
+    "notifi-popup-holder header-holder fa-angle-left": {
+        "left": 15
+    },
+    "notifi-popup-holder header-holder fa-angle-right": {
+        "right": 15
+    },
+    "notifi-popup-holder conv-holder msg-holder:hover a": {
+        "textDecoration": "none"
+    },
+    "notifi-popup-holder notifications-holder connection-name": {
+        "font": "0.8em \"montserratregular\", sans-serif",
+        "color": "#61b3de",
+        "display": "block",
+        "marginBottom": 2
+    },
+    "notifi-popup-holder notifications-holder type-of-action": {
+        "font": "11px 'montserratregular', sans-serif",
+        "color": "#2d5164",
+        "marginTop": -1,
+        "fontSize": 0.7
+    },
+    "notifi-popup-holder notifications-holder chat-date": {
+        "font": "0.6em 'montserratsemi_bold', sans-serif",
+        "position": "absolute",
+        "right": 10,
+        "bottom": 0,
+        "color": "#7795a8"
+    },
+    "notifi-popup-holder all-notifications a": {
+        "color": "#61b3de",
+        "display": "block",
+        "font": "1em \"montserratregular\",sans-serif",
+        "textAlign": "center",
+        "textDecoration": "none"
+    },
+    "notifi-popup-holder notifications-holder": {
+        "height": 318
+    },
+    "notifi-popup-holder all-notifications": {
+        "borderTop": "1px solid #ECEEF1",
+        "paddingTop": 7
+    },
+    "notifi-popup-holder all-notifications a:hover": {
+        "textDecoration": "none"
     },
     "middle-content-wrapper": {
         "minWidth": 500

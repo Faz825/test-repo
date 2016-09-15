@@ -12,13 +12,13 @@ var NotificationController ={
         var pg = req.query.pg;console.log("pg = "+pg);
 
         var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
-            NoteBook = require('mongoose').model('NoteBook'),
             _async = require('async'),
             user_id = Util.getCurrentSession(req).id,
             criteria = {recipient:Util.toObjectId(user_id)},
             skip = (pg - 1)*Config.NOTIFICATION_RESULT_PER_PAGE, limit = Config.NOTIFICATION_RESULT_PER_PAGE,
             _notifications = {}, _redisIds = [], notifications = {},
-            _unreadCount = 0, _formattedNotificationData = [], _postIds = [], _userIds = [], _users = {}, _postData = {}, _totalNotifications = 0, outPut = {}, _noOfNotifications = 0;
+            _unreadCount = 0, _formattedNotificationData = [], _postIds = [], _userIds = [],
+            _users = {}, _postData = {}, _totalNotifications = 0, outPut = {}, _noOfNotifications = 0, _notebookIds = [], notebookData = [] ;
 
         _async.waterfall([
             function getNotificationCount(callBack){
@@ -100,6 +100,9 @@ var NotificationController ={
                                     _notifications[_type] = [noteObj];
                                 } else {
                                     _notifications[_type].push(noteObj);
+                                }
+                                if(_notebookIds.indexOf(notifications[i]['notebook_id']) == -1 && typeof notifications[i]['notebook_id'] != 'undefined') {
+                                    _notebookIds.push(notifications[i]['notebook_id']);
                                 }
 
                                 _noOfNotifications++;
@@ -186,6 +189,9 @@ var NotificationController ={
                                 } else {
                                     _notifications[_type].push(noteObj);
                                 }
+                                if(_notebookIds.indexOf(notifications[i]['notebook_id']) == -1 && typeof notifications[i]['notebook_id'] != 'undefined') {
+                                    _notebookIds.push(notifications[i]['notebook_id']);
+                                }
                                 _noOfNotifications++;
 
                             } else if(_types.indexOf(_type) == -1){
@@ -229,6 +235,26 @@ var NotificationController ={
                 }, function(err){
                     callBack(null)
                 });
+            },
+            function getNotebookData(callBack){
+                var NoteBook = require('mongoose').model('NoteBook');
+                if(_notebookIds.length > 0) {
+                    _async.each(_notebookIds, function (_notebookId, callBack) {
+
+                        NoteBook.getNotebookById(_notebookId,function(resultSet){
+                            var _ndata = {
+                                notebook_id : _notebookId,
+                                notebook_name : resultSet.name
+                            };
+                            notebookData.push(_ndata);
+                            callBack(null);
+                        });
+                    }, function (err) {
+                        callBack(null);
+                    });
+                } else {
+                    callBack(null);
+                }
             },
             function getDetails(callBack){
                 for(var i = 0; i < notifications.length; i++){
@@ -367,7 +393,26 @@ var NotificationController ={
 
                 });
             },
+            function setNotebookName(callBack){
+                if(notebookData.length > 0) {
+                    for (var key in _notifications) {
+                        if (key == Notifications.SHARE_NOTEBOOK || key == Notifications.SHARE_NOTEBOOK_RESPONSE) {
+                            var obj = _notifications[key];
+                            for (var i in obj) {
+                                if(typeof _notifications[key][i].notebook_id != 'undefined') {
+                                    for (var k in notebookData) {
+                                        if(notebookData[k].notebook_id == _notifications[key][i].notebook_id) {
+                                            _notifications[key][i]['notebook_name'] = notebookData[k].notebook_name;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
+                callBack(null);
+            },
             function finalizeData(callBack){
 
                 for (var key in _notifications) {
@@ -390,6 +435,14 @@ var NotificationController ={
                                     birthdayDay = "yesterday";
                                 }
 
+                            } else {
+
+                                if(obj.post_owner == user_id){
+                                    _postOwnerName = "your";
+                                }else{
+                                    _postOwnerName = _users[obj.post_owner]['name']+"'s";
+                                }
+                                _postOwnerUsername = _users[obj.post_owner]['user_name'];
                             }
 
                             var _data = {
@@ -401,7 +454,7 @@ var NotificationController ={
                                 post_owner_name:_postOwnerName,
                                 sender_profile_picture:_users[obj.senders[0]]['profile_image'],
                                 sender_name:_users[obj.senders[0]]['name'],
-                                sender_user_name:_users[obj[i].senders[0]]['user_name'],
+                                sender_user_name:_users[obj.senders[0]]['user_name'],
                                 sender_count:obj.sender_count,
                                 birthday:birthdayDay,
                                 notebook_id:obj.notebook_id,
@@ -447,6 +500,7 @@ var NotificationController ={
                                 notebook_id:obj[i].notebook_id,
                                 notification_id:obj[i].notification_id,
                                 notification_status:obj[i]['notification_status'] == "REQUEST_ACCEPTED" ? "accepted" : "declined",
+                                notebook_name:obj[i]['notebook_name'],
                                 sender_id:obj[i]['sender_id']
                             };
 
@@ -457,15 +511,17 @@ var NotificationController ={
 
                 }
 
+                callBack(null);
+
+            },
+
+            function doSortingBefore(callBack) {
                 //sorting the list by created date
                 _formattedNotificationData.sort(function(a,b){
-                    // Turn your strings into dates, and then subtract them
-                    // to get a value that is either negative, positive, or zero.
-                    return new Date(b.created_at) - new Date(a.created_at);
+                    return b.created_at.time_stamp - a.created_at.time_stamp;
                 });
 
                 callBack(null);
-
             }
         ],function(err){
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
