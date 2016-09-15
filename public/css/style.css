@@ -2721,6 +2721,11 @@ textarea{
 	padding-top: 15px;
 }
 
+.q-chat{
+	border: 1px solid #c7c1b7;
+	border-radius: 4px 4px 0px 0px ;
+}
+
 .pg-middle-chat-content-header h2 {
 	color: #fff;
 	font: 20px "montserratregular",sans-serif;
@@ -4330,17 +4335,232 @@ textarea{
 	font-size: 0.95em;
 }
 
+.dialog--jss-0-0.workmode-popup-holder{
+	padding: 0;
+	background: none;
+	box-shadow: none;
+}
+
+.work-mode-container .close-holder{
+	position: absolute;
+	top: 30px;
+	right: 35px;
+	z-index: 1;
+}
+
+.work-mode-container form{
+	position: relative;
+	z-index: 0;
+}
+
+.workmode-popup-holder .closeButton--jss-0-1{
+	left: auto;
+	right: 18px;
+	z-index: 10000;
+	position: relative;
+	float: right;
+	top: 27px;
+	width: 12px;
+	height: 20px;
+	cursor: pointer;
+}
+
+.workmode-popup-holder .closeButton--jss-0-1:hover{
+	transform: none;
+	text-decoration: none;
+}
+
+.workmode-popup-holder .closeButton--jss-0-1:before{
+	content: "\f00d";
+	font-family: "FontAwesome";
+	color: #a4becd;
+	font-size: 1.3em;
+}
+
+.workmode-popup-holder .closeButton--jss-0-1 svg{
+	display: none;
+}
+
 /* News feed overlay */
 #pg-newsfeed-page{
 	position: relative;
 }
 
 #pg-newsfeed-page .workmode-overlay-holder{
-	width: calc(100vw - 237px);
+	width: calc(100vw - 220px);
     height: calc(100vh - 180px);
     position: fixed;
     background: rgba(0, 0, 0, 0.9);
     top: 70px;
+}
+
+/* Notification popup */
+.pg-footer-left-options{
+	padding: 0;
+}
+
+.pg-footer-left-options-panel .notifi-type-holder{
+	border-bottom: 1px solid #F2F6F9;
+	cursor: pointer;
+	text-align: center;
+	position: relative;
+}
+
+.pg-footer-left-options-panel .notifi-type-holder:last-child{
+	border: none;
+}
+
+.pg-footer-left-options-panel .notifi-type-holder .fa{
+	color: #fff;
+	padding: 11px 7px;
+}
+
+.pg-footer-left-options-panel .notifi-type-holder .notifi-counter{
+	color: #E82107;
+	position: absolute;
+	bottom: 0;
+	right: 3px;
+	font-size: 0.7em;
+}
+
+.notifi-popup-holder{
+	position: fixed;
+	bottom: 130px;
+    left: 120px;
+	width: 300px;
+	height: 400px;
+	background: #fff;
+	z-index: 3;
+	-webkit-box-shadow: 0px 2px 18px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 2px 18px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 2px 18px 0px rgba(0,0,0,0.75);
+	border-radius: 3px;
+}
+
+.notifi-popup-holder .inner-wrapper{
+	position: relative;
+}
+
+.notifi-popup-holder .inner-wrapper:after{
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -20px;
+	width: 16px;
+	height: 16px;
+	background: url(../images/notify-arrow.png) no-repeat 0 0;
+}
+
+.notifi-popup-holder .header-holder{
+	padding: 15px;
+	position: relative;
+    text-align: center;
+	border-bottom: 1px solid #ECEEF1;
+}
+
+.notifi-popup-holder .header-holder .close{
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	cursor: pointer;
+	color: #000;
+	font-size: 0.8em;
+	opacity: 0.3;
+}
+
+.notifi-popup-holder .header-holder .close:hover{
+	opacity: 1;
+}
+
+.notifi-popup-holder .header-holder .section-title{
+	font-family: "montserratregular", sans-serif;
+	display: inline-block;
+    margin: 3px 0 0;
+	font-size: 1.05em;
+	position: relative;
+	padding-left: 25px;
+}
+
+.header-holder .section-title .fa{
+	position: absolute;
+	top: 1px;
+	left: 0;
+	color: #61B3DE;
+}
+
+.notifi-popup-holder .header-holder .notifi-count{
+	display: inline-block;
+	color: #E94834;
+	margin-left: 5px;
+	font-size: 0.8em;
+}
+
+.notifi-popup-holder .header-holder .arrow{
+	position: absolute;
+	top: 15px;
+	color: #9ABFE3;
+	cursor: pointer;
+	font-size: 1.5em;
+	opacity: 0.7;
+}
+
+.notifi-popup-holder .header-holder .arrow:hover{
+	opacity: 1;
+}
+
+.notifi-popup-holder .header-holder .fa-angle-left{
+	left: 15px;
+}
+
+.notifi-popup-holder .header-holder .fa-angle-right{
+	right: 15px;
+}
+
+.notifi-popup-holder .conv-holder .msg-holder:hover a{
+	text-decoration: none;
+}
+
+.notifi-popup-holder .notifications-holder .connection-name{
+	font: 0.8em "montserratregular", sans-serif;
+	color: #61b3de;
+	display: block;
+	margin-bottom: 2px;
+}
+
+.notifi-popup-holder .notifications-holder .type-of-action{
+	font: 11px 'montserratregular', sans-serif;
+	color: #2d5164;
+	margin-top: -1px;
+	font-size: 0.7em;
+}
+
+.notifi-popup-holder .notifications-holder .chat-date{
+	font: 0.6em 'montserratsemi_bold', sans-serif;
+	position: absolute;
+	right: 10px;
+	bottom: 0;
+	color: #7795a8;
+}
+
+.notifi-popup-holder .all-notifications a{
+	color: #61b3de;
+    display: block;
+    font: 1em "montserratregular",sans-serif;
+    text-align: center;
+    text-decoration: none;
+}
+
+.notifi-popup-holder .notifications-holder{
+	height: 318px;
+}
+
+.notifi-popup-holder .all-notifications{
+	border-top: 1px solid #ECEEF1;
+    padding-top: 7px;
+}
+
+.notifi-popup-holder .all-notifications a:hover{
+	text-decoration: none;
 }
 
 /* Large Screen */

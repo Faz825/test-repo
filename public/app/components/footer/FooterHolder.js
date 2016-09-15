@@ -52,6 +52,10 @@ export default class FooterHolder extends React.Component{
         this.props.onWorkmodeClick();
     }
 
+    onNotifiClick(e){
+        this.props.onNotifiTypeClick(e.target.id);
+    }
+
     render() {
         let _sesData = Session.getSession('prg_lg');
 
@@ -77,12 +81,18 @@ export default class FooterHolder extends React.Component{
                             </div>
                         </a>
                         <div className="pg-footer-left-options">
-                            <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/pg-home-v6_03.png" alt=""
-                                                                                 className="img-responsive"/></a>
-                            <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/pg-home-v6_066.png" alt=""
-                                                                                 className="img-responsive"/></a>
-                            <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/pg-home-v6_08.png" alt=""
-                                                                                 className="img-responsive"/></a>
+                            <div className="notifi-type-holder">
+                                <i className="fa fa-list-alt" id="todos" onClick={(event) => this.onNotifiClick(event)}></i>
+                                <span className="notifi-counter">5</span>
+                            </div>
+                            <div className="notifi-type-holder">
+                                <i className="fa fa-globe" id="social" onClick={(event) => this.onNotifiClick(event)}></i>
+                                <span className="notifi-counter">5</span>
+                            </div>
+                            <div className="notifi-type-holder">
+                                <i className="fa fa-line-chart" id="productivity" onClick={(event) => this.onNotifiClick(event)}></i>
+                                <span className="notifi-counter">5</span>
+                            </div>
                         </div>
                     </div>
                     {
