@@ -109,7 +109,7 @@ export default class QuickChatBubble extends React.Component{
 
         return (
             <div className="chat-popup col-sm-4" ref={this.props.chatData.title}>
-                <div className="row inner-wrapper">
+                <div className="row inner-wrapper q-chat">
                     <ChatHeader
                         conv={this.props.chatData}
                         bubbleClose={this.onbubbleClosed.bind(this)}
