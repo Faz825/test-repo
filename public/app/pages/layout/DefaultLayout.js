@@ -51,7 +51,8 @@ export default class DefaultLayout extends React.Component{
             rightBottom:_rightBottom,
             socialNotifications:_socialNotifications,
             isShowingModal: false,
-            notifiType: ""
+            notifiType: "",
+            notificationCount: ""
         };
 
         this.quickChatUsers = [];
@@ -126,7 +127,6 @@ export default class DefaultLayout extends React.Component{
     }
 
     handleClick() {
-
         this.setState({isShowingModal: true});
     }
 
@@ -138,12 +138,18 @@ export default class DefaultLayout extends React.Component{
         this.handleClick();
     }
 
-    onNotifiTypeClick(type){
-        this.setState({notifiType : type});
+    onNotifiTypeClick(type, count){
+        this.setState({notifiType : type, notificationCount : count});
     }
 
     onNotifiClose(){
         this.setState({notifiType : ""});
+    }
+
+    updateNotificationPopCount(c){
+        console.log("going to update count - 02");
+        console.log(c);
+        this.setState({notificationCount : c});
     }
 
     render(){
@@ -170,7 +176,7 @@ export default class DefaultLayout extends React.Component{
                         {this.props.children || <Dashboard />}
                     </div>
                 </div>
-                <FooterHolder blockBottom={this.state.rightBottom} blockSocialNotification={this.state.socialNotifications} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)}/>
+                <FooterHolder blockBottom={this.state.rightBottom} blockSocialNotification={this.state.socialNotifications} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)} onUpdateNotifiPopupCount={this.updateNotificationPopCount.bind(this)}/>
                 <InCallPane/>
                 {
                     this.state.isShowingModal &&
@@ -185,7 +191,7 @@ export default class DefaultLayout extends React.Component{
                 }
                 {
                     (this.state.notifiType)?
-                        <NotificationPop notifiType={this.state.notifiType} onNotifiClose={this.onNotifiClose.bind(this)}/>
+                        <NotificationPop notifiType={this.state.notifiType} notifyCount={this.state.notificationCount} onNotifiClose={this.onNotifiClose.bind(this)}/>
                     :
                         null
                 }
