@@ -4312,6 +4312,7 @@ textarea{
 	border-radius: 5px;
 	padding: 12px 14px;
 	cursor: pointer;
+	position: relative;
 }
 
 .work-mode-container .mode-notice .title{
@@ -4319,6 +4320,15 @@ textarea{
 	color: #7694a2;
 	font-size: 1em;
 	margin: 0;
+	float: left;
+}
+
+.work-mode-container .mode-notice .fa-times{
+	float: left;
+	margin: 0 0 0 5px;
+	color: #9dadbd;
+	font-size: 0.8em;
+	line-height: 1.5;
 }
 
 .inner-wrapper .btn-holder{
@@ -4341,7 +4351,7 @@ textarea{
 	box-shadow: none;
 }
 
-.workmode-popup-wrapper .fa-times{
+.workmode-popup-wrapper .close-icon{
 	position: absolute;
 	top: 30px;
 	right: 20px;
