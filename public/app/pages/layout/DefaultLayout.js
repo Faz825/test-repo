@@ -10,6 +10,7 @@ import InCallPane  from '../chat/InCallPane';
 import QuickChatHandler from '../chat/QuickChatHandler';
 import WorkMode from '../workmode/Index';
 import NotificationPop from '../notifications/NotificationPop';
+import Moment from 'moment';
 
 export default class DefaultLayout extends React.Component{
     constructor(props){
@@ -25,10 +26,7 @@ export default class DefaultLayout extends React.Component{
         }
 
         let _rightBottom = false;
-        //let _newsFeed = false;
-        //let _calls = false;
-        //let _messages = false;
-        //let _socialNotifications = false;
+        let _socialNotifications = false;
 
         this.checkWorkModeInterval = null;
 
@@ -41,27 +39,19 @@ export default class DefaultLayout extends React.Component{
             } else{
                 let _this = this;
                 _rightBottom = Session.getSession('prg_wm').rightBottom;
-                //_newsFeed = Session.getSession('prg_wm').newsFeed;
-                //_calls = Session.getSession('prg_wm').calls;
-                //_messages = Session.getSession('prg_wm').messages;
-                //_socialNotifications = Session.getSession('prg_wm').socialNotifications;
-                if(_rightBottom == true){
+                _socialNotifications = Session.getSession('prg_wm').socialNotifications;
+                if(_rightBottom == true || _socialNotifications == true){
                     this.checkWorkModeInterval = setInterval(function(){_this.checkWorkMode()}, 1000);
                 }
             }
         }
 
-        //console.log(Session.getSession('prg_wm'));
-
         this.state={
             chatBubble:[],
             rightBottom:_rightBottom,
+            socialNotifications:_socialNotifications,
             isShowingModal: false,
             notifiType: ""
-            //newsFeed:_newsFeed,
-            //calls:_calls,
-            //messages:_messages,
-            //socialNotifications:_socialNotifications
         };
 
         this.quickChatUsers = [];
@@ -70,20 +60,19 @@ export default class DefaultLayout extends React.Component{
     }
 
     checkWorkMode(){
-        //console.log("checkWorkMode from Default Layout")
         if(Session.getSession('prg_wm') != null){
             let _currentTime = new Date().getTime();
             let _finishTime = Session.getSession('prg_wm').endTime;
 
             if (_currentTime > _finishTime){
                 console.log("TIME UP from Default Layout")
-                this.setState({rightBottom:false})
+                this.setState({rightBottom:false, socialNotifications:false})
                 Session.destroy("prg_wm");
                 clearInterval(this.checkWorkModeInterval);
                 this.checkWorkModeInterval = null;
             }
         } else{
-            this.setState({rightBottom:false});
+            this.setState({rightBottom:false, socialNotifications:false});
             clearInterval(this.checkWorkModeInterval);
             this.checkWorkModeInterval = null;
         }
@@ -137,6 +126,7 @@ export default class DefaultLayout extends React.Component{
     }
 
     handleClick() {
+
         this.setState({isShowingModal: true});
     }
 
@@ -180,14 +170,14 @@ export default class DefaultLayout extends React.Component{
                         {this.props.children || <Dashboard />}
                     </div>
                 </div>
-                <FooterHolder blockBottom={this.state.rightBottom} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)}/>
+                <FooterHolder blockBottom={this.state.rightBottom} blockSocialNotification={this.state.socialNotifications} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)}/>
                 <InCallPane/>
                 {
                     this.state.isShowingModal &&
                     <ModalContainer zIndex={9999}>
                         <ModalDialog width="65%" className="workmode-popup-holder">
                             <div className="workmode-popup-wrapper">
-                                <WorkMode/>
+                                <WorkMode />
                                 <i className="fa fa-times" aria-hidden="true" onClick={this.handleClose.bind(this)}></i>
                             </div>
                         </ModalDialog>

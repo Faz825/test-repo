@@ -16,36 +16,41 @@ export default class FooterHolder extends React.Component{
     }
 
     getNotificationCount(){
-        $.ajax({
-            url: '/notifications/get-notification-count',
-            method: "GET",
-            dataType: "JSON",
-            headers: { 'prg-auth-header':this.state.loggedUser.token }
-        }).done( function (data, text) {
+        if(!this.props.blockSocialNotification){
+            $.ajax({
+                url: '/notifications/get-notification-count',
+                method: "GET",
+                dataType: "JSON",
+                headers: { 'prg-auth-header':this.state.loggedUser.token }
+            }).done( function (data, text) {
 
-            if(data.status.code == 200){
-                this.setState({notificationCount:data.count});
-            }
-        }.bind(this));
+                if(data.status.code == 200){
+                    this.setState({notificationCount:data.count});
+                }
+            }.bind(this));
+        }
     }
 
     listenToNotification(){
-        let _this = this;
+        if(!this.props.blockSocialNotification){
+            let _this = this;
 
-        Socket.listenToNotification(function(data){
-            console.log("Got Notification from footer")
-            if(data.notification_type == "Birthday"){
-                _this.state.notificationCount++;
-            }else{
-                if(data.user != _this.state.loggedUser.user_name){
-                    console.log("Increase")
-                    let _notCount = _this.state.notificationCount;
-                    _notCount++;
-                    _this.setState({notificationCount:_notCount});
+            Socket.listenToNotification(function(data){
+                console.log("Got Notification from footer")
+                if(data.notification_type == "Birthday"){
+                    _this.state.notificationCount++;
+                }else{
+                    if(data.user != _this.state.loggedUser.user_name){
+                        console.log("Increase")
+                        let _notCount = _this.state.notificationCount;
+                        _notCount++;
+                        _this.setState({notificationCount:_notCount});
+                    }
                 }
-            }
 
-        });
+            });
+
+        }
     }
 
     onWorkmodeClick(){
