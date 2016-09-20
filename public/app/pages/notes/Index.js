@@ -902,6 +902,9 @@ export class  SharedUsers extends React.Component {
         let _allUsers = this.props.sharedUserList.map(function(user,key){
 
             return (
+                <div>
+            {
+                (user.shared_status == 3) ?
                 <div className="user-block shared clearfix" key={key}>
                     <div className="separator"></div>
                     <div className="img-holder">
@@ -918,24 +921,48 @@ export class  SharedUsers extends React.Component {
                         }
 
                     </div>
-                    {
-                        (_notebook.owned_by == 'me')?
-                        <div>
-                            <div className="action add-new">
-                                <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
-                                    <i className="fa fa-minus" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                            < div className="permission">
-                            <select className="pg-custom-input" onChange={(event)=>_this.props.changePermissions(event, user)} value={user.shared_type}>
-                                <option value="1">Read Only</option>
-                                <option value="2">Read/Write</option>
-                            </select>
-                            </div>
-                        </div> : null
-                    }
+                    <div className="action add-new">
+                        <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
+                            <i className="fa fa-minus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div className="permission">
+                        <select className="pg-custom-input"
+                                onChange={(event)=>_this.props.changePermissions(event, user)}
+                                value={user.shared_type}>
+                            <option value="1">Read Only</option>
+                            <option value="2">Read/Write</option>
+                        </select>
+                    </div>
                     {_this.props.removeSharedUser()}
+                </div> :
+                <div className="user-block shared clearfix" key={key}>
+                    <div className="separator"></div>
+                    <div className="img-holder">
+                        <img src={user.profile_image} alt="User"/>
+                    </div>
+                    <div className="user-details">
+                        <h3 className="user-name shared">{user.user_name}</h3>
+
+                        {
+                            (typeof user.school != 'undefined') ?
+                                <p className="more-info shared">{user.school}</p>
+                                :
+                                <p className="more-info shared">{user.company_name}</p>
+                        }
+
+                    </div>
+                    <div className="action add-new">
+                        <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
+                            <i className="fa fa-minus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div className="permission">
+                        <p className="req-pending">Request Pending</p>
+                    </div>
                 </div>
+            }
+        </div>
             )
         });
 

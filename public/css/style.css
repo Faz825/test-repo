@@ -3875,7 +3875,8 @@ textarea{
 	margin-right: 85px;
 }
 
-.popup-body-holder .user-block.shared .permission select{
+.popup-body-holder .user-block.shared .permission select,
+.popup-body-holder .user-block.shared .permission p{
 	background: transparent;
 	box-shadow: none;
 	border: none;
@@ -3886,7 +3887,7 @@ textarea{
 }
 
 .popup-body-holder .user-block .action{
-	margin-top: 0;
+	margin-top: 5px;
 	margin-right: 20px;
 	float: right;
 	font-size: 0.857em;

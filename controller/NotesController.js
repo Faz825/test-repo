@@ -544,7 +544,7 @@ var NotesController ={
 
                     // console.log(sharedUser);
 
-                    if(sharedUser.status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
+                    if(sharedUser.status == NoteBookSharedRequest.REQUEST_ACCEPTED || sharedUser.status == NoteBookSharedRequest.REQUEST_PENDING) {
                         var usrObj = {};
                         _async.waterfall([
 
