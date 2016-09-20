@@ -4312,6 +4312,7 @@ textarea{
 	border-radius: 5px;
 	padding: 12px 14px;
 	cursor: pointer;
+	position: relative;
 }
 
 .work-mode-container .mode-notice .title{
@@ -4319,6 +4320,15 @@ textarea{
 	color: #7694a2;
 	font-size: 1em;
 	margin: 0;
+	float: left;
+}
+
+.work-mode-container .mode-notice .fa-times{
+	float: left;
+	margin: 0 0 0 5px;
+	color: #9dadbd;
+	font-size: 0.8em;
+	line-height: 1.5;
 }
 
 .inner-wrapper .btn-holder{
@@ -4339,6 +4349,15 @@ textarea{
 	padding: 0;
 	background: none;
 	box-shadow: none;
+}
+
+.workmode-popup-wrapper .close-icon{
+	position: absolute;
+	top: 30px;
+	right: 20px;
+	cursor: pointer;
+	font-size: 1.2em;
+	color: #9dadbd;
 }
 
 .work-mode-container .close-holder{
@@ -4425,8 +4444,8 @@ textarea{
 
 .notifi-popup-holder{
 	position: fixed;
-	bottom: 150px;
-	left: 150px;
+	bottom: 130px;
+    left: 120px;
 	width: 300px;
 	height: 400px;
 	background: #fff;
@@ -4437,11 +4456,39 @@ textarea{
 	border-radius: 3px;
 }
 
+.notifi-popup-holder .inner-wrapper{
+	position: relative;
+}
+
+.notifi-popup-holder .inner-wrapper:after{
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -20px;
+	width: 16px;
+	height: 16px;
+	background: url(../images/notify-arrow.png) no-repeat 0 0;
+}
+
 .notifi-popup-holder .header-holder{
 	padding: 15px;
 	position: relative;
     text-align: center;
 	border-bottom: 1px solid #ECEEF1;
+}
+
+.notifi-popup-holder .header-holder .close{
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	cursor: pointer;
+	color: #000;
+	font-size: 0.8em;
+	opacity: 0.3;
+}
+
+.notifi-popup-holder .header-holder .close:hover{
+	opacity: 1;
 }
 
 .notifi-popup-holder .header-holder .section-title{
@@ -4528,6 +4575,7 @@ textarea{
 
 .notifi-popup-holder .all-notifications{
 	border-top: 1px solid #ECEEF1;
+    padding-top: 7px;
 }
 
 .notifi-popup-holder .all-notifications a:hover{
@@ -4612,12 +4660,30 @@ textarea{
 	.chat-msg-holder .chat-view{
 		height: calc(52vh - 87px);
 	}
+
+	.time-holder .time-wrapper{
+	    padding-right: 0;
+	}
+
+	.time-holder .date-holder{
+		padding-left: 4%;
+	}
+
+	.time-holder .opt-block {
+	    margin-right: 18px;
+	}
+
+	.dialog--jss-0-0.workmode-popup-holder{
+		width: 75% !important;
+	}
+
 }
 
 @media (min-width: 768px) and (max-width: 1023px){
 	.chat-msg-holder .chat-view {
 	    height: 62vh;
 	}
+
 }
 
 /* Text editor */

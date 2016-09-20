@@ -14,14 +14,29 @@ export default class Index extends React.Component{
         this.cM = Moment().format("mm");
         let _sesData = Session.getSession('prg_wm');
         let _startTime = new Date().getTime();
+        let _sesStartTime;
+        let _sesHowLong;
         let _endTime;
         let timeLeft;
+        let timeIn;
         if(_sesData){
             _endTime = _sesData.endTime;
             timeLeft = _endTime - _startTime;
-            timeLeft =  Moment.utc(timeLeft).format("DD HH mm");
+            if(timeLeft > 60000){
+                timeLeft =  Moment.utc(timeLeft).format("DD HH mm");
+                timeIn = "min";
+            }else if(timeLeft < 60000 && timeLeft > 0) {
+                timeLeft =  Moment.utc(timeLeft).format("HH mm ss");
+                timeIn = "sec";
+            } else{
+                timeLeft = undefined;
+            }
+            _sesStartTime = _sesData.startTimer;
+            _sesHowLong = _sesData.howLong;
         }
         let isVisible = (timeLeft)? false : true;
+        let _this = this;
+        this.checkRemainingTimeInterval = (timeLeft)?setInterval(function(){_this.checkRemainingTime()}, 1000):null;
 
         this.state={
             startDate: Moment(),
@@ -31,12 +46,74 @@ export default class Index extends React.Component{
             blockedMode: "",
             timeBlockIsVisible: isVisible,
             timePeriod: this.tPeriod,
-            remainingTime: timeLeft
+            remainingTime: timeLeft,
+            remainingTimeIn:timeIn,
+            sesStartTime:_sesStartTime,
+            sesHowLong:_sesHowLong,
+            sesEndTime:_endTime
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.formatDate;
         this.selectedList = [];
+
+        if(Session.getSession('prg_wm') != null){
+
+            if(Session.getSession('prg_wm').rightBottom){this.selectedList.push("bars")}
+            if(Session.getSession('prg_wm').newsFeed){this.selectedList.push("newsfeed")}
+            if(Session.getSession('prg_wm').calls){this.selectedList.push("calls")}
+            if(Session.getSession('prg_wm').messages){this.selectedList.push("msg")}
+            if(Session.getSession('prg_wm').socialNotifications){this.selectedList.push("notifications")}
+            if(this.selectedList.length == 5){this.selectedList.push("all")}
+
+        }
+
+    }
+
+    componentDidMount() {
+        console.log("componentDidMount")
+        //this.loadInterval = setInterval(this.loadSearches, this.props.pollInterval);
+    }
+
+    componentWillUnmount () {
+        console.log("componentWillUnmount")
+        clearInterval(this.checkRemainingTimeInterval);
+        this.checkRemainingTimeInterval = null;
+    }
+
+    checkRemainingTime(){
+        //console.log("checkRemainingTime");
+        let _sesData = Session.getSession('prg_wm');
+        let _startTime = new Date().getTime();
+        let _endTime;
+        let timeLeft;
+        let timeIn;
+        if(_sesData){
+            _endTime = _sesData.endTime;
+            timeLeft = _endTime - _startTime;
+            if(timeLeft > 60000){
+                timeLeft =  Moment.utc(timeLeft).format("DD HH mm");
+                timeIn = "min";
+            }else if(timeLeft < 60000 && timeLeft > 0) {
+                timeLeft =  Moment.utc(timeLeft).format("HH mm ss");
+                timeIn = "sec";
+            } else{
+                this.setState({timeBlockIsVisible:true})
+                timeLeft = undefined;
+                clearInterval(this.checkRemainingTimeInterval);
+                this.checkRemainingTimeInterval = null;
+                alert("Work Mode time out");
+                location.reload();
+            }
+            this.setState({remainingTime:timeLeft, remainingTimeIn:timeIn});
+        } else{
+            this.setState({timeBlockIsVisible:true})
+            console.log("NO session data")
+            clearInterval(this.checkRemainingTimeInterval);
+            this.checkRemainingTimeInterval = null;
+            alert("Work Mode time out");
+            location.reload();
+        }
 
     }
 
@@ -94,6 +171,13 @@ export default class Index extends React.Component{
         this.formatDate = date.format("YYYY-MM-DD");
     }
 
+    onCancelTimeClick(){
+        console.log("onCancelTimeClick")
+        clearInterval(this.checkRemainingTimeInterval);
+        this.checkRemainingTimeInterval = null;
+        this.setState({sesStartTime:undefined, sesHowLong:undefined, sesEndTime:undefined, timeBlockIsVisible: true})
+    }
+
     onWorkModeSet(e){
 
         let data;
@@ -114,28 +198,38 @@ export default class Index extends React.Component{
                 }
             }
         }else{
+            e.preventDefault();
             alert("Please Select Work Mode");
+            return false;
         }
         console.log(data);
 
-        let _startTime = new Date().getTime();
-        let howLong = 0;
-        let _endTime = _startTime+howLong;
+        let _startTime = (this.state.sesStartTime)? this.state.sesStartTime:new Date().getTime();
+        let howLong = (this.state.sesHowLong)? this.state.sesHowLong:0;
+        let _endTime = (this.state.sesEndTime)? this.state.sesEndTime:_startTime+howLong;
 
-        if(data.time != 0){
-            howLong = data.time*60*1000;
-            _endTime = _startTime+howLong;
-        } else{
-            console.log("time not selected");
+        if(howLong == 0){
 
-            let now = Moment().format('YYYY-MM-DD HH:mm a');
-            let toFormat = Moment(data.date.day + ' ' + data.date.hh + ':' + data.date.mm +' ' + data.date.period, "YYYY-MM-DD HH:mm a");
-            howLong = toFormat.diff(now);
-            console.log(howLong);
-            _endTime = _startTime+howLong;
+            if(data.time != 0){
+                howLong = data.time*60*1000;
+                _endTime = _startTime+howLong;
+            } else{
+                console.log("time not selected");
+
+                let now = Moment().format('YYYY-MM-DD HH:mm a');
+                let toFormat = Moment(data.date.day + ' ' + data.date.hh + ':' + data.date.mm +' ' + data.date.period, "YYYY-MM-DD HH:mm a");
+                howLong = toFormat.diff(now);
+
+                if(howLong <= 0){
+                    e.preventDefault();
+                    alert("Please Select Time");
+                    return false;
+                }
+                console.log(howLong);
+                _endTime = _startTime+howLong;
+            }
+
         }
-
-
 
         var _wm = {
             rightBottom:(data.mode.indexOf("bars") != -1 || data.mode.indexOf("all") != -1)?true:false,
@@ -152,7 +246,7 @@ export default class Index extends React.Component{
         Session.createSession("prg_wm",_wm);
 
         //it must be at the end. because to create session form must get posted
-        //e.preventDefault(); //can uncomment if we find a way to hide footer & right bar without refresh.
+        e.preventDefault(); //can uncomment if we find a way to hide footer & right bar without refresh.
 
         location.reload();
     }
@@ -192,16 +286,29 @@ export default class Index extends React.Component{
 
     render(){
         let timeLeft = this.state.remainingTime;
-        let days, hrs, mins;
+        let timeIn = this.state.remainingTimeIn;
+        let days, hrs, mins, sec;
         if (timeLeft) {
             timeLeft = timeLeft.split(" ");
-            days = timeLeft[0];
-            hrs = timeLeft[1];
-            mins = timeLeft[2];
-            if(days == "01"){
-                days = "";
-            }else{
-                days = days+"'days ";
+            if(timeIn == "min"){
+                days = timeLeft[0];
+                hrs = timeLeft[1];
+                mins = timeLeft[2];
+                if(days == "01"){
+                    days = "";
+                }else{
+                    days = days+"'days ";
+                }
+            } else{
+                hrs = timeLeft[0];
+                mins = timeLeft[1];
+                sec = timeLeft[2];
+                if(mins == "0"){
+                    mins = "";
+                }else{
+                    mins = mins+"'minutes ";
+
+                }
             }
 
             if(hrs == "0"){
@@ -209,6 +316,7 @@ export default class Index extends React.Component{
             }else{
                 hrs = hrs+"'hours ";
             }
+
         }
 
         return(
@@ -223,7 +331,7 @@ export default class Index extends React.Component{
                                 <span className="icon bar-block"></span>
                                 <div className="field-holder">
                                     <input type="checkbox" value="bars" id="bar-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                    checked={(this.selectedList.includes("bars") || this.selectedList.includes("all"))? true : false } />
+                                           checked={(this.selectedList.includes("bars") || this.selectedList.includes("all"))? true : false } />
                                     <label htmlFor="bar-block-check">Block Right Bar + Bottom Bar</label>
                                 </div>
                             </div>
@@ -231,7 +339,7 @@ export default class Index extends React.Component{
                                 <span className="icon newsfeed-block"></span>
                                 <div className="field-holder">
                                     <input type="checkbox" value="newsfeed" id="newsfeed-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                    checked={(this.selectedList.includes("newsfeed") || this.selectedList.includes("all") )? true : false } />
+                                           checked={(this.selectedList.includes("newsfeed") || this.selectedList.includes("all") )? true : false } />
                                     <label htmlFor="newsfeed-block-check">Block Newsfeed Temporarily</label>
                                 </div>
                             </div>
@@ -239,7 +347,7 @@ export default class Index extends React.Component{
                                 <span className="icon voice-video-block"></span>
                                 <div className="field-holder">
                                     <input type="checkbox" value="calls" id="calls-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                    checked={(this.selectedList.includes("calls") || this.selectedList.includes("all"))? true : false } />
+                                           checked={(this.selectedList.includes("calls") || this.selectedList.includes("all"))? true : false } />
                                     <label htmlFor="calls-block-check">Block Voice / Video Calls</label>
                                 </div>
                             </div>
@@ -247,7 +355,7 @@ export default class Index extends React.Component{
                                 <span className="icon msg-block"></span>
                                 <div className="field-holder">
                                     <input type="checkbox" value="msg" id="msg-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                    checked={(this.selectedList.includes("msg") || this.selectedList.includes("all"))? true : false } />
+                                           checked={(this.selectedList.includes("msg") || this.selectedList.includes("all"))? true : false } />
                                     <label htmlFor="msg-block-check">Block Messages</label>
                                 </div>
                             </div>
@@ -255,7 +363,7 @@ export default class Index extends React.Component{
                                 <span className="icon notifications-block"></span>
                                 <div className="field-holder">
                                     <input type="checkbox" value="notifications" id="notifications-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                    checked={(this.selectedList.includes("notifications") || this.selectedList.includes("all"))? true : false } />
+                                           checked={(this.selectedList.includes("notifications") || this.selectedList.includes("all"))? true : false } />
                                     <label htmlFor="notifications-block-check">Block Social Notifications</label>
                                 </div>
                             </div>
@@ -263,7 +371,7 @@ export default class Index extends React.Component{
                                 <span className="icon all-block"></span>
                                 <div className="field-holder">
                                     <input type="checkbox" value="all" id="all-block-check" onChange={(event)=>{ this.onBlockedModeSelect(event)}}
-                                    checked={(this.selectedList.includes("all"))? true : false } />
+                                           checked={(this.selectedList.includes("all"))? true : false } />
                                     <label htmlFor="all-block-check">Block All</label>
                                 </div>
                             </div>
@@ -277,17 +385,17 @@ export default class Index extends React.Component{
                                             <div className="opt-holder">
                                                 <div className="opt-block clearfix">
                                                     <input type="checkbox" value="30" id="min-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                        checked={(this.state.selectedTimeOpt == 30)? true : false} />
+                                                           checked={(this.state.selectedTimeOpt == 30)? true : false} />
                                                     <label htmlFor="min-check">30 Mins</label>
                                                 </div>
                                                 <div className="opt-block clearfix">
                                                     <input type="checkbox" value="60" id="one-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                        checked={(this.state.selectedTimeOpt == 60)? true : false}/>
+                                                           checked={(this.state.selectedTimeOpt == 60)? true : false}/>
                                                     <label htmlFor="one-hour-check">1 Hour</label>
                                                 </div>
                                                 <div className="opt-block clearfix">
                                                     <input type="checkbox" value="180" id="three-hour-check" onChange={(event)=>{ this.onTimeSelect(event)}}
-                                                        checked={(this.state.selectedTimeOpt == 180)? true : false}/>
+                                                           checked={(this.state.selectedTimeOpt == 180)? true : false}/>
                                                     <label htmlFor="three-hour-check">3 Hour</label>
                                                 </div>
                                             </div>
@@ -326,9 +434,18 @@ export default class Index extends React.Component{
                                         </div>
                                     </div>
                                 </div>
-                            :
-                                <div className="mode-notice" onClick={this.onTimeSummeryClick.bind(this)}>
-                                    <h3 className="title">{"Work Mode on for next " + days + hrs + "and "+ mins+"'minutes" }</h3>
+                                :
+                                <div className="mode-notice">
+                                    <div onClick={this.onTimeSummeryClick.bind(this)}>
+                                        {
+                                            (timeIn == "min")?
+                                                <h3 className="title">{"Work Mode on for next " + days + hrs + "and "+ mins+"'minutes" }</h3>
+                                                :
+                                                <h3 className="title">{"Work Mode on for next " + hrs + mins+"and "+ sec+"'seconds" }</h3>
+                                        }
+
+                                        <i className="fa fa-times" aria-hidden="true" onClick={this.onCancelTimeClick.bind(this)}></i>
+                                    </div>
                                 </div>
                         }
                         <div className="btn-holder">
