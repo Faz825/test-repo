@@ -760,18 +760,25 @@ export class SharePopupNewUsr extends React.Component{
         this.state={
             value: '',
             suggestions: [],
-            addNewUserValue: ''
+            addNewUserValue: '',
+            notebook: '',
+            isShowingModal: false,
+            userToAdd: null
         };
 
         this.loadNewUsers = this.loadNewUsers.bind(this);
         this.shareNote = this.shareNote.bind(this);
         this._handleAddNewUser = this._handleAddNewUser.bind(this);
+        this.getPopupAddUser = this.getPopupAddUser.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
     _handleAddNewUser (e){
         this.setState({
             addNewUserValue: e.target.value
-        }, this.loadNewUsers());
+        },function (){
+            this.loadNewUsers();
+        });
 
     }
 
@@ -830,12 +837,43 @@ export class SharePopupNewUsr extends React.Component{
 
                 Socket.sendNotebookNotification(_notificationData);
 
-                this.loadNewUsers();
+                this.setState({
+                    notebook: notebook.notebook_name,
+                    userToAdd: user,
+                    isShowingModal: true
+                }, function(){
+                    this.getPopupAddUser();
+                    this.loadNewUsers();
+                });
+
+
                 this.props.onLoadNotes();
                 this.props.onShareuser();
             }
         }.bind(this));
 
+    }
+
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
+
+    getPopupAddUser(){
+        let user = this.state.userToAdd;
+        return(
+            <div>
+                {this.state.isShowingModal &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="35%" style={{marginTop: "-100px"}}>
+                        <div className="col-xs-12 shared-user-r-popup">
+                            <p>{this.state.notebook} shared invitation send to {user.first_name} {user.last_name} successfully...</p>
+                            <button className="btn btn-popup">Ok</button>
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
     }
 
     render() {
@@ -879,6 +917,9 @@ export class SharePopupNewUsr extends React.Component{
                     </div>
 
                 </div>
+
+                {this.getPopupAddUser()}
+
             </div>
         )
     }
