@@ -760,18 +760,25 @@ export class SharePopupNewUsr extends React.Component{
         this.state={
             value: '',
             suggestions: [],
-            addNewUserValue: ''
+            addNewUserValue: '',
+            notebook: '',
+            isShowingModal: false,
+            userToAdd: null
         };
 
         this.loadNewUsers = this.loadNewUsers.bind(this);
         this.shareNote = this.shareNote.bind(this);
         this._handleAddNewUser = this._handleAddNewUser.bind(this);
+        this.getPopupAddUser = this.getPopupAddUser.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
     _handleAddNewUser (e){
         this.setState({
             addNewUserValue: e.target.value
-        }, this.loadNewUsers());
+        },function (){
+            this.loadNewUsers();
+        });
 
     }
 
@@ -830,12 +837,43 @@ export class SharePopupNewUsr extends React.Component{
 
                 Socket.sendNotebookNotification(_notificationData);
 
-                this.loadNewUsers();
+                this.setState({
+                    notebook: notebook.notebook_name,
+                    userToAdd: user,
+                    isShowingModal: true
+                }, function(){
+                    this.getPopupAddUser();
+                    this.loadNewUsers();
+                });
+
+
                 this.props.onLoadNotes();
                 this.props.onShareuser();
             }
         }.bind(this));
 
+    }
+
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
+
+    getPopupAddUser(){
+        let user = this.state.userToAdd;
+        return(
+            <div>
+                {this.state.isShowingModal &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="35%" style={{marginTop: "-100px"}}>
+                        <div className="col-xs-12 shared-user-r-popup">
+                            <p>{this.state.notebook} shared invitation send to {user.first_name} {user.last_name} successfully...</p>
+                            <button className="btn btn-popup">Ok</button>
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
     }
 
     render() {
@@ -879,6 +917,9 @@ export class SharePopupNewUsr extends React.Component{
                     </div>
 
                 </div>
+
+                {this.getPopupAddUser()}
+
             </div>
         )
     }
@@ -902,6 +943,9 @@ export class  SharedUsers extends React.Component {
         let _allUsers = this.props.sharedUserList.map(function(user,key){
 
             return (
+                <div>
+            {
+                (user.shared_status == 3) ?
                 <div className="user-block shared clearfix" key={key}>
                     <div className="separator"></div>
                     <div className="img-holder">
@@ -918,24 +962,48 @@ export class  SharedUsers extends React.Component {
                         }
 
                     </div>
-                    {
-                        (_notebook.owned_by == 'me')?
-                        <div>
-                            <div className="action add-new">
-                                <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
-                                    <i className="fa fa-minus" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                            < div className="permission">
-                            <select className="pg-custom-input" onChange={(event)=>_this.props.changePermissions(event, user)} value={user.shared_type}>
-                                <option value="1">Read Only</option>
-                                <option value="2">Read/Write</option>
-                            </select>
-                            </div>
-                        </div> : null
-                    }
+                    <div className="action add-new">
+                        <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
+                            <i className="fa fa-minus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div className="permission">
+                        <select className="pg-custom-input"
+                                onChange={(event)=>_this.props.changePermissions(event, user)}
+                                value={user.shared_type}>
+                            <option value="1">Read Only</option>
+                            <option value="2">Read/Write</option>
+                        </select>
+                    </div>
                     {_this.props.removeSharedUser()}
+                </div> :
+                <div className="user-block shared clearfix" key={key}>
+                    <div className="separator"></div>
+                    <div className="img-holder">
+                        <img src={user.profile_image} alt="User"/>
+                    </div>
+                    <div className="user-details">
+                        <h3 className="user-name shared">{user.user_name}</h3>
+
+                        {
+                            (typeof user.school != 'undefined') ?
+                                <p className="more-info shared">{user.school}</p>
+                                :
+                                <p className="more-info shared">{user.company_name}</p>
+                        }
+
+                    </div>
+                    <div className="action add-new">
+                        <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
+                            <i className="fa fa-minus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div className="permission">
+                        <p className="req-pending">Request Pending</p>
+                    </div>
                 </div>
+            }
+        </div>
             )
         });
 

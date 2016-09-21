@@ -444,8 +444,8 @@ export default class Index extends React.Component{
                                                 <h3 className="title">{"Work Mode on for next " + hrs + mins+"and "+ sec+"'seconds" }</h3>
                                         }
 
+                                        <i className="fa fa-times" aria-hidden="true" onClick={this.onCancelTimeClick.bind(this)}></i>
                                     </div>
-                                    <i className="fa fa-times" aria-hidden="true" onClick={this.onCancelTimeClick.bind(this)}></i>
                                 </div>
                         }
                         <div className="btn-holder">
