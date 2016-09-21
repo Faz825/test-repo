@@ -22,6 +22,10 @@ var NotificationRecipientSchema = new Schema({
     read_status:{
         type:Boolean,
         default:false
+    },
+    seen_status:{
+        type:Boolean,
+        default:false
     }
 },{collection:"notification_recipients"});
 
@@ -39,7 +43,8 @@ NotificationRecipientSchema.statics.saveRecipients = function(data,callBack){
         recipients.push({
             notification_id: Util.toObjectId(data.notification_id),
             recipient: Util.toObjectId(data.recipients[i]),
-            read_status: false
+            read_status: false,
+            seen_status: false
         });
     }
 
