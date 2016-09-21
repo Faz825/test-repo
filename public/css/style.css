@@ -518,6 +518,7 @@ a:focus{
 }
 .signupContentHolder{
 	position: relative;
+	margin-bottom: 10%;
 }
 
 .signupContentHolder .pgs-secratery-img{
@@ -569,7 +570,7 @@ a:focus{
 
 /*About You page*/
 
-.pgs-middle-about-wrapper {height: 100vh; padding-top:130px;padding-bottom: 50px;position: relative;z-index: 500; background-color: rgba(0, 0, 0, 0.6);}
+.pgs-middle-about-wrapper {height: 100%; padding-top:130px;padding-bottom: 50px;position: relative;z-index: 500; background-color: rgba(0, 0, 0, 0.6);}
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.3),
 only screen and (-o-min-device-pixel-ratio: 13/10),
@@ -4652,6 +4653,16 @@ textarea{
 
 	.pg-news-inner-box-content-txt{
 		font-size: 0.95em;
+	}
+
+	.pgs-sign-select-about-col {margin-right:4px;}
+
+	.pgs-sign-left-arrow {
+		left: -8px;
+	}
+
+	.signupContentHolder .pgs-secratery-img {
+		left: -95px;
 	}
 
 	.curr-job-holder .combine-text{

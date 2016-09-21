@@ -593,9 +593,10 @@ var NotificationController ={
         }else{
             var _criteria = {recipient:Util.toObjectId(user_id)};
 
-            NotificationRecipient.updateRecipientNotification(_criteria, _data, function(result){
+            NotificationRecipient.updateRecipientNotificationRefactored(_criteria, _data, function(result){
                 var outPut ={
-                    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+                    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                    data: result
                 };
                 res.status(200).json(outPut);
             });

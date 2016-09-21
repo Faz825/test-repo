@@ -290,7 +290,9 @@ export default class Index extends React.Component{
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             for (var i = 0; i < this.elementsList.length; i++){
-                this.elementsList[i].read_status = true;
+                if(this.elementsList[i].notification_type != 'share_notebook') {
+                    this.elementsList[i].read_status = true;
+                }
             }
             this.setState({eleList: this.elementsList});
         }.bind(this));
