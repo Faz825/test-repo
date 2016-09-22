@@ -91,6 +91,11 @@ export class CoverImage extends React.Component{
             <div className="cover-image-wrapper">
                 <img src={this.state.coverimgSrc} alt="" className="img-responsive pg-profile-cover-banner" />
                 {(this.props.readOnly)? null : <CoverImageUploader imgUpdated={this.coverImgUpdate} /> }
+                <div className="action-btn-holder">
+                    <button className="btn btn-default"><i className="fa fa-comments" aria-hidden="true"></i> Message</button>
+                    <button className="btn btn-default"><i className="fa fa-phone" aria-hidden="true"></i> Call</button>
+                    <button className="btn btn-default"><i className="fa fa-video-camera" aria-hidden="true"></i> Video</button>
+                </div>
             </div>
         );
     }
