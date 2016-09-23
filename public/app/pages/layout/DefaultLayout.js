@@ -184,7 +184,7 @@ export default class DefaultLayout extends React.Component{
                         <ModalDialog width="65%" className="workmode-popup-holder">
                             <div className="workmode-popup-wrapper">
                                 <WorkMode />
-                                <i className="fa fa-times" aria-hidden="true" onClick={this.handleClose.bind(this)}></i>
+                                <i className="fa fa-times close-icon" aria-hidden="true" onClick={this.handleClose.bind(this)}></i>
                             </div>
                         </ModalDialog>
                     </ModalContainer>

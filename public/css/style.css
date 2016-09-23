@@ -462,6 +462,10 @@ a:focus{
 	border: 0;
 }
 
+.cover-image-wrapper .action-btn-holder .btn:hover{
+	background: rgba(255, 255, 255, 1);
+}
+
 .pgs-sign-submit-cancel {border:none;background-color: #a4becd;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;font: 13px 'montserratregular', sans-serif;color: #fff;text-decoration:none !important;text-align:center;padding:12px 0px;width:88px;display:block;text-transform:uppercase;}
 
 .pgs-sign-submit {border:none;background-color: #61b3de;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;font: 13px 'montserratregular', sans-serif;color: #fff;text-decoration:none !important;text-align:center;padding:12px 0px;width:88px;display:block;text-transform:uppercase;float:right;}
@@ -1282,6 +1286,10 @@ input[type=number]::-webkit-outer-spin-button {
 	font: 15px "montserratregular",sans-serif;
 	margin: 0;
 	display: block;
+}
+#pg-pro-share-btn.mutual-friends-holder .pg-pro-share-btn-txt{
+	float: left;
+	margin-right: 5px;
 }
 #pg-profile-pic-detail-wrapper {
 	bottom: 0;
