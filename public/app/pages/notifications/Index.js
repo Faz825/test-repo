@@ -55,8 +55,10 @@ export default class Index extends React.Component{
             let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
 
 
-            if(_notificationType == "share_notebook") {
-                window.location.reload();
+            if(_notificationType == "share_notebook" || _notificationType == "share_notebook_response") {
+
+                console.log("came to load >>" + _notificationType);
+                _this.loadNotifications();
 
             } else if(_notificationType == "Birthday") {
                 _this.state.notificationCount++;
@@ -67,9 +69,6 @@ export default class Index extends React.Component{
                 //_this.state.eleList = _newNotifications;
                 this.setState({eleList: _newNotifications});
                 //_this.setState({notifications:_newNotifications});
-
-            } else if(_notificationType == "share_notebook_response") {
-                window.location.reload();
 
             } else {
                 if(data.user != _this.state.loggedUser.user_name){
@@ -146,6 +145,8 @@ export default class Index extends React.Component{
 
     loadNotifications(){
 
+        console.log("---- going to load notifications again ----");
+
         var _data = {};
         if(this.days == 1){
             _data = {days:this.days, pg:this.currentPage}
@@ -166,6 +167,7 @@ export default class Index extends React.Component{
                     this.setState({notificationCount:data.unreadCount,resultHeader:data.header});
                 }
                 this.setState({notifications:data.notifications});
+                this.elementsList = [];
                 for(var i = 0; i < this.state.notifications.length; i++){
                     this.elementsList.push(this.state.notifications[i]);
                 }
@@ -246,7 +248,7 @@ export default class Index extends React.Component{
                 }).done( function (data, text) {
 
                     if(_notification.notification_type == "share_notebook_response") {
-                        window.location.reload();
+                        this.loadNotifications();
                     } else {
                         window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
                     }
@@ -398,7 +400,7 @@ export default class Index extends React.Component{
                     Socket.sendNotebookNotification(_notificationData);
 
                     if(stt == 'REQUEST_REJECTED') {
-                        window.location.reload();
+                        this.loadNotifications();
                     } else {
                         window.location.href = '/notes';
                     }

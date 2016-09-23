@@ -43,7 +43,7 @@ export default class NotificationPop extends React.Component{
 
         Socket.listenToNotification(function(data){
 
-            let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
+            //let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
 
             _this.loadNotifications();
 
