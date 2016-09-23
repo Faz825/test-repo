@@ -1733,6 +1733,9 @@ export default StyleSheet.create({
         "marginLeft": 0,
         "display": "block"
     },
+    "pg-pro-share-btnmutual-friends-holder": {
+        "paddingBottom": 1
+    },
     "pg-pro-share-btnmutual-friends-holder pg-pro-share-btn-txt": {
         "float": "left",
         "marginRight": 5
@@ -1948,6 +1951,22 @@ export default StyleSheet.create({
     },
     "profile-middle-container-left-col": {
         "marginTop": 15,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "profile-middle-container-left-col pg-profile-middle-container-left-col-details": {
+        "backgroundColor": "#fff",
+        "WebkitBorderRadius": 5,
+        "MozBorderRadius": 5,
+        "borderRadius": 5,
+        "paddingTop": 10,
+        "paddingRight": 15,
+        "paddingBottom": 10,
+        "paddingLeft": 15,
+        "boxShadow": "0px 0px 7px -2px #000"
+    },
+    "newsfeed-middle-container-right-col pg-locked-profile-content": {
         "backgroundColor": "#fff",
         "WebkitBorderRadius": 5,
         "MozBorderRadius": 5,
@@ -2007,6 +2026,14 @@ export default StyleSheet.create({
         "lineHeight": 30,
         "paddingRight": 35,
         "marginBottom": 0
+    },
+    "profile-content-container locked-screen-holder locked-title": {
+        "font": "18px 'montserratregular', sans-serif"
+    },
+    "locked-screen-holder locked-title fa": {
+        "fontSize": 2,
+        "color": "#E82107",
+        "marginRight": 10
     },
     "pg-section-container pg-header h3": {
         "fontWeight": "lighter",
