@@ -315,10 +315,10 @@ export default class Index extends React.Component{
                             </div>
                             <div className="col-xs-8" id="newsfeed-middle-container-right-col">
                                 <div className="row pg-newsfeed-right-title-section">
-                                    <div className="col-xs-6">
+                                    <div className="col-xs-5">
                                         <h2 className="pg-newsfeed-right-title-section-txt">Updates</h2>
                                     </div>
-                                    <div className="col-xs-6">
+                                    <div className="col-xs-7">
                                         <h3 className="pg-newsfeed-right-title-section-date">{this.current_date}</h3>
                                     </div>
                                 </div>

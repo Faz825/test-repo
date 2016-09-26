@@ -220,6 +220,56 @@ NotificationRecipientSchema.statics.updateRecipientNotification = function(crite
 };
 
 /**
+ * Update Notification
+ * @param criteria
+ * @param data
+ * @param callBack
+ */
+NotificationRecipientSchema.statics.updateRecipientNotificationRefactored = function(criteria, data, callBack){
+
+    var _this = this,
+        _async = require('async'),
+        Notification = require('mongoose').model('Notification');
+
+    _async.waterfall([
+
+        function getNotificationsToRecipient(callBack){
+            _this.find({
+                recipient: criteria.recipient,
+                read_status: false
+            }).exec(function (err, resultSet) {
+                if (!err) {
+                    callBack(null, resultSet);
+                }
+            });
+        },
+        function loopNotificationByRecipientId(notificationRecipients, callBack) {
+            _async.eachSeries(notificationRecipients, function(notificationRecipient, callBack){
+
+                Notification.getFirstNotification({_id: notificationRecipient.notification_id},function(notification){
+                    if(notification.result.notification_type != 'share_notebook'){
+                        var updateData = {read_status: true};
+                        _this.update(
+                            {_id: notificationRecipient._id}, {$set:updateData}, function(err,resultSet){
+                                callBack(null);
+                            });
+                    }else{
+                        callBack(null);
+                    }
+
+                });
+
+            },function(err){
+                callBack(null);
+            });
+        }
+
+    ],function(err){
+        callBack('Updated');
+    });
+};
+
+/**
  * Get notifications based on criteria
  * @param criteria
  * @param callBack

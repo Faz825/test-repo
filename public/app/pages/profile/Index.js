@@ -243,22 +243,47 @@ export default class Index extends React.Component{
                                         <div className="row row-clr pg-profile-heading">
                                             <h1>{profileName + "'s"} Resume</h1>
                                         </div>
-                                        <Intro uname={this.state.uname} user={this.state.user} loadProfileData={this.loadProfileData}/>
-                                        <EducationalInfo uname={this.state.uname} />
-                                        <WorkExperience uname={this.state.uname} data={this.state.data} loadExperiences={this.loadExperiences} loadProfileData={this.loadProfileData}/>
-                                        <SkillsAndInterests uname={this.state.uname} />
+                                        {
+                                            (this.state.connectionStatus == 3)?
+                                                <div className="locked-screen-holder">
+                                                    <h3 className="locked-title"><i className="fa fa-lock" aria-hidden="true"></i>Resume is locked.</h3>
+                                                    <p className="locked-msg">{profileName} is not a friends of yours yet. Send him a friend request by clicking "Add as a Connection" button.</p>
+                                                </div>
+                                            :
+                                                <div>
+                                                    <Intro uname={this.state.uname} user={this.state.user} loadProfileData={this.loadProfileData}/>
+                                                    <EducationalInfo uname={this.state.uname} />
+                                                    <WorkExperience uname={this.state.uname} data={this.state.data} loadExperiences={this.loadExperiences} loadProfileData={this.loadProfileData}/>
+                                                    <SkillsAndInterests uname={this.state.uname} />
+                                                </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
 
                             <div className="col-xs-6" id="newsfeed-middle-container-right-col">
-                                <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                {
+                                    (this.state.connectionStatus == 3)?
+                                        <div className="row row-clr pg-locked-profile-content">
+                                            <div className="row row-clr pg-profile-heading">
+                                                <h1>{profileName + "'s"} Personal Feed</h1>
+                                            </div>
+                                            <div className="locked-screen-holder">
+                                                <h3 className="locked-title"><i className="fa fa-lock" aria-hidden="true"></i>Personal Feed is locked.</h3>
+                                                <p className="locked-msg">{profileName} is not a friends of yours yet. Send him a friend request by clicking "Add as a Connection" button.</p>
+                                            </div>
+                                        </div>
+                                    :
+                                        <div>
+                                            <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
                                                 uname = {this.state.uname} profileUsr={this.state.user} connectionStatus={this.state.connectionStatus} />
-                                <ListPostsElement posts={this.state.posts}
-                                                  uname = {this.state.uname}
-                                                  onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
-                                                  onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
-                                                  onLikeSuccess = {this.onLikeSuccess.bind(this)}/>
+                                            <ListPostsElement posts={this.state.posts}
+                                                uname = {this.state.uname}
+                                                onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                                onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
+                                                onLikeSuccess = {this.onLikeSuccess.bind(this)}/>
+                                        </div>
+                                }
                             </div>
                             <div className="col-xs-6"></div>
                         </div>

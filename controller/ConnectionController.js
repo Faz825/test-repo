@@ -78,6 +78,65 @@ var ConnectionController ={
         });
     },
 
+    getMutualConnections:function(req,res){
+
+        var User = require('mongoose').model('User'),
+            Connection = require('mongoose').model('Connection'),
+            CurrentSession = Util.getCurrentSession(req),
+            _async = require('async'),
+            _grep = require('grep-from-array'),
+            _mutual_cons = [];
+
+        _async.waterfall([
+                function getMyConnections(callback){
+                    var criteria = {
+                        user_id :CurrentSession.id,
+                        q:req.params['q']
+                    };
+
+                    Connection.getMyConnection(criteria,function(resultSet){
+                        var my_cons = resultSet.results;
+                        callback(null, my_cons);
+                    })
+                },
+                function getFriendsConnection(resultSet, callback){
+                    var myConnection = resultSet,
+                        criteria = {
+                            user_id :req.params['uid'],
+                            q:req.params['q']
+                        };
+
+                    Connection.getMyConnection(criteria,function(resultSet){
+                        var friend_cons = resultSet.results;
+
+                        for(var inc = 0; inc < myConnection.length; inc++){
+                            var user_id = myConnection[inc].user_id;
+                            if(user_id != req.params['uid']) {
+
+                                var mutual_con = _grep(friend_cons, function (e) {
+                                    return e.user_id == user_id;
+                                });
+                                if(mutual_con[0] != null){
+                                    _mutual_cons.push(mutual_con[0]);
+                                }
+                            }
+                        }
+                        callback(null);
+                    });
+                }
+            ],function(err){
+                var outPut = {
+                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS)
+                };
+                outPut['mutual_cons'] = _mutual_cons;
+                outPut['mutual_cons_count'] = _mutual_cons.length;
+                res.status(200).send(outPut);
+            }
+        );
+
+
+    },
+
     /**
      * Send Frind Request
      * @param req

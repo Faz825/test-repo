@@ -31,7 +31,12 @@ export default class Header extends Component {
         return (
             <div className="row row-clr" id="pg-profile-banner-area">
                 <CoverImage dt={this.props.user} readOnly={read_only}/>
-                <ConnectionIndicator dt ={this.props.user}  readOnly={read_only}/>
+                {
+                    (read_only)?
+                        <MutualConnectionIndicator />
+                    :
+                        <ConnectionIndicator dt ={this.props.user}  readOnly={read_only}/>
+                }
                 <ConnectionStatus connectionStatus={this.props.connectionStatus} onAddFriend = {this.props.onAddFriend}
                                   onAcceptFriendRequest = {this.props.onAcceptFriendRequest}
                                   usrId={this.props.usrId}/>
@@ -91,6 +96,11 @@ export class CoverImage extends React.Component{
             <div className="cover-image-wrapper">
                 <img src={this.state.coverimgSrc} alt="" className="img-responsive pg-profile-cover-banner" />
                 {(this.props.readOnly)? null : <CoverImageUploader imgUpdated={this.coverImgUpdate} /> }
+                <div className="action-btn-holder">
+                    <button className="btn btn-default"><i className="fa fa-comments" aria-hidden="true"></i> Message</button>
+                    <button className="btn btn-default"><i className="fa fa-phone" aria-hidden="true"></i> Call</button>
+                    <button className="btn btn-default"><i className="fa fa-video-camera" aria-hidden="true"></i> Video</button>
+                </div>
             </div>
         );
     }
@@ -120,6 +130,25 @@ const ConnectionIndicator =(props)=> {
                             Connections
                         </a>
                 }
+        </div>
+    );
+};
+
+/**
+ * Show Mutual Friends count
+ */
+const MutualConnectionIndicator =(props)=> {
+    let _style ={
+        "width": "102px",
+        "textTransform": "uppercase"
+    }
+
+    return (
+        <div id="pg-pro-share-btn" className="mutual-friends-holder clearfix" style={_style}>
+            <p>
+                <span className="pg-pro-share-btn-txt">23</span>
+                Mutual Connections
+            </p>
         </div>
     );
 };
