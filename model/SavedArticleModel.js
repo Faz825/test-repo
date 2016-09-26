@@ -27,6 +27,11 @@ var SavedArticleSchema = new Schema({
         trim:true,
         default:null
     },
+    url:{
+        type:String,
+        trim:true,
+        default:null
+    },
     created_at:{
         type:Date
     },
@@ -60,6 +65,7 @@ SavedArticleSchema.statics.saveArticle =function(articel,callBack){
     _article.content=articel.content;
     _article.article_date=articel.article_date;
     _article.channel = articel.channel;
+    _article.url = articel.url;
     _article.save(function(err,resultSet){
         console
         if(!err){
