@@ -117,7 +117,7 @@ var ConnectionController ={
                                     return e.user_id == user_id;
                                 });
                                 if(mutual_con[0] != null){
-                                    _mutual_cons.push(mutual_con);
+                                    _mutual_cons.push(mutual_con[0]);
                                 }
                             }
                         }
@@ -129,6 +129,7 @@ var ConnectionController ={
                     status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS)
                 };
                 outPut['mutual_cons'] = _mutual_cons;
+                outPut['mutual_cons_count'] = _mutual_cons.length;
                 res.status(200).send(outPut);
             }
         );
