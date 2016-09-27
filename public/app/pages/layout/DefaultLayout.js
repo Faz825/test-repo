@@ -11,6 +11,8 @@ import QuickChatHandler from '../chat/QuickChatHandler';
 import WorkMode from '../workmode/Index';
 import NotificationPop from '../notifications/NotificationPop';
 import Moment from 'moment';
+import PubSub from 'pubsub-js';
+import Chat from '../../middleware/Chat';
 
 export default class DefaultLayout extends React.Component{
     constructor(props){
@@ -58,7 +60,62 @@ export default class DefaultLayout extends React.Component{
         this.quickChatUsers = [];
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
+        this.doVideoCall = this.doVideoCall.bind(this);
+        this.doAudioCall = this.doAudioCall.bind(this);
     }
+
+    componentWillMount() {
+        let _this = this;
+        let FVM = "FRIEND_PROFILE_MESSAGING";
+        let FPVC = "FRIEND_PROFILE_VIDEO_CALL";
+        let VIDEO_CALL = "VIDEO";
+
+        PubSub.subscribe(FVM, function( msg, data ){
+
+            //console.log( "start adding new chat ==" );
+            //console.log( data );
+            let chatExists = false;
+            if(_this.quickChatUsers.length > 0) {
+                for(let con in _this.quickChatUsers){
+                    if(_this.quickChatUsers[con].title == data.title){
+                        chatExists = true;
+                    }
+                }
+            }
+
+            if(!chatExists) {
+                _this.quickChatUsers.push(data);
+                _this.setState({chatBubble:_this.quickChatUsers});
+            }
+        });
+
+        PubSub.subscribe(FPVC, function( msg, data ){
+
+            //console.log( "start video call ==" );
+            //console.log( data );
+
+            if(data.type == VIDEO_CALL) {
+                //console.log( "video call ==" );
+                _this.doVideoCall(data);
+            } else {
+                //console.log( "call only ==" );
+                _this.doAudioCall(data);
+            }
+
+        });
+
+
+
+    }
+
+    doVideoCall(callObj){
+        Chat.startOutgoingCall(callObj.uri, true);
+    };
+
+    doAudioCall(callObj){
+        Chat.startOutgoingCall(callObj.uri, false);
+    };
+
 
     checkWorkMode(){
         if(Session.getSession('prg_wm') != null){

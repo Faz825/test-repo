@@ -5,8 +5,10 @@
  */
 import React,{Component} from 'react';
 import Session  from '../../middleware/Session';
-import CoverImageUploader from '../../components/elements/CoverImageUploader'
-import ProfileImageUploader from '../../components/elements/ProfileImageUploader'
+import CoverImageUploader from '../../components/elements/CoverImageUploader';
+import ProfileImageUploader from '../../components/elements/ProfileImageUploader';
+import PubSub from 'pubsub-js';
+
 export default class Header extends Component {
 
     constructor(props) {
@@ -28,11 +30,13 @@ export default class Header extends Component {
         }
 
         let read_only = (this.state.loggedUser.id == this.props.user.user_id)?false:true;
+        let isOnFriendsProfile = (this.state.loggedUser.id != this.props.user.user_id && this.props.connectionStatus == 0) ? true : false;
+
         return (
             <div className="row row-clr" id="pg-profile-banner-area">
-                <CoverImage dt={this.props.user} readOnly={read_only}/>
+                <CoverImage dt={this.props.user} readOnly={read_only} onFriendsProfile={isOnFriendsProfile}/>
                 {
-                    (read_only)?
+                    (isOnFriendsProfile)?
                         <MutualConnectionIndicator />
                     :
                         <ConnectionIndicator dt ={this.props.user}  readOnly={read_only}/>
@@ -59,6 +63,57 @@ export class CoverImage extends React.Component{
         }
         this.coverImgUpdate = this.coverImgUpdate.bind(this);
         this.loggedUser = Session.getSession('prg_lg');
+    }
+
+    onLoadQuickChatMessage() {
+
+        if(!this.props.onFriendsProfile) {
+            return;
+        }
+
+        let friend_title = this.props.dt.user_name;
+        let progTitle = 'proglobe' + friend_title;
+        var FPM = "FRIEND_PROFILE_MESSAGING";
+
+        let messagingObj = {
+            date: "",
+            id: "",
+            latestMsg: "",
+            message_id: "",
+            proglobeTitle: progTitle,
+            tabId: "",
+            title: friend_title,
+            user:this.props.dt
+        };
+
+        PubSub.publishSync(FPM, messagingObj);
+    }
+
+    onLoadVideoCall(t) {
+
+        if(!this.props.onFriendsProfile) {
+            return;
+        }
+
+        let friend_title = this.props.dt.user_name;
+        let friend_uri = 'usr:proglobe' + friend_title;
+        let progTitle = 'proglobe' + friend_title;
+        let FPVC = "FRIEND_PROFILE_VIDEO_CALL";
+
+        let messagingObj = {
+            date: "",
+            id: "",
+            latestMsg: "",
+            message_id: "",
+            proglobeTitle: progTitle,
+            tabId: "",
+            title: friend_title,
+            user: this.props.dt,
+            uri: friend_uri,
+            type: t
+        };
+
+        PubSub.publishSync(FPVC, messagingObj);
     }
 
     coverImgUpdate(data){
@@ -96,11 +151,16 @@ export class CoverImage extends React.Component{
             <div className="cover-image-wrapper">
                 <img src={this.state.coverimgSrc} alt="" className="img-responsive pg-profile-cover-banner" />
                 {(this.props.readOnly)? null : <CoverImageUploader imgUpdated={this.coverImgUpdate} /> }
-                <div className="action-btn-holder">
-                    <button className="btn btn-default"><i className="fa fa-comments" aria-hidden="true"></i> Message</button>
-                    <button className="btn btn-default"><i className="fa fa-phone" aria-hidden="true"></i> Call</button>
-                    <button className="btn btn-default"><i className="fa fa-video-camera" aria-hidden="true"></i> Video</button>
-                </div>
+                {(this.props.onFriendsProfile) ?
+                    <div className="action-btn-holder">
+                        <button className="btn btn-default" onClick={()=>this.onLoadQuickChatMessage()}><i className="fa fa-comments" aria-hidden="true"></i> Message</button>
+                        <button className="btn btn-default" onClick={()=>this.onLoadVideoCall('CALL')}><i className="fa fa-phone" aria-hidden="true"></i> Call</button>
+                        <button className="btn btn-default" onClick={()=>this.onLoadVideoCall('VIDEO')}><i className="fa fa-video-camera" aria-hidden="true"></i> Video</button>
+                    </div>
+                    :
+                    null
+                }
+
             </div>
         );
     }
