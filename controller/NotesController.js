@@ -366,7 +366,7 @@ var NotesController ={
 
         var noteBookId = req.body.noteBookId;
 
-        var notifyUsers = [];
+        var notifyUsers = [req.body.userId];
 
         _async.waterfall([
 
@@ -377,7 +377,7 @@ var NotesController ={
             },
             function shareNoteBook(resultSet, callBack) {
                 var sharedUsers = resultSet.shared_users;
-                notifyUsers = resultSet.shared_users;
+                //notifyUsers = resultSet.shared_users;
                 _async.waterfall([
                     function isESIndexExists(callBack){
                         var _cache_key = "idx_user:"+NoteBookConfig.CACHE_PREFIX+req.body.userId.toString();
@@ -467,7 +467,6 @@ var NotesController ={
                     }
                     Notification.saveNotification(_data, function(res){
                         if(res.status == 200){
-                            //_commentData['notification_id'] = res.result._id;
                             callBack(null,res.result._id);
                         }
 
@@ -478,16 +477,12 @@ var NotesController ={
                 }
             },
             function notifyingUsers(notification_id, callBack){
-                var userList = [];
-                for(var i = 0; notifyUsers.length > i; i++) {
-                    userList.push(notifyUsers[i].user_id);
-                }
 
-                if(typeof notification_id != 'undefined' && userList.length > 0){
+                if(typeof notification_id != 'undefined' && notifyUsers.length > 0){
 
                     var _data = {
                         notification_id:notification_id,
-                        recipients:userList
+                        recipients:notifyUsers
                     };
                     NotificationRecipient.saveRecipients(_data, function(res){
                         callBack(null);

@@ -72,8 +72,6 @@ export default class DefaultLayout extends React.Component{
 
         PubSub.subscribe(FVM, function( msg, data ){
 
-            //console.log( "start adding new chat ==" );
-            //console.log( data );
             let chatExists = false;
             if(_this.quickChatUsers.length > 0) {
                 for(let con in _this.quickChatUsers){
@@ -91,14 +89,9 @@ export default class DefaultLayout extends React.Component{
 
         PubSub.subscribe(FPVC, function( msg, data ){
 
-            //console.log( "start video call ==" );
-            //console.log( data );
-
             if(data.type == VIDEO_CALL) {
-                //console.log( "video call ==" );
                 _this.doVideoCall(data);
             } else {
-                //console.log( "call only ==" );
                 _this.doAudioCall(data);
             }
 

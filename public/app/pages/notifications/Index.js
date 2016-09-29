@@ -136,7 +136,7 @@ export default class Index extends React.Component{
 
                     //_this.setState({notifications:_newNotifications});
                     //_this.elementsList = _newNotifications;
-                    this.setState({eleList: _newNotifications});
+                    _this.setState({eleList: _newNotifications});
                 }
 
             }
@@ -165,9 +165,9 @@ export default class Index extends React.Component{
             if(data.status.code == 200){
                 if(this.days == 1){
                     this.setState({notificationCount:data.unreadCount,resultHeader:data.header});
+                    this.elementsList = [];
                 }
                 this.setState({notifications:data.notifications});
-                this.elementsList = [];
                 for(var i = 0; i < this.state.notifications.length; i++){
                     this.elementsList.push(this.state.notifications[i]);
                 }
