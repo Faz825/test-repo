@@ -19,6 +19,12 @@ let errorStyles = {
     display       : "block"
 };
 
+let unfriendStyles = {
+    color         : "#ed0909",
+    fontSize      : "0.8em",
+    margin        : "0 15px"
+};
+
 export default class QuickChatBubble extends React.Component{
     constructor(props) {
         super(props);
@@ -140,14 +146,18 @@ export class ChatHeader extends React.Component{
     }
 
     render() {
+        let conv = this.props.conv;
         let user = this.props.conv.user;
+
         return (
             <div className="header-wrapper">
                 <div className="chat-user-header clearfix">
                     <div className="chat-pro-img">
                         <img src={user.images.profile_image.http_url} alt={user.first_name + " " + user.last_name} />
                     </div>
-                    <h3 className="connection-name">{user.first_name + " " + user.last_name}</h3>
+                    <h3 className="connection-name">{user.first_name + " " + user.last_name}
+                        {typeof conv.connection_status != 'undefined' && conv.connection_status == 'CONNECTION_UNFRIEND' ? <span className="form-validation-alert" style={unfriendStyles}>( Not a Friend )</span> : null}
+                    </h3>
                 </div>
                 <div className="call-opts-wrapper clearfix">
                     <div className="chat-opts">

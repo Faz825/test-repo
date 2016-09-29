@@ -130,7 +130,8 @@ export default class QuickChatHandler extends React.Component{
                                 tabId:tabId,
                                 proglobeTitle:proglobe_title,
                                 title:title,
-                                user:this.state.my_connections[my_con]
+                                user:this.state.my_connections[my_con],
+                                connection_status: this.state.my_connections[my_con].connection_status
                             };
 
                             //Update Conversation data

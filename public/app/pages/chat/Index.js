@@ -18,6 +18,12 @@ let errorStyles = {
     display       : "block"
 };
 
+let unfriendStyles = {
+    color         : "#ed0909",
+    fontSize      : "0.8em",
+    margin        : "0 15px"
+};
+
 export default class Index extends React.Component{
     constructor(props) {
         super(props);
@@ -124,7 +130,8 @@ export default class Index extends React.Component{
                                 tabId:tabId,
                                 proglobeTitle:proglobe_title,
                                 title:title,
-                                user:this.state.my_connections[my_con]
+                                user:this.state.my_connections[my_con],
+                                connection_status: this.state.my_connections[my_con].connection_status
                             };
 
                             //Update Conversation data
@@ -672,7 +679,10 @@ export class ChatList extends React.Component{
                             <img src={conv.user.images.profile_image.http_url}/>
                         </div>
                         <div className="chat-body">
-                            <span className="connection-name">{conv.user.first_name + " " + conv.user.last_name}</span>
+                            <span className="connection-name">{conv.user.first_name + " " + conv.user.last_name}
+                                {typeof conv.connection_status != 'undefined' && conv.connection_status == 'CONNECTION_UNFRIEND' ? <span className="form-validation-alert" style={unfriendStyles}>( Not a Friend )</span> : null}
+                            </span>
+
                             <p className="msg">{conv.latestMsg}</p>
                             <span className="chat-date">{conv.date}</span>
                         </div>

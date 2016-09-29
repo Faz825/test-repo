@@ -189,7 +189,8 @@ export class ConversationList extends React.Component{
                             tabId:notificationId,
                             proglobeTitle:proglobe_title,
                             title:title,
-                            user:this.props.connections[my_con]
+                            user:this.props.connections[my_con],
+                            connection_status:this.props.connections[my_con].connection_status
                         };
 
                         if(this.conv_ids.indexOf(c.id) == -1){
