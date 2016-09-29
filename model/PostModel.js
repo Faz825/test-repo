@@ -400,63 +400,75 @@ PostSchema.statics.postList=function(userId,posts,callBack){
                 data_by_date[_created_date] = [];
             }
 
-
-            //GET COMMENT COUNT
-            Comment.getCommentCount(_post.post_id,function(commentCount){
-                _post['comment_count'] = commentCount;
-
-                if(post.post_owned_by !== undefined){
-                    //Find User from Elastic search
-                    var profile_query={
-                        q:"user_id:"+post.post_owned_by.toString(),
-                        index:'idx_usr'
-                    };
-                    var query={
-                        q:"user_id:"+post.created_by.toString(),
-                        index:'idx_usr'
-                    };
-                    ES.search(query,function(csResultSet){
-                        _post['created_by'] = csResultSet.result[0];
-
-                        ES.search(profile_query,function(csResultSet){
-                            delete _post['post_owned_by'];
-                            _post['post_owned_by'] = csResultSet.result[0];
-
-                            Like.getLikedUsers(userId,_post.post_id,0,function(likedUsers,likedUserIds){
-
-                                _post['like_count'] = likedUsers.length;
-                                _post['liked_user'] = likedUsers;
-                                _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1)?0:1;
-
-                                data_by_date[_created_date].push(_post) ;
-
-                                callBack();
-                            })
-
-                        });
+            _async.waterfall([
+            //GET SHARED COUT
+                function getSharedCount(callBack){
+                    _this.getSharedCount(_post, function (sharedCount) {
+                        _post['share_count'] = sharedCount;
+                        callBack(null);
                     });
-                }else {
-                    //Find User from Elastic search
-                    var query = {
-                        q: "user_id:" + post.created_by.toString(),
-                        index: 'idx_usr'
-                    };
-                    ES.search(query, function (csResultSet) {
-                        _post['created_by'] = csResultSet.result[0];
-                        Like.getLikedUsers(userId, _post.post_id, 0, function (likedUsers, likedUserIds) {
+                },
+                function getCommentCount(callBack) {
+                   //GET COMMENT COUNT
+                   Comment.getCommentCount(_post.post_id, function (commentCount) {
+                       _post['comment_count'] = commentCount;
 
-                            _post['like_count'] = likedUsers.length;
-                            _post['liked_user'] = likedUsers;
-                            _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1) ? 0 : 1;
+                       if (post.post_owned_by !== undefined) {
+                           //Find User from Elastic search
+                           var profile_query = {
+                               q: "user_id:" + post.post_owned_by.toString(),
+                               index: 'idx_usr'
+                           };
+                           var query = {
+                               q: "user_id:" + post.created_by.toString(),
+                               index: 'idx_usr'
+                           };
+                           ES.search(query, function (csResultSet) {
+                               _post['created_by'] = csResultSet.result[0];
 
-                            data_by_date[_created_date].push(_post);
+                               ES.search(profile_query, function (csResultSet) {
+                                   delete _post['post_owned_by'];
+                                   _post['post_owned_by'] = csResultSet.result[0];
 
-                            callBack();
-                        })
-                    });
+                                   Like.getLikedUsers(userId, _post.post_id, 0, function (likedUsers, likedUserIds) {
+
+                                       _post['like_count'] = likedUsers.length;
+                                       _post['liked_user'] = likedUsers;
+                                       _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1) ? 0 : 1;
+
+                                       data_by_date[_created_date].push(_post);
+
+                                       callBack();
+                                   })
+
+                               });
+                           });
+                       } else {
+                           //Find User from Elastic search
+                           var query = {
+                               q: "user_id:" + post.created_by.toString(),
+                               index: 'idx_usr'
+                           };
+                           ES.search(query, function (csResultSet) {
+                               _post['created_by'] = csResultSet.result[0];
+                               Like.getLikedUsers(userId, _post.post_id, 0, function (likedUsers, likedUserIds) {
+
+                                   _post['like_count'] = likedUsers.length;
+                                   _post['liked_user'] = likedUsers;
+                                   _post['is_i_liked'] = (likedUserIds.indexOf(userId) == -1) ? 0 : 1;
+
+                                   data_by_date[_created_date].push(_post);
+
+                                   callBack();
+                               })
+                           });
+                       }
+
+                   });
                 }
-
-            });
+            ],function(err){
+                callBack();
+            })
 
         },
         function(err){
@@ -475,8 +487,35 @@ PostSchema.statics.postList=function(userId,posts,callBack){
         }
     );
 
-}
+};
 
+
+/**
+ * Format Post list
+ * @param posts
+ */
+PostSchema.statics.getSharedCount=function(post,callBack){
+    var _this = this,
+        _async = require('async');
+
+    var criteria = {
+        $and : [
+            {shared_post_id: Util.toObjectId(post.post_id)},
+            {post_mode: 'SP'}
+        ]
+    };
+
+    _this.find(criteria)
+        .exec(function(err,resultSet){
+            if(!err){
+                callBack(resultSet.length);
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
 
 /**
  * Format Post object

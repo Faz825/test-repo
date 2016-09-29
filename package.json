@@ -39,6 +39,7 @@
     "nodemailer": "^2.1.0",
     "passport": "~0.2.0",
     "passport-local": "~1.0.0",
+    "pubsub-js": "^1.5.3",
     "pusher": "^1.2.1",
     "react": "^0.14.6",
     "react-autosuggest": "^3.5.0",

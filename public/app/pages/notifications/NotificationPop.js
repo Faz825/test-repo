@@ -16,7 +16,7 @@ export default class NotificationPop extends React.Component{
             hours: "",
             minutes: "",
             notifications: [],
-            notificationCount: 0,
+            notificationCount: this.props.notifyCount,
             seeAllNotifications: false,
             resultHeader:[],
             eleList:[],
@@ -35,7 +35,7 @@ export default class NotificationPop extends React.Component{
     }
 
     componentWillReceiveProps(nextProps){
-        this.setState({notifiType: nextProps.notifiType});
+        this.setState({notifiType: nextProps.notifiType, notificationCount: nextProps.notifyCount});
     }
 
     listenToNotification(){
@@ -43,105 +43,47 @@ export default class NotificationPop extends React.Component{
 
         Socket.listenToNotification(function(data){
 
-            let _existingNotifications = _this.state.eleList;
-            let _newNotifications = [];
-            let _oldNotification = {}, _newNotification = {};
-            let _alreadyExist = false;
+            //let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
 
-            let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
+            _this.loadNotifications();
 
-
-            if(_notificationType == "share_notebook") {
-                window.location.reload();
-
-            } else if(_notificationType == "Birthday") {
-                _this.state.notificationCount++;
-                _newNotifications.push(data);
-                for (var j = 0; j < _existingNotifications.length; j++) {
-                    _newNotifications.push(_existingNotifications[j]);
-                }
-                //_this.state.eleList = _newNotifications;
-                this.setState({eleList: _newNotifications});
-                //_this.setState({notifications:_newNotifications});
-
-            } else if(_notificationType == "share_notebook_response") {
-                window.location.reload();
-
-            } else {
-                if(data.user != _this.state.loggedUser.user_name){
-
-                    _this.state.notificationCount++;
-
-                    for(var j = _existingNotifications.length - 1; j >= 0; j--){
-                        if(_existingNotifications[j].post_id == data.data.post_id && _existingNotifications[j].notification_type == data.data.notification_type){
-                            _alreadyExist = true;
-                            _oldNotification = _existingNotifications[j];
-                        } else{
-                            _newNotifications.unshift(_existingNotifications[j]);
-                        }
-                    }
-
-                    if(_alreadyExist == true){
-
-                        let _oldsender = _oldNotification.sender_name;
-                        let _newsender = data.data.notification_sender.first_name+" "+data.data.notification_sender.last_name;
-                        let _oldSenderCount = _oldNotification.sender_count;
-
-                        let _senderFirstArray = _oldsender.split("and");
-
-                        if(_senderFirstArray.length > 1){
-                            let _senderSecondArray = _senderFirstArray[0].trim().split(",");
-                            if(_senderSecondArray.length > 1){
-                                _oldSenderCount++;
-                                _newsender += ", "+_senderSecondArray[0].trim()+" and "+_senderSecondArray[1].trim();
-                            } else{
-                                _newsender += " and "+_senderSecondArray[0].trim();
-                            }
-                        } else{
-                            _newsender += " and "+_senderFirstArray[0].trim();
-                        }
-
-                        let _createdAt = _oldNotification.created_at;
-                        _createdAt['time_a_go'] = 'Just Now';
-
-                        _newNotification = {
-                            post_id:_oldNotification.post_id,
-                            notification_type:_oldNotification.notification_type,
-                            read_status:false,
-                            created_at:_createdAt,
-                            post_owner_username:_oldNotification.post_owner_username,
-                            post_owner_name:_oldNotification.post_owner_name,
-                            sender_profile_picture:data.data.notification_sender.profile_image,
-                            sender_name:_newsender,
-                            sender_count:_oldSenderCount
-                        };
-                        _newNotifications.unshift(_newNotification);
-                    }else{
-                        $.ajax({
-                            url: '/notifications/get-details',
-                            method: "GET",
-                            dataType: "JSON",
-                            data: {post_id:data.data.post_id, notification_type:data.data.notification_type},
-                            headers: { 'prg-auth-header':_this.state.loggedUser.token }
-                        }).done( function (data, text) {
-                            if(data.status.code == 200){
-                                _newNotifications.unshift(data.data);
-                            }
-                        }.bind(_this));
-
-                    }
-
-                    //_this.setState({notifications:_newNotifications});
-                    //_this.elementsList = _newNotifications;
-                    this.setState({eleList: _newNotifications});
-                }
-
-            }
         });
     }
 
-    loadNotifications(){
 
+    redirectToNotification(_notification){
+
+        if(_notification.notification_type != 'Birthday' && _notification.notification_type != "share_notebook"){
+
+            if(!_notification.read_status) {
+                $.ajax({
+                    url: '/notifications/update-notifications',
+                    method: "POST",
+                    dataType: "JSON",
+                    data:{post_id:_notification.post_id, notification_type:_notification.notification_type, notification_id:_notification.notification_id},
+                    headers: { 'prg-auth-header':this.state.loggedUser.token }
+                }).done( function (data, text) {
+
+                    if(_notification.notification_type == "share_notebook_response") {
+                        this.loadNotifications();
+                    } else {
+                        window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
+                    }
+
+                }.bind(this));
+
+            } else {
+
+                if(_notification.notification_type != "share_notebook_response") {
+                    window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
+                }
+            }
+
+        }
+
+    }
+
+    loadNotifications(){
         var _data = {};
         if(this.days == 1){
             _data = {days:this.days, pg:this.currentPage}
@@ -160,6 +102,7 @@ export default class NotificationPop extends React.Component{
             if(data.status.code == 200){
                 if(this.days == 1){
                     this.setState({notificationCount:data.unreadCount,resultHeader:data.header});
+                    this.elementsList = [];
                 }
                 this.setState({notifications:data.notifications});
                 for(var i = 0; i < this.state.notifications.length; i++){
@@ -173,9 +116,9 @@ export default class NotificationPop extends React.Component{
 
     onUpdateSharedNoteBook(notification, stt) {
 
-        if(typeof notification.notebook_id != 'undefined' && notification.notification_type == "share_notebook"){
+        if(typeof notification.notebook_id != 'undefined' && notification.notification_type == "share_notebook" && !notification.read_status){
 
-                $.ajax({
+            $.ajax({
                 url: '/notifications/notebook-update',
                 method: "POST",
                 dataType: "JSON",
@@ -183,20 +126,20 @@ export default class NotificationPop extends React.Component{
                 headers: { 'prg-auth-header':this.state.loggedUser.token }
             }).done( function (data, text) {
 
-                    let _notificationData = {
-                        notebook_id:notification.notebook_id,
-                        notification_type:"share_notebook_response",
-                        notification_sender:this.state.loggedUser,
-                        notification_receiver:notification.sender_user_name
-                    };
+                let _notificationData = {
+                    notebook_id:notification.notebook_id,
+                    notification_type:"share_notebook_response",
+                    notification_sender:this.state.loggedUser,
+                    notification_receiver:notification.sender_user_name
+                };
 
-                    Socket.sendNotebookNotification(_notificationData);
+                Socket.sendNotebookNotification(_notificationData);
 
-                    if(stt == 'REQUEST_REJECTED') {
-                        window.location.reload();
-                    } else {
-                        window.location.href = '/notes';
-                    }
+                if(stt == 'REQUEST_REJECTED') {
+                    this.loadNotifications();
+                } else {
+                    window.location.href = '/notes';
+                }
 
             }.bind(this));
         }
@@ -208,8 +151,7 @@ export default class NotificationPop extends React.Component{
         let notifiTypeTitle;
         let icon;
         const {
-            notifications,
-            notificationCount
+            notificationCount,
             }=this.state;
 
         if(type == "todos"){
@@ -228,7 +170,7 @@ export default class NotificationPop extends React.Component{
                 <div className="inner-wrapper">
                     <div className="header-holder">
                         <h3 className="section-title"><i className={"fa " + icon}></i>{notifiTypeTitle}</h3>
-                        <span className="notifi-count">(7)</span>
+                        <span className="notifi-count">({notificationCount})</span>
                         <span className="fa fa-angle-left arrow"></span>
                         <span className="fa fa-angle-right arrow"></span>
                         <span className="close fa fa-times" onClick={() => this.props.onNotifiClose()}></span>
@@ -236,7 +178,7 @@ export default class NotificationPop extends React.Component{
                     <div className="notifications-holder">
                         <Scrollbars style={{ height: 318 }}>
                             <Notification notifications = {elementsList}
-                                updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)} />
+                                updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)} clickNotification = {this.redirectToNotification.bind(this)}/>
                         </Scrollbars>
                     </div>
                     <div className="all-notifications">
@@ -252,12 +194,17 @@ export class Notification extends React.Component{
     constructor(props) {
         super(props);
         this.state={
+            notificationList:this.props.notifications
         };
+    }
+
+    componentWillReceiveProps(nextProps){
+        this.setState({notificationList: nextProps.notifications});
     }
 
     render() {
         let _this = this;
-        let notifications = this.props.notifications;
+        let notifications = this.state.notificationList;
 
         if (notifications.length <= 0) {
             return <div />
@@ -269,7 +216,7 @@ export class Notification extends React.Component{
             }
             return (
                 <div className={_classNames} key={key}>
-                    <a href="/notifications">
+                    <a href="javascript:void(0)" onClick={()=>_this.props.clickNotification(notification)}>
                         <div className="chat-pro-img">
                             <img src={notification.sender_profile_picture}/>
                         </div>
@@ -285,8 +232,8 @@ export class Notification extends React.Component{
                                     notification.notification_type != 'share_notebook' &&
                                     notification.notification_type != 'share_notebook_response'
                                     ? notification.post_owner_name +" post":null}
-                                {notification.notification_type == 'share_notebook' ? notification.post_owner_name +" has invited you to collaborate on a notebook" :null}
-                                {notification.notification_type == 'share_notebook_response' ? notification.post_owner_name + " has " + notification.notification_status + " your notebook invitation" :null}
+                                {notification.notification_type == 'share_notebook' ? notification.post_owner_name +" has invited you to collaborate on " + notification.notebook_name :null}
+                                {notification.notification_type == 'share_notebook_response' ? notification.post_owner_name + " has " + notification.notification_status + " your invitation to collaborate on " + notification.notebook_name :null}
                             </p>
                             <p className="chat-date">{notification.created_at.time_a_go}</p>
 

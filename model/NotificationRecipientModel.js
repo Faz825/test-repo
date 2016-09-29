@@ -22,6 +22,10 @@ var NotificationRecipientSchema = new Schema({
     read_status:{
         type:Boolean,
         default:false
+    },
+    seen_status:{
+        type:Boolean,
+        default:false
     }
 },{collection:"notification_recipients"});
 
@@ -39,7 +43,8 @@ NotificationRecipientSchema.statics.saveRecipients = function(data,callBack){
         recipients.push({
             notification_id: Util.toObjectId(data.notification_id),
             recipient: Util.toObjectId(data.recipients[i]),
-            read_status: false
+            read_status: false,
+            seen_status: false
         });
     }
 
@@ -212,6 +217,56 @@ NotificationRecipientSchema.statics.updateRecipientNotification = function(crite
             }
         });
 
+};
+
+/**
+ * Update Notification
+ * @param criteria
+ * @param data
+ * @param callBack
+ */
+NotificationRecipientSchema.statics.updateRecipientNotificationRefactored = function(criteria, data, callBack){
+
+    var _this = this,
+        _async = require('async'),
+        Notification = require('mongoose').model('Notification');
+
+    _async.waterfall([
+
+        function getNotificationsToRecipient(callBack){
+            _this.find({
+                recipient: criteria.recipient,
+                read_status: false
+            }).exec(function (err, resultSet) {
+                if (!err) {
+                    callBack(null, resultSet);
+                }
+            });
+        },
+        function loopNotificationByRecipientId(notificationRecipients, callBack) {
+            _async.eachSeries(notificationRecipients, function(notificationRecipient, callBack){
+
+                Notification.getFirstNotification({_id: notificationRecipient.notification_id},function(notification){
+                    if(notification.result.notification_type != 'share_notebook'){
+                        var updateData = {read_status: true};
+                        _this.update(
+                            {_id: notificationRecipient._id}, {$set:updateData}, function(err,resultSet){
+                                callBack(null);
+                            });
+                    }else{
+                        callBack(null);
+                    }
+
+                });
+
+            },function(err){
+                callBack(null);
+            });
+        }
+
+    ],function(err){
+        callBack('Updated');
+    });
 };
 
 /**

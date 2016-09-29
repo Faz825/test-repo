@@ -18,8 +18,7 @@ export default StyleSheet.create({
         "marginRight": "0px !important"
     },
     "pg-middle-sign-wrapper": {
-        "position": "relative",
-        "zIndex": 1
+        "position": "relative"
     },
     "pg-middle-sign-wrapper > container-fluid": {
         "paddingTop": 0,
@@ -548,7 +547,9 @@ export default StyleSheet.create({
         "paddingRight": 0,
         "paddingBottom": 0,
         "paddingLeft": 0,
-        "width": "calc(100% - 220px)"
+        "width": "calc(100% - 220px)",
+        "zIndex": 1,
+        "position": "relative"
     },
     "cover-image-wrapper": {
         "height": 299,
@@ -622,6 +623,21 @@ export default StyleSheet.create({
         "marginBottom": 0,
         "marginLeft": "auto"
     },
+    "cover-image-wrapper action-btn-holder": {
+        "position": "absolute",
+        "bottom": 55,
+        "right": 15
+    },
+    "cover-image-wrapper action-btn-holder btn": {
+        "marginRight": 5,
+        "background": "rgba(255, 255, 255, 0.8)",
+        "font": "12px 'montserratregular', sans-serif",
+        "color": "#2d5164",
+        "border": 0
+    },
+    "cover-image-wrapper action-btn-holder btn:hover": {
+        "background": "rgba(255, 255, 255, 1)"
+    },
     "pgs-sign-submit-cancel": {
         "border": "none",
         "backgroundColor": "#a4becd",
@@ -671,19 +687,19 @@ export default StyleSheet.create({
         "backgroundColor": "rgba(13, 29, 50, 0.3)",
         "position": "fixed",
         "left": 0,
-        "height": "100%",
+        "height": "calc(100vh - 180px)",
         "width": 110,
         "top": 70,
-        "zIndex": 100
+        "zIndex": 1
     },
     "pg-right-nav-wrapper": {
         "backgroundColor": "rgba(13, 29, 50, 0.3)",
         "position": "fixed",
         "width": 110,
         "right": 0,
-        "height": "100%",
+        "height": "calc(100vh - 180px)",
         "top": 70,
-        "zIndex": 100
+        "zIndex": 1
     },
     "pg-right-nav-wrapperworkmode-switched": {
         "backgroundColor": "transparent"
@@ -730,7 +746,8 @@ export default StyleSheet.create({
         "textTransform": "uppercase"
     },
     "signupContentHolder": {
-        "position": "relative"
+        "position": "relative",
+        "marginBottom": "10%"
     },
     "signupContentHolder pgs-secratery-img": {
         "left": -130,
@@ -840,7 +857,7 @@ export default StyleSheet.create({
         "display": "block !important"
     },
     "pgs-middle-about-wrapper": {
-        "height": 100 * vh,
+        "height": "100%",
         "paddingTop": 130,
         "paddingBottom": 50,
         "position": "relative",
@@ -1444,14 +1461,15 @@ export default StyleSheet.create({
         "position": "fixed",
         "width": "100%",
         "bottom": 0,
-        "zIndex": 100,
+        "zIndex": 1,
         "height": 110,
         "backgroundColor": "#eceef1",
         "boxShadow": "2px 1px 8px -2px #000"
     },
     "pg-footer-wrapperworkmode-switched": {
         "backgroundColor": "transparent",
-        "boxShadow": "none"
+        "boxShadow": "none",
+        "zIndex": 0
     },
     "pg-footer-left-options-panel": {
         "width": 110,
@@ -1475,7 +1493,8 @@ export default StyleSheet.create({
         "WebkitBorderRadius": 5,
         "MozBorderRadius": 5,
         "borderRadius": 5,
-        "paddingTop": 22
+        "paddingTop": 22,
+        "cursor": "pointer"
     },
     "pg-footer-right-options-panel-inner img": {
         "marginTop": 0,
@@ -1714,6 +1733,13 @@ export default StyleSheet.create({
         "marginLeft": 0,
         "display": "block"
     },
+    "pg-pro-share-btnmutual-friends-holder": {
+        "paddingBottom": 1
+    },
+    "pg-pro-share-btnmutual-friends-holder pg-pro-share-btn-txt": {
+        "float": "left",
+        "marginRight": 5
+    },
     "pg-profile-pic-detail-wrapper": {
         "bottom": 0,
         "width": "100%",
@@ -1925,6 +1951,22 @@ export default StyleSheet.create({
     },
     "profile-middle-container-left-col": {
         "marginTop": 15,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "profile-middle-container-left-col pg-profile-middle-container-left-col-details": {
+        "backgroundColor": "#fff",
+        "WebkitBorderRadius": 5,
+        "MozBorderRadius": 5,
+        "borderRadius": 5,
+        "paddingTop": 10,
+        "paddingRight": 15,
+        "paddingBottom": 10,
+        "paddingLeft": 15,
+        "boxShadow": "0px 0px 7px -2px #000"
+    },
+    "newsfeed-middle-container-right-col pg-locked-profile-content": {
         "backgroundColor": "#fff",
         "WebkitBorderRadius": 5,
         "MozBorderRadius": 5,
@@ -1984,6 +2026,14 @@ export default StyleSheet.create({
         "lineHeight": 30,
         "paddingRight": 35,
         "marginBottom": 0
+    },
+    "profile-content-container locked-screen-holder locked-title": {
+        "font": "18px 'montserratregular', sans-serif"
+    },
+    "locked-screen-holder locked-title fa": {
+        "fontSize": 2,
+        "color": "#E82107",
+        "marginRight": 10
     },
     "pg-section-container pg-header h3": {
         "fontWeight": "lighter",
@@ -3638,7 +3688,8 @@ export default StyleSheet.create({
         "position": "relative",
         "cursor": "pointer",
         "borderBottom": "1px solid #dee6eb",
-        "height": 62
+        "height": 62,
+        "background": "#f2f6f9"
     },
     "conv-holder msg-holder a": {
         "display": "block",
@@ -4667,8 +4718,17 @@ export default StyleSheet.create({
         "outline": "none",
         "color": "#2d5164"
     },
+    "popup-body-holder user-blockshared permission p": {
+        "background": "transparent",
+        "boxShadow": "none",
+        "border": "none",
+        "float": "right",
+        "font": "11px 'montserratsemi_bold', sans-serif",
+        "outline": "none",
+        "color": "#2d5164"
+    },
     "popup-body-holder user-block action": {
-        "marginTop": 0,
+        "marginTop": 5,
         "marginRight": 20,
         "float": "right",
         "fontSize": 0.857,
@@ -5083,10 +5143,11 @@ export default StyleSheet.create({
         "border": "1px solid #d6e1ea",
         "borderRadius": 5,
         "paddingTop": 12,
-        "paddingRight": 14,
+        "paddingRight": 5,
         "paddingBottom": 12,
         "paddingLeft": 14,
-        "cursor": "pointer"
+        "cursor": "pointer",
+        "position": "relative"
     },
     "work-mode-container mode-notice title": {
         "fontFamily": "\"montserratregular\", sans-serif",
@@ -5095,7 +5156,18 @@ export default StyleSheet.create({
         "marginTop": 0,
         "marginRight": 0,
         "marginBottom": 0,
-        "marginLeft": 0
+        "marginLeft": 0,
+        "float": "left"
+    },
+    "work-mode-container mode-notice fa-times": {
+        "float": "left",
+        "marginTop": 0,
+        "marginRight": 2,
+        "marginBottom": 0,
+        "marginLeft": 8,
+        "color": "#9dadbd",
+        "fontSize": 0.8,
+        "lineHeight": 1.5
     },
     "inner-wrapper btn-holder": {
         "float": "right"
@@ -5120,7 +5192,7 @@ export default StyleSheet.create({
         "background": "none",
         "boxShadow": "none"
     },
-    "workmode-popup-wrapper fa-times": {
+    "workmode-popup-wrapper close-icon": {
         "position": "absolute",
         "top": 30,
         "right": 20,
@@ -5319,6 +5391,12 @@ export default StyleSheet.create({
     },
     "notifi-popup-holder all-notifications a:hover": {
         "textDecoration": "none"
+    },
+    "notifi-popup-holder conv-holder msg-holderread": {
+        "background": "#fff"
+    },
+    "notifi-popup-holder NotificationList msg-holder": {
+        "minHeight": 66
     },
     "middle-content-wrapper": {
         "minWidth": 500

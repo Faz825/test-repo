@@ -10,6 +10,9 @@ import InCallPane  from '../chat/InCallPane';
 import QuickChatHandler from '../chat/QuickChatHandler';
 import WorkMode from '../workmode/Index';
 import NotificationPop from '../notifications/NotificationPop';
+import Moment from 'moment';
+import PubSub from 'pubsub-js';
+import Chat from '../../middleware/Chat';
 
 export default class DefaultLayout extends React.Component{
     constructor(props){
@@ -25,10 +28,7 @@ export default class DefaultLayout extends React.Component{
         }
 
         let _rightBottom = false;
-        //let _newsFeed = false;
-        //let _calls = false;
-        //let _messages = false;
-        //let _socialNotifications = false;
+        let _socialNotifications = false;
 
         this.checkWorkModeInterval = null;
 
@@ -41,49 +41,89 @@ export default class DefaultLayout extends React.Component{
             } else{
                 let _this = this;
                 _rightBottom = Session.getSession('prg_wm').rightBottom;
-                //_newsFeed = Session.getSession('prg_wm').newsFeed;
-                //_calls = Session.getSession('prg_wm').calls;
-                //_messages = Session.getSession('prg_wm').messages;
-                //_socialNotifications = Session.getSession('prg_wm').socialNotifications;
-                if(_rightBottom == true){
+                _socialNotifications = Session.getSession('prg_wm').socialNotifications;
+                if(_rightBottom == true || _socialNotifications == true){
                     this.checkWorkModeInterval = setInterval(function(){_this.checkWorkMode()}, 1000);
                 }
             }
         }
 
-        //console.log(Session.getSession('prg_wm'));
-
         this.state={
             chatBubble:[],
             rightBottom:_rightBottom,
+            socialNotifications:_socialNotifications,
             isShowingModal: false,
-            notifiType: ""
-            //newsFeed:_newsFeed,
-            //calls:_calls,
-            //messages:_messages,
-            //socialNotifications:_socialNotifications
+            notifiType: "",
+            notificationCount: ""
         };
 
         this.quickChatUsers = [];
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
+        this.doVideoCall = this.doVideoCall.bind(this);
+        this.doAudioCall = this.doAudioCall.bind(this);
     }
 
+    componentWillMount() {
+        let _this = this;
+        let FVM = "FRIEND_PROFILE_MESSAGING";
+        let FPVC = "FRIEND_PROFILE_VIDEO_CALL";
+        let VIDEO_CALL = "VIDEO";
+
+        PubSub.subscribe(FVM, function( msg, data ){
+
+            let chatExists = false;
+            if(_this.quickChatUsers.length > 0) {
+                for(let con in _this.quickChatUsers){
+                    if(_this.quickChatUsers[con].title == data.title){
+                        chatExists = true;
+                    }
+                }
+            }
+
+            if(!chatExists) {
+                _this.quickChatUsers.push(data);
+                _this.setState({chatBubble:_this.quickChatUsers});
+            }
+        });
+
+        PubSub.subscribe(FPVC, function( msg, data ){
+
+            if(data.type == VIDEO_CALL) {
+                _this.doVideoCall(data);
+            } else {
+                _this.doAudioCall(data);
+            }
+
+        });
+
+
+
+    }
+
+    doVideoCall(callObj){
+        Chat.startOutgoingCall(callObj.uri, true);
+    };
+
+    doAudioCall(callObj){
+        Chat.startOutgoingCall(callObj.uri, false);
+    };
+
+
     checkWorkMode(){
-        //console.log("checkWorkMode from Default Layout")
         if(Session.getSession('prg_wm') != null){
             let _currentTime = new Date().getTime();
             let _finishTime = Session.getSession('prg_wm').endTime;
 
             if (_currentTime > _finishTime){
                 console.log("TIME UP from Default Layout")
-                this.setState({rightBottom:false})
+                this.setState({rightBottom:false, socialNotifications:false})
                 Session.destroy("prg_wm");
                 clearInterval(this.checkWorkModeInterval);
                 this.checkWorkModeInterval = null;
             }
         } else{
-            this.setState({rightBottom:false});
+            this.setState({rightBottom:false, socialNotifications:false});
             clearInterval(this.checkWorkModeInterval);
             this.checkWorkModeInterval = null;
         }
@@ -148,12 +188,18 @@ export default class DefaultLayout extends React.Component{
         this.handleClick();
     }
 
-    onNotifiTypeClick(type){
-        this.setState({notifiType : type});
+    onNotifiTypeClick(type, count){
+        this.setState({notifiType : type, notificationCount : count});
     }
 
     onNotifiClose(){
         this.setState({notifiType : ""});
+    }
+
+    updateNotificationPopCount(c){
+        console.log("going to update count - 02");
+        console.log(c);
+        this.setState({notificationCount : c});
     }
 
     render(){
@@ -180,22 +226,22 @@ export default class DefaultLayout extends React.Component{
                         {this.props.children || <Dashboard />}
                     </div>
                 </div>
-                <FooterHolder blockBottom={this.state.rightBottom} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)}/>
+                <FooterHolder blockBottom={this.state.rightBottom} blockSocialNotification={this.state.socialNotifications} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)} onUpdateNotifiPopupCount={this.updateNotificationPopCount.bind(this)}/>
                 <InCallPane/>
                 {
                     this.state.isShowingModal &&
                     <ModalContainer zIndex={9999}>
                         <ModalDialog width="65%" className="workmode-popup-holder">
                             <div className="workmode-popup-wrapper">
-                                <WorkMode/>
-                                <i className="fa fa-times" aria-hidden="true" onClick={this.handleClose.bind(this)}></i>
+                                <WorkMode />
+                                <i className="fa fa-times close-icon" aria-hidden="true" onClick={this.handleClose.bind(this)}></i>
                             </div>
                         </ModalDialog>
                     </ModalContainer>
                 }
                 {
                     (this.state.notifiType)?
-                        <NotificationPop notifiType={this.state.notifiType} onNotifiClose={this.onNotifiClose.bind(this)}/>
+                        <NotificationPop notifiType={this.state.notifiType} notifyCount={this.state.notificationCount} onNotifiClose={this.onNotifiClose.bind(this)}/>
                     :
                         null
                 }

@@ -169,7 +169,6 @@ export class ConversationList extends React.Component{
 
         let _blockMessages = this.checkWorkMode();
 
-
         // New conversation
         if (op > 0) {
 
@@ -190,7 +189,8 @@ export class ConversationList extends React.Component{
                             tabId:notificationId,
                             proglobeTitle:proglobe_title,
                             title:title,
-                            user:this.props.connections[my_con]
+                            user:this.props.connections[my_con],
+                            connection_status:this.props.connections[my_con].connection_status
                         };
 
                         if(this.conv_ids.indexOf(c.id) == -1){
@@ -228,24 +228,20 @@ export class ConversationList extends React.Component{
                             this.unreadCount += 1;
                             this.unreadConversationCount.push(c.id);
 
-                            console.log("------HERE------229")
                         }
 
                         if(this.unreadCount > 0 && !_blockMessages){
-                            console.log("233")
                             $("#unread_chat_count_header").html('<span class="total">'+this.unreadCount+'</span>');
                         } else{
-                            console.log("236")
                             $("#unread_chat_count_header").html('');
                         }
 
                         // IF user is in block messages mode then notify the sender
 
-                        console.log(c)
 
-                        console.log("c.unread ==> ",c.unread);
-                        console.log("_blockMessages ==> ",_blockMessages);
-                        console.log("this.notifiedUsers.indexOf(c.id) ==> ",this.notifiedUsers.indexOf(c.id));
+                        //console.log("c.unread ==> ",c.unread);
+                        //console.log("_blockMessages ==> ",_blockMessages);
+                        //console.log("this.notifiedUsers.indexOf(c.id) ==> ",this.notifiedUsers.indexOf(c.id));
 
                         if(c.unread > 0 && _blockMessages && this.notifiedUsers.indexOf(c.id) == -1){
 
@@ -314,15 +310,11 @@ export class ConversationList extends React.Component{
             if (c.unread > 0 && this.unreadConversationCount.indexOf(c.id) == -1) {
                 this.unreadCount += 1;
                 this.unreadConversationCount.push(c.id);
-
-                console.log("------HERE------280")
             }
 
             if(this.unreadCount > 0 && !_blockMessages){
-                console.log("286")
                 $("#unread_chat_count_header").html('<span class="total">'+this.unreadCount+'</span>');
             } else{
-                console.log("289")
                 $("#unread_chat_count_header").html('');
             }
         }
@@ -351,10 +343,8 @@ export class ConversationList extends React.Component{
                     this.unreadConversationCount.splice(index,1);
                     this.unreadCount--;
                     if(this.unreadCount <= 0 || _blockMessages){
-                        console.log("320")
                         $("#unread_chat_count_header").html('');
                     } else {
-                        console.log("323")
                         $("#unread_chat_count_header").html('<span class="total">' + this.unreadCount + '</span>');
                     }
                 }

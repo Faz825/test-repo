@@ -18,14 +18,25 @@ export default class Index extends React.Component{
         let _sesHowLong;
         let _endTime;
         let timeLeft;
+        let timeIn;
         if(_sesData){
             _endTime = _sesData.endTime;
             timeLeft = _endTime - _startTime;
-            timeLeft =  Moment.utc(timeLeft).format("DD HH mm");
+            if(timeLeft > 60000){
+                timeLeft =  Moment.utc(timeLeft).format("DD HH mm");
+                timeIn = "min";
+            }else if(timeLeft < 60000 && timeLeft > 0) {
+                timeLeft =  Moment.utc(timeLeft).format("HH mm ss");
+                timeIn = "sec";
+            } else{
+                timeLeft = undefined;
+            }
             _sesStartTime = _sesData.startTimer;
             _sesHowLong = _sesData.howLong;
         }
         let isVisible = (timeLeft)? false : true;
+        let _this = this;
+        this.checkRemainingTimeInterval = (timeLeft)?setInterval(function(){_this.checkRemainingTime()}, 1000):null;
 
         this.state={
             startDate: Moment(),
@@ -36,6 +47,7 @@ export default class Index extends React.Component{
             timeBlockIsVisible: isVisible,
             timePeriod: this.tPeriod,
             remainingTime: timeLeft,
+            remainingTimeIn:timeIn,
             sesStartTime:_sesStartTime,
             sesHowLong:_sesHowLong,
             sesEndTime:_endTime
@@ -54,6 +66,53 @@ export default class Index extends React.Component{
             if(Session.getSession('prg_wm').socialNotifications){this.selectedList.push("notifications")}
             if(this.selectedList.length == 5){this.selectedList.push("all")}
 
+        }
+
+    }
+
+    componentDidMount() {
+        console.log("componentDidMount")
+        //this.loadInterval = setInterval(this.loadSearches, this.props.pollInterval);
+    }
+
+    componentWillUnmount () {
+        console.log("componentWillUnmount")
+        clearInterval(this.checkRemainingTimeInterval);
+        this.checkRemainingTimeInterval = null;
+    }
+
+    checkRemainingTime(){
+        //console.log("checkRemainingTime");
+        let _sesData = Session.getSession('prg_wm');
+        let _startTime = new Date().getTime();
+        let _endTime;
+        let timeLeft;
+        let timeIn;
+        if(_sesData){
+            _endTime = _sesData.endTime;
+            timeLeft = _endTime - _startTime;
+            if(timeLeft > 60000){
+                timeLeft =  Moment.utc(timeLeft).format("DD HH mm");
+                timeIn = "min";
+            }else if(timeLeft < 60000 && timeLeft > 0) {
+                timeLeft =  Moment.utc(timeLeft).format("HH mm ss");
+                timeIn = "sec";
+            } else{
+                this.setState({timeBlockIsVisible:true})
+                timeLeft = undefined;
+                clearInterval(this.checkRemainingTimeInterval);
+                this.checkRemainingTimeInterval = null;
+                alert("Work Mode time out");
+                location.reload();
+            }
+            this.setState({remainingTime:timeLeft, remainingTimeIn:timeIn});
+        } else{
+            this.setState({timeBlockIsVisible:true})
+            console.log("NO session data")
+            clearInterval(this.checkRemainingTimeInterval);
+            this.checkRemainingTimeInterval = null;
+            alert("Work Mode time out");
+            location.reload();
         }
 
     }
@@ -114,7 +173,9 @@ export default class Index extends React.Component{
 
     onCancelTimeClick(){
         console.log("onCancelTimeClick")
-
+        clearInterval(this.checkRemainingTimeInterval);
+        this.checkRemainingTimeInterval = null;
+        this.setState({sesStartTime:undefined, sesHowLong:undefined, sesEndTime:undefined, timeBlockIsVisible: true})
     }
 
     onWorkModeSet(e){
@@ -143,30 +204,32 @@ export default class Index extends React.Component{
         }
         console.log(data);
 
-        let _startTime = new Date().getTime();
-        let howLong = 0;
-        let _endTime = _startTime+howLong;
+        let _startTime = (this.state.sesStartTime)? this.state.sesStartTime:new Date().getTime();
+        let howLong = (this.state.sesHowLong)? this.state.sesHowLong:0;
+        let _endTime = (this.state.sesEndTime)? this.state.sesEndTime:_startTime+howLong;
 
-        if(Session.getSession('prg_wm') != null){
+        if(howLong == 0){
+
+            if(data.time != 0){
+                howLong = data.time*60*1000;
+                _endTime = _startTime+howLong;
+            } else{
+                console.log("time not selected");
+
+                let now = Moment().format('YYYY-MM-DD HH:mm a');
+                let toFormat = Moment(data.date.day + ' ' + data.date.hh + ':' + data.date.mm +' ' + data.date.period, "YYYY-MM-DD HH:mm a");
+                howLong = toFormat.diff(now);
+
+                if(howLong <= 0){
+                    e.preventDefault();
+                    alert("Please Select Time");
+                    return false;
+                }
+                console.log(howLong);
+                _endTime = _startTime+howLong;
+            }
 
         }
-
-
-
-        if(data.time != 0){
-            howLong = data.time*60*1000;
-            _endTime = _startTime+howLong;
-        } else{
-            console.log("time not selected");
-
-            let now = Moment().format('YYYY-MM-DD HH:mm a');
-            let toFormat = Moment(data.date.day + ' ' + data.date.hh + ':' + data.date.mm +' ' + data.date.period, "YYYY-MM-DD HH:mm a");
-            howLong = toFormat.diff(now);
-            console.log(howLong);
-            _endTime = _startTime+howLong;
-        }
-
-
 
         var _wm = {
             rightBottom:(data.mode.indexOf("bars") != -1 || data.mode.indexOf("all") != -1)?true:false,
@@ -223,16 +286,29 @@ export default class Index extends React.Component{
 
     render(){
         let timeLeft = this.state.remainingTime;
-        let days, hrs, mins;
+        let timeIn = this.state.remainingTimeIn;
+        let days, hrs, mins, sec;
         if (timeLeft) {
             timeLeft = timeLeft.split(" ");
-            days = timeLeft[0];
-            hrs = timeLeft[1];
-            mins = timeLeft[2];
-            if(days == "01"){
-                days = "";
-            }else{
-                days = days+"'days ";
+            if(timeIn == "min"){
+                days = timeLeft[0];
+                hrs = timeLeft[1];
+                mins = timeLeft[2];
+                if(days == "01"){
+                    days = "";
+                }else{
+                    days = days+"'days ";
+                }
+            } else{
+                hrs = timeLeft[0];
+                mins = timeLeft[1];
+                sec = timeLeft[2];
+                if(mins == "0"){
+                    mins = "";
+                }else{
+                    mins = mins+"'minutes ";
+
+                }
             }
 
             if(hrs == "0"){
@@ -240,6 +316,7 @@ export default class Index extends React.Component{
             }else{
                 hrs = hrs+"'hours ";
             }
+
         }
 
         return(
@@ -358,8 +435,17 @@ export default class Index extends React.Component{
                                     </div>
                                 </div>
                                 :
-                                <div className="mode-notice" onClick={this.onTimeSummeryClick.bind(this)}>
-                                    <h3 className="title">{"Work Mode on for next " + days + hrs + "and "+ mins+"'minutes" }</h3>
+                                <div className="mode-notice">
+                                    <div onClick={this.onTimeSummeryClick.bind(this)}>
+                                        {
+                                            (timeIn == "min")?
+                                                <h3 className="title">{"Work Mode on for next " + days + hrs + "and "+ mins+"'minutes" }</h3>
+                                                :
+                                                <h3 className="title">{"Work Mode on for next " + hrs + mins+"and "+ sec+"'seconds" }</h3>
+                                        }
+
+                                        <i className="fa fa-times" aria-hidden="true" onClick={this.onCancelTimeClick.bind(this)}></i>
+                                    </div>
                                 </div>
                         }
                         <div className="btn-holder">

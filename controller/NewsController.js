@@ -430,6 +430,9 @@ var NewsController ={
 
         ],function(err,resultSet){
 
+            console.log("========= NewsController ====== ")
+            console.log(JSON.stringify(resultSet))
+
             NewsFeed.getNewsFeed(resultSet, function(data){
                 var outPut ={
                     status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
@@ -451,7 +454,6 @@ var NewsController ={
             UsersSavedArticle = require('mongoose').model('UsersSavedArticle'),
             _async = require('async'),
             CurrentSession = Util.getCurrentSession(req);
-        //req.body.user_id = CurrentSession.id;
 
         var criteria ={
             heading:req.body.heading,

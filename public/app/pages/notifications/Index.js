@@ -55,8 +55,10 @@ export default class Index extends React.Component{
             let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
 
 
-            if(_notificationType == "share_notebook") {
-                window.location.reload();
+            if(_notificationType == "share_notebook" || _notificationType == "share_notebook_response") {
+
+                console.log("came to load >>" + _notificationType);
+                _this.loadNotifications();
 
             } else if(_notificationType == "Birthday") {
                 _this.state.notificationCount++;
@@ -67,9 +69,6 @@ export default class Index extends React.Component{
                 //_this.state.eleList = _newNotifications;
                 this.setState({eleList: _newNotifications});
                 //_this.setState({notifications:_newNotifications});
-
-            } else if(_notificationType == "share_notebook_response") {
-                window.location.reload();
 
             } else {
                 if(data.user != _this.state.loggedUser.user_name){
@@ -137,7 +136,7 @@ export default class Index extends React.Component{
 
                     //_this.setState({notifications:_newNotifications});
                     //_this.elementsList = _newNotifications;
-                    this.setState({eleList: _newNotifications});
+                    _this.setState({eleList: _newNotifications});
                 }
 
             }
@@ -145,6 +144,8 @@ export default class Index extends React.Component{
     }
 
     loadNotifications(){
+
+        console.log("---- going to load notifications again ----");
 
         var _data = {};
         if(this.days == 1){
@@ -164,6 +165,7 @@ export default class Index extends React.Component{
             if(data.status.code == 200){
                 if(this.days == 1){
                     this.setState({notificationCount:data.unreadCount,resultHeader:data.header});
+                    this.elementsList = [];
                 }
                 this.setState({notifications:data.notifications});
                 for(var i = 0; i < this.state.notifications.length; i++){
@@ -246,7 +248,7 @@ export default class Index extends React.Component{
                 }).done( function (data, text) {
 
                     if(_notification.notification_type == "share_notebook_response") {
-                        window.location.reload();
+                        this.loadNotifications();
                     } else {
                         window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
                     }
@@ -290,7 +292,9 @@ export default class Index extends React.Component{
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             for (var i = 0; i < this.elementsList.length; i++){
-                this.elementsList[i].read_status = true;
+                if(this.elementsList[i].notification_type != 'share_notebook') {
+                    this.elementsList[i].read_status = true;
+                }
             }
             this.setState({eleList: this.elementsList});
         }.bind(this));
@@ -396,7 +400,7 @@ export default class Index extends React.Component{
                     Socket.sendNotebookNotification(_notificationData);
 
                     if(stt == 'REQUEST_REJECTED') {
-                        window.location.reload();
+                        this.loadNotifications();
                     } else {
                         window.location.href = '/notes';
                     }

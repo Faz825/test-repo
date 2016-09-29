@@ -13,39 +13,47 @@ export default class FooterHolder extends React.Component{
         Socket.connect();
         this.listenToNotification();
         this.getNotificationCount();
+        this.updateNotificationPopCount = this.updateNotificationPopCount.bind(this);
     }
 
     getNotificationCount(){
-        $.ajax({
-            url: '/notifications/get-notification-count',
-            method: "GET",
-            dataType: "JSON",
-            headers: { 'prg-auth-header':this.state.loggedUser.token }
-        }).done( function (data, text) {
+        if(!this.props.blockSocialNotification){
+            $.ajax({
+                url: '/notifications/get-notification-count',
+                method: "GET",
+                dataType: "JSON",
+                headers: { 'prg-auth-header':this.state.loggedUser.token }
+            }).done( function (data, text) {
 
-            if(data.status.code == 200){
-                this.setState({notificationCount:data.count});
-            }
-        }.bind(this));
+                if(data.status.code == 200){
+                    this.setState({notificationCount:data.count});
+                }
+            }.bind(this));
+        }
     }
 
     listenToNotification(){
-        let _this = this;
+        if(!this.props.blockSocialNotification){
+            let _this = this;
 
-        Socket.listenToNotification(function(data){
-            console.log("Got Notification from footer")
-            if(data.notification_type == "Birthday"){
-                _this.state.notificationCount++;
-            }else{
-                if(data.user != _this.state.loggedUser.user_name){
-                    console.log("Increase")
-                    let _notCount = _this.state.notificationCount;
-                    _notCount++;
-                    _this.setState({notificationCount:_notCount});
+            Socket.listenToNotification(function(data){
+                console.log("Got Notification from footer");
+                let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
+    
+                if(_notificationType == "Birthday"){
+                    _this.state.notificationCount++;
+                }else {
+                    if (data.user != _this.state.loggedUser.user_name) {
+                        console.log("Increase")
+                        let _notCount = _this.state.notificationCount;
+                        _notCount++;
+                        _this.setState({notificationCount: _notCount});
+                        _this.updateNotificationPopCount(_notCount);
+                    }
                 }
-            }
-
-        });
+    
+            });
+        }
     }
 
     onWorkmodeClick(){
@@ -53,7 +61,11 @@ export default class FooterHolder extends React.Component{
     }
 
     onNotifiClick(e){
-        this.props.onNotifiTypeClick(e.target.id);
+        this.props.onNotifiTypeClick(e.target.id, this.state.notificationCount);
+    }
+
+    updateNotificationPopCount(count){
+        this.props.onUpdateNotifiPopupCount(count);
     }
 
     render() {
@@ -83,15 +95,15 @@ export default class FooterHolder extends React.Component{
                         <div className="pg-footer-left-options">
                             <div className="notifi-type-holder">
                                 <i className="fa fa-list-alt" id="todos" onClick={(event) => this.onNotifiClick(event)}></i>
-                                <span className="notifi-counter">5</span>
+                                {notificationCount>0?<span className="notifi-counter">{notificationCount}</span>:null}
                             </div>
                             <div className="notifi-type-holder">
                                 <i className="fa fa-globe" id="social" onClick={(event) => this.onNotifiClick(event)}></i>
-                                <span className="notifi-counter">5</span>
+                                {notificationCount>0?<span className="notifi-counter">{notificationCount}</span>:null}
                             </div>
                             <div className="notifi-type-holder">
                                 <i className="fa fa-line-chart" id="productivity" onClick={(event) => this.onNotifiClick(event)}></i>
-                                <span className="notifi-counter">5</span>
+                                {notificationCount>0?<span className="notifi-counter">{notificationCount}</span>:null}
                             </div>
                         </div>
                     </div>

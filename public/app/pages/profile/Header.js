@@ -5,8 +5,10 @@
  */
 import React,{Component} from 'react';
 import Session  from '../../middleware/Session';
-import CoverImageUploader from '../../components/elements/CoverImageUploader'
-import ProfileImageUploader from '../../components/elements/ProfileImageUploader'
+import CoverImageUploader from '../../components/elements/CoverImageUploader';
+import ProfileImageUploader from '../../components/elements/ProfileImageUploader';
+import PubSub from 'pubsub-js';
+
 export default class Header extends Component {
 
     constructor(props) {
@@ -28,13 +30,22 @@ export default class Header extends Component {
         }
 
         let read_only = (this.state.loggedUser.id == this.props.user.user_id)?false:true;
+        let isOnFriendsProfile = (this.state.loggedUser.id != this.props.user.user_id && this.props.connectionStatus == 0) ? true : false;
+
         return (
             <div className="row row-clr" id="pg-profile-banner-area">
-                <CoverImage dt={this.props.user} readOnly={read_only}/>
-                <ConnectionIndicator dt ={this.props.user}  readOnly={read_only}/>
+                <CoverImage dt={this.props.user} readOnly={read_only} onFriendsProfile={isOnFriendsProfile}/>
+                {
+                    (isOnFriendsProfile)?
+                        <MutualConnectionIndicator />
+                    :
+                        <ConnectionIndicator dt ={this.props.user}  readOnly={read_only}/>
+                }
                 <ConnectionStatus connectionStatus={this.props.connectionStatus} onAddFriend = {this.props.onAddFriend}
                                   onAcceptFriendRequest = {this.props.onAcceptFriendRequest}
-                                  usrId={this.props.usrId}/>
+                                  onUnfriendUser = {this.props.onUnfriendUser}
+                                  usrId={this.props.usrId}
+                                  loggedUser={this.props.loggedUser}/>
                 <ProfileInfo dt={this.props.user} readOnly={read_only} loadExperiences={this.props.loadExperiences} uname={this.props.uname} loadProfileData={this.props.loadProfileData}/>
             </div>
         )
@@ -54,6 +65,57 @@ export class CoverImage extends React.Component{
         }
         this.coverImgUpdate = this.coverImgUpdate.bind(this);
         this.loggedUser = Session.getSession('prg_lg');
+    }
+
+    onLoadQuickChatMessage() {
+
+        if(!this.props.onFriendsProfile) {
+            return;
+        }
+
+        let friend_title = this.props.dt.user_name;
+        let progTitle = 'proglobe' + friend_title;
+        var FPM = "FRIEND_PROFILE_MESSAGING";
+
+        let messagingObj = {
+            date: "",
+            id: "",
+            latestMsg: "",
+            message_id: "",
+            proglobeTitle: progTitle,
+            tabId: "",
+            title: friend_title,
+            user:this.props.dt
+        };
+
+        PubSub.publishSync(FPM, messagingObj);
+    }
+
+    onLoadVideoCall(t) {
+
+        if(!this.props.onFriendsProfile) {
+            return;
+        }
+
+        let friend_title = this.props.dt.user_name;
+        let friend_uri = 'usr:proglobe' + friend_title;
+        let progTitle = 'proglobe' + friend_title;
+        let FPVC = "FRIEND_PROFILE_VIDEO_CALL";
+
+        let messagingObj = {
+            date: "",
+            id: "",
+            latestMsg: "",
+            message_id: "",
+            proglobeTitle: progTitle,
+            tabId: "",
+            title: friend_title,
+            user: this.props.dt,
+            uri: friend_uri,
+            type: t
+        };
+
+        PubSub.publishSync(FPVC, messagingObj);
     }
 
     coverImgUpdate(data){
@@ -91,6 +153,16 @@ export class CoverImage extends React.Component{
             <div className="cover-image-wrapper">
                 <img src={this.state.coverimgSrc} alt="" className="img-responsive pg-profile-cover-banner" />
                 {(this.props.readOnly)? null : <CoverImageUploader imgUpdated={this.coverImgUpdate} /> }
+                {(this.props.onFriendsProfile) ?
+                    <div className="action-btn-holder">
+                        <button className="btn btn-default" onClick={()=>this.onLoadQuickChatMessage()}><i className="fa fa-comments" aria-hidden="true"></i> Message</button>
+                        <button className="btn btn-default" onClick={()=>this.onLoadVideoCall('CALL')}><i className="fa fa-phone" aria-hidden="true"></i> Call</button>
+                        <button className="btn btn-default" onClick={()=>this.onLoadVideoCall('VIDEO')}><i className="fa fa-video-camera" aria-hidden="true"></i> Video</button>
+                    </div>
+                    :
+                    null
+                }
+
             </div>
         );
     }
@@ -124,6 +196,25 @@ const ConnectionIndicator =(props)=> {
     );
 };
 
+/**
+ * Show Mutual Friends count
+ */
+const MutualConnectionIndicator =(props)=> {
+    let _style ={
+        "width": "102px",
+        "textTransform": "uppercase"
+    }
+
+    return (
+        <div id="pg-pro-share-btn" className="mutual-friends-holder clearfix" style={_style}>
+            <p>
+                <span className="pg-pro-share-btn-txt">23</span>
+                Mutual Connections
+            </p>
+        </div>
+    );
+};
+
 
 export class ConnectionStatus extends React.Component{
     constructor(props){
@@ -135,7 +226,11 @@ export class ConnectionStatus extends React.Component{
     render(){
         {
             return(
-                (this.props.connectionStatus != 0)?
+                (this.props.connectionStatus == 0)?
+                    (this.props.usrId != null)?
+                        <a href="javascript:void(0)"
+                           onClick={ () => this.props.onUnfriendUser(this.props.usrId) }
+                           className="pg-fr-bot-btn action-btn">Unfriend</a> : null :
                     (this.props.connectionStatus == 1) ? <a className="action-btn">Request Pending</a> :
                         (this.props.connectionStatus == 2) ? <a href="javascript:void(0)"
                                                                 onClick={ () => this.props.onAcceptFriendRequest(this.props.usrId) }
@@ -143,7 +238,6 @@ export class ConnectionStatus extends React.Component{
                             (this.props.connectionStatus == 3) ? <a href="javascript:void(0)"
                                                                     onClick={ () => this.props.onAddFriend(this.props.usrId) }
                                                                     className="pg-fr-bot-btn action-btn"><i className="fa fa-plus" aria-hidden="true"></i>Add as a Connection</a> : null
-                    : null
             )
         }
     }

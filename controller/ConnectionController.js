@@ -28,6 +28,7 @@ var ConnectionController ={
             return 0
         });
     },
+
     /**
      * Get My Connection
      * @param req
@@ -58,6 +59,38 @@ var ConnectionController ={
             return 0
         })
     },
+
+    /**
+     * Get My Connection with Unfriend User
+     * @param req
+     * @param res
+     */
+    getMyConnectionsBindUnfriendConnections:function(req,res){
+        console.log(req.query['q']);
+        var Connection = require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
+        var criteria = {
+            user_id :CurrentSession.id,
+            q:req.query['q']
+        }
+
+        Connection.getMyConnectionsBindUnfriendConnections(criteria,function(resultSet){
+            var outPut = {
+                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+
+            }
+            outPut['header'] ={
+                total_result:resultSet.result_count,
+                result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
+                total_pages:Math.ceil(resultSet.result_count/Config.CONNECTION_RESULT_PER_PAGE)
+            };
+
+            outPut['my_con'] = resultSet.results;
+            outPut['unfriend'] = resultSet.unfriend_connections;
+
+            res.status(200).send(outPut);
+            return 0
+        })
+    },
     /**
      * Accept Friend request
      * @param req
@@ -76,6 +109,65 @@ var ConnectionController ={
             res.status(200).send(outPut);
             return 0
         });
+    },
+
+    getMutualConnections:function(req,res){
+
+        var User = require('mongoose').model('User'),
+            Connection = require('mongoose').model('Connection'),
+            CurrentSession = Util.getCurrentSession(req),
+            _async = require('async'),
+            _grep = require('grep-from-array'),
+            _mutual_cons = [];
+
+        _async.waterfall([
+                function getMyConnections(callback){
+                    var criteria = {
+                        user_id :CurrentSession.id,
+                        q:req.params['q']
+                    };
+
+                    Connection.getMyConnection(criteria,function(resultSet){
+                        var my_cons = resultSet.results;
+                        callback(null, my_cons);
+                    })
+                },
+                function getFriendsConnection(resultSet, callback){
+                    var myConnection = resultSet,
+                        criteria = {
+                            user_id :req.params['uid'],
+                            q:req.params['q']
+                        };
+
+                    Connection.getMyConnection(criteria,function(resultSet){
+                        var friend_cons = resultSet.results;
+
+                        for(var inc = 0; inc < myConnection.length; inc++){
+                            var user_id = myConnection[inc].user_id;
+                            if(user_id != req.params['uid']) {
+
+                                var mutual_con = _grep(friend_cons, function (e) {
+                                    return e.user_id == user_id;
+                                });
+                                if(mutual_con[0] != null){
+                                    _mutual_cons.push(mutual_con[0]);
+                                }
+                            }
+                        }
+                        callback(null);
+                    });
+                }
+            ],function(err){
+                var outPut = {
+                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS)
+                };
+                outPut['mutual_cons'] = _mutual_cons;
+                outPut['mutual_cons_count'] = _mutual_cons.length;
+                res.status(200).send(outPut);
+            }
+        );
+
+
     },
 
     /**
@@ -295,6 +387,59 @@ var ConnectionController ={
                 return 0;
             }
         );
+    },
+
+    /**
+     * Remove User Connections
+     * @param req
+     * @param res
+     */
+    unfriendUser:function(req,res){
+        var Connection = require('mongoose').model('Connection'),
+            NoteBook = require('mongoose').model('NoteBook'),
+            _async = require('async'),
+            CurrentSession = Util.getCurrentSession(req);
+
+        _async.waterfall([
+            function updateConnection(callback){
+                var criteria ={
+                    sender_id  :req.body.sender_id,
+                    user_id:CurrentSession.id
+                };
+
+                Connection.unfriendUser(criteria,function(resultSet){
+                    console.log('connections');
+                    callback(null);
+                });
+            },
+            function updateNotebookByLoggedUser(callback){
+                var criteria ={
+                    sender_id  :req.body.sender_id,
+                    user_id:CurrentSession.id
+                };
+
+                NoteBook.sharedNotebookOnUnfriend(criteria,function(resultSet){
+                    console.log('1');
+                    callback(null);
+                });
+            },
+            function updateNotebookByRemovedUser(callback){
+                var criteria ={
+                    user_id  :req.body.sender_id,
+                    sender_id:CurrentSession.id.toString()
+                };
+
+                NoteBook.sharedNotebookOnUnfriend(criteria,function(resultSet){
+                    console.log('2');
+                    callback(null);
+                });
+            }
+        ],function(err){
+            var outPut = {
+                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS)
+            };
+            res.status(200).send(outPut);
+        });
     }
 
 }
