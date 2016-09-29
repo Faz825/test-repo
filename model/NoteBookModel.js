@@ -267,6 +267,8 @@ NoteBookSchema.statics.sharedNotebookOnUnfriend = function(payLoad, callBack){
             });
         },
         function getESSharedNotebookList(resultSet, callBack) {
+            console.log('results.....');
+            console.log(resultSet);
             if(resultSet) {
                 var query = {
                     q: "_id:" + payLoad.user_id.toString()
@@ -301,48 +303,55 @@ NoteBookSchema.statics.sharedNotebookOnUnfriend = function(payLoad, callBack){
                 dbNotebookList = resultSet.dbNotebookList,
                 dbRemovingList = [];
 
-            console.log(esNotebookList);
+            if(esNotebookList != null) {
 
-            for(var inc = 0; inc < dbNotebookList.length; inc++){
-                var index = esNotebookList.indexOf(dbNotebookList[inc]._id.toString());
+                for (var inc = 0; inc < dbNotebookList.length; inc++) {
+                    var index = esNotebookList.indexOf(dbNotebookList[inc]._id.toString());
 
-                console.log('index captured for '+ dbNotebookList[inc].name + ' '+ dbNotebookList[inc]._id +' index '+ index+' es id '+ esNotebookList[index]);
+                    console.log('index captured for ' + dbNotebookList[inc].name + ' ' + dbNotebookList[inc]._id + ' index ' + index + ' es id ' + esNotebookList[index]);
 
-                if(index != -1) {
-                    dbRemovingList.push(esNotebookList[inc]);
-                    esNotebookList.splice(index, 1);
+                    if (index != -1) {
+                        dbRemovingList.push(esNotebookList[inc]);
+                        esNotebookList.splice(index, 1);
+                    }
                 }
+
+                var query = {
+                        q: "user_id:" + payLoad.user_id.toString()
+                    },
+                    data = {
+                        user_id: payLoad.user_id,
+                        notebooks: esNotebookList
+                    };
+
+                _this.ch_shareNoteBookUpdateIndex(payLoad.user_id, data, function (esResultSet) {
+                    callBack(null, dbRemovingList);
+                });
+            }else{
+                callBack(null, null);
             }
-
-            var query={
-                    q:"user_id:"+payLoad.user_id.toString()
-                },
-                data = {
-                    user_id: payLoad.user_id,
-                    notebooks: esNotebookList
-                };
-
-            _this.ch_shareNoteBookUpdateIndex(payLoad.user_id,data, function(esResultSet){
-                callBack(null, dbRemovingList);
-            });
 
         },
         function (resultSet, callBack) {
             var dbNotebookList = resultSet;
 
-            _async.each(dbNotebookList, function(dbNotebook, callBack){
+            if(dbNotebookList != null) {
+                _async.each(dbNotebookList, function (dbNotebook, callBack) {
 
-                console.log('deleting... '+ dbNotebook);
+                    console.log('deleting... ' + dbNotebook);
 
-                _this.collection.update(
-                    { _id: Util.toObjectId(dbNotebook) },
-                    { $pull: { 'shared_users': {'user_id': payLoad.user_id} } },
-                    { multi: false },function(err,resultSet){
-                        callBack(null);
-                    });
-            },function(err){
+                    _this.collection.update(
+                        {_id: Util.toObjectId(dbNotebook)},
+                        {$pull: {'shared_users': {'user_id': payLoad.user_id}}},
+                        {multi: false}, function (err, resultSet) {
+                            callBack(null);
+                        });
+                }, function (err) {
+                    callBack(null);
+                });
+            }else{
                 callBack(null);
-            });
+            }
         }
 
     ], function (err) {
