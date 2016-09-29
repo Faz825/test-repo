@@ -43,7 +43,9 @@ export default class Header extends Component {
                 }
                 <ConnectionStatus connectionStatus={this.props.connectionStatus} onAddFriend = {this.props.onAddFriend}
                                   onAcceptFriendRequest = {this.props.onAcceptFriendRequest}
-                                  usrId={this.props.usrId}/>
+                                  onUnfriendUser = {this.props.onUnfriendUser}
+                                  usrId={this.props.usrId}
+                                  loggedUser={this.props.loggedUser}/>
                 <ProfileInfo dt={this.props.user} readOnly={read_only} loadExperiences={this.props.loadExperiences} uname={this.props.uname} loadProfileData={this.props.loadProfileData}/>
             </div>
         )
@@ -224,7 +226,11 @@ export class ConnectionStatus extends React.Component{
     render(){
         {
             return(
-                (this.props.connectionStatus != 0)?
+                (this.props.connectionStatus == 0)?
+                    (this.props.usrId != null)?
+                        <a href="javascript:void(0)"
+                           onClick={ () => this.props.onUnfriendUser(this.props.usrId) }
+                           className="pg-fr-bot-btn action-btn">Unfriend</a> : null :
                     (this.props.connectionStatus == 1) ? <a className="action-btn">Request Pending</a> :
                         (this.props.connectionStatus == 2) ? <a href="javascript:void(0)"
                                                                 onClick={ () => this.props.onAcceptFriendRequest(this.props.usrId) }
@@ -232,7 +238,6 @@ export class ConnectionStatus extends React.Component{
                             (this.props.connectionStatus == 3) ? <a href="javascript:void(0)"
                                                                     onClick={ () => this.props.onAddFriend(this.props.usrId) }
                                                                     className="pg-fr-bot-btn action-btn"><i className="fa fa-plus" aria-hidden="true"></i>Add as a Connection</a> : null
-                    : null
             )
         }
     }

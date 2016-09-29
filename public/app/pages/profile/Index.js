@@ -41,6 +41,7 @@ export default class Index extends React.Component{
         this.checkConnection = this.checkConnection.bind(this);
         this.onAddFriend = this.onAddFriend.bind(this);
         this.onAcceptFriendRequest = this.onAcceptFriendRequest.bind(this);
+        this.onUnfriendUser = this.onUnfriendUser.bind(this);
         this.loadExperiences();
         this.loadProfileData();
         this.loadPosts(0);
@@ -57,6 +58,22 @@ export default class Index extends React.Component{
         }).done(function(data){
             if(data.status.code == 200){
                 this.setState({connectionStatus:0});
+            }
+        }.bind(this));
+
+    }
+
+    onUnfriendUser(user_id){
+        $.ajax({
+            url: '/connection/unfriend',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            data:{ sender_id: user_id},
+
+        }).done(function(data){
+            if(data.status.code == 200){
+                this.setState({connectionStatus:3});
             }
         }.bind(this));
 
@@ -233,6 +250,7 @@ export default class Index extends React.Component{
                     connectionStatus={this.state.connectionStatus}
                     onAddFriend = {this.onAddFriend}
                     onAcceptFriendRequest = {this.onAcceptFriendRequest}
+                    onUnfriendUser = {this.onUnfriendUser}
                     usrId={this.state.usrId}/>
                 <div className="row row-clr">
                     <div className="container-fluid">

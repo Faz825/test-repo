@@ -13,6 +13,8 @@ GLOBAL.ConnectionStatus ={
     RESPONSE_DECLINED:2,
     REQUEST_BLOCKED:3,
     REQUEST_SENT:4,
+    CONNECTION_UNFRIEND:5,
+    CONNECTION_BLOCKED:6
 
 };
 
@@ -50,7 +52,7 @@ var ConnectionSchema = new Schema({
 },{collection:"connections"});
 
 ConnectionSchema.statics.sendConnectionRequest=function(user_id,connected_users,unconnected_users,callBack){
-    var _connected_users =[],now = new Date();
+    var _connected_users =[],now = new Date(), _this = this,_async = require('async');
     //REMOVE UNSELECTED CONNECTIONS
     if(unconnected_users.length > 0){
         var _formatted_unconnected_ids = [];
@@ -61,18 +63,55 @@ ConnectionSchema.statics.sendConnectionRequest=function(user_id,connected_users,
         }
     }
     if(connected_users.length >0){
-        for (var i = 0; connected_users.length > i; i++) {
-            _connected_users.push({
-                user_id: Util.toObjectId(user_id),
-                connected_with: connected_users[i].toObjectId(),
-                created_at: now,
-                action_user_id:Util.toObjectId(user_id),
-                status:ConnectionStatus.REQUEST_SENT
-            });
-        }
-        this.collection.insert(_connected_users,function(err,resultSet){});
+        _async.each(connected_users, function(connected_user, callBack){
+
+            _this.collection.update(
+                {
+                    $or: [
+                        {
+                            user_id:Util.toObjectId(connected_user.toObjectId()),
+                            connected_with:Util.toObjectId(user_id)
+                        },
+                        {
+                            user_id:Util.toObjectId(user_id),
+                            connected_with:Util.toObjectId(connected_user.toObjectId())
+                        }
+                    ]
+                }
+                ,{
+                    $set:{
+                        user_id: Util.toObjectId(user_id),
+                        connected_with: connected_user.toObjectId(),
+                        created_at: now,
+                        action_user_id:Util.toObjectId(user_id),
+                        status:ConnectionStatus.REQUEST_SENT
+                    }
+                },{upsert:true,multi:false},function(err,rsUpdate){
+                    if(!err){
+                        callBack(null);
+                    }else{
+                        console.log("user connection removed \n");
+                        console.log(err);
+                    }
+                })
+
+        },function(err){
+            callBack({status:200,connected:"ok"});
+        });
+
+        // for (var i = 0; connected_users.length > i; i++) {
+        //     _connected_users.push({
+        //         user_id: Util.toObjectId(user_id),
+        //         connected_with: connected_users[i].toObjectId(),
+        //         created_at: now,
+        //         action_user_id:Util.toObjectId(user_id),
+        //         status:ConnectionStatus.REQUEST_SENT
+        //     });
+        // }
+        // this.collection.insert(_connected_users,function(err,resultSet){});
+    }else {
+        callBack({status:200,connected:"empty"});
     }
-    callBack({status:200,connected:"ok"});
 
 }
 
@@ -428,6 +467,104 @@ ConnectionSchema.statics.getMyConnection = function(criteria,callBack){
 
 }
 
+/**
+ * Get My Connection with Unfriend Users
+ * @param criteria
+ * @param callBack
+ */
+ConnectionSchema.statics.getMyConnectionsBindUnfriendConnections = function(criteria,callBack){
+
+    var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString(),
+        _async = require('async'), _this = this;
+
+    var formatted_users = [], responseObj = {};
+
+    _async.waterfall([
+        function getEsUsers(callBack) {
+            var query={
+                    q:criteria.q,
+                    index:_cache_key
+                }
+
+            ES.search(query,function(esResultSet){
+
+                if(esResultSet != null){
+                    _async.each(esResultSet.result,
+                        function(result,callBack){
+
+                            var query={
+                                q:"user_id:"+result.user_id,
+                                index:'idx_usr'
+                            };
+                            ES.search(query,function(sesResultSet){
+                                if(result.user_id != criteria.user_id){
+                                    formatted_users.push(sesResultSet.result[0]);
+                                }
+                                callBack(null);
+
+                            });
+                        },
+                        function(err){
+                            responseObj = {result_count:formatted_users.length,results:formatted_users};
+                            callBack(null, responseObj);
+                        });
+                }else{
+                    responseObj = {result_count:0,results:[]};
+                    callBack(null, responseObj);
+                }
+
+            });
+        },
+        function getUnfriendUsers(resultSet, callBack) {
+            var query={
+                    $or: [
+                        {
+                            connected_with:Util.toObjectId(criteria.user_id),
+                            status:ConnectionStatus.CONNECTION_UNFRIEND
+                        },
+                        {
+                            user_id:Util.toObjectId(criteria.user_id),
+                            status:ConnectionStatus.CONNECTION_UNFRIEND
+                        }
+                    ]
+                };
+
+            _this.find(query)
+                .exec(function(err,dbResult){
+                    _async.each(dbResult, function(result,callBack){
+                           var friendsId = null;
+
+                            if(criteria.user_id == result.user_id){
+                                friendsId = result.connected_with;
+                            }else{
+                                friendsId = result.user_id;
+                            }
+                            var esQuery={
+                                q:"user_id:"+friendsId.toString(),
+                                index:'idx_usr'
+                            };
+                            ES.search(esQuery,function(sesResultSet){
+                                if(result._id != criteria.user_id){
+                                    sesResultSet.result[0]['status'] = 'CONNECTION_UNFRIEND';
+                                    formatted_users.push(sesResultSet.result[0]);
+                                }
+                                callBack(null);
+
+                            });
+                        },
+                        function(err){
+                            responseObj = {result_count:formatted_users.length,results:formatted_users};
+                            callBack(null);
+                        });
+
+
+                });
+        }
+    ], function (err) {
+        callBack(responseObj);
+    });
+
+};
 
 
 ConnectionSchema.statics.getFriendSuggestion = function(criteria,callBack){
@@ -547,6 +684,104 @@ ConnectionSchema.statics.checkRequestSentReceived = function(i,other,callBack){
             }
         });
 }
+
+/**
+ * Unfriend Connection
+ * @param userId
+ * @param callBack
+ */
+ConnectionSchema.statics.unfriendUser = function(criteria,callBack){
+
+    var _this = this, _async = require('async');
+
+    _async.waterfall([
+
+        function changeStatus(callBack){
+            var now = new Date();
+            _this.update(
+                {
+                    $or: [
+                        {
+                            user_id:Util.toObjectId(criteria.sender_id),
+                            connected_with:Util.toObjectId(criteria.user_id)
+                        },
+                        {
+                            user_id:Util.toObjectId(criteria.user_id),
+                            connected_with:Util.toObjectId(criteria.sender_id)
+                        }
+                    ]
+                }
+                ,{
+                $set:{
+                    status:ConnectionStatus.CONNECTION_UNFRIEND,
+                    updated_at:now
+                }
+            },{upsert:false,multi:false},function(err,rsUpdate){
+                if(!err){
+                    callBack(null);
+                }else{
+                    console.log("user connection removed \n");
+                    console.log(err);
+                }
+            })
+        },
+        function updateIndexConnection(callBack){
+
+            //UPDATE OWN CONNECTION ES
+            var query={
+                q:criteria.sender_id.toString(),
+                index:'idx_usr'
+            };
+
+            ES.search(query,function(esResultSet){
+
+
+                var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString();
+                var payLoad={
+                    index:_cache_key,
+                    id:criteria.sender_id.toString(),
+                    type: 'connections'
+                }
+
+                ES.delete(payLoad,function(resultSet){
+                    //DONE
+                    console.log("own connection removeIndex");
+                    console.log(resultSet);
+                });
+
+            });
+
+
+            //UPDATE FRIEND'S CONNECTION ES
+            var query={
+                q:criteria.user_id.toString(),
+                index:'idx_usr'
+            };
+            ES.search(query,function(esResultSet){
+
+                var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.sender_id.toString();
+                var payLoad={
+                    index:_cache_key,
+                    id:criteria.user_id.toString(),
+                    type: 'connections'
+                }
+
+                ES.delete(payLoad,function(resultSet){
+                    console.log("friend's connection removeIndex");
+                    console.log(resultSet);
+                    //DONE
+                });
+
+            });
+            callBack(null)
+        }
+
+    ],function(err,resultSet){
+        callBack({status:200})
+    });
+}
+
+
 
 
 
