@@ -1028,7 +1028,8 @@ var UserControler ={
         var _async = require('async'),
             Connection = require('mongoose').model('Connection'),
             User = require('mongoose').model('User'),
-            Upload = require('mongoose').model('Upload') ;
+            Upload = require('mongoose').model('Upload'),
+            CurrentSession = Util.getCurrentSession(req);
 
         if(typeof req.params['uname'] == 'undefined'){
             var outPut ={};
@@ -1100,6 +1101,61 @@ var UserControler ={
 
 
 
+            },
+            function getMutualConnectionCount(profileData, callBack){
+                console.log("getMutualConnectionCount");
+
+                if(CurrentSession.id != profileData.user_id){
+
+                    var _grep = require('grep-from-array'),
+                        _mutual_cons = [];
+
+                    _async.waterfall([
+                            function getMyConnections(callback){
+                                var criteria = {
+                                    user_id :CurrentSession.id,
+                                    //q:req.query['q']
+                                };
+
+                                Connection.getMyConnection(criteria,function(resultSet){
+                                    var my_cons = resultSet.results;
+                                    callback(null, my_cons);
+                                })
+                            },
+                            function getFriendsConnection(resultSet, callback){
+                                var myConnection = resultSet,
+                                    criteria = {
+                                        user_id :profileData.user_id,
+                                        //q:req.query['q']
+                                    };
+
+                                Connection.getMyConnection(criteria,function(resultSet){
+                                    var friend_cons = resultSet.results;
+
+                                    for(var inc = 0; inc < myConnection.length; inc++){
+                                        var user_id = myConnection[inc].user_id;
+                                        if(user_id != profileData.user_id) {
+
+                                            var mutual_con = _grep(friend_cons, function (e) {
+                                                return e.user_id == user_id;
+                                            });
+                                            if(mutual_con[0] != null){
+                                                _mutual_cons.push(mutual_con[0]);
+                                            }
+                                        }
+                                    }
+                                    callback(null);
+                                });
+                            }
+                        ],function(err){
+                            profileData['mutual_connection_count'] = _mutual_cons.length;
+                            callBack(null,profileData);
+                        }
+                    );
+
+                } else{
+                    callBack(null);
+                }
             }
 
 
