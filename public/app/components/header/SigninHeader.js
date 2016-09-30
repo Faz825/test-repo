@@ -39,7 +39,7 @@ export default class Header extends React.Component {
 
     loadMyConnections(token){
         $.ajax({
-            url: '/connection/me',
+            url: '/connection/me/unfriend',
             method: "GET",
             dataType: "JSON",
             headers: { 'prg-auth-header':token }
