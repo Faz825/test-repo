@@ -495,25 +495,30 @@ PostSchema.statics.postList=function(userId,posts,callBack){
  * @param posts
  */
 PostSchema.statics.getSharedCount=function(post,callBack){
-    var _this = this,
-        _async = require('async');
-
-    var criteria = {
-        $and : [
-            {shared_post_id: Util.toObjectId(post.post_id)},
-            {post_mode: 'SP'}
-        ]
-    };
-
-    _this.find(criteria)
-        .exec(function(err,resultSet){
-            if(!err){
-                callBack(resultSet.length);
-            }else{
-                console.log("Server Error --------")
-                callBack({status:400,error:err});
-            }
-        });
+    // var _this = this,
+    //     _async = require('async');
+    //
+    // var criteria = {
+    //     $and : [
+    //         {shared_post_id: Util.toObjectId(post.post_id)},
+    //         {post_mode: 'SP'}
+    //     ]
+    // };
+    //
+    // _this.find(criteria)
+    //     .exec(function(err,resultSet){
+    //         if(!err){
+    //             callBack(resultSet.length);
+    //         }else{
+    //             console.log("Server Error --------")
+    //             callBack({status:400,error:err});
+    //         }
+    //     });
+    var _this = this;
+    var _cache_key = PostConfig.SHARE_PREFIX+post.post_id.toString();
+    CacheEngine.getListCount(_cache_key,function(chResultCount){
+        callBack(chResultCount);
+    });
 
 };
 
