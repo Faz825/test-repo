@@ -1103,58 +1103,62 @@ var UserControler ={
 
             },
             function getMutualConnectionCount(profileData, callBack){
+                if( profileData!= null){
                 console.log("getMutualConnectionCount");
 
-                if(CurrentSession.id != profileData.user_id){
+                    if(CurrentSession.id != profileData.user_id){
 
-                    var _grep = require('grep-from-array'),
-                        _mutual_cons = [];
+                        var _grep = require('grep-from-array'),
+                            _mutual_cons = [];
 
-                    _async.waterfall([
-                            function getMyConnections(callback){
-                                var criteria = {
-                                    user_id :CurrentSession.id,
-                                    //q:req.query['q']
-                                };
-
-                                Connection.getMyConnection(criteria,function(resultSet){
-                                    var my_cons = resultSet.results;
-                                    callback(null, my_cons);
-                                })
-                            },
-                            function getFriendsConnection(resultSet, callback){
-                                var myConnection = resultSet,
-                                    criteria = {
-                                        user_id :profileData.user_id,
+                        _async.waterfall([
+                                function getMyConnections(callback){
+                                    var criteria = {
+                                        user_id :CurrentSession.id,
                                         //q:req.query['q']
                                     };
 
-                                Connection.getMyConnection(criteria,function(resultSet){
-                                    var friend_cons = resultSet.results;
+                                    Connection.getMyConnection(criteria,function(resultSet){
+                                        var my_cons = resultSet.results;
+                                        callback(null, my_cons);
+                                    })
+                                },
+                                function getFriendsConnection(resultSet, callback){
+                                    var myConnection = resultSet,
+                                        criteria = {
+                                            user_id :profileData.user_id,
+                                            //q:req.query['q']
+                                        };
 
-                                    for(var inc = 0; inc < myConnection.length; inc++){
-                                        var user_id = myConnection[inc].user_id;
-                                        if(user_id != profileData.user_id) {
+                                    Connection.getMyConnection(criteria,function(resultSet){
+                                        var friend_cons = resultSet.results;
 
-                                            var mutual_con = _grep(friend_cons, function (e) {
-                                                return e.user_id == user_id;
-                                            });
-                                            if(mutual_con[0] != null){
-                                                _mutual_cons.push(mutual_con[0]);
+                                        for(var inc = 0; inc < myConnection.length; inc++){
+                                            var user_id = myConnection[inc].user_id;
+                                            if(user_id != profileData.user_id) {
+
+                                                var mutual_con = _grep(friend_cons, function (e) {
+                                                    return e.user_id == user_id;
+                                                });
+                                                if(mutual_con[0] != null){
+                                                    _mutual_cons.push(mutual_con[0]);
+                                                }
                                             }
                                         }
-                                    }
-                                    callback(null);
-                                });
+                                        callback(null);
+                                    });
+                                }
+                            ],function(err){
+                                profileData['mutual_connection_count'] = _mutual_cons.length;
+                                callBack(null,profileData);
                             }
-                        ],function(err){
-                            profileData['mutual_connection_count'] = _mutual_cons.length;
-                            callBack(null,profileData);
-                        }
-                    );
+                        );
 
+                    } else{
+                        callBack(null);
+                    }
                 } else{
-                    callBack(null);
+                    callBack(null,null)
                 }
             }
 
