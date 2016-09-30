@@ -1155,7 +1155,7 @@ var UserControler ={
                         );
 
                     } else{
-                        callBack(null);
+                        callBack(null,profileData);
                     }
                 } else{
                     callBack(null,null)
