@@ -545,7 +545,7 @@ ConnectionSchema.statics.getMyConnectionsBindUnfriendConnections = function(crit
                             };
                             ES.search(esQuery,function(sesResultSet){
                                 if(result._id != criteria.user_id){
-                                    sesResultSet.result[0]['status'] = 'CONNECTION_UNFRIEND';
+                                    sesResultSet.result[0]['connection_status'] = 'CONNECTION_UNFRIEND';
                                     formatted_users.push(sesResultSet.result[0]);
                                 }
                                 callBack(null);
