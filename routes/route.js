@@ -217,7 +217,7 @@ router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
 //CONNECTIONS
 router.get('/connection/requests', ConnectionController.getRequestedConnections);
 router.get('/connection/me', ConnectionController.getMyConnections);
-router.get('/connection/me-b-unfriend-connections', ConnectionController.getMyConnectionsBindUnfriendConnections);
+router.get('/connection/me/unfriend', ConnectionController.getMyConnectionsBindUnfriendConnections);
 router.get('/connection/get-mutual/:uid', ConnectionController.getMutualConnections);
 router.post('/connection/accept', ConnectionController.acceptFriendRequest);
 router.post('/connection/unfriend', ConnectionController.unfriendUser);

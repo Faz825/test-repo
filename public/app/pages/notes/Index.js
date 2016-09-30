@@ -746,7 +746,11 @@ export class SharePopup extends React.Component{
                         </div> : null
                     }
                     <div className="see-all">
-                        <button className="btn-link" onClick={this.allSharedUsers.bind(this)}>See All</button>
+                        {
+                            (this.state.sharedUsers.length > 2) ?
+                                <button className="btn-link" onClick={this.allSharedUsers.bind(this)}>See
+                                    All</button> : null
+                        }
                     </div>
                 </div>
             </div>

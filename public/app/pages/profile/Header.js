@@ -37,7 +37,7 @@ export default class Header extends Component {
                 <CoverImage dt={this.props.user} readOnly={read_only} onFriendsProfile={isOnFriendsProfile}/>
                 {
                     (isOnFriendsProfile)?
-                        <MutualConnectionIndicator />
+                        <MutualConnectionIndicator mutualCount={this.props.user.mutual_connection_count} />
                     :
                         <ConnectionIndicator dt ={this.props.user}  readOnly={read_only}/>
                 }
@@ -208,7 +208,7 @@ const MutualConnectionIndicator =(props)=> {
     return (
         <div id="pg-pro-share-btn" className="mutual-friends-holder clearfix" style={_style}>
             <p>
-                <span className="pg-pro-share-btn-txt">23</span>
+                <span className="pg-pro-share-btn-txt">{props.mutualCount}</span>
                 Mutual Connections
             </p>
         </div>

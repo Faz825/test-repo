@@ -545,7 +545,7 @@ ConnectionSchema.statics.getMyConnectionsBindUnfriendConnections = function(crit
                             };
                             ES.search(esQuery,function(sesResultSet){
                                 if(result._id != criteria.user_id){
-                                    sesResultSet.result[0]['status'] = 'CONNECTION_UNFRIEND';
+                                    sesResultSet.result[0]['connection_status'] = 'CONNECTION_UNFRIEND';
                                     formatted_users.push(sesResultSet.result[0]);
                                 }
                                 callBack(null);
@@ -694,7 +694,7 @@ ConnectionSchema.statics.unfriendUser = function(criteria,callBack){
 
     var _this = this, _async = require('async');
 
-    _async.waterfall([
+    _async.parallel([
 
         function changeStatus(callBack){
             var now = new Date();
@@ -712,71 +712,53 @@ ConnectionSchema.statics.unfriendUser = function(criteria,callBack){
                     ]
                 }
                 ,{
-                $set:{
-                    status:ConnectionStatus.CONNECTION_UNFRIEND,
-                    updated_at:now
-                }
-            },{upsert:false,multi:false},function(err,rsUpdate){
-                if(!err){
-                    callBack(null);
-                }else{
-                    console.log("user connection removed \n");
-                    console.log(err);
-                }
-            })
+                    $set:{
+                        status:ConnectionStatus.CONNECTION_UNFRIEND,
+                        updated_at:now
+                    }
+                },{upsert:false,multi:false},function(err,rsUpdate){
+                    if(!err){
+                        callBack(null);
+                    }else{
+                        console.log("user connection removed \n");
+                        console.log(err);
+                    }
+                })
         },
-        function updateIndexConnection(callBack){
-
+        function updateOwnConnectionES(callBack){
             //UPDATE OWN CONNECTION ES
-            var query={
-                q:criteria.sender_id.toString(),
-                index:'idx_usr'
-            };
+            var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString();
+            var payLoad={
+                index:_cache_key,
+                id:criteria.sender_id.toString(),
+                type: 'connections'
+            }
 
-            ES.search(query,function(esResultSet){
-
-
-                var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString();
-                var payLoad={
-                    index:_cache_key,
-                    id:criteria.sender_id.toString(),
-                    type: 'connections'
-                }
-
-                ES.delete(payLoad,function(resultSet){
-                    //DONE
-                    console.log("own connection removeIndex");
-                    console.log(resultSet);
-                });
-
+            ES.delete(payLoad,function(resultSet){
+                console.log("own connection removeIndex");
+                console.log(resultSet);
+                callBack(null);
             });
 
-
+        },
+        function updateFriendsConnectionES(callBack) {
             //UPDATE FRIEND'S CONNECTION ES
-            var query={
-                q:criteria.user_id.toString(),
-                index:'idx_usr'
-            };
-            ES.search(query,function(esResultSet){
+            var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.sender_id.toString();
+            var payLoad={
+                index:_cache_key,
+                id:criteria.user_id.toString(),
+                type: 'connections'
+            }
 
-                var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.sender_id.toString();
-                var payLoad={
-                    index:_cache_key,
-                    id:criteria.user_id.toString(),
-                    type: 'connections'
-                }
-
-                ES.delete(payLoad,function(resultSet){
-                    console.log("friend's connection removeIndex");
-                    console.log(resultSet);
-                    //DONE
-                });
-
+            ES.delete(payLoad,function(resultSet){
+                console.log("friend's connection removeIndex");
+                console.log(resultSet);
+                callBack(null);
             });
-            callBack(null)
+
         }
 
-    ],function(err,resultSet){
+    ],function(err){
         callBack({status:200})
     });
 }

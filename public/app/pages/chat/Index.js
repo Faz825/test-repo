@@ -364,7 +364,7 @@ export default class Index extends React.Component{
 
     loadMyConnections(){
         $.ajax({
-            url: '/connection/me',
+            url: '/connection/me/unfriend',
             method: "GET",
             dataType: "JSON",
             headers: { 'prg-auth-header':this.state.userLoggedIn.token }
