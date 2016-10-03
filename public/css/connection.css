@@ -187,6 +187,9 @@
 .pg-my-connections-wrapper{
     margin-top: 15px
 }
+.pg-my-connections-wrapper.mutual{
+    margin-top: 0;
+}
 .pg-connections-page-header2 {
     padding-top: 11px;
     padding-bottom: 7px;

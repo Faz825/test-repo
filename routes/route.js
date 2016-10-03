@@ -72,7 +72,7 @@ GLOBAL.notAuthURLs = ['/sign-up','/forgot-password','/change-password-invalid','
 GLOBAL.AccessAllow = [
     '/','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
-    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode', '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name'
+    '/notes/edit-note/:note_id','/connections', '/connections/mutual/:uname','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode', '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name'
 ];
 
 /**
@@ -133,6 +133,7 @@ router.get('/notes', DefaultController.index);
 router.get('/notes/new-note/:notebook_id', DefaultController.index);
 router.get('/notes/edit-note/:note_id', DefaultController.index);
 router.get('/connections', DefaultController.index);
+router.get('/connections/mutual/:uname', DefaultController.index);
 router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
 

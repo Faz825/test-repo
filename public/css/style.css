@@ -1289,6 +1289,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 #pg-pro-share-btn.mutual-friends-holder{
 	padding-bottom: 1px;
+	cursor: pointer;
 }
 #pg-pro-share-btn.mutual-friends-holder .pg-pro-share-btn-txt{
 	float: left;
@@ -3015,6 +3016,10 @@ textarea{
 	border-radius: 8px
 }
 
+.chat-view .chat-block.receiver img{
+	cursor: pointer;
+}
+
 .chat-view .chat-block.receiver .chat-msg-body{
 	background: #ededed;
 }
@@ -3046,6 +3051,7 @@ textarea{
 .chat-block .chat-msg-body .user-name{
 	display: block;
 	font-size: 0.8em;
+	cursor: pointer;
 }
 
 .chat-block .chat-msg-body .user-name{
@@ -3497,6 +3503,10 @@ textarea{
 	padding: 10px;
 	position: relative;
 	border-bottom: 1px solid #dee6eb;
+}
+
+.chat-popup .header-wrapper .connection-name{
+	cursor: pointer;
 }
 
 .header-wrapper .bubble-opts-holder{

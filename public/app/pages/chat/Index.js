@@ -709,7 +709,14 @@ export class MessageList extends React.Component{
         super(props)
         this.state ={};
         this.loggedUser = this.props.loggedUser;
+        this.onLoadProfile = this.onLoadProfile.bind(this);
     }
+
+    onLoadProfile(){
+        console.log('loaing...');
+        window.location.href = '/profile/'+this.props.chatWith;
+    }
+
     render() {
 
         if(Object.keys(this.refs).length > 0){
@@ -734,8 +741,8 @@ export class MessageList extends React.Component{
                 let cssClass = 'chat-block '+msg.cssClass;
                 return (
                     <div className={cssClass} key={key}>
-                        <img src={msg.display_prof_img} alt="" width="40px" height="40px"/>
-                        <div className="chat-msg-body"><span className="user-name">{msg.display_name}</span><p className="chat-msg">{msg.text}</p></div>
+                        <img src={msg.display_prof_img} alt="" width="40px" height="40px" onClick={_this.onLoadProfile}/>
+                        <div className="chat-msg-body"><span className="user-name" onClick={_this.onLoadProfile}>{msg.display_name}</span><p className="chat-msg">{msg.text}</p></div>
                     </div>
                 );
             });

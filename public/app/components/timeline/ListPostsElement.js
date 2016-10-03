@@ -11,7 +11,7 @@ import CommentElement from './CommentElement';
 import ProgressBar from '../elements/ProgressBar';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Scroll from 'react-scroll';
-const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,onLikeSuccess})=>{
+const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,onLikeSuccess,onLoadProfile})=>{
 
         if(posts.length <= 0){
             return (<div />)
@@ -20,7 +20,7 @@ const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,
         let _postElement = posts.map((post,key)=>{
 
             return (<SinglePost postItem = {post} key={key} postIndex={key} onPostSubmitSuccess ={(post)=>onPostSubmitSuccess(post)}
-                                onPostDeleteSuccess = {onPostDeleteSuccess} onLikeSuccess = {onLikeSuccess}/>)
+                                onPostDeleteSuccess = {onPostDeleteSuccess} onLikeSuccess = {onLikeSuccess} onLoadProfile = {onLoadProfile}/>)
         });
 
         return (
@@ -403,16 +403,19 @@ class SinglePost extends React.Component{
                     <div className="row row-clr pg-newsfeed-section-common-content-post-info">
                         <div className="pg-user-pro-pic">
                             <PostProfilePic post={_post}
-                                            profile={_profile}/>
+                                            profile={_profile}
+                                            onLoadProfile = {this.props.onLoadProfile}/>
                         </div>
                         <div className="pg-user-pro-info">
                             <h5 className="pg-newsfeed-profile-name">
 
                                 <PostOwner post={_post}
-                                            profile={_profile}/>
+                                           profile={_profile}
+                                           onLoadProfile = {this.props.onLoadProfile}/>
 
                                 <SharedPostTitle post={_post}
-                                                 loggedUser={this.loggedUser}/>
+                                                 loggedUser={this.loggedUser}
+                                                 onLoadProfile = {this.props.onLoadProfile}/>
 
                                 <UpdatedProPic post={_post}
                                               loggedUser={this.loggedUser}/>
@@ -436,7 +439,8 @@ class SinglePost extends React.Component{
                         </div>
 
                         <SharedPostBody  post={_post}
-                                     loggedUser={this.loggedUser}/>
+                                     loggedUser={this.loggedUser}
+                                     onLoadProfile = {this.props.onLoadProfile}/>
 
 
                         <PostActionBar comment_count={_post.comment_count}
@@ -577,7 +581,7 @@ const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost,btnEnabled
 };
 
 
-const SharedPostTitle = ({loggedUser,post}) =>{
+const SharedPostTitle = ({loggedUser,post,onLoadProfile}) =>{
 
     if(post.post_mode == "SP"){
         return (
@@ -585,7 +589,7 @@ const SharedPostTitle = ({loggedUser,post}) =>{
                 <span className="own-post-share">shared own post</span>
                 :   <span className="post-owner-name">
                         <span className="shared-text">shared</span>
-                        <span className="pro-name">
+                        <span className="pro-name" onClick={()=>onLoadProfile(post.shared_post.created_by.user_name)}>
                             {" "+post.shared_post.created_by.first_name + " " + post.shared_post.created_by.last_name}
                         </span>'s post
                     </span>
@@ -611,42 +615,42 @@ const PostContentBody = ({loggedUser,post})=>{
 
 };
 
-const PostOwner = ({post,profile}) => {
+const PostOwner = ({post,profile,onLoadProfile}) => {
 
     if(post.post_owned_by != undefined){
         return (
             (post.created_by.user_id == post.post_owned_by.user_id)?
-                <span className="pro-name">{profile.first_name + " " + profile.last_name + " "} </span>
+                <span className="pro-name" onClick={()=>onLoadProfile(profile.user_name)} >{profile.first_name + " " + profile.last_name + " "} </span>
                 :
                 <span className="post-owner-name">
-                    <span className="pro-name">
+                    <span className="pro-name" onClick={()=>onLoadProfile(post.post_owned_by.user_name)}>
                   {post.post_owned_by.first_name + " " + post.post_owned_by.last_name + " "}
                     </span>
                     <i className="fa fa-caret-right"></i>
-                    <span className="pro-name">
+                    <span className="pro-name" onClick={()=>onLoadProfile(post.created_by.user_name)}>
                         {" " + post.created_by.first_name + " " + post.created_by.last_name}
                     </span>
                 </span>
         );
     }else{
         return(
-            <span className="pro-name">{profile.first_name + " " + profile.last_name + " "} </span>
+            <span className="pro-name" onClick={()=>onLoadProfile(profile.user_name)}>{profile.first_name + " " + profile.last_name + " "} </span>
         );
     }
 
 };
 
-const PostProfilePic = ({post,profile}) => {
+const PostProfilePic = ({post,profile,onLoadProfile}) => {
     if(post.post_owned_by != undefined){
         return (
             (post.created_by.user_id == post.post_owned_by.user_id)?
-                <img src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
+                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
                 :
-                <img src={post.post_owned_by.images.profile_image.http_url} alt={post.post_owned_by.first_name + " " + post.post_owned_by.last_name} className="img-responsive"/>
+                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={post.post_owned_by.images.profile_image.http_url} alt={post.post_owned_by.first_name + " " + post.post_owned_by.last_name} className="img-responsive"/>
         );
     }else{
         return(
-            <img src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
+            <img onClick={()=>onLoadProfile(post.created_by.user_name)} src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
         );
     }
 
@@ -671,7 +675,7 @@ export const UpdatedProPic = ({loggedUser,post})=>{
 }
 
 
-const SharedPostBody = ({loggedUser,post}) => {
+const SharedPostBody = ({loggedUser,post,onLoadProfile}) => {
 
     if(post.post_mode != "SP"){
         return (<span />);
@@ -705,10 +709,10 @@ const SharedPostBody = ({loggedUser,post}) => {
     return (
         <div className="shared-post-holder">
             <div className="pg-user-pro-pic">
-                <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
+                <img onClick={()=>onLoadProfile(_profile.user_name)} src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
             </div>
             <div className="pg-user-pro-info">
-                <h5 className="pg-newsfeed-profile-name">
+                <h5 className="pg-newsfeed-profile-name" onClick={()=>onLoadProfile(_profile.user_name)}>
                     <span className="pro-name">
                         {_profile.first_name + " " + _profile.last_name}
                     </span>

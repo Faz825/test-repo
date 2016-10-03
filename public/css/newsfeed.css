@@ -208,6 +208,11 @@
     margin-right: 10px;
     width: 7%;
 }
+
+.pg-user-pro-pic img{
+    cursor: pointer;
+}
+
 .pg-user-pro-info {
     display: inline-block;
     vertical-align: top;
@@ -843,6 +848,7 @@
 
 .pro-name{
     text-transform: capitalize;
+    cursor: pointer;
 }
 
 .artical-save-btn{
