@@ -80,7 +80,7 @@ export default class Index extends React.Component{
                 <div className="pg-connections-wrapper">
                     {
                         (my_connections.length > 0)?
-                            <MyConnections my_connections = {my_connections}/>
+                            <MutualConnections my_connections = {my_connections}/>
                             :null
                     }
 
@@ -91,7 +91,7 @@ export default class Index extends React.Component{
     }
 }
 
-export class MyConnections  extends React.Component{
+export class MutualConnections  extends React.Component{
     constructor(props){
         super(props);
         this.state ={
@@ -128,7 +128,7 @@ export class MyConnections  extends React.Component{
                     <div className="col-xs-10 col-xs-offset-1">
                         <div className="row">
                             <div className="col-sm-4 connection-title-holder">
-                                <h2 className="pg-connections-page-header-title2">My Connections</h2>
+                                <h2 className="pg-connections-page-header-title2">Mutual Connections</h2>
                             </div>
                             <div className="col-sm-8">
                                 <div className="pg-my-con-option-full-wrapper">

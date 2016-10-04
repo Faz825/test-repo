@@ -365,13 +365,16 @@ ConnectionSchema.statics.acceptConnectionRequest = function(criteria,callBack){
 
             ES.search(query,function(esResultSet){
 
+                var now = new Date();
+                esResultSet.result[0]['connected_at'] = now
+                var _data = esResultSet.result[0];
 
                 var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString();
                 var payLoad={
                     index:_cache_key,
                     id:criteria.sender_id.toString(),
                     type: 'connections',
-                    data:esResultSet.result[0],
+                    data:_data,
                     tag_fields:[esResultSet.result[0].first_name,esResultSet.result[0].last_name]
                 }
 
@@ -391,12 +394,16 @@ ConnectionSchema.statics.acceptConnectionRequest = function(criteria,callBack){
             };
             ES.search(query,function(esResultSet){
 
+                var now = new Date();
+                esResultSet.result[0]['connected_at'] = now
+                var _data = esResultSet.result[0];
+
                 var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.sender_id.toString();
                 var payLoad={
                     index:_cache_key,
                     id:criteria.user_id.toString(),
                     type: 'connections',
-                    data:esResultSet.result[0],
+                    data:_data,
                     tag_fields:[esResultSet.result[0].first_name,esResultSet.result[0].last_name]
                 }
 
@@ -444,6 +451,11 @@ ConnectionSchema.statics.getMyConnection = function(criteria,callBack){
                     };
                     ES.search(query,function(sesResultSet){
                         if(result.user_id != criteria.user_id){
+                            if(result.connected_at){
+                                sesResultSet.result[0]['connected_at'] = result.connected_at;
+                            }else{
+                                sesResultSet.result[0]['connected_at'] = Date.parse('2016-10-04T10:04:48.762Z');
+                            }
                             formatted_users.push(sesResultSet.result[0]);
 
                         }

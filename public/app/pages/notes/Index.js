@@ -966,20 +966,26 @@ export class  SharedUsers extends React.Component {
                         }
 
                     </div>
-                    <div className="action add-new">
-                        <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
-                            <i className="fa fa-minus" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div className="permission">
-                        <select className="pg-custom-input"
-                                onChange={(event)=>_this.props.changePermissions(event, user)}
-                                value={user.shared_type}>
-                            <option value="1">Read Only</option>
-                            <option value="2">Read/Write</option>
-                        </select>
-                    </div>
-                    {_this.props.removeSharedUser()}
+                    {
+                        (_notebook.owned_by == 'me')?
+                            <div>
+                                <div className="action add-new">
+                                    <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
+                                        <i className="fa fa-minus" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <div className="permission">
+                                    <select className="pg-custom-input"
+                                            onChange={(event)=>_this.props.changePermissions(event, user)}
+                                            value={user.shared_type}>
+                                        <option value="1">Read Only</option>
+                                        <option value="2">Read/Write</option>
+                                    </select>
+                                </div>
+                                {_this.props.removeSharedUser()}
+                            </div>
+                            : null
+                    }
                 </div> :
                 <div className="user-block shared clearfix" key={key}>
                     <div className="separator"></div>

@@ -380,11 +380,30 @@ export class MyConnections  extends React.Component{
     constructor(props){
         super(props);
         this.state ={
+            loggedUser:Session.getSession('prg_lg'),
             my_connections:[],
 
         };
 
+        this.onSortConnectionsByName = this.onSortConnectionsByName.bind(this);
 
+    }
+
+    onSortConnectionsByName(e){
+        let _fieldValue = e.target.value;
+        let _this = this;
+
+        $.ajax({
+            url: '/connection/me/sort/'+_fieldValue,
+            method: "GET",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+
+        }).done(function(data){
+            if(data.status.code == 200){
+                _this.setState({my_connections:data.my_con});
+            }
+        });
     }
 
 
@@ -423,8 +442,10 @@ export class MyConnections  extends React.Component{
                                         </select>
                                     </div>
                                     <div className="pg-my-con-option pg-my-con-option-sort">
-                                        <select>
-                                            <option>Sort by</option>
+                                        <select onChange={(event)=>this.onSortConnectionsByName(event)}>
+                                            <option selected="" disabled="">Sort by</option>
+                                            <option value="name">Name</option>
+                                            <option value="date">Date Connected</option>
                                         </select>
                                     </div>
                                     <div className="pg-my-con-option pg-my-con-option-filter">

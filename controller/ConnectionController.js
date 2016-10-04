@@ -35,7 +35,8 @@ var ConnectionController ={
      * @param res
      */
     getMyConnections:function(req,res){
-        console.log(req.query['q'])
+        console.log(req.query['q']);
+        console.log('default');
         var Connection = require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
         var criteria = {
             user_id :CurrentSession.id,
@@ -54,6 +55,53 @@ var ConnectionController ={
             };
 
             outPut['my_con'] = resultSet.results
+
+            res.status(200).send(outPut);
+            return 0
+        })
+    },
+
+    /**
+     * Get My Connection - Sort
+     * @param req
+     * @param res
+     */
+    getMySortedConnections:function(req,res){
+
+        var Connection = require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
+        var criteria = {
+            user_id :CurrentSession.id,
+            q:req.query['q']
+        }, sortingOption = req.params['option'];
+
+        Connection.getMyConnection(criteria,function(resultSet){
+            var outPut = {
+                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+
+            }
+            outPut['header'] ={
+                total_result:resultSet.result_count,
+                result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
+                total_pages:Math.ceil(resultSet.result_count/Config.CONNECTION_RESULT_PER_PAGE)
+            };
+
+            var _allConnections = resultSet.results;
+
+            switch(sortingOption){
+                case 'name':
+                    console.log('sorting...');
+                    _allConnections.sort(function(a,b){
+                        a.first_name - b.first_name;
+                    });
+                    break;
+                case 'date':
+                    _allConnections.sort(function(a,b){
+                        b.connected_at - a.connected_at;
+                    });
+                    break;
+            }
+            console.log('outing...');
+            outPut['my_con'] = _allConnections;
 
             res.status(200).send(outPut);
             return 0
