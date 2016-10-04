@@ -26,7 +26,7 @@
     "ffmpeg": "0.0.4",
     "ffmpeg-binary-linux-64bit": "^0.1.0",
     "grep-from-array": "^0.9.0",
-    "jsonwebtoken": "^5.4.0",
+    "jsonwebtoken": "^7.1.9",
     "kerberos": "0.0.18",
     "mandrill-api": "^1.0.45",
     "memcached": "^2.2.1",
