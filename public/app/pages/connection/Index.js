@@ -381,7 +381,7 @@ export class MyConnections  extends React.Component{
         super(props);
         this.state ={
             loggedUser:Session.getSession('prg_lg'),
-            my_connections:[],
+            my_connections: this.props.my_connections,
 
         };
 
@@ -412,11 +412,11 @@ export class MyConnections  extends React.Component{
     }
 
     render(){
-        if(typeof this.props.my_connections == 'undefined'){
+        let _this = this;
+        if(typeof _this.state.my_connections == 'undefined'){
             return (<div />)
         }
-        let _this = this;
-        let user_elements = this.props.my_connections.map(function(friend,key){
+        let user_elements = _this.state.my_connections.map(function(friend,key){
 
             return (
                 <UserBlockThumbView user = {friend}

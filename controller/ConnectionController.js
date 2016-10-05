@@ -85,23 +85,18 @@ var ConnectionController ={
                 total_pages:Math.ceil(resultSet.result_count/Config.CONNECTION_RESULT_PER_PAGE)
             };
 
-            var _allConnections = resultSet.results;
+            var _allConnections = resultSet.results,
+                sortedUsers = [];
 
             switch(sortingOption){
                 case 'name':
-                    console.log('sorting...');
-                    _allConnections.sort(function(a,b){
-                        a.first_name - b.first_name;
-                    });
+                    sortedUsers = Util.sortByKeyDES(_allConnections, 'first_name');
                     break;
                 case 'date':
-                    _allConnections.sort(function(a,b){
-                        b.connected_at - a.connected_at;
-                    });
+                    sortedUsers = Util.sortByKeyDES(_allConnections, 'connected_at');
                     break;
             }
-            console.log('outing...');
-            outPut['my_con'] = _allConnections;
+            outPut['my_con'] = sortedUsers;
 
             res.status(200).send(outPut);
             return 0
