@@ -90,11 +90,13 @@ var ConnectionController ={
 
             switch(sortingOption){
                 case 'name':
-                    sortedUsers = Util.sortByKeyDES(_allConnections, 'first_name');
+                    sortedUsers = Util.sortByKeyASC(_allConnections, 'first_name');
                     break;
                 case 'date':
                     sortedUsers = Util.sortByKeyDES(_allConnections, 'connected_at');
                     break;
+                default:
+                    sortedUsers = _allConnections;
             }
             outPut['my_con'] = sortedUsers;
 
