@@ -2162,7 +2162,7 @@ textarea{
 	margin-bottom: 40px;
 	cursor: pointer;
 	padding: 0;
-	min-height: 350px;
+	min-height: 180px;
 }
 .pg-notes-page-content-item.pg-box-shadow{
 	cursor: default;
@@ -2317,7 +2317,12 @@ textarea{
 }
 .pg-news-item,
 .pg-notes-item-main-row .note-holder{
-	margin: 15px 0 ;
+	margin: 15px 0;
+}
+
+.pg-news-item{
+	max-width: 120px;
+	width: 120px;
 }
 .pg-notes-item-main-row .note{
 	height: 145px;
