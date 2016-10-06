@@ -2162,6 +2162,7 @@ textarea{
 	margin-bottom: 40px;
 	cursor: pointer;
 	padding: 0;
+	min-height: 350px;
 }
 .pg-notes-page-content-item.pg-box-shadow{
 	cursor: default;

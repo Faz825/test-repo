@@ -26,6 +26,7 @@ require('../model/NotesModel');
 require('../model/NoteBookModel');
 require('../model/UsersSavedArticle');
 require('../model/SubscribedPosts');
+require('../model/NewsChannelsModel');
 
 /** Load  Controllers
  */

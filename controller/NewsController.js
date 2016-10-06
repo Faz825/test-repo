@@ -45,12 +45,25 @@ var NewsController ={
         var News = require('mongoose').model('News'),
             _async = require('async'),
             FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
+            NewsChannels = require('mongoose').model('NewsChannels'),
             CurrentSession = Util.getCurrentSession(req);
 
 
         var user_id=CurrentSession.id;
+        var channels = [];
 
         _async.waterfall([
+            function getUserChannels(callBack){
+
+                NewsChannels.getChannelsByUser(user_id, function(resultSet) {
+                    if(resultSet.status == 200) {
+                        channels = resultSet.channel_list;
+                        console.log("------channels");
+                        console.log(channels);
+                        callBack(null);
+                    }
+                });
+            },
             function getFavouriteNewsCategories(callBack){
 
                 FavouriteNewsCategory.getNewsCategoriesByUserId(user_id,function(resultSet){
@@ -71,8 +84,6 @@ var NewsController ={
                         _tmpData.is_favorite = 0;
                         for(var i = 0; i< newsCategories.length;i++ ) {
 
-
-
                             if(newsCategories[i].category.toString() == _tmpData._id.toString()){
                                 _tmpData.is_favorite = 1;
                                 break;
@@ -86,6 +97,20 @@ var NewsController ={
                     callBack(null,_tmpOutPut);
                 });
 
+            },
+            function reCategorizeChannels(news,callBack){
+
+                var _this = this;
+
+                for(var a=0;a<news.length;a++){
+                    var categoryChannelList = news[a].channels;
+                    console.log("------first");
+                    console.log(categoryChannelList);
+                    news[a].channels = NewsChannels.formatNewsChannels(categoryChannelList, channels);
+                }
+                console.log("------second");
+                console.log(news);
+                callBack(null,news);
             }
 
         ],function(err,resultSet){
