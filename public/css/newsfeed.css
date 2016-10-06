@@ -656,11 +656,8 @@
 
 .imgPop-holder .pg-newsfeed-common-content-post-new-comment{
     margin: 0 auto;
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    width: 80%;
+    width: 380px;
+    max-width: 80%;
 }
 
 .imgPop-holder .share-popup-holder .pg-status-post-btn{
@@ -678,11 +675,11 @@
     overflow: hidden;
 }
 
-.imgPop-holder .share-popup-holder .comment-holder{
-    min-height: 40px;
+.imgPop-holder .pg-newsfeed-common-content-post-new-comment-input-area {
+    width: 80%;
 }
 
-.share-popup-holder .comment-holder .cmt-pro-img{
+.share-popup-holder .comment-inner-wrapper .cmt-pro-img{
     max-width: 32px;
     height: 35px;
     width: 35px;

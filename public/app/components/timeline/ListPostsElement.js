@@ -421,7 +421,7 @@ class SinglePost extends React.Component{
 
                             {
                                 (this.state.showCommentPane) ?
-                                    <div className="comment-holder">
+                                    <div className="comment-inner-wrapper">
                                         <CommentElement
                                         visibility = {this.state.showCommentPane}
                                         postId = {_post.post_id}
