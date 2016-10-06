@@ -247,6 +247,7 @@ router.post('/news/articles/save', NewsController.saveMyNews);
 router.get('/news/saved/articles', NewsController.getSavedArticles);
 
 router.post('/news/user-channel/composer', NewsController.addChannelByUser);
+router.post('/news/user-channel/remove', NewsController.removeChannelByUser);
 
 router.post('/like/composer', LikeController.doLike);
 

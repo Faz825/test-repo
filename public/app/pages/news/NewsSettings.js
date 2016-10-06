@@ -24,9 +24,11 @@ export default class NewsSettings extends React.Component{
 
         this.onPopUp = this.onPopUp.bind(this);
         this.addNewsChannel = this.addNewsChannel.bind(this);
+        this.removeNewsChannel = this.removeNewsChannel.bind(this);
 
         this.loadCategories();
         // this.addNewsChannel();
+        // this.removeNewsChannel();
     }
 
     loadCategories(){
@@ -66,6 +68,30 @@ export default class NewsSettings extends React.Component{
             }
         });
 
+    }
+
+    removeNewsChannel(){
+        let channelData ={
+            __channel_name: 'FoxNews',
+            __category_id: '56f7a1fe96688d640db5b95d'
+        };
+
+        $.ajax({
+            url: '/news/user-channel/remove',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            data: channelData,
+            success: function (data, text) {
+                if (data.status.code == 200) {
+                    this.loadCategories();
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(status);
+                console.log(error);
+            }
+        });
     }
 
     handleClose() {

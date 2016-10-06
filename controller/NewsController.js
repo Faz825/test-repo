@@ -587,6 +587,47 @@ var NewsController ={
             };
             res.status(200).json(outPut);
         });
+    },
+
+    /**
+     * Remove News Channel to User
+     * @param req
+     * @param res
+     */
+
+    removeChannelByUser:function(req,res){
+        var NewsChannels = require('mongoose').model('NewsChannels'),
+            _async = require('async'),
+            CurrentSession = Util.getCurrentSession(req);
+
+        var _newsChannel = {
+            channel_name:req.body.__channel_name,
+            user_id:Util.getCurrentSession(req).id
+        };
+
+        _async.waterfall([
+
+            function isAlreadyAddedChannel(callBack) {
+                NewsChannels.isChannelExistsForUser(_newsChannel, function (resultSet) {
+                    callBack(null, resultSet);
+                });
+            },
+            function (isAdded, callBack) {
+                if(isAdded){
+                    NewsChannels.removeChannelByUser(_newsChannel,function(resultSet){
+                        callBack(null);
+                    });
+                }else {
+                    callBack(null);
+                }
+            }
+
+        ],function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
+            res.status(200).json(outPut);
+        });
     }
 
 };

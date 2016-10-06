@@ -67,9 +67,6 @@ NewsChannelsSchema.statics.isChannelExistsForUser = function(payload,callBack){
 
     _this.findOne(criteria).exec(function (err, resultSet) {
         if (!err) {
-
-            console.log("is exists "+resultSet);
-
             if(resultSet){
                 callBack(true);
             }else{
@@ -100,6 +97,31 @@ NewsChannelsSchema.statics.addChannelByUser = function(channelData,callBack){
             });
         }else{
             console.log("Server Error --------");
+            callBack({status:400,error:err});
+        }
+
+    });
+
+};
+
+NewsChannelsSchema.statics.removeChannelByUser = function(payload,callBack){
+
+    var _this = this;
+    var criteria = {
+        user_id: payload.user_id,
+        channel_name: payload.channel_name
+    };
+
+    this.remove(criteria).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
             callBack({status:400,error:err});
         }
 
