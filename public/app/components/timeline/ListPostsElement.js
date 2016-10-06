@@ -41,25 +41,29 @@ export default ListPostsElement;
 class SinglePost extends React.Component{
     constructor(props){
         super(props);
-        this.state={
-            postItem :this.props.postItem,
-            profile:this.props.postItem.created_by,
-            showCommentPane:false,
-            comments:[],
-            unformattedComments:[],
-            liked_users : [],
-            isShowingModal:false,
-            iniTextisVisible:false,
-            text:"",
-            shareBtnEnabled:true,
-            isShowingVideoModal:false,
-            videoUrl:""
+        this.state= {
+            postItem: this.props.postItem,
+            profile: this.props.postItem.created_by,
+            showCommentPane: false,
+            comments: [],
+            unformattedComments: [],
+            liked_users: [],
+            isShowingModal: false,
+            iniTextisVisible: false,
+            text: "",
+            shareBtnEnabled: true,
+            isShowingVideoModal: false,
+            isShowingImgModal: false,
+            videoUrl: "",
+            currentImage: 0
         };
         this.loggedUser= Session.getSession('prg_lg');
 
         this.lifeEvent="";
         this.sharedPost = false;
+        this.imgList = [];
 
+        this.openLightbox = this.openLightbox.bind(this);
     }
 
     componentDidMount(){
@@ -146,7 +150,7 @@ class SinglePost extends React.Component{
         this.loadComment();
     }
     handleClose() {
-        this.setState({isShowingModal: false, isShowingVideoModal:false});
+        this.setState({isShowingModal: false, isShowingVideoModal:false, isShowingImgModal:false});
     }
     onContentAdd(event){
         let _text  = Lib.sanitize(event.target.innerHTML);
@@ -358,10 +362,100 @@ class SinglePost extends React.Component{
         )
     }
 
+    onPrevClick(){
+        this.setState({
+            currentImage: this.state.currentImage - 1
+        });
+    }
+
+    onNextClick(){
+        this.setState({
+            currentImage: this.state.currentImage + 1
+        });
+    }
+
+    getImgPopup(){
+        const _post = this.props.postItem;
+        const _postIndex = this.props.postIndex;
+        const _is_i_liked = _post.is_i_liked;
+
+        return(
+            <div>
+                {this.state.isShowingImgModal &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} className="imgPop-holder">
+                        <div className="share-popup-holder">
+                            <div className="img-holder">
+                                <img src={this.imgList[this.state.currentImage]} className="img-responsive"/>
+                            </div>
+                            {
+                                (this.state.currentImage != 0)?
+                                    <i className="fa fa-chevron-left left-arrow arrow" onClick={this.onPrevClick.bind(this)}></i>
+                                    :
+                                    null
+                            }
+
+                            {
+                                (this.imgList.length != this.state.currentImage + 1)?
+                                    <i className="fa fa-chevron-right right-arrow arrow" onClick={this.onNextClick.bind(this)}></i>
+                                    :
+                                    null
+                            }
+                            <PostActionBar comment_count={_post.comment_count}
+                                           post_index = {_postIndex}
+                                           onLikeClick = {this.onLikeClick.bind(this)}
+                                           onShareClick = {event=>this.onShareClick()}
+                                           onCommentClick = {event=>this.onCommentClick()}
+                                           OnLikeHover = {event=>this.loadLikedUsers()}
+                                           is_i_liked = {_is_i_liked}
+                                           liked_users = {_post.liked_user}
+                                           show_share_button ={true}/>
+
+                            {
+                                (typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
+                                    <LikeSummery
+                                        visibility={true}
+                                        likes ={_post.liked_user}/>
+                                    :null
+                            }
+
+                            {
+                                (this.state.showCommentPane) ?
+                                    <div className="comment-holder">
+                                        <CommentElement
+                                        visibility = {this.state.showCommentPane}
+                                        postId = {_post.post_id}
+                                        comments = {this.state.comments}
+                                        unformattedComments = {this.state.unformattedComments}
+                                        onCommentAddSuccess = {this.onCommentAddSuccess.bind(this)}
+                                        onCommentDeleteSuccess = {this.onCommentDeleteSuccess.bind(this)}/>
+                                    </div>
+                                    : ""
+                            }
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        );
+    }
+
+    openLightbox (index, event) {
+        event.preventDefault();
+        this.setState({
+            currentImage: index,
+            isShowingImgModal: true,
+        });
+    }
+
     render(){
         if(typeof  this.props.postItem == 'undefined'){
             return(<div />);
         }
+
+        let _this = this;
+
+        this.imgList = [];
 
         const _post = this.props.postItem;
         let img_div_class = "pg-newsfeed-post-upload-image";
@@ -385,9 +479,16 @@ class SinglePost extends React.Component{
                 } else{
                     _url = upload.http_url
                 }
+
+                _this.imgList.push(_url);
+
                 return (
                     <div className={img_div_class} key={key}>
-                        <img src = {_url}/>{
+                        <a
+                            href={_url}
+                            key={key}
+                            onClick={(e) => this.openLightbox(key, e)}
+                        ><img src = {_url}/></a>{
                         (upload.file_type == "mp4")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true" onClick = {(event)=>{this.onVideoPlay(upload)}}></i>:null
                     }
                         {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
@@ -474,6 +575,7 @@ class SinglePost extends React.Component{
 
                         {this.getPopup()}
                         {this.getVideoPopup()}
+                        {this.getImgPopup()}
                     </div>
                 </div>
             </div>

@@ -630,6 +630,86 @@
     border-width: 0;
 }
 
+/* Image popup holder */
+.imgPop-holder.dialog--jss-0-0{
+    padding: 0 0 10px 0;
+}
+
+.imgPop-holder .closeButton--jss-0-1{
+    left: auto;
+    right: 0px;
+    z-index: 10;
+}
+
+.imgPop-holder .closeButton--jss-0-1 circle{
+    display: none;
+}
+
+.imgPop-holder .pg-newsfeed-common-content-like-status,
+.imgPop-holder .pg-newsfeed-common-content-post-status{
+    margin: 0 0 10px;
+}
+
+.imgPop-holder .pg-newsfeed-common-content-post-comments{
+    display: none;
+}
+
+.imgPop-holder .pg-newsfeed-common-content-post-new-comment{
+    margin: 0 auto;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    width: 80%;
+}
+
+.imgPop-holder .share-popup-holder .pg-status-post-btn{
+    position: relative;
+    bottom: auto;
+    right: auto;
+}
+
+.imgPop-holder .share-popup-holder{
+    padding: 0;
+}
+
+.imgPop-holder .share-popup-holder .img-holder{
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+}
+
+.imgPop-holder .share-popup-holder .comment-holder{
+    min-height: 40px;
+}
+
+.share-popup-holder .comment-holder .cmt-pro-img{
+    max-width: 32px;
+    height: 35px;
+    width: 35px;
+    padding: 0;
+    margin: 0 5% 0 0;
+}
+
+.share-popup-holder .arrow{
+    position: absolute;
+    top: calc(50% - 69px);
+    font-size: 2em;
+    color: #ffffff;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.share-popup-holder .arrow:hover{
+    opacity: 1;
+}
+
+.share-popup-holder .right-arrow{
+    right: 5px;
+}
+
+.share-popup-holder .left-arrow{
+    left: 5px;
+}
 
 /** ========================================= Left column - news feed in news  ====================================================== */
 /**  newsfeed right section */
