@@ -246,6 +246,8 @@ router.post('/news/articles/save', NewsController.saveMyNews);
 
 router.get('/news/saved/articles', NewsController.getSavedArticles);
 
+router.post('/news/user-channel/composer', NewsController.addChannelByUser);
+
 router.post('/like/composer', LikeController.doLike);
 
 router.post('/notes/add-notebook', NotesController.addNoteBook);

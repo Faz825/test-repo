@@ -57,6 +57,56 @@ NewsChannelsSchema.statics.findNewsChannel = function(criteria,callBack){
 
 };
 
+NewsChannelsSchema.statics.isChannelExistsForUser = function(payload,callBack){
+
+    var _this = this;
+    var criteria = {
+        user_id: payload.user_id,
+        channel_name: payload.channel_name
+    };
+
+    _this.findOne(criteria).exec(function (err, resultSet) {
+        if (!err) {
+
+            console.log("is exists "+resultSet);
+
+            if(resultSet){
+                callBack(true);
+            }else{
+                callBack(false);
+            }
+        } else {
+            console.log(err);
+            callBack({status: 400, error: err});
+        }
+    });
+
+};
+
+NewsChannelsSchema.statics.addChannelByUser = function(channelData,callBack){
+
+    var newChannel = new this();
+    newChannel.user_id 	= channelData.user_id;
+    newChannel.category_id = channelData.category_id;
+    newChannel.channel_name = channelData.channel_name;
+    newChannel.created_at = channelData.created_at;
+
+    newChannel.save(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                newChannel:resultSet
+            });
+        }else{
+            console.log("Server Error --------");
+            callBack({status:400,error:err});
+        }
+
+    });
+
+};
+
 NewsChannelsSchema.statics.getChannelsByUser = function(user_id,callBack){
 
     var _this = this;

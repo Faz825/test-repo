@@ -58,8 +58,6 @@ var NewsController ={
                 NewsChannels.getChannelsByUser(user_id, function(resultSet) {
                     if(resultSet.status == 200) {
                         channels = resultSet.channel_list;
-                        console.log("------channels");
-                        console.log(channels);
                         callBack(null);
                     }
                 });
@@ -104,12 +102,8 @@ var NewsController ={
 
                 for(var a=0;a<news.length;a++){
                     var categoryChannelList = news[a].channels;
-                    console.log("------first");
-                    console.log(categoryChannelList);
                     news[a].channels = NewsChannels.formatNewsChannels(categoryChannelList, channels);
                 }
-                console.log("------second");
-                console.log(news);
                 callBack(null,news);
             }
 
@@ -455,9 +449,6 @@ var NewsController ={
 
         ],function(err,resultSet){
 
-            console.log("========= NewsController ====== ")
-            console.log(JSON.stringify(resultSet))
-
             NewsFeed.getNewsFeed(resultSet, function(data){
                 var outPut ={
                     status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
@@ -547,13 +538,55 @@ var NewsController ={
             user_id:CurrentSession.id
         }
         UsersSavedArticle.findSavedArticle(criteria,function(resultSet){
-            console.log(resultSet.news_list.article);
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 news_list:resultSet.news_list
             }
             res.status(200).json(outPut);
         })
+    },
+
+    /**
+     * Save News Channel to User
+     * @param req
+     * @param res
+     */
+
+    addChannelByUser:function(req,res){
+        var NewsChannels = require('mongoose').model('NewsChannels'),
+            _async = require('async'),
+            CurrentSession = Util.getCurrentSession(req);
+
+        var _newsChannel = {
+            channel_name:req.body.__channel_name,
+            category_id:Util.toObjectId(req.body.__category_id),
+            user_id:Util.getCurrentSession(req).id,
+            created_at: new Date()
+        };
+
+        _async.waterfall([
+
+            function isAlreadyAddedChannel(callBack) {
+                NewsChannels.isChannelExistsForUser(_newsChannel, function (resultSet) {
+                    callBack(null, resultSet);
+                });
+            },
+            function (isAdded, callBack) {
+                if(!isAdded){
+                    NewsChannels.addChannelByUser(_newsChannel,function(resultSet){
+                        callBack(null);
+                    });
+                }else {
+                    callBack(null);
+                }
+            }
+
+        ],function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
+            res.status(200).json(outPut);
+        });
     }
 
 };
