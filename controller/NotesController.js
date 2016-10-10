@@ -673,7 +673,10 @@ var NotesController ={
                     sharedUsers = resultSet.shared_users;
                     oldSharedUserList = resultSet.shared_users;
                     var index = sharedUsers.indexOfProperty('user_id', shared_user_id);
-                    sharedUsers.splice(index, 1);
+
+                    if(index != -1) {
+                        sharedUsers.splice(index, 1);
+                    }
                     callBack(null, true);
 
                 } else {

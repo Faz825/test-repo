@@ -9,6 +9,11 @@ var  mongoose = require('mongoose'),
     uuid = require('node-uuid');
 
 
+GLOBAL.ChannelConfig ={
+    ES_INDEX_NAME:"idx_channel_final:"
+};
+
+
 var NewsChannelsSchema = new Schema({
 
     user_id:{
@@ -21,9 +26,10 @@ var NewsChannelsSchema = new Schema({
         ref: 'news',
         default:null
     },
-    channel_name:{
-        type:String,
-        trim:true
+    channel_id:{
+        type: Schema.ObjectId,
+        ref: 'news:channels',
+        default:null
     },
     created_at:{
         type:Date
@@ -62,7 +68,7 @@ NewsChannelsSchema.statics.isChannelExistsForUser = function(payload,callBack){
     var _this = this;
     var criteria = {
         user_id: payload.user_id,
-        channel_name: payload.channel_name
+        channel_id: payload.channel_id
     };
 
     _this.findOne(criteria).exec(function (err, resultSet) {
@@ -85,7 +91,7 @@ NewsChannelsSchema.statics.addChannelByUser = function(channelData,callBack){
     var newChannel = new this();
     newChannel.user_id 	= channelData.user_id;
     newChannel.category_id = channelData.category_id;
-    newChannel.channel_name = channelData.channel_name;
+    newChannel.channel_id = channelData.channel_id;
     newChannel.created_at = channelData.created_at;
 
     newChannel.save(function(err,resultSet){
@@ -109,7 +115,7 @@ NewsChannelsSchema.statics.removeChannelByUser = function(payload,callBack){
     var _this = this;
     var criteria = {
         user_id: payload.user_id,
-        channel_name: payload.channel_name
+        channel_id: payload.channel_id
     };
 
     this.remove(criteria).exec(function(err,resultSet){
@@ -152,6 +158,75 @@ NewsChannelsSchema.statics.getChannelsByUser = function(user_id,callBack){
 
 };
 
+NewsChannelsSchema.statics.es_isChannelExists = function(payload, callBack) {
+
+    var payLoad={
+        index: ChannelConfig.ES_INDEX_NAME,
+        id: payload.category_id.toString() + '_' + payload.channel_name.toLowerCase(),
+        type: 'channels_test'
+    }
+
+    ES.isIndexExists(payLoad,function(resultSet){
+        callBack(resultSet)
+        return 0;
+    });
+};
+
+NewsChannelsSchema.statics.es_createNewsChannelsByCategory = function(payload, callBack) {
+
+    var payLoad={
+        index: ChannelConfig.ES_INDEX_NAME,
+        id: payload.channel_id.toString(),
+        type: 'channels_test',
+        data:payload.data,
+        tag_fields: ['name']
+    }
+
+    ES.createIndex(payLoad,function(resultSet){
+        callBack(resultSet)
+        return 0;
+    });
+};
+
+NewsChannelsSchema.statics.es_updateNewsChannelsByCategory = function(payload, callBack) {
+
+    var payLoad={
+        index: ChannelConfig.ES_INDEX_NAME,
+        id: payload.channel_id.toString(),
+        type: 'channels_test',
+        data:payload.data
+    }
+
+    ES.update(payLoad,function(resultSet){
+        callBack(resultSet)
+        return 0;
+    });
+};
+
+NewsChannelsSchema.statics.es_getNewsChannelsByCategory = function(payload, callBack) {
+
+    var payLoad={
+        index: ChannelConfig.ES_INDEX_NAME,
+        id: payload.channel_id.toString()
+    };
+
+    ES.search(payLoad,function(csResultSet){
+        callBack(csResultSet);
+    });
+};
+
+NewsChannelsSchema.statics.es_getNewsChannelsSuggestions = function(criteria, callBack) {
+
+    var payLoad={
+        q:criteria.q,
+        index: ChannelConfig.ES_INDEX_NAME
+    };
+
+    ES.search(payLoad,function(esResultSet){
+        callBack(esResultSet.result);
+    });
+};
+
 
 NewsChannelsSchema.statics.formatNewsChannels = function(categoryChannels, userChannels) {
 
@@ -160,7 +235,7 @@ NewsChannelsSchema.statics.formatNewsChannels = function(categoryChannels, userC
     for(var b=0;b<categoryChannels.length;b++){
 
         var obj = userChannels.filter(function ( obj ) {
-            return obj.channel_name === categoryChannels[b].name;
+            return obj.channel_id.toString() == categoryChannels[b]._id.toString();
         })[0];
 
         if(obj) {
@@ -168,7 +243,7 @@ NewsChannelsSchema.statics.formatNewsChannels = function(categoryChannels, userC
         }
     }
     return updatedChannelsList;
-},
+};
 
 
 mongoose.model('NewsChannels',NewsChannelsSchema);

@@ -6,9 +6,10 @@ var ESUpdateHandler = {
 
     init:function(){
         this.updateConnectedTime(function (payload) {});
+        this.updateChannelList(function (payload) {});
     },
 
-    updateConnectedTime:function(){
+    updateConnectedTime:function(callBack){
         var _async = require('async'),
             Connection = require('mongoose').model('Connection'),
             User = require('mongoose').model('User');
@@ -77,7 +78,115 @@ var ESUpdateHandler = {
         ],function(err){
             callBack(null);
         });
+    },
+
+    updateChannelList:function(callBack){
+        var _async = require('async'),
+            News = require('mongoose').model('News'),
+            NewsChannels = require('mongoose').model('NewsChannels');
+
+        _async.waterfall([
+            function getAllCategories(callBack) {
+                var criteria = {};
+
+                News.findNews(criteria,function(resultSet) {
+                    callBack(null, resultSet.news_list);
+                });
+            },
+            function getESChannels(categories, callBack) {
+                _async.eachSeries(categories, function(category,callBack){
+
+                    _async.waterfall([
+                        function isESIndexExists(callBack) {
+                            News.es_isNewsCategoryExists(category._id, function (esResultSet) {
+                                callBack(null, esResultSet);
+                            });
+                        },
+                        function createOrUpdateESCategories(isExists, callBack) {
+                            var formatted_channel_list = [];
+
+                            for(var i = 0; i < category.channels.length; i++){
+                                formatted_channel_list.push(category.channels[i]._id);
+                            }
+
+                            var payLoad={
+                                category_id:category._id,
+                                data: {
+                                    channel_list:formatted_channel_list
+                                }
+                            };
+
+                            if(!isExists) {
+                                News.ch_newsCategoryCreateIndex(payLoad, function (esResultSet) {
+                                    callBack(null);
+                                });
+                            }else{
+                                News.ch_newsCategoryUpdateIndex(payLoad, function (esResultSet) {
+                                    callBack(null);
+                                });
+                            }
+                        },
+                        function createOrUpdateESChannels(callBack) {
+
+                            _async.eachSeries(category.channels, function(channel,callBack){
+                                _async.waterfall([
+
+                                    function isESIndexExists(callBack) {
+
+                                        var payLoad={
+                                            category_id:category._id,
+                                            channel_name: channel.name
+                                        };
+
+                                        NewsChannels.es_isChannelExists(payLoad, function (esResultSet) {
+                                            callBack(null, esResultSet);
+                                        });
+                                    },
+                                    function (isExists, callBack) {
+
+                                        var payLoad={
+                                            channel_id: channel._id,
+                                            data: channel
+                                        };
+
+                                        if(isExists){
+                                            NewsChannels.es_getNewsChannelsByCategory(payLoad, function (esResultSet) {
+                                                console.log(esResultSet);
+                                                callBack(null, esResultSet);
+                                            });
+                                        }else{
+                                            NewsChannels.es_createNewsChannelsByCategory(payLoad, function (esResultSet) {
+                                                callBack(null, esResultSet);
+                                            });
+                                        }
+
+                                        callBack(null);
+                                    }
+
+                                ],function(err){
+                                    callBack(null);
+                                });
+
+                            }, function(err){
+                                callBack(null);
+                            });
+
+                        }
+                    ],function(err){
+                        callBack(null);
+                    });
+
+                }, function(err){
+                    callBack(null);
+                });
+
+
+            }
+        ],function(err){
+            callBack(null);
+        });
     }
+
 };
 
 module.exports = ESUpdateHandler;

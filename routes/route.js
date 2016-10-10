@@ -36,6 +36,7 @@ var DefaultController   = require('../controller/DefaultController'),
     TestController      = require('../controller/TestController'),
     SkillController     = require('../controller/SkillController'),
     NewsController      = require('../controller/NewsController'),
+    NewsChannelController      = require('../controller/NewsChannelController'),
     PostController      = require('../controller/PostController'),
     CommentController   = require('../controller/CommentController'),
     UploadController    = require('../controller/UploadController'),
@@ -73,7 +74,8 @@ GLOBAL.notAuthURLs = ['/sign-up','/forgot-password','/change-password-invalid','
 GLOBAL.AccessAllow = [
     '/','/choose-secretary','/doSignup','/doSignin/mob/','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
-    '/notes/edit-note/:note_id','/connections', '/connections/mutual/:uname','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode', '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name'
+    '/notes/edit-note/:note_id','/connections', '/connections/mutual/:uname','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode',
+    '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name'
 ];
 
 /**
@@ -248,6 +250,8 @@ router.get('/news/saved/articles', NewsController.getSavedArticles);
 
 router.post('/news/user-channel/composer', NewsController.addChannelByUser);
 router.post('/news/user-channel/remove', NewsController.removeChannelByUser);
+router.get('/news/channels/:category_id', NewsChannelController.getChannelByCategory);
+router.get('/news/channels/:category_id/:channel_name', NewsChannelController.searchChannelForCategory);
 
 router.post('/like/composer', LikeController.doLike);
 

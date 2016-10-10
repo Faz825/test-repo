@@ -27,7 +27,7 @@ export default class NewsSettings extends React.Component{
         this.removeNewsChannel = this.removeNewsChannel.bind(this);
 
         this.loadCategories();
-        // this.addNewsChannel();
+        this.addNewsChannel();
         // this.removeNewsChannel();
     }
 
@@ -47,8 +47,8 @@ export default class NewsSettings extends React.Component{
     addNewsChannel(){
 
         let channelData ={
-            __channel_name: 'FoxNews',
-            __category_id: '56f7a1fe96688d640db5b95d'
+            __channel_id: '56cbf9e18e015cad0e8a2ff8',
+            __category_id: '56f7a1f596688d640db5b95c'
         };
 
         $.ajax({
