@@ -563,12 +563,15 @@ export class RightMenu extends React.Component{
         this.state ={
             value: '',
             suggestions: this.getSuggestions(''),
+            searchTerm: "",
+            showSearchTerm: false
         };
         this.loggedUser = this.props.loggedUser;
         this.onChange = this.onChange.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
         this.getSuggestionValue = this.getSuggestionValue.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
+        this.elementChangeHandler = this.elementChangeHandler.bind(this);
     }
 
 
@@ -604,6 +607,22 @@ export class RightMenu extends React.Component{
         });
     }
 
+    elementChangeHandler(event){
+        this.setState({searchTerm: event.target.value});
+        if(event.target.value == ""){
+            this.setState({showSearchTerm : false});
+        }
+    }
+
+    onTermSearch(){
+        console.log(this.state.searchTerm);
+        if(this.state.searchTerm != ""){
+            this.setState({showSearchTerm : true});
+        }else{
+            alert("Add Search term to search");
+        }
+    }
+
     render() {
         const { value, suggestions } = this.state;
         const inputProps = {
@@ -611,6 +630,7 @@ export class RightMenu extends React.Component{
             value,
             onChange: this.onChange
         };
+        let searchFieldClass = (this.props.chatWith !== 'new')? "hasSearch" : "";
         return (
             <div className="col-sm-8 chat-person-options clearfix">
                 <div className="connection-name">
@@ -627,31 +647,44 @@ export class RightMenu extends React.Component{
                          : null
                 }
                 <div className="media-options-holder">
-                    <div className="media-options">
+                    <div className={"media-options " + searchFieldClass}>
                         {
                             (this.props.chatWith !== 'new')?
-                                <span className="opt new-message">
-                                                <a href='#' onClick={()=>this.props.loadRoute('new')}>New Message</a>
-                                            </span> : null
+                            <span className="opt new-message">
+                                <a href='#' onClick={()=>this.props.loadRoute('new')}>New Message</a>
+                            </span> : null
                         }
-                                    <span className="opt chat-icon">
-                                        <i className="fa"></i>
-                                    </span>
-                                    <span className="opt video-icon" onClick={this.props.doVideoCall}>
-                                        <i className="fa fa-video-camera"></i>
-                                    </span>
-                                    <span className="opt call-icon" onClick={this.props.doAudioCall}>
-                                        <i className="fa fa-phone"></i>
-                                    </span>
-                                    <span className="opt search-icon">
-                                        <i className="fa fa-search"></i>
-                                    </span>
+                        {
+                            (this.props.chatWith !== 'new')?
+                            <div className="msg-search-holder form-group">
+                                <input type="text" className="form-control" name="searchTerm" placeholder="Search Term.." value={this.state.searchTerm} onChange={(event)=>{this.elementChangeHandler(event)}} />
+                                <i className="fa fa-search" aria-hidden="true" onClick={this.onTermSearch.bind(this)}></i>
+                            </div> : null
+                        }
+                        <span className="opt chat-icon">
+                            <i className="fa"></i>
+                        </span>
+                        <span className="opt video-icon" onClick={this.props.doVideoCall}>
+                            <i className="fa fa-video-camera"></i>
+                        </span>
+                        <span className="opt call-icon" onClick={this.props.doAudioCall}>
+                            <i className="fa fa-phone"></i>
+                        </span>
                     </div>
                     <div className="all-media btn btn-default">
                         <span className="btn-text">All Media</span>
                         <i className="fa fa-caret-down"></i>
                     </div>
                 </div>
+                {
+                    (this.state.showSearchTerm)?
+                        <div className="searching-notifi">
+                            <p className="alert-text">{'Searching the conversation for "' + this.state.searchTerm + '"'}</p>
+                        </div>
+                    :
+                        null
+
+                }
             </div>
         )
     }

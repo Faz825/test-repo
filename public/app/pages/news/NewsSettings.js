@@ -273,6 +273,9 @@ const NewsChannels = ({newsChannel})=>{
         <div className="col-xs-2 pg-col-20 pg-news-item" >
             <div className="row row-clr pg-news-inner-full various">
                 <img src={_channel_img} alt="" className="img-responsive pg-pg-news-inner-img" />
+                <span className="delete-icon">
+                    <i className="fa fa-times" aria-hidden="true"></i>
+                </span>
             </div>
         </div>
     )
