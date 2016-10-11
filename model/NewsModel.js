@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
     Schema   = mongoose.Schema;
 
 GLOBAL.NewsCategoryConfig ={
-    ES_INDEX_NAME:"idx_news_cat_final:"
+    ES_INDEX_NAME:"idx_news_categories:"
 };
 
 /**

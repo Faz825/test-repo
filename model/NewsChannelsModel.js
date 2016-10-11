@@ -10,7 +10,7 @@ var  mongoose = require('mongoose'),
 
 
 GLOBAL.ChannelConfig ={
-    ES_INDEX_NAME:"idx_channel_final:"
+    ES_INDEX_NAME:"idx_channels:"
 };
 
 
@@ -163,7 +163,7 @@ NewsChannelsSchema.statics.es_isChannelExists = function(payload, callBack) {
     var payLoad={
         index: ChannelConfig.ES_INDEX_NAME,
         id: payload.category_id.toString() + '_' + payload.channel_name.toLowerCase(),
-        type: 'channels_test'
+        type: 'channels'
     }
 
     ES.isIndexExists(payLoad,function(resultSet){
@@ -177,7 +177,7 @@ NewsChannelsSchema.statics.es_createNewsChannelsByCategory = function(payload, c
     var payLoad={
         index: ChannelConfig.ES_INDEX_NAME,
         id: payload.channel_id.toString(),
-        type: 'channels_test',
+        type: 'channels',
         data:payload.data,
         tag_fields: ['name']
     }
@@ -193,7 +193,7 @@ NewsChannelsSchema.statics.es_updateNewsChannelsByCategory = function(payload, c
     var payLoad={
         index: ChannelConfig.ES_INDEX_NAME,
         id: payload.channel_id.toString(),
-        type: 'channels_test',
+        type: 'channels',
         data:payload.data
     }
 
