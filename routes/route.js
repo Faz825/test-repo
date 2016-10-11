@@ -263,6 +263,7 @@ router.get('/notes/get-note/:note_id', NotesController.getNote);
 router.post('/notebook/shared-users', NotesController.getNoteBookSharedUsers);
 router.post('/notebook/shared-permission/change', NotesController.updateNoteBookSharedPermissions);
 router.post('/notebook/shared-user/remove', NotesController.removeSharedNoteBookUser);
+router.post('/notebook/update/shared-users/color', NotesController.updateSharedUsersListColor);
 router.post('/notes/update-note', NotesController.updateNote);
 router.post('/notes/delete-note', NotesController.deleteNote);
 router.post('/introduction/update', UserController.updateIntroduction);

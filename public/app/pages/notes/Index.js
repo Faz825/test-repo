@@ -1068,7 +1068,7 @@ export class NoteThumb extends React.Component{
             if(key < 4) {
                 return (
                     <div className="note-holder" id={note.note_id} key={key}>
-                        <div className="row-clear note">
+                        <div className="row-clear note" style={{borderColor : note.note_color}}>
                             <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note,_notebook_props)}>
                                 <div className="time-wrapper">
                                     <p className="date-created">{note.updated_at.createdDate}</p>

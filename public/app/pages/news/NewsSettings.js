@@ -47,8 +47,8 @@ export default class NewsSettings extends React.Component{
     addNewsChannel(){
 
         let channelData ={
-            __channel_id: '56cbf9e18e015cad0e8a2ff8',
-            __category_id: '56f7a1f596688d640db5b95c'
+            __channel_id: '56cbf55f09e38d870d1df691',
+            __category_id: '56f7a1d796688d640db5b95a'
         };
 
         $.ajax({
@@ -269,9 +269,11 @@ const NewsCategory = ({newsCategory,onCategorySelect})=>{
 const NewsChannels = ({newsChannel})=>{
 
     let _channel_img = "/images/news/channels/"+newsChannel.channel_image;
+    let _channel_date = newsChannel.date.time_a_go;
     return (
         <div className="col-xs-2 pg-col-20 pg-news-item" >
             <div className="row row-clr pg-news-inner-full various">
+                <p className="pg-pg-news-inner-time">{_channel_date}</p>
                 <img src={_channel_img} alt="" className="img-responsive pg-pg-news-inner-img" />
                 <span className="delete-icon">
                     <i className="fa fa-times" aria-hidden="true"></i>

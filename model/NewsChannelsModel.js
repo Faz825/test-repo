@@ -239,6 +239,7 @@ NewsChannelsSchema.statics.formatNewsChannels = function(categoryChannels, userC
         })[0];
 
         if(obj) {
+            categoryChannels[b]['date'] = DateTime.explainDateShortForm(obj.created_at);
             updatedChannelsList.push(categoryChannels[b]);
         }
     }
