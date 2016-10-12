@@ -6,6 +6,10 @@
 var mongoose = require('mongoose'),
     Schema   = mongoose.Schema;
 
+GLOBAL.NewsCategoryConfig ={
+    ES_INDEX_NAME:"idx_news_categories:"
+};
+
 /**
  * Article Information
  */
@@ -191,6 +195,72 @@ NewsSchema.statics.removeRecordFromSubDocument = function(criteria, pullData, ca
                 callBack({status:400,error:err});
             }
         });
+
+};
+
+NewsSchema.statics.es_isNewsCategoryExists = function(categoryId, callBack) {
+
+    var payLoad={
+        index: NewsCategoryConfig.ES_INDEX_NAME+categoryId,
+        id: categoryId.toString(),
+        type: 'news_categories'
+    }
+
+    ES.isIndexExists(payLoad,function(resultSet){
+        callBack(resultSet)
+        return 0;
+    });
+};
+
+NewsSchema.statics.es_getNewsCategories = function(category_id, callBack) {
+
+    var payLoad={
+        index: NewsCategoryConfig.ES_INDEX_NAME+category_id.toString(),
+        id: category_id.toString()
+    };
+
+    ES.search(payLoad,function(csResultSet){
+        callBack(csResultSet);
+    });
+};
+
+/**
+ * Create ES index for News Category
+ * {Create Index}
+ */
+NewsSchema.statics.ch_newsCategoryCreateIndex = function(payload,callBack){
+
+    var _cache_key = NewsCategoryConfig.ES_INDEX_NAME+payload.category_id.toString();
+    var payLoad={
+        index:_cache_key,
+        id:payload.category_id.toString(),
+        type: 'news_categories',
+        data:payload.data
+    }
+
+    ES.createIndex(payLoad,function(resultSet){
+        callBack(resultSet)
+    });
+
+};
+
+/**
+ * Share Notebook | Cache based on User
+ * {Update Notebook List}
+ */
+NewsSchema.statics.ch_newsCategoryUpdateIndex = function(payload,callBack){
+
+    var _cache_key = NewsCategoryConfig.ES_INDEX_NAME+payload.category_id.toString();
+    var payLoad={
+        index:_cache_key,
+        id:payload.category_id.toString(),
+        type: 'news_categories',
+        data:payload.data
+    }
+
+    ES.update(payLoad,function(resultSet){
+        callBack(resultSet)
+    });
 
 };
 

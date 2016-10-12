@@ -45,6 +45,8 @@ export default class Index extends React.Component{
             unreadConversations:[],
             conversations:[],
             messages:[],
+            searchKey:'',
+            myAllMessages:[],
             uri:'usr:proglobe'+this.getUrl()
         };
 
@@ -54,6 +56,7 @@ export default class Index extends React.Component{
         this.unreadConversations = [];
         this.msgDivIds = [];
         this.messages = [];
+        this.allChatList = [];
         this.checkChatWith = this.getUrl();
         this.initChat(this.b6);
         this.loadChat(this.state.chatWith);
@@ -189,8 +192,17 @@ export default class Index extends React.Component{
                                 messages:[]
                             };
 
+                            let myChats = {};
+                            myChats = {
+                                chat_id:msgsId,
+                                chat_user:title,
+                                chat_list:[]
+                            };
+
+                            this.allChatList.push(myChats);
+
                             this.messages.push(message);
-                            this.setState({messages:this.messages});
+                            this.setState({messages:this.messages, myAllMessages:this.allChatList});
                         }
                     }
                 }
@@ -350,12 +362,27 @@ export default class Index extends React.Component{
                 cssClass:cssClass,
                 text:text,
                 display_name:display_name,
-                display_prof_img:display_prof_img
+                display_prof_img:display_prof_img,
+                searchFilterApplied:false,
+                highlightText:text
             };
 
             for(let con in this.messages){
                 if(this.messages[con].id == msgsId){
                     this.messages[con].messages.push(msg);
+                }
+            }
+
+            for(let _con in this.allChatList){
+                if(this.allChatList[_con].chat_id == msgsId){
+
+                    var obj = this.allChatList[_con].chat_list.filter(function ( obj ) {
+                        return obj.id === msg.id;
+                    })[0];
+                    if(!obj) {
+                        this.allChatList[_con].chat_list.push(msg);
+                    }
+
                 }
             }
             this.setState({messages:this.messages});
@@ -392,8 +419,7 @@ export default class Index extends React.Component{
     }
 
     loadRoute(url){
-        this.setState({chatWith : url});
-        this.setState({chatWithUserName : ""});
+        this.setState({chatWith : url, chatWithUserName : "", searchKey : ""});
         if(url !== 'new'){
             this.setState({uri:'usr:proglobe'+url});
             this.loadChat(url);
@@ -476,6 +502,16 @@ export default class Index extends React.Component{
         }
     }
 
+    doMessageSearch(key) {
+        this.setState({searchKey:key});
+    }
+
+    clearMessageSearch() {
+        let clearKey = this.state.chatWith + "-clear";
+        this.setState({searchKey:clearKey, messages:this.messages});
+
+    }
+
     render() {
 
         const {
@@ -485,7 +521,9 @@ export default class Index extends React.Component{
             chatWithUserName,
             conversations,
             unreadConversations,
-            messages
+            messages,
+            searchKey,
+            myAllMessages
             }=this.state;
 
         return (
@@ -500,6 +538,8 @@ export default class Index extends React.Component{
                         <LeftMenu unreadConversations = {unreadConversations}/>
                         <RightMenu
                             loadRoute ={this.loadRoute.bind(this)}
+                            doChatSearch ={this.doMessageSearch.bind(this)}
+                            doClearSearch ={this.clearMessageSearch.bind(this)}
                             chatWith = {chatWith}
                             chatWithUserName = {chatWithUserName}
                             my_connections = {my_connections}
@@ -514,8 +554,10 @@ export default class Index extends React.Component{
                             <MessageList
                                 loggedUser = {userLoggedIn}
                                 chatWith = {chatWith}
+                                searchKey = {searchKey}
                                 sendChat = {this.sendChat.bind(this)}
                                 messages = {messages}
+                                all_chats = {myAllMessages}
                                 />
                             <ComposeMessage loggedUser = {userLoggedIn}
                                             chatWith = {chatWith}
@@ -563,14 +605,16 @@ export class RightMenu extends React.Component{
         this.state ={
             value: '',
             suggestions: this.getSuggestions(''),
+            searchTerm: "",
+            showSearchTerm: false
         };
         this.loggedUser = this.props.loggedUser;
         this.onChange = this.onChange.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
         this.getSuggestionValue = this.getSuggestionValue.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
+        this.elementChangeHandler = this.elementChangeHandler.bind(this);
     }
-
 
 
     getSuggestions(value, data) {
@@ -604,6 +648,21 @@ export class RightMenu extends React.Component{
         });
     }
 
+    elementChangeHandler(event){
+        this.setState({searchTerm: event.target.value});
+        if(event.target.value == "" && this.state.showSearchTerm === true){
+            this.props.doClearSearch();
+            this.setState({showSearchTerm : false});
+        }
+    }
+
+    onTermSearch(){
+        if(this.state.searchTerm != ""){
+            this.setState({showSearchTerm : true});
+            this.props.doChatSearch(this.state.searchTerm);
+        }
+    }
+
     render() {
         const { value, suggestions } = this.state;
         const inputProps = {
@@ -611,6 +670,7 @@ export class RightMenu extends React.Component{
             value,
             onChange: this.onChange
         };
+        let searchFieldClass = (this.props.chatWith !== 'new')? "hasSearch" : "";
         return (
             <div className="col-sm-8 chat-person-options clearfix">
                 <div className="connection-name">
@@ -627,31 +687,44 @@ export class RightMenu extends React.Component{
                          : null
                 }
                 <div className="media-options-holder">
-                    <div className="media-options">
+                    <div className={"media-options " + searchFieldClass}>
                         {
                             (this.props.chatWith !== 'new')?
-                                <span className="opt new-message">
-                                                <a href='#' onClick={()=>this.props.loadRoute('new')}>New Message</a>
-                                            </span> : null
+                            <span className="opt new-message">
+                                <a href='#' onClick={()=>this.props.loadRoute('new')}>New Message</a>
+                            </span> : null
                         }
-                                    <span className="opt chat-icon">
-                                        <i className="fa"></i>
-                                    </span>
-                                    <span className="opt video-icon" onClick={this.props.doVideoCall}>
-                                        <i className="fa fa-video-camera"></i>
-                                    </span>
-                                    <span className="opt call-icon" onClick={this.props.doAudioCall}>
-                                        <i className="fa fa-phone"></i>
-                                    </span>
-                                    <span className="opt search-icon">
-                                        <i className="fa fa-search"></i>
-                                    </span>
+                        {
+                            (this.props.chatWith !== 'new')?
+                            <div className="msg-search-holder form-group">
+                                <input type="text" className="form-control" name="searchTerm" placeholder="Search Term.." value={this.state.searchTerm} onChange={(event)=>{this.elementChangeHandler(event)}} />
+                                <i className="fa fa-search" aria-hidden="true" onClick={this.onTermSearch.bind(this)}></i>
+                            </div> : null
+                        }
+                        <span className="opt chat-icon">
+                            <i className="fa"></i>
+                        </span>
+                        <span className="opt video-icon" onClick={this.props.doVideoCall}>
+                            <i className="fa fa-video-camera"></i>
+                        </span>
+                        <span className="opt call-icon" onClick={this.props.doAudioCall}>
+                            <i className="fa fa-phone"></i>
+                        </span>
                     </div>
                     <div className="all-media btn btn-default">
                         <span className="btn-text">All Media</span>
                         <i className="fa fa-caret-down"></i>
                     </div>
                 </div>
+                {
+                    (this.state.showSearchTerm)?
+                        <div className="searching-notifi">
+                            <p className="alert-text">{'Searching the conversation for "' + this.state.searchTerm + '"'}</p>
+                        </div>
+                    :
+                        null
+
+                }
             </div>
         )
     }
@@ -707,9 +780,116 @@ export class ChatList extends React.Component{
 export class MessageList extends React.Component{
     constructor(props){
         super(props)
-        this.state ={};
+        this.state ={
+            messageList:[],
+            myAllMsgList:[]
+        };
         this.loggedUser = this.props.loggedUser;
+        this.onLoadProfile = this.onLoadProfile.bind(this);
+
+        this.chatMessages = [];
     }
+
+    componentWillMount() {
+        this.setState({messageList:this.props.messages, myAllMsgList:this.props.messages});
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+        let chatwithIndex = -1;
+        let searchMessageList = [];
+        this.chatMessages = [];
+
+        if(nextProps.searchKey != '' && nextProps.searchKey) {
+
+            var searchKeyValue = nextProps.searchKey;
+
+            for(let conv in nextProps.messages) {
+
+                searchMessageList = [];
+                this.chatMessages.push(nextProps.messages[conv]);
+                var clearKey = nextProps.messages[conv].title + "-clear";
+
+                if(nextProps.messages[conv].title == this.props.chatWith && searchKeyValue != clearKey) {
+
+                    let messageList = nextProps.messages[conv].messages;
+                    chatwithIndex = conv;
+
+                    for(let msg in messageList) {
+                        var result2 = messageList[msg].text.toLowerCase().indexOf(searchKeyValue.toLowerCase());
+
+                        if(typeof result2 != 'undefined' && result2 >= 0){
+                            var sub1="", sub2="", sub3="", myMsg=messageList[msg].text, part1=Number(result2) + Number(searchKeyValue.length), highlightedMessage="";
+
+                            if(result2 == 0) {
+
+                                if(searchKeyValue.length < myMsg.length) {
+                                    sub1 = "<span class='highlighted'>" + myMsg.toString().substr(0, searchKeyValue.length) + "</span>";
+                                    sub2 = myMsg.toString().substr(searchKeyValue.length, myMsg.length);
+                                    highlightedMessage = sub1 + sub2;
+                                } else {
+                                    sub1 = "<span class='highlighted'>" + searchKeyValue + "</span>";
+                                    highlightedMessage = sub1;
+                                }
+
+                            } else if(result2 > 0) {
+
+                                if(part1 < myMsg.length) {
+                                    sub1 = myMsg.toString().substr(0, Number(result2));
+                                    sub2 = "<span class='highlighted'>" + myMsg.toString().substr(Number(result2), searchKeyValue.length) + "</span>";
+                                    sub3 = myMsg.toString().substr(part1);
+                                    highlightedMessage = sub1 + sub2 + sub3;
+                                } else {
+                                    sub1 = myMsg.toString().substr(0, Number(result2));
+                                    sub2 = "<span class='highlighted'>" + myMsg.toString().substr(Number(result2), myMsg.length) + "</span>";
+                                    highlightedMessage = sub1 + sub2;
+                                }
+
+                            } else {
+                                highlightedMessage = msg;
+                            }
+
+                            messageList[msg].highlightText = highlightedMessage;
+                            messageList[msg].searchFilterApplied = true;
+                            searchMessageList.push(messageList[msg]);
+                        }
+                    }
+                    this.chatMessages[conv].messages = searchMessageList;
+
+                } else if(nextProps.messages[conv].title == this.props.chatWith && nextProps.searchKey == clearKey) {
+
+                    for(let _conv in nextProps.all_chats) {
+                        if(nextProps.all_chats[_conv].chat_user == nextProps.messages[conv].title) {
+                            let chats = nextProps.all_chats[_conv].chat_list;
+                            for(let mesgs in chats) {
+                                let messageObj = chats[mesgs];
+                                messageObj.highlightText = messageObj.text;
+                                messageObj.searchFilterApplied = false;
+                                searchMessageList.push(messageObj);
+                            }
+                        }
+                    }
+
+                    this.chatMessages[conv].messages = searchMessageList;
+                }
+            }
+            this.setState({messageList:this.chatMessages});
+
+        } else {
+            /*
+            No search key means just the chat only
+             */
+            this.setState({messageList:nextProps.messages});
+        }
+
+    }
+
+
+    onLoadProfile(){
+        console.log('loaing...');
+        window.location.href = '/profile/'+this.props.chatWith;
+    }
+
     render() {
 
         if(Object.keys(this.refs).length > 0){
@@ -724,18 +904,25 @@ export class MessageList extends React.Component{
         }
 
         let _this = this;
-        let convs = this.props.messages.map(function(conv,key){
+        let convs = _this.state.messageList.map(function(conv,key){
             let style = {display:"none"};
             if(conv.title == _this.props.chatWith){
                 style = {display:"block"};
             }
 
+
+
             let msgs = conv.messages.map(function(msg,key){
                 let cssClass = 'chat-block '+msg.cssClass;
                 return (
                     <div className={cssClass} key={key}>
-                        <img src={msg.display_prof_img} alt="" width="40px" height="40px"/>
-                        <div className="chat-msg-body"><span className="user-name">{msg.display_name}</span><p className="chat-msg">{msg.text}</p></div>
+                        <img src={msg.display_prof_img} alt="" width="40px" height="40px" onClick={_this.onLoadProfile}/>
+                        <div className="chat-msg-body"><span className="user-name" onClick={_this.onLoadProfile}>{msg.display_name}</span>{
+                            msg.searchFilterApplied ?
+                                <p className="chat-msg" dangerouslySetInnerHTML={{__html: msg.highlightText}} />
+                                :
+                                <p className="chat-msg">{msg.text}</p>
+                        }</div>
                     </div>
                 );
             });

@@ -106,6 +106,10 @@ export default class QuickChatBubble extends React.Component{
         this.props.doAudioCall(callBody);
     }
 
+    onLoadProfile(){
+        window.location.href = '/profile/'+this.props.chatData.user.user_name;
+    }
+
 
     render() {
         const {
@@ -121,6 +125,7 @@ export default class QuickChatBubble extends React.Component{
                         bubbleClose={this.onbubbleClosed.bind(this)}
                         doAudioCall = {this.doAudioCall.bind(this)}
                         doVideoCall = {this.doVideoCall.bind(this)}
+                        onLoadProfile = {this.onLoadProfile.bind(this)}
                         />
                     <MessageList
                         conv={this.props.chatData}
@@ -153,9 +158,9 @@ export class ChatHeader extends React.Component{
             <div className="header-wrapper">
                 <div className="chat-user-header clearfix">
                     <div className="chat-pro-img">
-                        <img src={user.images.profile_image.http_url} alt={user.first_name + " " + user.last_name} />
+                        <img src={user.images.profile_image.http_url} alt={user.first_name + " " + user.last_name} onClick={this.props.onLoadProfile}/>
                     </div>
-                    <h3 className="connection-name">{user.first_name + " " + user.last_name}
+                    <h3 className="connection-name" onClick={this.props.onLoadProfile}>{user.first_name + " " + user.last_name}
                         {typeof conv.connection_status != 'undefined' && conv.connection_status == 'CONNECTION_UNFRIEND' ? <span className="form-validation-alert" style={unfriendStyles}>( Not a Friend )</span> : null}
                     </h3>
                 </div>

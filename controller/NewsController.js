@@ -45,12 +45,23 @@ var NewsController ={
         var News = require('mongoose').model('News'),
             _async = require('async'),
             FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
+            NewsChannels = require('mongoose').model('NewsChannels'),
             CurrentSession = Util.getCurrentSession(req);
 
 
         var user_id=CurrentSession.id;
+        var channels = [];
 
         _async.waterfall([
+            function getUserChannels(callBack){
+
+                NewsChannels.getChannelsByUser(user_id, function(resultSet) {
+                    if(resultSet.status == 200) {
+                        channels = resultSet.channel_list;
+                        callBack(null);
+                    }
+                });
+            },
             function getFavouriteNewsCategories(callBack){
 
                 FavouriteNewsCategory.getNewsCategoriesByUserId(user_id,function(resultSet){
@@ -71,8 +82,6 @@ var NewsController ={
                         _tmpData.is_favorite = 0;
                         for(var i = 0; i< newsCategories.length;i++ ) {
 
-
-
                             if(newsCategories[i].category.toString() == _tmpData._id.toString()){
                                 _tmpData.is_favorite = 1;
                                 break;
@@ -86,6 +95,16 @@ var NewsController ={
                     callBack(null,_tmpOutPut);
                 });
 
+            },
+            function reCategorizeChannels(news,callBack){
+
+                var _this = this;
+
+                for(var a=0;a<news.length;a++){
+                    var categoryChannelList = news[a].channels;
+                    news[a].channels = NewsChannels.formatNewsChannels(categoryChannelList, channels);
+                }
+                callBack(null,news);
             }
 
         ],function(err,resultSet){
@@ -430,9 +449,6 @@ var NewsController ={
 
         ],function(err,resultSet){
 
-            console.log("========= NewsController ====== ")
-            console.log(JSON.stringify(resultSet))
-
             NewsFeed.getNewsFeed(resultSet, function(data){
                 var outPut ={
                     status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
@@ -522,13 +538,96 @@ var NewsController ={
             user_id:CurrentSession.id
         }
         UsersSavedArticle.findSavedArticle(criteria,function(resultSet){
-            console.log(resultSet.news_list.article);
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 news_list:resultSet.news_list
             }
             res.status(200).json(outPut);
         })
+    },
+
+    /**
+     * Save News Channel to User
+     * @param req
+     * @param res
+     */
+
+    addChannelByUser:function(req,res){
+        var NewsChannels = require('mongoose').model('NewsChannels'),
+            _async = require('async'),
+            CurrentSession = Util.getCurrentSession(req);
+
+        var _newsChannel = {
+            channel_id:req.body.__channel_id,
+            category_id:Util.toObjectId(req.body.__category_id),
+            user_id:Util.getCurrentSession(req).id,
+            created_at: new Date()
+        };
+
+        _async.waterfall([
+
+            function isAlreadyAddedChannel(callBack) {
+                NewsChannels.isChannelExistsForUser(_newsChannel, function (resultSet) {
+                    callBack(null, resultSet);
+                });
+            },
+            function (isAdded, callBack) {
+                if(!isAdded){
+                    NewsChannels.addChannelByUser(_newsChannel,function(resultSet){
+                        callBack(null);
+                    });
+                }else {
+                    callBack(null);
+                }
+            }
+
+        ],function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
+            res.status(200).json(outPut);
+        });
+    },
+
+    /**
+     * Remove News Channel to User
+     * @param req
+     * @param res
+     */
+
+    removeChannelByUser:function(req,res){
+        var NewsChannels = require('mongoose').model('NewsChannels'),
+            _async = require('async'),
+            CurrentSession = Util.getCurrentSession(req);
+
+        var _newsChannel = {
+            channel_name:req.body.__channel_name,
+            user_id:Util.getCurrentSession(req).id
+        };
+
+        _async.waterfall([
+
+            function isAlreadyAddedChannel(callBack) {
+                NewsChannels.isChannelExistsForUser(_newsChannel, function (resultSet) {
+                    callBack(null, resultSet);
+                });
+            },
+            function (isAdded, callBack) {
+                if(isAdded){
+                    NewsChannels.removeChannelByUser(_newsChannel,function(resultSet){
+                        callBack(null);
+                    });
+                }else {
+                    callBack(null);
+                }
+            }
+
+        ],function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
+            res.status(200).json(outPut);
+        });
     }
 
 };

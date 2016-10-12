@@ -221,7 +221,7 @@ export class  PostCommentAction extends React.Component{
             <div className="row pg-newsfeed-common-content-post-new-comment pg-bottom-round-border">
                 <div className="col-xs-10">
                     <div className="row clearfix">
-                        <div className="col-xs-2">
+                        <div className="col-xs-2 cmt-pro-img">
                             <img src={profile_image} alt={this.loggedUser.first_name +" "+ this.loggedUser.last_name} className="img-responsive"/>
                         </div>
                         <div className="col-xs-10 pg-newsfeed-common-content-post-new-comment-input-area comment-holder">

@@ -58,6 +58,10 @@ export default class Index extends React.Component{
         }
     }
 
+    onLoadProfile(user_name){
+        window.location.href = '/profile/'+user_name;
+    }
+
     checkWorkMode(){
         //console.log("checkWorkMode from NewsFeed")
         if(Session.getSession('prg_wm') != null){
@@ -328,7 +332,9 @@ export default class Index extends React.Component{
                                                   uname = {uname}
                                                   onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}
                                                   onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
-                                                  onLikeSuccess = {this.onLikeSuccess.bind(this)}/>
+                                                  onLikeSuccess = {this.onLikeSuccess.bind(this)}
+                                                  onLoadProfile = {this.onLoadProfile.bind(this)}
+                                />
                             </div>
                             <div className="col-xs-6"></div>
                         </div>

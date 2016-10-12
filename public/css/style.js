@@ -1734,7 +1734,8 @@ export default StyleSheet.create({
         "display": "block"
     },
     "pg-pro-share-btnmutual-friends-holder": {
-        "paddingBottom": 1
+        "paddingBottom": 1,
+        "cursor": "pointer"
     },
     "pg-pro-share-btnmutual-friends-holder pg-pro-share-btn-txt": {
         "float": "left",
@@ -2805,7 +2806,8 @@ export default StyleSheet.create({
         "paddingTop": 0,
         "paddingRight": 0,
         "paddingBottom": 0,
-        "paddingLeft": 0
+        "paddingLeft": 0,
+        "minHeight": 180
     },
     "pg-notes-page-content-itempg-box-shadow": {
         "boxShadow": "0px 1px 5px -1px #000",
@@ -2815,7 +2817,8 @@ export default StyleSheet.create({
         "paddingTop": 0,
         "paddingRight": 0,
         "paddingBottom": 0,
-        "paddingLeft": 0
+        "paddingLeft": 0,
+        "minHeight": 180
     },
     "pg-news-page-content-itempg-box-shadow pg-news-page-content-item-right-thumbs": {
         "border": "2px solid transparent",
@@ -2839,6 +2842,7 @@ export default StyleSheet.create({
     "pg-news-page-content-item-left-thumb": {
         "border": "none",
         "width": "20%",
+        "maxWidth": 200,
         "backgroundRepeat": "no-repeat",
         "backgroundSize": "100% 100%",
         "position": "relative",
@@ -3033,7 +3037,9 @@ export default StyleSheet.create({
         "marginTop": 15,
         "marginRight": 0,
         "marginBottom": 15,
-        "marginLeft": 0
+        "marginLeft": 0,
+        "maxWidth": 120,
+        "width": 120
     },
     "pg-notes-item-main-row note": {
         "height": 145,
@@ -3140,7 +3146,29 @@ export default StyleSheet.create({
         "marginBottom": 0,
         "marginLeft": "!important",
         "float": "none !important",
-        "cursor": "pointer"
+        "cursor": "pointer",
+        "position": "relative"
+    },
+    "pg-news-inner-full delete-icon": {
+        "width": 18,
+        "height": 18,
+        "cursor": "pointer",
+        "textAlign": "center",
+        "position": "absolute",
+        "top": -7,
+        "right": -7,
+        "border": "2px solid #e82107",
+        "borderRadius": 999,
+        "background": "#fff",
+        "display": "none"
+    },
+    "pg-news-inner-full:hover delete-icon": {
+        "display": "block"
+    },
+    "pg-news-inner-full delete-icon fa": {
+        "color": "#e82107",
+        "lineHeight": 1.2,
+        "fontSize": 1.2
     },
     "pg-pg-news-inner-time": {
         "position": "absolute",
@@ -3594,6 +3622,27 @@ export default StyleSheet.create({
     "chat-person-options": {
         "borderLeft": "1px solid #dee6eb"
     },
+    "chat-person-options searching-notifi": {
+        "borderBottom": "1px solid #59afe1",
+        "background": "#e2f4ff",
+        "paddingTop": 3,
+        "paddingRight": 5,
+        "paddingBottom": 3,
+        "paddingLeft": 5,
+        "position": "absolute",
+        "bottom": -34,
+        "left": 0,
+        "width": "100%",
+        "textAlign": "center"
+    },
+    "chat-person-options searching-notifi p": {
+        "color": "#61b3de",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "fontSize": 0.8
+    },
     "chat-person-options connection-name": {
         "float": "left"
     },
@@ -3622,7 +3671,17 @@ export default StyleSheet.create({
         "overflow": "hidden",
         "border": "1px solid #59afe1",
         "borderRadius": 5,
-        "marginRight": 10
+        "marginTop": 0,
+        "marginRight": 15,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "media-options-holder media-optionshasSearch": {
+        "width": "64%",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": "13%"
     },
     "media-options-holder media-options opt": {
         "float": "left",
@@ -3633,6 +3692,34 @@ export default StyleSheet.create({
         "borderRight": "1px solid #59afe1",
         "textAlign": "center",
         "color": "#9dadbd",
+        "cursor": "pointer"
+    },
+    "media-options-holder media-options msg-search-holder": {
+        "float": "left",
+        "position": "relative",
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "width": "36%"
+    },
+    "media-options-holder msg-search-holder form-control": {
+        "border": "none",
+        "borderRadius": 0,
+        "height": 24,
+        "boxShadow": "none",
+        "paddingTop": 11,
+        "paddingRight": 25,
+        "paddingBottom": 12,
+        "paddingLeft": 7,
+        "borderRight": "1px solid #59afe1",
+        "fontSize": 0.8
+    },
+    "media-options-holder msg-search-holder fa": {
+        "color": "#9dadbd",
+        "position": "absolute",
+        "top": 4,
+        "right": 7,
         "cursor": "pointer"
     },
     "media-options-holder media-options opt:last-child": {
@@ -3771,6 +3858,9 @@ export default StyleSheet.create({
         "maxWidth": "85%",
         "borderRadius": 8
     },
+    "chat-view chat-blockreceiver img": {
+        "cursor": "pointer"
+    },
     "chat-view chat-blockreceiver chat-msg-body": {
         "background": "#ededed"
     },
@@ -3798,6 +3888,7 @@ export default StyleSheet.create({
     "chat-block chat-msg-body user-name": {
         "display": "block",
         "fontSize": 0.9,
+        "cursor": "pointer",
         "color": "#61b3de",
         "marginBottom": 10
     },
@@ -3806,6 +3897,11 @@ export default StyleSheet.create({
         "marginRight": 0,
         "marginBottom": 0,
         "marginLeft": 0
+    },
+    "chat-block chat-msg-body chat-msg highlighted": {
+        "display": "inline-block",
+        "background": "#FFF9CA",
+        "borderBottom": "1px solid #FFE400"
     },
     "chat-block chat-msg-body chat-msg-time": {
         "position": "absolute",
@@ -4287,6 +4383,9 @@ export default StyleSheet.create({
         "paddingLeft": 10,
         "position": "relative",
         "borderBottom": "1px solid #dee6eb"
+    },
+    "chat-popup header-wrapper connection-name": {
+        "cursor": "pointer"
     },
     "header-wrapper bubble-opts-holder": {
         "position": "absolute",

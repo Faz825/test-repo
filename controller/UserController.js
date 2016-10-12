@@ -1,4 +1,3 @@
-
 'use strict'
 
 var UserControler ={
@@ -108,6 +107,223 @@ var UserControler ={
                 });
             }
         });
+
+    },
+
+
+    /**
+     * Api User Signin
+     * @param req
+     * @param res
+     * @returns {number}
+     */
+
+    doMobileApiSignin:function(req,res){
+
+        var outPut ={};
+
+        console.log(req.body);
+
+        if(typeof req.body.uname != 'undefined' && typeof req.body.password != 'undefined'){
+
+            var User = require('mongoose').model('User'),
+                bCrypt	  = require('bcrypt-nodejs');
+
+            var data = {
+                user_name:req.body.uname,
+                password:req.body.password
+            };
+
+            User.authenticate(data,function(resultSet){
+
+                if(resultSet.status != 200){
+                    outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                } else if(resultSet.status == 200 && resultSet.error != null){
+                    outPut['status'] = ApiHelper.getMessage(400, resultSet.error, Alert.ERROR);
+                    res.status(400).json(outPut);
+                    return 0;
+                }
+
+                if(typeof req.body.push_token != 'undefined' && req.body.push_token != null && req.body.push_token != ""
+                    && (typeof resultSet.user.push_token != 'undefined' && resultSet.user.push_token != req.body.push_token)){
+
+                    var _async = require('async');
+
+                    _async.waterfall([
+                        function(callback){
+                            var _data = {
+                                push_token:req.body.push_token,
+                                device_type:req.body.device_type
+                            };
+                            User.saveUpdates(resultSet.user.id, _data, function(result){
+                                if(result.status == 200){
+                                    resultSet.user.push_token = req.body.push_token;
+                                    resultSet.user.device_type = req.body.device_type;
+                                }
+                                callback(null);
+                            });
+                        },
+                        function(callback){
+
+                            if(typeof resultSet.user.push_token != 'undefined' && resultSet.user.push_token != null && resultSet.user.push_token != ""){
+
+                                var query={
+                                    q:"user_id:"+resultSet.user.id,
+                                    index:'idx_usr'
+                                };
+
+                                ES.search(query,function(esResultSet){
+
+                                    var profileData = esResultSet.result[0];
+                                    profileData.push_token = resultSet.user.push_token;
+                                    profileData.device_type = resultSet.user.device_type;
+
+                                    var payLoad={
+                                        index:"idx_usr",
+                                        id:profileData.user_id,
+                                        type: 'user',
+                                        data:profileData,
+                                        tag_fields:['first_name','last_name','email','user_name','country']
+                                    }
+
+                                    ES.createIndex(payLoad,function(resultSet){
+                                        callback(resultSet)
+                                        return 0;
+                                    });
+
+                                });
+
+                            } else{
+                                callback(null);
+                            }
+
+                        }
+                    ],function(err){
+
+                        var _async = require('async'),
+                            jwt    = require('jsonwebtoken'),
+                            date_t = new Date().getTime();
+
+                        _async.waterfall([
+                            function getApiVerificationCode(callBack){
+                                var data = {
+                                    user_name:req.body.uname,
+                                    dt: date_t
+                                };
+                                User.getApiVerification(data, function(result){
+                                    if(result.status == 200){
+
+                                        console.log("verification >>"+result.verificationCode);
+
+                                        var _payload = {
+                                            user_id:resultSet.user.id,
+                                            push_token: resultSet.user.push_token,
+                                            device_type: resultSet.user.device_type,
+                                            pat:date_t,
+                                            v_token:result.verificationCode,
+                                            v_tag:result.verificationName
+                                        };
+
+                                        var token = jwt.sign(_payload, Config.SECRET);
+                                        resultSet.user.token = token;
+
+                                    }
+                                    callBack(null);
+                                });
+                            },
+                            function createToken(callBack) {
+
+                                console.log(resultSet.user.token);
+
+                                callBack(null);
+                            }
+
+                        ],function(err){
+                            var outPut ={};
+                            if(err){
+                                outPut['status'] = ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR);
+                                res.status(400).json(outPut);
+                                return;
+                            } else {
+                                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                                outPut['user']=resultSet.user;
+                                res.status(200).send(outPut);
+                                return;
+                            }
+                        });
+                        return;
+
+                    });
+                } else {
+
+                    var _async = require('async'),
+                        jwt    = require('jsonwebtoken'),
+                        date_t = new Date().getTime();
+
+                    _async.waterfall([
+                        function getApiVerificationCode(callBack){
+                            var data = {
+                                user_name:req.body.uname,
+                                dt: date_t
+                            };
+                            User.getApiVerification(data, function(result){
+                                if(result.status == 200){
+
+                                    console.log("verification >>"+result.verificationCode);
+
+                                    var _payload = {
+                                        user_id:resultSet.user.id,
+                                        push_token: resultSet.user.push_token,
+                                        device_type: resultSet.user.device_type,
+                                        pat:date_t,
+                                        v_token:result.verificationCode,
+                                        v_tag:result.verificationName
+                                    };
+
+                                    var token = jwt.sign(_payload, Config.SECRET);
+                                    resultSet.user.token = token;
+                                }
+                                callBack(null);
+                            });
+                        },
+                        function createToken(callBack) {
+
+                            console.log(resultSet.user.token);
+
+                            callBack(null);
+                        }
+
+                    ],function(err){
+                        var outPut ={};
+                        if(err){
+                            outPut['status'] = ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR);
+                            res.status(400).json(outPut);
+                            return;
+                        } else {
+                            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                            outPut['user']=resultSet.user;
+                            res.status(200).send(outPut);
+                            return;
+                        }
+                    });
+
+                    //outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                    //outPut['user']=resultSet.user;
+                    //res.status(200).send(outPut);
+                    return;
+
+                }
+
+            });
+
+        } else{
+            outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+            res.status(400).json(outPut);
+            return 0;
+
+        }
 
     },
 

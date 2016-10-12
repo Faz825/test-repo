@@ -26,6 +26,7 @@ require('../model/NotesModel');
 require('../model/NoteBookModel');
 require('../model/UsersSavedArticle');
 require('../model/SubscribedPosts');
+require('../model/NewsChannelsModel');
 
 /** Load  Controllers
  */
@@ -35,6 +36,7 @@ var DefaultController   = require('../controller/DefaultController'),
     TestController      = require('../controller/TestController'),
     SkillController     = require('../controller/SkillController'),
     NewsController      = require('../controller/NewsController'),
+    NewsChannelController      = require('../controller/NewsChannelController'),
     PostController      = require('../controller/PostController'),
     CommentController   = require('../controller/CommentController'),
     UploadController    = require('../controller/UploadController'),
@@ -70,10 +72,16 @@ GLOBAL.notAuthURLs = ['/sign-up','/forgot-password','/change-password-invalid','
  * this URL can be accessed through web browser without login
  */
 GLOBAL.AccessAllow = [
-    '/','/choose-secretary','/doSignup','/secretaries','/about-you','/establish-connections','/news-categories',
+    '/','/choose-secretary','/doSignup','/doSignin/mob/','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
-    '/notes/edit-note/:note_id','/connections','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode', '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name'
+    '/notes/edit-note/:note_id','/connections', '/connections/mutual/:uname','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode',
+    '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name'
 ];
+
+/**
+ * This urls are related to api and will be authenticated separately
+ */
+GLOBAL.mobileApiUrls = ['/mobile/connections/get'];
 
 /**
  * Actual Routes Implementation without Authentication
@@ -82,6 +90,7 @@ router.post('/doSignup',UserController.doSignup);
 router.get('/secretaries',SecretaryController.getSeretaries);
 router.get('/cache-check/:key',SecretaryController.cacheCheck);
 router.post('/doSignin', UserController.doSignin);
+router.post('/doSignin/mob/', UserController.doMobileApiSignin);
 router.post('/dummy', DefaultController.dummy);
 router.post('/forgot-password/request/', UserController.forgotPassword);
 router.get('/forgot-password/reset/:token', UserController.validateToken);
@@ -133,6 +142,7 @@ router.get('/notes', DefaultController.index);
 router.get('/notes/new-note/:notebook_id', DefaultController.index);
 router.get('/notes/edit-note/:note_id', DefaultController.index);
 router.get('/connections', DefaultController.index);
+router.get('/connections/mutual/:uname', DefaultController.index);
 router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
 
@@ -217,6 +227,7 @@ router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
 //CONNECTIONS
 router.get('/connection/requests', ConnectionController.getRequestedConnections);
 router.get('/connection/me', ConnectionController.getMyConnections);
+router.get('/connection/me/sort/:option', ConnectionController.getMySortedConnections);
 router.get('/connection/me/unfriend', ConnectionController.getMyConnectionsBindUnfriendConnections);
 router.get('/connection/get-mutual/:uid', ConnectionController.getMutualConnections);
 router.post('/connection/accept', ConnectionController.acceptFriendRequest);
@@ -237,6 +248,11 @@ router.post('/news/articles/save', NewsController.saveMyNews);
 
 router.get('/news/saved/articles', NewsController.getSavedArticles);
 
+router.post('/news/user-channel/composer', NewsController.addChannelByUser);
+router.post('/news/user-channel/remove', NewsController.removeChannelByUser);
+router.get('/news/channels/:category_id', NewsChannelController.getChannelByCategory);
+router.get('/news/channels/:category_id/:channel_name', NewsChannelController.searchChannelForCategory);
+
 router.post('/like/composer', LikeController.doLike);
 
 router.post('/notes/add-notebook', NotesController.addNoteBook);
@@ -247,6 +263,7 @@ router.get('/notes/get-note/:note_id', NotesController.getNote);
 router.post('/notebook/shared-users', NotesController.getNoteBookSharedUsers);
 router.post('/notebook/shared-permission/change', NotesController.updateNoteBookSharedPermissions);
 router.post('/notebook/shared-user/remove', NotesController.removeSharedNoteBookUser);
+router.post('/notebook/update/shared-users/color', NotesController.updateSharedUsersListColor);
 router.post('/notes/update-note', NotesController.updateNote);
 router.post('/notes/delete-note', NotesController.deleteNote);
 router.post('/introduction/update', UserController.updateIntroduction);
@@ -257,5 +274,11 @@ router.post('/notifications/notebook-update',NotificationController.updateNotebo
 router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);
 router.get('/notifications/get-details',NotificationController.getDetails);
 router.get('/notifications/get-notification-count',NotificationController.getNotificationCount);
+
+
+/**
+ * API Routes that need to authenticate separately
+ */
+router.post('/mobile/connections/get',DefaultController.dummy);
 
 module.exports = router;

@@ -42,6 +42,7 @@ export default class Index extends React.Component{
         this.onAddFriend = this.onAddFriend.bind(this);
         this.onAcceptFriendRequest = this.onAcceptFriendRequest.bind(this);
         this.onUnfriendUser = this.onUnfriendUser.bind(this);
+        this.onLoadMutualFriends = this.onLoadMutualFriends.bind(this);
         this.loadExperiences();
         this.loadProfileData();
         this.loadPosts(0);
@@ -231,6 +232,14 @@ export default class Index extends React.Component{
         this.setState({posts:_updatedPosts});
     }
 
+    onLoadProfile(user_name){
+        window.location.href = '/profile/'+user_name;
+    }
+
+    onLoadMutualFriends(){
+        window.location.href = '/connections/mutual/'+this.state.uname;
+    }
+
     render(){
         let profileName;
 
@@ -251,7 +260,8 @@ export default class Index extends React.Component{
                     onAddFriend = {this.onAddFriend}
                     onAcceptFriendRequest = {this.onAcceptFriendRequest}
                     onUnfriendUser = {this.onUnfriendUser}
-                    usrId={this.state.usrId}/>
+                    usrId={this.state.usrId}
+                    onLoadMutualFriends = {this.onLoadMutualFriends}/>
                 <div className="row row-clr">
                     <div className="container-fluid">
                         <div className="profile-content-container" id="middle-content-wrapper">
@@ -299,7 +309,8 @@ export default class Index extends React.Component{
                                                 uname = {this.state.uname}
                                                 onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
                                                 onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
-                                                onLikeSuccess = {this.onLikeSuccess.bind(this)}/>
+                                                onLikeSuccess = {this.onLikeSuccess.bind(this)}
+                                            />
                                         </div>
                                 }
                             </div>

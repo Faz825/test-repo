@@ -882,6 +882,28 @@ UserSchema.statics.getUser=function(criteria,showOptions,callBack){
 
 
 /**
+ * Get user password Based on User Id
+ * @param userId
+ * @param callBack
+ */
+UserSchema.statics.getUserAllDetails=function(criteria,callBack){
+    var _this = this;
+    _this.findOne(criteria)
+        .exec(function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200,
+                    user:resultSet
+
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+}
+
+/**
  * Get All registered users
  * Users are taking from elastic search
  * @param callBack
@@ -1305,6 +1327,32 @@ UserSchema.statics.authenticate = function(data, callback) {
             }
         }else{
             console.log("Server Error --------")
+            callback({status:400,error:err});
+        }
+    });
+
+};
+
+
+/**
+ * authenticating user
+ */
+UserSchema.statics.getApiVerification = function(data, callback) {
+    var _this = this;
+    var criteria = {email:data.user_name}
+    _this.findOne(criteria,function(err,resultSet){
+
+        if(!err){
+            if(resultSet == null){
+                callback({status:200,error:Alert.USER_NOT_FOUND});
+            } else{
+                var code = Config.API_KEY + data.dt;
+                var vCode = createHash(resultSet.salt, code);
+                var vName = createHash(resultSet.salt, resultSet.user_name);
+                callback({status:200,verificationCode:vCode, verificationName:vName});
+            }
+        }else{
+            console.log("Error while getting api verification code --------")
             callback({status:400,error:err});
         }
     });
