@@ -657,7 +657,6 @@ export class RightMenu extends React.Component{
     }
 
     onTermSearch(){
-        console.log(this.state.searchTerm);
         if(this.state.searchTerm != ""){
             this.setState({showSearchTerm : true});
             this.props.doChatSearch(this.state.searchTerm);
