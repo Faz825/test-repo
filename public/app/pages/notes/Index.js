@@ -1080,7 +1080,7 @@ export class NoteThumb extends React.Component{
                                 </div>
                             </a>
                             <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>
-
+                            <p className="note-owner" style={{color : note.note_color}}>{note.note_owner}</p>
                         </div>
                     </div>
                 )

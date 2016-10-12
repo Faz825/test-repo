@@ -2395,6 +2395,21 @@ textarea{
 	right: -13px;
 	background: url(../images/del-note-icon.png) no-repeat 0 0;
 }
+
+.pg-notes-item-main-row .row-clear.note .note-owner{
+	position: absolute;
+	bottom: -8px;
+	right: 5px;
+	margin-left: 2px;
+	margin-right: 2px;
+	font: 9px "montserratsemi_bold",sans-serif;
+	display: none;
+}
+
+.pg-notes-item-main-row .row-clear.note:hover .note-owner{
+	display: block;
+}
+
 .pg-news-item-top-row{
 	display:inline-block;
 }

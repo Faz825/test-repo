@@ -102,32 +102,57 @@ var NotesController ={
                         var notes_set = resultSet.notes,
                             _shared_users = _notebook.notebook_shared_users;
 
-                        for(var inc = 0; inc < notes_set.length; inc++){
-                            
-                            var c_index = grep(_shared_users, function(e){ return e.user_id == notes_set[inc].user_id; }),
-                                _hexColor = '#e3e7ea';
+                        _async.eachSeries(notes_set, function(__note, callBack){
 
-                            if(c_index.length > 0 && (notes_set[inc].user_id == c_index[0].user_id)){
-                                _hexColor = c_index[0].user_note_color;
+                            _async.waterfall([
+                                function getUser(callBack) {
+                                    var _search_param = {
+                                            _id:__note.user_id
+                                        },
+                                        showOptions ={
+                                            w_exp:false,
+                                            edu:false
+                                        };
+
+                                    User.getUser(_search_param,showOptions,function(resultSet){
+                                        if(resultSet.status ==200 ){
+                                            callBack(null,resultSet.user)
+                                        }
+                                    });
+                                },
+                                function finalizeNoteSet(note_owner, callBack) {
+                                    var c_index = grep(_shared_users, function(e){ return e.user_id == __note.user_id; }),
+                                        _hexColor = '#e3e7ea';
+
+                                    if(c_index.length > 0 && (__note.user_id == c_index[0].user_id)){
+                                        _hexColor = c_index[0].user_note_color;
+                                    }
+
+                                    var _note = {
+                                        note_id: __note._id,
+                                        note_name: __note.name,
+                                        note_content: __note.content,
+                                        note_owner: note_owner.first_name + ' ' + note_owner.last_name,
+                                        note_color: _hexColor,
+                                        updated_at: DateTime.noteCreatedDate(__note.updated_at)
+                                    };
+                                    _notebook.notes.push(_note);
+
+                                    callBack(null);
+                                }
+                            ],function(err){
+                                callBack(null);
+                            });
+
+                        },function(err){
+                            if(_notebook.notebook_name == 'My Notes'){
+                                my_note = _notebook;
+                            }else {
+                                _notes.push(_notebook);
                             }
+                            callBack(null);
+                        });
 
-                            var _note = {
-                                note_id: notes_set[inc]._id,
-                                note_name: notes_set[inc].name,
-                                note_content: notes_set[inc].content,
-                                note_owner: notes_set[inc].user_id,
-                                note_color: _hexColor,
-                                updated_at: DateTime.noteCreatedDate(notes_set[inc].updated_at)
-                            };
-                            _notebook.notes[inc] = _note;
-                        }
-                        if(_notebook.notebook_name == 'My Notes'){
-                            my_note = _notebook;
-                        }else {
-                            _notes.push(_notebook);
-                        }
-
-                        callBack(null);
                     });
                 },function(err){
                     callBack(null,_notes);
@@ -265,27 +290,57 @@ var NotesController ={
                                         var notes_set = resultSet.notes,
                                             _shared_users = _notebook.notebook_shared_users;
 
-                                        for(var inc = 0; inc < notes_set.length; inc++){
+                                        _async.eachSeries(notes_set, function(__note, callBack){
 
-                                            var c_index = grep(_shared_users, function(e){ return e.user_id == notes_set[inc].user_id; }),
-                                                _hexColor = '#e3e7ea';
+                                            _async.waterfall([
+                                                function getUser(callBack) {
+                                                    var _search_param = {
+                                                            _id:__note.user_id
+                                                        },
+                                                        showOptions ={
+                                                            w_exp:false,
+                                                            edu:false
+                                                        };
 
-                                            if(c_index.length > 0 && (notes_set[inc].user_id == c_index[0].user_id)){
-                                                _hexColor = c_index[0].user_note_color;
+                                                    User.getUser(_search_param,showOptions,function(resultSet){
+                                                        if(resultSet.status ==200 ){
+                                                            callBack(null,resultSet.user)
+                                                        }
+                                                    });
+                                                },
+                                                function finalizeNoteSet(note_owner, callBack) {
+                                                    var c_index = grep(_shared_users, function(e){ return e.user_id == __note.user_id; }),
+                                                        _hexColor = '#e3e7ea';
+
+                                                    if(c_index.length > 0 && (__note.user_id == c_index[0].user_id)){
+                                                        _hexColor = c_index[0].user_note_color;
+                                                    }
+
+                                                    var _note = {
+                                                        note_id: __note._id,
+                                                        note_name: __note.name,
+                                                        note_content: __note.content,
+                                                        note_owner: note_owner.first_name + ' ' + note_owner.last_name,
+                                                        note_color: _hexColor,
+                                                        updated_at: DateTime.noteCreatedDate(__note.updated_at)
+                                                    };
+                                                    _notebook.notes.push(_note);
+
+                                                    callBack(null);
+                                                }
+                                            ],function(err){
+                                                callBack(null);
+                                            });
+
+                                        },function(err){
+                                            if(_notebook.notebook_name == 'My Notes'){
+                                                my_note = _notebook;
+                                            }else {
+                                                _notes.push(_notebook);
                                             }
+                                            callBack(null);
+                                        });
 
-                                            var _note = {
-                                                note_id: notes_set[inc]._id,
-                                                note_name: notes_set[inc].name,
-                                                note_content: notes_set[inc].content,
-                                                note_owner: notes_set[inc].user_id,
-                                                note_color: _hexColor,
-                                                updated_at: DateTime.noteCreatedDate(notes_set[inc].updated_at)
-                                            };
-                                            _notebook.notes[inc] = _note;
-                                        }
-                                        _notes.push(_notebook);
-                                        callBack(null);
                                     });
                                 }else{
                                     callBack(null);
@@ -833,7 +888,7 @@ var NotesController ={
                     _async.eachSeries(_notebook_shared_users, function(user,callBack){
 
                         var randColor = _randColor.randomColor({
-                            luminosity: 'light',
+                            luminosity: 'bright',
                             hue: 'random'
                         });
 
