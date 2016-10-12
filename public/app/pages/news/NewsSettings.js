@@ -325,7 +325,7 @@ export class NewsCategory extends React.Component{
         let _selected = (this.props.newsCategory.is_favorite)?"selected":"";
         let _channel_template = this.props.newsCategory.channels.map(function(channel,key){
             return (
-                <NewsChannels newsChannel ={channel}
+                <NewsChannels newsC hannel ={channel}
                               key={key}/>
             )
         });
@@ -385,7 +385,7 @@ export class NewsChannels extends React.Component{
 
     render(){
         let _channel_img = "/images/news/channels/"+this.props.newsChannel.channel_image;
-        let _channel_date = newsChannel.date.time_a_go;
+        let _channel_date = this.props.newsChannel.date.time_a_go;
         return(
             <div className="col-xs-2 pg-col-20 pg-news-item" >
                 <div className="row row-clr pg-news-inner-full various">
