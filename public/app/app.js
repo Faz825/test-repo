@@ -22,6 +22,7 @@ import FoldersIndex from './pages/folders/Index';
 import DocIndex from './pages/doc/Index';
 import NotificationsIndex from './pages/notifications/Index';
 import WorkmodeIndex from './pages/workmode/Index';
+import MutualConnections  from './pages/connection/MutualConnections';
 
 
 let rootRoute =(
@@ -56,6 +57,7 @@ let rootRoute =(
          */
 
         <Route name="connections" path="/connections" component={Connection}/>
+        <Route name="mutual-connections" path="/connections/mutual/:uname" component={MutualConnections}/>
 
 
 

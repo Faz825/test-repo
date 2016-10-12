@@ -746,7 +746,11 @@ export class SharePopup extends React.Component{
                         </div> : null
                     }
                     <div className="see-all">
-                        <button className="btn-link" onClick={this.allSharedUsers.bind(this)}>See All</button>
+                        {
+                            (this.state.sharedUsers.length > 2) ?
+                                <button className="btn-link" onClick={this.allSharedUsers.bind(this)}>See
+                                    All</button> : null
+                        }
                     </div>
                 </div>
             </div>
@@ -962,20 +966,26 @@ export class  SharedUsers extends React.Component {
                         }
 
                     </div>
-                    <div className="action add-new">
-                        <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
-                            <i className="fa fa-minus" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div className="permission">
-                        <select className="pg-custom-input"
-                                onChange={(event)=>_this.props.changePermissions(event, user)}
-                                value={user.shared_type}>
-                            <option value="1">Read Only</option>
-                            <option value="2">Read/Write</option>
-                        </select>
-                    </div>
-                    {_this.props.removeSharedUser()}
+                    {
+                        (_notebook.owned_by == 'me')?
+                            <div>
+                                <div className="action add-new">
+                                    <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
+                                        <i className="fa fa-minus" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <div className="permission">
+                                    <select className="pg-custom-input"
+                                            onChange={(event)=>_this.props.changePermissions(event, user)}
+                                            value={user.shared_type}>
+                                        <option value="1">Read Only</option>
+                                        <option value="2">Read/Write</option>
+                                    </select>
+                                </div>
+                                {_this.props.removeSharedUser()}
+                            </div>
+                            : null
+                    }
                 </div> :
                 <div className="user-block shared clearfix" key={key}>
                     <div className="separator"></div>
@@ -1058,7 +1068,7 @@ export class NoteThumb extends React.Component{
             if(key < 4) {
                 return (
                     <div className="note-holder" id={note.note_id} key={key}>
-                        <div className="row-clear note">
+                        <div className="row-clear note" style={{borderColor : note.note_color}}>
                             <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note,_notebook_props)}>
                                 <div className="time-wrapper">
                                     <p className="date-created">{note.updated_at.createdDate}</p>
@@ -1070,7 +1080,7 @@ export class NoteThumb extends React.Component{
                                 </div>
                             </a>
                             <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>
-
+                            <p className="note-owner" style={{color : note.note_color}}>{note.note_owner}</p>
                         </div>
                     </div>
                 )

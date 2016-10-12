@@ -93,5 +93,9 @@ app.use(function(err, req, res, next) {
   });
 });
 
+//ES Connection Update - init
+GLOBAL.ESUpdateHandler = require('./middleware/ESUpdateHandler');
+ESUpdateHandler.init();
+
 
 module.exports = app;

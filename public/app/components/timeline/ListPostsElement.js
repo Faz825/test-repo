@@ -11,7 +11,7 @@ import CommentElement from './CommentElement';
 import ProgressBar from '../elements/ProgressBar';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Scroll from 'react-scroll';
-const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,onLikeSuccess})=>{
+const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,onLikeSuccess,onLoadProfile})=>{
 
         if(posts.length <= 0){
             return (<div />)
@@ -20,7 +20,7 @@ const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,
         let _postElement = posts.map((post,key)=>{
 
             return (<SinglePost postItem = {post} key={key} postIndex={key} onPostSubmitSuccess ={(post)=>onPostSubmitSuccess(post)}
-                                onPostDeleteSuccess = {onPostDeleteSuccess} onLikeSuccess = {onLikeSuccess}/>)
+                                onPostDeleteSuccess = {onPostDeleteSuccess} onLikeSuccess = {onLikeSuccess} onLoadProfile = {onLoadProfile}/>)
         });
 
         return (
@@ -41,25 +41,29 @@ export default ListPostsElement;
 class SinglePost extends React.Component{
     constructor(props){
         super(props);
-        this.state={
-            postItem :this.props.postItem,
-            profile:this.props.postItem.created_by,
-            showCommentPane:false,
-            comments:[],
-            unformattedComments:[],
-            liked_users : [],
-            isShowingModal:false,
-            iniTextisVisible:false,
-            text:"",
-            shareBtnEnabled:true,
-            isShowingVideoModal:false,
-            videoUrl:""
+        this.state= {
+            postItem: this.props.postItem,
+            profile: this.props.postItem.created_by,
+            showCommentPane: false,
+            comments: [],
+            unformattedComments: [],
+            liked_users: [],
+            isShowingModal: false,
+            iniTextisVisible: false,
+            text: "",
+            shareBtnEnabled: true,
+            isShowingVideoModal: false,
+            isShowingImgModal: false,
+            videoUrl: "",
+            currentImage: 0
         };
         this.loggedUser= Session.getSession('prg_lg');
 
         this.lifeEvent="";
         this.sharedPost = false;
+        this.imgList = [];
 
+        this.openLightbox = this.openLightbox.bind(this);
     }
 
     componentDidMount(){
@@ -146,7 +150,7 @@ class SinglePost extends React.Component{
         this.loadComment();
     }
     handleClose() {
-        this.setState({isShowingModal: false, isShowingVideoModal:false});
+        this.setState({isShowingModal: false, isShowingVideoModal:false, isShowingImgModal:false});
     }
     onContentAdd(event){
         let _text  = Lib.sanitize(event.target.innerHTML);
@@ -358,10 +362,100 @@ class SinglePost extends React.Component{
         )
     }
 
+    onPrevClick(){
+        this.setState({
+            currentImage: this.state.currentImage - 1
+        });
+    }
+
+    onNextClick(){
+        this.setState({
+            currentImage: this.state.currentImage + 1
+        });
+    }
+
+    getImgPopup(){
+        const _post = this.props.postItem;
+        const _postIndex = this.props.postIndex;
+        const _is_i_liked = _post.is_i_liked;
+
+        return(
+            <div>
+                {this.state.isShowingImgModal &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} className="imgPop-holder">
+                        <div className="share-popup-holder">
+                            <div className="img-holder">
+                                <img src={this.imgList[this.state.currentImage]} className="img-responsive"/>
+                            </div>
+                            {
+                                (this.state.currentImage != 0)?
+                                    <i className="fa fa-chevron-left left-arrow arrow" onClick={this.onPrevClick.bind(this)}></i>
+                                    :
+                                    null
+                            }
+
+                            {
+                                (this.imgList.length != this.state.currentImage + 1)?
+                                    <i className="fa fa-chevron-right right-arrow arrow" onClick={this.onNextClick.bind(this)}></i>
+                                    :
+                                    null
+                            }
+                            <PostActionBar comment_count={_post.comment_count}
+                                           post_index = {_postIndex}
+                                           onLikeClick = {this.onLikeClick.bind(this)}
+                                           onShareClick = {event=>this.onShareClick()}
+                                           onCommentClick = {event=>this.onCommentClick()}
+                                           OnLikeHover = {event=>this.loadLikedUsers()}
+                                           is_i_liked = {_is_i_liked}
+                                           liked_users = {_post.liked_user}
+                                           show_share_button ={true}/>
+
+                            {
+                                (typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
+                                    <LikeSummery
+                                        visibility={true}
+                                        likes ={_post.liked_user}/>
+                                    :null
+                            }
+
+                            {
+                                (this.state.showCommentPane) ?
+                                    <div className="comment-inner-wrapper">
+                                        <CommentElement
+                                        visibility = {this.state.showCommentPane}
+                                        postId = {_post.post_id}
+                                        comments = {this.state.comments}
+                                        unformattedComments = {this.state.unformattedComments}
+                                        onCommentAddSuccess = {this.onCommentAddSuccess.bind(this)}
+                                        onCommentDeleteSuccess = {this.onCommentDeleteSuccess.bind(this)}/>
+                                    </div>
+                                    : ""
+                            }
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        );
+    }
+
+    openLightbox (index, event) {
+        event.preventDefault();
+        this.setState({
+            currentImage: index,
+            isShowingImgModal: true,
+        });
+    }
+
     render(){
         if(typeof  this.props.postItem == 'undefined'){
             return(<div />);
         }
+
+        let _this = this;
+
+        this.imgList = [];
 
         const _post = this.props.postItem;
         let img_div_class = "pg-newsfeed-post-upload-image";
@@ -385,9 +479,16 @@ class SinglePost extends React.Component{
                 } else{
                     _url = upload.http_url
                 }
+
+                _this.imgList.push(_url);
+
                 return (
                     <div className={img_div_class} key={key}>
-                        <img src = {_url}/>{
+                        <a
+                            href={_url}
+                            key={key}
+                            onClick={(e) => this.openLightbox(key, e)}
+                        ><img src = {_url}/></a>{
                         (upload.file_type == "mp4")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true" onClick = {(event)=>{this.onVideoPlay(upload)}}></i>:null
                     }
                         {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
@@ -403,16 +504,19 @@ class SinglePost extends React.Component{
                     <div className="row row-clr pg-newsfeed-section-common-content-post-info">
                         <div className="pg-user-pro-pic">
                             <PostProfilePic post={_post}
-                                            profile={_profile}/>
+                                            profile={_profile}
+                                            onLoadProfile = {this.props.onLoadProfile}/>
                         </div>
                         <div className="pg-user-pro-info">
                             <h5 className="pg-newsfeed-profile-name">
 
                                 <PostOwner post={_post}
-                                            profile={_profile}/>
+                                           profile={_profile}
+                                           onLoadProfile = {this.props.onLoadProfile}/>
 
                                 <SharedPostTitle post={_post}
-                                                 loggedUser={this.loggedUser}/>
+                                                 loggedUser={this.loggedUser}
+                                                 onLoadProfile = {this.props.onLoadProfile}/>
 
                                 <UpdatedProPic post={_post}
                                               loggedUser={this.loggedUser}/>
@@ -436,7 +540,8 @@ class SinglePost extends React.Component{
                         </div>
 
                         <SharedPostBody  post={_post}
-                                     loggedUser={this.loggedUser}/>
+                                     loggedUser={this.loggedUser}
+                                     onLoadProfile = {this.props.onLoadProfile}/>
 
 
                         <PostActionBar comment_count={_post.comment_count}
@@ -470,6 +575,7 @@ class SinglePost extends React.Component{
 
                         {this.getPopup()}
                         {this.getVideoPopup()}
+                        {this.getImgPopup()}
                     </div>
                 </div>
             </div>
@@ -577,7 +683,7 @@ const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost,btnEnabled
 };
 
 
-const SharedPostTitle = ({loggedUser,post}) =>{
+const SharedPostTitle = ({loggedUser,post,onLoadProfile}) =>{
 
     if(post.post_mode == "SP"){
         return (
@@ -585,7 +691,7 @@ const SharedPostTitle = ({loggedUser,post}) =>{
                 <span className="own-post-share">shared own post</span>
                 :   <span className="post-owner-name">
                         <span className="shared-text">shared</span>
-                        <span className="pro-name">
+                        <span className="pro-name" onClick={()=>onLoadProfile(post.shared_post.created_by.user_name)}>
                             {" "+post.shared_post.created_by.first_name + " " + post.shared_post.created_by.last_name}
                         </span>'s post
                     </span>
@@ -611,42 +717,42 @@ const PostContentBody = ({loggedUser,post})=>{
 
 };
 
-const PostOwner = ({post,profile}) => {
+const PostOwner = ({post,profile,onLoadProfile}) => {
 
     if(post.post_owned_by != undefined){
         return (
             (post.created_by.user_id == post.post_owned_by.user_id)?
-                <span className="pro-name">{profile.first_name + " " + profile.last_name + " "} </span>
+                <span className="pro-name" onClick={()=>onLoadProfile(profile.user_name)} >{profile.first_name + " " + profile.last_name + " "} </span>
                 :
                 <span className="post-owner-name">
-                    <span className="pro-name">
+                    <span className="pro-name" onClick={()=>onLoadProfile(post.post_owned_by.user_name)}>
                   {post.post_owned_by.first_name + " " + post.post_owned_by.last_name + " "}
                     </span>
                     <i className="fa fa-caret-right"></i>
-                    <span className="pro-name">
+                    <span className="pro-name" onClick={()=>onLoadProfile(post.created_by.user_name)}>
                         {" " + post.created_by.first_name + " " + post.created_by.last_name}
                     </span>
                 </span>
         );
     }else{
         return(
-            <span className="pro-name">{profile.first_name + " " + profile.last_name + " "} </span>
+            <span className="pro-name" onClick={()=>onLoadProfile(profile.user_name)}>{profile.first_name + " " + profile.last_name + " "} </span>
         );
     }
 
 };
 
-const PostProfilePic = ({post,profile}) => {
+const PostProfilePic = ({post,profile,onLoadProfile}) => {
     if(post.post_owned_by != undefined){
         return (
             (post.created_by.user_id == post.post_owned_by.user_id)?
-                <img src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
+                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
                 :
-                <img src={post.post_owned_by.images.profile_image.http_url} alt={post.post_owned_by.first_name + " " + post.post_owned_by.last_name} className="img-responsive"/>
+                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={post.post_owned_by.images.profile_image.http_url} alt={post.post_owned_by.first_name + " " + post.post_owned_by.last_name} className="img-responsive"/>
         );
     }else{
         return(
-            <img src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
+            <img onClick={()=>onLoadProfile(post.created_by.user_name)} src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
         );
     }
 
@@ -671,7 +777,7 @@ export const UpdatedProPic = ({loggedUser,post})=>{
 }
 
 
-const SharedPostBody = ({loggedUser,post}) => {
+const SharedPostBody = ({loggedUser,post,onLoadProfile}) => {
 
     if(post.post_mode != "SP"){
         return (<span />);
@@ -705,10 +811,10 @@ const SharedPostBody = ({loggedUser,post}) => {
     return (
         <div className="shared-post-holder">
             <div className="pg-user-pro-pic">
-                <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
+                <img onClick={()=>onLoadProfile(_profile.user_name)} src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
             </div>
             <div className="pg-user-pro-info">
-                <h5 className="pg-newsfeed-profile-name">
+                <h5 className="pg-newsfeed-profile-name" onClick={()=>onLoadProfile(_profile.user_name)}>
                     <span className="pro-name">
                         {_profile.first_name + " " + _profile.last_name}
                     </span>

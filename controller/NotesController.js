@@ -99,23 +99,60 @@ var NotesController ={
                     };
 
                     Note.getNotes(notes_criteria,function(resultSet){
-                        var notes_set = resultSet.notes;
-                        for(var inc = 0; inc < notes_set.length; inc++){
-                            var _note = {
-                                note_id: notes_set[inc]._id,
-                                note_name: notes_set[inc].name,
-                                note_content: notes_set[inc].content,
-                                updated_at: DateTime.noteCreatedDate(notes_set[inc].updated_at)
-                            };
-                            _notebook.notes[inc] = _note;
-                        }
-                        if(_notebook.notebook_name == 'My Notes'){
-                            my_note = _notebook;
-                        }else {
-                            _notes.push(_notebook);
-                        }
+                        var notes_set = resultSet.notes,
+                            _shared_users = _notebook.notebook_shared_users;
 
-                        callBack(null);
+                        _async.eachSeries(notes_set, function(__note, callBack){
+
+                            _async.waterfall([
+                                function getUser(callBack) {
+                                    var _search_param = {
+                                            _id:__note.user_id
+                                        },
+                                        showOptions ={
+                                            w_exp:false,
+                                            edu:false
+                                        };
+
+                                    User.getUser(_search_param,showOptions,function(resultSet){
+                                        if(resultSet.status ==200 ){
+                                            callBack(null,resultSet.user)
+                                        }
+                                    });
+                                },
+                                function finalizeNoteSet(note_owner, callBack) {
+                                    var c_index = grep(_shared_users, function(e){ return e.user_id == __note.user_id; }),
+                                        _hexColor = '#e3e7ea';
+
+                                    if(c_index.length > 0 && (__note.user_id == c_index[0].user_id)){
+                                        _hexColor = c_index[0].user_note_color;
+                                    }
+
+                                    var _note = {
+                                        note_id: __note._id,
+                                        note_name: __note.name,
+                                        note_content: __note.content,
+                                        note_owner: note_owner.first_name + ' ' + note_owner.last_name,
+                                        note_color: _hexColor,
+                                        updated_at: DateTime.noteCreatedDate(__note.updated_at)
+                                    };
+                                    _notebook.notes.push(_note);
+
+                                    callBack(null);
+                                }
+                            ],function(err){
+                                callBack(null);
+                            });
+
+                        },function(err){
+                            if(_notebook.notebook_name == 'My Notes'){
+                                my_note = _notebook;
+                            }else {
+                                _notes.push(_notebook);
+                            }
+                            callBack(null);
+                        });
+
                     });
                 },function(err){
                     callBack(null,_notes);
@@ -250,18 +287,60 @@ var NotesController ={
                                     _notebook.shared_privacy = notebook_sharedUser[0].shared_type;
 
                                     Note.getNotes(notes_criteria,function(resultSet){
-                                        var notes_set = resultSet.notes;
-                                        for(var inc = 0; inc < notes_set.length; inc++){
-                                            var _note = {
-                                                note_id: notes_set[inc]._id,
-                                                note_name: notes_set[inc].name,
-                                                note_content: notes_set[inc].content,
-                                                updated_at: DateTime.noteCreatedDate(notes_set[inc].updated_at)
-                                            };
-                                            _notebook.notes[inc] = _note;
-                                        }
-                                        _notes.push(_notebook);
-                                        callBack(null);
+                                        var notes_set = resultSet.notes,
+                                            _shared_users = _notebook.notebook_shared_users;
+
+                                        _async.eachSeries(notes_set, function(__note, callBack){
+
+                                            _async.waterfall([
+                                                function getUser(callBack) {
+                                                    var _search_param = {
+                                                            _id:__note.user_id
+                                                        },
+                                                        showOptions ={
+                                                            w_exp:false,
+                                                            edu:false
+                                                        };
+
+                                                    User.getUser(_search_param,showOptions,function(resultSet){
+                                                        if(resultSet.status ==200 ){
+                                                            callBack(null,resultSet.user)
+                                                        }
+                                                    });
+                                                },
+                                                function finalizeNoteSet(note_owner, callBack) {
+                                                    var c_index = grep(_shared_users, function(e){ return e.user_id == __note.user_id; }),
+                                                        _hexColor = '#e3e7ea';
+
+                                                    if(c_index.length > 0 && (__note.user_id == c_index[0].user_id)){
+                                                        _hexColor = c_index[0].user_note_color;
+                                                    }
+
+                                                    var _note = {
+                                                        note_id: __note._id,
+                                                        note_name: __note.name,
+                                                        note_content: __note.content,
+                                                        note_owner: note_owner.first_name + ' ' + note_owner.last_name,
+                                                        note_color: _hexColor,
+                                                        updated_at: DateTime.noteCreatedDate(__note.updated_at)
+                                                    };
+                                                    _notebook.notes.push(_note);
+
+                                                    callBack(null);
+                                                }
+                                            ],function(err){
+                                                callBack(null);
+                                            });
+
+                                        },function(err){
+                                            if(_notebook.notebook_name == 'My Notes'){
+                                                my_note = _notebook;
+                                            }else {
+                                                _notes.push(_notebook);
+                                            }
+                                            callBack(null);
+                                        });
+
                                     });
                                 }else{
                                     callBack(null);
@@ -359,6 +438,7 @@ var NotesController ={
     shareNoteBook:function(req,res){
 
         var _async = require('async'),
+            _randColor = require('randomcolor'),
             NoteBook = require('mongoose').model('NoteBook'),
             CurrentSession = Util.getCurrentSession(req),
             Notification = require('mongoose').model('Notification'),
@@ -436,8 +516,13 @@ var NotesController ={
                         }
                     },
                     function saveInDB(callBack){
+                        var randColor = _randColor.randomColor({
+                            luminosity: 'light',
+                            hue: 'random'
+                        });
                         var _sharingUser = {
                             user_id: req.body.userId,
+                            user_note_color: randColor,
                             shared_type: NoteBookSharedMode.READ_WRITE,
                             status: NoteBookSharedRequest.REQUEST_PENDING
                         };
@@ -673,7 +758,10 @@ var NotesController ={
                     sharedUsers = resultSet.shared_users;
                     oldSharedUserList = resultSet.shared_users;
                     var index = sharedUsers.indexOfProperty('user_id', shared_user_id);
-                    sharedUsers.splice(index, 1);
+
+                    if(index != -1) {
+                        sharedUsers.splice(index, 1);
+                    }
                     callBack(null, true);
 
                 } else {
@@ -769,6 +857,70 @@ var NotesController ={
         })
 
 
+    },
+
+    /**
+     * update shared user's note color
+     * @param req
+     * @param res
+     */
+    updateSharedUsersListColor:function(req,res){
+
+        var NoteBook = require('mongoose').model('NoteBook'),
+            _async = require('async'),
+            _randColor = require('randomcolor'),
+            own_user_id = Util.getCurrentSession(req).id;
+
+        _async.waterfall([
+            function getNotebooks(callBack){
+
+                var criteria = {};
+
+                NoteBook.getNotebooks(criteria,function(resultSet){
+                    callBack(null,resultSet);
+                });
+            },
+            function updateSharedUsersNoteColor(resultSet, callBack){
+                _async.eachSeries(resultSet.notebooks, function(notebook,callBack){
+
+                    var _notebook_shared_users = notebook.shared_users;
+
+                    _async.eachSeries(_notebook_shared_users, function(user,callBack){
+
+                        var randColor = _randColor.randomColor({
+                            luminosity: 'bright',
+                            hue: 'random'
+                        });
+
+                        var criteria = {
+                            _id: notebook._id,
+                            'shared_users.user_id': user.user_id
+                        };
+
+                        var data = {
+                            $set:{
+                                "shared_users.$.user_note_color" :  randColor
+                            }
+                        };
+
+                        NoteBook.updateSharedNotebook(criteria, data, function(resultSet){
+                            callBack(null);
+                        });
+
+                    }, function(err){
+                        callBack(null);
+                    });
+
+                }, function(err){
+                    callBack(null);
+                });
+            }
+        ],function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
+            res.status(200).json(outPut);
+        })
     }
 
 };

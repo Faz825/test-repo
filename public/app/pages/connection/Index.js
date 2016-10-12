@@ -380,11 +380,30 @@ export class MyConnections  extends React.Component{
     constructor(props){
         super(props);
         this.state ={
-            my_connections:[],
+            loggedUser:Session.getSession('prg_lg'),
+            my_connections: this.props.my_connections,
 
         };
 
+        this.onSortConnectionsByName = this.onSortConnectionsByName.bind(this);
 
+    }
+
+    onSortConnectionsByName(e){
+        let _fieldValue = e.target.value;
+        let _this = this;
+
+        $.ajax({
+            url: '/connection/me/sort/'+_fieldValue,
+            method: "GET",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+
+        }).done(function(data){
+            if(data.status.code == 200){
+                _this.setState({my_connections:data.my_con});
+            }
+        });
     }
 
 
@@ -393,11 +412,11 @@ export class MyConnections  extends React.Component{
     }
 
     render(){
-        if(typeof this.props.my_connections == 'undefined'){
+        let _this = this;
+        if(typeof _this.state.my_connections == 'undefined'){
             return (<div />)
         }
-        let _this = this;
-        let user_elements = this.props.my_connections.map(function(friend,key){
+        let user_elements = _this.state.my_connections.map(function(friend,key){
 
             return (
                 <UserBlockThumbView user = {friend}
@@ -423,8 +442,10 @@ export class MyConnections  extends React.Component{
                                         </select>
                                     </div>
                                     <div className="pg-my-con-option pg-my-con-option-sort">
-                                        <select>
-                                            <option>Sort by</option>
+                                        <select onChange={(event)=>this.onSortConnectionsByName(event)}>
+                                            <option selected="" disabled="">Sort by</option>
+                                            <option value="name">Name</option>
+                                            <option value="date">Date Connected</option>
                                         </select>
                                     </div>
                                     <div className="pg-my-con-option pg-my-con-option-filter">
