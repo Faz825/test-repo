@@ -325,7 +325,7 @@ export class NewsCategory extends React.Component{
         let _selected = (this.props.newsCategory.is_favorite)?"selected":"";
         let _channel_template = this.props.newsCategory.channels.map(function(channel,key){
             return (
-                <NewsChannels newsC hannel ={channel}
+                <NewsChannels newsChannel ={channel}
                               key={key}/>
             )
         });
