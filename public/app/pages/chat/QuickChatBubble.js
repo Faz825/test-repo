@@ -33,11 +33,12 @@ export default class QuickChatBubble extends React.Component{
             chatWith:this.props.chatData.title,
             userLoggedIn : Session.getSession('prg_lg'),
             messages:[],
-            uri:'usr:proglobe'+this.props.chatData.title
+            uri:'usr:proglobe'+this.props.chatData.title,
+            isMinimized : false
         };
 
         this.messages = [];
-
+        this.onChatMinimize = this.onChatMinimize.bind(this);
     };
 
     componentDidMount() {
@@ -110,6 +111,13 @@ export default class QuickChatBubble extends React.Component{
         window.location.href = '/profile/'+this.props.chatData.user.user_name;
     }
 
+    onChatMinimize(state){
+        if(state){
+            this.setState({isMinimized: true});
+        }else{
+            this.setState({isMinimized: false});
+        }
+    }
 
     render() {
         const {
@@ -118,7 +126,7 @@ export default class QuickChatBubble extends React.Component{
             }=this.state;
 
         return (
-            <div className="chat-popup col-sm-4" ref={this.props.chatData.title}>
+            <div className={(this.state.isMinimized)? "chat-popup popup-minimized col-sm-4" : "chat-popup col-sm-4"} ref={this.props.chatData.title}>
                 <div className="row inner-wrapper q-chat">
                     <ChatHeader
                         conv={this.props.chatData}
@@ -126,12 +134,19 @@ export default class QuickChatBubble extends React.Component{
                         doAudioCall = {this.doAudioCall.bind(this)}
                         doVideoCall = {this.doVideoCall.bind(this)}
                         onLoadProfile = {this.onLoadProfile.bind(this)}
+                        onMinimize = {this.onChatMinimize.bind(this)}
                         />
                     <MessageList
                         conv={this.props.chatData}
                         loggedUser = {userLoggedIn}
-                        messages = {messages}/>
-                    <ComposeMessage sendChat={this.sendMsg.bind(this)} conv={this.props.chatData}/>
+                        messages = {messages}
+                        minimizeChat = {this.state.isMinimized}
+                        />
+                    <ComposeMessage
+                        sendChat={this.sendMsg.bind(this)}
+                        conv={this.props.chatData}
+                        minimizeChat = {this.state.isMinimized}
+                        />
                 </div>
             </div>
         );
@@ -143,16 +158,34 @@ export default class QuickChatBubble extends React.Component{
 export class ChatHeader extends React.Component{
     constructor(props){
         super(props)
-        this.state ={};
+        this.state ={
+            minimized: false
+        };
+
+        this.onMinimiseClick = this.onMinimiseClick.bind(this);
+        this.isMinimized = false;
     }
 
     onCloseClick(){
         this.props.bubbleClose(this.props.conv);
     }
 
+    onMinimiseClick(){
+        this.isMinimized = !this.isMinimized;
+
+        if(this.isMinimized){
+            this.props.onMinimize(true);
+            this.setState({minimized : true});
+        }else{
+            this.props.onMinimize(false);
+            this.setState({minimized : false});
+        }
+    }
+
     render() {
         let conv = this.props.conv;
         let user = this.props.conv.user;
+        console.log(this.state.minimized);
 
         return (
             <div className="header-wrapper">
@@ -172,7 +205,13 @@ export class ChatHeader extends React.Component{
                     <p className="all-media">All Media</p>
                 </div>
                 <div className="bubble-opts-holder">
-                    <span className="close icon" onClick={this.onCloseClick.bind(this)}><i className="fa fa-times" aria-hidden="true"></i></span>
+                    {
+                        (this.state.minimized)?
+                            <i className="fa fa-caret-square-o-up opt-icon icon" aria-hidden="true" onClick={this.onMinimiseClick.bind(this)}></i>
+                        :
+                            <i className="fa fa-minus opt-icon icon" aria-hidden="true" onClick={this.onMinimiseClick.bind(this)}></i>
+                    }
+                    <i className="fa fa-times close icon" aria-hidden="true" onClick={this.onCloseClick.bind(this)}></i>
                 </div>
             </div>
         )
@@ -211,14 +250,21 @@ export class MessageList extends React.Component{
         });
 
         return (
-            <div className="chat-view">
-                <Scrollbars ref="msgScrollBar" autoHide={true} autoHideTimeout={1000} autoHideDuration={200} >
-                    <div id="msgListRow">
-                        <div id="msgList">
-                            {convs}
+            <div>
+                {
+                    (!this.props.minimizeChat)?
+                        <div className="chat-view">
+                            <Scrollbars ref="msgScrollBar" autoHide={true} autoHideTimeout={1000} autoHideDuration={200} >
+                                <div id="msgListRow">
+                                    <div id="msgList">
+                                        {convs}
+                                    </div>
+                                </div>
+                            </Scrollbars>
                         </div>
-                    </div>
-                </Scrollbars>
+                    :
+                        null
+                }
             </div>
         )
     }
@@ -269,22 +315,29 @@ export class ComposeMessage extends React.Component{
 
     render(){
         return(
-            <form onSubmit={this.sendMessage.bind(this)} id="chatMsg">
-                <div className="chat-msg-input-holder">
-                    <div className="msg-input">
-                        <textarea className="form-control" placeholder="New Message..." name="msg" value={this.state.msgText}
-                                  onChange={(event)=>{ this.elementChangeHandler(event)}}
-                                  onKeyDown={(event)=>{this.onEnter(event)}}
-                            ></textarea>
-                    </div>
-                </div>
-                <div className="chat-msg-options-holder">
-                    <div className="send-msg">
-                        <button type="submit" className="btn btn-default send-btn">Send</button>
-                    </div>
-                </div>
-                {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
-            </form>
+            <div>
+                {
+                    (!this.props.minimizeChat)?
+                        <form onSubmit={this.sendMessage.bind(this)} id="chatMsg">
+                            <div className="chat-msg-input-holder">
+                                <div className="msg-input">
+                                    <textarea className="form-control" placeholder="New Message..." name="msg" value={this.state.msgText}
+                                        onChange={(event)=>{ this.elementChangeHandler(event)}}
+                                        onKeyDown={(event)=>{this.onEnter(event)}}
+                                        ></textarea>
+                                </div>
+                            </div>
+                            <div className="chat-msg-options-holder">
+                                <div className="send-msg">
+                                    <button type="submit" className="btn btn-default send-btn">Send</button>
+                                </div>
+                            </div>
+                            {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
+                        </form>
+                    :
+                        null
+                }
+            </div>
         )
     }
 }

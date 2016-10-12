@@ -47,8 +47,8 @@ export default class NewsSettings extends React.Component{
     addNewsChannel(){
 
         let channelData ={
-            __channel_id: '56cbf55f09e38d870d1df691',
-            __category_id: '56f7a1d796688d640db5b95a'
+            __channel_id: '56cbf9e18e015cad0e8a2ff8',
+            __category_id: '56f7a1f596688d640db5b95c'
         };
 
         $.ajax({
@@ -226,61 +226,183 @@ export default class NewsSettings extends React.Component{
     }
 }
 
+// const NewsCategory = ({newsCategory,onCategorySelect})=>{
+//
+//     let _opt_class = newsCategory.category.toLowerCase();
+//
+//     let _channel_template = newsCategory.channels.map(function(channel,key){
+//         return (
+//             <NewsChannels newsChannel ={channel}
+//                           key={key}/>
+//         )
+//     });
+//
+//     let _selected = (newsCategory.is_favorite)?"selected":"";
+//     return (
+//         <div className={"row row-clr pg-news-page-content-item pg-box-shadow "+ _selected + " "+ _opt_class}
+//              onClick ={event=>onCategorySelect(newsCategory.is_favorite,newsCategory._id)}>
+//
+//             <div className={"col-xs-2 pg-news-page-content-item-left-thumb "+_opt_class }>
+//                 <div className="cat-icon-holder">
+//                     <span className="cat-icon"></span>
+//                     <h3 className="cat-title">{newsCategory.category}</h3>
+//                 </div>
+//             </div>
+//             <div className="col-xs-10 pg-news-page-content-item-right-thumbs">
+//                 <div className="pg-news-page-content-item-right-inner-box">
+//                     <div className="pg-news-item-main-row">
+//
+//                         {_channel_template}
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     )
+//
+// }
 
+export class NewsCategory extends React.Component{
+    constructor(props){
+        super(props);
 
+        this.state={
+            isShowingModal : false
+        }
 
+        this.onAddChannelClick = this.onAddChannelClick.bind(this);
+    }
 
-const NewsCategory = ({newsCategory,onCategorySelect})=>{
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
 
-    let _opt_class = newsCategory.category.toLowerCase();
+    onCategorySelect(){
+        console.log("parent");
+        this.props.onCategorySelect(this.props.newsCategory.is_favorite,this.props.newsCategory._id);
+    }
 
-    let _channel_template = newsCategory.channels.map(function(channel,key){
-        return (
-            <NewsChannels newsChannel ={channel}
-                          key={key}/>
-        )
-    });
+    onAddChannelClick(event){
+        event.stopPropagation();
+        this.setState({isShowingModal: true});
+    }
 
-    let _selected = (newsCategory.is_favorite)?"selected":"";
-    return (
-        <div className={"row row-clr pg-news-page-content-item pg-box-shadow "+ _selected + " "+ _opt_class}
-             onClick ={event=>onCategorySelect(newsCategory.is_favorite,newsCategory._id)}>
-
-            <div className={"col-xs-2 pg-news-page-content-item-left-thumb "+_opt_class }>
-                <div className="cat-icon-holder">
-                    <span className="cat-icon"></span>
-                    <h3 className="cat-title">{newsCategory.category}</h3>
-                </div>
+    getPopup(){
+        let chanels = [];
+        let dummyObj = {
+            channel_image : "tnw.png"
+        }
+        for (let i=0; i < 9; i++) {
+            chanels.push(<NewsChannels newsChannel ={dummyObj} key={i} canDelete={false} />);
+        }
+        return(
+            <div>
+                {this.state.isShowingModal &&
+                    <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                        <ModalDialog onClose={this.handleClose.bind(this)} width="432px" className="add-chanel-popup">
+                            <div className="popup-wrapper clearfix">
+                                <div className="popup-header">
+                                    <h3 className="popup-title">Add News Channels</h3>
+                                    <div className="form-group channel-search-holder">
+                                        <input type="text" className="form-controllor" placeholder="Search for channels" />
+                                        <i className="fa fa-search" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                                <div className="popup-content-holder">
+                                    <Scrollbars style={{ height: 280 }}>
+                                            {chanels}
+                                    </Scrollbars>
+                                </div>
+                            </div>
+                        </ModalDialog>
+                    </ModalContainer>
+                }
             </div>
-            <div className="col-xs-10 pg-news-page-content-item-right-thumbs">
-                <div className="pg-news-page-content-item-right-inner-box">
-                    <div className="pg-news-item-main-row">
+        )
+    }
 
-                        {_channel_template}
+    render(){
+        let _opt_class = this.props.newsCategory.category.toLowerCase();
+        let _selected = (this.props.newsCategory.is_favorite)?"selected":"";
+        let _channel_template = this.props.newsCategory.channels.map(function(channel,key){
+            return (
+                <NewsChannels newsC hannel ={channel}
+                              key={key}/>
+            )
+        });
+        return (
+            <div className={"row row-clr pg-news-page-content-item pg-box-shadow "+ _selected + " "+ _opt_class}
+                 onClick ={this.onCategorySelect.bind(this)}>
+                <div className={"col-xs-2 pg-news-page-content-item-left-thumb "+_opt_class }>
+                    <div className="cat-icon-holder">
+                        <span className="cat-icon"></span>
+                        <h3 className="cat-title">{this.props.newsCategory.category}</h3>
                     </div>
                 </div>
+                <div className="col-xs-10 pg-news-page-content-item-right-thumbs">
+                    <div className="pg-news-page-content-item-right-inner-box">
+                        <div className="pg-news-item-main-row">
+                            <div className="add-chanel-wrapper pg-news-item" onClick={this.onAddChannelClick}>
+                                <i className="fa fa-plus" aria-hidden="true"></i>
+                                <p>Add Channel</p>
+                            </div>
+                            {_channel_template}
+                        </div>
+                    </div>
+                </div>
+                {this.getPopup()}
             </div>
-        </div>
-    )
-
+        )
+    }
 }
 
 
-const NewsChannels = ({newsChannel})=>{
+// const NewsChannels = ({newsChannel})=>{
+//
+//     let _channel_img = "/images/news/channels/"+newsChannel.channel_image;
+//     return (
+//         <div className="col-xs-2 pg-col-20 pg-news-item" >
+//             <div className="row row-clr pg-news-inner-full various">
+//                 <img src={_channel_img} alt="" className="img-responsive pg-pg-news-inner-img" />
+//                 <span className="delete-icon">
+//                     <i className="fa fa-times" aria-hidden="true"></i>
+//                 </span>
+//             </div>
+//         </div>
+//     )
+// }
 
-    let _channel_img = "/images/news/channels/"+newsChannel.channel_image;
-    let _channel_date = newsChannel.date.time_a_go;
-    return (
-        <div className="col-xs-2 pg-col-20 pg-news-item" >
-            <div className="row row-clr pg-news-inner-full various">
-                <p className="pg-pg-news-inner-time">{_channel_date}</p>
-                <img src={_channel_img} alt="" className="img-responsive pg-pg-news-inner-img" />
-                <span className="delete-icon">
-                    <i className="fa fa-times" aria-hidden="true"></i>
-                </span>
+export class NewsChannels extends React.Component{
+    constructor(props){
+        super(props);
+
+        this.state={}
+    }
+
+    onChannelDelete(event){
+        event.stopPropagation();
+        console.log("deleted");
+    }
+
+    render(){
+        let _channel_img = "/images/news/channels/"+this.props.newsChannel.channel_image;
+        let _channel_date = this.props.newsChannel.date.time_a_go;
+        return(
+            <div className="col-xs-2 pg-col-20 pg-news-item" >
+                <div className="row row-clr pg-news-inner-full various">
+                    <p className="pg-pg-news-inner-time">{_channel_date}</p>
+                    <img src={_channel_img} alt="" className="img-responsive pg-pg-news-inner-img" />
+                    {
+                        (this.props.canDelete != false)?
+                            <span className="delete-icon" onClick={this.onChannelDelete}>
+                                <i className="fa fa-times" aria-hidden="true"></i>
+                            </span>
+                        :
+                            null
+                    }
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
 }
 
 

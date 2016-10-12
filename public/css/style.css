@@ -2325,6 +2325,24 @@ textarea{
 	max-width: 120px;
 	width: 120px;
 }
+.add-chanel-wrapper.pg-news-item{
+	background: #e2ebf1;
+	min-height: 145px;
+	border: 1px dashed #b4c5d0;
+	border-radius: 4px;
+	text-align: center;
+	float: left;
+	margin-right: 10px;
+}
+.add-chanel-wrapper.pg-news-item p{
+	font: 10px 'montserratsemi_bold', sans-serif;
+	color: #2d5164;
+	margin: 2px 0 0;
+}
+.add-chanel-wrapper.pg-news-item .fa{
+	color: #2d5164;
+	padding: 44% 0 0;
+}
 .pg-notes-item-main-row .note{
 	height: 145px;
 	position: relative;
@@ -3598,10 +3616,19 @@ textarea{
 	box-shadow: 0 0 50px -20px #000;
 }
 
+.chat-popup.popup-minimized{
+	height: 45px;
+    margin-top: 235px;
+}
+
 .chat-popup .header-wrapper{
 	padding: 10px;
 	position: relative;
 	border-bottom: 1px solid #dee6eb;
+}
+
+.chat-popup.popup-minimized .header-wrapper .call-opts-wrapper{
+	display: none;
 }
 
 .chat-popup .header-wrapper .connection-name{
@@ -3612,6 +3639,11 @@ textarea{
 	position: absolute;
 	top: 3px;
     right: 4px;
+}
+
+.header-wrapper .bubble-opts-holder .opt-icon{
+	margin-right: 10px;
+	cursor: pointer;
 }
 
 .bubble-opts-holder .close{
@@ -3639,6 +3671,10 @@ textarea{
 
 .header-wrapper .icon{
 	color: #a8bfcd;
+}
+
+.header-wrapper .icon.close{
+	opacity: 1;
 }
 
 .header-wrapper .call-opts-wrapper{
@@ -4742,6 +4778,17 @@ textarea{
 
 .notifi-popup-holder #NotificationList .msg-holder{
 	min-height: 66px;
+}
+
+/* News - Add Channel */
+.add-chanel-popup .popup-header{
+	margin: 0;
+}
+
+.add-chanel-popup .popup-header .popup-title{
+	margin: 0;
+	font: 1.2em "montserratregular",sans-serif;
+	float: left;
 }
 
 /* Large Screen */
