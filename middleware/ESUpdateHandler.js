@@ -44,19 +44,24 @@ var ESUpdateHandler = {
                                 ES.search(query,function(esConnections){
                                     var esResult = esConnections.result;
                                     _async.eachSeries(esResult, function(esUser,callBack){
-                                        if(esUser.connected_at == undefined){
-                                            esUser['connected_at'] = friends[esUser.user_id].updated_at;
+                                        if(typeof esUser.connected_at == 'undefined'){
+                                            if(typeof friends[esUser.user_id] != 'undefined'&&
+                                                typeof friends[esUser.user_id].updated_at != 'undefined') {
+                                                esUser['connected_at'] = friends[esUser.user_id].updated_at;
 
-                                            var payLoad={
-                                                index:_cache_key,
-                                                id:esUser.user_id,
-                                                type: 'connections',
-                                                data:esUser
-                                            }
+                                                var payLoad = {
+                                                    index: _cache_key,
+                                                    id: esUser.user_id,
+                                                    type: 'connections',
+                                                    data: esUser
+                                                }
 
-                                            ES.update(payLoad,function(resultSet){
+                                                ES.update(payLoad, function (resultSet) {
+                                                    callBack(null);
+                                                });
+                                            }else{
                                                 callBack(null);
-                                            });
+                                            }
                                         }else{
                                             callBack(null);
                                         }
