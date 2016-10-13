@@ -3041,6 +3041,30 @@ export default StyleSheet.create({
         "maxWidth": 120,
         "width": 120
     },
+    "add-chanel-wrapperpg-news-item": {
+        "background": "#e2ebf1",
+        "minHeight": 145,
+        "border": "1px dashed #b4c5d0",
+        "borderRadius": 4,
+        "textAlign": "center",
+        "float": "left",
+        "marginRight": 10
+    },
+    "add-chanel-wrapperpg-news-item p": {
+        "font": "10px 'montserratsemi_bold', sans-serif",
+        "color": "#2d5164",
+        "marginTop": 2,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "add-chanel-wrapperpg-news-item fa": {
+        "color": "#2d5164",
+        "paddingTop": "44%",
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "paddingLeft": 0
+    },
     "pg-notes-item-main-row note": {
         "height": 145,
         "position": "relative",
@@ -4376,6 +4400,10 @@ export default StyleSheet.create({
         "background": "#fff",
         "boxShadow": "0 0 50px -20px #000"
     },
+    "chat-popuppopup-minimized": {
+        "height": 45,
+        "marginTop": 235
+    },
     "chat-popup header-wrapper": {
         "paddingTop": 10,
         "paddingRight": 10,
@@ -4384,6 +4412,9 @@ export default StyleSheet.create({
         "position": "relative",
         "borderBottom": "1px solid #dee6eb"
     },
+    "chat-popuppopup-minimized header-wrapper call-opts-wrapper": {
+        "display": "none"
+    },
     "chat-popup header-wrapper connection-name": {
         "cursor": "pointer"
     },
@@ -4391,6 +4422,10 @@ export default StyleSheet.create({
         "position": "absolute",
         "top": 3,
         "right": 4
+    },
+    "header-wrapper bubble-opts-holder opt-icon": {
+        "marginRight": 10,
+        "cursor": "pointer"
     },
     "bubble-opts-holder close": {
         "fontSize": 1
@@ -4416,6 +4451,9 @@ export default StyleSheet.create({
     },
     "header-wrapper icon": {
         "color": "#a8bfcd"
+    },
+    "header-wrapper iconclose": {
+        "opacity": 1
     },
     "header-wrapper call-opts-wrapper": {
         "marginTop": 10,
@@ -5496,6 +5534,20 @@ export default StyleSheet.create({
     },
     "notifi-popup-holder NotificationList msg-holder": {
         "minHeight": 66
+    },
+    "add-chanel-popup popup-header": {
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0
+    },
+    "add-chanel-popup popup-header popup-title": {
+        "marginTop": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "marginLeft": 0,
+        "font": "1.2em \"montserratregular\",sans-serif",
+        "float": "left"
     },
     "middle-content-wrapper": {
         "minWidth": 500

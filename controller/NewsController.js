@@ -601,7 +601,7 @@ var NewsController ={
             CurrentSession = Util.getCurrentSession(req);
 
         var _newsChannel = {
-            channel_name:req.body.__channel_name,
+            channel_id:req.body.__channel_id,
             user_id:Util.getCurrentSession(req).id
         };
 
