@@ -1,5 +1,5 @@
 /**
- * This is Notebook model
+ * Folder model
  */
 
 
@@ -61,7 +61,7 @@ FolderSchema.pre('save', function(next){
 });
 
 /**
- * Create Notebook
+ * Create New Folder
  */
 FolderSchema.statics.addNewFolder = function(_data,callBack){
 
@@ -88,6 +88,75 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
 
 };
 
+
+/**
+ * Get Folders
+ */
+FolderSchema.statics.getFolders = function(criteria,callBack){
+
+    var _this = this;
+
+    _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200,
+                folders:resultSet
+            });
+        }else{
+            console.log("Server Error while getting folders--------")
+            callBack({status:400,error:err});
+        }
+    })
+
+};
+
+
+/**
+ * Get Folder By Id
+ */
+FolderSchema.statics.getFolderById = function(id,callBack){
+
+    var _this = this;
+
+    _this.findOne({_id: id}).exec(function (err, resultSet) {
+        if (!err) {
+            if (resultSet == null) {
+                callBack(null);
+                return;
+            }
+
+            callBack(resultSet);
+        } else {
+            console.log(err)
+            callBack({status: 400, error: err})
+        }
+    });
+
+};
+
+
+/**
+ * This is to update folder
+ * @param criteria
+ * @param data
+ * @param callBack
+ */
+FolderSchema.statics.updateFolder = function(criteria, data, callBack){
+
+    var _this = this;
+
+    _this.update(criteria, data, {multi:true}, function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200
+            });
+        }else{
+            console.log("Server Error while updating folder--------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+    });
+};
 
 
 mongoose.model('Folders',FolderSchema);

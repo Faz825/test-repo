@@ -1,11 +1,16 @@
 'use strict';
 
 /**
- * Handle note related operation in the class
+ * Handle All Folder related functions
  */
 
 var FolderController ={
 
+    /**
+     * Adding New Folder
+     * @param req
+     * @param res
+     */
     addNewFolder:function(req,res){
 
         var Folders = require('mongoose').model('Folders');
