@@ -11,8 +11,8 @@ var FolderController ={
         var Folders = require('mongoose').model('Folders');
 
         var _folder = {
-            name:req.body.folderName,
-            color:req.body.folderColor,
+            name:req.body.folder_name,
+            color:req.body.folder_color,
             isDefault:req.body.isDefault,
             user_id:Util.getCurrentSession(req).id
         };
