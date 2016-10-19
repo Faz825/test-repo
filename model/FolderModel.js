@@ -76,7 +76,7 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
         if(!err){
             callBack({
                 status:200,
-                notebook:resultSet
+                folder:resultSet
             });
         }else{
             console.log("Folder Save Error --------")
@@ -95,8 +95,7 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
 FolderSchema.statics.getFolders = function(criteria,callBack){
 
     var _this = this;
-
-    _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
+    _this.find(criteria).exec(function(err,resultSet){
         if(!err){
             callBack({
                 status:200,
@@ -130,6 +129,31 @@ FolderSchema.statics.getFolderById = function(id,callBack){
             console.log(err)
             callBack({status: 400, error: err})
         }
+    });
+
+};
+
+/**
+ * Get Folder | Get shared folder to user
+ */
+FolderSchema.statics.ch_getSharedFolders = function(userId,payload,callBack){
+
+    var _this = this;
+    var _cache_key = "idx_user:"+FolderConfig.CACHE_PREFIX+userId;
+
+    var query={
+        q:payload.q,
+        index:_cache_key
+    };
+
+    //Find User from Elastic search
+    ES.search(query,function(csResultSet){
+        if(csResultSet == null){
+            callBack(null);
+        }else{
+            callBack(csResultSet);
+        }
+
     });
 
 };
