@@ -12,6 +12,12 @@ var  mongoose = require('mongoose'),
  */
 var CalenderEventSchema = new Schema({
 
+    user_id : {
+        type : Schema.ObjectId,
+        ref : 'User',
+        default : null
+    },
+
     description : {
         type : String,
         default : null,
