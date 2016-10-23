@@ -27,6 +27,7 @@ require('../model/NoteBookModel');
 require('../model/UsersSavedArticle');
 require('../model/SubscribedPosts');
 require('../model/NewsChannelsModel');
+require('../model/FolderModel');
 
 /** Load  Controllers
  */
@@ -45,7 +46,8 @@ var DefaultController   = require('../controller/DefaultController'),
     LikeController      =  require('../controller/LikeController'),
     NotesController     = require('../controller/NotesController'),
     NotificationController     = require('../controller/NotificationController'),
-    NotificationSMSController     = require('../controller/NotificationSMSController');
+    NotificationSMSController     = require('../controller/NotificationSMSController'),
+    FolderController     = require('../controller/FolderController');
 
 
 
@@ -75,7 +77,8 @@ GLOBAL.AccessAllow = [
     '/','/choose-secretary','/doSignup','/doSignin/mob/','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
     '/notes/edit-note/:note_id','/connections', '/connections/mutual/:uname','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode',
-    '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name'
+    '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name',
+    '/calender'
 ];
 
 /**
@@ -274,7 +277,7 @@ router.post('/notifications/notebook-update',NotificationController.updateNotebo
 router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);
 router.get('/notifications/get-details',NotificationController.getDetails);
 router.get('/notifications/get-notification-count',NotificationController.getNotificationCount);
-
+router.post('/folders/add-new', FolderController.addNewFolder);
 
 /**
  * API Routes that need to authenticate separately
