@@ -7,6 +7,19 @@
 var  mongoose = require('mongoose'),
      Schema   = mongoose.Schema;
 
+GLOBAL.CalenderTypes = {
+    EVENT: 1,
+    TODO: 2,
+    TASK: 3
+};
+
+GLOBAL.CalenderStatus = {
+    PENDING: 1,
+    COMPLETED: 2,
+    EXPIRED: 3,
+    CANCELLED: 4
+};
+
 /**
  * CalenderEvent Basic information
  */
@@ -26,14 +39,12 @@ var CalenderEventSchema = new Schema({
 
     status : {
         type : Number,
-        default : 1 /* 1 - pending | 2 - completed | 3 - expired */
+        default : 1 /* 1 - pending | 2 - completed | 3 - expired, 4 - cancelled */
     },
 
     type : {
-        type : String,
-        trim : true,
-        default : 'event',
-        enum : ['event', 'todo']
+        type : Number,
+        default : null
     },
 
     start_date_time : {
@@ -107,7 +118,6 @@ CalenderEventSchema.statics.update = function (filter, value, callBack) {
 CalenderEventSchema.statics.getOne = function (filter, fields, callBack) {
 
     var calenderEvent = new this();
-    var options = { multi: true };
 
     calenderEvent.findOne(filter, fields, function (err, event ) {
         if (err){
@@ -139,7 +149,30 @@ CalenderEventSchema.statics.get = function (filter, fields, options, callBack) {
         } else {
             callBack({status:200,events:events});
         }
-    })
+    });
+};
+
+/**
+ * Get Calender events, todos, Tasks for the given period sorted by created date
+ * @param criteria
+ * @param callBack
+ */
+CalenderEventSchema.statics.getSortedCalenderItems = function(criteria,callBack){
+
+    var _this = this;
+
+    _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200,
+                notebooks:resultSet
+            });
+        } else {
+            console.log("Server error while getSortedCalenderItems --------");
+            callBack({status:400,error:err});
+        }
+    });
+
 };
 
 mongoose.model('CalenderEvent', CalenderEventSchema);
