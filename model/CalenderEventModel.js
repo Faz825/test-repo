@@ -33,7 +33,7 @@ var CalenderEventSchema = new Schema({
         type : String,
         trim : true,
         default : 'event',
-        enum: ['event', 'todo']
+        enum : ['event', 'todo']
     },
 
     start_date_time : {

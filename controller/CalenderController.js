@@ -14,13 +14,53 @@ var CalenderController = {
     getEvents: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
+        var CalenderEvent = require('mongoose').model('CalenderEvent');
         var UserId = CurrentSession.id;
-        var outPut = {
-            status : ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-            news : null
+
+        CalenderEvent.get({},{},{},function(err, result) {
+            
+            var outPut ={};
+            if(err) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.COMMENT_POST_ID_EMPTY, Alert.ERROR);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['events'] = result.events;
+                res.status(200).send(outPut);
+            }
+        });
+    },
+
+    /**
+     * This action creates a Event based on the parameters we are sending.
+     * @param req
+     * @param res
+     * @return Json
+     */
+    add: function(req,res) {
+
+        var CurrentSession = Util.getCurrentSession(req);
+        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var UserId = CurrentSession.id;
+
+        var eventData = {
+            description : req.params.description,
+            type: req.params.type
         }
-        res.status(200).json(outPut);
+
+        CalenderEvent.add(eventData, function(err, result) {
+            
+            var outPut ={};
+            if(err) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.COMMENT_POST_ID_EMPTY, Alert.ERROR);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['events'] = result.life_events;
+                res.status(200).send(outPut);
+            }
+        });
     }
 };
 
-module.exports = NewsController;
+module.exports = CalenderController;
