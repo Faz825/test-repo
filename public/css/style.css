@@ -5244,6 +5244,9 @@ textarea{
 	border: solid 1px #CCC;
 	margin-bottom: 10px;
 }
+.mini-calender-container.calender-container {
+	width: auto;
+}
 .calender-container > div.header {
 	float: left;
 	width: 100%;
@@ -5325,6 +5328,12 @@ textarea{
 	cursor: pointer;
 	color: #273859;
 }
+.mini-calender-container.calender-container > div.week > span.day {
+	height: auto;
+	font-size: 1em;
+	text-align: center;
+}
+
 .calender-container > div.week > span.day-names {
 	font-size: 1.05em !important;
 	height: 30px !important;

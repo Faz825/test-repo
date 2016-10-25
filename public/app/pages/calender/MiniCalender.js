@@ -36,13 +36,13 @@ export default class MiniCalender extends React.Component {
 
     render() {
         return(
-            <div className="calender-container">
+            <div className="calender-container mini-calender-container">
                 <div className="header">
                     <i className="fa fa-angle-left" onClick={this.previous.bind(this)}></i>
                     {this.renderMonthLabel()}
                     <i className="fa fa-angle-right" onClick={this.next.bind(this)}></i>
                 </div>
-                <DayNames />
+                <DayNames mini="true" />
                 {this.renderWeeks()}
             </div>
         );
