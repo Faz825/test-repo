@@ -5234,7 +5234,7 @@ textarea{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 }
-.calender-container {
+.calender-box {
 	float: left;
 	display: block;
 	box-sizing: border-box;
@@ -5244,23 +5244,21 @@ textarea{
 	border: solid 1px #CCC;
 	margin-bottom: 10px;
 }
-.mini-calender-container.calender-container {
-	width: auto;
-}
-.calender-container > div.header {
+
+.calender-box > div.header {
 	float: left;
 	width: 100%;
 	background: transparent !important;
 	height: 40px;
 	/*color: white;*/
 }
-.calender-container > div.header > * {
+.calender-box > div.header > * {
 	height: 40px;
 	line-height: 40px !important;
 	display: inline-block;
 	vertical-align: middle;
 }
-.calender-container > div.header > i {
+.calender-box > div.header > i {
 	float: left;
 	width: 40px;
 	font-size: 1.125em;
@@ -5271,14 +5269,14 @@ textarea{
 	padding: 0 10px;
 	cursor: pointer;
 }
-.calender-container > div.header > i.fa-angle-left {
+.calender-box > div.header > i.fa-angle-left {
 	text-align: left;
 }
-.calender-container > div.header > i.fa-angle-right {
+.calender-box > div.header > i.fa-angle-right {
 	text-align: left;
 	margin-left: -40px;
 }
-.calender-container > div.header > span {
+.calender-box > div.header > span {
 	float: left;
 	width: 100%;
 	/*font-weight: bold;*/
@@ -5291,27 +5289,27 @@ textarea{
 	padding-right: 40px;
 	color: #273859;
 }
-.calender-container > div.header > span.middle-month {
+.calender-box > div.header > span.middle-month {
 	text-align: center;
 	width: 800px;
 	padding-right: 132px;
 	font-size: 20px;
 }
-.calender-container > div.header > span.smaller-month {
+.calender-box > div.header > span.smaller-month {
 	text-align: left;
 	width: 180px;
 	font-size: 10px;
 	padding-right: 66px;
 }
-.calender-container > div.week {
+.calender-box > div.week {
 	float: left;
 	width: 100%;
 	border-top: solid 1px #CCC;
 }
-.calender-container > div.week:first-child {
+.calender-box > div.week:first-child {
 	border-top: none;
 }
-.calender-container > div.week > span.day {
+.calender-box > div.week > span.day {
 	float: left;
 	width: 14.28571429%;
 	box-sizing: border-box;
@@ -5328,32 +5326,40 @@ textarea{
 	cursor: pointer;
 	color: #273859;
 }
-.mini-calender-container.calender-container > div.week > span.day {
+
+.calender-box > div.week > span.day-names {
+	font-size: 1.05em !important;
+	height: 30px !important;
+}
+.calender-box > div.week > span.day:first-child {
+	border-left: none;
+}
+.calender-box > div.week > span.day.today {
+	background: #E3F2FF;
+}
+.calender-box > div.week > span.day.different-month {
+	color: #C0C0C0;
+}
+.calender-box > div.week > span.day.selected {
+	background: #2875C7;
+	color: white;
+}
+.calender-box > div.week.names > span {
+	color: #2ea8d0;
+}
+
+/* mini calender
+ */
+
+.mini-calender-box.calender-box {
+	width: auto;
+}
+
+.mini-calender-box.calender-box > div.week > span.day {
 	height: auto;
 	font-size: 1em;
 	text-align: center;
 	padding-left: 0px; 
-}
-
-.calender-container > div.week > span.day-names {
-	font-size: 1.05em !important;
-	height: 30px !important;
-}
-.calender-container > div.week > span.day:first-child {
-	border-left: none;
-}
-.calender-container > div.week > span.day.today {
-	background: #E3F2FF;
-}
-.calender-container > div.week > span.day.different-month {
-	color: #C0C0C0;
-}
-.calender-container > div.week > span.day.selected {
-	background: #2875C7;
-	color: white;
-}
-.calender-container > div.week.names > span {
-	color: #2ea8d0;
 }
 
 /**
