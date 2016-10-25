@@ -13,7 +13,6 @@ export default class DayNames extends React.Component {
     }
 
     render() {
-        console.log(this.state.mini);
 
         return <div className="week names">
             <span className="day day-names">{ this.state.mini ? "Sun" : "Sunday" }</span>

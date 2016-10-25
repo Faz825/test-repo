@@ -9,19 +9,20 @@ import MonthView from './MonthView';
 import WeekView from './WeekView';
 import DayView from './DayView';
 import CalenderView from './MonthView';
+import ViewButton from './ViewButton';
 
 export default class Index extends React.Component{
     
     constructor(props) {
 
         super(props);
-        this.state = { dafaultView : 'day' }; // curently assuming the dafault view is DayView
+        this.state = { defaultView : 'day' }; // curently assuming the dafault view is DayView
         this.relativeView = this.relativeView.bind(this);
     }
 
     relativeView() {
 
-        switch(this.state.dafaultView) {
+        switch(this.state.defaultView) {
             case 'week':
                 return (<WeekView/>);
             case 'day':
@@ -35,6 +36,11 @@ export default class Index extends React.Component{
     
     render() {
 
+        // const {
+        //     dafaultView,
+        //     current
+        //     }=this.state;
+
         return (
             <section className="calender-container">
                 <div className="container">
@@ -44,18 +50,10 @@ export default class Index extends React.Component{
                                 <h2>Calender</h2>
                             </div>
                             <div className="col-sm-5 col-sm-offset-1">
-                                <div className="calender-type active">
-                                    <h4>Day</h4>
-                                </div>
-                                <div className="calender-type">
-                                    <h4>Week</h4>
-                                </div>
-                                <div className="calender-type">
-                                    <h4>Month</h4>
-                                </div>
-                                <div className="calender-type">
-                                    <h4>Year</h4>
-                                </div>
+                                <ViewButton view="day" value="Day" />
+                                <ViewButton view="week" value="Week" />
+                                <ViewButton view="month" value="Month" />
+                                <ViewButton view="year" value="Year" />
                             </div>
                             <div className="col-sm-4">
                                 <div className="search-folder">
