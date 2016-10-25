@@ -56,29 +56,66 @@ export default class Header extends React.Component {
 
     render(){
         return(
-                <div className="row row-clr pg-top-navigation">
-                  <div className="container-fluid pg-custom-container">
-                    <div className="row">
-                      <div className="col-xs-2">
-                        <a href="/">
-                            <Logo url ="/images/logo.png" />
-                        </a>
-                      </div>
+            <header>
+                {/**
+                    <div className="row row-clr pg-top-navigation">
+                                  <div className="container-fluid pg-custom-container">
+                                    <div className="row">
+                                      <div className="col-xs-2">
+                                        <a href="/">
+                                            <Logo url ="/images/logo.png" />
+                                        </a>
+                                      </div>
+                                        <GlobalSearch/>
+                                      <span className="col-xs-1"></span>
+                                      <div className="col-xs-2 pg-header-options">
+                                        <a href="/news-feed" className="dropDown-holder">
+                                          <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_09.png" alt="" />
+                                          <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_03.png" alt="" />
+                                        </a>
+                                        <div onClick={()=>this.showChatList()} className="chat-dropdown-holder dropDown-holder" id="chat_notification_a">
+                                          <span className="pg-drop-down">
+                                            <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_11.png" alt="" />
+                                            <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_033.png" alt="" />
+                                          </span>
+                                            <span id="unread_chat_count_header">
+                                            </span>
+                                            <div id="chat_notification_wrapper" className="chat-notification-wrapper">
+                                                <img className="drop_downarrow" src="/images/drop_arrow.png" alt="" />
+                                                <Scrollbars style={{ height: 260 }}>
+                                                    <ConversationList connections={this.state.my_connections} loadQuickChat={this.initiateQuickChat.bind(this)}/>
+                                                    <div className="chat-dropdown-link-holder">
+                                                        <a href="/chat">See All</a>
+                                                    </div>
+                                                </Scrollbars>
+                                            </div>
+                                        </div>
+                                        <div className="dropDown-holder">
+                                            <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_13.png" alt="" />
+                                            <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_05.png" alt="" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <ProfileImg />
+                                </div>
+                    **/}
+                <div className="container">
+                    <div className="row clearfix">
+                        <Logo url ="/images/logo.png" />
                         <GlobalSearch/>
-                      <span className="col-xs-1"></span>
-                      <div className="col-xs-2 pg-header-options">
-                        <a href="/news-feed" className="dropDown-holder">
-                          <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_09.png" alt="" />
-                          <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_03.png" alt="" />
-                        </a>
-                        <div onClick={()=>this.showChatList()} className="chat-dropdown-holder dropDown-holder" id="chat_notification_a">
-                          <span className="pg-drop-down">
-                            <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_11.png" alt="" />
-                            <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_033.png" alt="" />
-                          </span>
-                            <span id="unread_chat_count_header">
-                            </span>
-                            <div id="chat_notification_wrapper" className="chat-notification-wrapper">
+                        <div className="notification-holder clearfix">
+                            <div className="news-feed opt-holder">
+                                <div className="icon-holder">
+                                    <img src="/images/header-icons/news-feed-notifi-icon.png" alt="News-feed" />
+                                </div>
+                            </div>
+                            <div onClick={()=>this.showChatList()} className="chat-icon opt-holder chat-dropdown-holder dropDown-holder" id="chat_notification_a">
+                                <div className="icon-holder">
+                                    <img src="/images/header-icons/chat-notifi-icon.png" alt="chat notifi" />
+                                </div>
+                                <span id="unread_chat_count_header" className="notifi-num">2</span>
+                                <div id="chat_notification_wrapper" className="chat-notification-wrapper">
                                 <img className="drop_downarrow" src="/images/drop_arrow.png" alt="" />
                                 <Scrollbars style={{ height: 260 }}>
                                     <ConversationList connections={this.state.my_connections} loadQuickChat={this.initiateQuickChat.bind(this)}/>
@@ -87,16 +124,18 @@ export default class Header extends React.Component {
                                     </div>
                                 </Scrollbars>
                             </div>
+                            </div>
+                            <div className="friends-icon opt-holder">
+                                <div className="icon-holder">
+                                    <img src="/images/header-icons/friends-notifi-icon.png" alt="friends notifi" />
+                                </div>
+                                <span className="notifi-num">2</span>
+                            </div>
+                            <ProfileImg />
                         </div>
-                        <div className="dropDown-holder">
-                            <img className="img-responsive pg-top-defalt-ico" src="/images/pg-home-v6_13.png" alt="" />
-                            <img className="img-responsive pg-top-hover-ico" src="/images/pg-newsfeed_05.png" alt="" />
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                  <ProfileImg />
                 </div>
+            </header>
 
         );
     }
