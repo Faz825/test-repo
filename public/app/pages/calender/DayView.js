@@ -5,7 +5,8 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import Session from '../../middleware/Session';
 import MiniCalender from './MiniCalender';
-import Button from '../../components/elements/Button';
+import DayEventsList from './DayEventsList';
+import DayTodosList from './DayTodosList';
 
 import { EditorState } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
@@ -82,19 +83,21 @@ export default class DayView extends Component {
                             </div>
                             <div className="row calender-input">
                                 <div className="col-sm-12">
-                                    <Editor
-                                        editorState={this.state.editorState}
-                                        onChange={this.onChange}
-                                        plugins={plugins}
-                                        ref={(element) => { this.editor = element; }}
-                                      />
-                                    <EmojiSuggestions />
-                                    <MentionSuggestions
-                                        onSearchChange={this.onSearchChange}
-                                        suggestions={this.state.suggestions}
-                                        mentionTrigger="#"
-                                    />
-                                    <div className="input" contenteditable="true" placeholder="Type in an Event or a To-do here use # to tag people, @ to set time of the event"></div>
+                                    <div className="input" >
+                                        <Editor
+                                            editorState={this.state.editorState}
+                                            onChange={this.onChange}
+                                            plugins={plugins}
+                                            ref={(element) => { this.editor = element; }}
+                                            placeholder="Type in an Event or a To-do here use # to tag people, @ to set time of the event"
+                                          />
+                                        <EmojiSuggestions />
+                                        <MentionSuggestions
+                                            onSearchChange={this.onSearchChange}
+                                            suggestions={this.state.suggestions}
+                                            mentionTrigger="#"
+                                        />
+                                    </div>
                                     <div className="calender-input-type">
                                         <p>Event</p>
                                     </div>
@@ -137,18 +140,7 @@ export default class DayView extends Component {
                                             <span>events</span>
                                         </div>
                                         <div className="events-list-area-content-title-hr"></div>
-                                        <ul className="list-unstyled events-list-area-content-list">
-                                            <li>
-                                                <i className="fa fa-circle" aria-hidden="true"></i>
-                                                <span>Custom event #1</span>
-                                                <i className="fa fa-trash-o pull-right" aria-hidden="true"></i>
-                                            </li>
-                                            <li>
-                                                <i className="fa fa-circle" aria-hidden="true"></i>
-                                                <span>Custom event #2</span>
-                                                <i className="fa fa-trash-o pull-right" aria-hidden="true"></i>
-                                            </li>
-                                        </ul>
+                                        <DayEventsList />
                                     </div>
                                 </div>
                             </div>
@@ -159,70 +151,7 @@ export default class DayView extends Component {
                                             <img src="/images/calender/icon-to-do.png" /><span>To-Do's</span>
                                         </div>
                                         <div className="to-do-list-area-content-title-hr"></div>
-                                        <ul className="list-unstyled to-do-list-area-content-list">
-                                            <li className="active">
-                                                <div className="checkbox-area">
-                                                    <input id="check1" name="check" value="check1" type="checkbox" />
-                                                    <label for="check1">
-                                                        <p>Meeting with web design team</p>
-                                                        <p>People in the event</p>
-                                                    </label>
-                                                </div>
-                                                <div className="time-wrapper pull-right">
-                                                    9.30 PM
-                                                </div>
-                                            </li>
-                                            <li className="active">
-                                                <input type="checkbox" id="checkbox-lbl-0" />
-                                                <label for="checkbox-lbl-0">
-                                                    <p>Meeting with web design team</p>
-                                                    <p>People in the event</p>
-                                                </label>
-                                                <div className="time-wrapper pull-right">
-                                                    9.30 PM
-                                                </div>
-                                            </li>
-                                            <li className="active">
-                                                <input type="checkbox" id="checkbox-lbl-1" />
-                                                <label for="checkbox-lbl-1">
-                                                    <p>Meeting with web design team</p>
-                                                    <p>People in the To-do: <span>Saad Ei Yamani, Ghali El Mouhandiz</span></p>
-                                                </label>
-                                                <div className="time-wrapper pull-right">
-                                                    9.30 PM
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <input type="checkbox" id="checkbox-lbl-2" />
-                                                <label for="checkbox-lbl-2">
-                                                    <p>Meeting with web design team</p>
-                                                    <p>People in the To-do: <span>Saad Ei Yamani, Ghali El Mouhandiz</span></p>
-                                                </label>
-                                                <div className="time-wrapper pull-right">
-                                                    9.30 PM
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <input type="checkbox" id="checkbox-lbl-3" />
-                                                <label for="checkbox-lbl-3">
-                                                    <p>Meeting with web design team</p>
-                                                    <p>People in the To-do: <span>Saad Ei Yamani, Ghali El Mouhandiz</span></p>
-                                                </label>
-                                                <div className="time-wrapper pull-right">
-                                                    9.30 PM
-                                                </div>
-                                            </li>
-                                            <li className="active">
-                                                <input type="checkbox" id="checkbox-lbl-4" />
-                                                <label for="checkbox-lbl-4">
-                                                    <p>Meeting with web design team</p>
-                                                    <p>People in the To-do: <span>Saad Ei Yamani, Ghali El Mouhandiz</span></p>
-                                                </label>
-                                                <div className="time-wrapper pull-right">
-                                                    9.30 PM
-                                                </div>
-                                            </li>
-                                        </ul>
+                                        <DayTodosList />
                                     </div>
                                 </div>
                             </div>
