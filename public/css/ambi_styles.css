@@ -10450,6 +10450,476 @@ header .notification-holder .profile-header-thumb {
   cursor: pointer;
 }
 
+
+/* line 2, ../sass/pages/_calender.scss */
+.calender-container {
+  background-color: #e9ebee;
+}
+/* line 4, ../sass/components/_calender_header.scss */
+.calender-container .calender-header .col-sm-2 {
+  padding-left: 0px;
+}
+/* line 8, ../sass/components/_calender_header.scss */
+.calender-container .calender-header .col-sm-5 {
+  text-align: center;
+}
+/* line 12, ../sass/components/_calender_header.scss */
+.calender-container .calender-header h2 {
+  margin-top: 33px;
+  font-size: 2.1875em;
+  font-family: Pantra-Bold;
+  text-transform: uppercase;
+  letter-spacing: -2px;
+  color: #000000;
+}
+/* line 21, ../sass/components/_calender_header.scss */
+.calender-container .calender-header .calender-type {
+  position: relative;
+  margin: 25px auto;
+  float: left;
+  cursor: pointer;
+  text-align: center;
+  width: 90px;
+  height: 40px;
+  background-color: #ffffff;
+  border: 1px solid #bcbfbf;
+  border-right: none;
+}
+/* line 33, ../sass/components/_calender_header.scss */
+.calender-container .calender-header .calender-type:nth-child(1) {
+  margin-left: 11%;
+  border-radius: 3px 0px 0px 3px;
+}
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+  /* line 39, ../sass/components/_calender_header.scss */
+  .calender-container .calender-header .calender-type:nth-child(1) {
+    margin-left: 0px;
+    border-radius: 3px 0px 0px 3px;
+  }
+}
+/* line 45, ../sass/components/_calender_header.scss */
+.calender-container .calender-header .calender-type:last-child {
+  border-right: 1px solid #bcbfbf;
+  border-radius: 0px 3px 3px 0px;
+}
+/* line 50, ../sass/components/_calender_header.scss */
+.calender-container .calender-header .calender-type h4 {
+  margin-top: 13px;
+  font-size: 0.75em;
+  font-family: 400;
+  color: #000000;
+  text-transform: uppercase;
+}
+/* line 58, ../sass/components/_calender_header.scss */
+.calender-container .calender-header .calender-type.active {
+  background-color: #989ba0;
+}
+/* line 61, ../sass/components/_calender_header.scss */
+.calender-container .calender-header .calender-type.active h4 {
+  color: #ffffff;
+}
+/* line 67, ../sass/components/_calender_header.scss */
+.calender-container .calender-header .search-folder {
+  position: relative;
+  float: right;
+  margin-top: 25px;
+  width: 150px;
+}
+/* line 73, ../sass/components/_calender_header.scss */
+.calender-container .calender-header .search-folder .inner-addon i {
+  position: absolute;
+  padding: 10px;
+  left: 29px;
+  font-weight: 400;
+  pointer-events: none;
+}
+/* line 80, ../sass/components/_calender_header.scss */
+.calender-container .calender-header .search-folder .inner-addon input {
+  border-radius: 7px;
+  padding-left: 58px;
+  height: 40px;
+  font-size: 0.875em;
+}
+/* line 10, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 {
+  padding-left: 0;
+}
+/* line 13, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view {
+  margin-top: 28px;
+  overflow: hidden;
+  box-shadow: 1px 0 12px -8px #000000;
+  background-color: #ffffff;
+}
+/* line 19, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .view-header {
+  padding: 21px 21px 16px;
+  overflow: hidden;
+  background-color: #f6f6f6;
+}
+/* line 24, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper {
+  float: left;
+  border: 1px solid #bcbfbf;
+  border-radius: 3px;
+  background-color: #e9ebee;
+}
+/* line 30, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper .date-nav {
+  float: left;
+}
+/* line 33, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper .date-nav i {
+  margin: 10px 12px 12px;
+}
+/* line 38, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper .date {
+  float: left;
+  border-left: 1px solid #bcbfbf;
+  border-right: 1px solid #bcbfbf;
+  background-color: #ffffff;
+}
+/* line 44, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper .date p {
+  margin: 9px 14px 12px;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  color: #000000;
+  font-weight: 500;
+}
+/* line 53, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .view-header .day-wrapper {
+  margin-left: 16px;
+  border: 1px solid #bcbfbf;
+  border-radius: 3px;
+  background-color: #ffffff;
+  float: left;
+}
+/* line 60, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .view-header .day-wrapper p {
+  margin: 10px 30px;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  color: #000000;
+  font-weight: 500;
+}
+/* line 70, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .view-header .calender-date p {
+  margin-top: 3px;
+  float: right;
+  text-transform: uppercase;
+  font-size: 1.3125em;
+  color: #000000;
+  font-weight: 400;
+}
+/* line 81, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid #d9d9d9;
+  border-bottom: 1px solid #d9d9d9;
+  background-color: #ffffff;
+}
+/* line 88, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
+  margin: 30px 70px;
+  overflow: hidden;
+  height: 45px;
+  font-size: 0.875em;
+  font-weight: 400;
+  color: #bebfbf;
+  outline: none;
+}
+/* line 97, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .input:empty:before {
+  content: attr(placeholder);
+}
+/* line 102, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .calender-input-type {
+  position: absolute;
+  top: 16px;
+  right: 35px;
+  width: auto;
+  height: auto;
+}
+/* line 109, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .calender-input-type p {
+  text-transform: uppercase;
+  color: #00a6ef;
+  font-size: 0.9375em;
+  font-weight: 400;
+}
+/* line 118, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu {
+  border-bottom: 1px solid #d9d9d9;
+  background-color: #f6f6f6;
+  padding: 8px 20px;
+}
+/* line 124, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper {
+  float: right;
+  overflow: hidden;
+}
+/* line 128, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .menu-ico {
+  margin: 3px 7px 0px 0px;
+  float: left;
+  text-align: center;
+  width: 35px;
+  height: 35px;
+  border: 1px solid #bcbfbf;
+  border-radius: 4px;
+}
+/* line 137, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .menu-ico:first-child {
+  padding: 2px;
+}
+/* line 141, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .menu-ico p {
+  text-transform: uppercase;
+  font-size: 1.25em;
+  color: #bcbfbf;
+}
+/* line 148, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper {
+  overflow: hidden;
+  float: left;
+  border: 1px solid #bcbfbf;
+  border-radius: 4px;
+}
+/* line 154, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper .btn-toggle {
+  padding: 10px;
+  float: left;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  font-weight: 500;
+  background-color: #3e3e3e;
+  color: #a6c649;
+  width: 90px;
+  height: 40px;
+}
+/* line 166, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper .btn-toggle:first-child {
+  border-right: 1px solid #bcbfbf;
+}
+/* line 170, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper .btn-toggle.active {
+  background-color: #ffffff;
+  color: #00a6ef;
+}
+/* line 175, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper .btn-toggle i {
+  margin-right: 5px;
+}
+/* line 181, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .btn-enter {
+  margin-left: 7px;
+  padding-top: 10px;
+  overflow: hidden;
+  float: left;
+  border: 1px solid #00a6ef;
+  border-radius: 4px;
+  background-color: #00a6ef;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #ffffff;
+  width: 110px;
+  height: 40px;
+}
+/* line 202, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content {
+  padding: 40px 70px;
+}
+/* line 207, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-title span {
+  font-family: "Work Sans", sans-serif;
+  color: #00a6ef;
+  font-size: 1.09375em;
+  font-weight: 700;
+  margin-bottom: 0;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+/* line 218, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-title-hr {
+  width: 100%;
+  border: 0;
+  border-top: 4px solid #f6f6f6;
+  margin-top: 15px;
+}
+/* line 227, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li {
+  padding: 20px 0px 20px 30px;
+  border-bottom: 1px solid #f6f6f6;
+}
+/* line 231, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i {
+  vertical-align: middle;
+  font-size: 1.125em;
+}
+/* line 236, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i.pull-right {
+  margin-top: 2px;
+}
+/* line 240, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li span {
+  font-family: "Work Sans", sans-serif;
+  color: #000000;
+  font-size: 0.875em;
+  vertical-align: middle;
+  font-weight: 400;
+}
+/* line 254, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content {
+  padding: 40px 70px;
+}
+/* line 258, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-title span {
+  font-family: "Work Sans", sans-serif;
+  color: #a6c649;
+  font-size: 1.09375em;
+  font-weight: 700;
+  margin-bottom: 0;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+/* line 269, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-title-hr {
+  width: 100%;
+  border: 0;
+  border-top: 4px solid #f6f6f6;
+  margin-top: 15px;
+}
+/* line 278, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li {
+  padding: 20px 30px;
+  border-bottom: 1px solid #d9d9d9;
+}
+/* line 282, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li .checkbox-area {
+  display: inline-block;
+}
+/* line 286, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li .checkbox label:before {
+  border-radius: 3px;
+}
+/* line 290, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li input[type=checkbox] {
+  display: none;
+}
+/* line 294, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li input[type=checkbox]:checked + label:before {
+  font-family: FontAwesome;
+  content: "";
+  font-size: 12px;
+  color: #fff;
+  text-align: center;
+  line-height: 16px;
+  background-color: #a6c649;
+  border-radius: 3px;
+}
+/* line 305, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label {
+  font-family: "Work Sans", sans-serif;
+  color: #000000;
+  font-size: 0.875em;
+  font-weight: 400;
+  margin-bottom: 0;
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+  padding-left: 25px;
+  margin-right: 15px;
+}
+/* line 317, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label:before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  position: absolute;
+  left: 0;
+  top: 4px;
+  background-color: transparent;
+  border: 1px solid #a6c649;
+  border-radius: 3px;
+}
+/* line 331, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p {
+  line-height: 19px;
+  font-size: 0.875em;
+  margin-bottom: 0;
+}
+/* line 336, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p:nth-child(1) {
+  color: #000000;
+  font-weight: 500;
+}
+/* line 341, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p:nth-child(2) {
+  color: #7f7f7f;
+  font-weight: 400;
+}
+/* line 345, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p:nth-child(2) span {
+  color: #00a6ef;
+}
+/* line 352, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li .time-wrapper {
+  color: #a6c649;
+  font-family: "Work Sans", sans-serif;
+  font-size: 0.875em;
+  vertical-align: middle;
+  font-weight: 400;
+  display: inline-block;
+  border: 1px solid #a6c649;
+  padding: 1px 16px;
+  border-radius: 5px;
+  margin-top: 7px;
+}
+/* line 366, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li.active {
+  background-color: #faf5ee;
+  border-bottom: 1px solid #d9d9d9;
+}
+/* line 370, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li.active label {
+  text-decoration: line-through;
+}
+/* line 373, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li.active label:before {
+  font-family: FontAwesome;
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  position: absolute;
+  left: 0;
+  top: 4px;
+  color: #ffffff;
+  background-color: #a6c649;
+  border: 1px solid #a6c649;
+  border-radius: 3px;
+  font-size: 12px;
+  text-align: center;
+  line-height: 16px;
+}
+/* line 393, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li.active .time-wrapper {
+  color: #989ba0;
+  border: 1px solid #989ba0;
+}
+/* line 407, ../sass/pages/_calender.scss */
+.calender-container .calender-body .col-sm-3 .calender-grid {
+  margin-top: 25px;
+}
+
 footer {
   position: fixed;
   width: 100%;

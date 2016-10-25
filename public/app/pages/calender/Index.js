@@ -36,20 +36,40 @@ export default class Index extends React.Component{
     render() {
 
         return (
-            <div id="pg-profile-page" className="loggedUserView pg-page">
-                <div className="row row-clr">
-                    <div className="container-fluid">
-                        <div className="profile-content-container" id="middle-content-wrapper">
-                            <div className="col-xs-12">
-                                <div>
-                                    <h1>Calender</h1>
-                                    {this.relativeView()}
+            <section className="calender-container">
+                <div className="container">
+                    <section className="calender-header">
+                        <div className="row">
+                            <div className="col-sm-2">
+                                <h2>Calender</h2>
+                            </div>
+                            <div className="col-sm-5 col-sm-offset-1">
+                                <div className="calender-type active">
+                                    <h4>Day</h4>
+                                </div>
+                                <div className="calender-type">
+                                    <h4>Week</h4>
+                                </div>
+                                <div className="calender-type">
+                                    <h4>Month</h4>
+                                </div>
+                                <div className="calender-type">
+                                    <h4>Year</h4>
+                                </div>
+                            </div>
+                            <div className="col-sm-4">
+                                <div className="search-folder">
+                                    <span className="inner-addon">
+                                        <i className="fa fa-search"></i>
+                                        <input type="text" className="form-control" placeholder="Search"/>
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
+                    {this.relativeView()}
                 </div>
-            </div>
+            </section>
         );
     }
 }

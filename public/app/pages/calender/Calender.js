@@ -38,7 +38,7 @@ export default class Calender extends React.Component {
 
     render() {
         return(
-            <div className="calender-container">
+            <div className="calender-box">
                 <div className="header">
                     <i className="fa fa-angle-left" onClick={this.previous.bind(this)}></i>
                     {this.renderMonthNameLabel()}
