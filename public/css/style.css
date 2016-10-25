@@ -5239,17 +5239,17 @@ textarea{
 	display: block;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
-	background: white;
-	width: 300px;
+	/*background: white;*/
+	width: 1000px;
 	border: solid 1px #CCC;
 	margin-bottom: 10px;
 }
 .calender-container > div.header {
 	float: left;
 	width: 100%;
-	background: #2875C7;
+	background: transparent !important;
 	height: 40px;
-	color: white;
+	/*color: white;*/
 }
 .calender-container > div.header > * {
 	height: 40px;
@@ -5272,13 +5272,13 @@ textarea{
 	text-align: left;
 }
 .calender-container > div.header > i.fa-angle-right {
-	text-align: right;
+	text-align: left;
 	margin-left: -40px;
 }
 .calender-container > div.header > span {
 	float: left;
 	width: 100%;
-	font-weight: bold;
+	/*font-weight: bold;*/
 	text-transform: uppercase;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -5286,7 +5286,19 @@ textarea{
 	margin-left: -40px;
 	text-align: center;
 	padding-right: 40px;
-	color: inherit;
+	color: #273859;
+}
+.calender-container > div.header > span.middle-month {
+	text-align: center;
+	width: 800px;
+	padding-right: 132px;
+	font-size: 20px;
+}
+.calender-container > div.header > span.smaller-month {
+	text-align: left;
+	width: 180px;
+	font-size: 10px;
+	padding-right: 66px;
 }
 .calender-container > div.week {
 	float: left;
@@ -5302,15 +5314,20 @@ textarea{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	border-left: solid 1px #CCC;
-	font-size: 0.75em;
-	text-align: center;
-	height: 30px;
+	font-size: 1.5em;
+	text-align: left;
+	padding-left: 1.9%;
+	height: 100px;
 	line-height: 30px !important;
 	display: inline-block;
 	vertical-align: middle;
 	background: white;
 	cursor: pointer;
-	color: black;
+	color: #273859;
+}
+.calender-container > div.week > span.day-names {
+	font-size: 1.05em !important;
+	height: 30px !important;
 }
 .calender-container > div.week > span.day:first-child {
 	border-left: none;
@@ -5326,8 +5343,7 @@ textarea{
 	color: white;
 }
 .calender-container > div.week.names > span {
-	color: #2875C7;
-	font-weight: bold;
+	color: #2ea8d0;
 }
 
 /**

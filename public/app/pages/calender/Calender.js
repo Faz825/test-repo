@@ -30,7 +30,9 @@ export default class Calender extends React.Component {
     }
 
     select(day) {
-        this.props.selected = day.date;
+        console.log(day.date);
+        alert("selected : " + day.date._d);
+        //this.props.selected = day.date;
         this.forceUpdate();
     }
 
@@ -39,8 +41,9 @@ export default class Calender extends React.Component {
             <div className="calender-container">
                 <div className="header">
                     <i className="fa fa-angle-left" onClick={this.previous.bind(this)}></i>
-                    {this.renderMonthLabel()}
+                    {this.renderMonthNameLabel()}
                     <i className="fa fa-angle-right" onClick={this.next.bind(this)}></i>
+                    {this.renderMonthLabel()}
                 </div>
                 <DayNames />
                 {this.renderWeeks()}
@@ -67,7 +70,13 @@ export default class Calender extends React.Component {
 
     renderMonthLabel() {
         return(
-            <span>{this.state.month.format("MMMM, YYYY")}</span>
+            <span className="middle-month">{this.state.month.format("MMMM, YYYY")}</span>
+        );
+    }
+
+    renderMonthNameLabel() {
+        return(
+            <span className="smaller-month">{this.state.month.format("MMMM").toString}</span>
         );
     }
 }
