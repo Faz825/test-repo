@@ -153,6 +153,7 @@ CalenderEventSchema.statics.get = function (filter, fields, options, callBack) {
 };
 
 /**
+ *
  * Get Calender events, todos, Tasks for the given period sorted by created date
  * @param criteria
  * @param callBack
@@ -162,14 +163,15 @@ CalenderEventSchema.statics.getSortedCalenderItems = function(criteria,callBack)
     var _this = this;
 
     _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
+
         if(!err){
-            callBack({
+            callBack(null, {
                 status:200,
-                notebooks:resultSet
+                events:resultSet
             });
         } else {
             console.log("Server error while getSortedCalenderItems --------");
-            callBack({status:400,error:err});
+            callBack({status:400,error:err}, null);
         }
     });
 
