@@ -5332,6 +5332,7 @@ textarea{
 	height: auto;
 	font-size: 1em;
 	text-align: center;
+	padding-left: 0px; 
 }
 
 .calender-container > div.week > span.day-names {
