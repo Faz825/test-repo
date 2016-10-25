@@ -61,6 +61,36 @@ var CalenderController = {
             }
         });
     }
+
+    /**
+     * Return all events of the loggedin user.
+     * @param req
+     * @param res
+     * @return Json
+     */
+    getUserSuggestion : function(req,res) {
+
+        var CurrentSession = Util.getCurrentSession(req);
+        var User = require('mongoose').model('User');
+        var UserId = CurrentSession.id;
+        var criteria = {
+            user_id : UserId,
+            status : 3
+        };
+
+        User.getConnectionUsers(criteria,function(err, result) {
+            
+            var outPut ={};
+            if(err) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.COMMENT_POST_ID_EMPTY, Alert.ERROR);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['users'] = result.friends;
+                res.status(200).send(outPut);
+            }
+        });
+    },
 };
 
 module.exports = CalenderController;

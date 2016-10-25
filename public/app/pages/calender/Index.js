@@ -15,21 +15,21 @@ export default class Index extends React.Component{
     constructor(props) {
 
         super(props);
-        this.state = { view : 'month' };
+        this.state = { dafaultView : 'day' }; // curently assuming the dafault view is DayView
         this.relativeView = this.relativeView.bind(this);
     }
 
     relativeView() {
 
-        switch(this.state.view) {
+        switch(this.state.dafaultView) {
             case 'week':
                 return (<WeekView/>);
             case 'day':
                 return  (<DayView/>);
-            case 'calender':
+            case 'month':
                 return  (<MonthView/>);
             default:
-                return (<MonthView/>);
+                return (<DayView/>);
         }
     }
     
