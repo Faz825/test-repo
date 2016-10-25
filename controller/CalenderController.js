@@ -103,7 +103,7 @@ var CalenderController = {
                 res.status(200).send(outPut);
             }
         });
-    }
+    },
 
     /**
      * Return all events of the loggedin user.
@@ -133,7 +133,7 @@ var CalenderController = {
                 res.status(200).send(outPut);
             }
         });
-    },
+    }
 };
 
 module.exports = CalenderController;
