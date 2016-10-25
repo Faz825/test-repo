@@ -51,8 +51,9 @@ var CalenderEventSchema = new Schema({
         type : Date
     },
 
-    end_date_time : {
-        type : Date
+    event_time : {
+        type : String,
+        default : null
     },    
 
     created_at : {
@@ -65,17 +66,33 @@ var CalenderEventSchema = new Schema({
 
 },{collection:"calender_events"});
 
+
+CalenderEventSchema.pre('save', function(next){
+    var now = new Date();
+    this.updated_at = now;
+    if ( !this.created_at ) {
+        this.created_at = now;
+    }
+    next();
+});
+
 /**
  * Add CalenderEvent to the system
  * @param EventData
  * @param callBack
  * @return Json
  */
-CalenderEventSchema.statics.add = function (eventData,callBack) {
+CalenderEventSchema.statics.addNew = function (eventData,callBack) {
 
     var calenderEvent = new this();
-    calenderEvent.type = (eventData.description ? eventData.description : 'No title');
+
+    calenderEvent.user_id = eventData.user_id;
+    calenderEvent.description = (eventData.description ? eventData.description : 'No title');
+    calenderEvent.status = this.CalenderStatus.PENDING;
     calenderEvent.type = (eventData.type ? eventData.type : 'event');
+    calenderEvent.start_date_time = eventData.startDate;
+    calenderEvent.event_time = eventData.event_time;
+
     calenderEvent.save(function(err,resultSet){
         if(err){
             console.log(err);
