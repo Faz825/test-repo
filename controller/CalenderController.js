@@ -231,6 +231,54 @@ var CalenderController = {
     },
 
     /**
+     * Update events for a given id
+     * @param req
+     * @param res
+     * @return Json
+     */
+    updateEvent: function(req,res) {
+
+        var CurrentSession = Util.getCurrentSession(req);
+        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var moment = require('moment');
+        var _async = require('async');
+
+        var event_id = req.query.id;
+        event_id = Util.toObjectId(event_id);
+        var user_id = Util.toObjectId(CurrentSession.id);
+
+        _async.waterfall([
+            function getEvents(callBack){
+                CalenderEvent.getEventById(event_id,function(resultSet){
+                    callBack(null, resultSet);
+                });
+            },
+            function updateEvent(resultSet, callBack){
+                var criteria={
+                    _id:event_id
+                };
+                var updateData = {
+                    start_date_time:moment(resultSet.start_date_time).add(1,"day").format('YYYY-MM-DD')
+                };
+                console.log(updateData);
+                CalenderEvent.updateEvent(criteria, updateData,function(res) {
+                    callBack(null,res);
+                });
+            }
+        ],function(err, resultSet){
+            var outPut ={};
+            if(err) {
+                outPut['status'] = ApiHelper.getMessage(400, err);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['event'] = resultSet.event;
+                res.status(200).send(outPut);
+            }
+        });
+    },
+
+    /**
      * Return all events of the loggedin user.
      * @param req
      * @param res
