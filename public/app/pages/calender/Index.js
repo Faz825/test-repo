@@ -57,9 +57,6 @@ export default class Index extends React.Component{
                                 <div className={ this.state.current == 'month' ? 'calender-type active' : 'calender-type'} view="month" onClick={() => this.setView('month')} >
                                     <h4>Month</h4>
                                 </div>
-                                <div className={ this.state.current == 'year' ? 'calender-type active' : 'calender-type'} view="year" onClick={() => this.setView('year')} >
-                                    <h4>Year</h4>
-                                </div>
                             </div>
                             <div className="col-sm-4">
                                 <div className="search-folder">
