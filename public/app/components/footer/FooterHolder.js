@@ -164,7 +164,7 @@ export default class FooterHolder extends React.Component{
                                 </a>
                             </div>
                             <div className="notebooks nav-item">
-                                <a href="/notes">
+                                <a href="#">
                                     <div className="icon-holder">
                                         <img src="/images/nav-icons/note-icon.png" alt="notebooks" />
                                     </div>
@@ -188,7 +188,7 @@ export default class FooterHolder extends React.Component{
                                 </a>
                             </div>
                             <div className="news nav-item">
-                                <a href="/news">
+                                <a href="#">
                                     <div className="icon-holder">
                                         <img src="/images/nav-icons/news-icon.png" alt="news" />
                                     </div>
@@ -196,7 +196,7 @@ export default class FooterHolder extends React.Component{
                                 </a>
                             </div>
                             <div className="interests nav-item">
-                                <a href="/interests">
+                                <a href="#">
                                     <div className="icon-holder">
                                         <img src="/images/nav-icons/interest-ison.png" alt="interests" />
                                     </div>
