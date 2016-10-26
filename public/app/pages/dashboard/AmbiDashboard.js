@@ -29,9 +29,11 @@ export default class AmbiDashboard extends React.Component {
 			greating = 'Good Evening';
 		}
 
-		console.log(this.day);
-		console.log(this.month);
-		console.log(this.date);
+		let imgUrl = "images/bodyBg.png";
+		const wallpaper = {
+				backgroundImage: 'url(' + imgUrl + ')'
+			};
+
 		return (
 			<section className="dashboard-container">
 	            <div className="container">
@@ -41,7 +43,7 @@ export default class AmbiDashboard extends React.Component {
 	                        <p className="time-text">10:20</p>
 	                    </section>
 	                    <section className="greeting-holder">
-	                        <p className="greeting-text">{greating}, {session.first_name + " " + session.last_name}!</p>
+	                        <p className="greeting-text">{greating}, {session.first_name}!</p>
 	                    </section>
 	                    <section className="main-task-holder">
 	                        <div className="inner-wrapper">
@@ -55,8 +57,16 @@ export default class AmbiDashboard extends React.Component {
 	                    </section>
 	                </div>
 	            </div>
+		        <section className="weather-holder">
+		            <div className="weather-icon">
+		                <img src="/images/weather-icons/weather-icon.png" alt="rainy" className="img-reponsive" />
+		            </div>
+		            <p className="weather-text">64°F</p>
+		            <p className="weather-location">San francisco</p>
+		        </section>
+		        <span className="widget-icon"></span>
+		        <div className="wallpaper-holder" style={wallpaper}></div>
 	        </section>
-
 		);
 	}
 }

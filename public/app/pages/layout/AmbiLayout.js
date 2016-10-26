@@ -1,16 +1,18 @@
 import React from 'react';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import SignupIndex from '../signup/Index';
 import SigninHeader from '../../components/header/SigninHeader';
+import SidebarNav from '../../components/sidebarNav/SidebarNav';
+import FooterHolder from '../../components/footer/FooterHolder';
+import Session  from '../../middleware/Session';
 import AmbiDashboard  from '../dashboard/AmbiDashboard';
 import InCallPane  from '../chat/InCallPane';
 import QuickChatHandler from '../chat/QuickChatHandler';
 import WorkMode from '../workmode/Index';
-import FooterHolder from '../../components/footer/FooterHolder';
 import NotificationPop from '../notifications/NotificationPop';
 import Moment from 'moment';
 import PubSub from 'pubsub-js';
 import Chat from '../../middleware/Chat';
-import Session  from '../../middleware/Session';
 
 export default class AmbiLayout extends React.Component{
 	constructor(props){
@@ -201,48 +203,33 @@ export default class AmbiLayout extends React.Component{
     }
 
 	render(){
-		let imgUrl = "images/bodyBg.png";
-		const wallpaper = {
-				backgroundImage: 'url(' + imgUrl + ')'
-			};
 		return(
-			<div>
-				<div className="app-holder">
-					<SigninHeader quickChat={this.loadQuickChat.bind(this)} />
-					<section className="body-container">
-			      		{this.props.children || <AmbiDashboard />}
-					</section>
-					<InCallPane/>
-					{
-	                    this.state.isShowingModal &&
-	                    <ModalContainer zIndex={9999}>
-	                        <ModalDialog width="65%" className="workmode-popup-holder">
-	                            <div className="workmode-popup-wrapper">
-	                                <WorkMode />
-	                                <i className="fa fa-times close-icon" aria-hidden="true" onClick={this.handleClose.bind(this)}></i>
-	                            </div>
-	                        </ModalDialog>
-	                    </ModalContainer>
-	                }
-	                {
-	                    (this.state.notifiType)?
-	                        <NotificationPop notifiType={this.state.notifiType} notifyCount={this.state.notificationCount} onNotifiClose={this.onNotifiClose.bind(this)}/>
-	                    :
-	                        null
-	                }
-	                <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)}/>
-	                <section className="weather-holder">
-			            <div className="weather-icon">
-			                <img src="/images/weather-icons/weather-icon.png" alt="rainy" className="img-reponsive" />
-			            </div>
-			            <p className="weather-text">64°F</p>
-			            <p className="weather-location">San francisco</p>
-			        </section>
-			        <span className="settings-icon"></span>
-			        <span className="widget-icon"></span>
-	                <FooterHolder blockBottom={this.state.rightBottom} blockSocialNotification={this.state.socialNotifications} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)} onUpdateNotifiPopupCount={this.updateNotificationPopCount.bind(this)}/>
-				</div>
-				<div className="wallpaper-holder" style={wallpaper}></div>
+			<div className="app-holder">
+				<SigninHeader quickChat={this.loadQuickChat.bind(this)} />
+				<section className="body-container">
+		      		{this.props.children || <AmbiDashboard />}
+				</section>
+				<InCallPane/>
+				{
+                    this.state.isShowingModal &&
+                    <ModalContainer zIndex={9999}>
+                        <ModalDialog width="65%" className="workmode-popup-holder">
+                            <div className="workmode-popup-wrapper">
+                                <WorkMode />
+                                <i className="fa fa-times close-icon" aria-hidden="true" onClick={this.handleClose.bind(this)}></i>
+                            </div>
+                        </ModalDialog>
+                    </ModalContainer>
+                }
+                {
+                    (this.state.notifiType)?
+                        <NotificationPop notifiType={this.state.notifiType} notifyCount={this.state.notificationCount} onNotifiClose={this.onNotifiClose.bind(this)}/>
+                    :
+                        null
+                }
+                <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)}/>
+                <FooterHolder blockBottom={this.state.rightBottom} blockSocialNotification={this.state.socialNotifications} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)} onUpdateNotifiPopupCount={this.updateNotificationPopCount.bind(this)}/>
+                <span className="settings-icon"></span>
 			</div>
 		);
 	}
