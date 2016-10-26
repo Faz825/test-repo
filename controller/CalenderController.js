@@ -207,13 +207,27 @@ var CalenderController = {
 
         var CurrentSession = Util.getCurrentSession(req);
         var CalenderEvent = require('mongoose').model('CalenderEvent');
-        var UserId = CurrentSession.id;
         var moment = require('moment');
 
-        var month = req.query.day;
-        var user_id = Util.toObjectId(UserId);
+        var day = req.query.day;
+        var user_id = Util.toObjectId(CurrentSession.id);
+        var startTimeOfDay = moment(day).format('YYYY-MM-DD'); //format the given date as mongo date object
+        var endTimeOfDay = moment(day).add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
 
-        console.log(" ERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ");
+        var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, status: 1, user_id: user_id};
+
+        CalenderEvent.getSortedCalenderItems(criteria,function(err, result) {
+
+            var outPut ={};
+            if(err) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_WEEK_EMPTY, Alert.ERROR);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['events'] = result.events;
+                res.status(200).send(outPut);
+            }
+        });
     },
 
     /**
