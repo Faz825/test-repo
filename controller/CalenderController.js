@@ -39,17 +39,66 @@ var CalenderController = {
      */
     addEvent: function(req,res) {
 
-        var CurrentSession = Util.getCurrentSession(req);
-        var CalenderEvent = require('mongoose').model('CalenderEvent');
-        var UserId = CurrentSession.id;
+        var _async = require('async'),
+            CalenderEvent = require('mongoose').model('CalenderEvent'),
+            UserId = Util.getCurrentSession(req).id,
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            notifyUsers = req.params.sharedUserd; //this should be an array
 
-        var eventData = {
-            description : req.params.description,
-            type: req.params.type
-        }
+        _async.waterfall([
 
-        CalenderEvent.add(eventData, function(err, result) {
-            
+            function addNewToDb(callBack){
+                var eventData = {
+                    user_id:UserId,
+                    description : req.params.description,
+                    type: req.params.type,
+                    startDate: req.params.apply_date,
+                    event_time: req.params.event_time
+                }
+
+                CalenderEvent.addNew(eventData, function(err, result) {
+                    callBack(null,result);
+                });
+            },
+            function addNotification(callBack) {
+
+                if(notifyUsers.length > 0){
+
+                    var _data = {
+                        sender:UserId,
+                        notification_type:Notifications.SHARE_CALENDER,
+                    }
+                    Notification.saveNotification(_data, function(res){
+                        if(res.status == 200){
+                            callBack(null,res.result._id);
+                        }
+
+                    });
+
+                } else{
+                    callBack(null);
+                }
+            },
+            function notifyingUsers(notification_id, callBack) {
+
+                if(typeof notification_id != 'undefined' && notifyUsers.length > 0){
+
+                    var _data = {
+                        notification_id:notification_id,
+                        recipients:notifyUsers
+                    };
+                    NotificationRecipient.saveRecipients(_data, function(res){
+                        callBack(null);
+                    })
+
+                } else{
+                    callBack(null);
+                }
+            }
+
+        ], function(err, resultSet){
+
             var outPut ={};
             if(err) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.COMMENT_POST_ID_EMPTY, Alert.ERROR);
@@ -59,7 +108,9 @@ var CalenderController = {
                 outPut['events'] = result.life_events;
                 res.status(200).send(outPut);
             }
+
         });
+
     },
 
     /**
