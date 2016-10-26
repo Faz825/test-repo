@@ -9,14 +9,13 @@ import MonthView from './MonthView';
 import WeekView from './WeekView';
 import DayView from './DayView';
 import CalenderView from './MonthView';
-import ViewButton from './ViewButton';
 
 export default class Index extends React.Component{
     
     constructor(props) {
 
         super(props);
-        this.state = { defaultView : 'day' }; // curently assuming the dafault view is DayView
+        this.state = { defaultView : 'day', current : 'day' }; // curently assuming the dafault view is DayView
         this.relativeView = this.relativeView.bind(this);
     }
 
@@ -33,13 +32,12 @@ export default class Index extends React.Component{
                 return (<DayView/>);
         }
     }
+
+    setView(view) {
+        this.setState({ defaultView: view, current : view});
+    }
     
     render() {
-
-        // const {
-        //     dafaultView,
-        //     current
-        //     }=this.state;
 
         return (
             <section className="calender-container">
@@ -50,10 +48,18 @@ export default class Index extends React.Component{
                                 <h2>Calender</h2>
                             </div>
                             <div className="col-sm-5 col-sm-offset-1">
-                                <ViewButton view="day" value="Day" />
-                                <ViewButton view="week" value="Week" />
-                                <ViewButton view="month" value="Month" />
-                                <ViewButton view="year" value="Year" />
+                                <div className={ this.state.current == 'day' ? 'calender-type active' : 'calender-type'} view="day" onClick={() => this.setView('day')} >
+                                    <h4>Day</h4>
+                                </div>
+                                <div className={ this.state.current == 'week' ? 'calender-type active' : 'calender-type'} view="week" onClick={() => this.setView('week')} >
+                                    <h4>Week</h4>
+                                </div>
+                                <div className={ this.state.current == 'month' ? 'calender-type active' : 'calender-type'} view="month" onClick={() => this.setView('month')} >
+                                    <h4>Month</h4>
+                                </div>
+                                <div className={ this.state.current == 'year' ? 'calender-type active' : 'calender-type'} view="year" onClick={() => this.setView('year')} >
+                                    <h4>Year</h4>
+                                </div>
                             </div>
                             <div className="col-sm-4">
                                 <div className="search-folder">

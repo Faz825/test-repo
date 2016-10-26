@@ -147,6 +147,25 @@ var CalenderController = {
     },
 
     /**
+     * Return all events of a given day
+     * @param req
+     * @param res
+     * @return Json
+     */
+    getEventsForSpecificDay: function(req,res) {
+
+        var CurrentSession = Util.getCurrentSession(req);
+        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var UserId = CurrentSession.id;
+        var moment = require('moment');
+
+        var month = req.query.day;
+        var user_id = Util.toObjectId(UserId);
+
+        console.log(" ERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ");
+    },
+
+    /**
      * Return all events of the loggedin user.
      * @param req
      * @param res

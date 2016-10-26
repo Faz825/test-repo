@@ -140,7 +140,7 @@ export default class DayView extends Component {
                                             <span>events</span>
                                         </div>
                                         <div className="events-list-area-content-title-hr"></div>
-                                        <DayEventsList />
+                                        <DayEventsList day={moment().startOf("day")} />
                                     </div>
                                 </div>
                             </div>
