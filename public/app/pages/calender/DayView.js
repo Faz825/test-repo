@@ -34,14 +34,15 @@ export default class DayView extends Component {
         this.state = {
             editorState : EditorState.createEmpty(),
             suggestions : mentions,
-            currentDay : moment(new Date()).format('L')
+            currentDay : moment(new Date()).format('L'),
+            defaultType : 'event'
         };
 
         this.addEvent = this.addEvent.bind(this);
         this.onChange = this.onChange.bind(this);
         this.nextDay = this.nextDay.bind(this);
         this.focus = this.focus.bind(this);
-
+        this.changeType = this.changeType.bind(this);
 
         this.onSearchChange = ({ value }) => {
             this.setState({
@@ -76,6 +77,10 @@ export default class DayView extends Component {
 
     previousDay() {
         this.setState({currentDay : moment(this.state.currentDay).add(-1, 'days').format('L')});
+    }
+
+    changeType(eventType) {
+        this.setState({defaultType : eventType});
     }
 
     render() {
@@ -124,7 +129,7 @@ export default class DayView extends Component {
                                             />
                                         </div>
                                         <div className="calender-input-type">
-                                            <p>Event</p>
+                                            <p>{this.state.defaultType}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -144,10 +149,10 @@ export default class DayView extends Component {
                                                 <p><i className="fa fa-at" aria-hidden="true"></i></p>
                                             </div>
                                             <div className="toggle-wrapper">
-                                                <div className="btn-toggle active">
+                                                <div className={this.state.defaultType == 'event' ? 'btn-toggle active' : 'btn-toggle'} eventType="event" onClick={() => this.changeType('event')} >
                                                     <i className="fa fa-calendar" aria-hidden="true"></i> Event
                                                 </div>
-                                                <div className="btn-toggle">
+                                                <div className={this.state.defaultType == 'todo' ? 'btn-toggle active' : 'btn-toggle'} eventType="todo" onClick={() => this.changeType('todo')} >
                                                     <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
                                                 </div>
                                             </div>

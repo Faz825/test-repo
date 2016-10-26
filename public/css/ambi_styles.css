@@ -10946,7 +10946,6 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input {
   position: relative;
-  overflow: hidden;
   border-top: 1px solid #d9d9d9;
   border-bottom: 1px solid #d9d9d9;
   background-color: #ffffff;
