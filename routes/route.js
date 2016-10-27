@@ -288,6 +288,7 @@ router.get('/calender/get-all-week', CalenderController.getAllForSpecificWeek);
 router.get('/calender/get-all-day', CalenderController.getEventsForSpecificDay);
 router.post('/calender/update', CalenderController.updateEvent);
 router.post('/calender/add-event', CalenderController.addEvent);
+router.post('/calender/get-events-for-specific-day', CalenderController.getEventsForSpecificDay);
 
 /**
  * API Routes that need to authenticate separately

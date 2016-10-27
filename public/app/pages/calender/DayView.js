@@ -16,8 +16,6 @@ import mentions from './mentions';
 
 import {convertFromRaw, convertToRaw} from 'draft-js';
 
-import {stateToHTML} from 'draft-js-export-html';
-
 // emoji plugin
 const emojiPlugin = createEmojiPlugin();
 const { EmojiSuggestions } = emojiPlugin;
@@ -38,7 +36,8 @@ export default class DayView extends Component {
             editorState : EditorState.createEmpty(),
             suggestions : mentions,
             currentDay : moment().format('L'),
-            defaultType : 'event'
+            defaultType : 'event',
+            events : "DEFAULT EVENTSSSSSSSSSSS"
         };
 
         this.addEvent = this.addEvent.bind(this);
@@ -67,12 +66,16 @@ export default class DayView extends Component {
         const Editor = this.state.editorState;
         const contentState = this.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
+        
+        var split = new Date().toString().split(" ");
+        const timeZoneFormatted = split[split.length - 2] + " " + split[split.length - 1];
+
         const postData = {
             description : editorContentRaw,
             type : 'TODO',
             apply_date : moment().format('MM DD YYYY HH:MM'),
             event_time : moment().format('HH:MM'),
-            event_timezone : 'Asia/Colombo',
+            event_timezone : timeZoneFormatted,
             sharedUserd : []
         };
 
@@ -81,12 +84,40 @@ export default class DayView extends Component {
             method: "POST",
             dataType: "JSON",
             data: postData
-        }).done( function (data, text) {
+        }).done(function (data, text) {
             if(data.status.code == 200){
-                // this.setState({isShowingModal: false});
+                this.setState({events: "Events AFTER AJAX"});
                 // this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
             }
         }.bind(this));
+    }
+
+    componentDidMount() {
+        this.loadEvents();
+    }
+
+    loadEvents() {
+
+        let _this = this;
+        let day = this.props.day;
+        $.ajax({
+            url: '/calender/get-events-for-specific-day/',
+            method: "POST",
+            data : { day : day }, 
+            dataType: "JSON",
+            success: function (data, text) {
+                console.log(data);
+                if (data.status.code == 200) {
+                    this.setState({events: data.events});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+
     }
 
     nextDay() {
@@ -188,7 +219,7 @@ export default class DayView extends Component {
                                             <span>events</span>
                                         </div>
                                         <div className="events-list-area-content-title-hr"></div>
-                                        <DayEventsList day={moment().startOf("day")} />
+                                        <DayEventsList events={this.state.events} day={moment().startOf("day")} />
                                     </div>
                                 </div>
                             </div>

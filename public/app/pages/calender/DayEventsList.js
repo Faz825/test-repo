@@ -41,9 +41,16 @@ export default class DayEventsList extends React.Component {
     }
 
     render() {
+
+        var rows = [];
+        const { events } = this.props;
+        // events.forEach(function(event) {
+        //     rows.push(<DayEventListItem description={event.start_date_time} />);
+        // });
+
         return(
             <ul className="list-unstyled events-list-area-content-list">
-                <DayEventListItem />
+                // {rows}
             </ul>
         );
     }
