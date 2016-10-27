@@ -285,6 +285,8 @@ router.get('/folders/get-all', FolderController.getFolders);
 
 router.get('/calender/get-all-month', CalenderController.getAllForSpecificMonth);
 router.get('/calender/get-all-week', CalenderController.getAllForSpecificWeek);
+router.get('/calender/get-all-day', CalenderController.getEventsForSpecificDay);
+router.post('/calender/update', CalenderController.updateEvent);
 
 /**
  * API Routes that need to authenticate separately

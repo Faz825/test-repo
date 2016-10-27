@@ -110,19 +110,46 @@ CalenderEventSchema.statics.addNew = function (eventData,callBack) {
  * @param callBack
  * @return Json
  */
-CalenderEventSchema.statics.update = function (filter, value, callBack) {
+CalenderEventSchema.statics.updateEvent = function (filter, value, callBack) {
 
-    var calenderEvent = new this();
+    var _this = this;
     var options = { multi: true };
 
-    calenderEvent.update(filter, value, options, function(err, update) {
+    _this.update(filter, value, options, function(err, update) {
         if(err){
             console.log(err);
             callBack({status:400,error:err});
         }else{
-            callBack({status:200,count:update});
+            callBack({status:200,event:update});
         }
     });
+};
+
+/**
+ * Get Event By Id
+ * @param Json filter
+ * @param Json value
+ * @param callBack
+ * @return Json
+ */
+CalenderEventSchema.statics.getEventById = function(id,callBack){
+
+    var _this = this;
+
+    _this.findOne({_id: id}).exec(function (err, resultSet) {
+        if (!err) {
+            if (resultSet == null) {
+                callBack(null);
+                return;
+            }
+
+            callBack(resultSet);
+        } else {
+            console.log(err)
+            callBack({status: 400, error: err})
+        }
+    });
+
 };
 
 /**
