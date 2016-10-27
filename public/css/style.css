@@ -3941,13 +3941,13 @@ textarea{
 	color: #fff;
 }
 
-.popup-holder{
+/* .popup-holder{
 	margin-left: 20px !important;
 	max-width: 500px;
 	width: 500px;
 	background: #e8eef2;
 	border-radius: 5px;
-}
+} */
 
 .popup-holder.add-new{
 	margin-top: 20px !important;
