@@ -54,7 +54,12 @@ var CalenderEventSchema = new Schema({
     event_time : {
         type : String,
         default : null
-    },    
+    },  
+
+    time_zone : {
+        type : String,
+        default : null
+    },  
 
     created_at : {
         type : Date
@@ -85,14 +90,13 @@ CalenderEventSchema.pre('save', function(next){
 CalenderEventSchema.statics.addNew = function (eventData,callBack) {
 
     var calenderEvent = new this();
-
+    console.log(" MODEL 1 ");
     calenderEvent.user_id = eventData.user_id;
     calenderEvent.description = (eventData.description ? eventData.description : 'No title');
-    calenderEvent.status = this.CalenderStatus.PENDING;
-    calenderEvent.type = (eventData.type ? eventData.type : 'event');
-    calenderEvent.start_date_time = eventData.startDate;
+    calenderEvent.status = CalenderStatus.PENDING;
+    calenderEvent.type = (CalenderTypes.hasOwnProperty(eventData.type) ? CalenderTypes.eventData.type : 1);
+    calenderEvent.start_date_time = eventData.start_date;
     calenderEvent.event_time = eventData.event_time;
-
     calenderEvent.save(function(err,resultSet){
         if(err){
             console.log(err);

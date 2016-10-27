@@ -39,13 +39,16 @@ var CalenderController = {
      */
     addEvent: function(req,res) {
 
+        console.log("ADD Event is CALLED");
+        console.log(req.params);
+        var CurrentSession = Util.getCurrentSession(req);
         var _async = require('async'),
             CalenderEvent = require('mongoose').model('CalenderEvent'),
             UserId = Util.getCurrentSession(req).id,
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient'),
-            notifyUsers = req.params.sharedUserd; //this should be an array
-
+            // notifyUsers = req.params.sharedUserd; //this should be an array
+            notifyUsers = []; // TODO: this will be removed after mentions issue will be fixed
         _async.waterfall([
 
             function addNewToDb(callBack){
@@ -53,47 +56,45 @@ var CalenderController = {
                     user_id:UserId,
                     description : req.params.description,
                     type: req.params.type,
-                    startDate: req.params.apply_date,
+                    start_date: req.params.apply_date,
                     event_time: req.params.event_time
                 }
 
-                CalenderEvent.addNew(eventData, function(err, result) {
-                    callBack(null,result);
+                CalenderEvent.addNew(eventData, function(event) {
+                    callBack(null, event);
                 });
             },
-            function addNotification(callBack) {
+            function addNotification(event, callBack) {
 
-                if(notifyUsers.length > 0){
-
+                if(typeof notifyUsers != 'undefined' && notifyUsers.length > 0){
                     var _data = {
                         sender:UserId,
                         notification_type:Notifications.SHARE_CALENDER,
                     }
                     Notification.saveNotification(_data, function(res){
                         if(res.status == 200){
-                            callBack(null,res.result._id);
+                            callBack(null, res.result._id, event);
                         }
 
                     });
 
-                } else{
-                    callBack(null);
+                } else {
+                    callBack(null, null, event);
                 }
             },
-            function notifyingUsers(notification_id, callBack) {
+            function notifyingUsers(notification_id, event, callBack) {
 
                 if(typeof notification_id != 'undefined' && notifyUsers.length > 0){
-
                     var _data = {
                         notification_id:notification_id,
                         recipients:notifyUsers
                     };
                     NotificationRecipient.saveRecipients(_data, function(res){
-                        callBack(null);
+                        callBack(null, event);
                     })
 
                 } else{
-                    callBack(null);
+                    callBack(null, event);
                 }
             }
 
@@ -105,10 +106,9 @@ var CalenderController = {
                 res.status(400).send(outPut);
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['events'] = result.life_events;
+                outPut['events'] = resultSet.event;
                 res.status(200).send(outPut);
             }
-
         });
 
     },
@@ -208,7 +208,6 @@ var CalenderController = {
         var CurrentSession = Util.getCurrentSession(req);
         var CalenderEvent = require('mongoose').model('CalenderEvent');
         var moment = require('moment');
-
         var day = req.query.day;
         var user_id = Util.toObjectId(CurrentSession.id);
         var startTimeOfDay = moment(day).format('YYYY-MM-DD'); //format the given date as mongo date object

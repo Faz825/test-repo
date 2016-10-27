@@ -14,6 +14,10 @@ export default class Index extends React.Component{
     
     constructor(props) {
 
+        if(Session.getSession('prg_lg') == null){
+            window.location.href = "/";
+        }
+
         super(props);
         this.state = { defaultView : 'day', current : 'day' }; // curently assuming the dafault view is DayView
         this.relativeView = this.relativeView.bind(this);

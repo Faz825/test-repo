@@ -14,13 +14,16 @@ import createEmojiPlugin from 'draft-js-emoji-plugin';
 import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin';
 import mentions from './mentions';
 
+import {convertFromRaw, convertToRaw} from 'draft-js';
+
+import {stateToHTML} from 'draft-js-export-html';
 
 // emoji plugin
 const emojiPlugin = createEmojiPlugin();
 const { EmojiSuggestions } = emojiPlugin;
 
 // mention plugin
-const mentionPlugin = createMentionPlugin({ mentionTrigger: '#'});
+const mentionPlugin = createMentionPlugin({mentionTrigger: '#', mentionPrefix: '#',entityMutability: 'IMMUTABLE'});
 const { MentionSuggestions } = mentionPlugin;
 
 const plugins = [emojiPlugin,mentionPlugin];
@@ -34,7 +37,7 @@ export default class DayView extends Component {
         this.state = {
             editorState : EditorState.createEmpty(),
             suggestions : mentions,
-            currentDay : moment(new Date()).format('L'),
+            currentDay : moment().format('L'),
             defaultType : 'event'
         };
 
@@ -55,20 +58,37 @@ export default class DayView extends Component {
         this.editor.focus();
     }
 
-    onSearchChange(value) {
-        console.log("onSearchChange CALED");
-        this.setState({
-            suggestions: defaultSuggestionsFilter(value, mentions),
-        });
-    }
-
     onChange(editorState) {
         this.setState({editorState});
     }
 
     addEvent(event) {
-        console.log(" ADD event is called");
-        alert("Text field value is: '" + this.state.editorState + "'");
+
+        let loggedUser = Session.getSession('prg_lg');
+        
+        const Editor = this.state.editorState;
+        const contentState = this.state.editorState.getCurrentContent();
+        const editorContentRaw = convertToRaw(contentState);
+        const postData = {
+            user_id : loggedUser.id,
+            description : editorContentRaw,
+            type: 'TODO',
+            apply_date: moment().format('MM DD YYYY LT'),
+            event_time: moment().format('LT'),
+            sharedUserd : []
+        };
+
+        $.ajax({
+            url: '/calender/add-event',
+            method: "POST",
+            dataType: "JSON",
+            data: postData
+        }).done( function (data, text) {
+            if(data.status.code == 200){
+                // this.setState({isShowingModal: false});
+                // this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
+            }
+        }.bind(this));
     }
 
     nextDay() {
@@ -125,7 +145,6 @@ export default class DayView extends Component {
                                             <MentionSuggestions
                                                 onSearchChange={this.onSearchChange}
                                                 suggestions={this.state.suggestions}
-                                                mentionTrigger="#"
                                             />
                                         </div>
                                         <div className="calender-input-type">
