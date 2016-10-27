@@ -54,12 +54,12 @@ var CalenderEventSchema = new Schema({
     event_time : {
         type : String,
         default : null
-    },  
+    },
 
-    time_zone : {
+    event_timezone : {
         type : String,
         default : null
-    },  
+    },
 
     created_at : {
         type : Date
