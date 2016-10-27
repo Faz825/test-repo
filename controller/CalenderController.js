@@ -54,7 +54,8 @@ var CalenderController = {
                     description : req.params.description,
                     type: req.params.type,
                     startDate: req.params.apply_date,
-                    event_time: req.params.event_time
+                    event_time: req.params.event_time,
+                    event_timezone: req.params.event_timezone
                 }
 
                 CalenderEvent.addNew(eventData, function(err, result) {
