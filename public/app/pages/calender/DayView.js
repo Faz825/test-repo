@@ -63,18 +63,16 @@ export default class DayView extends Component {
     }
 
     addEvent(event) {
-
-        let loggedUser = Session.getSession('prg_lg');
         
         const Editor = this.state.editorState;
         const contentState = this.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
         const postData = {
-            user_id : loggedUser.id,
             description : editorContentRaw,
-            type: 'TODO',
-            apply_date: moment().format('MM DD YYYY LT'),
-            event_time: moment().format('LT'),
+            type : 'TODO',
+            apply_date : moment().format('MM DD YYYY HH:MM'),
+            event_time : moment().format('HH:MM'),
+            event_timezone : 'Asia/Colombo',
             sharedUserd : []
         };
 

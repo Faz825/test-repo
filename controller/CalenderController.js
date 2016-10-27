@@ -39,8 +39,6 @@ var CalenderController = {
      */
     addEvent: function(req,res) {
 
-        console.log("ADD Event is CALLED");
-        console.log(req.params);
         var CurrentSession = Util.getCurrentSession(req);
         var _async = require('async'),
             CalenderEvent = require('mongoose').model('CalenderEvent'),
@@ -53,12 +51,12 @@ var CalenderController = {
 
             function addNewToDb(callBack){
                 var eventData = {
-                    user_id:UserId,
-                    description : req.params.description,
-                    type: req.params.type,
-                    start_date: req.params.apply_date,
-                    event_time: req.params.event_time,
-                    event_timezone: req.params.event_timezone
+                    user_id : UserId,
+                    description : req.body.description,
+                    type: req.body.type,
+                    start_date: req.body.apply_date,
+                    event_time: req.body.event_time,
+                    event_timezone: req.body.event_timezone
                 }
 
                 CalenderEvent.addNew(eventData, function(event) {

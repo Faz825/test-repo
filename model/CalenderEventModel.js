@@ -32,9 +32,8 @@ var CalenderEventSchema = new Schema({
     },
 
     description : {
-        type : String,
-        default : null,
-        trim : true
+        type : Schema.Types.Mixed,
+        default : null
     },
 
     status : {
@@ -90,11 +89,12 @@ CalenderEventSchema.pre('save', function(next){
 CalenderEventSchema.statics.addNew = function (eventData,callBack) {
 
     var calenderEvent = new this();
-    console.log(" MODEL 1 ");
+    var type = (eventData.type ? eventData.type : 'EVENT');
+    console.log(eventData);
     calenderEvent.user_id = eventData.user_id;
     calenderEvent.description = (eventData.description ? eventData.description : 'No title');
     calenderEvent.status = CalenderStatus.PENDING;
-    calenderEvent.type = (CalenderTypes.hasOwnProperty(eventData.type) ? CalenderTypes.eventData.type : 1);
+    calenderEvent.type = (CalenderTypes.hasOwnProperty(type) ? CalenderTypes.type : 1);
     calenderEvent.start_date_time = eventData.start_date;
     calenderEvent.event_time = eventData.event_time;
     calenderEvent.save(function(err,resultSet){
