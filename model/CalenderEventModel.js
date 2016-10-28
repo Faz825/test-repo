@@ -7,6 +7,10 @@
 var  mongoose = require('mongoose'),
      Schema   = mongoose.Schema;
 
+GLOBAL.CalenderEventsConfig={
+    CACHE_PREFIX :"shared_events:"
+};
+
 GLOBAL.CalenderTypes = {
     EVENT: 1,
     TODO: 2,
@@ -59,7 +63,7 @@ var CalenderEventSchema = new Schema({
         type : String,
         default : null
     },
-
+    shared_users:[],
     created_at : {
         type : Date
     },
@@ -199,6 +203,52 @@ CalenderEventSchema.statics.get = function (filter, fields, options, callBack) {
         }
     });
 };
+
+/**
+ * Share Event | DB
+ */
+CalenderEventSchema.statics.shareEvent = function(eventId,sharedCriteria,callBack){
+
+    var _this = this;
+    _this.update({_id:eventId},
+        {$set:sharedCriteria},function(err,resultSet){
+
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
+/**
+ * Update Shared Events
+ * @param criteria
+ * @param data
+ * @param callBack
+ */
+CalenderEventSchema.statics.updateSharedEvent = function(criteria, data, callBack){
+
+    var _this = this;
+
+    _this.update(criteria, data, {multi:true}, function(err,resultSet){
+        if(!err){
+            callBack(null,{
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err},null);
+        }
+    });
+};
+
 
 /**
  *

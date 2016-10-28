@@ -30,6 +30,11 @@ var NotificationSchema = new Schema({
         ref: 'NoteBook',
         default:null
     },
+    notified_event:{ // if a event request then event id
+        type: Schema.ObjectId,
+        ref: 'CalenderEvent',
+        default:null
+    },
     notification_status:{ // Accept / Reject the invitation ...
         type:String,
         trim:true,
@@ -60,10 +65,13 @@ NotificationSchema.statics.saveNotification = function(new_notification,callBack
     var notification = new this();
     notification.sender = Util.toObjectId(new_notification.sender);
     notification.notification_type = new_notification.notification_type;
-    if(new_notification.notification_type != Notifications.SHARE_NOTEBOOK
-        && new_notification.notification_type != Notifications.SHARE_NOTEBOOK_RESPONSE) {
-        notification.notified_post = Util.toObjectId(new_notification.notified_post);
+    if(new_notification.notification_type == Notifications.SHARE_CALENDER ) {
+        notification.notified_event = (new_notification.notified_event);
         notification.notification_status = "";
+
+    }else if(new_notification.notification_type != Notifications.SHARE_NOTEBOOK
+        && new_notification.notification_type != Notifications.SHARE_NOTEBOOK_RESPONSE){
+
     } else {
         notification.notified_notebook = Util.toObjectId(new_notification.notified_notebook);
         notification.notification_status = new_notification.notification_status;
