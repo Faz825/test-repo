@@ -3,56 +3,39 @@
  */
 import React from 'react';
 import DayEventListItem from './DayEventListItem';
+import moment from 'moment';
+import {stateToHTML} from 'draft-js-export-html';
+import {convertFromRaw, convertToRaw} from 'draft-js';
 
 export default class DayEventsList extends React.Component {
 
 	constructor(props) {
         super(props);
-        this.state ={
-            day: this.props.day
-        }; 
-    }
-
-    loadEvents(){
-        let _this = this;
-        let day = this.props.day;
-        $.ajax({
-            url: '/get-events-for-specific-day/'+this.state.uname,
-            method: "POST",
-            data : { day : day }, 
-            dataType: "JSON",
-            success: function (data, text) {
-            	console.log(data);
-            	console.log(text);
-            	console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-                if (data.status.code == 200) {
-                    // this.setState({user:data.profile_data}, function () {
-                    //    _this.loadMutualConnection(this.state.user.user_id);
-                    // });
-                }
-            }.bind(this),
-            error: function (request, status, error) {
-                console.log(request.responseText);
-                console.log(status);
-                console.log(error);
-            }
-        });
-
+        this.state = {}; 
     }
 
     render() {
+        let _this = this;
+        let items = this.props.events.map(function(event,key){
+            // TODO convert description object to HTML and render them.
+            // let rawDescription = event.description;
+            // let contentState = convertFromRaw(event.description);
+            // let html = stateToHTML(event.description);
 
-        var rows = [];
-        const { events } = this.props;
-        // events.forEach(function(event) {
-        //     rows.push(<DayEventListItem description={event.start_date_time} />);
-        // });
+            return (
+                <li key={key}>
+                    <i className="fa fa-circle" aria-hidden="true"></i>
+                    <span>{event.start_date_time}</span>
+                    <i className="fa fa-trash-o pull-right" aria-hidden="true"></i>
+                </li>
+            );
+        });
 
         return(
             <ul className="list-unstyled events-list-area-content-list">
-                // {rows}
+                {items}
             </ul>
-        );
+        )
     }
 }
 

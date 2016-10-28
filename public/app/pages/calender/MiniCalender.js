@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import DayNames from './DayNames';
-import Week from './Week';
+import MiniWeek from './MiniWeek';
 import Session  from '../../middleware/Session';
 import moment from 'moment';
 
@@ -56,7 +56,7 @@ export default class MiniCalender extends React.Component {
             count = 0;
 
         while (!done) {
-            weeks.push(<Week key={date.toString()} date={date.clone()} month={this.state.month} select={this.select.bind(this)} selected={this.props.selected} />);
+            weeks.push(<MiniWeek key={date.toString()} date={date.clone()} month={this.state.month} select={this.select.bind(this)} selected={this.props.selected} />);
             date.add(1, "w");
             done = count++ > 2 && monthIndex !== date.month();
             monthIndex = date.month();

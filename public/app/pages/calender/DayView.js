@@ -37,7 +37,8 @@ export default class DayView extends Component {
             suggestions : mentions,
             currentDay : moment().format('L'),
             defaultType : 'event',
-            events : "DEFAULT EVENTSSSSSSSSSSS"
+            events : [],
+            user : user
         };
 
         this.addEvent = this.addEvent.bind(this);
@@ -67,7 +68,7 @@ export default class DayView extends Component {
         const contentState = this.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
         
-        var split = new Date().toString().split(" ");
+        var split = moment().toString().split(" ");
         const timeZoneFormatted = split[split.length - 2] + " " + split[split.length - 1];
 
         const postData = {
@@ -83,11 +84,11 @@ export default class DayView extends Component {
             url: '/calender/add-event',
             method: "POST",
             dataType: "JSON",
-            data: postData
+            data: postData,
+            headers : { "prg-auth-header" : this.state.user.token },
         }).done(function (data, text) {
             if(data.status.code == 200){
-                this.setState({events: "Events AFTER AJAX"});
-                // this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
+                this.loadEvents();
             }
         }.bind(this));
     }
@@ -101,19 +102,18 @@ export default class DayView extends Component {
         let _this = this;
         let day = this.props.day;
         $.ajax({
-            url: '/calender/get-events-for-specific-day/',
-            method: "POST",
+            url : '/calender/get-events-for-specific-day/',
+            method : "POST",
             data : { day : day }, 
-            dataType: "JSON",
-            success: function (data, text) {
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
                 console.log(data);
                 if (data.status.code == 200) {
                     this.setState({events: data.events});
                 }
             }.bind(this),
             error: function (request, status, error) {
-                console.log(request.responseText);
-                console.log(status);
                 console.log(error);
             }
         });
