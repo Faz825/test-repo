@@ -16,8 +16,6 @@ import mentions from './mentions';
 
 import {convertFromRaw, convertToRaw} from 'draft-js';
 
-import {stateToHTML} from 'draft-js-export-html';
-
 // emoji plugin
 const emojiPlugin = createEmojiPlugin();
 const { EmojiSuggestions } = emojiPlugin;
@@ -38,7 +36,9 @@ export default class DayView extends Component {
             editorState : EditorState.createEmpty(),
             suggestions : mentions,
             currentDay : moment().format('L'),
-            defaultType : 'event'
+            defaultType : 'event',
+            events : [],
+            user : user
         };
 
         this.addEvent = this.addEvent.bind(this);
@@ -67,12 +67,16 @@ export default class DayView extends Component {
         const Editor = this.state.editorState;
         const contentState = this.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
+        
+        var split = moment().toString().split(" ");
+        const timeZoneFormatted = split[split.length - 2] + " " + split[split.length - 1];
+
         const postData = {
             description : editorContentRaw,
             type : 'TODO',
             apply_date : moment().format('MM DD YYYY HH:MM'),
             event_time : moment().format('HH:MM'),
-            event_timezone : 'Asia/Colombo',
+            event_timezone : timeZoneFormatted,
             sharedUserd : []
         };
 
@@ -80,13 +84,40 @@ export default class DayView extends Component {
             url: '/calender/add-event',
             method: "POST",
             dataType: "JSON",
-            data: postData
-        }).done( function (data, text) {
+            data: postData,
+            headers : { "prg-auth-header" : this.state.user.token },
+        }).done(function (data, text) {
             if(data.status.code == 200){
-                // this.setState({isShowingModal: false});
-                // this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
+                this.loadEvents();
             }
         }.bind(this));
+    }
+
+    componentDidMount() {
+        this.loadEvents();
+    }
+
+    loadEvents() {
+
+        let _this = this;
+        let day = this.props.day;
+        $.ajax({
+            url : '/calender/get-events-for-specific-day/',
+            method : "POST",
+            data : { day : day }, 
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
+                console.log(data);
+                if (data.status.code == 200) {
+                    this.setState({events: data.events});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
+
     }
 
     nextDay() {
@@ -188,7 +219,7 @@ export default class DayView extends Component {
                                             <span>events</span>
                                         </div>
                                         <div className="events-list-area-content-title-hr"></div>
-                                        <DayEventsList day={moment().startOf("day")} />
+                                        <DayEventsList events={this.state.events} day={moment().startOf("day")} />
                                     </div>
                                 </div>
                             </div>
@@ -199,7 +230,7 @@ export default class DayView extends Component {
                                             <img src="/images/calender/icon-to-do.png" /><span>To-Do's</span>
                                         </div>
                                         <div className="to-do-list-area-content-title-hr"></div>
-                                        <DayTodosList />
+                                        <DayTodosList events={this.state.events} />
                                     </div>
                                 </div>
                             </div>

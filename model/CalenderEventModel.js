@@ -101,6 +101,7 @@ CalenderEventSchema.statics.addNew = function (eventData,callBack) {
     calenderEvent.type = (CalenderTypes.hasOwnProperty(type) ? CalenderTypes.type : 1);
     calenderEvent.start_date_time = eventData.start_date;
     calenderEvent.event_time = eventData.event_time;
+    calenderEvent.event_timezone = eventData.event_timezone;
     calenderEvent.save(function(err,resultSet){
         if(err){
             console.log(err);
