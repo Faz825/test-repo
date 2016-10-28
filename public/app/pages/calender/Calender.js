@@ -4,17 +4,44 @@
 import React from 'react';
 import DayNames from './DayNames';
 import Week from './Week';
-import Session  from '../../middleware/Session';
+import Session from '../../middleware/Session';
 import moment from 'moment';
 
 export default class Calender extends React.Component {
 
     constructor(props) {
         super(props);
-        let user =  Session.getSession('prg_lg');
         this.state ={
             month:this.props.selected.clone(),
-        }; 
+            events:[]
+        };
+        this.loggedUser = Session.getSession('prg_lg');
+        this.getAllEventsForMonth();
+    }
+
+
+    getAllEventsForMonth() {
+        let _month = this.state.month.format("MM");
+        let _year = this.state.month.format("YYYY");
+        let postData = {
+            month : _month,
+            year : _year
+        };
+
+
+        $.ajax({
+            url: '/calender/get-all-month',
+            method: "GET",
+            dataType: "JSON",
+            data: postData,
+            headers: { 'prg-auth-header':this.loggedUser.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200){
+                console.log("data loaded ===");
+                console.log(data.events);
+                this.setState({events: data.events});
+            }
+        }.bind(this));
     }
 
     previous() {
@@ -38,15 +65,39 @@ export default class Calender extends React.Component {
 
     render() {
         return(
-            <div className="calender-box">
-                <div className="header">
-                    <i className="fa fa-angle-left" onClick={this.previous.bind(this)}></i>
-                    {this.renderMonthNameLabel()}
-                    <i className="fa fa-angle-right" onClick={this.next.bind(this)}></i>
-                    {this.renderMonthLabel()}
+            <div className="calender-body">
+                <div className="row">
+                    <div className="calender-month-view">
+
+                        <div className="view-header">
+                            <div className="col-sm-6 remove-padding">
+                                <div className="date-wrapper">
+                                    <div className="date-nav">
+                                        <i className="fa fa-angle-left" aria-hidden="true" onClick={this.previous.bind(this)}></i>
+                                    </div>
+                                    <div className="date">
+                                        {this.renderMonthLabel()}
+                                    </div>
+                                    <div className="date-nav">
+                                        <i className="fa fa-angle-right" aria-hidden="true" onClick={this.next.bind(this)}></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-sm-6 calender-date  remove-padding">
+                                {this.renderMonthLabel()}
+                            </div>
+                        </div>
+
+
+                        <div className="view-tile-area">
+                            <div className="calender-box">
+                                <DayNames />
+                                {this.renderWeeks()}
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-                <DayNames />
-                {this.renderWeeks()}
             </div>
         );
     }
@@ -59,7 +110,7 @@ export default class Calender extends React.Component {
             count = 0;
 
         while (!done) {
-            weeks.push(<Week key={date.toString()} date={date.clone()} month={this.state.month} select={this.select.bind(this)} selected={this.props.selected} />);
+            weeks.push(<Week key={date.toString()} date={date.clone()} month={this.state.month} select={this.select.bind(this)} selected={this.props.selected} events={this.state.events}/>);
             date.add(1, "w");
             done = count++ > 2 && monthIndex !== date.month();
             monthIndex = date.month();
@@ -70,13 +121,13 @@ export default class Calender extends React.Component {
 
     renderMonthLabel() {
         return(
-            <span className="middle-month">{this.state.month.format("MMMM, YYYY")}</span>
+            <p>{this.state.month.format("MMMM, YYYY")}</p>
         );
     }
 
     renderMonthNameLabel() {
         return(
-            <span className="smaller-month">{this.state.month.format("MMMM").toString}</span>
+            <p>{this.state.month.format("MMMM").toString}</p>
         );
     }
 }
