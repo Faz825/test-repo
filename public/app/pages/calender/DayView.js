@@ -230,7 +230,7 @@ export default class DayView extends Component {
                                             <img src="/images/calender/icon-to-do.png" /><span>To-Do's</span>
                                         </div>
                                         <div className="to-do-list-area-content-title-hr"></div>
-                                        <DayTodosList />
+                                        <DayTodosList events={this.state.events} />
                                     </div>
                                 </div>
                             </div>

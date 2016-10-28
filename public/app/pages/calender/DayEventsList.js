@@ -2,7 +2,6 @@
  * Day Name Component 
  */
 import React from 'react';
-import DayEventListItem from './DayEventListItem';
 import moment from 'moment';
 import {stateToHTML} from 'draft-js-export-html';
 import {convertFromRaw, convertToRaw} from 'draft-js';
