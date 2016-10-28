@@ -11714,8 +11714,9 @@ header .notification-holder .profile-header-thumb {
   color: #a4a4a4;
   font-weight: normal;
   font-size: 0.6875em;
-  float: right;
-  margin-right: 16%;
+  position: absolute;
+  top: 14px;
+  right: 25px;
 }
 .calender-month-view .view-tile-area .calender-box > div.week > span.day .event-area {
   height: 50px;

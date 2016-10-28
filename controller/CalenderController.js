@@ -53,7 +53,7 @@ var CalenderController = {
                 var eventData = {
                     user_id : UserId,
                     description : req.body.description,
-                    type: req.body.type,
+                    type: req.body.type == "TODO" ? CalenderTypes.TODO : CalenderTypes.EVENT,
                     start_date: req.body.apply_date,
                     event_time: req.body.event_time,
                     event_timezone: req.body.event_timezone
