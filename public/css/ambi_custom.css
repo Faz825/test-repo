@@ -1,1 +1,21 @@
 /* Custom css styles for Ambi layout will go here */
+.body-container{}
+
+.modalPopup.modalPopup{
+	border-radius: 0;
+	padding: 0;
+	background: none;
+}
+
+.modalPopup .closeButton--jss-0-1{
+	top: -20px;
+	right: -21px;
+	left: auto;
+}
+
+.errorMsg{
+	color: #F44336;
+    font-size: 0.8em;
+    float: left;
+    margin-top: 5px;
+}

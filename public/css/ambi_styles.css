@@ -10247,16 +10247,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /*
-  Method to use:
-  @include @border {
-    border ($style,  $sides, $emptySides){
-  }
+	Method to use:
+	@include @border {
+		border ($style,  $sides, $emptySides){
+	}
 */
 /*
-  Method to use:
-  @include @mixin {
-    content
-  }
+	Method to use:
+	@include @mixin {
+		content
+	}
 */
 header {
   background: #fff;
@@ -10593,6 +10593,7 @@ header .notification-holder .profile-header-thumb {
   margin-top: 20px;
 }
 .folder-container .folder-body .folder .folder-wrapper {
+  position: relative;
   margin-left: 15px;
   margin-right: 15px;
   overflow: hidden;
@@ -10601,6 +10602,9 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper:last-child {
   margin-bottom: 20px;
+}
+.folder-container .folder-body .folder .folder-wrapper .drag-shader {
+  display: none;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-3 {
   padding-left: 0px;
@@ -10844,7 +10848,6 @@ header .notification-holder .profile-header-thumb {
   position: absolute;
   bottom: 12px;
   right: 34px;
-  width: 80px;
   height: 18px;
   cursor: pointer;
 }
@@ -10860,6 +10863,9 @@ header .notification-holder .profile-header-thumb {
   float: right;
   font-weight: 400;
   color: #00a5ef;
+}
+.folder-container .folder-body .folder.see-all .folder-wrapper .drag-shader .drag-title {
+  margin-top: 19% !important;
 }
 .folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover {
   height: 510px;
@@ -10911,93 +10917,26 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.dark-green .folder-cover {
   background-color: #067d41;
 }
-
-.new-folder-container {
-  margin: 0px -10px;
-  overflow: hidden;
-  background-color: #ffffff;
-  border: 1px solid #ffffff;
-  border-radius: 5px;
+.folder-container .folder-body .folder.drag .folder-wrapper {
+  border: 1px solid #848484;
+  border-style: dashed;
 }
-.new-folder-container .folder-header {
-  overflow: hidden;
-}
-.new-folder-container .folder-header h2 {
-  margin-top: 42px;
-  text-align: center;
-  letter-spacing: -2px;
-  font-weight: 300;
-  font-size: 2.25em;
-  color: #000000;
-}
-.new-folder-container .folder-body {
-  padding: 10px 15%;
-}
-.new-folder-container .folder-body .input-group {
-  margin-top: 30px;
-}
-.new-folder-container .folder-body .input-group p {
-  font-weight: 400;
-  color: #000000;
-  font-size: 0.823125em;
-}
-.new-folder-container .folder-body .input-group input {
-  border: 1px solid #e7e7e7;
-  border-radius: 0px;
-  background-color: #f6f6f6;
-}
-.new-folder-container .folder-body .input-group .color-palette div {
-  float: left;
-  margin-right: 16px;
-  width: 35px;
-  height: 35px;
-  border-radius: 100%;
-  cursor: pointer;
-  text-align: center;
-}
-.new-folder-container .folder-body .input-group .color-palette div i {
-  margin-top: 8px;
-  color: #ffffff;
-  font-size: 1.125em;
-  display: none;
-}
-.new-folder-container .folder-body .input-group .color-palette div.active i {
+.folder-container .folder-body .folder.drag .folder-wrapper .drag-shader {
+  position: absolute;
   display: block;
-}
-.new-folder-container .folder-body .input-group .color-palette div.pink {
-  background-color: #ed0677;
-}
-.new-folder-container .folder-body .input-group .color-palette div.light-blue {
-  background-color: #1b9ed9;
-}
-.new-folder-container .folder-body .input-group .color-palette div.light-green {
-  background-color: #a2c73e;
-}
-.new-folder-container .folder-body .input-group .color-palette div.red {
-  background-color: #b01d5a;
-}
-.new-folder-container .folder-body .input-group .color-palette div.dark-blue {
-  background-color: #091652;
-}
-.new-folder-container .folder-body .input-group .color-palette div.gray {
-  background-color: #bbbdbe;
-}
-.new-folder-container .folder-body .input-group .color-palette div.dark-green {
-  background-color: #067d41;
-}
-.new-folder-container .folder-footer .action-bar {
-  margin-top: 42px;
-}
-.new-folder-container .folder-footer .action-bar .btn-add-folder {
-  padding-top: 15px;
-  padding-bottom: 15px;
   width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #c4c4c4;
+  z-index: 2;
   text-align: center;
-  font-weight: 400;
-  font-size: 1.235em;
-  color: #ffffff;
-  background-color: #00a6ef;
-  border-radius: 0px;
+  opacity: 0.95;
+}
+.folder-container .folder-body .folder.drag .folder-wrapper .drag-shader .drag-title {
+  margin-top: 11%;
+  font-size: 2.0625em;
+  color: #5a5a5a;
 }
 
 .calender-container {
@@ -11441,8 +11380,115 @@ header .notification-holder .profile-header-thumb {
   color: #000000;
   font-weight: 400;
 }
-.calender-week-view .view-tile-area .item-wrapper {
-  background: #f6f8fc;
+.calender-week-view .view-tile-area {
+  margin-bottom: 90px;
+}
+.calender-week-view .view-tile-area .week-tiles {
+  width: 100%;
+  font-size: 0;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile {
+  font-size: 16px;
+  overflow: hidden;
+  display: inline-block;
+  margin-bottom: 8px;
+  width: calc(50% - 4px);
+  margin-right: 8px;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile:nth-of-type(2n) {
+  margin-right: 0;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .header {
+  background-color: #ffffff;
+  padding: 5% 7%;
+  border-bottom: 1px solid #dee6eb;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .header:before {
+  display: table;
+  content: " ";
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .header:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .header h5 {
+  float: left;
+  text-align: left;
+  width: 50%;
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.934375em;
+  color: #00a6ef;
+  font-weight: 500;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .header h6 {
+  float: left;
+  text-align: right;
+  width: 50%;
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.77875em;
+  color: #989ba0;
+  font-weight: 500;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .header h3 {
+  float: left;
+  text-align: left;
+  font-size: 1.5575em;
+  color: #c1c1c1;
+  clear: both;
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .body {
+  background-color: #f6f8fc;
+  padding: 5% 7%;
+  height: 215px;
+  overflow-y: scroll;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .body:before {
+  display: table;
+  content: " ";
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .body:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li {
+  font-family: "Work Sans", sans-serif;
+  font-size: 0.77875em;
+  font-weight: 500;
+  color: black;
+  margin-bottom: 5px;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li:before {
+  content: "\f111";
+  font-family: FontAwesome;
+  line-height: 1;
+  font-size: 8px;
+  float: left;
+  margin-top: 5px;
+  margin-right: 4px;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li.todo:before {
+  color: #a6c649;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li.events:before {
+  color: #00a6ef;
+}
+@media screen and (min-width: 50em) {
+  .calender-week-view .view-tile-area .week-tiles .day-tile {
+    width: calc(25% - 6px);
+  }
+  .calender-week-view .view-tile-area .week-tiles .day-tile:nth-of-type(2n) {
+    margin-right: 8px;
+  }
+  .calender-week-view .view-tile-area .week-tiles .day-tile:nth-of-type(4n) {
+    margin-right: 0;
+  }
 }
 .calender-week-view .remove-padding {
   padding: 0;
@@ -11712,6 +11758,7 @@ header .notification-holder .profile-header-thumb {
 .popup-holder {
   overflow: hidden;
   background-color: #ffffff;
+  border-radius: 5px;
 }
 .popup-holder .calendar-week-popup-wrapper {
   width: 680px;
@@ -11867,11 +11914,7 @@ header .notification-holder .profile-header-thumb {
   height: 40px;
 }
 .popup-holder .create-folder-popup {
-  margin: 0px -10px;
   overflow: hidden;
-  background-color: #ffffff;
-  border: 1px solid #ffffff;
-  border-radius: 5px;
 }
 .popup-holder .create-folder-popup .folder-header {
   overflow: hidden;
@@ -11899,6 +11942,22 @@ header .notification-holder .profile-header-thumb {
   border: 1px solid #e7e7e7;
   border-radius: 0px;
   background-color: #f6f6f6;
+}
+.popup-holder .create-folder-popup .folder-body .input-group .user-holder {
+  float: left;
+}
+.popup-holder .create-folder-popup .folder-body .input-group .user-holder .user {
+  margin-top: 5px;
+  margin-right: 5px;
+  border: 1px solid #1b9ed9;
+  padding: 5px;
+  color: #1b9ed9;
+  font-size: 0.75em;
+  float: left;
+}
+.popup-holder .create-folder-popup .folder-body .input-group .user-holder .user i {
+  margin-left: 5px;
+  cursor: pointer;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div {
   float: left;
@@ -11953,9 +12012,224 @@ header .notification-holder .profile-header-thumb {
   background-color: #00a6ef;
   border-radius: 0px;
 }
+.popup-holder .share-folder-popup {
+  position: relative;
+  margin: 0px -10px;
+  overflow: hidden;
+}
+.popup-holder .share-folder-popup .folder-header .search-people-wrapper {
+  margin-top: 20px;
+  margin-left: 25px;
+  overflow: hidden;
+}
+.popup-holder .share-folder-popup .folder-header .search-people-wrapper i {
+  padding: 2px;
+  float: left;
+  font-size: 0.875em;
+  color: #bebfbf;
+}
+.popup-holder .share-folder-popup .folder-header .search-people-wrapper .search-people {
+  overflow: hidden;
+  margin-top: -2px;
+  margin-left: 22px;
+  float: left;
+  width: 90%;
+  max-height: 25px;
+  font-size: 0.875em;
+  font-weight: 400;
+  color: #bebfbf;
+  outline: none;
+}
+.popup-holder .share-folder-popup .folder-header .search-people-wrapper .search-people:empty:before {
+  content: attr(placeholder);
+}
+.popup-holder .share-folder-popup .folder-header .header-wrapper {
+  margin-top: 23px;
+  border-top: 1px solid #ebebeb;
+  border-bottom: 1px solid #ebebeb;
+}
+.popup-holder .share-folder-popup .folder-header .header-wrapper .popup-title {
+  margin-top: 20px;
+  margin-left: 24px;
+  text-transform: uppercase;
+  font-size: 1.125em;
+  font-weight: 500;
+  color: #000000;
+}
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper {
+  overflow: hidden;
+}
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user {
+  overflow: hidden;
+  padding-top: 17px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #ebebeb;
+}
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .user-image {
+  margin-left: 25px;
+  float: left;
+  width: 50px;
+  height: 50px;
+}
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper {
+  margin-left: 20px;
+  float: left;
+}
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper .name {
+  margin-top: 4px;
+  font-size: 0.875em;
+  font-weight: 400;
+  color: #000000;
+}
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper .name-title {
+  margin-top: -10px;
+  font-size: 0.75em;
+  font-weight: 400;
+  color: #464646;
+}
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .shared-privacy {
+  margin-left: 47px;
+  padding-top: 8px;
+  float: left;
+}
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .shared-privacy .owner {
+  margin-top: 4px;
+  font-size: 0.75em;
+  font-weight: 400;
+  color: #000000;
+}
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .shared-privacy .privacy-selector {
+  outline: none;
+  border: none;
+  font-size: 0.75em;
+  color: #000000;
+  cursor: pointer;
+}
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action {
+  margin-top: 7px;
+  margin-left: 70px;
+  float: left;
+  cursor: pointer;
+}
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action i {
+  padding: 5px 6px;
+  color: #1b9ed9;
+  font-size: 0.625em;
+  border: 1px solid #1b9ed9;
+  border-radius: 100%;
+}
+.popup-holder .share-folder-popup .folder-footer .footer-action-wrapper {
+  margin-top: 27px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .see-all {
+  margin-left: 275px;
+  float: left;
+  font-size: 0.875em;
+  color: #33a2db;
+  cursor: pointer;
+}
+.popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .add-people {
+  margin-right: 22px;
+  float: right;
+  font-size: 0.875em;
+  color: #33a2db;
+  cursor: pointer;
+}
+.popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .add-people i {
+  font-size: 0.75em;
+}
+.popup-holder .share-folder-popup .popup-pointer {
+  position: absolute;
+  width: 34px;
+  height: 39px;
+  bottom: 0px;
+  left: 0px;
+}
+.popup-holder .share-folder-add-people-popup {
+  position: relative;
+  margin: 0px -10px;
+  overflow: hidden;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+}
+.popup-holder .share-folder-add-people-popup .input-wrapper {
+  position: relative;
+  padding: 0 8px;
+}
+.popup-holder .share-folder-add-people-popup .input-wrapper i {
+  position: absolute;
+  top: 6px;
+  left: 20px;
+}
+.popup-holder .share-folder-add-people-popup .input-wrapper input {
+  margin-top: 3px;
+  margin-bottom: 5px;
+  padding-top: 5px;
+  padding-left: 40px;
+  border-radius: 18px;
+  max-height: 30px;
+  border: 1px solid #bcbfbf;
+  color: #bebfbf;
+  font-size: 0.75em;
+  font-weight: 400;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper {
+  overflow: hidden;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion {
+  overflow: hidden;
+  border-bottom: 1px solid #ebebeb;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:first-child {
+  border-top: 1px solid #ebebeb;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:last-child {
+  margin-bottom: 3px;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .user-image {
+  margin-left: 7px;
+  float: left;
+  width: 38px;
+  height: 38px;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .name-wrapper {
+  margin-left: 10px;
+  float: left;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .name-wrapper .name {
+  margin-top: 8px;
+  font-size: 0.875em;
+  font-weight: 400;
+  color: #000000;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .action {
+  margin-top: 7px;
+  margin-right: 12px;
+  float: right;
+  cursor: pointer;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .action i {
+  padding: 5px 6px;
+  color: #1b9ed9;
+  font-size: 0.625em;
+  border: 1px solid #1b9ed9;
+  border-radius: 100%;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:hover {
+  background-color: #1b9ed9;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:hover .name-wrapper .name {
+  color: #ffffff;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:hover .action i {
+  background-color: #ffffff;
+}
 
 .settings-icon {
-  position: absolute;
+  position: fixed;
   bottom: 30px;
   left: 2.6vw;
   width: 41px;
