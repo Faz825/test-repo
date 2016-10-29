@@ -93,12 +93,12 @@ CalenderEventSchema.pre('save', function(next){
 CalenderEventSchema.statics.addNew = function (eventData,callBack) {
 
     var calenderEvent = new this();
-    var type = (eventData.type ? eventData.type : 'EVENT');
     console.log(eventData);
+    console.log("EVENT TYPE");
     calenderEvent.user_id = eventData.user_id;
     calenderEvent.description = (eventData.description ? eventData.description : 'No title');
     calenderEvent.status = CalenderStatus.PENDING;
-    calenderEvent.type = eventData.type;
+    calenderEvent.type = (eventData.type ? eventData.type : 1);
     calenderEvent.start_date_time = eventData.start_date;
     calenderEvent.event_time = eventData.event_time;
     calenderEvent.event_timezone = eventData.event_timezone;

@@ -3,7 +3,6 @@
  */
 import React from 'react';
 import moment from 'moment';
-//import {stateToHTML} from 'draft-js-export-html';
 import {convertFromRaw, convertToRaw} from 'draft-js';
 
 export default class DayEventsList extends React.Component {

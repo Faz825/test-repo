@@ -15,6 +15,7 @@ export default class MiniCalender extends React.Component {
         this.state ={
             month:this.props.selected.clone(),
         }; 
+        // this.select = this.select.bind(this);
     }
 
     previous() {
@@ -30,7 +31,8 @@ export default class MiniCalender extends React.Component {
     }
 
     select(day) {
-        this.props.selected = day.date;
+        this.props.changeDay(day);
+        // this.props.selected = day.date;
         this.forceUpdate();
     }
 

@@ -31,16 +31,15 @@ export default class DayView extends Component {
     constructor(props) {
         super(props);
         let user =  Session.getSession('prg_lg');
-  
         this.state = {
             editorState : EditorState.createEmpty(),
             suggestions : mentions,
             currentDay : moment().format('L'),
             defaultType : 'event',
             events : [],
-            user : user
+            user : user,
         };
-
+        this.currentDay = this.state.currentDay;
         this.addEvent = this.addEvent.bind(this);
         this.onChange = this.onChange.bind(this);
         this.nextDay = this.nextDay.bind(this);
@@ -49,9 +48,34 @@ export default class DayView extends Component {
 
         this.onSearchChange = ({ value }) => {
             this.setState({
-              suggestions: defaultSuggestionsFilter(value, mentions),
+                suggestions: defaultSuggestionsFilter(value, mentions),
             });
         };
+    }
+
+    componentDidMount() {
+        this.loadEvents();
+    }
+
+    loadEvents() {
+
+        $.ajax({
+            url : '/calender/get-events-for-specific-day/',
+            method : "POST",
+            data : { day : this.currentDay }, 
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
+                console.log(data);
+                if (data.status.code == 200) {
+                    this.setState({events: data.events});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
+
     }
 
     focus() {
@@ -73,8 +97,8 @@ export default class DayView extends Component {
 
         const postData = {
             description : editorContentRaw,
-            type : 'TODO',
-            apply_date : moment().format('MM DD YYYY HH:MM'),
+            type : (this.state.defaultType == 'todo' ? 2 : 1),
+            apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:MM'),
             event_time : moment().format('HH:MM'),
             event_timezone : timeZoneFormatted,
             sharedUserd : []
@@ -93,43 +117,31 @@ export default class DayView extends Component {
         }.bind(this));
     }
 
-    componentDidMount() {
+    nextDay() {
+        let nextDay = moment(this.state.currentDay).add(1,'days').format('L');
+        this.currentDay = nextDay;
+        this.setState({currentDay : nextDay});
         this.loadEvents();
     }
 
-    loadEvents() {
-
-        let _this = this;
-        let day = this.props.day;
-        $.ajax({
-            url : '/calender/get-events-for-specific-day/',
-            method : "POST",
-            data : { day : day }, 
-            dataType : "JSON",
-            headers : { "prg-auth-header" : this.state.user.token },
-            success : function (data, text) {
-                console.log(data);
-                if (data.status.code == 200) {
-                    this.setState({events: data.events});
-                }
-            }.bind(this),
-            error: function (request, status, error) {
-                console.log(error);
-            }
-        });
-
-    }
-
-    nextDay() {
-        this.setState({currentDay : moment(this.state.currentDay).add(1,'days').format('L')});
-    }
-
     previousDay() {
-        this.setState({currentDay : moment(this.state.currentDay).add(-1, 'days').format('L')});
+        let prevDay = moment(this.state.currentDay).add(-1, 'days').format('L');
+        this.currentDay = prevDay;
+        this.setState({currentDay : prevDay});
+        this.loadEvents();
     }
 
     changeType(eventType) {
         this.setState({defaultType : eventType});
+    }
+
+    calenderClick(day) {
+
+        console.log(day);
+        let clickedDay =  moment(day.date).format('L');
+        this.currentDay = clickedDay;
+        this.setState({currentDay : clickedDay});
+        this.loadEvents();
     }
 
     render() {
@@ -237,7 +249,7 @@ export default class DayView extends Component {
                         </div>
                     </div>
                     <div className="col-sm-3">
-                        <MiniCalender selected={moment().startOf("day")} />
+                        <MiniCalender selected={moment(this.currentDay)} changeDay={this.calenderClick.bind(this)} />
                     </div>
                 </div>
             </section>

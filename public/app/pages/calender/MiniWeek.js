@@ -6,9 +6,10 @@ import React from 'react';
 export default class MiniWeek extends React.Component {
     
     render() {
+
         var days = [],
-            date = this.props.date,
-            month = this.props.month;
+        date = this.props.date,
+        month = this.props.month;
 
         for (var i = 0; i < 7; i++) {
             var day = {
