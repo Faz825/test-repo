@@ -34,7 +34,7 @@ export default class DayView extends Component {
         this.state = {
             editorState : EditorState.createEmpty(),
             suggestions : mentions,
-            currentDay : moment().format('L'),
+            currentDay : moment().format('YYYY-MM-DD'),
             defaultType : 'event',
             events : [],
             user : user,
@@ -118,14 +118,14 @@ export default class DayView extends Component {
     }
 
     nextDay() {
-        let nextDay = moment(this.state.currentDay).add(1,'days').format('L');
+        let nextDay = moment(this.state.currentDay).add(1,'days').format('YYYY-MM-DD');
         this.currentDay = nextDay;
         this.setState({currentDay : nextDay});
         this.loadEvents();
     }
 
     previousDay() {
-        let prevDay = moment(this.state.currentDay).add(-1, 'days').format('L');
+        let prevDay = moment(this.state.currentDay).add(-1, 'days').format('YYYY-MM-DD');
         this.currentDay = prevDay;
         this.setState({currentDay : prevDay});
         this.loadEvents();
@@ -138,7 +138,7 @@ export default class DayView extends Component {
     calenderClick(day) {
 
         console.log(day);
-        let clickedDay =  moment(day.date).format('L');
+        let clickedDay =  moment(day.date).format('YYYY-MM-DD');
         this.currentDay = clickedDay;
         this.setState({currentDay : clickedDay});
         this.loadEvents();
