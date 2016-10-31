@@ -11,6 +11,7 @@
 	top: -20px;
 	right: -21px;
 	left: auto;
+	cursor: pointer;
 }
 
 .errorMsg{

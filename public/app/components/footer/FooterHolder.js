@@ -76,13 +76,13 @@ export default class FooterHolder extends React.Component{
         const {
             notificationCount
             }=this.state;
-        let workmodeCSS = (this.props.blockBottom)?" workmode-switched":"";
+        let dashboardCSS= (this.props.currPage)? "dashboard-footer" : "";
+        let workmodeCSS = (this.props.blockBottom)? " workmode-switched nav-holder clearfix" : "nav-holder clearfix";
         //console.log("=====Footer Holder======"+this.props.blockBottom)
         //TODO::
         // if blockBottom true need to hide
-
         return (
-            <footer className={workmodeCSS}>
+            <footer className={dashboardCSS}>
                 {/**<div>
 
                     <div className={"row row-clr pg-footer-wrapper "+workmodeCSS}>
@@ -154,7 +154,7 @@ export default class FooterHolder extends React.Component{
                                 </div>
                             </div>
                         </section>
-                        <section className="nav-holder clearfix">
+                        <section className={workmodeCSS}>
                             <div className="calender nav-item">
                                 <a href="/calender">
                                     <div className="icon-holder">

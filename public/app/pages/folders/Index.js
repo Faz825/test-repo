@@ -131,6 +131,9 @@ export default class Index extends React.Component{
                                         <div className="col-sm-12 input-group">
                                             <p>Invite some people</p>
                                             <input type="text" className="form-control" placeholder="Type a name..." />
+                                            <div className="user-holder">
+                                                <span className="user">User name<i className="fa fa-times" aria-hidden="true"></i></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </section>
@@ -243,8 +246,6 @@ export class Folder extends React.Component{
                                                 <p>Upload new file or image</p>
                                             </div>
                                         </div>
-                                        <File />
-                                        <File />
                                         <File />
                                         <File />
                                         <File />

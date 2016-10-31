@@ -11017,12 +11017,15 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-box > div.week {
   float: left;
   width: 100%;
-  border-top: solid 1px transparent !important;
+  border-top: solid 1px #dee6eb;
   background: white;
   border-left: solid 1px #dee6eb;
 }
 .calender-container .calender-box > div.week:first-child {
   border-top: none;
+}
+.calender-container .calender-box > div.week {
+  border-top: solid 1px #dee6eb;
 }
 .calender-container .calender-box > div.week > span.day {
   float: left;
@@ -11120,6 +11123,7 @@ header .notification-holder .profile-header-thumb {
   height: auto;
   text-align: center;
   padding-left: 0px;
+  border-left: none;
 }
 .calender-container .mini-calender-box.calender-box {
   border: solid 1px #CCC;
@@ -11135,11 +11139,11 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .mini-calender-box.calender-box .week {
   border-left: none;
+  border-top: none;
 }
 .calender-container .mini-calender-box.calender-box .week .day {
   padding-top: 0;
   font-size: 0.598125em;
-  border-left: solid 1px transparent;
 }
 .calender-container .mini-calender-box.calender-box .week .day:first-child {
   border-left: none;
@@ -11166,6 +11170,7 @@ header .notification-holder .profile-header-thumb {
   color: #a8bfcd;
   font-size: 0.7475em;
   font-weight: 400;
+  border-left: none;
 }
 .calender-container .calender-header .col-sm-2 {
   padding-left: 0px;
@@ -11723,6 +11728,10 @@ header .notification-holder .profile-header-thumb {
   padding: 0;
 }
 
+.calender-body {
+  margin-bottom: 100px;
+}
+
 .calender-month-view .view-header {
   padding: 21px 21px;
   overflow: hidden;
@@ -11762,9 +11771,6 @@ header .notification-holder .profile-header-thumb {
   font-size: 1.3125em;
   color: #000000;
   font-weight: 400;
-}
-.calender-month-view .view-tile-area {
-  color: red;
 }
 .calender-month-view .view-tile-area .color-1 {
   color: #00a6ef;
@@ -12093,7 +12099,7 @@ header .notification-holder .profile-header-thumb {
   float: left;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .user-holder .user {
-  margin-top: 5px;
+  margin-top: 10px;
   margin-right: 5px;
   border: 1px solid #1b9ed9;
   padding: 5px;
@@ -12407,6 +12413,7 @@ footer {
   width: 100%;
   bottom: 0;
   left: 0;
+  z-index: 1;
 }
 footer .notification-alert-holder {
   position: relative;
@@ -12475,7 +12482,7 @@ footer .nav-holder {
   position: relative;
   padding: 15px 0 8px;
   margin: 0 9px 0;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.8);
   border-radius: 10px 10px 0 0;
 }
 footer .nav-holder .nav-item {
@@ -12506,7 +12513,7 @@ footer .nav-holder .nav-item .icon-holder > img {
 }
 footer .nav-holder .nav-item .nav-title {
   font-weight: 500;
-  color: #fff;
+  color: #000;
   font-size: 0.75em;
   text-transform: capitalize;
   margin: 8px 0 0;
@@ -12520,6 +12527,12 @@ footer .nav-holder .nav-item .nav-title {
   footer .nav-holder {
     width: 76%;
   }
+}
+footer.dashboard-footer .nav-holder {
+  background: rgba(255, 255, 255, 0.2);
+}
+footer.dashboard-footer .nav-holder .nav-item .nav-title {
+  color: #fff;
 }
 footer .work-mode-holder {
   float: left;
