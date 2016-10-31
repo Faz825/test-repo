@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Session  from '../../middleware/Session';
 import Socket  from '../../middleware/Socket';
 
@@ -82,55 +82,145 @@ export default class FooterHolder extends React.Component{
         // if blockBottom true need to hide
 
         return (
-            <div>
+            <footer className={workmodeCSS}>
+                {/**<div>
 
-                <div className={"row row-clr pg-footer-wrapper "+workmodeCSS}>
-                    <div className="pg-footer-left-options-panel">
-                        <a href="/notifications">
-                            <div className="col-xs-2 pgs-secratery-img">
-                                <img src={_secretary_image} alt="Secretary" className="img-responsive" />
-                                {notificationCount>0?<span className="counter">{notificationCount}</span>:null}
-                            </div>
-                        </a>
-                        <div className="pg-footer-left-options">
-                            <div className="notifi-type-holder">
-                                <i className="fa fa-list-alt" id="todos" onClick={(event) => this.onNotifiClick(event)}></i>
-                                {notificationCount>0?<span className="notifi-counter">{notificationCount}</span>:null}
-                            </div>
-                            <div className="notifi-type-holder">
-                                <i className="fa fa-globe" id="social" onClick={(event) => this.onNotifiClick(event)}></i>
-                                {notificationCount>0?<span className="notifi-counter">{notificationCount}</span>:null}
-                            </div>
-                            <div className="notifi-type-holder">
-                                <i className="fa fa-line-chart" id="productivity" onClick={(event) => this.onNotifiClick(event)}></i>
-                                {notificationCount>0?<span className="notifi-counter">{notificationCount}</span>:null}
-                            </div>
-                        </div>
-                    </div>
-                    {
-                        (this.props.blockBottom)?
-                            null
-                            :
-                            <div className="container">
-                                <div className="pg-footer-top-control-panel">
-                                    <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/footer-control-ico-1.png"
-                                                                                         alt="" className="img-responsive"/>
-                                        split</a>
-                                    <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/footer-control-ico-2.png"
-                                                                                         alt="" className="img-responsive"/>
-                                        full</a>
+                    <div className={"row row-clr pg-footer-wrapper "+workmodeCSS}>
+                        <div className="pg-footer-left-options-panel">
+                            <a href="/notifications">
+                                <div className="col-xs-2 pgs-secratery-img">
+                                    <img src={_secretary_image} alt="Secretary" className="img-responsive" />
+                                    {notificationCount>0?<span className="counter">{notificationCount}</span>:null}
+                                </div>
+                            </a>
+                            <div className="pg-footer-left-options">
+                                <div className="notifi-type-holder">
+                                    <i className="fa fa-list-alt" id="todos" onClick={(event) => this.onNotifiClick(event)}></i>
+                                    {notificationCount>0?<span className="notifi-counter">{notificationCount}</span>:null}
+                                </div>
+                                <div className="notifi-type-holder">
+                                    <i className="fa fa-globe" id="social" onClick={(event) => this.onNotifiClick(event)}></i>
+                                    {notificationCount>0?<span className="notifi-counter">{notificationCount}</span>:null}
+                                </div>
+                                <div className="notifi-type-holder">
+                                    <i className="fa fa-line-chart" id="productivity" onClick={(event) => this.onNotifiClick(event)}></i>
+                                    {notificationCount>0?<span className="notifi-counter">{notificationCount}</span>:null}
                                 </div>
                             </div>
-                    }
-                    <div className="pg-footer-right-options-panel">
-                        <div className="pg-footer-right-options-panel-inner" onClick={this.onWorkmodeClick.bind(this)}>
-                            <img src="/images/footer-right-image.png" alt="Logo" className="img-responsive"/>
-                            <p>Work Mode</p>
                         </div>
-                    </div>
+                        {
+                            (this.props.blockBottom)?
+                                null
+                                :
+                                <div className="container">
+                                    <div className="pg-footer-top-control-panel">
+                                        <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/footer-control-ico-1.png"
+                                                                                             alt="" className="img-responsive"/>
+                                            split</a>
+                                        <a href="#" onClick={event=>onLinkClick(event)}><img src="/images/footer-control-ico-2.png"
+                                                                                             alt="" className="img-responsive"/>
+                                            full</a>
+                                    </div>
+                                </div>
+                        }
+                        <div className="pg-footer-right-options-panel">
+                            <div className="pg-footer-right-options-panel-inner" onClick={this.onWorkmodeClick.bind(this)}>
+                                <img src="/images/footer-right-image.png" alt="Logo" className="img-responsive"/>
+                                <p>Work Mode</p>
+                            </div>
+                        </div>
 
+                    </div>
                 </div>
-            </div>
+                **/}
+               <div className="container">
+                    <div className="row">
+                        <section className="notification-alert-holder">
+                            <a href="#" className="notifi-brand-icon">
+                                <img src="/images/brand-icon.png" alt="Ambi Icon" />
+                            </a>
+                            <div className="notifi-icon-holder">
+                                <div className="todo-notifi notifi-icons" id="todos" onClick={(event) => this.onNotifiClick(event)}>
+                                    <img src="/images/icons/to-do-icon.png" alt="todos" />
+                                    {notificationCount>0?<span className="has-notifi"></span>:null}
+                                </div>
+                                <div className="social-notifi notifi-icons" id="social" onClick={(event) => this.onNotifiClick(event)}>
+                                    <img src="/images/icons/social-notifi-icon.png" alt="social" />
+                                    {notificationCount>0?<span className="has-notifi"></span>:null}
+                                </div>
+                                <div className="productivity-notifi notifi-icons" id="productivity" onClick={(event) => this.onNotifiClick(event)}>
+                                    <img src="/images/icons/productivity-icon.png" alt="procutivity" />
+                                    {notificationCount>0?<span className="has-notifi"></span>:null}
+                                </div>
+                            </div>
+                        </section>
+                        <section className="nav-holder clearfix">
+                            <div className="calender nav-item">
+                                <a href="/calender">
+                                    <div className="icon-holder">
+                                        <img src="/images/nav-icons/cal-icon.png" alt="Calender" />
+                                    </div>
+                                    <p className="nav-title">Calendar</p>                               
+                                </a>
+                            </div>
+                            <div className="notebooks nav-item">
+                                <a href="#">
+                                    <div className="icon-holder">
+                                        <img src="/images/nav-icons/note-icon.png" alt="notebooks" />
+                                    </div>
+                                    <p className="nav-title">Notebooks</p>
+                                </a>
+                            </div>
+                            <div className="folders nav-item">
+                                <a href="/folders">
+                                    <div className="icon-holder">
+                                        <img src="/images/nav-icons/folder-icon.png" alt="folders" />
+                                    </div>
+                                    <p className="nav-title">Folders</p>
+                                </a>
+                            </div>
+                            <div className="groups nav-item">
+                                <a href="/groups">
+                                    <div className="icon-holder">
+                                        <img src="/images/nav-icons/groups-icon.png" alt="groups" />
+                                    </div>
+                                    <p className="nav-title">Groups</p>
+                                </a>
+                            </div>
+                            <div className="news nav-item">
+                                <a href="#">
+                                    <div className="icon-holder">
+                                        <img src="/images/nav-icons/news-icon.png" alt="news" />
+                                    </div>
+                                    <p className="nav-title">News</p>
+                                </a>
+                            </div>
+                            <div className="interests nav-item">
+                                <a href="#">
+                                    <div className="icon-holder">
+                                        <img src="/images/nav-icons/interest-ison.png" alt="interests" />
+                                    </div>
+                                    <p className="nav-title">Interests</p>
+                                </a>
+                            </div>
+                            <div className="call-center nav-item">
+                                <a href="/chat">
+                                    <div className="icon-holder">
+                                        <img src="/images/nav-icons/call-center-icon.png" alt="call-center" />
+                                    </div>
+                                    <p className="nav-title">Call Center</p>
+                                </a>
+                            </div>
+                        </section>
+                        <section className="work-mode-holder" onClick={this.onWorkmodeClick.bind(this)}>
+                            <div className="icon-holder">
+                                <img src="/images/work-mode-icon.png" alt="work mode icon" />
+                            </div>
+                            <p className="section-title">Work mode</p>
+                        </section>
+                    </div>
+               </div>
+            </footer>
 
         );
     }

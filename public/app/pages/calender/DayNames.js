@@ -5,15 +5,23 @@ import React from 'react';
 
 export default class DayNames extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state ={
+            mini : this.props.mini,
+        }; 
+    }
+
     render() {
+
         return <div className="week names">
-            <span className="day">Sun</span>
-            <span className="day">Mon</span>
-            <span className="day">Tue</span>
-            <span className="day">Wed</span>
-            <span className="day">Thu</span>
-            <span className="day">Fri</span>
-            <span className="day">Sat</span>
+            <span className="day day-names">{ this.state.mini ? "Sun" : "Sunday" }</span>
+            <span className="day day-names">{ this.state.mini ? "Mon" : "Monday" }</span>
+            <span className="day day-names">{ this.state.mini ? "Tue" : "Tuesday" }</span>
+            <span className="day day-names">{ this.state.mini ? "Wed" : "Wednesday" }</span>
+            <span className="day day-names">{ this.state.mini ? "Thu" : "Thursday" }</span>
+            <span className="day day-names">{ this.state.mini ? "Fri" : "Friday" }</span>
+            <span className="day day-names">{ this.state.mini ? "Sat" : "Saturday" }</span>
         </div>;
     }
 }

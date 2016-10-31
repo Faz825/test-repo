@@ -28,6 +28,8 @@ require('../model/UsersSavedArticle');
 require('../model/SubscribedPosts');
 require('../model/NewsChannelsModel');
 require('../model/FolderModel');
+require('../model/FolderDocsModel');
+require('../model/CalenderEventModel');
 
 /** Load  Controllers
  */
@@ -48,6 +50,7 @@ var DefaultController   = require('../controller/DefaultController'),
     NotificationController     = require('../controller/NotificationController'),
     NotificationSMSController     = require('../controller/NotificationSMSController'),
     FolderController     = require('../controller/FolderController');
+    CalenderController     = require('../controller/CalenderController');
 
 
 
@@ -278,6 +281,19 @@ router.post('/notifications/set-notification-sms',NotificationSMSController.setN
 router.get('/notifications/get-details',NotificationController.getDetails);
 router.get('/notifications/get-notification-count',NotificationController.getNotificationCount);
 router.post('/folders/add-new', FolderController.addNewFolder);
+router.get('/folders/get-all', FolderController.getFolders);
+
+router.get('/calender/get-all-month', CalenderController.getAllForSpecificMonth);
+router.get('/calender/get-all-week', CalenderController.getAllForSpecificWeek);
+router.get('/calender/get-all-day', CalenderController.getEventsForSpecificDay);
+router.post('/calender/update', CalenderController.updateEvent);
+router.post('/calender/add-event', CalenderController.addEvent);
+router.post('/calender/share-event', CalenderController.shareEvent);
+router.post('/calender/remove-share-user', CalenderController.removeSharedEventUser);
+router.post('/calender/update-share-event-status', CalenderController.updateEventSharedStatus);
+router.get('/calender/get-shared-users', CalenderController.getEventSharedUsers);
+
+router.post('/calender/get-events-for-specific-day', CalenderController.getEventsForSpecificDay);
 
 /**
  * API Routes that need to authenticate separately

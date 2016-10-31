@@ -7,6 +7,23 @@
 var  mongoose = require('mongoose'),
      Schema   = mongoose.Schema;
 
+GLOBAL.CalenderEventsConfig={
+    CACHE_PREFIX :"shared_events:"
+};
+
+GLOBAL.CalenderTypes = {
+    EVENT: 1,
+    TODO: 2,
+    TASK: 3
+};
+
+GLOBAL.CalenderStatus = {
+    PENDING: 1,
+    COMPLETED: 2,
+    EXPIRED: 3,
+    CANCELLED: 4
+};
+
 /**
  * CalenderEvent Basic information
  */
@@ -19,31 +36,34 @@ var CalenderEventSchema = new Schema({
     },
 
     description : {
-        type : String,
-        default : null,
-        trim : true
+        type : Schema.Types.Mixed,
+        default : null
     },
 
     status : {
         type : Number,
-        default : 1 /* 1 - pending | 2 - completed | 3 - expired */
+        default : 1 /* 1 - pending | 2 - completed | 3 - expired, 4 - cancelled */
     },
 
     type : {
-        type : String,
-        trim : true,
-        default : 'event',
-        enum: ['event', 'todo']
+        type : Number,
+        default : null
     },
 
     start_date_time : {
         type : Date
     },
 
-    end_date_time : {
-        type : Date
-    },    
+    event_time : {
+        type : String,
+        default : null
+    },
 
+    event_timezone : {
+        type : String,
+        default : null
+    },
+    shared_users:[],
     created_at : {
         type : Date
     },
@@ -54,17 +74,34 @@ var CalenderEventSchema = new Schema({
 
 },{collection:"calender_events"});
 
+
+CalenderEventSchema.pre('save', function(next){
+    var now = new Date();
+    this.updated_at = now;
+    if ( !this.created_at ) {
+        this.created_at = now;
+    }
+    next();
+});
+
 /**
  * Add CalenderEvent to the system
  * @param EventData
  * @param callBack
  * @return Json
  */
-CalenderEventSchema.statics.add = function (eventData,callBack) {
+CalenderEventSchema.statics.addNew = function (eventData,callBack) {
 
     var calenderEvent = new this();
-    calenderEvent.type = (eventData.description ? eventData.description : 'No title');
-    calenderEvent.type = (eventData.type ? eventData.type : 'event');
+    console.log(eventData);
+    console.log("EVENT TYPE");
+    calenderEvent.user_id = eventData.user_id;
+    calenderEvent.description = (eventData.description ? eventData.description : 'No title');
+    calenderEvent.status = CalenderStatus.PENDING;
+    calenderEvent.type = (eventData.type ? eventData.type : 1);
+    calenderEvent.start_date_time = eventData.start_date;
+    calenderEvent.event_time = eventData.event_time;
+    calenderEvent.event_timezone = eventData.event_timezone;
     calenderEvent.save(function(err,resultSet){
         if(err){
             console.log(err);
@@ -82,19 +119,46 @@ CalenderEventSchema.statics.add = function (eventData,callBack) {
  * @param callBack
  * @return Json
  */
-CalenderEventSchema.statics.update = function (filter, value, callBack) {
+CalenderEventSchema.statics.updateEvent = function (filter, value, callBack) {
 
-    var calenderEvent = new this();
+    var _this = this;
     var options = { multi: true };
 
-    calenderEvent.update(filter, value, options, function(err, update) {
+    _this.update(filter, value, options, function(err, update) {
         if(err){
             console.log(err);
             callBack({status:400,error:err});
         }else{
-            callBack({status:200,count:update});
+            callBack({status:200,event:update});
         }
     });
+};
+
+/**
+ * Get Event By Id
+ * @param Json filter
+ * @param Json value
+ * @param callBack
+ * @return Json
+ */
+CalenderEventSchema.statics.getEventById = function(id,callBack){
+
+    var _this = this;
+
+    _this.findOne({_id: id}).exec(function (err, resultSet) {
+        if (!err) {
+            if (resultSet == null) {
+                callBack(null);
+                return;
+            }
+
+            callBack(resultSet);
+        } else {
+            console.log(err)
+            callBack({status: 400, error: err})
+        }
+    });
+
 };
 
 /**
@@ -107,7 +171,6 @@ CalenderEventSchema.statics.update = function (filter, value, callBack) {
 CalenderEventSchema.statics.getOne = function (filter, fields, callBack) {
 
     var calenderEvent = new this();
-    var options = { multi: true };
 
     calenderEvent.findOne(filter, fields, function (err, event ) {
         if (err){
@@ -139,7 +202,78 @@ CalenderEventSchema.statics.get = function (filter, fields, options, callBack) {
         } else {
             callBack({status:200,events:events});
         }
-    })
+    });
+};
+
+/**
+ * Share Event | DB
+ */
+CalenderEventSchema.statics.shareEvent = function(eventId,sharedCriteria,callBack){
+
+    var _this = this;
+    _this.update({_id:eventId},
+        {$set:sharedCriteria},function(err,resultSet){
+
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
+/**
+ * Update Shared Events
+ * @param criteria
+ * @param data
+ * @param callBack
+ */
+CalenderEventSchema.statics.updateSharedEvent = function(criteria, data, callBack){
+
+    var _this = this;
+
+    _this.update(criteria, data, {multi:true}, function(err,resultSet){
+        if(!err){
+            callBack(null,{
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err},null);
+        }
+    });
+};
+
+
+/**
+ *
+ * Get Calender events, todos, Tasks for the given period sorted by created date
+ * @param criteria
+ * @param callBack
+ */
+CalenderEventSchema.statics.getSortedCalenderItems = function(criteria,callBack){
+
+    var _this = this;
+
+    _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
+
+        if(!err){
+            callBack(null, {
+                status:200,
+                events:resultSet
+            });
+        } else {
+            console.log("Server error while getSortedCalenderItems --------");
+            callBack({status:400,error:err}, null);
+        }
+    });
+
 };
 
 mongoose.model('CalenderEvent', CalenderEventSchema);
