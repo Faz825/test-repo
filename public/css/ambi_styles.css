@@ -11073,13 +11073,13 @@ header .notification-holder .profile-header-thumb {
   border-radius: 50%;
   width: 36px;
   height: 36px;
-  padding: 8px;
+  padding: 3px 5px;
   background: #00a6ef;
   color: #ffffff;
 }
 .calender-container .calender-box > div.week > span.day .squre {
   height: 36px;
-  padding: 8px 8px 8px 0;
+  padding: 0;
   font-size: 1.4em;
 }
 .calender-container .calender-box > div.week > span.day .event-counts {
@@ -11275,6 +11275,8 @@ header .notification-holder .profile-header-thumb {
   border-left: 1px solid #bcbfbf;
   border-right: 1px solid #bcbfbf;
   background-color: #ffffff;
+  min-width: 155px;
+  text-align: center;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper .date p {
   margin: 9px 14px 12px;
@@ -11406,6 +11408,7 @@ header .notification-holder .profile-header-thumb {
   color: #ffffff;
   width: 110px;
   height: 40px;
+  cursor: pointer;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content {
   padding: 40px 70px;
@@ -11596,6 +11599,8 @@ header .notification-holder .profile-header-thumb {
   border-left: 1px solid #bcbfbf;
   border-right: 1px solid #bcbfbf;
   background-color: #ffffff;
+  min-width: 155px;
+  text-align: center;
 }
 .calender-week-view .view-header .date-wrapper .date p {
   padding: 11px 14px 11px;
@@ -11754,6 +11759,8 @@ header .notification-holder .profile-header-thumb {
   border-left: 1px solid #bcbfbf;
   border-right: 1px solid #bcbfbf;
   background-color: #ffffff;
+  min-width: 155px;
+  text-align: center;
 }
 .calender-month-view .view-header .date-wrapper .date p {
   padding: 11px 14px 11px;
@@ -11796,6 +11803,9 @@ header .notification-holder .profile-header-thumb {
 }
 .profile-container .white-box {
   background-color: #ffffff;
+}
+.profile-container textarea:focus, .profile-container input:focus {
+  outline: none;
 }
 .profile-container .time-line-top-section .cover-page-section {
   position: relative;
@@ -11860,11 +11870,16 @@ header .notification-holder .profile-header-thumb {
   font-weight: 400;
 }
 .profile-container #new-post {
-  padding: 20px 15px;
   border-radius: 5px;
+}
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+  .profile-container #new-post {
+    padding: 20px 5px;
+  }
 }
 .profile-container #new-post .new-post-header {
   border-bottom: 1px solid #dee6eb;
+  margin: 0px 20px;
 }
 .profile-container #new-post .new-post-header:before {
   display: table;
@@ -11883,12 +11898,18 @@ header .notification-holder .profile-header-thumb {
 .profile-container #new-post .new-post-header ul li {
   list-style: none;
   float: left;
-  margin-right: 9px;
-  min-height: 30px;
+  margin-right: 5%;
+  min-height: 45px;
+  padding-top: 10px;
+}
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+  .profile-container #new-post .new-post-header ul li {
+    margin-right: 2%;
+  }
 }
 .profile-container #new-post .new-post-header ul li:hover a {
   color: #59afe1 !important;
-  border-bottom: 1px solid #59afe1;
+  border-bottom: 3px solid #59afe1;
 }
 .profile-container #new-post .new-post-header ul li:hover a img:nth-child(1) {
   opacity: 1;
@@ -11905,6 +11926,83 @@ header .notification-holder .profile-header-thumb {
 .profile-container #new-post .new-post-header ul li a img:nth-child(1) {
   opacity: 0;
   position: absolute;
+  margin-top: 2px;
+}
+.profile-container #new-post .new-post-header ul li a img:nth-child(2) {
+  display: inline-block;
+}
+.profile-container #new-post .new-post-body {
+  padding: 0 20px;
+}
+.profile-container #new-post .new-post-body .post-content {
+  padding: 25px 0;
+  background-color: #fff;
+}
+.profile-container #new-post .new-post-body .post-content .user-pro-pic {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 15px;
+  width: 7%;
+}
+.profile-container #new-post .new-post-body .post-content textarea {
+  resize: none;
+  width: 87%;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 400;
+  font-size: 1.08625em;
+  color: #bebfbf;
+  border: none;
+  display: inline-block;
+}
+.profile-container #new-post .new-post-footer {
+  border-top: 2px solid #d9d9d9;
+  padding: 13px 20px;
+}
+.profile-container #new-post .new-post-footer:before {
+  display: table;
+  content: " ";
+}
+.profile-container #new-post .new-post-footer:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.profile-container #new-post .new-post-footer .left-col {
+  float: left;
+}
+.profile-container #new-post .new-post-footer .left-col button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  outline: none;
+  margin-top: 7px;
+}
+.profile-container #new-post .new-post-footer .left-col .fa-camera {
+  color: #7f7f7f;
+  font-size: 1.25em;
+}
+.profile-container #new-post .new-post-footer .right-col {
+  float: right;
+}
+.profile-container #new-post .new-post-footer .right-col button {
+  font-family: "Work Sans", sans-serif;
+  color: #fff;
+  font-size: 0.775625em;
+  text-align: center;
+  background-color: #00a5ef;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  padding: 7px 24px;
+  display: block;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: none;
+  outline: none;
 }
 
 .popup-holder {
