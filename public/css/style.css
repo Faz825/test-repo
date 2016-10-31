@@ -3787,7 +3787,7 @@ textarea{
 }
 
 .popover.right>.arrow {
-    top: 90px!important;
+    /*top: 90px!important;*/
 }
 
 .notifications.popover-holder .arrow{

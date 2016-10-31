@@ -166,7 +166,7 @@ export default class Index extends React.Component{
                                 <div className="folder-type active">
                                     <h4>My Folders</h4>
                                     <div className="highlighter"></div>
-                                    
+
                                 </div>
                                 <div className="folder-type">
                                     <h4>Group Folders</h4>
@@ -216,6 +216,11 @@ export class Folder extends React.Component{
 
     render(){
         let folderClr = this.props.clr;
+        let i = (
+            <Popover id="popover-contained" style={{maxWidth: "635px", width: "635px"}}>
+                <SharePopup />
+            </Popover>
+        );
         return(
             <div className={(this.state.isCollapsed)? "row folder " + folderClr : "row folder see-all " + folderClr}>
                 <div className="folder-wrapper">
@@ -231,6 +236,11 @@ export class Folder extends React.Component{
                                     </div>
                                     <h3>My Folder</h3>
                                 </div>
+                                <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                    <div className="share-folder">
+                                        <i className="fa fa-share-alt" aria-hidden="true"></i>
+                                    </div>
+                                </OverlayTrigger>
                             </div>
                             <div className="folder-peak"></div>
                         </div>
@@ -301,4 +311,149 @@ export class File extends React.Component{
             </div>
         );
     }
+}
+
+export class SharePopup extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state={
+        }
+    }
+
+    render(){
+
+        let i = (
+            <Popover id="popover-contained" className="share-folder-popover add-new-user" style={{maxWidth: "280px", width: "280px", marginTop: "6.2%", marginLeft: "20%"}}>
+                <SharePopupNewUsr />
+            </Popover>
+        );
+
+        return(
+            <div className="popup-holder">
+                <section className="share-folder-popup">
+                    <section className="folder-header">
+                        <div className="row">
+                            <div className="col-sm-12">
+                                <div className="search-people-wrapper">
+                                    <i className="fa fa-search" aria-hidden="true"></i>
+                                    <div className="search-people" contentEditable="true" placeholder="Search"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-12">
+                                <div className="header-wrapper">
+                                    <h3 className="popup-title">People in this folder</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section className="folder-body">
+                        <div className="shared-user-wrapper">
+                            <div className="shared-user">
+                                <img className="user-image img-circle" src="assets/images/user_2.png" alt="User"/>
+                                    <div className="name-wrapper">
+                                        <p className="name">Leonard Green</p>
+                                        <p className="name-title">University of california, Barkeley</p>
+                                    </div>
+                                    <div className="shared-privacy">
+                                        <p className="owner">(Owner)</p>
+                                    </div>
+                            </div>
+                            <div className="shared-user">
+                                <img className="user-image img-circle" src="assets/images/user_1.png" alt="User"/>
+                                    <div className="name-wrapper">
+                                        <p className="name">Saad Ei Yamani</p>
+                                        <p className="name-title">University of california, Barkeley</p>
+                                    </div>
+                                    <div className="shared-privacy">
+                                        <select className="privacy-selector">
+                                            <option value="">Read Only</option>
+                                            <option value="">Read/Write</option>
+                                        </select>
+                                    </div>
+                                    <div className="action">
+                                        <i className="fa fa-minus" aria-hidden="true"></i>
+                                    </div>
+                            </div>
+                            <div className="shared-user">
+                                <img className="user-image img-circle" src="assets/images/user-rounded.png" alt="User"/>
+                                    <div className="name-wrapper">
+                                        <p className="name">Gerald Edwards</p>
+                                        <p className="name-title">University of california, Barkeley</p>
+                                    </div>
+                                    <div className="shared-privacy">
+                                        <select className="privacy-selector">
+                                            <option value="">Read Only</option>
+                                            <option value="">Read/Write</option>
+                                        </select>
+                                    </div>
+                                    <div className="action">
+                                        <i className="fa fa-minus" aria-hidden="true"></i>
+                                    </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section className="folder-footer">
+                        <div className="footer-action-wrapper">
+                            <p className="see-all">See All</p>
+                            <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
+                                <p className="add-people">
+                                    <i className="fa fa-plus"></i> Add more
+                                </p>
+                            </OverlayTrigger>
+                        </div>
+                    </section>
+                </section>
+            </div>
+
+        )
+    }
+}
+
+export class SharePopupNewUsr extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state={};
+
+    }
+
+    render() {
+
+        const { value, suggestions } = this.state;
+        let _this = this;
+
+        return (
+            <div className="popup-holder">
+                <section className="share-folder-add-people-popup">
+                    <div className="input-wrapper">
+                        <i className="fa fa-search"></i>
+                        <input type="text" className="form-control" placeholder="Type name"/>
+                    </div>
+                    <div className="suggestions-wrapper">
+                        <div className="suggestion">
+                            <img className="user-image img-circle" src="assets/images/user_1.png" alt="User"/>
+                                <div className="name-wrapper">
+                                    <p className="name">Saa Katamor</p>
+                                </div>
+                                <div className="action">
+                                    <i className="fa fa-plus" aria-hidden="true"></i>
+                                </div>
+                        </div>
+                        <div className="suggestion">
+                            <img className="user-image img-circle" src="assets/images/user_2.png" alt="User"/>
+                                <div className="name-wrapper">
+                                    <p className="name">Soham Khan</p>
+                                </div>
+                                <div className="action">
+                                    <i className="fa fa-plus" aria-hidden="true"></i>
+                                </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        )
+    }
+
+
 }
