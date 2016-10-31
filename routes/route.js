@@ -283,8 +283,10 @@ router.get('/notifications/get-notification-count',NotificationController.getNot
 router.post('/folders/add-new', FolderController.addNewFolder);
 router.get('/folders/get-all', FolderController.getFolders);
 
+router.post('/calender/add-event', CalenderController.addEvent);
 router.get('/calender/get-all-month', CalenderController.getAllForSpecificMonth);
 router.get('/calender/get-all-week', CalenderController.getAllForSpecificWeek);
+router.get('/calender/get-default-week', CalenderController.getAllForDefaultWeek);
 router.get('/calender/get-all-day', CalenderController.getEventsForSpecificDay);
 router.post('/calender/update', CalenderController.updateEvent);
 router.post('/calender/add-event', CalenderController.addEvent);

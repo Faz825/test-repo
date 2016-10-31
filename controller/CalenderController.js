@@ -161,14 +161,47 @@ var CalenderController = {
     getAllForSpecificWeek: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
-        var CalenderEvent = require('mongoose').model('CalenderEvent');
-        var UserId = CurrentSession.id;
         var moment = require('moment');
-        var user_id = Util.toObjectId(UserId);
+        var user_id = Util.toObjectId(CurrentSession.id);
 
         var week = req.query.week;
         var month = req.query.month;
         var year = req.query.year;
+        return CalenderController.getDefaultWeekEvent(req,res,week,month,year,user_id);
+    },
+
+    /**
+     * Return all events todos tasks for default week
+     * @param req
+     * @param res
+     * @return Json
+     */
+    getAllForDefaultWeek: function(req,res) {
+        var moment = require('moment');
+        var CurrentSession = Util.getCurrentSession(req);
+        var user_id = Util.toObjectId(CurrentSession.id);
+
+        var week = Math.ceil(moment().format('DD')/7);
+        var month = moment().format('MM');
+        var year = moment().format('YYYY');
+
+        return CalenderController.getDefaultWeekEvent(req,res,week,month,year,user_id);
+    },
+
+    /**
+     * process and return all even for a week provided week from database
+     * @param req
+     * @param res
+     * @param week
+     * @param month
+     * @param year
+     * @param user_id
+     */
+    getDefaultWeekEvent: function(req,res,week,month,year,user_id) {
+
+        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var moment = require('moment');
+
 
         var startDateOfWeek = moment([year, month]).add(-1,"month").add((week-1)*7,"day");
         var endDateOfWeek = moment([year, month]).add(-1,"month").add(week*7,"day");
