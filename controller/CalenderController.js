@@ -161,62 +161,15 @@ var CalenderController = {
     getAllForSpecificWeek: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
-        var moment = require('moment');
-        var user_id = Util.toObjectId(CurrentSession.id);
-
-        var week = req.query.week;
-        var month = req.query.month;
-        var year = req.query.year;
-        return CalenderController.getDefaultWeekEvent(req,res,week,month,year,user_id);
-    },
-
-    /**
-     * Return all events todos tasks for default week
-     * @param req
-     * @param res
-     * @return Json
-     */
-    getAllForDefaultWeek: function(req,res) {
-        var moment = require('moment');
-        var CurrentSession = Util.getCurrentSession(req);
-        var user_id = Util.toObjectId(CurrentSession.id);
-
-        var week = Math.ceil(moment().format('DD')/7);
-        var month = moment().format('MM');
-        var year = moment().format('YYYY');
-
-        return CalenderController.getDefaultWeekEvent(req,res,week,month,year,user_id);
-    },
-
-    /**
-     * process and return all even for a week provided week from database
-     * @param req
-     * @param res
-     * @param week
-     * @param month
-     * @param year
-     * @param user_id
-     */
-    getDefaultWeekEvent: function(req,res,week,month,year,user_id) {
-
         var CalenderEvent = require('mongoose').model('CalenderEvent');
-        var moment = require('moment');
 
+        var data ={};
+        data['week'] = req.query.week;
+        data['month'] = req.query.month;
+        data['year'] = req.query.year;
+        data['user_id'] = Util.toObjectId(CurrentSession.id);
 
-        var startDateOfWeek = moment([year, month]).add(-1,"month").add((week-1)*7,"day");
-        var endDateOfWeek = moment([year, month]).add(-1,"month").add(week*7,"day");
-        endDateOfWeek = endDateOfWeek.add(1,"day").subtract(1,"millisecond");//last millisecond of the day
-        // limit the 5th week within the month
-        if(week == 5){
-            var startDate = moment([year, month]).add(-1,"month");
-            endDateOfWeek =  moment(startDate).endOf('month');
-            endDateOfWeek = endDateOfWeek.subtract(1,"millisecond");//last millisecond of the day
-        }
-
-        var criteria =  { start_date_time: {$gte: startDateOfWeek, $lt: endDateOfWeek }, status: 1, user_id: user_id};
-
-        CalenderEvent.getSortedCalenderItems(criteria,function(err, result) {
-
+        CalenderEvent.getWeeklyCalenderEvens(data,function(err, result) {
             var outPut ={};
             if(err) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_WEEK_EMPTY, Alert.ERROR);
@@ -224,6 +177,100 @@ var CalenderController = {
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
                 outPut['events'] = result.events;
+                outPut['week'] = result.week;
+                outPut['days'] = result.days;
+                res.status(200).send(outPut);
+            }
+        });
+    },
+
+    /**
+     * Return all events todos tasks for current week
+     * @param req
+     * @param res
+     * @return Json
+     */
+    getAllEventForCurrentWeek: function(req,res) {
+        var moment = require('moment');
+        var CurrentSession = Util.getCurrentSession(req);
+        var CalenderEvent = require('mongoose').model('CalenderEvent');
+
+        var data ={};
+        data['week'] = Math.ceil(moment().format('DD')/7);
+        data['month'] = moment().format('MM');
+        data['year'] = moment().format('YYYY');
+        data['user_id'] = Util.toObjectId(CurrentSession.id);
+
+        CalenderEvent.getWeeklyCalenderEvens(data,function(err, result) {
+            var outPut ={};
+            if(err) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_WEEK_EMPTY, Alert.ERROR);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['events'] = result.events;
+                outPut['week'] = result.week;
+                outPut['days'] = result.days;
+                res.status(200).send(outPut);
+            }
+        });
+    },
+
+    /**
+     * Return all events todos tasks for next or previous week
+     * @param req
+     * @param res
+     * @return Json
+     */
+    getAllEventForNextOrPrevWeek: function(req,res) {
+        var moment = require('moment');
+        var CurrentSession = Util.getCurrentSession(req);
+        var CalenderEvent = require('mongoose').model('CalenderEvent');
+
+        var data ={}, startDateOfWeek,endDateOfWeek;
+        data['date'] = req.query.date;
+        data['action'] = req.query.action;
+        data['user_id'] = Util.toObjectId(CurrentSession.id);
+        data['current_month'] = moment(data['date']).format('MM');
+        data['current_year'] = moment(data['date']).format('YYYY');
+
+        if(data['action'] == 'next'){
+            startDateOfWeek = moment(data['date']).add(7,'day').format('YYYY-MM-DD');
+        }else{
+            startDateOfWeek = moment(data['date']).subtract(7,'day').format('YYYY-MM-DD');
+        }
+
+        data['week'] = Math.ceil(moment(startDateOfWeek).format('DD')/7);
+        data['month'] = moment(startDateOfWeek).format('MM');
+        data['year'] = moment(startDateOfWeek).format('YYYY');
+
+        if(data['current_month'] != data['month'] || data['current_year'] != data['year']){
+            if(data['current_year'] != data['year']){
+                if(data['current_year'] > data['year']){
+                    data['week'] = Math.ceil(moment(startDateOfWeek).endOf('month').format('DD')/7);
+                }else{
+                    data['week'] = Math.ceil(moment(startDateOfWeek).startOf('month').format('DD')/7);
+                }
+            }else{
+                if(data['current_month'] > data['month']){
+                    data['week'] = Math.ceil(moment(startDateOfWeek).endOf('month').format('DD')/7);
+                }else{
+                    data['week'] = Math.ceil(moment(startDateOfWeek).startOf('month').format('DD')/7);
+                }
+            }
+
+        }
+
+            CalenderEvent.getWeeklyCalenderEvens(data,function(err, result) {
+            var outPut ={};
+            if(err) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_WEEK_EMPTY, Alert.ERROR);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['events'] = result.events;
+                outPut['week'] = result.week;
+                outPut['days'] = result.days;
                 res.status(200).send(outPut);
             }
         });
