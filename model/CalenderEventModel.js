@@ -276,4 +276,49 @@ CalenderEventSchema.statics.getSortedCalenderItems = function(criteria,callBack)
 
 };
 
+/**
+ *
+ * Get Calender events, for the given week
+ * @param data object
+ *
+ */
+CalenderEventSchema.statics.getWeeklyCalenderEvens = function(data,callBack){
+
+    var _this = this;
+    var moment = require('moment');
+    var week = data['week'],month = (data['month'] -1),year = data['year'];
+
+    var startDateOfWeek = moment([year, month]).add((week-1)*7,"days");
+    var endDateOfWeek = moment([year,month]).add((week*7)+1,"days").subtract(1,"millisecond");
+
+    if(week == 5){
+        endDateOfWeek =  moment([year, month]).endOf('month').subtract(1,"millisecond");
+    }
+
+    //get days betweek the week
+    var dateArray = [];
+    var currentDate = startDateOfWeek;
+    while (currentDate <= endDateOfWeek) {
+        dateArray.push(currentDate);
+        currentDate = moment(currentDate).add(1, 'days');
+    }
+
+    var criteria =  { start_date_time: {$gte: startDateOfWeek, $lt: endDateOfWeek }, status: 1, user_id: data['user_id']};
+
+    _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
+        if(!err){
+            callBack(null, {
+                status:200,
+                events:resultSet,
+                week:week,
+                days:dateArray
+            });
+        } else {
+            console.log("Server error while getSortedCalenderItems --------");
+            callBack({status:400,error:err}, null);
+        }
+    });
+
+};
+
 mongoose.model('CalenderEvent', CalenderEventSchema);

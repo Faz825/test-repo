@@ -114,22 +114,24 @@ export default class Header extends React.Component {
                                 <div className="icon-holder">
                                     <img src="/images/header-icons/chat-notifi-icon.png" alt="chat notifi" />
                                 </div>
-                                <span id="unread_chat_count_header" className="notifi-num">2</span>
+                                <div id="unread_chat_count_header" className="notifi-num notifi-alert-holder"></div>
                                 <div id="chat_notification_wrapper" className="chat-notification-wrapper">
-                                <img className="drop_downarrow" src="/images/drop_arrow.png" alt="" />
-                                <Scrollbars style={{ height: 260 }}>
-                                    <ConversationList connections={this.state.my_connections} loadQuickChat={this.initiateQuickChat.bind(this)}/>
-                                    <div className="chat-dropdown-link-holder">
-                                        <a href="/chat">See All</a>
-                                    </div>
-                                </Scrollbars>
-                            </div>
+                                    <img className="drop_downarrow" src="/images/drop_arrow.png" alt="" />
+                                    <Scrollbars style={{ height: 260 }}>
+                                        <ConversationList connections={this.state.my_connections} loadQuickChat={this.initiateQuickChat.bind(this)}/>
+                                        <div className="chat-dropdown-link-holder">
+                                            <a href="/chat">See All</a>
+                                        </div>
+                                    </Scrollbars>
+                                </div>
                             </div>
                             <div className="friends-icon opt-holder">
                                 <div className="icon-holder">
                                     <img src="/images/header-icons/friends-notifi-icon.png" alt="friends notifi" />
                                 </div>
-                                <span className="notifi-num">2</span>
+                                <div className="notifi-alert-holder">
+                                    <span className="notifi-num">2</span>
+                                </div>
                             </div>
                             <ProfileImg />
                         </div>
@@ -270,7 +272,7 @@ export class ConversationList extends React.Component{
                         }
 
                         if(this.unreadCount > 0 && !_blockMessages){
-                            $("#unread_chat_count_header").html('<span class="total">'+this.unreadCount+'</span>');
+                            $("#unread_chat_count_header").html('<span class="total notifi-num">'+this.unreadCount+'</span>');
                         } else{
                             $("#unread_chat_count_header").html('');
                         }
@@ -352,7 +354,7 @@ export class ConversationList extends React.Component{
             }
 
             if(this.unreadCount > 0 && !_blockMessages){
-                $("#unread_chat_count_header").html('<span class="total">'+this.unreadCount+'</span>');
+                $("#unread_chat_count_header").html('<span class="total notifi-num">'+this.unreadCount+'</span>');
             } else{
                 $("#unread_chat_count_header").html('');
             }
@@ -384,7 +386,7 @@ export class ConversationList extends React.Component{
                     if(this.unreadCount <= 0 || _blockMessages){
                         $("#unread_chat_count_header").html('');
                     } else {
-                        $("#unread_chat_count_header").html('<span class="total">' + this.unreadCount + '</span>');
+                        $("#unread_chat_count_header").html('<span class="total notifi-num">' + this.unreadCount + '</span>');
                     }
                 }
             }

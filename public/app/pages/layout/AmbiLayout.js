@@ -202,6 +202,7 @@ export default class AmbiLayout extends React.Component{
         this.setState({notificationCount : c});
     }
 
+
 	render(){
 		return(
 			<div className="app-holder">
@@ -228,7 +229,8 @@ export default class AmbiLayout extends React.Component{
                         null
                 }
                 <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)}/>
-                <FooterHolder blockBottom={this.state.rightBottom} blockSocialNotification={this.state.socialNotifications} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)} onUpdateNotifiPopupCount={this.updateNotificationPopCount.bind(this)}/>
+                <FooterHolder blockBottom={this.state.rightBottom} blockSocialNotification={this.state.socialNotifications} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)} onUpdateNotifiPopupCount={this.updateNotificationPopCount.bind(this)}
+                	currPage={(this.props.children)? null : "dashboard"}/>
                 <span className="settings-icon"></span>
 			</div>
 		);

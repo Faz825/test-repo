@@ -3352,10 +3352,10 @@ textarea{
 	margin: auto;
 }
 
-#unread_chat_count_header{
+/*#unread_chat_count_header{
 	position: relative;
 	top: -45px;
-	left: 30px;}
+	left: 30px;}*/
 
 #unread_chat_count_header .total{
 	color: #fff;
@@ -3787,7 +3787,7 @@ textarea{
 }
 
 .popover.right>.arrow {
-    top: 90px!important;
+    /*top: 90px!important;*/
 }
 
 .notifications.popover-holder .arrow{
