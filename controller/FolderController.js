@@ -13,6 +13,8 @@ var FolderController ={
      */
     addNewFolder:function(req,res){
 
+        console.log("addNewFolder")
+
         var Folders = require('mongoose').model('Folders');
 
         var _folder = {

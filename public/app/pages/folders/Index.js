@@ -6,6 +6,8 @@ import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
+import Autosuggest from 'react-autosuggest';
+import Lib from '../../middleware/Lib'
 
 export default class Index extends React.Component{
     constructor(props){
@@ -17,12 +19,116 @@ export default class Index extends React.Component{
             CFColor : "",
             clrChosen : "",
             isFolderNameEmpty : false,
-            isFolderClrEmpty: false
-        }
+            isFolderClrEmpty: false,
+            isAlreadySelected:false,
+            value: '',
+            suggestions: [],
+            suggestionsList : {},
+            sharedWithIds : [],
+            sharedWithNames : []
+        };
+
+        this.users = [];
+        this.sharedWithIds = [];
+        this.sharedWithNames = [];
 
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.colorPicker = this.colorPicker.bind(this);
+
+        this.onChange = this.onChange.bind(this);
+        this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
+        this.getSuggestionValue = this.getSuggestionValue.bind(this);
+        this.renderSuggestion = this.renderSuggestion.bind(this);
+
+        this.removeUser = this.removeUser.bind(this);
+    }
+
+    removeUser(key){
+        this.sharedWithIds.splice(key,1);
+        this.sharedWithNames.splice(key,1);
+        this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames});
+    }
+
+    getSuggestions(value, data) {
+        const escapedValue = Lib.escapeRegexCharacters(value.trim());
+        if (escapedValue === '') {
+            return [];
+        }
+        const regex = new RegExp('^' + escapedValue, 'i');
+        return data.filter(data => regex.test(data.first_name+" "+data.last_name));
+    }
+
+    getSuggestionValue(suggestion) {
+        if(this.sharedWithIds.indexOf(suggestion.user_id)==-1){
+            this.sharedWithIds.push(suggestion.user_id);
+            this.sharedWithNames.push(suggestion.first_name+" "+suggestion.last_name);
+            this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false})
+        } else{
+            this.setState({isAlreadySelected:true});
+            console.log("already selected" + this.state.isAlreadySelected)
+        }
+
+        return "";
+    }
+
+    renderSuggestion(suggestion) {
+        return (
+            <span id={suggestion.user_id}>{suggestion.first_name+" "+suggestion.last_name}</span>
+        );
+    }
+
+    onChange(event, { newValue }) {
+        this.setState({ value: newValue, isAlreadySelected:false });
+
+        if(newValue.length == 1){
+            $.ajax({
+                url: '/connection/search/'+newValue,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.users = data.suggested_users;
+                        this.setState({
+                            suggestions: this.getSuggestions(newValue, this.users),
+                            suggestionsList : this.getSuggestions(newValue, this.users)
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        } else if(newValue.length > 1 && this.users.length < 10){
+            $.ajax({
+                url: '/connection/search/'+newValue,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.users = data.suggested_users;
+                        this.setState({
+                            suggestions: this.getSuggestions(newValue, this.users),
+                            suggestionsList : this.getSuggestions(newValue, this.users)
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        }
+    }
+
+    onSuggestionsUpdateRequested({ value }) {
+        this.setState({
+            suggestions: this.getSuggestions(value, this.users),
+            suggestionsList : this.getSuggestions(value, this.users)
+        });
     }
 
     handleClick() {
@@ -30,7 +136,12 @@ export default class Index extends React.Component{
     }
 
     handleClose() {
-        this.setState({isShowingModal: false, isFolderNameEmpty : false, isFolderClrEmpty : false});
+        this.setState({isShowingModal: false, isFolderNameEmpty : false, isFolderClrEmpty : false, CFName : "", CFColor : "", clrChosen : "", isAlreadySelected:false, value: '',
+            suggestions: [], suggestionsList : {}, sharedWithIds : [], sharedWithNames : []});
+
+        this.users = [];
+        this.sharedWithIds = [];
+        this.sharedWithNames = [];
     }
 
     handleNameChange(e){
@@ -51,6 +162,27 @@ export default class Index extends React.Component{
         }
 
         if(this.state.CFName && this.state.CFColor){
+            console.log("this.state.CFName ==> "+this.state.CFName);
+            console.log("this.state.CFColor ==> "+this.state.CFColor);
+            console.log("this.state.sharedWithIds ==> "+this.state.sharedWithIds);
+
+            $.ajax({
+                url: '/folders/add-new',
+                method: "POST",
+                dataType: "JSON",
+                headers: { 'prg-auth-header':this.state.loggedUser.token },
+                data:{folder_name:this.state.CFName, folder_color:this.state.CFColor, shared_with:this.state.sharedWithIds},
+                success: function (data, text) {
+                    if (data.status.code == 200) {
+
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(status);
+                    console.log(error);
+                }
+            });
+
             this.setState({isShowingModal: false, CFName : "", CFColor : ""});
             console.log(this.state.CFName, this.state.CFColor);
         }
@@ -66,6 +198,21 @@ export default class Index extends React.Component{
     }
 
     addFolderPopup(){
+        const { value, suggestions, suggestionsList } = this.state;
+
+        const inputProps = {
+            placeholder: 'Type a name...',
+            value,
+            onChange: this.onChange
+        };
+
+        let shared_with_list = [];
+
+        if(this.state.sharedWithNames.length > 0){
+            shared_with_list = this.state.sharedWithNames.map((name,key)=>{
+                return <div key={key}>{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></div>
+            });
+        }
         return(
             <div>
                 {this.state.isShowingModal &&
@@ -130,9 +277,26 @@ export default class Index extends React.Component{
                                     <div className="row invite-people">
                                         <div className="col-sm-12 input-group">
                                             <p>Invite some people</p>
-                                            <input type="text" className="form-control" placeholder="Type a name..." />
+                                            <Autosuggest suggestions={suggestions}
+                                                         onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                                                         getSuggestionValue={this.getSuggestionValue}
+                                                         renderSuggestion={this.renderSuggestion}
+                                                         inputProps={inputProps} />
                                         </div>
                                     </div>
+                                    {
+                                        (this.state.sharedWithNames.length > 0)?
+                                            <div className="row folder-name">
+                                                <div className="col-sm-12 input-group">{shared_with_list}</div>
+                                            </div> : null
+                                    }
+                                    {
+                                        (this.state.isAlreadySelected)?
+                                            <span className="errorMsg">Already selected this user</span>
+                                            :
+                                            null
+                                    }
+
                                 </section>
                                 <section className="folder-footer">
                                     <div className="row action-bar">
