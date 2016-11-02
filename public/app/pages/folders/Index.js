@@ -14,6 +14,7 @@ export default class Index extends React.Component{
         super(props);
 
         this.state={
+            loggedUser : Session.getSession('prg_lg'),
             isShowingModal : false,
             CFName : "",
             CFColor : "",
@@ -25,7 +26,8 @@ export default class Index extends React.Component{
             suggestions: [],
             suggestionsList : {},
             sharedWithIds : [],
-            sharedWithNames : []
+            sharedWithNames : [],
+            folders : {}
         };
 
         this.users = [];
@@ -35,13 +37,59 @@ export default class Index extends React.Component{
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.colorPicker = this.colorPicker.bind(this);
-
         this.onChange = this.onChange.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
         this.getSuggestionValue = this.getSuggestionValue.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
-
         this.removeUser = this.removeUser.bind(this);
+        this.loadFolders();
+    }
+
+    loadFolders(){
+
+        console.log("loadFolders")
+
+        $.ajax({
+            url: '/folders/get-all',
+            method: "GET",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
+        }).done( function (data, text) {
+            console.log(data);
+            if(data.status.code == 200){
+                if(data.folders.length == 0 || data.folders[0] == null){
+                    this.setState({CFName:"My Folder", CFColor:"#ed0677"})
+                    this.addDefaultFolder();
+                } else{
+                    let folders = data.folders;
+                    this.setState({folders: folders});
+                }
+            }
+        }.bind(this));
+    }
+
+    addDefaultFolder(){
+
+        console.log("addDefaultFolder")
+
+        $.ajax({
+            url: '/folders/add-new',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            data:{folder_name:this.state.CFName, folder_color:this.state.CFColor, shared_with:this.state.sharedWithIds, isDefault:1},
+            success: function (data, text) {
+                if (data.status.code == 200) {
+                    this.loadFolders();
+                    this.setState({CFName : "", CFColor : ""});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(status);
+                console.log(error);
+            }
+        });
+
     }
 
     removeUser(key){
@@ -174,6 +222,8 @@ export default class Index extends React.Component{
                 data:{folder_name:this.state.CFName, folder_color:this.state.CFColor, shared_with:this.state.sharedWithIds},
                 success: function (data, text) {
                     if (data.status.code == 200) {
+                        this.setState({isShowingModal: false, CFName : "", CFColor : ""});
+                        console.log(this.state.CFName, this.state.CFColor);
 
                     }
                 }.bind(this),
@@ -183,8 +233,7 @@ export default class Index extends React.Component{
                 }
             });
 
-            this.setState({isShowingModal: false, CFName : "", CFColor : ""});
-            console.log(this.state.CFName, this.state.CFColor);
+
         }
     }
 

@@ -15,9 +15,9 @@ var CalenderEventHandler = {
                 CalenderEvent = require('mongoose').model('CalenderEvent'),
                 moment = require('moment');
 
-            console.log("***************************************************");
-            console.log("------------ START SCHEDULE ---- @ " + moment().format('YYYY-MM-DD HH:mm:ss'));
-            console.log("***************************************************");
+            //console.log("***************************************************");
+            //console.log("------------ START SCHEDULE ---- @ " + moment().format('YYYY-MM-DD HH:mm:ss'));
+            //console.log("***************************************************");
 
 
             _async.waterfall([
@@ -86,8 +86,8 @@ var CalenderEventHandler = {
                     }
                 }
             ], function(err) {
-                console.log("----------------- END SCHEDULE ------------------");
-                console.log("***************************************************");
+                //console.log("----------------- END SCHEDULE ------------------");
+                //console.log("***************************************************");
             });
 
         });
