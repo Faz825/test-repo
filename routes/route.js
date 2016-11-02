@@ -295,6 +295,8 @@ router.get('/calender/get-shared-users', CalenderController.getEventSharedUsers)
 
 router.post('/calender/get-events-for-specific-day', CalenderController.getEventsForSpecificDay);
 
+router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
+
 /**
  * API Routes that need to authenticate separately
  */

@@ -19,3 +19,94 @@
     float: left;
     margin-top: 5px;
 }
+
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input {
+	overflow: visible !important;
+}
+
+/* Day event suggestions styles. */
+.day-view-text-editor-holder {
+	position: relative;
+}
+
+.day-view-text-editor.day-view-editor-copy {
+	/*border: 1px solid red;*/
+	/*margin-bottom: -62px;*/
+    position: relative;
+    opacity: 1;
+    z-index: 0;
+} 
+
+.day-view-text-editor { 
+	border : 0px;  
+	width: 100%;
+	padding: 30px 70px;
+    overflow: hidden;
+    font-size: 0.875em;
+    font-weight: 400;
+    color: #bebfbf;
+    outline: none;
+    position: relative;
+    z-index: 1;
+    opacity: 1;
+}
+
+.day-view-text-editor .custom-editor-field-suggestion {
+	color: #00a6ef;	
+}
+
+.day-view-text-editor-holder .suggestions-holder {
+	position: absolute;
+	top: 70px;
+	left: 30px;
+	z-index: 999;
+	background: #fff;
+	-webkit-box-shadow: 0 0 10px 10px #eeeeee;
+	-moz-box-shadow: 0 0 10px 10px #eeeeee;
+	-o-box-shadow: 0 0 10px 10px #eeeeee;
+    box-shadow: 0 0 3px 2px #eeeeee;
+    -webkit-transition: all 200ms ease;
+	-moz-transition: all 200ms ease;
+	-ms-transition: all 200ms ease;
+	-o-transition: all 200ms ease;
+	transition: all 200ms ease;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.day-view-text-editor-holder .suggestions-holder li {
+	display: block;
+	border-bottom: 1px solid #eee; 
+	padding: 10px 5px;
+	overflow: hidden;
+	min-width: 200px;
+    line-height: 10px;
+    cursor: pointer;
+}
+
+.day-view-text-editor-holder .suggestions-holder .img-div {
+	font-size: 0px;
+	line-height: 0px;
+	width: 20px;
+	margin-right: 5px;
+	float: left;
+}
+
+.day-view-text-editor-holder .suggestions-holder .img-div img {
+	width: 100%
+}
+
+.day-view-text-editor-holder .suggestions-holder li p {
+	margin: 5px 0px 0px 0px;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .menu-ico p button {
+
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	-o-appearance: none;
+    border: 0px;
+    background: none;
+}
