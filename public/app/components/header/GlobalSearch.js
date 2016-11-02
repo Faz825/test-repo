@@ -119,7 +119,8 @@ export default class GlobalSearch extends React.Component{
         const inputProps = {
             placeholder: 'Search...',
             value,
-            onChange: this.onChange
+            onChange: this.onChange,
+            className: 'form-control'
         };
 
         return(
@@ -143,7 +144,9 @@ export default class GlobalSearch extends React.Component{
                                  getSuggestionValue={this.getSuggestionValue}
                                  renderSuggestion={this.renderSuggestion}
                                  inputProps={inputProps} />
-                <i className="fa fa-search" aria-hidden="true"></i>
+                {
+                    (value.length <= 0) ? <i className="fa fa-search" aria-hidden="true"></i> : null
+                }
             </div>
         );
     }
