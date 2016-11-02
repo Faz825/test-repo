@@ -233,6 +233,7 @@ router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
 //CONNECTIONS
 router.get('/connection/requests', ConnectionController.getRequestedConnections);
 router.get('/connection/me', ConnectionController.getMyConnections);
+router.get('/connection/search/:q', ConnectionController.searchConnection);
 router.get('/connection/me/sort/:option', ConnectionController.getMySortedConnections);
 router.get('/connection/me/unfriend', ConnectionController.getMyConnectionsBindUnfriendConnections);
 router.get('/connection/get-mutual/:uid', ConnectionController.getMutualConnections);
@@ -283,8 +284,11 @@ router.get('/notifications/get-notification-count',NotificationController.getNot
 router.post('/folders/add-new', FolderController.addNewFolder);
 router.get('/folders/get-all', FolderController.getFolders);
 
+router.post('/calender/add-event', CalenderController.addEvent);
 router.get('/calender/get-all-month', CalenderController.getAllForSpecificMonth);
 router.get('/calender/get-all-week', CalenderController.getAllForSpecificWeek);
+router.get('/calender/get-current-week', CalenderController.getAllEventForCurrentWeek);
+router.get('/calender/get-next-prev-week', CalenderController.getAllEventForNextOrPrevWeek);
 router.get('/calender/get-all-day', CalenderController.getEventsForSpecificDay);
 router.post('/calender/update', CalenderController.updateEvent);
 router.post('/calender/add-event', CalenderController.addEvent);

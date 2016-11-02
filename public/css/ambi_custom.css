@@ -1,6 +1,4 @@
 /* Custom css styles for Ambi layout will go here */
-.body-container{}
-
 .modalPopup.modalPopup{
 	border-radius: 0;
 	padding: 0;
@@ -11,6 +9,7 @@
 	top: -20px;
 	right: -21px;
 	left: auto;
+	cursor: pointer;
 }
 
 .errorMsg{
@@ -20,27 +19,97 @@
     margin-top: 5px;
 }
 
+.invite-people #react-autowhatever-1{
+	width: 100%;
+	float: left;
+	position: relative;
+	top: auto;
+	left: auto;
+	height: 120px;
+	overflow-y: scroll;
+}
+
+.invite-people .suggestion-item{
+	overflow: hidden;
+}
+
+.invite-people .suggestion-item .suggestion-img{
+	width: 30px;
+	height: 30px;
+	float: left;
+	margin-right: 10px;
+}
+
+.invite-people .suggestion-item span{
+	float: left;
+	font-size: 0.9em;
+	text-transform: capitalize;
+	margin: 5px 0 0 0 ;
+}
+
+/* - ReactAutoSuggest Custom Styles*/
+.search-holder .react-autosuggest__suggestions-container{
+	z-index: 1;
+}
+.search-holder #react-autowhatever-1{
+	max-height: 335px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	top: 48px;
+	width: 100%;
+}
+.search-holder #react-autowhatever-1 a:hover{
+	text-decoration: none;
+}
+.search-holder #react-autowhatever-1 .suggestion{
+	overflow: hidden;
+	position: relative;
+}
+.search-holder #react-autowhatever-1 .suggestion .img-holder{
+	width: 30px;
+	height: 30px;
+	margin-right: 15px;
+	float: left;
+}
+.search-holder #react-autowhatever-1 .suggestion span{
+	float: left;
+	margin-top: 8px;
+	line-height: 1;
+	text-transform: capitalize;
+	font: 12px 'montserratregular', sans-serif;
+	color: #2d5164;
+}
+
+/* Dashboard time */
+.timeA {
+	font-size: 0.17em;
+	text-transform: uppercase;
+	font-weight: 500;
+	margin-left: 0px;
+}
+
+
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input {
-	overflow: visible !important;
+  overflow: visible !important;
 }
 
 /* Day event suggestions styles. */
 .day-view-text-editor-holder {
-	position: relative;
+  position: relative;
 }
 
 .day-view-text-editor.day-view-editor-copy {
-	/*border: 1px solid red;*/
-	/*margin-bottom: -62px;*/
+  /*border: 1px solid red;*/
+  /*margin-bottom: -62px;*/
     position: relative;
     opacity: 1;
     z-index: 0;
 } 
 
 .day-view-text-editor { 
-	border : 0px;  
-	width: 100%;
-	padding: 30px 70px;
+  border : 0px;  
+  width: 100%;
+  padding: 30px 70px;
     overflow: hidden;
     font-size: 0.875em;
     font-weight: 400;
@@ -52,61 +121,61 @@
 }
 
 .day-view-text-editor .custom-editor-field-suggestion {
-	color: #00a6ef;	
+  color: #00a6ef; 
 }
 
 .day-view-text-editor-holder .suggestions-holder {
-	position: absolute;
-	top: 70px;
-	left: 30px;
-	z-index: 999;
-	background: #fff;
-	-webkit-box-shadow: 0 0 10px 10px #eeeeee;
-	-moz-box-shadow: 0 0 10px 10px #eeeeee;
-	-o-box-shadow: 0 0 10px 10px #eeeeee;
+  position: absolute;
+  top: 70px;
+  left: 30px;
+  z-index: 999;
+  background: #fff;
+  -webkit-box-shadow: 0 0 10px 10px #eeeeee;
+  -moz-box-shadow: 0 0 10px 10px #eeeeee;
+  -o-box-shadow: 0 0 10px 10px #eeeeee;
     box-shadow: 0 0 3px 2px #eeeeee;
     -webkit-transition: all 200ms ease;
-	-moz-transition: all 200ms ease;
-	-ms-transition: all 200ms ease;
-	-o-transition: all 200ms ease;
-	transition: all 200ms ease;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	-o-border-radius: 3px;
-	border-radius: 3px;
+  -moz-transition: all 200ms ease;
+  -ms-transition: all 200ms ease;
+  -o-transition: all 200ms ease;
+  transition: all 200ms ease;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
 }
 
 .day-view-text-editor-holder .suggestions-holder li {
-	display: block;
-	border-bottom: 1px solid #eee; 
-	padding: 10px 5px;
-	overflow: hidden;
-	min-width: 200px;
+  display: block;
+  border-bottom: 1px solid #eee; 
+  padding: 10px 5px;
+  overflow: hidden;
+  min-width: 200px;
     line-height: 10px;
     cursor: pointer;
 }
 
 .day-view-text-editor-holder .suggestions-holder .img-div {
-	font-size: 0px;
-	line-height: 0px;
-	width: 20px;
-	margin-right: 5px;
-	float: left;
+  font-size: 0px;
+  line-height: 0px;
+  width: 20px;
+  margin-right: 5px;
+  float: left;
 }
 
 .day-view-text-editor-holder .suggestions-holder .img-div img {
-	width: 100%
+  width: 100%
 }
 
 .day-view-text-editor-holder .suggestions-holder li p {
-	margin: 5px 0px 0px 0px;
+  margin: 5px 0px 0px 0px;
 }
 
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .menu-ico p button {
 
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	-o-appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
     border: 0px;
     background: none;
 }

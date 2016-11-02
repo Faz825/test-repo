@@ -10334,7 +10334,12 @@ header .notification-holder .opt-holder .icon-holder {
   text-align: center;
   padding: 10px;
 }
-header .notification-holder .opt-holder .notifi-num {
+header .notification-holder .opt-holder .notifi-alert-holder {
+  position: absolute;
+  top: -6px;
+  right: -4px;
+}
+header .notification-holder .opt-holder .notifi-alert-holder .notifi-num {
   color: #fff;
   background: #f11379;
   border-radius: 999px;
@@ -10342,9 +10347,6 @@ header .notification-holder .opt-holder .notifi-num {
   line-height: 1;
   font-size: 0.75em;
   font-weight: 500;
-  position: absolute;
-  top: 2px;
-  right: -4px;
 }
 header .notification-holder .profile-header-thumb {
   float: left;
@@ -11017,12 +11019,15 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-box > div.week {
   float: left;
   width: 100%;
-  border-top: solid 1px transparent !important;
+  border-top: solid 1px #dee6eb;
   background: white;
   border-left: solid 1px #dee6eb;
 }
 .calender-container .calender-box > div.week:first-child {
   border-top: none;
+}
+.calender-container .calender-box > div.week {
+  border-top: solid 1px #dee6eb;
 }
 .calender-container .calender-box > div.week > span.day {
   float: left;
@@ -11070,13 +11075,13 @@ header .notification-holder .profile-header-thumb {
   border-radius: 50%;
   width: 36px;
   height: 36px;
-  padding: 8px;
+  padding: 3px 5px;
   background: #00a6ef;
   color: #ffffff;
 }
 .calender-container .calender-box > div.week > span.day .squre {
   height: 36px;
-  padding: 8px 8px 8px 0;
+  padding: 0;
   font-size: 1.4em;
 }
 .calender-container .calender-box > div.week > span.day .event-counts {
@@ -11120,6 +11125,7 @@ header .notification-holder .profile-header-thumb {
   height: auto;
   text-align: center;
   padding-left: 0px;
+  border-left: none;
 }
 .calender-container .mini-calender-box.calender-box {
   border: solid 1px #CCC;
@@ -11135,11 +11141,11 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .mini-calender-box.calender-box .week {
   border-left: none;
+  border-top: none;
 }
 .calender-container .mini-calender-box.calender-box .week .day {
   padding-top: 0;
   font-size: 0.598125em;
-  border-left: solid 1px transparent;
 }
 .calender-container .mini-calender-box.calender-box .week .day:first-child {
   border-left: none;
@@ -11166,6 +11172,7 @@ header .notification-holder .profile-header-thumb {
   color: #a8bfcd;
   font-size: 0.7475em;
   font-weight: 400;
+  border-left: none;
 }
 .calender-container .calender-header .col-sm-2 {
   padding-left: 0px;
@@ -11270,6 +11277,8 @@ header .notification-holder .profile-header-thumb {
   border-left: 1px solid #bcbfbf;
   border-right: 1px solid #bcbfbf;
   background-color: #ffffff;
+  min-width: 155px;
+  text-align: center;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper .date p {
   margin: 9px 14px 12px;
@@ -11401,6 +11410,7 @@ header .notification-holder .profile-header-thumb {
   color: #ffffff;
   width: 110px;
   height: 40px;
+  cursor: pointer;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content {
   padding: 40px 70px;
@@ -11591,6 +11601,8 @@ header .notification-holder .profile-header-thumb {
   border-left: 1px solid #bcbfbf;
   border-right: 1px solid #bcbfbf;
   background-color: #ffffff;
+  min-width: 155px;
+  text-align: center;
 }
 .calender-week-view .view-header .date-wrapper .date p {
   padding: 11px 14px 11px;
@@ -11627,21 +11639,21 @@ header .notification-holder .profile-header-thumb {
 .calender-week-view .view-tile-area .week-tiles .day-tile:nth-of-type(2n) {
   margin-right: 0;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header {
   background-color: #ffffff;
   padding: 5% 7%;
   border-bottom: 1px solid #dee6eb;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header:before {
   display: table;
   content: " ";
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header:after {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header:after {
   clear: both;
   display: table;
   content: " ";
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header h5 {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header h5 {
   float: left;
   text-align: left;
   width: 50%;
@@ -11651,7 +11663,7 @@ header .notification-holder .profile-header-thumb {
   color: #00a6ef;
   font-weight: 500;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header h6 {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header h6 {
   float: left;
   text-align: right;
   width: 50%;
@@ -11661,7 +11673,7 @@ header .notification-holder .profile-header-thumb {
   color: #989ba0;
   font-weight: 500;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header h3 {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header h3 {
   float: left;
   text-align: left;
   font-size: 1.5575em;
@@ -11671,29 +11683,29 @@ header .notification-holder .profile-header-thumb {
   margin-top: 8px;
   margin-bottom: 0;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body {
   background-color: #f6f8fc;
   padding: 5% 7%;
   height: 215px;
   overflow-y: scroll;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body:before {
   display: table;
   content: " ";
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body:after {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body:after {
   clear: both;
   display: table;
   content: " ";
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li {
   font-family: "Work Sans", sans-serif;
   font-size: 0.77875em;
   font-weight: 500;
   color: black;
   margin-bottom: 5px;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li:before {
   content: "\f111";
   font-family: FontAwesome;
   line-height: 1;
@@ -11702,10 +11714,10 @@ header .notification-holder .profile-header-thumb {
   margin-top: 5px;
   margin-right: 4px;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li.todo:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li.todo:before {
   color: #a6c649;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li.events:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li.events:before {
   color: #00a6ef;
 }
 @media screen and (min-width: 50em) {
@@ -11721,6 +11733,10 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-week-view .remove-padding {
   padding: 0;
+}
+
+.calender-body {
+  margin-bottom: 100px;
 }
 
 .calender-month-view .view-header {
@@ -11745,6 +11761,8 @@ header .notification-holder .profile-header-thumb {
   border-left: 1px solid #bcbfbf;
   border-right: 1px solid #bcbfbf;
   background-color: #ffffff;
+  min-width: 155px;
+  text-align: center;
 }
 .calender-month-view .view-header .date-wrapper .date p {
   padding: 11px 14px 11px;
@@ -11762,9 +11780,6 @@ header .notification-holder .profile-header-thumb {
   font-size: 1.3125em;
   color: #000000;
   font-weight: 400;
-}
-.calender-month-view .view-tile-area {
-  color: red;
 }
 .calender-month-view .view-tile-area .color-1 {
   color: #00a6ef;
@@ -11787,9 +11802,13 @@ header .notification-holder .profile-header-thumb {
 }
 .profile-container .content-area {
   margin-top: 45px;
+  padding-bottom: 45px;
 }
 .profile-container .white-box {
   background-color: #ffffff;
+}
+.profile-container textarea:focus, .profile-container input:focus {
+  outline: none;
 }
 .profile-container .time-line-top-section .cover-page-section {
   position: relative;
@@ -11854,11 +11873,17 @@ header .notification-holder .profile-header-thumb {
   font-weight: 400;
 }
 .profile-container #new-post {
-  padding: 20px 15px;
   border-radius: 5px;
+  margin-bottom: 10px;
+}
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+  .profile-container #new-post {
+    padding: 20px 5px;
+  }
 }
 .profile-container #new-post .new-post-header {
   border-bottom: 1px solid #dee6eb;
+  margin: 0px 20px;
 }
 .profile-container #new-post .new-post-header:before {
   display: table;
@@ -11877,17 +11902,27 @@ header .notification-holder .profile-header-thumb {
 .profile-container #new-post .new-post-header ul li {
   list-style: none;
   float: left;
-  margin-right: 9px;
-  min-height: 30px;
+  margin-right: 4%;
+  min-height: 47px;
+  padding-top: 10px;
+}
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+  .profile-container #new-post .new-post-header ul li {
+    margin-right: 2%;
+  }
 }
 .profile-container #new-post .new-post-header ul li:hover a {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 500;
   color: #59afe1 !important;
-  border-bottom: 1px solid #59afe1;
+  border-bottom: 3px solid #59afe1;
 }
 .profile-container #new-post .new-post-header ul li:hover a img:nth-child(1) {
   opacity: 1;
 }
 .profile-container #new-post .new-post-header ul li a {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 500;
   text-decoration: none;
   font-size: 0.775625em;
   color: #000000;
@@ -11899,6 +11934,331 @@ header .notification-holder .profile-header-thumb {
 .profile-container #new-post .new-post-header ul li a img:nth-child(1) {
   opacity: 0;
   position: absolute;
+  margin-top: 0px;
+}
+.profile-container #new-post .new-post-header ul li a img:nth-child(2) {
+  display: inline-block;
+}
+.profile-container #new-post .new-post-body {
+  padding: 0 20px;
+}
+.profile-container #new-post .new-post-body .post-content {
+  padding: 25px 0;
+  background-color: #fff;
+}
+.profile-container #new-post .new-post-body .post-content .user-pro-pic {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 15px;
+  width: 7%;
+}
+.profile-container #new-post .new-post-body .post-content textarea {
+  resize: none;
+  width: 87%;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 400;
+  font-size: 1.08625em;
+  color: #bebfbf;
+  border: none;
+  display: inline-block;
+}
+.profile-container #new-post .new-post-footer {
+  border-top: 2px solid #d9d9d9;
+  padding: 13px 20px;
+}
+.profile-container #new-post .new-post-footer:before {
+  display: table;
+  content: " ";
+}
+.profile-container #new-post .new-post-footer:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.profile-container #new-post .new-post-footer .left-col {
+  float: left;
+}
+.profile-container #new-post .new-post-footer .left-col button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  outline: none;
+  margin-top: 7px;
+}
+.profile-container #new-post .new-post-footer .left-col .fa-camera {
+  color: #7f7f7f;
+  font-size: 1.25em;
+}
+.profile-container #new-post .new-post-footer .right-col {
+  float: right;
+}
+.profile-container #new-post .new-post-footer .right-col button {
+  font-family: "Work Sans", sans-serif;
+  color: #fff;
+  font-size: 0.775625em;
+  text-align: center;
+  background-color: #00a5ef;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  padding: 7px 24px;
+  display: block;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: none;
+  outline: none;
+}
+.profile-container #post {
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+.profile-container #post .post-header {
+  padding: 20px;
+}
+.profile-container #post .post-header:before {
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-header:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-header .profile-pic {
+  float: left;
+}
+.profile-container #post .post-header .post-details {
+  font-family: "Work Sans", sans-serif;
+  float: left;
+  padding-left: 20px;
+}
+.profile-container #post .post-header .post-details h5 {
+  color: #000000;
+  font-size: 1.08625em;
+  font-weight: 700;
+  cursor: pointer;
+}
+.profile-container #post .post-header .post-details h5 span > i {
+  color: #999999;
+}
+.profile-container #post .post-header .post-details p {
+  font-size: 0.775625em;
+  font-weight: 400;
+  color: #999999;
+  margin-bottom: 0;
+}
+.profile-container #post .post-body {
+  padding: 0px 20px 20px 20px;
+}
+.profile-container #post .post-body:before {
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-body:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-body p {
+  color: #010101;
+  font-size: 0.93125em;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+.profile-container #post .post-body .photo-album {
+  margin-left: -1%;
+  margin-right: -1%;
+}
+.profile-container #post .post-body .photo-album:before {
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-body .photo-album:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-body .photo-album .photo-box {
+  width: 25%;
+  float: left;
+  padding-right: 1%;
+  padding-left: 1%;
+  position: relative;
+}
+.profile-container #post .post-body .photo-album .photo-box .overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  width: 92%;
+  height: 100%;
+  z-index: 100;
+  text-align: center;
+}
+.profile-container #post .post-body .photo-album .photo-box .overlay:before {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 100%;
+  vertical-align: middle;
+}
+.profile-container #post .post-body .photo-album .photo-box .overlay span {
+  color: #fff;
+  margin: 0;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 1.706875em;
+  font-weight: 500;
+}
+.profile-container #post .post-footer:before {
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-footer:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-footer .actions-box {
+  border-top: 1px solid #d9d9d9;
+  padding: 15px 20px;
+}
+.profile-container #post .post-footer .actions-box span .action-icon {
+  display: inline-block;
+  position: relative;
+  font-size: 0.775625em;
+  margin-right: 20px;
+  cursor: pointer;
+}
+.profile-container #post .post-footer .actions-box span:last-child {
+  float: right;
+}
+.profile-container #post .post-footer .actions-box span:last-child .comments-count {
+  color: #7f7f7f;
+  font-size: 0.775625em;
+  font-weight: 400;
+  cursor: pointer;
+}
+.profile-container #post .post-footer .actions-summary {
+  border-top: 1px solid #d9d9d9;
+  border-bottom: 1px solid #d9d9d9;
+  padding: 15px 20px;
+  font-family: "Work Sans", sans-serif;
+  background-color: #f6f6f6;
+}
+.profile-container #post .post-footer .actions-summary .user-names {
+  color: #00a5ef;
+  font-size: 0.775625em;
+  font-weight: 500;
+  cursor: pointer;
+}
+.profile-container #post .post-footer .actions-summary .contcat-text {
+  color: #7f7f7f;
+  font-size: 0.775625em;
+  font-weight: 500;
+}
+.profile-container #post .post-footer .actions-summary .users-count {
+  color: #00a5ef;
+  font-size: 0.775625em;
+  font-weight: 500;
+  cursor: pointer;
+}
+.profile-container #post .post-footer .comments-box .comment {
+  background-color: #f6f6f6;
+  padding: 20px 25px 20px 20px;
+  border-bottom: 1px solid #d9d9d9;
+}
+.profile-container #post .post-footer .comments-box .comment:before {
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-footer .comments-box .comment:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-footer .comments-box .comment .profile-pic {
+  float: left;
+}
+.profile-container #post .post-footer .comments-box .comment .comment-details {
+  float: left;
+  padding-left: 20px;
+  width: calc(100% - 30%);
+}
+.profile-container #post .post-footer .comments-box .comment .comment-details h5 {
+  color: #000000;
+  font-size: 0.85375em;
+  font-weight: 500;
+  cursor: pointer;
+}
+.profile-container #post .post-footer .comments-box .comment .comment-details .comment-content {
+  color: #000000;
+  font-size: 0.775625em;
+  font-weight: 400;
+}
+.profile-container #post .post-footer .comments-box .comment .comment-details .comment-content .profile-name {
+  color: #00a5ef;
+  cursor: pointer;
+}
+.profile-container #post .post-footer .comments-box .comment .comment-date-time {
+  float: right;
+  color: #7f7f7f;
+  font-size: 0.698125em;
+  font-weight: 400;
+}
+.profile-container #post .post-footer .comments-box .new-comment {
+  padding: 15px 20px;
+}
+.profile-container #post .post-footer .comments-box .new-comment:before {
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-footer .comments-box .new-comment:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-footer .comments-box .new-comment .profile-pic {
+  float: left;
+  width: 35px;
+}
+.profile-container #post .post-footer .comments-box .new-comment .comment-input {
+  float: left;
+  padding: 0 10px;
+  width: calc(100% - 90px);
+}
+.profile-container #post .post-footer .comments-box .new-comment .comment-input input {
+  border: none;
+  width: 100%;
+  font-size: 0.775625em;
+  margin-top: 3px;
+}
+.profile-container #post .post-footer .comments-box .new-comment .comment-actions {
+  float: right;
+  margin-top: 4px;
+}
+.profile-container #post .post-footer .comments-box .new-comment .comment-actions i {
+  cursor: pointer;
+}
+.profile-container #post .post-footer .comments-box .new-comment .comment-actions i:last-child {
+  margin-left: 15px;
+}
+.profile-container #profile-resume {
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+.profile-container #profile-resume h1 {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 700;
+  font-size: 1.084375em;
+  color: #010101;
+  margin-top: 0px;
+  margin-bottom: 20px;
 }
 
 .popup-holder {
@@ -12093,7 +12453,7 @@ header .notification-holder .profile-header-thumb {
   float: left;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .user-holder .user {
-  margin-top: 5px;
+  margin-top: 10px;
   margin-right: 5px;
   border: 1px solid #1b9ed9;
   padding: 5px;
@@ -12286,13 +12646,6 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .add-people i {
   font-size: 0.75em;
 }
-.popup-holder .share-folder-popup .popup-pointer {
-  position: absolute;
-  width: 34px;
-  height: 39px;
-  bottom: 0px;
-  left: 0px;
-}
 .popup-holder .share-folder-add-people-popup {
   position: relative;
   margin: 0px -10px;
@@ -12303,12 +12656,12 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .share-folder-add-people-popup .input-wrapper {
   position: relative;
-  padding: 0 8px;
+  padding: 0 12px;
 }
 .popup-holder .share-folder-add-people-popup .input-wrapper i {
   position: absolute;
-  top: 6px;
-  left: 20px;
+  top: 8px;
+  left: 24px;
 }
 .popup-holder .share-folder-add-people-popup .input-wrapper input {
   margin-top: 3px;
@@ -12373,6 +12726,9 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:hover .action i {
   background-color: #ffffff;
 }
+.popup-holder .share-folder-popover.add-new-user .arrow {
+  display: none;
+}
 
 .settings-icon {
   position: fixed;
@@ -12407,6 +12763,7 @@ footer {
   width: 100%;
   bottom: 0;
   left: 0;
+  z-index: 1;
 }
 footer .notification-alert-holder {
   position: relative;
@@ -12475,7 +12832,7 @@ footer .nav-holder {
   position: relative;
   padding: 15px 0 8px;
   margin: 0 9px 0;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.8);
   border-radius: 10px 10px 0 0;
 }
 footer .nav-holder .nav-item {
@@ -12506,7 +12863,7 @@ footer .nav-holder .nav-item .icon-holder > img {
 }
 footer .nav-holder .nav-item .nav-title {
   font-weight: 500;
-  color: #fff;
+  color: #000;
   font-size: 0.75em;
   text-transform: capitalize;
   margin: 8px 0 0;
@@ -12520,6 +12877,12 @@ footer .nav-holder .nav-item .nav-title {
   footer .nav-holder {
     width: 76%;
   }
+}
+footer.dashboard-footer .nav-holder {
+  background: rgba(255, 255, 255, 0.2);
+}
+footer.dashboard-footer .nav-holder .nav-item .nav-title {
+  color: #fff;
 }
 footer .work-mode-holder {
   float: left;

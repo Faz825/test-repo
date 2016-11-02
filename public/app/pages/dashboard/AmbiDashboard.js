@@ -1,16 +1,35 @@
 import React from 'react';
+import schedule from 'node-schedule';
 import Moment from 'moment';
 import Session  from '../../middleware/Session';
 
 export default class AmbiDashboard extends React.Component {
 	constructor(props) {
 		super(props);
-		
+
 		this.day = Moment().format("dddd");
         this.month = Moment().format("MMMM");
         this.date = Moment().format("DD");
 
-		this.state = {}
+		this.state = {
+			currentTime: Moment().format("h:mm"),
+            a: Moment().format("a")
+		}
+
+		this.tick = this.tick.bind(this);
+		this.tick();
+
+	}
+
+	tick() {
+	    let _this = this;
+		new schedule.scheduleJob('* * * * *', function () {
+		    var now = Moment().format("h:mm"), a = Moment().format("a");
+            _this.setState({
+				currentTime: now,
+                a: a
+			});
+		}, null, true);
 	}
 
 	render() {
@@ -40,7 +59,10 @@ export default class AmbiDashboard extends React.Component {
 	                <div className="row">
 	                    <section className="time-holder">
 	                        <p className="date-text">{this.day}, {this.month} {this.date}</p>
-	                        <p className="time-text">10:20</p>
+	                        <p className="time-text">
+                                <span>{this.state.currentTime}</span>
+                                <span className="timeA">{this.state.a}</span>
+                            </p>
 	                    </section>
 	                    <section className="greeting-holder">
 	                        <p className="greeting-text">{greating}, {session.first_name}!</p>

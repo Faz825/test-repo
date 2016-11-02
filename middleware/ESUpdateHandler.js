@@ -100,7 +100,8 @@ var ESUpdateHandler = {
             },
             function getESChannels(categories, callBack) {
                 _async.eachSeries(categories, function(category,callBack){
-
+                    //console.log("======Category======")
+                    //console.log(category)
                     _async.waterfall([
                         function isESIndexExists(callBack) {
                             News.es_isNewsCategoryExists(category._id, function (esResultSet) {
@@ -134,6 +135,9 @@ var ESUpdateHandler = {
                         function createOrUpdateESChannels(callBack) {
 
                             _async.eachSeries(category.channels, function(channel,callBack){
+                                //console.log("======Channel======")
+                                //console.log(channel)
+
                                 _async.waterfall([
 
                                     function isESIndexExists(callBack) {
@@ -156,7 +160,7 @@ var ESUpdateHandler = {
 
                                         if(isExists){
                                             NewsChannels.es_getNewsChannelsByCategory(payLoad, function (esResultSet) {
-                                                console.log(esResultSet);
+                                                //console.log(esResultSet);
                                                 callBack(null, esResultSet);
                                             });
                                         }else{

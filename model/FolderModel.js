@@ -9,7 +9,8 @@ var  mongoose = require('mongoose'),
     uuid = require('node-uuid');
 
 GLOBAL.FolderConfig={
-    CACHE_PREFIX :"shared_folders:"
+    CACHE_PREFIX :"shared_folders:",
+    ES_INDEX_NAME:"idx_folders:"
 };
 GLOBAL.FolderSharedMode = {
     READ_ONLY: 1,
@@ -87,6 +88,96 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
     });
 
 };
+
+
+/**
+ * Add folder to CACHE
+ */
+FolderSchema.statics.addFolderToCache = function(data, callBack){
+    var _async = require('async'),
+        Connection = require('mongoose').model('Connection'),
+        Upload = require('mongoose').model('Upload'),
+        _this = this;
+    _async.waterfall([
+        function getUserById(callBack){
+            var _search_param = {
+                    _id:Util.toObjectId(userId),
+                },
+                showOptions ={
+                    w_exp:false,
+                    edu:false
+                };
+
+            _this.getUser(_search_param,showOptions,function(resultSet){
+                if(resultSet.status ==200 ){
+                    callBack(null,resultSet.user)
+                }
+            })
+        },
+        function getConnectionCount(profileData,callBack){
+
+            if( profileData!= null){
+                Connection.getFriendsCount(profileData.user_id,function(connectionCount){
+                    profileData['connection_count'] = connectionCount;
+                    callBack(null,profileData);
+                    return 0
+                });
+            }else{
+                callBack(null,null)
+            }
+        },
+        function getProfileImage(profileData,callBack){
+
+
+            Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
+
+                if(profileImageData.status != 200){
+                    profileData['images'] = {
+                        'profile_image': {
+                            id: "DEFAULT",
+                            file_name: "default_profile_image.png",
+                            file_type: ".png",
+                            http_url: Config.DEFAULT_PROFILE_IMAGE
+                        }
+                    };
+                }else{
+                    profileData['images'] = profileImageData.image;
+
+                }
+
+
+                callBack(null,profileData)
+                return 0;
+            });
+
+        }
+
+    ],function(err,profileData){
+        var outPut ={};
+        if(!err){
+
+            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['profile_data']      = profileData;
+
+            var payLoad={
+                index:"idx_usr",
+                id:profileData.user_id,
+                type: 'user',
+                data:profileData,
+                tag_fields:['first_name','last_name','email','user_name','country']
+            }
+
+            ES.createIndex(payLoad,function(resultSet){
+                callBack(resultSet)
+                return 0;
+            });
+
+        }else{
+            callBack(err)
+            return 0;
+        }
+    })
+}
 
 
 /**

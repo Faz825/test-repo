@@ -51,11 +51,11 @@ export default class ProfileImg extends React.Component{
         return (
             <div className="profile-header-thumb">
                 <a href="javascript:void(0)" onClick={event=>this.loadProfile(event)} title={_full_name}>
-                    <img src={this.state.imgSrc} alt={_full_name} />
+                    <img src={this.state.imgSrc} alt={_full_name} className="img-responsive" />
                 </a>
                 <div className="pg-top-profile-pic-options">
                     <a href="javascript:void(0)" onClick={event=>this.logout(event)}><img src="/images/pg-home-v6_06.png" alt="" className="img-responsive"/></a>
-                    <a href="javascript:void(0)" onClick={event=>this.loadProfile(event)}><img src="/images/pg-home-v6_20.png" alt="" className="img-responsive"/></a>
+                    {/*<a href="javascript:void(0)" onClick={event=>this.loadProfile(event)}><img src="/images/pg-home-v6_20.png" alt="" className="img-responsive"/></a>*/}
                 </div>
             </div>
         );
