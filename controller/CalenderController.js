@@ -231,13 +231,13 @@ var CalenderController = {
         data['date'] = req.query.date;
         data['action'] = req.query.action;
         data['user_id'] = Util.toObjectId(CurrentSession.id);
-        data['current_month'] = moment(data['date']).format('MM');
-        data['current_year'] = moment(data['date']).format('YYYY');
+        data['current_month'] = moment(data['date'], 'YYYY-MM-DD').format('MM');
+        data['current_year'] = moment(data['date'], 'YYYY-MM-DD').format('YYYY');
 
         if(data['action'] == 'next'){
-            startDateOfWeek = moment(data['date']).add(7,'day').format('YYYY-MM-DD');
+            startDateOfWeek = moment(data['date'], 'YYYY-MM-DD').add(7,'day').format('YYYY-MM-DD');
         }else{
-            startDateOfWeek = moment(data['date']).subtract(7,'day').format('YYYY-MM-DD');
+            startDateOfWeek = moment(data['date'], 'YYYY-MM-DD').subtract(7,'day').format('YYYY-MM-DD');
         }
 
         data['week'] = Math.ceil(moment(startDateOfWeek).format('DD')/7);
@@ -289,8 +289,8 @@ var CalenderController = {
         var moment = require('moment');
         var day = req.body.day;
         var user_id = Util.toObjectId(CurrentSession.id);
-        var startTimeOfDay = moment(day).format('YYYY-MM-DD'); //format the given date as mongo date object
-        var endTimeOfDay = moment(day).add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
+        var startTimeOfDay = moment(day, 'YYYY-MM-DD').format('YYYY-MM-DD'); //format the given date as mongo date object
+        var endTimeOfDay = moment(day, 'YYYY-MM-DD').add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
 
         var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, status: 1, user_id: user_id};
 
