@@ -69,7 +69,7 @@ NotificationSchema.statics.saveNotification = function (new_notification, callBa
         notification.notified_event = (new_notification.notified_event);
         notification.notification_status = "";
     } else if (new_notification.notification_type == Notifications.SHARE_NOTEBOOK
-        && new_notification.notification_type == Notifications.SHARE_NOTEBOOK_RESPONSE) {
+        || new_notification.notification_type == Notifications.SHARE_NOTEBOOK_RESPONSE) {
         notification.notified_notebook = Util.toObjectId(new_notification.notified_notebook);
         notification.notification_status = new_notification.notification_status;
     } else {
