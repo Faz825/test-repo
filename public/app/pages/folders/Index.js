@@ -18,6 +18,7 @@ export default class Index extends React.Component{
             isShowingModal : false,
             CFName : "",
             CFColor : "",
+            CFClrClass : "",
             clrChosen : "",
             isFolderNameEmpty : false,
             isFolderClrEmpty: false,
@@ -121,8 +122,11 @@ export default class Index extends React.Component{
     }
 
     renderSuggestion(suggestion) {
-        return (
-            <span id={suggestion.user_id}>{suggestion.first_name+" "+suggestion.last_name}</span>
+        return (            
+            <div id={suggestion.user_id} className="suggestion-item">
+                <img className="suggestion-img" src={suggestion.images.profile_image.http_url} alt={suggestion.first_name} />
+                <span>{suggestion.first_name+" "+suggestion.last_name}</span>
+            </div>
         );
     }
 
@@ -184,7 +188,7 @@ export default class Index extends React.Component{
     }
 
     handleClose() {
-        this.setState({isShowingModal: false, isFolderNameEmpty : false, isFolderClrEmpty : false, CFName : "", CFColor : "", clrChosen : "", isAlreadySelected:false, value: '',
+        this.setState({isShowingModal: false, isFolderNameEmpty : false, isFolderClrEmpty : false, CFName : "", CFClrClass : "", clrChosen : "", isAlreadySelected:false, value: '',
             suggestions: [], suggestionsList : {}, sharedWithIds : [], sharedWithNames : []});
 
         this.users = [];
@@ -238,12 +242,13 @@ export default class Index extends React.Component{
     }
 
     colorPicker(e){
-        let colorName = e.target.getAttribute('data-color');
-        this.setState({CFColor : colorName, isFolderClrEmpty: false});
+        let colorCode = e.target.getAttribute('data-hexclr');
+        let colorCls = e.target.getAttribute('data-color');
+        this.setState({CFColor : colorCode, CFClrClass : colorCls, isFolderClrEmpty: false});
     }
 
     isActive(value){
-        return ((value===this.state.CFColor) ? value+' active': value);
+        return ((value===this.state.CFClrClass) ? value+' active': value);
     }
 
     addFolderPopup(){
@@ -294,25 +299,25 @@ export default class Index extends React.Component{
                                         <div className="col-sm-12 input-group">
                                             <p>Choose a colour</p>
                                             <div className="color-palette clearfix">
-                                                <div className={this.isActive('pink')} data-color="pink" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('pink')} data-color="pink" data-hexclr="#ed0677" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('light-blue')} data-color="light-blue" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('light-blue')} data-color="light-blue" data-hexclr="#1b9ed9" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('light-green')} data-color="light-green" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('light-green')} data-color="light-green" data-hexclr="#a2c73e" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('red')} data-color="red" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('red')} data-color="red" data-hexclr="#b01d5a" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('dark-blue')} data-color="dark-blue" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('dark-blue')} data-color="dark-blue" data-hexclr="#091652" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('gray')} data-color="gray" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('gray')} data-color="gray" data-hexclr="#bbbdbe" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('dark-green')} data-color="dark-green" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('dark-green')} data-color="dark-green" data-hexclr="#067d41" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
                                             </div>

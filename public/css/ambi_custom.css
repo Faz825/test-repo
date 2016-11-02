@@ -19,6 +19,34 @@
     margin-top: 5px;
 }
 
+.invite-people #react-autowhatever-1{
+	width: 100%;
+	float: left;
+	position: relative;
+	top: auto;
+	left: auto;
+	height: 120px;
+	overflow-y: scroll;
+}
+
+.invite-people .suggestion-item{
+	overflow: hidden;
+}
+
+.invite-people .suggestion-item .suggestion-img{
+	width: 30px;
+	height: 30px;
+	float: left;
+	margin-right: 10px;
+}
+
+.invite-people .suggestion-item span{
+	float: left;
+	font-size: 0.9em;
+	text-transform: capitalize;
+	margin: 5px 0 0 0 ;
+}
+
 /* - ReactAutoSuggest Custom Styles*/
 .search-holder .react-autosuggest__suggestions-container{
 	z-index: 1;
@@ -52,9 +80,11 @@
 	color: #2d5164;
 }
 
+/* Dashboard time */
 .timeA {
 	font-size: 0.17em;
 	text-transform: uppercase;
 	font-weight: 500;
 	margin-left: 0px;
 }
+
