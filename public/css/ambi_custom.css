@@ -24,6 +24,9 @@
 	z-index: 1;
 }
 .search-holder #react-autowhatever-1{
+	max-height: 335px;
+	overflow-y: scroll;
+	overflow-x: hidden;
 	top: 48px;
 	width: 100%;
 }

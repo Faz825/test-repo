@@ -1,5 +1,5 @@
 import React from 'react';
-import Cron from 'cron';
+import schedule from 'node-schedule';
 import Moment from 'moment';
 import Session  from '../../middleware/Session';
 
@@ -23,7 +23,7 @@ export default class AmbiDashboard extends React.Component {
 
 	tick() {
 	    let _this = this;
-		new Cron.CronJob('* * * * *', function () {
+		new schedule.scheduleJob('* * * * *', function () {
 		    var now = Moment().format("h:mm"), a = Moment().format("a");
             _this.setState({
 				currentTime: now,
