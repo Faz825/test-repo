@@ -252,7 +252,8 @@ export default class Index extends React.Component{
         const inputProps = {
             placeholder: 'Type a name...',
             value,
-            onChange: this.onChange
+            onChange: this.onChange,
+            className: 'form-control'
         };
 
         let shared_with_list = [];

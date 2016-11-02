@@ -11639,21 +11639,21 @@ header .notification-holder .profile-header-thumb {
 .calender-week-view .view-tile-area .week-tiles .day-tile:nth-of-type(2n) {
   margin-right: 0;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header {
   background-color: #ffffff;
   padding: 5% 7%;
   border-bottom: 1px solid #dee6eb;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header:before {
   display: table;
   content: " ";
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header:after {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header:after {
   clear: both;
   display: table;
   content: " ";
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header h5 {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header h5 {
   float: left;
   text-align: left;
   width: 50%;
@@ -11663,7 +11663,7 @@ header .notification-holder .profile-header-thumb {
   color: #00a6ef;
   font-weight: 500;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header h6 {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header h6 {
   float: left;
   text-align: right;
   width: 50%;
@@ -11673,7 +11673,7 @@ header .notification-holder .profile-header-thumb {
   color: #989ba0;
   font-weight: 500;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .header h3 {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header h3 {
   float: left;
   text-align: left;
   font-size: 1.5575em;
@@ -11683,29 +11683,29 @@ header .notification-holder .profile-header-thumb {
   margin-top: 8px;
   margin-bottom: 0;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body {
   background-color: #f6f8fc;
   padding: 5% 7%;
   height: 215px;
   overflow-y: scroll;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body:before {
   display: table;
   content: " ";
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body:after {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body:after {
   clear: both;
   display: table;
   content: " ";
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li {
   font-family: "Work Sans", sans-serif;
   font-size: 0.77875em;
   font-weight: 500;
   color: black;
   margin-bottom: 5px;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li:before {
   content: "\f111";
   font-family: FontAwesome;
   line-height: 1;
@@ -11714,10 +11714,10 @@ header .notification-holder .profile-header-thumb {
   margin-top: 5px;
   margin-right: 4px;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li.todo:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li.todo:before {
   color: #a6c649;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .body .list-items li.events:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li.events:before {
   color: #00a6ef;
 }
 @media screen and (min-width: 50em) {
@@ -11802,6 +11802,7 @@ header .notification-holder .profile-header-thumb {
 }
 .profile-container .content-area {
   margin-top: 45px;
+  padding-bottom: 45px;
 }
 .profile-container .white-box {
   background-color: #ffffff;
@@ -12039,6 +12040,7 @@ header .notification-holder .profile-header-thumb {
   color: #000000;
   font-size: 1.08625em;
   font-weight: 700;
+  cursor: pointer;
 }
 .profile-container #post .post-header .post-details h5 span > i {
   color: #999999;
@@ -12130,6 +12132,7 @@ header .notification-holder .profile-header-thumb {
   position: relative;
   font-size: 0.775625em;
   margin-right: 20px;
+  cursor: pointer;
 }
 .profile-container #post .post-footer .actions-box span:last-child {
   float: right;
@@ -12163,6 +12166,99 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.775625em;
   font-weight: 500;
   cursor: pointer;
+}
+.profile-container #post .post-footer .comments-box .comment {
+  background-color: #f6f6f6;
+  padding: 20px 25px 20px 20px;
+  border-bottom: 1px solid #d9d9d9;
+}
+.profile-container #post .post-footer .comments-box .comment:before {
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-footer .comments-box .comment:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-footer .comments-box .comment .profile-pic {
+  float: left;
+}
+.profile-container #post .post-footer .comments-box .comment .comment-details {
+  float: left;
+  padding-left: 20px;
+  width: calc(100% - 30%);
+}
+.profile-container #post .post-footer .comments-box .comment .comment-details h5 {
+  color: #000000;
+  font-size: 0.85375em;
+  font-weight: 500;
+  cursor: pointer;
+}
+.profile-container #post .post-footer .comments-box .comment .comment-details .comment-content {
+  color: #000000;
+  font-size: 0.775625em;
+  font-weight: 400;
+}
+.profile-container #post .post-footer .comments-box .comment .comment-details .comment-content .profile-name {
+  color: #00a5ef;
+  cursor: pointer;
+}
+.profile-container #post .post-footer .comments-box .comment .comment-date-time {
+  float: right;
+  color: #7f7f7f;
+  font-size: 0.698125em;
+  font-weight: 400;
+}
+.profile-container #post .post-footer .comments-box .new-comment {
+  padding: 15px 20px;
+}
+.profile-container #post .post-footer .comments-box .new-comment:before {
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-footer .comments-box .new-comment:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.profile-container #post .post-footer .comments-box .new-comment .profile-pic {
+  float: left;
+  width: 35px;
+}
+.profile-container #post .post-footer .comments-box .new-comment .comment-input {
+  float: left;
+  padding: 0 10px;
+  width: calc(100% - 90px);
+}
+.profile-container #post .post-footer .comments-box .new-comment .comment-input input {
+  border: none;
+  width: 100%;
+  font-size: 0.775625em;
+  margin-top: 3px;
+}
+.profile-container #post .post-footer .comments-box .new-comment .comment-actions {
+  float: right;
+  margin-top: 4px;
+}
+.profile-container #post .post-footer .comments-box .new-comment .comment-actions i {
+  cursor: pointer;
+}
+.profile-container #post .post-footer .comments-box .new-comment .comment-actions i:last-child {
+  margin-left: 15px;
+}
+.profile-container #profile-resume {
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+.profile-container #profile-resume h1 {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 700;
+  font-size: 1.084375em;
+  color: #010101;
+  margin-top: 0px;
+  margin-bottom: 20px;
 }
 
 .popup-holder {
