@@ -142,7 +142,7 @@ export class WorkPlaces extends React.Component{
         let _time_period = this.getTimePeriod(data.start_date,data.left_date,data.is_current_work_place);
         return (
             <div className="pg-body-item">
-                <header>
+                <div>
                     {
                         (data.title)?
                         <h4 className="pg-entity-control-field">
@@ -180,7 +180,7 @@ export class WorkPlaces extends React.Component{
                         : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Company Details</button>:null
                     }
 
-                </header>
+                </div>
                 {
                     (data.description)?
                     <p className="pg-description pg-field">

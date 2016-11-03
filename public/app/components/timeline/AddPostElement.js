@@ -531,15 +531,15 @@ const PostOptionMenu = ({onTabClick,selectImage})=>{
                 <li className="tabmenu selected-tab">
                     <a href="javascript:void(0);" className="tabmenu" id="pg_tb_1"
                        onClick={(event)=>{onTabClick("bla1")}}>
-                        <img src="/images/pg-newsfeed-share-default.png" alt="" className="img-responsive pg-default-status-icon"/>
-                        <img src="/images/pg-newsfeed-share-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
+                        <img src="/images/pg-newsfeed-share-default.png" alt="" className="pg-default-status-icon"/>
+                        <img src="/images/pg-newsfeed-share-active.png" alt="" className="pg-hover-status-icon"/>
                         Share Update
                     </a>
                 </li>
                 <li>
                     <label htmlFor="imgUpload" className="tabmenu" id="pg_tb_2">
-                        <img src="/images/pg-newsfeed-image-default.png" alt="" className="img-responsive pg-default-status-icon"/>
-                        <img src="/images/pg-newsfeed-image-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
+                        <img src="/images/pg-newsfeed-image-default.png" alt="" className="pg-default-status-icon"/>
+                        <img src="/images/pg-newsfeed-image-active.png" alt="" className="pg-hover-status-icon"/>
                         Photo/Video
                     </label>
                     <input type='file' id="imgUpload" onChange={(event)=>{selectImage(event)}} multiple="multiple" />
@@ -547,16 +547,16 @@ const PostOptionMenu = ({onTabClick,selectImage})=>{
                 <li>
                     <a href="javascript:void(0);" className="tabmenu" id="pg_tb_3"
                        onClick={(event)=>{onTabClick("bla3")}}>
-                        <img src="/images/pg-newsfeed-life-event-default.png" alt="" className="img-responsive pg-default-status-icon"/>
-                        <img src="/images/pg-newsfeed-life-event-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
+                        <img src="/images/pg-newsfeed-life-event-default.png" alt="" className="pg-default-status-icon"/>
+                        <img src="/images/pg-newsfeed-life-event-active.png" alt="" className="pg-hover-status-icon"/>
                         Life Event
                     </a>
                 </li>
                 <li>
                     <a href="javascript:void(0);"  className="tabmenu" id="pg_tb_4"
                        onClick={(event)=>{onTabClick("bla4")}}>
-                        <img src="/images/pg-newsfeed-location-default.png" alt="" className="img-responsive pg-default-status-icon"/>
-                        <img src="/images/pg-newsfeed-location-active.png" alt="" className="img-responsive pg-hover-status-icon"/>
+                        <img src="/images/pg-newsfeed-location-default.png" alt="" className="pg-default-status-icon"/>
+                        <img src="/images/pg-newsfeed-location-active.png" alt="" className="pg-hover-status-icon"/>
                         Current Location
                     </a>
                 </li>
