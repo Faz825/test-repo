@@ -18,7 +18,6 @@ export default class Index extends React.Component{
             isShowingModal : false,
             CFName : "",
             CFColor : "",
-            CFClrClass : "",
             clrChosen : "",
             isFolderNameEmpty : false,
             isFolderClrEmpty: false,
@@ -28,7 +27,7 @@ export default class Index extends React.Component{
             suggestionsList : {},
             sharedWithIds : [],
             sharedWithNames : [],
-            folders : {}
+            folders : []
         };
 
         this.users = [];
@@ -63,6 +62,7 @@ export default class Index extends React.Component{
                     this.addDefaultFolder();
                 } else{
                     let folders = data.folders;
+                    console.log(folders);
                     this.setState({folders: folders});
                 }
             }
@@ -226,9 +226,9 @@ export default class Index extends React.Component{
                 data:{folder_name:this.state.CFName, folder_color:this.state.CFColor, shared_with:this.state.sharedWithIds},
                 success: function (data, text) {
                     if (data.status.code == 200) {
+                        this.loadFolders();
                         this.setState({isShowingModal: false, CFName : "", CFColor : ""});
                         console.log(this.state.CFName, this.state.CFColor);
-
                     }
                 }.bind(this),
                 error: function (request, status, error) {
@@ -242,13 +242,12 @@ export default class Index extends React.Component{
     }
 
     colorPicker(e){
-        let colorCode = e.target.getAttribute('data-hexclr');
         let colorCls = e.target.getAttribute('data-color');
-        this.setState({CFColor : colorCode, CFClrClass : colorCls, isFolderClrEmpty: false});
+        this.setState({CFColor : colorCls, isFolderClrEmpty: false});
     }
 
     isActive(value){
-        return ((value===this.state.CFClrClass) ? value+' active': value);
+        return ((value===this.state.CFColor) ? 'palette active': 'palette');
     }
 
     addFolderPopup(){
@@ -299,25 +298,25 @@ export default class Index extends React.Component{
                                         <div className="col-sm-12 input-group">
                                             <p>Choose a colour</p>
                                             <div className="color-palette clearfix">
-                                                <div className={this.isActive('pink')} data-color="pink" data-hexclr="#ed0677" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('#ed0677')} style={{backgroundColor: "#ed0677"}} data-color="#ed0677" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('light-blue')} data-color="light-blue" data-hexclr="#1b9ed9" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('#1b9ed9')} style={{backgroundColor: "#1b9ed9"}} data-color="#1b9ed9" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('light-green')} data-color="light-green" data-hexclr="#a2c73e" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('#a2c73e')} style={{backgroundColor: "#a2c73e"}} data-color="#a2c73e" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('red')} data-color="red" data-hexclr="#b01d5a" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('#b01d5a')} style={{backgroundColor: "#b01d5a"}} data-color="#b01d5a" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('dark-blue')} data-color="dark-blue" data-hexclr="#091652" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('#091652')} style={{backgroundColor: "#091652"}} data-color="#091652" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('gray')} data-color="gray" data-hexclr="#bbbdbe" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('#bbbdbe')} style={{backgroundColor: "#bbbdbe"}} data-color="#bbbdbe" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('dark-green')} data-color="dark-green" data-hexclr="#067d41" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('#067d41')} style={{backgroundColor: "#067d41"}} data-color="#067d41" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
                                             </div>
@@ -363,6 +362,12 @@ export default class Index extends React.Component{
     }
 
     render(){
+        let _folders = this.state.folders;
+        let folderList = _folders.map(function(folder,key){
+                            return (
+                                <Folder key={key} folderData={folder} />
+                            )
+                        });
         return(
             <section className="folder-container">
                 <div className="container">
@@ -396,9 +401,7 @@ export default class Index extends React.Component{
                         </div>
                     </section>
                     <section className="folder-body">
-                        <Folder clr="pink" />
-                        <Folder clr="light-blue" />
-                        <Folder clr="light-green" />
+                        {folderList}
                     </section>
                 </div>
                 {this.addFolderPopup()}
@@ -413,6 +416,7 @@ export class Folder extends React.Component{
         super(props);
 
         this.state={
+            loggedUser : Session.getSession('prg_lg'),
             isCollapsed : true
         }
     }
@@ -424,26 +428,34 @@ export class Folder extends React.Component{
     }
 
     render(){
-        let folderClr = this.props.clr;
+        let folderData = this.props.folderData;
+        let ownerImg;
         let i = (
             <Popover id="popover-contained" style={{maxWidth: "635px", width: "635px"}}>
                 <SharePopup />
             </Popover>
         );
+
+        if(folderData.owned_by == "me"){
+            ownerImg = (this.state.loggedUser.profile_image == "")? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image;
+        }else{
+            ownerImg = folderData.folder_user.profile_image;
+        }
+
         return(
-            <div className={(this.state.isCollapsed)? "row folder " + folderClr : "row folder see-all " + folderClr}>
+            <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
                 <div className="folder-wrapper">
                     <div className="col-sm-3">
                         <div className="folder-cover-wrapper">
                             <div className="folder-cover">
                                 <div className="folder-overlay"></div>
-                                <div className="content-wrapper">
+                                <div className="content-wrapper" style={{backgroundColor: folderData.folder_color}}>
                                     <div className="logo-wrapper">
-                                        <img src="assets/images/user-rounded.png" alt="Folder Name" className="img-rounded" />
+                                        <img src={ownerImg} alt={this.state.loggedUser.first_name} className="img-rounded" />
                                         <span className="logo-shader"></span>
                                         <span className="logo-shader"></span>
                                     </div>
-                                    <h3>My Folder</h3>
+                                    <h3>{folderData.folder_name}</h3>
                                 </div>
                                 <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
                                     <div className="share-folder">
@@ -451,7 +463,7 @@ export class Folder extends React.Component{
                                     </div>
                                 </OverlayTrigger>
                             </div>
-                            <div className="folder-peak"></div>
+                            <div className="folder-peak" style={{backgroundColor: folderData.folder_color}}><span className="peak-tail" style={{backgroundColor: folderData.folder_color}}></span></div>
                         </div>
                     </div>
                     <div className="col-sm-9">
@@ -465,18 +477,9 @@ export class Folder extends React.Component{
                                                 <p>Upload new file or image</p>
                                             </div>
                                         </div>
-                                        <File />
-                                        <File />
-                                        <File />
-                                        <File />
-                                        <File />
-                                        <File />
-                                        <File />
-                                        <File />
-                                        <File />
                                     </div>
                                     {
-                                        (this.state.isCollapsed)?
+                                        /*(this.state.isCollapsed)?
                                             <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
                                                 <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
                                                 <p>See All</p>
@@ -485,7 +488,7 @@ export class Folder extends React.Component{
                                             <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
                                                 <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
                                                 <p>See Less</p>
-                                            </div>
+                                            </div>*/
                                     }
                                 </div>
                             </div>
