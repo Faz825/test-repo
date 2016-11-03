@@ -16,6 +16,10 @@ export default class DayEventsList extends React.Component {
     render() {
         let _this = this;
         let items = this.props.events.map(function(event,key){
+            
+            if(event.type == 2) {
+                return;
+            }
 
             let rawDescription = event.description;
             if(rawDescription.hasOwnProperty("entityMap") == false){
@@ -24,7 +28,7 @@ export default class DayEventsList extends React.Component {
 
             let contentState = convertFromRaw(event.description);
             let htmlC = stateToHTML(contentState);
-            
+
             return (
                 <li key={key}>
                     <i className="fa fa-circle" aria-hidden="true"></i>
