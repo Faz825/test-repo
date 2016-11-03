@@ -29,6 +29,13 @@
 	overflow-y: scroll;
 }
 
+.calander-body .invite-people #react-autowhatever-1{
+  position: absolute;
+  z-index: 1;
+  width: 400px;
+  height: auto;
+}
+
 .invite-people .suggestion-item{
 	overflow: hidden;
 }

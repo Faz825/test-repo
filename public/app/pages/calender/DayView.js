@@ -2,11 +2,12 @@
  * Day view of the calender
  */
 import React, { Component } from 'react';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import Session from '../../middleware/Session';
 import MiniCalender from './MiniCalender';
 import DayEventsList from './DayEventsList';
 import DayTodosList from './DayTodosList';
+import SharedUsers from './SharedUsers';
 
 import {EditorState, RichUtils} from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
@@ -45,8 +46,6 @@ export default class DayView extends Component {
         this.addEvent = this.addEvent.bind(this);
         this.nextDay = this.nextDay.bind(this);
         this.changeType = this.changeType.bind(this);
-
-
         // this.onChange = (editorState) => this.setState({editorState});
         this.handleKeyCommand = this.handleKeyCommand.bind(this);
         this.focus = this.focus.bind(this);
@@ -140,19 +139,12 @@ export default class DayView extends Component {
         const Editor = this.state.editorState;
         const contentState = this.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
-
-        console.log(editorContentRaw);
-        console.log("^^^^^^^^^^^^^^");
-
-        var split = moment().toString().split(" ");
-        const timeZoneFormatted = split[split.length - 2] + " " + split[split.length - 1];
-
         const postData = {
             description : editorContentRaw,
-            type : (this.state.defaultType == 'todo' ? 2 : 1),
+            type : this.state.defaultType,
             apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:MM'),
             event_time : moment().format('HH:MM'),
-            event_timezone : timeZoneFormatted,
+            event_timezone : moment.tz.guess(),
             sharedUserd : []
         };
 
@@ -241,6 +233,9 @@ export default class DayView extends Component {
                                                     onSearchChange={this.onSearchChange}
                                                     suggestions={this.state.suggestions}
                                                 />
+                                            </div>
+                                            <div className="shared-userd">
+                                                <SharedUsers />
                                             </div>
                                         </div>
                                         <div className="calender-input-type">
