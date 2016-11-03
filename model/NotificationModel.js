@@ -35,6 +35,11 @@ var NotificationSchema = new Schema({
         ref: 'CalenderEvent',
         default:null
     },
+    notified_folder:{
+        type: Schema.ObjectId,
+        ref: 'Folders',
+        default:null
+    },
     notification_status:{ // Accept / Reject the invitation ...
         type:String,
         trim:true,

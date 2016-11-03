@@ -1,6 +1,7 @@
 /**
  * This is folders index class that handle all
  */
+
 import React from 'react';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
@@ -59,7 +60,7 @@ export default class Index extends React.Component{
             console.log(data);
             if(data.status.code == 200){
                 if(data.folders.length == 0 || data.folders[0] == null){
-                    this.setState({CFName:"My Folder", CFColor:"#ed0677"})
+                    this.setState({CFName:"My Folder", CFColor:"light-blue"})
                     this.addDefaultFolder();
                 } else{
                     let folders = data.folders;
@@ -188,8 +189,9 @@ export default class Index extends React.Component{
     }
 
     handleClose() {
-        this.setState({isShowingModal: false, isFolderNameEmpty : false, isFolderClrEmpty : false, CFName : "", CFClrClass : "", clrChosen : "", isAlreadySelected:false, value: '',
-            suggestions: [], suggestionsList : {}, sharedWithIds : [], sharedWithNames : []});
+        this.setState({isShowingModal: false, isFolderNameEmpty : false, isFolderClrEmpty : false, CFName : "", CFClrClass : "",
+            clrChosen : "", isAlreadySelected:false, value: '', suggestions: [], suggestionsList : {}, sharedWithIds : [],
+            sharedWithNames : []});
 
         this.users = [];
         this.sharedWithIds = [];

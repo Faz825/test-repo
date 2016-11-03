@@ -15,16 +15,89 @@ var FolderController ={
 
         console.log("addNewFolder")
 
-        var Folders = require('mongoose').model('Folders');
+        var Folders = require('mongoose').model('Folders'),
+            _shared_with = req.body.shared_with,
+            _randColor = require('randomcolor'),
+            sharedUsers = [],
+            _async = require('async'),
+            _folder_id = 0,
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient');
 
-        var _folder = {
-            name:req.body.folder_name,
-            color:req.body.folder_color,
-            isDefault:req.body.isDefault,
-            user_id:Util.getCurrentSession(req).id
-        };
+        _async.waterfall([
 
-        Folders.addNewFolder(_folder,function(resultSet){
+            function addFolderToDB(){
+
+                for(var i = 0; i < _shared_with.length; i++){
+                    var randColor = _randColor.randomColor({
+                        luminosity: 'light',
+                        hue: 'random'
+                    });
+
+                    var _sharingUser = {
+                        user_id: _shared_with[i],
+                        user_note_color: randColor,
+                        shared_type: FolderSharedRequest.READ_WRITE,
+                        status: FolderSharedRequest.REQUEST_PENDING
+                    };
+
+                    sharedUsers.push(_sharingUser);
+                }
+
+                var _folder = {
+                    name:req.body.folder_name,
+                    color:req.body.folder_color,
+                    isDefault:req.body.isDefault,
+                    user_id:Util.getCurrentSession(req).id,
+                    shared_users:sharedUsers
+                };
+
+                Folders.addNewFolder(_folder,function(resultSet){
+                    console.log(resultSet.folder)
+                    _folder_id = resultSet.folder._id;
+                });
+
+            },
+            function addNotification(callBack){
+
+                if(sharedUsers.length > 0 && _folder_id != 0){
+
+                    var _data = {
+                        sender:Util.getCurrentSession(req).id,
+                        notification_type:Notifications.SHARE_FOLDER,
+                        notified_folder:_folder_id
+                    }
+                    Notification.saveNotification(_data, function(res){
+                        if(res.status == 200){
+                            callBack(null,res.result._id);
+                        }
+
+                    });
+
+                } else{
+                    callBack(null);
+                }
+            },
+            function notifyingUsers(notification_id, callBack){
+
+                if(typeof notification_id != 'undefined' && notifyUsers.length > 0){
+
+                    var _data = {
+                        notification_id:notification_id,
+                        recipients:notifyUsers
+                    };
+                    NotificationRecipient.saveRecipients(_data, function(res){
+                        callBack(null);
+                    })
+
+                } else{
+                    callBack(null);
+                }
+            }
+
+        ],function(err,resultSet){
+            console.log("async waterfall callback")
+
             if(resultSet.status == 200){
                 var outPut ={
                     status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
@@ -36,7 +109,22 @@ var FolderController ={
                 };
                 res.status(400).json(outPut);
             }
+
+            if(err){
+                var outPut ={
+                    status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR),
+                };
+                res.status(400).json(outPut);
+            }
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                folders:resultSet
+            };
+            res.status(200).json(outPut);
         });
+
+
+
 
     },
 
@@ -135,7 +223,7 @@ var FolderController ={
             }
         });
 
-    },
+    }
 
 };
 

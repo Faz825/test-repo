@@ -29,6 +29,8 @@ require('../model/SubscribedPosts');
 require('../model/NewsChannelsModel');
 require('../model/FolderModel');
 require('../model/FolderDocsModel');
+require('../model/GroupFolderModel');
+require('../model/GroupFolderDocsModel');
 require('../model/CalenderEventModel');
 
 /** Load  Controllers
@@ -50,6 +52,7 @@ var DefaultController   = require('../controller/DefaultController'),
     NotificationController     = require('../controller/NotificationController'),
     NotificationSMSController     = require('../controller/NotificationSMSController'),
     FolderController     = require('../controller/FolderController');
+    GroupFolderController     = require('../controller/GroupFolderController');
     CalenderController     = require('../controller/CalenderController');
 
 
@@ -283,6 +286,8 @@ router.get('/notifications/get-details',NotificationController.getDetails);
 router.get('/notifications/get-notification-count',NotificationController.getNotificationCount);
 router.post('/folders/add-new', FolderController.addNewFolder);
 router.get('/folders/get-all', FolderController.getFolders);
+router.post('/group-folders/add-new', GroupFolderController.addNewFolder);
+router.get('/group-folders/get-all', GroupFolderController.getFolders);
 
 router.post('/calender/add-event', CalenderController.addEvent);
 router.get('/calender/get-all-month', CalenderController.getAllForSpecificMonth);
