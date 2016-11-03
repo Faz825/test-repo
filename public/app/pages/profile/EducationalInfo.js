@@ -192,7 +192,7 @@ export class University extends React.Component{
 
         return (
             <div className="pg-body-item">
-                <header>
+                <div>
                     <h4 className="pg-entity-control-field">
                         <div className="pg-main-header-field  pg-field" title="Click to edit this education">
                             <span className="pg-field-text">{data.school}</span>
@@ -226,7 +226,7 @@ export class University extends React.Component{
                         </h5>
                         : (!readOnly)? <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Degree</button> :null
                     }
-                </header>
+                </div>
                 <div className="pg-empty-fields-area">
                     {
                         (data.date_attended_to)?

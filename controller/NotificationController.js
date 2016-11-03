@@ -533,6 +533,115 @@ var NotificationController ={
 
     },
 
+    getNotificationsList: function (req, res) {
+        var days = req.query.days; console.log("Days = "+days);
+        var pg = req.query.pg;console.log("pg = "+pg);
+        var cat = req.query.cat;
+
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            Post = require('mongoose').model('Post'),
+            _async = require('async'),
+            grep = require('grep-from-array'),
+            _arrIndex = require('array-index-of-property'),
+            user_id = Util.getCurrentSession(req).id,
+            criteria = {recipient:Util.toObjectId(user_id)},
+            skip = (pg - 1)*Config.NOTIFICATION_RESULT_PER_PAGE, limit = Config.NOTIFICATION_RESULT_PER_PAGE,
+            _formattedNotificationData = {}, outPut = {};
+
+        if(typeof cat != "undefined"){
+            criteria['notification_category'] = cat;
+        }
+
+        _async.waterfall([
+            function getNotificationsList(callBack) {
+                NotificationRecipient.getRecipientNotificationsLimit(criteria,skip,limit,function(resultSet){
+                    var notifications = resultSet.notifications;
+
+                    _async.eachSeries(notifications, function(notification, callBack){
+
+                        var _notificationType = notification.notification_type.toString();
+
+                        _async.waterfall([
+
+                            function tripNotifications(callBack){
+
+                                if(_notificationType == 'like' || _notificationType == 'comment' || _notificationType == 'share'){
+
+                                    var currentPostId = notification.post_id.toString();
+
+                                    //- Group post objects with same _id and notification_type
+                                    var groupedNotificationObj = grep(notifications, function(e){
+                                        return ((e.post_id.toString() == currentPostId) && (e.notification_type.toString() == _notificationType));
+                                    });
+
+                                    var _data = {
+                                        post_data: {},
+                                        related_senders: []
+                                    };
+
+                                    //- Push sender ids of grouped objects and splice
+                                    for(var inc = 1; inc < groupedNotificationObj.length; inc++){
+
+                                        _data.related_senders.push(groupedNotificationObj[inc].sender_id);
+
+                                        var index = notifications.indexOfProperty('_id', groupedNotificationObj[inc]._id);
+                                        notifications.splice(index, 1);
+                                    }
+
+
+                                    //- Get Post Details
+                                    Post.db_getPostDetailsOnly({_id:notification.post_id}, function(resultPost){
+                                        _data['post_data']['postOwner'] = resultPost.post.created_by;
+
+                                        //- Return post details + Senders Arr
+                                        callBack(null, _data);
+                                    });
+
+                                }
+                            },
+                            function (formattedData, callBack) {
+
+                                var formattedNotification = {
+                                    notification_id:notification['notification_id'],
+                                    notification_type:notification['notification_type'],
+                                    read_status: notification['read_status'],
+                                    created_at: DateTime.explainDate(notification['created_at']),
+                                    sender_id:notification['sender_id'].toString(),
+
+                                    //- Post details
+                                    post_id: (notification['post_id'] != null ? notification['post_id'] : ""),
+                                    post_owner: null,
+
+                                    //- Notebook details
+                                    notebook_id: (notification['notebook_id'] != null ? notification['notebook_id'] : ""),
+                                    notebook_name: '',
+
+                                    //- Notification status for (Notebook, Folder, ...)
+                                    notification_status: notification['notification_status']
+                                };
+
+                                callBack(null); //-tmp
+                            }
+                            
+                        ],function(err){
+                            callBack(null);
+                        });
+
+                    },function(err){
+                        callBack(null);
+                    });
+
+                });
+            }
+        ],function(err){
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['notifications'] = _formattedNotificationData;
+
+            res.status(200).json(outPut);
+        });
+
+    },
+
     updateNotifications: function(req,res){
         var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             Notification = require('mongoose').model('Notification'),

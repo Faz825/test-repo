@@ -638,7 +638,7 @@ const LikeSummery=({likes,visibility}) =>{
 
     return (
         <div className="row pg-newsfeed-common-content-like-status" {...opt}>
-            <div className="col-xs-12">
+            <div className="comment-wrapper-section">
                 <p className="pg-newsfeed-common-content-like-status-paragraph">
                     <a href="javascript:void(0)" className="pg-newsfeed-common-content-like-status-profile-links">{likes[0].name}</a>
                     {
