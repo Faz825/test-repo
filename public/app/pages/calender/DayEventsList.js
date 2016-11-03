@@ -4,6 +4,7 @@
 import React from 'react';
 import moment from 'moment';
 import {convertFromRaw, convertToRaw} from 'draft-js';
+import {stateToHTML} from 'draft-js-export-html';
 
 export default class DayEventsList extends React.Component {
 
@@ -15,15 +16,19 @@ export default class DayEventsList extends React.Component {
     render() {
         let _this = this;
         let items = this.props.events.map(function(event,key){
-            // TODO convert description object to HTML and render them.
-            // let rawDescription = event.description;
-            // let contentState = convertFromRaw(event.description);
-            // let html = stateToHTML(event.description);
 
+            let rawDescription = event.description;
+            if(rawDescription.hasOwnProperty("entityMap") == false){
+                rawDescription.entityMap = [];
+            }
+
+            let contentState = convertFromRaw(event.description);
+            let htmlC = stateToHTML(contentState);
+            
             return (
                 <li key={key}>
                     <i className="fa fa-circle" aria-hidden="true"></i>
-                    <span>{event.start_date_time}</span>
+                    <div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
                     <i className="fa fa-trash-o pull-right" aria-hidden="true"></i>
                 </li>
             );

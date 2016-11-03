@@ -8,8 +8,6 @@ import MiniCalender from './MiniCalender';
 import DayEventsList from './DayEventsList';
 import DayTodosList from './DayTodosList';
 
-import editorStyles from './editorStyles.css';
-
 import {EditorState, RichUtils} from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
 
@@ -17,9 +15,7 @@ import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-
 import createEmojiPlugin from 'draft-js-emoji-plugin'; 
 
 import {convertFromRaw, convertToRaw} from 'draft-js';
-
-
-// import editorStyles from './editorStyles.css';
+import editorStyles from './editorStyles.css';
 import mentions from './mentions';
 
 const mentionPlugin = createMentionPlugin();
@@ -28,8 +24,7 @@ const { MentionSuggestions } = mentionPlugin;
 
 const emojiPlugin = createEmojiPlugin();
 const { EmojiSuggestions } = emojiPlugin;
-const plugins = [mentionPlugin, emojiPlugin];
-const text = ``;
+const plugins = [emojiPlugin, mentionPlugin];
 
 
 export default class DayView extends Component {
@@ -146,6 +141,9 @@ export default class DayView extends Component {
         const contentState = this.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
 
+        console.log(editorContentRaw);
+        console.log("^^^^^^^^^^^^^^");
+
         var split = moment().toString().split(" ");
         const timeZoneFormatted = split[split.length - 2] + " " + split[split.length - 1];
 
@@ -228,7 +226,7 @@ export default class DayView extends Component {
                             <div className="form-holder">
                                 <div className="row calender-input">
                                     <div className="col-sm-12">
-                                        <div className="input" >
+                                        <div className="input" id="editor-holder" >
                                             <div className={editorStyles.editor} onClick={this.focus}>
                                                 <Editor
                                                     editorState={this.state.editorState}
@@ -238,9 +236,7 @@ export default class DayView extends Component {
                                                     ref={(element) => { this.editor = element; }}
                                                     placeholder="Type in an Event or a To-do here use # to tag people, @ to set time of the event"
                                                   />
-                                                <EmojiSuggestions 
-                                                    onSearchChange={this.onSearchChange}
-                                                />
+                                                <EmojiSuggestions />
                                                 <MentionSuggestions
                                                     onSearchChange={this.onSearchChange}
                                                     suggestions={this.state.suggestions}

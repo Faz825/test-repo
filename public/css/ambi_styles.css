@@ -11318,7 +11318,7 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
   margin: 30px 70px;
-  overflow: hidden;
+  overflow: visible;
   height: 45px;
   font-size: 0.875em;
   font-weight: 400;

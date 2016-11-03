@@ -19,6 +19,7 @@
     "debug": "~2.2.0",
     "draft-js": "^0.9.1",
     "draft-js-emoji-plugin": "^2.0.0-beta1",
+    "draft-js-export-html": "^0.5.0",
     "draft-js-mention-plugin": "^2.0.0-beta1",
     "draft-js-plugins-editor": "^2.0.0-beta1",
     "ejs": "~2.3.3",
