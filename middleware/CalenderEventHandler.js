@@ -7,17 +7,17 @@ var CalenderEventHandler = {
 
         var schedule = require('node-schedule');
 
-        // * * */8 * * - run on every 8 hours
+        // 0 0 0/8 * * ? - run on every 8 hours
 
-        var j = schedule.scheduleJob('* * */8 * *', function(){
+        var j = schedule.scheduleJob('0 0 0/8 * * ?', function(){
 
             var _async = require('async'),
                 CalenderEvent = require('mongoose').model('CalenderEvent'),
                 moment = require('moment');
 
-            //console.log("***************************************************");
-            //console.log("------------ START SCHEDULE ---- @ " + moment().format('YYYY-MM-DD HH:mm:ss'));
-            //console.log("***************************************************");
+            console.log("***************************************************");
+            console.log("------------ START SCHEDULE ---- @ " + moment().format('YYYY-MM-DD HH:mm:ss'));
+            console.log("***************************************************");
 
 
             _async.waterfall([
@@ -86,8 +86,8 @@ var CalenderEventHandler = {
                     }
                 }
             ], function(err) {
-                //console.log("----------------- END SCHEDULE ------------------");
-                //console.log("***************************************************");
+                console.log("----------------- END SCHEDULE ------------------");
+                console.log("***************************************************");
             });
 
         });
