@@ -28,6 +28,8 @@ export default class Week extends React.Component {
                 daily_events:this.getEventsForTheDay(date)
             };
 
+            console.log("what is the key >>" + day.date.toString());
+
             days.push(<span key={day.date.toString()}
                             className={"day" + (day.isToday ? " today" : "") + (day.isCurrentMonth ? "" : " different-month") + (day.date.isSame(this.props.selected) ? " selected" : "")}
                             onClick={this.props.select.bind(null, day)}>
@@ -46,7 +48,7 @@ export default class Week extends React.Component {
 
     renderNormalDate(day) {
         return(
-                <span className="squre">{day.number}</span>
+                <div className="squre">{day.number}</div>
         );
     }
 
@@ -85,7 +87,7 @@ export class DailyEvents extends React.Component {
         let _events = this.props.daily_events.map(function(event,key){
             let _text = event.description.blocks[0].text;
             return(
-                <li className={event.type == 1 ? "color-1" : "color-3"}>{_text}</li>
+                <li className={event.type == 1 ? "color-1" : "color-3"} key={key}>{_text}</li>
             );
         });
 
