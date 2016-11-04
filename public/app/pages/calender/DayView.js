@@ -153,7 +153,7 @@ export default class DayView extends Component {
             apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:MM'),
             event_time : moment().format('HH:MM'),
             event_timezone : moment.tz.guess(),
-            sharedUserd : sharedUsers,
+            shared_users : sharedUsers,
         };
 
         $.ajax({
