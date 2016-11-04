@@ -145,14 +145,31 @@ export default class DayView extends Component {
         const Editor = this.state.editorState;
         const contentState = this.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
+        // get shared users from SharedUsers field
+        const sharedUsers = this.refs.SharedUserField.sharedWithIds;
         const postData = {
             description : editorContentRaw,
             type : this.state.defaultType,
             apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:MM'),
             event_time : moment().format('HH:MM'),
             event_timezone : moment.tz.guess(),
-            sharedUserd : []
+            sharedUserd : sharedUsers,
         };
+
+        $.ajax({
+            url: '/calender/add-event',
+            method: "POST",
+            dataType: "JSON",
+            data: postData,
+            headers : { "prg-auth-header" : this.state.user.token },
+        }).done(function (data, text) {
+            if(data.status.code == 200){
+                this.loadEvents();
+            }
+        }.bind(this));
+    }
+
+    markAsDone(eventId) {
 
         $.ajax({
             url: '/calender/add-event',
@@ -241,7 +258,7 @@ export default class DayView extends Component {
                                                 />
                                             </div>
                                             <div className={this.state.showMentions + " shared-users"}>
-                                                <SharedUsers />
+                                                <SharedUsers ref="SharedUserField" />
                                             </div>
                                         </div>
                                         <div className="calender-input-type">
