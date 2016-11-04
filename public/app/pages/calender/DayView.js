@@ -40,6 +40,7 @@ export default class DayView extends Component {
             user : user,
             suggestions: mentions,
             editorState: EditorState.createEmpty(),
+            showMentions : '',
         };
 
         this.currentDay = this.state.currentDay;
@@ -107,6 +108,11 @@ export default class DayView extends Component {
 
     _onUnderLineClick() {
         this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'UNDERLINE'));
+    }
+
+    _onHashClick() {
+        let showMentions = this.state.showMentions;
+        this.setState({showMentions : (showMentions == 'active' ? '' : 'active') });
     }
 
     componentDidMount() {
@@ -234,7 +240,7 @@ export default class DayView extends Component {
                                                     suggestions={this.state.suggestions}
                                                 />
                                             </div>
-                                            <div className="shared-userd">
+                                            <div className={this.state.showMentions + " shared-users"}>
                                                 <SharedUsers />
                                             </div>
                                         </div>
@@ -266,7 +272,9 @@ export default class DayView extends Component {
                                             </div>
                                             
                                             <div className="menu-ico">
-                                                <p><i className="fa fa-hashtag" aria-hidden="true"></i></p>
+                                                <p onClick={this._onHashClick.bind(this)} >
+                                                    <i className="fa fa-hashtag" aria-hidden="true"></i>
+                                                </p>
                                             </div>
                                             <div className="menu-ico">
                                                 <p><i className="fa fa-at" aria-hidden="true"></i></p>

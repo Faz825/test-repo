@@ -29,13 +29,6 @@
 	overflow-y: scroll;
 }
 
-.calander-body .invite-people #react-autowhatever-1{
-  position: absolute;
-  z-index: 1;
-  width: 400px;
-  height: auto;
-}
-
 .invite-people .suggestion-item{
 	overflow: hidden;
 }
@@ -52,6 +45,32 @@
 	font-size: 0.9em;
 	text-transform: capitalize;
 	margin: 5px 0 0 0 ;
+}
+
+/* -Calender Custom Styles*/
+
+.calender-body .invite-people #react-autowhatever-1 {
+  position: absolute;
+  z-index: 1;
+  width: 400px;
+  height: auto;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
+  height: auto;
+}
+
+.calender-body .shared-users {
+  -webkit-transition: all 300ms ease;
+  -moz-transition: all 300ms ease;
+  -ms-transition: all 300ms ease;
+  -o-transition: all 300ms ease;
+  transition: all 300ms ease;
+  display: none;
+}
+
+.calender-body .shared-users.active { 
+  display: block;
 }
 
 /* - ReactAutoSuggest Custom Styles*/

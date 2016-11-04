@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Autosuggest from 'react-autosuggest';
-import Lib from '../../middleware/Lib'
+import Lib from '../../middleware/Lib';
+import Session from '../../middleware/Session';
 
 export default class SharedUsers extends Component {
 
@@ -8,6 +9,7 @@ export default class SharedUsers extends Component {
         super(props);
 
         this.state = {
+            user : Session.getSession('prg_lg'),
             value : '',
             suggestions : [],
             suggestionsList : {},
@@ -63,6 +65,7 @@ export default class SharedUsers extends Component {
                 url: '/connection/search/'+newValue,
                 method: "GET",
                 dataType: "JSON",
+                headers : { "prg-auth-header" : this.state.user.token },
                 success: function (data, text) {
                     if(data.status.code == 200){
                         this.users = data.suggested_users;
@@ -116,9 +119,6 @@ export default class SharedUsers extends Component {
 
     getSuggestionValue(suggestion) {
 
-        console.log(suggestion);
-        console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ getSuggestionValue ");
-
         if(this.sharedWithIds.indexOf(suggestion.user_id)==-1){
             this.sharedWithIds.push(suggestion.user_id);
             this.sharedWithNames.push(suggestion.first_name+" "+suggestion.last_name);
@@ -154,7 +154,7 @@ export default class SharedUsers extends Component {
             placeholder: 'Type a name...',
             value,
             onChange: this.onChange,
-            className: 'form-control'
+            className: 'form-control',
         };
 
         let shared_with_list = [];
