@@ -5,9 +5,6 @@ import React from 'react';
 import Session from '../../middleware/Session';
 import moment from 'moment';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import { Scrollbars } from 'react-custom-scrollbars';
-import { Popover, OverlayTrigger } from 'react-bootstrap';
-import Autosuggest from 'react-autosuggest';
 
 export default class WeekView extends React.Component {
     constructor(props) {
@@ -173,9 +170,6 @@ export class WeekDays extends React.Component {
             if(i > 0) {
                 dateObj = moment(this.props.week_startDt).add(i,"days");
             }
-            //this.state.month.clone().startOf("month").add("w" -1).day("Sunday");
-            //var day_key = moment(this.props.week_startDt).add(i,"days").format('YYYY-MM-DD').toString();
-            //console.log("what is the key 1 >>" + day_key);
             days.push(<LoadDayList current_date={dateObj} weekly_events={this.props.events} key={i}/>);
 
         }
