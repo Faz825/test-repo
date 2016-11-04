@@ -205,3 +205,16 @@
     border: 0px;
     background: none;
 }
+
+/* Folder */
+.folder-cover-wrapper .upload-anime{
+	position: absolute;
+	top: 10px;
+	left: 15px;
+	z-index: 1;
+}
+
+.folder-cover-wrapper .upload-anime .fa{
+	font-size: 1.5em;
+    color: #fff;
+}
