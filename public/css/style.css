@@ -371,11 +371,9 @@ a:focus{
 }
 
 #pg-profile-page{
-	margin: 0 auto 140px;
-	padding: 70px 0 0;
-	width: calc(100% - 220px);
 	z-index: 1;
 	position: relative;
+	background-color: #e9ebee;
 }
 
 .cover-image-wrapper{
@@ -1458,13 +1456,11 @@ input[type=number]::-webkit-outer-spin-button {
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
-	padding: 10px 15px;
-	box-shadow: 0px 0px 7px -2px #000;
+	padding:15px;
+	box-shadow: 0 0 7px -2px #000;
 }
 .profile-content-container{
-	margin: 0 auto;
-    width: 98%;
-    max-width: 1024px;
+	 margin: 0 auto;
 }
 .pg-body-item{
 	border-bottom: 1px dashed #e9f0f4;
@@ -1482,9 +1478,12 @@ input[type=number]::-webkit-outer-spin-button {
 	border-bottom: 1px solid #dee6eb;
 }
 .pg-profile-heading h1 {
-	font: 14px 'montserratregular', sans-serif;
-	color: #59afe1;
-	margin: 2px 0 9px 0;
+	font-family: "Work Sans", sans-serif;
+	font-weight: 700;
+	font-size: 17px;
+	color: #010101;
+	margin-top: 0px;
+	margin-bottom: 15px;
 }
 .pg-section-container .pg-section {
 	padding-top: 10px;
@@ -1519,12 +1518,12 @@ input[type=number]::-webkit-outer-spin-button {
 
 
 .pg-section-container .pg-header h3 {
-	font-weight: lighter;
-	font: 18px 'montserratsemi_bold', sans-serif;
-	font-size: 18px;
-	line-height: 18px;
-	color: #2d5164;
+	font-family: "Work Sans", sans-serif;
 	margin: 15px 0;
+	color: #000000;
+	font-weight: 500;
+	font-size: 15px;
+	margin-bottom: 20px;
 }
 .pg-section .pg-edit-tools {
 	position: absolute;
@@ -5226,145 +5225,6 @@ textarea{
 	cursor: pointer;
 	color: white;
 }
-
-/**
- * Calender CSS
- */ 
-.border-box {
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-}
-.calender-box {
-	float: left;
-	display: block;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	/*background: white;*/
-	width: 1000px;
-	border: solid 1px #CCC;
-	margin-bottom: 10px;
-}
-
-.calender-box > div.header {
-	float: left;
-	width: 100%;
-	background: transparent !important;
-	height: 40px;
-	/*color: white;*/
-}
-.calender-box > div.header > * {
-	height: 40px;
-	line-height: 40px !important;
-	display: inline-block;
-	vertical-align: middle;
-}
-.calender-box > div.header > i {
-	float: left;
-	width: 40px;
-	font-size: 1.125em;
-	font-weight: bold;
-	position: relative;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	padding: 0 10px;
-	cursor: pointer;
-}
-.calender-box > div.header > i.fa-angle-left {
-	text-align: left;
-}
-.calender-box > div.header > i.fa-angle-right {
-	text-align: left;
-	margin-left: -40px;
-}
-.calender-box > div.header > span {
-	float: left;
-	width: 100%;
-	/*font-weight: bold;*/
-	text-transform: uppercase;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	padding-left: 50px;
-	margin-left: -40px;
-	text-align: center;
-	padding-right: 40px;
-	color: #273859;
-}
-.calender-box > div.header > span.middle-month {
-	text-align: center;
-	width: 800px;
-	padding-right: 132px;
-	font-size: 20px;
-}
-.calender-box > div.header > span.smaller-month {
-	text-align: left;
-	width: 180px;
-	font-size: 10px;
-	padding-right: 66px;
-}
-.calender-box > div.week {
-	float: left;
-	width: 100%;
-	border-top: solid 1px #CCC;
-}
-.calender-box > div.week:first-child {
-	border-top: none;
-}
-.calender-box > div.week > span.day {
-	float: left;
-	width: 14.28571429%;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	border-left: solid 1px #CCC;
-	font-size: 1.5em;
-	text-align: left;
-	padding-left: 1.9%;
-	height: 100px;
-	line-height: 30px !important;
-	display: inline-block;
-	vertical-align: middle;
-	background: white;
-	cursor: pointer;
-	color: #273859;
-}
-
-.calender-box > div.week > span.day-names {
-	font-size: 1.05em !important;
-	height: 30px !important;
-}
-.calender-box > div.week > span.day:first-child {
-	border-left: none;
-}
-.calender-box > div.week > span.day.today {
-	background: #E3F2FF;
-}
-.calender-box > div.week > span.day.different-month {
-	color: #C0C0C0;
-}
-.calender-box > div.week > span.day.selected {
-	background: #2875C7;
-	color: white;
-}
-.calender-box > div.week.names > span {
-	color: #2ea8d0;
-}
-
-/* mini calender
- */
-
-.mini-calender-box.calender-box {
-	width: auto;
-}
-
-.mini-calender-box.calender-box > div.week > span.day {
-	height: auto;
-	font-size: 1em;
-	text-align: center;
-	padding-left: 0px; 
-}
-
-/**
- * End - Calender css
- */
 
 
 /**

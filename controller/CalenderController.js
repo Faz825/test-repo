@@ -153,6 +153,46 @@ var CalenderController = {
     },
 
     /**
+     * Return all events todos tasks for given month
+     * @param req
+     * @param res
+     * @return Json
+     */
+    getAllForDateRange: function(req,res) {
+
+        var CurrentSession = Util.getCurrentSession(req);
+        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var UserId = CurrentSession.id;
+        var moment = require('moment');
+
+        var start_date = req.query.start_date;
+        var end_date = req.query.end_date;
+        var user_id = Util.toObjectId(UserId);
+
+        // month in moment is 0 based, so 9 is actually october, subtract 1 to compensate
+        // array is 'year', 'month', 'day', etc
+        var startDate = moment(start_date).format('YYYY-MM-DD');
+
+        // Clone the value before .endOf()
+        var endDate = moment(end_date).format('YYYY-MM-DD');
+
+        var criteria =  { start_date_time: {$gte: startDate, $lt: endDate}, status: 1, user_id: user_id};
+
+        CalenderEvent.getSortedCalenderItems(criteria,function(err,result) {
+
+            var outPut ={};
+            if(err) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_MONTH_EMPTY, Alert.ERROR);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['events'] = result.events;
+                res.status(200).send(outPut);
+            }
+        });
+    },
+
+    /**
      * Return all events todos tasks for given week
      * @param req
      * @param res

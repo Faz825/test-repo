@@ -125,4 +125,4 @@ var GroupFolderController ={
 
 };
 
-module.exports = FolderController;
+module.exports = GroupFolderController;

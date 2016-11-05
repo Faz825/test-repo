@@ -26,7 +26,9 @@ var FolderController ={
 
         _async.waterfall([
 
-            function addFolderToDB(){
+            function addFolderToDB(callBack){
+
+                console.log("addFolderToDB")
 
                 for(var i = 0; i < _shared_with.length; i++){
                     var randColor = _randColor.randomColor({
@@ -55,13 +57,14 @@ var FolderController ={
                 Folders.addNewFolder(_folder,function(resultSet){
                     console.log(resultSet.folder)
                     _folder_id = resultSet.folder._id;
+                    callBack(null);
                 });
 
             },
             function addNotification(callBack){
+                console.log("addNotification")
 
-                if(sharedUsers.length > 0 && _folder_id != 0){
-
+                if(_shared_with.length > 0 && _folder_id != 0){
                     var _data = {
                         sender:Util.getCurrentSession(req).id,
                         notification_type:Notifications.SHARE_FOLDER,
@@ -70,21 +73,22 @@ var FolderController ={
                     Notification.saveNotification(_data, function(res){
                         if(res.status == 200){
                             callBack(null,res.result._id);
+                        } else{
+                            callBack(null);
                         }
-
                     });
-
                 } else{
                     callBack(null);
                 }
             },
             function notifyingUsers(notification_id, callBack){
+                console.log("notifyingUsers")
 
-                if(typeof notification_id != 'undefined' && notifyUsers.length > 0){
+                if(typeof notification_id != 'undefined' && _shared_with.length > 0){
 
                     var _data = {
                         notification_id:notification_id,
-                        recipients:notifyUsers
+                        recipients:_shared_with
                     };
                     NotificationRecipient.saveRecipients(_data, function(res){
                         callBack(null);
@@ -98,17 +102,17 @@ var FolderController ={
         ],function(err,resultSet){
             console.log("async waterfall callback")
 
-            if(resultSet.status == 200){
-                var outPut ={
-                    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
-                };
-                res.status(200).json(outPut);
-            }else{
-                var outPut ={
-                    status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
-                };
-                res.status(400).json(outPut);
-            }
+            //if(resultSet.status == 200){
+            //    var outPut ={
+            //        status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            //    };
+            //    res.status(200).json(outPut);
+            //}else{
+            //    var outPut ={
+            //        status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
+            //    };
+            //    res.status(400).json(outPut);
+            //}
 
             if(err){
                 var outPut ={
@@ -118,7 +122,7 @@ var FolderController ={
             }
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                folders:resultSet
+                folder_id:_folder_id
             };
             res.status(200).json(outPut);
         });

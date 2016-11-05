@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,6 +1418,7 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3118,6 +3119,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3670,6 +3672,7 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10246,17 +10249,17 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/*
-	Method to use:
-	@include @border {
-		border ($style,  $sides, $emptySides){
-	}
+/* 
+  Method to use:
+  @include @border {
+    border ($style,  $sides, $emptySides){
+  }
 */
-/*
-	Method to use:
-	@include @mixin {
-		content
-	}
+/* 
+  Method to use:
+  @include @mixin {
+    content
+  }
 */
 header {
   background: #fff;
@@ -10631,7 +10634,7 @@ header .notification-holder .profile-header-thumb {
     right: 2px;
   }
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-peak:after {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-peak .peak-tail {
   position: absolute;
   border-bottom-right-radius: 5px;
   content: "";
@@ -10663,12 +10666,14 @@ header .notification-holder .profile-header-thumb {
   left: 10px;
   opacity: 0.2;
   box-shadow: 2px 0 0 0 #000000;
+  z-index: 1;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper {
   position: relative;
-  margin: 75px 0px 64px;
+  padding: 75px 0px 66px;
   overflow: hidden;
   text-align: center;
+  height: 100%;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper {
   position: relative;
@@ -10683,8 +10688,8 @@ header .notification-holder .profile-header-thumb {
   background-color: #ffffff;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper .logo-shader:nth-child(1) {
-  width: 90px;
-  height: 90px;
+  width: 98px;
+  height: 98px;
   z-index: 4;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper .logo-shader:nth-child(2) {
@@ -10700,6 +10705,7 @@ header .notification-holder .profile-header-thumb {
   width: 98px;
   height: 98px;
   z-index: 5;
+  border-radius: 999px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
   margin-top: 22px;
@@ -10875,7 +10881,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .folder-overlay:nth-child(1) {
   height: 490px;
 }
-.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-peak:after {
+.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-peak .peak-tail {
   height: 385px;
 }
 .folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-9 .folder-content-wrapper {
@@ -10885,17 +10891,17 @@ header .notification-holder .profile-header-thumb {
   height: 510px;
 }
 .folder-container .folder-body .folder.pink .folder-peak,
-.folder-container .folder-body .folder.pink .folder-peak:after,
+.folder-container .folder-body .folder.pink .peak-tail,
 .folder-container .folder-body .folder.pink .folder-cover {
   background-color: #ed0677;
 }
 .folder-container .folder-body .folder.light-blue .folder-peak,
-.folder-container .folder-body .folder.light-blue .folder-peak:after,
+.folder-container .folder-body .folder.light-blue .peak-tail,
 .folder-container .folder-body .folder.light-blue .folder-cover {
   background-color: #1b9ed9;
 }
 .folder-container .folder-body .folder.light-green .folder-peak,
-.folder-container .folder-body .folder.light-green .folder-peak:after,
+.folder-container .folder-body .folder.light-green .peak-tail,
 .folder-container .folder-body .folder.light-green .folder-cover {
   background-color: #a2c73e;
 }
@@ -10905,17 +10911,17 @@ header .notification-holder .profile-header-thumb {
   background-color: #b01d5a;
 }
 .folder-container .folder-body .folder.dark-blue .folder-peak,
-.folder-container .folder-body .folder.dark-blue .folder-peak:after,
+.folder-container .folder-body .folder.dark-blue .peak-tail,
 .folder-container .folder-body .folder.dark-blue .folder-cover {
   background-color: #091652;
 }
 .folder-container .folder-body .folder.gray .folder-peak,
-.folder-container .folder-body .folder.gray .folder-peak:after,
+.folder-container .folder-body .folder.gray .peak-tail,
 .folder-container .folder-body .folder.gray .folder-cover {
   background-color: #bbbdbe;
 }
 .folder-container .folder-body .folder.dark-green .folder-peak,
-.folder-container .folder-body .folder.dark-green .folder-peak:after,
+.folder-container .folder-body .folder.dark-green .peak-tail,
 .folder-container .folder-body .folder.dark-green .folder-cover {
   background-color: #067d41;
 }
@@ -10956,10 +10962,10 @@ header .notification-holder .profile-header-thumb {
   display: block;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
-  margin-bottom: 10px;
   width: 100% !important;
   background: #f6f6f6;
   border: none;
+  box-shadow: 0px 2px 5px 1px #c4c4c4;
 }
 .calender-container .calender-box > div.header {
   float: left;
@@ -11021,7 +11027,6 @@ header .notification-holder .profile-header-thumb {
   width: 100%;
   border-top: solid 1px #dee6eb;
   background: white;
-  border-left: solid 1px #dee6eb;
 }
 .calender-container .calender-box > div.week:first-child {
   border-top: none;
@@ -11252,6 +11257,7 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view {
   margin-top: 28px;
   overflow: hidden;
+  -webkit-box-shadow: 1px 0 12px -8px #000000;
   box-shadow: 1px 0 12px -8px #000000;
   background-color: #ffffff;
 }
@@ -11318,7 +11324,7 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
   margin: 30px 70px;
-  overflow: hidden;
+  overflow: visible;
   height: 45px;
   font-size: 0.875em;
   font-weight: 400;
@@ -11380,7 +11386,7 @@ header .notification-holder .profile-header-thumb {
   text-transform: uppercase;
   font-size: 0.75em;
   font-weight: 500;
-  background-color: #3e3e3e;
+  background-color: #ffffff;
   color: #a6c649;
   width: 90px;
   height: 40px;
@@ -11389,7 +11395,7 @@ header .notification-holder .profile-header-thumb {
   border-right: 1px solid #bcbfbf;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper .btn-toggle.active {
-  background-color: #ffffff;
+  background-color: #3e3e3e;
   color: #00a6ef;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper .btn-toggle i {
@@ -11583,6 +11589,8 @@ header .notification-holder .profile-header-thumb {
   overflow: hidden;
   background-color: #f6f6f6;
   margin-bottom: 12px;
+  -webkit-box-shadow: 0px 4px 5px -1px #c4c4c4;
+  box-shadow: 0px 4px 5px -1px #c4c4c4;
 }
 .calender-week-view .view-header .date-wrapper {
   float: left;
@@ -11635,6 +11643,8 @@ header .notification-holder .profile-header-thumb {
   margin-bottom: 8px;
   width: calc(50% - 4px);
   margin-right: 8px;
+  -webkit-box-shadow: 0px 0px 6px 1px #c4c4c4;
+  box-shadow: 0px 0px 6px 1px #c4c4c4;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile:nth-of-type(2n) {
   margin-right: 0;
@@ -11743,6 +11753,9 @@ header .notification-holder .profile-header-thumb {
   padding: 21px 21px;
   overflow: hidden;
   background-color: #f6f6f6;
+  border-bottom: 1px solid #CCC;
+  -webkit-box-shadow: 0px 0px 5px 1px #c4c4c4;
+  box-shadow: 0px 0px 5px 1px #c4c4c4;
 }
 .calender-month-view .view-header .date-wrapper {
   float: left;
@@ -11794,6 +11807,183 @@ header .notification-holder .profile-header-thumb {
   padding: 0;
 }
 
+.calender-year-view .view-header {
+  padding: 21px 21px;
+  overflow: hidden;
+  background-color: #f6f6f6;
+  margin-bottom: 12px;
+  -webkit-box-shadow: 0px 4px 5px -1px #c4c4c4;
+  box-shadow: 0px 4px 5px -1px #c4c4c4;
+}
+.calender-year-view .view-header .date-wrapper {
+  float: left;
+  border: 1px solid #bcbfbf;
+  border-radius: 3px;
+  background-color: #e9ebee;
+}
+.calender-year-view .view-header .date-wrapper .date-nav {
+  float: left;
+}
+.calender-year-view .view-header .date-wrapper .date-nav i {
+  padding: 11px 12px 12px;
+}
+.calender-year-view .view-header .date-wrapper .date {
+  float: left;
+  border-left: 1px solid #bcbfbf;
+  border-right: 1px solid #bcbfbf;
+  background-color: #ffffff;
+  min-width: 155px;
+  text-align: center;
+}
+.calender-year-view .view-header .date-wrapper .date p {
+  padding: 11px 14px 11px;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  color: #000000;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.calender-year-view .view-header .calender-date p {
+  margin-top: 4px;
+  margin-bottom: 0;
+  float: right;
+  text-transform: uppercase;
+  font-size: 1.3125em;
+  color: #000000;
+  font-weight: 400;
+}
+.calender-year-view .view-tile-area {
+  margin-bottom: 90px;
+}
+.calender-year-view .view-tile-area .month-tiles {
+  width: 100%;
+  font-size: 0;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile {
+  font-size: 16px;
+  line-height: 1.4;
+  overflow: hidden;
+  display: inline-block;
+  margin-bottom: 8px;
+  width: calc(25% - 4px);
+  margin-right: 8px;
+  -webkit-box-shadow: 0px 0px 6px 1px #c4c4c4;
+  box-shadow: 0px 0px 6px 1px #c4c4c4;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile:nth-of-type(2n) {
+  margin-right: 0;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header {
+  background-color: #ffffff;
+  padding: 5% 7%;
+  border-bottom: 1px solid #dee6eb;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header:before {
+  display: table;
+  content: " ";
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header h5 {
+  float: left;
+  text-align: left;
+  width: 50%;
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.9375em;
+  color: #000000;
+  font-weight: 500;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header .month-event-todo-count {
+  width: 50%;
+  float: left;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header .month-event-todo-count h6.event-count {
+  text-align: right;
+  width: 100%;
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.77875em;
+  font-weight: 500;
+  color: #00a6ef;
+  margin-bottom: 5px;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header .month-event-todo-count h6.todo-count {
+  text-align: right;
+  width: 100%;
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.77875em;
+  color: #a6c649;
+  font-weight: 500;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header h3 {
+  float: left;
+  text-align: left;
+  font-size: 1.5575em;
+  color: #c1c1c1;
+  clear: both;
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body {
+  background-color: #f6f8fc;
+  padding: 5% 7%;
+  height: 130px;
+  overflow: hidden;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body:before {
+  display: table;
+  content: " ";
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body:after {
+  clear: both;
+  display: table;
+  content: " ";
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body .list-items li {
+  font-family: "Work Sans", sans-serif;
+  font-size: 0.77875em;
+  font-weight: 500;
+  color: black;
+  margin-bottom: 5px;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body .list-items li:before {
+  content: "\f111";
+  font-family: FontAwesome;
+  line-height: 1;
+  font-size: 8px;
+  float: left;
+  margin-top: 5px;
+  margin-right: 4px;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body .list-items li.todo:before {
+  color: #a6c649;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body .list-items li.events:before {
+  color: #00a6ef;
+}
+@media screen and (min-width: 50em) {
+  .calender-year-view .view-tile-area .month-tiles .month-tile {
+    width: calc(25% - 6px);
+  }
+  .calender-year-view .view-tile-area .month-tiles .month-tile:nth-of-type(2n) {
+    margin-right: 8px;
+  }
+  .calender-year-view .view-tile-area .month-tiles .month-tile:nth-of-type(4n) {
+    margin-right: 0;
+  }
+}
+.calender-year-view .remove-padding {
+  padding: 0;
+}
+
 .profile-container {
   background-color: #e9ebee;
 }
@@ -11815,14 +12005,14 @@ header .notification-holder .profile-header-thumb {
   background-size: cover !important;
   height: 290px;
   overflow: hidden;
+  cursor: pointer;
 }
 .profile-container .time-line-top-section .cover-page-section .drag-overlay {
-  display: none;
+  opacity: 0;
 }
-.profile-container .time-line-top-section .cover-page-section.edit .drag-overlay {
+.profile-container .time-line-top-section .cover-page-section.edit:hover .drag-overlay {
   border: 1px dashed #848484;
   position: absolute;
-  display: block;
   width: 100%;
   height: 100%;
   top: 0;
@@ -11830,14 +12020,13 @@ header .notification-holder .profile-header-thumb {
   background-color: #c4c4c4;
   z-index: 2;
   text-align: center;
-  opacity: 0.95;
+  opacity: 0.8;
 }
-.profile-container .time-line-top-section .cover-page-section.edit .drag-overlay > div {
+.profile-container .time-line-top-section .cover-page-section.edit:hover .drag-overlay > i {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: 0;
-  right: 0;
+  top: 25px;
+  left: 25px;
+  font-size: 1.5625em;
 }
 .profile-container .time-line-top-section .cover-page-section .profile-cover-photo {
   width: 100%;
@@ -11852,7 +12041,7 @@ header .notification-holder .profile-header-thumb {
   bottom: 0px;
   z-index: 10;
 }
-.profile-container .time-line-top-section .profile-details .profile-pic {
+.profile-container .time-line-top-section .profile-details .profile-pic-section .profile-pic {
   width: 160px;
   height: 160px;
   border: 5px solid #fff;
@@ -11929,7 +12118,7 @@ header .notification-holder .profile-header-thumb {
   padding-bottom: 10px;
   display: inline-block;
   cursor: pointer;
-  border-bottom: 1px solid transparent;
+  border-bottom: 3px solid transparent;
 }
 .profile-container #new-post .new-post-header ul li a img:nth-child(1) {
   opacity: 0;
@@ -12251,6 +12440,7 @@ header .notification-holder .profile-header-thumb {
   padding: 20px;
   border-radius: 5px;
   background-color: #ffffff;
+  border-top: #dee6eb;
 }
 .profile-container #profile-resume h1 {
   font-family: "Work Sans", sans-serif;
@@ -12258,7 +12448,76 @@ header .notification-holder .profile-header-thumb {
   font-size: 1.084375em;
   color: #010101;
   margin-top: 0px;
+  margin-bottom: 15px;
+}
+.profile-container #profile-resume .skills-interests {
+  border-top: 1px solid #dee6eb;
+  padding: 25px 0;
+}
+.profile-container #profile-resume .skills-interests h4 {
+  color: #000000;
+  font-weight: 500;
+  font-size: 0.9375em;
   margin-bottom: 20px;
+}
+.profile-container #profile-resume .skills-interests .view-skills .skills-interests-col h3 {
+  color: #000000;
+  font-weight: 500;
+  font-size: 0.93em;
+  margin-bottom: 15px;
+}
+.profile-container #profile-resume .skills-interests .view-skills .skills-interests-col .skills-list .skill-item {
+  font-weight: 400;
+  color: #00a5ef;
+  margin: 0px;
+  display: inline-block;
+  vertical-align: middle;
+  background: #f6f6f6;
+  padding: 2px 8px;
+  border: 1px solid #d9e6e6;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.profile-container #profile-resume .skills-interests .view-skills .skills-interests-col .skills-list .skill-item span {
+  font-size: 0.775em;
+}
+.profile-container #profile-resume .skills-interests .add-skills .form-area {
+  background: #f4f4f4;
+  padding: 10px;
+  width: 100%;
+}
+.profile-container #profile-resume .work-experience {
+  border-top: 1px solid #dee6eb;
+  padding: 25px 0;
+}
+.profile-container #profile-resume .work-experience h4 {
+  color: #000000;
+  font-weight: 500;
+  font-size: 0.9375em;
+  margin-bottom: 20px;
+}
+.profile-container #profile-resume .work-experience .view-experience .work-experience-list .work-experience-list-item {
+  padding-bottom: 25px;
+}
+.profile-container #profile-resume .work-experience .view-experience .work-experience-list .work-experience-list-item h5 {
+  color: #00a5ef;
+  font-size: 0.8525em;
+  margin-bottom: 10px;
+}
+.profile-container #profile-resume .work-experience .view-experience .work-experience-list .work-experience-list-item h6 {
+  color: #999999;
+  font-size: 0.775em;
+  margin-bottom: 12px;
+}
+.profile-container #profile-resume .work-experience .view-experience .work-experience-list .work-experience-list-item h6 i {
+  font-size: 5px;
+  vertical-align: middle;
+}
+.profile-container #profile-resume .work-experience .view-experience .work-experience-list .work-experience-list-item p {
+  color: #000000;
+  font-size: 0.8525em;
 }
 
 .popup-holder {
@@ -12378,6 +12637,7 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li {
   display: inline-block;
+  margin-right: 10px;
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li button {
   font-weight: 500;

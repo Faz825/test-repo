@@ -48,10 +48,20 @@ class Socket{
         this.socket.emit('notebook share notification', _data);
     }
 
+    sendFolderNotification(data){
+        console.log("sendFolderNotification");
+        console.log(data)
+        var _data = {
+            user:this.loggedUser.user_name,
+            data:data
+        };
+        this.socket.emit('folder share notification', _data);
+    }
+
     listenToNotification(callback){
 
         this.socket.on('notification',function(data){
-            //console.log("notification"); console.log(data);
+            console.log("notification"); console.log(data);
             callback(data);
         });
 

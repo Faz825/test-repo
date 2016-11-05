@@ -8,23 +8,24 @@ import MiniCalender from './MiniCalender';
 import DayEventsList from './DayEventsList';
 import DayTodosList from './DayTodosList';
 
-import { EditorState } from 'draft-js';
-import Editor from 'draft-js-plugins-editor';
-import createEmojiPlugin from 'draft-js-emoji-plugin';
-import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin';
-import mentions from './mentions';
+import {EditorState, RichUtils} from 'draft-js';
+import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
+
+import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin'; // eslint-disable-line import/no-unresolved
+import createEmojiPlugin from 'draft-js-emoji-plugin'; 
 
 import {convertFromRaw, convertToRaw} from 'draft-js';
+import editorStyles from './editorStyles.css';
+import mentions from './mentions';
 
-// emoji plugin
+const mentionPlugin = createMentionPlugin();
+const { MentionSuggestions } = mentionPlugin;
+// const plugins = [mentionPlugin];
+
 const emojiPlugin = createEmojiPlugin();
 const { EmojiSuggestions } = emojiPlugin;
+const plugins = [emojiPlugin, mentionPlugin];
 
-// mention plugin
-const mentionPlugin = createMentionPlugin({mentionTrigger: '#', mentionPrefix: '#',entityMutability: 'IMMUTABLE'});
-const { MentionSuggestions } = mentionPlugin;
-
-const plugins = [emojiPlugin,mentionPlugin];
 
 export default class DayView extends Component {
 
@@ -32,25 +33,81 @@ export default class DayView extends Component {
         super(props);
         let user =  Session.getSession('prg_lg');
         this.state = {
-            editorState : EditorState.createEmpty(),
-            suggestions : mentions,
-            currentDay : moment().format('L'),
+            currentDay : moment().format('YYYY-MM-DD'),
             defaultType : 'event',
             events : [],
             user : user,
+            suggestions: mentions,
+            editorState: EditorState.createEmpty(),
         };
+
         this.currentDay = this.state.currentDay;
         this.addEvent = this.addEvent.bind(this);
-        this.onChange = this.onChange.bind(this);
         this.nextDay = this.nextDay.bind(this);
-        this.focus = this.focus.bind(this);
         this.changeType = this.changeType.bind(this);
 
+
+        // this.onChange = (editorState) => this.setState({editorState});
+        this.handleKeyCommand = this.handleKeyCommand.bind(this);
+        this.focus = this.focus.bind(this);
+        // this.onSearchChange = this.onSearchChange.bind(this);
+        this.onChange = this.onChange.bind(this);
+
         this.onSearchChange = ({ value }) => {
+
+            // $.ajax({
+            //     url : '/user/get-user-suggestions/'+filter.replace("#", ""),
+            //     method : "GET",
+            //     dataType : "JSON",
+            //     headers : { "prg-auth-header" : this.state.user.token },
+            //     success : function (data, text) {
+            //         if (data.status.code == 200) {
+            //             this.setState({ suggestions: defaultSuggestionsFilter(value, data.suggested_users)});
+            //         }
+            //     }.bind(this),
+            //     error: function (request, status, error) {
+            //         console.log(error);
+            //     }
+            // });
+
+            console.log(" WHAT IS THIS VALUE :::: "+ value);
+
+
+
             this.setState({
                 suggestions: defaultSuggestionsFilter(value, mentions),
             });
         };
+
+    }
+
+    focus() {
+        this.editor.focus();
+    }
+
+    onChange(editorState) {
+        this.setState({editorState}); 
+    }
+
+    handleKeyCommand(command) {
+        const newState = RichUtils.handleKeyCommand(this.state.editorState, command);
+        if (newState) {
+            this.onChange(newState);
+            return 'handled';
+        }
+        return 'not-handled';
+    }
+
+    _onBoldClick() {
+        this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
+    }
+
+    _onItalicClick() {
+        this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'ITALIC'));
+    }
+
+    _onUnderLineClick() {
+        this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'UNDERLINE'));
     }
 
     componentDidMount() {
@@ -78,20 +135,15 @@ export default class DayView extends Component {
 
     }
 
-    focus() {
-        this.editor.focus();
-    }
-
-    onChange(editorState) {
-        this.setState({editorState});
-    }
-
     addEvent(event) {
-        
+
         const Editor = this.state.editorState;
         const contentState = this.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
-        
+
+        console.log(editorContentRaw);
+        console.log("^^^^^^^^^^^^^^");
+
         var split = moment().toString().split(" ");
         const timeZoneFormatted = split[split.length - 2] + " " + split[split.length - 1];
 
@@ -118,14 +170,14 @@ export default class DayView extends Component {
     }
 
     nextDay() {
-        let nextDay = moment(this.state.currentDay).add(1,'days').format('L');
+        let nextDay = moment(this.state.currentDay).add(1,'days').format('YYYY-MM-DD');
         this.currentDay = nextDay;
         this.setState({currentDay : nextDay});
         this.loadEvents();
     }
 
     previousDay() {
-        let prevDay = moment(this.state.currentDay).add(-1, 'days').format('L');
+        let prevDay = moment(this.state.currentDay).add(-1, 'days').format('YYYY-MM-DD');
         this.currentDay = prevDay;
         this.setState({currentDay : prevDay});
         this.loadEvents();
@@ -138,7 +190,7 @@ export default class DayView extends Component {
     calenderClick(day) {
 
         console.log(day);
-        let clickedDay =  moment(day.date).format('L');
+        let clickedDay =  moment(day.date).format('YYYY-MM-DD');
         this.currentDay = clickedDay;
         this.setState({currentDay : clickedDay});
         this.loadEvents();
@@ -168,25 +220,28 @@ export default class DayView extends Component {
                                     </div>
                                 </div>
                                 <div className="col-sm-6 calender-date">
-                                    <p>{moment().format('dddd D, YYYY')}</p>
+                                    <p>{moment(this.state.currentDay).format('dddd D, YYYY')}</p>
                                 </div>
                             </div>
                             <div className="form-holder">
                                 <div className="row calender-input">
                                     <div className="col-sm-12">
-                                        <div className="input" >
-                                            <Editor
-                                                editorState={this.state.editorState}
-                                                onChange={this.onChange}
-                                                plugins={plugins}
-                                                ref={(element) => { this.editor = element; }}
-                                                placeholder="Type in an Event or a To-do here use # to tag people, @ to set time of the event"
-                                              />
-                                            <EmojiSuggestions />
-                                            <MentionSuggestions
-                                                onSearchChange={this.onSearchChange}
-                                                suggestions={this.state.suggestions}
-                                            />
+                                        <div className="input" id="editor-holder" >
+                                            <div className={editorStyles.editor} onClick={this.focus}>
+                                                <Editor
+                                                    editorState={this.state.editorState}
+                                                    handleKeyCommand={this.handleKeyCommand}
+                                                    onChange={this.onChange}
+                                                    plugins={plugins}
+                                                    ref={(element) => { this.editor = element; }}
+                                                    placeholder="Type in an Event or a To-do here use # to tag people, @ to set time of the event"
+                                                  />
+                                                <EmojiSuggestions />
+                                                <MentionSuggestions
+                                                    onSearchChange={this.onSearchChange}
+                                                    suggestions={this.state.suggestions}
+                                                />
+                                            </div>
                                         </div>
                                         <div className="calender-input-type">
                                             <p>{this.state.defaultType}</p>
@@ -200,8 +255,21 @@ export default class DayView extends Component {
                                                 <p><i className="fa fa-smile-o" aria-hidden="true"></i></p>
                                             </div>
                                             <div className="menu-ico">
-                                                <p>A</p>
+                                                <p>
+                                                    <button onClick={this._onBoldClick.bind(this)}>B</button>
+                                                </p>
                                             </div>
+                                            <div className="menu-ico">
+                                                <p>
+                                                    <button onClick={this._onItalicClick.bind(this)}>I</button>
+                                                </p>
+                                            </div>
+                                            <div className="menu-ico">
+                                                <p>
+                                                    <button onClick={this._onUnderLineClick.bind(this)}>U</button>
+                                                </p>
+                                            </div>
+                                            
                                             <div className="menu-ico">
                                                 <p><i className="fa fa-hashtag" aria-hidden="true"></i></p>
                                             </div>

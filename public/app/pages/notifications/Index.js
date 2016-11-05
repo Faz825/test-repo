@@ -55,7 +55,7 @@ export default class Index extends React.Component{
             let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
 
 
-            if(_notificationType == "share_notebook" || _notificationType == "share_notebook_response") {
+            if(_notificationType == "share_notebook" || _notificationType == "share_notebook_response" || _notificationType == "share_folder") {
 
                 console.log("came to load >>" + _notificationType);
                 _this.loadNotifications();

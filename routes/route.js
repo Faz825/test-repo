@@ -279,6 +279,7 @@ router.post('/notes/delete-note', NotesController.deleteNote);
 router.post('/introduction/update', UserController.updateIntroduction);
 router.get('/introduction/:uname',UserController.retrieveIntroduction);
 router.get('/notifications/get-notifications',NotificationController.getNotifications);
+// router.get('/notifications/get-notifications',NotificationController.getNotificationsList);
 router.post('/notifications/update-notifications',NotificationController.updateNotifications);
 router.post('/notifications/notebook-update',NotificationController.updateNotebookNotifications);
 router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);
@@ -303,6 +304,9 @@ router.post('/calender/update-share-event-status', CalenderController.updateEven
 router.get('/calender/get-shared-users', CalenderController.getEventSharedUsers);
 
 router.post('/calender/get-events-for-specific-day', CalenderController.getEventsForSpecificDay);
+router.get('/calender/events/date-range/get', CalenderController.getAllForDateRange);
+
+router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
 
 /**
  * API Routes that need to authenticate separately
