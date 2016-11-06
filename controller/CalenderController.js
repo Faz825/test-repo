@@ -40,23 +40,25 @@ var CalenderController = {
     addEvent: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
+        console.log(req.body.shared_users.length + " LENGTH IS <<<<  ");
+
         var _async = require('async'),
             CalenderEvent = require('mongoose').model('CalenderEvent'),
             UserId = Util.getCurrentSession(req).id,
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient'),
-            // notifyUsers = req.params.sharedUserd; //this should be an array
-            notifyUsers = []; // TODO: this will be removed after mentions issue will be fixed
+            notifyUsers = (req.body.shared_users.length > 0 ? req.body.shared_users : []); //this should be an array
         _async.waterfall([
 
             function addNewToDb(callBack){
                 var eventData = {
                     user_id : UserId,
                     description : req.body.description,
-                    type: req.body.type == "TODO" ? CalenderTypes.TODO : CalenderTypes.EVENT,
+                    type: (req.body.type == "todo" ? CalenderTypes.TODO : CalenderTypes.EVENT),
                     start_date: req.body.apply_date,
                     event_time: req.body.event_time,
-                    event_timezone: req.body.event_timezone
+                    event_timezone: req.body.event_timezone,
+                    shared_users: notifyUsers
                 }
 
                 CalenderEvent.addNew(eventData, function(event) {
@@ -153,7 +155,7 @@ var CalenderController = {
     },
 
     /**
-     * Return all events todos tasks for given month
+     * Return all events todos tasks for given date range
      * @param req
      * @param res
      * @return Json
@@ -717,7 +719,53 @@ var CalenderController = {
                 res.status(200).send(outPut);
             }
         });
-    }
+    },
+
+    /**
+     * Update events for a given id
+     * @param req
+     * @param res
+     * @return Json
+     */
+    updateEventCompletion: function(req,res) {
+
+        var CurrentSession = Util.getCurrentSession(req);
+        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var moment = require('moment');
+        var _async = require('async');
+
+        var event_id = req.query.id;
+        event_id = Util.toObjectId(event_id);
+        var user_id = Util.toObjectId(CurrentSession.id);
+
+        _async.waterfall([
+            function getEvents(callBack){
+                CalenderEvent.getEventById(event_id,function(resultSet){
+                    callBack(null, resultSet);
+                });
+            },
+            function updateEvent(resultSet, callBack){
+                var criteria={
+                    _id:event_id
+                };
+                var updateData = {
+                    status:CalenderStatus.COMPLETED
+                };
+                CalenderEvent.updateEvent(criteria, updateData, function (res) {
+                    callBack(null);
+                });
+            }
+        ],function(err){
+            var outPut ={};
+            if(err) {
+                outPut['status'] = ApiHelper.getMessage(400, err);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                res.status(200).send(outPut);
+            }
+        });
+    },
 };
 
 module.exports = CalenderController;

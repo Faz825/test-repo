@@ -63,7 +63,10 @@ var CalenderEventSchema = new Schema({
         type : String,
         default : null
     },
-    shared_users:[],
+    shared_users: {
+        type: Array,
+        default: []
+    },
     created_at : {
         type : Date
     },
@@ -93,8 +96,6 @@ CalenderEventSchema.pre('save', function(next){
 CalenderEventSchema.statics.addNew = function (eventData,callBack) {
 
     var calenderEvent = new this();
-    console.log(eventData);
-    console.log("EVENT TYPE");
     calenderEvent.user_id = eventData.user_id;
     calenderEvent.description = (eventData.description ? eventData.description : 'No title');
     calenderEvent.status = CalenderStatus.PENDING;
@@ -102,6 +103,7 @@ CalenderEventSchema.statics.addNew = function (eventData,callBack) {
     calenderEvent.start_date_time = eventData.start_date;
     calenderEvent.event_time = eventData.event_time;
     calenderEvent.event_timezone = eventData.event_timezone;
+    calenderEvent.shared_users = eventData.shared_users;
     calenderEvent.save(function(err,resultSet){
         if(err){
             console.log(err);

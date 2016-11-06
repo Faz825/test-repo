@@ -7,9 +7,13 @@ var CalenderEventHandler = {
 
         var schedule = require('node-schedule');
 
+        var rule = new schedule.RecurrenceRule();
+        rule.hour = [12,23];
+        rule.minute = [10,50];
+
         // 0 0 0/8 * * ? - run on every 8 hours
 
-        var j = schedule.scheduleJob('0 0 0/8 * * ?', function(){
+        var j = schedule.scheduleJob(rule, function() {
 
             var _async = require('async'),
                 CalenderEvent = require('mongoose').model('CalenderEvent'),

@@ -2,11 +2,12 @@
  * Day view of the calender
  */
 import React, { Component } from 'react';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import Session from '../../middleware/Session';
 import MiniCalender from './MiniCalender';
 import DayEventsList from './DayEventsList';
 import DayTodosList from './DayTodosList';
+import SharedUsers from './SharedUsers';
 
 import {EditorState, RichUtils} from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
@@ -39,14 +40,13 @@ export default class DayView extends Component {
             user : user,
             suggestions: mentions,
             editorState: EditorState.createEmpty(),
+            showMentions : '',
         };
 
         this.currentDay = this.state.currentDay;
         this.addEvent = this.addEvent.bind(this);
         this.nextDay = this.nextDay.bind(this);
         this.changeType = this.changeType.bind(this);
-
-
         // this.onChange = (editorState) => this.setState({editorState});
         this.handleKeyCommand = this.handleKeyCommand.bind(this);
         this.focus = this.focus.bind(this);
@@ -110,6 +110,11 @@ export default class DayView extends Component {
         this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'UNDERLINE'));
     }
 
+    _onHashClick() {
+        let showMentions = this.state.showMentions;
+        this.setState({showMentions : (showMentions == 'active' ? '' : 'active') });
+    }
+
     componentDidMount() {
         this.loadEvents();
     }
@@ -140,21 +145,31 @@ export default class DayView extends Component {
         const Editor = this.state.editorState;
         const contentState = this.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
-
-        console.log(editorContentRaw);
-        console.log("^^^^^^^^^^^^^^");
-
-        var split = moment().toString().split(" ");
-        const timeZoneFormatted = split[split.length - 2] + " " + split[split.length - 1];
-
+        // get shared users from SharedUsers field
+        const sharedUsers = this.refs.SharedUserField.sharedWithIds;
         const postData = {
             description : editorContentRaw,
-            type : (this.state.defaultType == 'todo' ? 2 : 1),
+            type : this.state.defaultType,
             apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:MM'),
             event_time : moment().format('HH:MM'),
-            event_timezone : timeZoneFormatted,
-            sharedUserd : []
+            event_timezone : moment.tz.guess(),
+            shared_users : sharedUsers,
         };
+
+        $.ajax({
+            url: '/calender/add-event',
+            method: "POST",
+            dataType: "JSON",
+            data: postData,
+            headers : { "prg-auth-header" : this.state.user.token },
+        }).done(function (data, text) {
+            if(data.status.code == 200){
+                this.loadEvents();
+            }
+        }.bind(this));
+    }
+
+    markAsDone(eventId) {
 
         $.ajax({
             url: '/calender/add-event',
@@ -242,6 +257,9 @@ export default class DayView extends Component {
                                                     suggestions={this.state.suggestions}
                                                 />
                                             </div>
+                                            <div className={this.state.showMentions + " shared-users"}>
+                                                <SharedUsers ref="SharedUserField" />
+                                            </div>
                                         </div>
                                         <div className="calender-input-type">
                                             <p>{this.state.defaultType}</p>
@@ -271,7 +289,9 @@ export default class DayView extends Component {
                                             </div>
                                             
                                             <div className="menu-ico">
-                                                <p><i className="fa fa-hashtag" aria-hidden="true"></i></p>
+                                                <p onClick={this._onHashClick.bind(this)} >
+                                                    <i className="fa fa-hashtag" aria-hidden="true"></i>
+                                                </p>
                                             </div>
                                             <div className="menu-ico">
                                                 <p><i className="fa fa-at" aria-hidden="true"></i></p>

@@ -10,6 +10,7 @@ import { Popover, OverlayTrigger } from 'react-bootstrap';
 import Autosuggest from 'react-autosuggest';
 import Lib from '../../middleware/Lib';
 import Socket  from '../../middleware/Socket';
+import Dropzone from 'react-dropzone';
 
 export default class Index extends React.Component{
     constructor(props){
@@ -436,8 +437,11 @@ export class Folder extends React.Component{
 
         this.state={
             loggedUser : Session.getSession('prg_lg'),
-            isCollapsed : true
+            isCollapsed : true,
+            files: []
         }
+
+        this.onDrop = this.onDrop.bind(this);
     }
 
     onFldrExpand(){
@@ -446,7 +450,20 @@ export class Folder extends React.Component{
         this.setState({isCollapsed : !isCollapsed});
     }
 
+    onDrop(acceptedFiles, rejectedFiles) {
+      this.setState({
+        files: acceptedFiles
+      });
+      console.log('Accepted files: ', acceptedFiles);
+      console.log('Rejected files: ', rejectedFiles);
+    }
+
+    onOpenClick() {
+      this.dropzone.open();
+    }
+
     render(){
+        console.log(this.state.files);
         let folderData = this.props.folderData;
         let ownerImg;
         let i = (
@@ -463,7 +480,7 @@ export class Folder extends React.Component{
 
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
-                <div className="folder-wrapper">
+                <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop} multiple={false} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*" >
                     <div className="col-sm-3">
                         <div className="folder-cover-wrapper">
                             <div className="folder-cover">
@@ -483,6 +500,18 @@ export class Folder extends React.Component{
                                 </OverlayTrigger>
                             </div>
                             <div className="folder-peak" style={{backgroundColor: folderData.folder_color}}><span className="peak-tail" style={{backgroundColor: folderData.folder_color}}></span></div>
+                            {/*
+                                (this.state.files.length > 0)?
+                                <div className="upload-anime">
+                                    <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                                </div>
+                                :
+                                null
+                                */
+                            }
+                            <div className="upload-anime">
+                                <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                            </div>
                         </div>
                     </div>
                     <div className="col-sm-9">
@@ -490,12 +519,13 @@ export class Folder extends React.Component{
                             <div className="folder-content-wrapper">
                                 <div className="folder-items-wrapper">
                                     <div className="inner-wrapper">
-                                        <div className="folder-col">
-                                            <div className="folder-item upload-file">
-                                                <i className="fa fa-plus"></i>
-                                                <p>Upload new file or image</p>
-                                            </div>
+                                        <div className="folder-col" onClick={this.onOpenClick.bind(this)}>
+                                                <div className="folder-item upload-file">
+                                                    <i className="fa fa-plus"></i>
+                                                    <p>Upload new file or image</p>
+                                                </div>
                                         </div>
+                                        {/* files component */}
                                     </div>
                                     {
                                         /*(this.state.isCollapsed)?
@@ -513,7 +543,10 @@ export class Folder extends React.Component{
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div className="drag-shader">
+                        <p className="drag-title">Drag and Drop Link/Folder here</p>
+                    </div>
+                </Dropzone>
             </div>
         );
     }

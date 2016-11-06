@@ -582,6 +582,7 @@ var NotificationController ={
                                 sender_count:obj.sender_count,
                                 birthday:birthdayDay,
                                 notebook_id:obj.notebook_id,
+                                folder_id:obj.folder_id,
                                 notification_id:obj.notification_id
                             };
 
@@ -607,7 +608,7 @@ var NotificationController ={
                             _formattedNotificationData.push(_data);
 
                         }
-                    } else {
+                    } else if(key == Notifications.SHARE_NOTEBOOK || key == Notifications.SHARE_NOTEBOOK_RESPONSE) {
                         for (var i in obj) {
                             var _data = {
                                 post_id:obj[i].post_id,
@@ -625,12 +626,38 @@ var NotificationController ={
                                 notification_id:obj[i].notification_id,
                                 notification_status:obj[i]['notification_status'] == "REQUEST_ACCEPTED" ? "accepted" : "declined",
                                 notebook_name:obj[i]['notebook_name'],
-                                sender_id:obj[i]['sender_id']
+                                sender_id:obj[i]['sender_id'],
+                                folder_id:obj[i].folder_id
                             };
 
                             _formattedNotificationData.push(_data);
                         }
 
+                    } else if(key == Notifications.SHARE_FOLDER){
+
+                        for (var i in obj) {
+                            var _data = {
+                                post_id:obj[i].post_id,
+                                notification_type:obj[i].notification_type,
+                                read_status:obj[i].read_status,
+                                created_at:DateTime.explainDate(obj[i].created_at),
+                                post_owner_username:'   ',
+                                post_owner_name:_users[obj[i].senders[0]]['name'],
+                                sender_profile_picture:_users[obj[i].senders[0]]['profile_image'],
+                                sender_name:_users[obj[i].senders[0]]['name'],
+                                sender_user_name:_users[obj[i].senders[0]]['user_name'],
+                                sender_count:obj[i].sender_count,
+                                birthday:'',
+                                notebook_id:obj[i].notebook_id,
+                                notification_id:obj[i].notification_id,
+                                notification_status:obj[i]['notification_status'] == "REQUEST_ACCEPTED" ? "accepted" : "declined",
+                                folder_id:obj[i].folder_id,
+                                folder_name:obj[i]['folder_name'],
+                                sender_id:obj[i]['sender_id']
+                            };
+
+                            _formattedNotificationData.push(_data);
+                        }
                     }
 
                 }

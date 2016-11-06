@@ -10925,11 +10925,11 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.dark-green .folder-cover {
   background-color: #067d41;
 }
-.folder-container .folder-body .folder.drag .folder-wrapper {
+.folder-container .folder-body .folder .folder-wrapper.drag {
   border: 1px solid #848484;
   border-style: dashed;
 }
-.folder-container .folder-body .folder.drag .folder-wrapper .drag-shader {
+.folder-container .folder-body .folder .folder-wrapper.drag .drag-shader {
   position: absolute;
   display: block;
   width: 100%;
@@ -10941,7 +10941,7 @@ header .notification-holder .profile-header-thumb {
   text-align: center;
   opacity: 0.95;
 }
-.folder-container .folder-body .folder.drag .folder-wrapper .drag-shader .drag-title {
+.folder-container .folder-body .folder .folder-wrapper.drag .drag-shader .drag-title {
   margin-top: 11%;
   font-size: 2.0625em;
   color: #5a5a5a;
@@ -11324,7 +11324,7 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
   margin: 30px 70px;
-  overflow: visible;
+  overflow: hidden;
   height: 45px;
   font-size: 0.875em;
   font-weight: 400;

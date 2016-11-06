@@ -28,8 +28,6 @@ export default class Week extends React.Component {
                 daily_events:this.getEventsForTheDay(date)
             };
 
-            console.log("what is the key >>" + day.date.toString());
-
             days.push(<span key={day.date.toString()}
                             className={"day" + (day.isToday ? " today" : "") + (day.isCurrentMonth ? "" : " different-month") + (day.date.isSame(this.props.selected) ? " selected" : "")}
                             onClick={this.props.select.bind(null, day)}>

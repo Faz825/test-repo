@@ -236,7 +236,7 @@ export default class Index extends React.Component{
 
     redirectToNotification(_notification){
 
-        if(_notification.notification_type != 'Birthday' && _notification.notification_type != "share_notebook"){
+        if(_notification.notification_type != 'Birthday' && _notification.notification_type != "share_notebook" && _notification.notification_type != "share_folder"){
 
             if(!_notification.read_status) {
                 $.ajax({
@@ -586,15 +586,20 @@ export class Notification extends React.Component{
                                 {notification.notification_type == 'Birthday'?"has their bithday "+notification.birthday:"" }
                                 {notification.notification_type != 'Birthday' &&
                                     notification.notification_type != 'share_notebook' &&
-                                    notification.notification_type != 'share_notebook_response'
+                                    notification.notification_type != 'share_notebook_response' &&
+                                    notification.notification_type != 'share_folder'
                                     ? notification.post_owner_name +" post":null}
                                 {notification.notification_type == 'share_notebook' ? notification.post_owner_name +" has invited you to collaborate on " + notification.notebook_name :null}
                                 {notification.notification_type == 'share_notebook_response' ? notification.post_owner_name + " has " + notification.notification_status + " your invitation to collaborate on " + notification.notebook_name :null}
+                                {notification.notification_type == 'share_folder' ? " has invited you to collaborate on " + notification.folder_name :null}
                             </p>
                             <p className="chat-date">{notification.created_at.time_a_go}</p>
 
                             {notification.notification_type == 'share_notebook'  && !notification.read_status ? <button className="btn btn-default" onClick={()=>_this.props.updateNoteBook(notification, 'REQUEST_ACCEPTED')}>Accept</button> : null}
                             {notification.notification_type == 'share_notebook'  && !notification.read_status ? <button className="btn btn-default reject" onClick={()=>_this.props.updateNoteBook(notification, 'REQUEST_REJECTED')}>Decline</button> : null}
+
+                            {notification.notification_type == 'share_folder'  && !notification.read_status ? <button className="btn btn-default" >Accept</button> : null}
+                            {notification.notification_type == 'share_folder'  && !notification.read_status ? <button className="btn btn-default reject" >Decline</button> : null}
 
                         </div>
                     </a>

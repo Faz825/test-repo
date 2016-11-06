@@ -47,6 +47,32 @@
 	margin: 5px 0 0 0 ;
 }
 
+/* -Calender Custom Styles*/
+
+.calender-body .invite-people #react-autowhatever-1 {
+  position: absolute;
+  z-index: 1;
+  width: 400px;
+  height: auto;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
+  height: auto;
+}
+
+.calender-body .shared-users {
+  -webkit-transition: all 300ms ease;
+  -moz-transition: all 300ms ease;
+  -ms-transition: all 300ms ease;
+  -o-transition: all 300ms ease;
+  transition: all 300ms ease;
+  display: none;
+}
+
+.calender-body .shared-users.active { 
+  display: block;
+}
+
 /* - ReactAutoSuggest Custom Styles*/
 .search-holder .react-autosuggest__suggestions-container{
 	z-index: 1;
@@ -178,4 +204,17 @@
   -o-appearance: none;
     border: 0px;
     background: none;
+}
+
+/* Folder */
+.folder-cover-wrapper .upload-anime{
+	position: absolute;
+	top: 10px;
+	left: 15px;
+	z-index: 1;
+}
+
+.folder-cover-wrapper .upload-anime .fa{
+	font-size: 1.5em;
+    color: #fff;
 }
