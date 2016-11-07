@@ -69,7 +69,7 @@ export default class MiniCalender extends React.Component {
 
     renderMonthLabel() {
         return(
-            <span>{this.state.month.format("MMMM, YYYY")}</span>
+            <span>{this.state.month.format("MMMM")}</span>
         );
     }
 }
