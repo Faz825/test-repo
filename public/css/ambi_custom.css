@@ -113,12 +113,29 @@
 	color: #2d5164;
 }
 
+/** auto sugession list view **/
+.user-label{
+    color: #767676;
+    font-size: 14px;
+    margin-right: 10px;
+}
+.selected-users{
+    color: #00a6ef;
+    font-size: 14px;
+    font-weight:normal;
+    margin-right: 10px;
+}
+.selected-users .fa{
+    margin-left: 3px;
+    font-size: 11px;
+}
+
 /* Dashboard time */
 .timeA {
 	font-size: 0.17em;
 	text-transform: uppercase;
 	font-weight: 500;
-	margin-left: 0px;
+	margin-left: 0;
 }
 
 
