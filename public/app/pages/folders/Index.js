@@ -389,7 +389,7 @@ export default class Index extends React.Component{
                             )
                         });
         return(
-            <section className="folder-container">
+            <section className="folder-container sub-container">
                 <div className="container">
                     <section className="folder-header">
                         <div className="row">

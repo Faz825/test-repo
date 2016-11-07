@@ -1,4 +1,11 @@
 /* Custom css styles for Ambi layout will go here */
+/* Common body styles */
+.body-container .sub-container{
+	min-height: calc(100vh - 82px);
+    background: #e9ebee;
+}
+
+/* Popup styles */
 .modalPopup.modalPopup{
 	border-radius: 0;
 	padding: 0;
@@ -212,6 +219,7 @@
 	top: 10px;
 	left: 15px;
 	z-index: 1;
+	display: none;
 }
 
 .folder-cover-wrapper .upload-anime .fa{
