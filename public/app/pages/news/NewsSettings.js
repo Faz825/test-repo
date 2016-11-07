@@ -70,10 +70,10 @@ export default class NewsSettings extends React.Component{
 
     }
 
-    removeNewsChannel(){
+    removeNewsChannel(channelId, categoryId){
         let channelData ={
-            __channel_name: 'FoxNews',
-            __category_id: '56f7a1fe96688d640db5b95d'
+            __channel_id: channelId,
+            __category_id: categoryId
         };
 
         $.ajax({
@@ -167,6 +167,7 @@ export default class NewsSettings extends React.Component{
 
             return(
                 <NewsCategory newsCategory={newsCategory}
+                              removeNewsChannel = {_this.removeNewsChannel}
                               onCategorySelect={_this.onNewsCategoryClick.bind(_this)}
                               key={key} />
             )
@@ -323,9 +324,10 @@ export class NewsCategory extends React.Component{
     render(){
         let _opt_class = this.props.newsCategory.category.toLowerCase();
         let _selected = (this.props.newsCategory.is_favorite)?"selected":"";
+        let _this = this;
         let _channel_template = this.props.newsCategory.channels.map(function(channel,key){
             return (
-                <NewsChannels newsChannel ={channel}
+                <NewsChannels category = {_this.props.newsCategory} newsChannel ={channel} removeNewsChannel = {_this.props.removeNewsChannel}
                               key={key}/>
             )
         });
@@ -381,6 +383,11 @@ export class NewsChannels extends React.Component{
     onChannelDelete(event){
         event.stopPropagation();
         console.log("deleted");
+
+        let categoryId = this.props.category._id;
+        let channelId = this.props.newsChannel._id;
+
+        this.props.removeNewsChannel(channelId, categoryId);
     }
 
     render(){
@@ -393,7 +400,7 @@ export class NewsChannels extends React.Component{
                     <img src={_channel_img} alt="" className="img-responsive pg-pg-news-inner-img" />
                     {
                         (this.props.canDelete != false)?
-                            <span className="delete-icon" onClick={this.onChannelDelete}>
+                            <span className="delete-icon" onClick={this.onChannelDelete.bind(this)}>
                                 <i className="fa fa-times" aria-hidden="true"></i>
                             </span>
                         :

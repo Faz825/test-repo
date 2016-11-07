@@ -485,7 +485,36 @@ var ConnectionController ={
             };
             res.status(200).send(outPut);
         });
-    }
+    },
+
+    /**
+     * Search Connection
+     * @param req
+     * @param res
+     */
+    searchConnection:function(req,res){
+        var User = require('mongoose').model('User'),
+            Connection = require('mongoose').model('Connection'),
+            CurrentSession = Util.getCurrentSession(req);
+
+        var _user_id = CurrentSession.id,
+            _search = req.params['q'];
+
+        var criteria = {
+            user_id :_user_id,
+            q:'first_name:'+_search+'* OR last_name:'+_search+'*'
+        };
+
+        Connection.getMyConnectionData(criteria,function(resultSet){
+            var outPut = {
+                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                suggested_users:resultSet.results
+            };
+            res.status(200).send(outPut);
+            return 0;
+        });
+
+    },
 
 }
 

@@ -59,6 +59,9 @@ GLOBAL.Alert={
     COMMENT_CONTENT_EMPTY:"Comment text cannot be blank",
     COMMENT_POST_ID_EMPTY:"Post Id cannot be blank",
 
+    CALENDER_MONTH_EMPTY:"Year and Month cannot be blank",
+    CALENDER_WEEK_EMPTY:"Year, Month and week cannot be blank",
+
     USER_NOT_FOUND:"Invalid Username",
     INVALID_PASSWORD:"Invalid Password",
 

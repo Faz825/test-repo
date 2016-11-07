@@ -26,6 +26,10 @@ GLOBAL.NewsFeed  = require('./lib/NewsFeed');
 var Clusters = require('./config/clusters');
 Clusters.init();
 
+//Update calender events handler
+GLOBAL.CalenderEventHandler = require('./middleware/CalenderEventHandler');
+CalenderEventHandler.init();
+
 
 var app = express();
 
