@@ -40,14 +40,13 @@ var CalenderController = {
     addEvent: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
-        console.log(req.body.shared_users.length + " LENGTH IS <<<<  ");
 
         var _async = require('async'),
             CalenderEvent = require('mongoose').model('CalenderEvent'),
             UserId = Util.getCurrentSession(req).id,
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient'),
-            notifyUsers = (req.body.shared_users.length > 0 ? req.body.shared_users : []); //this should be an array
+            notifyUsers = (typeof req.body.shared_users != 'undefined' ? req.body.shared_users : []); //this should be an array
         _async.waterfall([
 
             function addNewToDb(callBack){
