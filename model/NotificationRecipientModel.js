@@ -100,8 +100,8 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
                 sender_id:"$notificationData.sender",
                 post_id:"$notificationData.notified_post",
                 notebook_id:"$notificationData.notified_notebook",
-                notification_status:"$notificationData.notification_status"
-                //post_owner:"$postData.created_by"
+                notification_status:"$notificationData.notification_status",
+                notified_folder:"$notificationData.notified_folder"
             }
         },
         { $sort:{ "created_at":-1}}
@@ -169,8 +169,8 @@ NotificationRecipientSchema.statics.getRecipientNotificationsLimit = function(cr
                 sender_id:"$notificationData.sender",
                 post_id:"$notificationData.notified_post",
                 notebook_id:"$notificationData.notified_notebook",
-                notification_status:"$notificationData.notification_status"
-                //post_owner:"$postData.created_by"
+                notification_status:"$notificationData.notification_status",
+                notified_folder:"$notificationData.notified_folder"
             }
         },
         { $sort:{ "created_at":-1}},

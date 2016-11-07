@@ -27,6 +27,11 @@ require('../model/NoteBookModel');
 require('../model/UsersSavedArticle');
 require('../model/SubscribedPosts');
 require('../model/NewsChannelsModel');
+require('../model/FolderModel');
+require('../model/FolderDocsModel');
+require('../model/GroupFolderModel');
+require('../model/GroupFolderDocsModel');
+require('../model/CalenderEventModel');
 
 /** Load  Controllers
  */
@@ -45,7 +50,10 @@ var DefaultController   = require('../controller/DefaultController'),
     LikeController      =  require('../controller/LikeController'),
     NotesController     = require('../controller/NotesController'),
     NotificationController     = require('../controller/NotificationController'),
-    NotificationSMSController     = require('../controller/NotificationSMSController');
+    NotificationSMSController     = require('../controller/NotificationSMSController'),
+    FolderController     = require('../controller/FolderController');
+    GroupFolderController     = require('../controller/GroupFolderController');
+    CalenderController     = require('../controller/CalenderController');
 
 
 
@@ -75,7 +83,8 @@ GLOBAL.AccessAllow = [
     '/','/choose-secretary','/doSignup','/doSignin/mob/','/secretaries','/about-you','/establish-connections','/news-categories',
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
     '/notes/edit-note/:note_id','/connections', '/connections/mutual/:uname','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode',
-    '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name'
+    '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name',
+    '/calender'
 ];
 
 /**
@@ -227,6 +236,7 @@ router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
 //CONNECTIONS
 router.get('/connection/requests', ConnectionController.getRequestedConnections);
 router.get('/connection/me', ConnectionController.getMyConnections);
+router.get('/connection/search/:q', ConnectionController.searchConnection);
 router.get('/connection/me/sort/:option', ConnectionController.getMySortedConnections);
 router.get('/connection/me/unfriend', ConnectionController.getMyConnectionsBindUnfriendConnections);
 router.get('/connection/get-mutual/:uid', ConnectionController.getMutualConnections);
@@ -269,12 +279,35 @@ router.post('/notes/delete-note', NotesController.deleteNote);
 router.post('/introduction/update', UserController.updateIntroduction);
 router.get('/introduction/:uname',UserController.retrieveIntroduction);
 router.get('/notifications/get-notifications',NotificationController.getNotifications);
+// router.get('/notifications/get-notifications',NotificationController.getNotificationsList);
 router.post('/notifications/update-notifications',NotificationController.updateNotifications);
 router.post('/notifications/notebook-update',NotificationController.updateNotebookNotifications);
 router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);
 router.get('/notifications/get-details',NotificationController.getDetails);
 router.get('/notifications/get-notification-count',NotificationController.getNotificationCount);
+router.post('/folders/add-new', FolderController.addNewFolder);
+router.get('/folders/get-all', FolderController.getFolders);
+router.post('/group-folders/add-new', GroupFolderController.addNewFolder);
+router.get('/group-folders/get-all', GroupFolderController.getFolders);
 
+router.post('/calender/add-event', CalenderController.addEvent);
+router.get('/calender/get-all-month', CalenderController.getAllForSpecificMonth);
+router.get('/calender/get-all-week', CalenderController.getAllForSpecificWeek);
+router.get('/calender/get-current-week', CalenderController.getAllEventForCurrentWeek);
+router.get('/calender/get-next-prev-week', CalenderController.getAllEventForNextOrPrevWeek);
+router.get('/calender/get-all-day', CalenderController.getEventsForSpecificDay);
+router.post('/calender/update', CalenderController.updateEvent);
+router.post('/calender/add-event', CalenderController.addEvent);
+router.post('/calender/share-event', CalenderController.shareEvent);
+router.post('/calender/remove-share-user', CalenderController.removeSharedEventUser);
+router.post('/calender/update-share-event-status', CalenderController.updateEventSharedStatus);
+router.get('/calender/get-shared-users', CalenderController.getEventSharedUsers);
+
+router.post('/calender/get-events-for-specific-day', CalenderController.getEventsForSpecificDay);
+router.get('/calender/events/date-range/get', CalenderController.getAllForDateRange);
+router.post('/calender/event/completion', CalenderController.updateEventCompletion);
+
+router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
 
 /**
  * API Routes that need to authenticate separately

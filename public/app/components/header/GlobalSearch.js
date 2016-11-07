@@ -119,21 +119,35 @@ export default class GlobalSearch extends React.Component{
         const inputProps = {
             placeholder: 'Search...',
             value,
-            onChange: this.onChange
+            onChange: this.onChange,
+            className: 'form-control'
         };
 
         return(
-            <div className="col-xs-7">
+            <div className="search-holder">
+                {
+                    /** <input type="text" className="form-control" placeholder="Search..." /> 
+                    <div className="col-xs-7">
                 <div className="row row-clr pg-header-search">
                     <Autosuggest suggestions={suggestions}
                                  onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                                  getSuggestionValue={this.getSuggestionValue}
                                  renderSuggestion={this.renderSuggestion}
                                  inputProps={inputProps} />
-                             <a href="#"><img className="img-responsive search-icon" alt="search" src="/images/pg-home-v6_17.png" /></a>
+                    <a href="#"><img className="img-responsive search-icon" alt="search" src="/images/pg-home-v6_17.png" /></a>
                 </div>
             </div>
-
+                    **/
+                }
+                <Autosuggest suggestions={suggestions}
+                                 onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                                 getSuggestionValue={this.getSuggestionValue}
+                                 renderSuggestion={this.renderSuggestion}
+                                 inputProps={inputProps} />
+                {
+                    (value.length <= 0) ? <i className="fa fa-search" aria-hidden="true"></i> : null
+                }
+            </div>
         );
     }
 }

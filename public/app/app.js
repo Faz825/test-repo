@@ -5,7 +5,7 @@ import { Router , Route, browserHistory } from 'react-router'
 import Main from './pages/main';
 import SignupIndex from './pages/signup/Index';
 import SelectSecretary  from './pages/signup/SelectSecretary';
-
+import CalenderIndex from './pages/calender/Index';
 
 import ProfileIndex  from './pages/profile/Index';
 
@@ -50,6 +50,11 @@ let rootRoute =(
         <Route name="new-chat" path="/chat/:chatWith" component={ChatIndex}/>
 
 
+        /**
+         * Calender
+         */
+
+        <Route name="calender" path="/calender" component={CalenderIndex}/>
 
 
         /**

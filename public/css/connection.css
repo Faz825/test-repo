@@ -205,9 +205,16 @@
 .box {
     float: left;
     position: relative;
+    width: 16.6%;
+    padding-bottom: 16.6%;
+}
+
+.box:first-child:nth-last-child(50),
+.box:first-child:nth-last-child(50) ~ .box {
     width: 12.5%;
     padding-bottom: 12.5%;
 }
+
 .boxInner {
     position: absolute;
     left: 10px;
@@ -297,10 +304,20 @@ body.no-touch .boxInner:hover .titleBox, body.touch .boxInner.touchFocus .titleB
         width: 33.3%;
         padding-bottom: 33.3%;
     }
+    .box:first-child:nth-last-child(50),
+    .box:first-child:nth-last-child(50) ~ .box {
+        width: 25%;
+        padding-bottom: 25%;
+    }
 }
 @media only screen and (max-width : 1290px) and (min-width : 1051px) {
     .box {
-        width: 25%;
-        padding-bottom: 25%;
+        width: 16.6%;
+        padding-bottom: 16.6%;
+    }
+    .box:first-child:nth-last-child(50),
+    .box:first-child:nth-last-child(50) ~ .box {
+        width: 12.5%;
+        padding-bottom: 12.5%;
     }
 }

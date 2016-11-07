@@ -4,30 +4,40 @@
 
 'use strict'
 var mongoose = require('mongoose'),
-    Schema   = mongoose.Schema;
+    Schema = mongoose.Schema;
 
 /**
  * Notification
  */
 var NotificationSchema = new Schema({
-    sender:{
+    sender: {
         type: Schema.ObjectId,
         ref: 'User',
-        default:null
+        default: null
     },
-    notification_type:{ // notification for post / comment / share / like / Birthday ...
-        type:String,
-        trim:true,
-        default:null
+    notification_type: { // notification for post / comment / share / like / Birthday ...
+        type: String,
+        trim: true,
+        default: null
     },
-    notified_post:{ // the post that origin user comment / share / like ...
+    notified_post: { // the post that origin user comment / share / like ...
         type: Schema.ObjectId,
         ref: 'Post',
-        default:null
+        default: null
     },
-    notified_notebook:{ // if a notebook request then notebook id
+    notified_notebook: { // if a notebook request then notebook id
         type: Schema.ObjectId,
         ref: 'NoteBook',
+        default: null
+    },
+    notified_event: { // if a event request then event id
+        type: Schema.ObjectId,
+        ref: 'CalenderEvent',
+        default: null
+    },
+    notified_folder:{
+        type: Schema.ObjectId,
+        ref: 'Folders',
         default:null
     },
     notification_status:{ // Accept / Reject the invitation ...
@@ -35,15 +45,15 @@ var NotificationSchema = new Schema({
         trim:true,
         default:null
     },
-    created_at:{
-        type:Date
+    created_at: {
+        type: Date
     }
-},{collection:"notifications"});
+}, {collection: "notifications"});
 
-NotificationSchema.pre('save', function(next){
+NotificationSchema.pre('save', function (next) {
     var now = new Date();
 
-    if ( !this.created_at ) {
+    if (!this.created_at) {
         this.created_at = now;
     }
     next();
@@ -55,29 +65,36 @@ NotificationSchema.pre('save', function(next){
  * @param criteria
  * @param callBack
  */
-NotificationSchema.statics.saveNotification = function(new_notification,callBack){
+NotificationSchema.statics.saveNotification = function (new_notification, callBack) {
 
     var notification = new this();
     notification.sender = Util.toObjectId(new_notification.sender);
     notification.notification_type = new_notification.notification_type;
-    if(new_notification.notification_type != Notifications.SHARE_NOTEBOOK
-        && new_notification.notification_type != Notifications.SHARE_NOTEBOOK_RESPONSE) {
-        notification.notified_post = Util.toObjectId(new_notification.notified_post);
+    if (new_notification.notification_type == Notifications.SHARE_CALENDER) {
+        notification.notified_event = (new_notification.notified_event);
         notification.notification_status = "";
-    } else {
+    } else if (new_notification.notification_type == Notifications.SHARE_NOTEBOOK
+        || new_notification.notification_type == Notifications.SHARE_NOTEBOOK_RESPONSE) {
         notification.notified_notebook = Util.toObjectId(new_notification.notified_notebook);
         notification.notification_status = new_notification.notification_status;
+    } else if(new_notification.notification_type == Notifications.SHARE_FOLDER) {
+        notification.notified_folder = Util.toObjectId(new_notification.notified_folder);
+        notification.notification_status = new_notification.notification_status;
+    } else {
+        notification.notified_post = Util.toObjectId(new_notification.notified_post);
+        notification.notification_status = "";
+
     }
-    notification.save(function(err, result){
-        if(!err){
+    notification.save(function (err, result) {
+        if (!err) {
             callBack({
-                status:200,
-                result:result
+                status: 200,
+                result: result
             });
-        }else{
+        } else {
             console.log("Server Error --------")
             console.log(err)
-            callBack({status:400,error:err});
+            callBack({status: 400, error: err});
         }
     });
 
@@ -89,19 +106,19 @@ NotificationSchema.statics.saveNotification = function(new_notification,callBack
  * @param criteria
  * @param callBack
  */
-NotificationSchema.statics.getNotifications = function(criteria,callBack){
+NotificationSchema.statics.getNotifications = function (criteria, callBack) {
 
-    this.find(criteria).exec(function(err,resultSet){
+    this.find(criteria).exec(function (err, resultSet) {
 
-        if(!err){
+        if (!err) {
             callBack({
-                status:200,
-                result:resultSet
+                status: 200,
+                result: resultSet
             });
-        }else{
+        } else {
             console.log("Server Error --------")
             console.log(err)
-            callBack({status:400,error:err});
+            callBack({status: 400, error: err});
         }
 
     })
@@ -114,20 +131,20 @@ NotificationSchema.statics.getNotifications = function(criteria,callBack){
  * @param criteria
  * @param callBack
  */
-NotificationSchema.statics.getFirstNotification = function(criteria,callBack){
+NotificationSchema.statics.getFirstNotification = function (criteria, callBack) {
     console.log("NotificationSchema.statics.getFirstNotification")
 
-    this.findOne(criteria).sort({created_at:1}).exec(function(err,resultSet){
+    this.findOne(criteria).sort({created_at: 1}).exec(function (err, resultSet) {
 
-        if(!err){
+        if (!err) {
             callBack({
-                status:200,
-                result:resultSet
+                status: 200,
+                result: resultSet
             });
-        }else{
+        } else {
             console.log("Server Error --------")
             console.log(err)
-            callBack({status:400,error:err});
+            callBack({status: 400, error: err});
         }
 
     })
@@ -139,20 +156,20 @@ NotificationSchema.statics.getFirstNotification = function(criteria,callBack){
  * @param criteria
  * @param callBack
  */
-NotificationSchema.statics.deleteNotification = function(criteria,callBack){
+NotificationSchema.statics.deleteNotification = function (criteria, callBack) {
     console.log("NotificationSchema.statics.deleteNotification")
 
-    this.remove(criteria).exec(function(err,resultSet){
+    this.remove(criteria).exec(function (err, resultSet) {
 
-        if(!err){
+        if (!err) {
             callBack({
-                status:200,
-                result:resultSet
+                status: 200,
+                result: resultSet
             });
-        }else{
+        } else {
             console.log("Server Error --------")
             console.log(err)
-            callBack({status:400,error:err});
+            callBack({status: 400, error: err});
         }
 
     })
@@ -160,6 +177,4 @@ NotificationSchema.statics.deleteNotification = function(criteria,callBack){
 };
 
 
-
-
-mongoose.model('Notification',NotificationSchema);
+mongoose.model('Notification', NotificationSchema);

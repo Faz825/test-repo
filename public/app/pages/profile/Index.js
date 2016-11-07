@@ -263,7 +263,7 @@ export default class Index extends React.Component{
                     usrId={this.state.usrId}
                     onLoadMutualFriends = {this.onLoadMutualFriends}/>
                 <div className="row row-clr">
-                    <div className="container-fluid">
+                    <div className="container">
                         <div className="profile-content-container" id="middle-content-wrapper">
                             <div className="col-xs-6" id="profile-middle-container-left-col">
                                 <div id="pg-profile-middle-container-left-col-details">
@@ -323,4 +323,4 @@ export default class Index extends React.Component{
     }
 
 }
-export default  Index;
+// export default  Index;
