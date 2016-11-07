@@ -29,7 +29,7 @@ export default class AmbiDashboard extends React.Component {
 				currentTime: now,
                 a: a
 			});
-		}, null, true);
+		});
 	}
 
 	render() {
