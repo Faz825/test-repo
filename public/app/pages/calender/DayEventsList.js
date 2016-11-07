@@ -32,8 +32,13 @@ export default class DayEventsList extends React.Component {
             return (
                 <li key={key}>
                     <i className="fa fa-circle" aria-hidden="true"></i>
-                    <div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
-                    <i className="fa fa-trash-o pull-right" aria-hidden="true"></i>
+                    <div>
+                        <div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
+                        <div className="people-list-wrapper">
+                            <span className="people-list">People on this event:</span><span className="selected-people"> Raymond Chang</span>
+                        </div>
+                    </div>
+                    <span className="event-time pull-right">2pm - 4pm</span>
                 </li>
             );
         });
