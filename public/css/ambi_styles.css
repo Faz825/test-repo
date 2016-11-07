@@ -11083,7 +11083,6 @@ header .notification-holder .profile-header-thumb {
   text-align: center;
 }
 .calender-container .calender-box > div.week > span.day .squre {
-  height: 36px;
   padding: 0;
   font-size: 1.4em;
 }
@@ -11132,6 +11131,8 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .mini-calender-box.calender-box {
   border: solid 1px #CCC;
+  padding: 30px;
+  border-radius: 10px;
 }
 .calender-container .mini-calender-box.calender-box .header {
   background: #ffffff;
@@ -11148,26 +11149,27 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .mini-calender-box.calender-box .week .day {
   padding-top: 0;
-  font-size: 0.598125em;
+  line-height: 20px !important;
 }
 .calender-container .mini-calender-box.calender-box .week .day:first-child {
   border-left: none;
 }
 .calender-container .mini-calender-box.calender-box .week .day .squre {
   color: #2d5164;
-  padding: 8px;
+  padding: 0px;
+  font-size: 0.598125em;
 }
 .calender-container .mini-calender-box.calender-box .week .day.different-month .squre {
   color: #a8bfcd;
 }
 .calender-container .mini-calender-box.calender-box .week .selected .squre {
   border-radius: 50%;
-  width: 28px !important;
-  height: 28px !important;
+  width: 20px !important;
+  height: 20px !important;
   padding: 0 !important;
   background: #00a6ef;
   color: #ffffff;
-  margin: 7px auto 0 auto;
+  margin: 0 auto;
 }
 .calender-container .mini-calender-box.calender-box .week.names .day {
   height: auto !important;
@@ -11257,12 +11259,13 @@ header .notification-holder .profile-header-thumb {
   overflow: hidden;
   -webkit-box-shadow: 1px 0 12px -8px #000000;
   box-shadow: 1px 0 12px -8px #000000;
-  background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header {
   padding: 21px 21px 16px;
   overflow: hidden;
   background-color: #f6f6f6;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper {
   float: left;
@@ -11418,6 +11421,7 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content {
   padding: 40px 70px;
+  background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-title span {
   font-family: "Work Sans", sans-serif;
@@ -11440,7 +11444,7 @@ header .notification-holder .profile-header-thumb {
   border-bottom: 1px solid #f6f6f6;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i {
-  vertical-align: middle;
+  vertical-align: top;
   font-size: 1.125em;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i:nth-child(1) {
@@ -11461,8 +11465,20 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div p {
   margin-bottom: 0;
 }
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .people-list {
+  color: #7f7f7f;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .selected-people {
+  color: #00a6ef;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li .event-time {
+  color: #00a6ef;
+  font-weight: 500;
+  font-size: 0.875em;
+}
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content {
   padding: 40px 70px;
+  background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-title span {
   font-family: "Work Sans", sans-serif;
@@ -11472,6 +11488,7 @@ header .notification-holder .profile-header-thumb {
   margin-bottom: 0;
   vertical-align: middle;
   text-transform: uppercase;
+  margin-left: 10px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-title-hr {
   width: 100%;
