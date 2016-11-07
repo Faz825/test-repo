@@ -19,7 +19,7 @@ export default class MiniWeek extends React.Component {
                 isToday: date.isSame(new Date(), "day"),
                 date: date
             };
-            days.push(<span key={day.date.toString()} className={"day" + (day.isToday ? " today" : "") + (day.isCurrentMonth ? "" : " different-month") + (day.date.isSame(this.props.selected) ? " selected" : "")} onClick={this.props.select.bind(null, day)}><span className="squre">{day.number}</span></span>);
+            days.push(<span key={day.date.toString()} className={"day" + (day.isToday ? " today" : "") + (day.isCurrentMonth ? "" : " different-month") + (day.date.isSame(this.props.selected) ? " selected" : "")} onClick={this.props.select.bind(null, day)}><div className="squre">{day.number}</div></span>);
             date = date.clone();
             date.add(1, "d");
 

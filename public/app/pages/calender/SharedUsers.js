@@ -161,7 +161,7 @@ export default class SharedUsers extends Component {
 
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
-                return <span key={key} className="user">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
+                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
             });
         }
 
@@ -172,7 +172,10 @@ export default class SharedUsers extends Component {
                   getSuggestionValue={this.getSuggestionValue}
                   renderSuggestion={this.renderSuggestion}
                   inputProps={inputProps} />
-              {shared_with_list}
+                <div>
+                    <span className="user-label"> People in the event</span>
+                    {shared_with_list}
+                 </div>
             </div>
         )
     }
