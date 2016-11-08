@@ -9,6 +9,7 @@ import MonthView from './MonthView';
 import WeekView from './WeekView';
 import DayView from './DayView';
 import CalenderView from './MonthView';
+import moment from 'moment';
 
 export default class Index extends React.Component{
     
@@ -19,26 +20,34 @@ export default class Index extends React.Component{
         }
 
         super(props);
-        this.state = { defaultView : 'day', current : 'day' }; // curently assuming the dafault view is DayView
+        this.state = {
+            current : 'day',
+            dayViewDate:moment().format('YYYY-MM-DD')
+        };
         this.relativeView = this.relativeView.bind(this);
+        this.loadDayView = this.loadDayView.bind(this);
     }
 
     relativeView() {
 
-        switch(this.state.defaultView) {
+        switch(this.state.current) {
             case 'week':
                 return (<WeekView/>);
             case 'day':
-                return  (<DayView/>);
+                return  (<DayView dayDate={this.state.dayViewDate}/>);
             case 'month':
-                return  (<MonthView/>);
+                return  (<MonthView setDayView={this.loadDayView}/>);
             default:
-                return (<DayView/>);
+                return (<DayView dayDate={this.state.dayViewDate}/>);
         }
     }
 
+    loadDayView(view, date) {
+        this.setState({current : view, dayViewDate:moment(date).format('YYYY-MM-DD')});
+    }
+
     setView(view) {
-        this.setState({ defaultView: view, current : view});
+        this.setState({ current : view});
     }
     
     render() {

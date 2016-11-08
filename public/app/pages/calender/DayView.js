@@ -36,7 +36,7 @@ export default class DayView extends Component {
         super(props);
         let user =  Session.getSession('prg_lg');
         this.state = {
-            currentDay : moment().format('YYYY-MM-DD'),
+            currentDay : this.props.dayDate,
             defaultType : 'event',
             events : [],
             user : user,
