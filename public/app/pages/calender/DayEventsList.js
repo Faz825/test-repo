@@ -15,7 +15,7 @@ export default class DayEventsList extends React.Component {
 
     render() {
         let _this = this;
-        let items = this.props.events.map(function(event,key){
+        let  items = this.props.events.map(function(event,key){
             
             if(event.type == 2) {
                 return;
@@ -41,7 +41,7 @@ export default class DayEventsList extends React.Component {
                             {usersString ? usersString : 'No shared users'}
                         </div>
                     </div>
-                    <span className="event-time pull-right">2pm - 4pm</span>
+                    <span className="event-time pull-right">{moment(event.start_date_time).format('LT')}</span>
                 </li>
             );
         });

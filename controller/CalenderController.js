@@ -328,6 +328,10 @@ var CalenderController = {
         var CalenderEvent = require('mongoose').model('CalenderEvent');
         var moment = require('moment');
         var day = req.body.day;
+
+        console.log(day);
+        console.log("====");
+
         var user_id = Util.toObjectId(CurrentSession.id);
         var startTimeOfDay = moment(day, 'YYYY-MM-DD').format('YYYY-MM-DD'); //format the given date as mongo date object
         var endTimeOfDay = moment(day, 'YYYY-MM-DD').add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
@@ -338,6 +342,7 @@ var CalenderController = {
 
             function getSortedCalenderItems(callback){
                 CalenderEvent.getSortedCalenderItems(criteria, function(err, result) {
+                    
                     var events = [];
                     if(err) {
                         callback(err, null)
@@ -349,7 +354,7 @@ var CalenderController = {
             },
 
             function getUsers(events, callback) {
-
+                
                 var criteria = {
                     user_id: user_id,
                     status: 3
@@ -362,8 +367,13 @@ var CalenderController = {
             },
 
             function composeUsers(events, users, callback) {
+                
+                if(events.length == 0) {
+                    callback(null, []);
+                }
 
                 for (var e = 0; e < events.length; e++) {
+                    
                     var event = events[e];  
                     var sharedUsers = event.shared_users;
 
@@ -788,7 +798,7 @@ var CalenderController = {
      * @return Json
      */
     updateEventCompletion: function(req,res) {
-
+        
         var CurrentSession = Util.getCurrentSession(req);
         var CalenderEvent = require('mongoose').model('CalenderEvent');
         var moment = require('moment');

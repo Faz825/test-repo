@@ -13,14 +13,10 @@ export default class DayTodosList extends React.Component {
         this.state = {}; 
     }
 
-    markToDo() {
-    	console.log(" MARK TODO ");
-    }
-
     render() {
 
         let _this = this;
-		let items = this.props.events.map(function(event,key){
+        let items = this.props.events.map(function(event,key){
             if(event.type == 1) {
                 return;
             }
@@ -39,8 +35,8 @@ export default class DayTodosList extends React.Component {
 		    return (
 		        <li className="active" key={key}>
 					<div className="checkbox-area">
-						<input id="check1" name="check" value="check1" onChange="{this.markToDo}" type="checkbox" />
-						<label for="check1">
+						<input id="check1" name="check" value="check1" type="checkbox" />
+						<label for="check1" >
 							<p dangerouslySetInnerHTML={{__html: htmlC}} ></p>
 							<p>People in the To-do: {usersString ? usersString : 'No shared users'}</p>
 						</label>

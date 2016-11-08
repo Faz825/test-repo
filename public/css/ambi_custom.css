@@ -240,6 +240,37 @@
     background: none;
 }
 
+/* calender pop-over */
+#calendar-popover-typo .menu-ico {
+  display: inline-block;
+}
+
+#calendar-popover-typo .menu-ico p {
+  margin: 0px; 
+}
+
+#calendar-popover-typo .menu-ico span {
+  cursor: pointer;
+  padding: 5px 10px;
+  display: inline-block;
+}
+
+#calendar-popover-typo .menu-ico span.italic {
+  font-style: italic;
+}
+
+#calendar-popover-typo .menu-ico span.bold {
+  font-weight: bold;
+}
+
+#calendar-popover-typo .menu-ico span.underline {
+  text-decoration: underline;
+}
+
+#calendar-popover-typo .menu-ico span:hover {
+  background: #E3F2FF;
+}
+
 /* Folder */
 .folder-cover-wrapper .upload-anime{
 	position: absolute;
@@ -253,3 +284,4 @@
 	font-size: 1.5em;
     color: #fff;
 }
+

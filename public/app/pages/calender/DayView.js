@@ -9,6 +9,8 @@ import DayEventsList from './DayEventsList';
 import DayTodosList from './DayTodosList';
 import SharedUsers from './SharedUsers';
 
+import { Popover, OverlayTrigger } from 'react-bootstrap';
+
 import {EditorState, RichUtils} from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
 
@@ -115,7 +117,7 @@ export default class DayView extends Component {
     }
 
     loadEvents() {
-
+        console.log("THE CURRENT DAY IS ::: " + this.currentDay);
         $.ajax({
             url : '/calender/get-events-for-specific-day/',
             method : "POST",
@@ -164,10 +166,14 @@ export default class DayView extends Component {
         }.bind(this));
     }
 
-    markAsDone(eventId) {
+    markTodo(eventId) {
+        console.log("markTodo is called");
+        var postData = {
+            id : eventId
+        }
 
         $.ajax({
-            url: '/calender/add-event',
+            url: '/calender/update-event-completion',
             method: "POST",
             dataType: "JSON",
             data: postData,
@@ -199,7 +205,6 @@ export default class DayView extends Component {
 
     calenderClick(day) {
 
-        console.log(day);
         let clickedDay =  moment(day.date).format('YYYY-MM-DD');
         this.currentDay = clickedDay;
         this.setState({currentDay : clickedDay});
@@ -207,6 +212,26 @@ export default class DayView extends Component {
     }
 
     render() {
+
+        const typoPopover = (
+            <Popover id="calendar-popover-typo">
+                <div className="menu-ico">
+                    <p>
+                        <span className="bold" onClick={this._onBoldClick.bind(this)}>B</span>
+                    </p>
+                </div>
+                <div className="menu-ico">
+                    <p>
+                        <span className="italic" onClick={this._onItalicClick.bind(this)}>I</span>
+                    </p>
+                </div>
+                <div className="menu-ico">
+                    <p>
+                        <span className="underline" onClick={this._onUnderLineClick.bind(this)}>U</span>
+                    </p>
+                </div>
+            </Popover>
+        );
         return (
             <section className="calender-body">
                 <div className="row">
@@ -219,18 +244,15 @@ export default class DayView extends Component {
                                             <i className="fa fa-angle-left" aria-hidden="true"></i>
                                         </div>
                                         <div className="date">
-                                            <p>{moment(this.state.currentDay).format('dddd, D')}</p>
+                                            <p>{moment(this.state.currentDay).format('ddd, D')}</p>
                                         </div>
                                         <div className="date-nav" onClick={() => this.nextDay()}>
                                             <i className="fa fa-angle-right" aria-hidden="true"></i>
                                         </div>
                                     </div>
-                                    <div className="day-wrapper">
-                                        <p>Today</p>
-                                    </div>
                                 </div>
                                 <div className="col-sm-6 calender-date">
-                                    <p>{moment(this.state.currentDay).format('dddd D, YYYY')}</p>
+                                    <p>{moment(this.state.currentDay).format('dddd, MMM D, YYYY')}</p>
                                 </div>
                             </div>
                             <div className="form-holder">
@@ -264,22 +286,12 @@ export default class DayView extends Component {
                                             <div className="menu-ico">
                                                 <p><i className="fa fa-smile-o" aria-hidden="true"></i></p>
                                             </div>
+
                                             <div className="menu-ico">
-                                                <p>
-                                                    <button onClick={this._onBoldClick.bind(this)}>B</button>
-                                                </p>
+                                                <OverlayTrigger trigger="click" placement="bottom" overlay={typoPopover}>
+                                                    <p>A</p>
+                                                </OverlayTrigger>
                                             </div>
-                                            <div className="menu-ico">
-                                                <p>
-                                                    <button onClick={this._onItalicClick.bind(this)}>I</button>
-                                                </p>
-                                            </div>
-                                            <div className="menu-ico">
-                                                <p>
-                                                    <button onClick={this._onUnderLineClick.bind(this)}>U</button>
-                                                </p>
-                                            </div>
-                                            
                                             <div className="menu-ico">
                                                 <p onClick={this._onHashClick.bind(this)} >
                                                     <i className="fa fa-hashtag" aria-hidden="true"></i>
@@ -311,7 +323,7 @@ export default class DayView extends Component {
                                             <span>events</span>
                                         </div>
                                         <div className="events-list-area-content-title-hr"></div>
-                                        <DayEventsList events={this.state.events} day={moment().startOf("day")} />
+                                        <DayEventsList events={this.state.events} />
                                     </div>
                                 </div>
                             </div>
