@@ -28,14 +28,17 @@ export default class DayEventsList extends React.Component {
 
             let contentState = convertFromRaw(event.description);
             let htmlC = stateToHTML(contentState);
-
+            let usersString = event.shared_users.map(function(user,userKey){
+                return <span className="selected-people" key={userKey}>{user.name}, </span>
+            });
             return (
                 <li key={key}>
                     <i className="fa fa-circle" aria-hidden="true"></i>
                     <div>
                         <div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
                         <div className="people-list-wrapper">
-                            <span className="people-list">People on this event:</span><span className="selected-people"> Raymond Chang</span>
+                            <span className="people-list">People on this event:</span>
+                            {usersString ? usersString : 'No shared users'}
                         </div>
                     </div>
                     <span className="event-time pull-right">2pm - 4pm</span>

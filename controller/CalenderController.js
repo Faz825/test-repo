@@ -40,7 +40,6 @@ var CalenderController = {
     addEvent: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
-
         var _async = require('async'),
             CalenderEvent = require('mongoose').model('CalenderEvent'),
             UserId = Util.getCurrentSession(req).id,
@@ -332,20 +331,82 @@ var CalenderController = {
         var user_id = Util.toObjectId(CurrentSession.id);
         var startTimeOfDay = moment(day, 'YYYY-MM-DD').format('YYYY-MM-DD'); //format the given date as mongo date object
         var endTimeOfDay = moment(day, 'YYYY-MM-DD').add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
+        var _async = require('async');
 
         var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, status: 1, user_id: user_id};
+        _async.waterfall([
 
-        CalenderEvent.getSortedCalenderItems(criteria,function(err, result) {
+            function getSortedCalenderItems(callback){
+                CalenderEvent.getSortedCalenderItems(criteria, function(err, result) {
+                    var events = [];
+                    if(err) {
+                        callback(err, null)
+                    } else {
+                        events = result.events;
+                        callback(null, events)
+                    }
+                });
+            },
 
-            var outPut ={};
-            if(err) {
-                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_WEEK_EMPTY, Alert.ERROR);
-                res.status(400).send(outPut);
-            } else {
-                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['events'] = result.events;
-                res.status(200).send(outPut);
+            function getUsers(events, callback) {
+
+                var criteria = {
+                    user_id: user_id,
+                    status: 3
+                };
+                var User = require('mongoose').model('User');
+                User.getConnectionUsers(criteria, function (result) {
+                    var friends = result.friends;
+                    callback(null, events, friends);
+                });
+            },
+
+            function composeUsers(events, users, callback) {
+
+                for (var e = 0; e < events.length; e++) {
+                    var event = events[e];  
+                    var sharedUsers = event.shared_users;
+
+                    if(sharedUsers.length == 0) {
+                        if(e+1 == (events.length)) {
+                            callback(null, events)
+
+                        }
+                    }
+
+                    var arrUsers = [];
+                    for (var u = 0; u < sharedUsers.length ; u++) {
+                        var userId = sharedUsers[u];
+
+
+                        var filterObj = users.filter(function(e) {
+                          return e.user_id == userId;
+                        });
+
+                        var user = {
+                            'id' : userId,
+                            'name' : 'Unknown'
+                        };
+
+                        if(filterObj) {
+                            user.name = filterObj[0].first_name+" "+filterObj[0].last_name; 
+                        }
+
+                        arrUsers.push(user);
+                        events[e].shared_users = arrUsers;
+
+                        if(u+1 == sharedUsers.length && e+1 == events.length) {
+                            callback(null, events);
+                        }
+                    }
+                }
             }
+        ],function(err, events){
+            var outPut = {};
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['events'] = events;
+            res.status(200).send(outPut);
+            return;
         });
     },
 
@@ -383,7 +444,7 @@ var CalenderController = {
                     callBack(null, res);
                 });
             }
-        ],function(err, resultSet){
+        ], function(err, resultSet) {
             var outPut ={};
             if(err) {
                 outPut['status'] = ApiHelper.getMessage(400, err);

@@ -12,20 +12,20 @@ import SharedUsers from './SharedUsers';
 import {EditorState, RichUtils} from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
 
-import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin'; // eslint-disable-line import/no-unresolved
+// import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin'; // eslint-disable-line import/no-unresolved
 import createEmojiPlugin from 'draft-js-emoji-plugin'; 
 
 import {convertFromRaw, convertToRaw} from 'draft-js';
 import editorStyles from './editorStyles.css';
-import mentions from './mentions';
+// import mentions from './mentions';
 
-const mentionPlugin = createMentionPlugin();
-const { MentionSuggestions } = mentionPlugin;
-// const plugins = [mentionPlugin];
+//const mentionPlugin = createMentionPlugin();
+//const { MentionSuggestions } = mentionPlugin;
 
 const emojiPlugin = createEmojiPlugin();
 const { EmojiSuggestions } = emojiPlugin;
-const plugins = [emojiPlugin, mentionPlugin];
+// const plugins = [emojiPlugin, mentionPlugin];
+const plugins = [emojiPlugin];
 
 
 export default class DayView extends Component {
@@ -38,7 +38,7 @@ export default class DayView extends Component {
             defaultType : 'event',
             events : [],
             user : user,
-            suggestions: mentions,
+            // suggestions: mentions,
             editorState: EditorState.createEmpty(),
             showMentions : '',
         };
@@ -53,7 +53,7 @@ export default class DayView extends Component {
         // this.onSearchChange = this.onSearchChange.bind(this);
         this.onChange = this.onChange.bind(this);
 
-        this.onSearchChange = ({ value }) => {
+        // this.onSearchChange = ({ value }) => {
 
             // $.ajax({
             //     url : '/user/get-user-suggestions/'+filter.replace("#", ""),
@@ -69,15 +69,10 @@ export default class DayView extends Component {
             //         console.log(error);
             //     }
             // });
-
-            console.log(" WHAT IS THIS VALUE :::: "+ value);
-
-
-
-            this.setState({
-                suggestions: defaultSuggestionsFilter(value, mentions),
-            });
-        };
+        //     this.setState({
+        //         suggestions: defaultSuggestionsFilter(value, mentions),
+        //     });
+        // };
 
     }
 
@@ -252,10 +247,7 @@ export default class DayView extends Component {
                                                     placeholder="Type in an Event or a To-do here use # to tag people, @ to set time of the event"
                                                   />
                                                 <EmojiSuggestions />
-                                                <MentionSuggestions
-                                                    onSearchChange={this.onSearchChange}
-                                                    suggestions={this.state.suggestions}
-                                                />
+                                                
                                             </div>
                                             <div className={this.state.showMentions + " shared-users"}>
                                                 <SharedUsers ref="SharedUserField" />

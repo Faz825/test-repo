@@ -21,7 +21,6 @@ export default class DayTodosList extends React.Component {
 
         let _this = this;
 		let items = this.props.events.map(function(event,key){
-		    
             if(event.type == 1) {
                 return;
             }
@@ -33,6 +32,9 @@ export default class DayTodosList extends React.Component {
 
             let contentState = convertFromRaw(event.description);
             let htmlC = stateToHTML(contentState);
+            let usersString = event.shared_users.map(function(user,userKey){
+            	return <span key={userKey}>{user.name}, </span>
+            });
 
 		    return (
 		        <li className="active" key={key}>
@@ -40,7 +42,7 @@ export default class DayTodosList extends React.Component {
 						<input id="check1" name="check" value="check1" onChange="{this.markToDo}" type="checkbox" />
 						<label for="check1">
 							<p dangerouslySetInnerHTML={{__html: htmlC}} ></p>
-							<p>People in the event</p>
+							<p>People in the To-do: {usersString ? usersString : 'No shared users'}</p>
 						</label>
 					</div>
 					<div className="time-wrapper pull-right">{moment(event.start_date_time).format('LT')}</div>

@@ -55,7 +55,7 @@
     "react-custom-scrollbars": "^2.3.0",
     "react-datepicker": "^0.29.0",
     "react-dom": "^0.14.6",
-    "react-dropzone": "^3.7.0",
+    "react-dropzone": "^3.7.2",
     "react-geosuggest": "^1.19.0",
     "react-infinite-scroll": "^0.1.5",
     "react-modal-dialog": "^2.0.0",
