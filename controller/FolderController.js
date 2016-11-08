@@ -16,7 +16,7 @@ var FolderController ={
         console.log("addNewFolder")
 
         var Folders = require('mongoose').model('Folders'),
-            _shared_with = req.body.shared_with,
+            _shared_with = (typeof req.body.shared_with != 'undefined' && req.body.shared_with.length > 0) ? req.body.shared_with : [],
             _randColor = require('randomcolor'),
             sharedUsers = [],
             _async = require('async'),
@@ -28,7 +28,7 @@ var FolderController ={
 
             function addFolderToDB(callBack){
 
-                console.log("addFolderToDB")
+                console.log("addFolderToDB");
 
                 for(var i = 0; i < _shared_with.length; i++){
                     var randColor = _randColor.randomColor({
@@ -62,7 +62,7 @@ var FolderController ={
 
             },
             function addNotification(callBack){
-                console.log("addNotification")
+                console.log("addNotification");
 
                 if(_shared_with.length > 0 && _folder_id != 0){
                     var _data = {
@@ -72,17 +72,15 @@ var FolderController ={
                     }
                     Notification.saveNotification(_data, function(res){
                         if(res.status == 200){
-                            callBack(null,res.result._id);
-                        } else{
-                            callBack(null);
+                            callBack(null, res.result._id);
                         }
                     });
                 } else{
-                    callBack(null);
+                    callBack(null, null);
                 }
             },
             function notifyingUsers(notification_id, callBack){
-                console.log("notifyingUsers")
+                console.log("notifyingUsers");
 
                 if(typeof notification_id != 'undefined' && _shared_with.length > 0){
 
@@ -90,29 +88,17 @@ var FolderController ={
                         notification_id:notification_id,
                         recipients:_shared_with
                     };
-                    NotificationRecipient.saveRecipients(_data, function(res){
+                    NotificationRecipient.saveRecipients(_data, function(res) {
                         callBack(null);
-                    })
+                    });
 
-                } else{
+                } else {
                     callBack(null);
                 }
             }
 
-        ],function(err,resultSet){
-            console.log("async waterfall callback")
-
-            //if(resultSet.status == 200){
-            //    var outPut ={
-            //        status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
-            //    };
-            //    res.status(200).json(outPut);
-            //}else{
-            //    var outPut ={
-            //        status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
-            //    };
-            //    res.status(400).json(outPut);
-            //}
+        ],function(err){
+            console.log("async waterfall callback");
 
             if(err){
                 var outPut ={
@@ -126,9 +112,6 @@ var FolderController ={
             };
             res.status(200).json(outPut);
         });
-
-
-
 
     },
 
