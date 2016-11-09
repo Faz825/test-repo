@@ -58,7 +58,7 @@ export default class Index extends React.Component{
                     <section className="calender-header">
                         <div className="row">
                             <div className="col-sm-2">
-                                <h2>Calender</h2>
+                                <h2>Calendar</h2>
                             </div>
                             <div className="col-sm-5 col-sm-offset-1">
                                 <div className={ this.state.current == 'day' ? 'calender-type active' : 'calender-type'} view="day" onClick={() => this.setView('day')} >
