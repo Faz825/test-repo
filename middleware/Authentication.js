@@ -136,6 +136,13 @@ exports.Authentication= function(req,res,next){
                 res.status(200).json(_out_put);
             });
             return ;
+
+        } else if(String(req.originalUrl).indexOf('/verify/me') != -1) {
+            _out_put={
+                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+            }
+            res.status(200).json(_out_put);
+            return ;
         }
         next();
         return;
@@ -145,7 +152,7 @@ exports.Authentication= function(req,res,next){
             message:Alert.INVALID_TOKEN
         }
         res.status(401).json(_out_put);
-        return ;
+        return;
     }
 
  }
