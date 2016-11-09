@@ -51,7 +51,7 @@
     "react": "^0.14.6",
     "react-autosuggest": "^3.5.0",
     "react-bootstrap": "^0.30.3",
-    "react-bootstrap-time-picker": "^1.0.1",
+    "react-bootstrap-datetime": "0.0.9",
     "react-cropper": "^0.6.0",
     "react-custom-scrollbars": "^2.3.0",
     "react-datepicker": "^0.29.0",

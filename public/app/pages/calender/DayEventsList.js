@@ -41,7 +41,7 @@ export default class DayEventsList extends React.Component {
                             {usersString ? usersString : 'No shared users'}
                         </div>
                     </div>
-                    <span className="event-time pull-right">{moment(event.start_date_time).format('LT')}</span>
+                    <span className="event-time pull-right">{event.event_time}</span>
                 </li>
             );
         });

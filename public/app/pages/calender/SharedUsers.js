@@ -166,16 +166,19 @@ export default class SharedUsers extends Component {
         }
 
         return (
-            <div className="invite-people">
-              <Autosuggest suggestions={suggestions}
-                  onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                  getSuggestionValue={this.getSuggestionValue}
-                  renderSuggestion={this.renderSuggestion}
-                  inputProps={inputProps} />
-                <div>
-                    <span className="user-label"> People in the event</span>
+            <div className="invite-people col-sm-9">
+                <p>
+                    <span className="user-label"> People in the event : </span>
                     {shared_with_list}
-                 </div>
+                </p>
+                <div className={this.props.showPanel + " panel user-panel"}>
+                    <Autosuggest suggestions={suggestions}
+                        onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                        getSuggestionValue={this.getSuggestionValue}
+                        renderSuggestion={this.renderSuggestion}
+                        inputProps={inputProps} 
+                    />
+                </div>
             </div>
         )
     }

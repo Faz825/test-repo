@@ -65,29 +65,38 @@
 
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
   height: auto;
-    color: #000000;
-    font-size: 14px;
+  color: #000000;
+  font-size: 14px;
+  overflow: visible;
 }
 
-.calender-body .shared-users {
+.calender-body .shared-users-time-panel .panel {
   -webkit-transition: all 300ms ease;
   -moz-transition: all 300ms ease;
   -ms-transition: all 300ms ease;
   -o-transition: all 300ms ease;
   transition: all 300ms ease;
+  display: none;
 }
-.calender-body .shared-users input{
-    display: none;
-}
-.calender-body .shared-users.active input {
+
+.calender-body .shared-users-time-panel .panel.active {
     display: block;
     border: none;
-    border-bottom: 1px solid #ddd;
     width: 50%;
-    padding-left: 0;
-    margin-bottom: 10px;
     border-radius: 0;
     box-shadow: none;
+}
+
+.calender-body .shared-users-time-panel .panel input {
+  border: 0px;
+  border-bottom: 2px solid #ddd;
+  outline: none;
+  padding: 6px 0px;
+  border-radius: 0px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  box-shadow: none;
 }
 
 /* - ReactAutoSuggest Custom Styles*/

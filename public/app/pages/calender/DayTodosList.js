@@ -36,12 +36,12 @@ export default class DayTodosList extends React.Component {
 		        <li className={event.status == 2 ? 'active' : ''} key={key}>
 					<div className="checkbox-area">
 						<input id="check1" name="check" value="check1" type="checkbox" />
-						<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id)} >
+						<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id, event.status)} >
 							<p dangerouslySetInnerHTML={{__html: htmlC}} ></p>
 							<p>{event.status} - People in the To-do: {usersString ? usersString : 'No shared users'}</p>
 						</label>
 					</div>
-					<div className="time-wrapper pull-right">{moment(event.start_date_time).format('LT')}</div>
+					<div className="time-wrapper pull-right">{event.event_time}</div>
 				</li>
 		    );
 		});

@@ -329,9 +329,6 @@ var CalendarController = {
         var moment = require('moment');
         var day = req.body.day;
 
-        console.log(day);
-        console.log("====");
-
         var user_id = Util.toObjectId(CurrentSession.id);
         var startTimeOfDay = moment(day, 'YYYY-MM-DD').format('YYYY-MM-DD'); //format the given date as mongo date object
         var endTimeOfDay = moment(day, 'YYYY-MM-DD').add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
@@ -805,6 +802,7 @@ var CalendarController = {
         var _async = require('async');
 
         var event_id = req.body.id;
+        var status = req.body.status;
         event_id = Util.toObjectId(event_id);
         var user_id = Util.toObjectId(CurrentSession.id);
 
@@ -819,7 +817,7 @@ var CalendarController = {
                     _id:event_id
                 };
                 var updateData = {
-                    status:CalendarStatus.COMPLETED
+                    status:status
                 };
                 CalendarEvent.updateEvent(criteria, updateData, function (res) {
                     callBack(null);

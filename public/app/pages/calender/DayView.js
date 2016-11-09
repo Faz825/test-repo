@@ -9,8 +9,16 @@ import DayEventsList from './DayEventsList';
 import DayTodosList from './DayTodosList';
 import SharedUsers from './SharedUsers';
 
+
+
 import { Popover, OverlayTrigger } from 'react-bootstrap';
-import TimePicker from 'react-bootstrap-time-picker';
+// import TimePicker from 'react-bootstrap-time-picker';
+
+import 'rc-time-picker/assets/index.css';
+import TimePicker from 'rc-time-picker';
+
+
+import DateTime from "react-bootstrap-datetime";
 
 import {EditorState, RichUtils} from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
@@ -39,14 +47,14 @@ export default class DayView extends Component {
         this.state = {
             currentDay : this.props.dayDate,
             defaultType : 'event',
-            defaultEventTime : moment().format('HH:MM'),
+            defaultEventTime : moment().format('HH:mm'),
             events : [],
             user : user,
             // suggestions: mentions,
-            editorState: EditorState.createEmpty(),
-            showMentions : '',
+            editorState : EditorState.createEmpty(),
+            showTimePanel : '',
+            showUserPanel : '',
         };
-
         this.currentDay = this.state.currentDay;
         this.addEvent = this.addEvent.bind(this);
         this.nextDay = this.nextDay.bind(this);
@@ -111,8 +119,13 @@ export default class DayView extends Component {
     }
 
     _onHashClick() {
-        let showMentions = this.state.showMentions;
-        this.setState({showMentions : (showMentions == 'active' ? '' : 'active') });
+        let showUserPanel = this.state.showUserPanel;
+        this.setState({showUserPanel : (showUserPanel == 'active' ? '' : 'active') });
+    }
+
+    _onAtClick() {
+        let showTimePanel = this.state.showTimePanel;
+        this.setState({showTimePanel : (showTimePanel == 'active' ? '' : 'active') });
     }
 
     componentDidMount() {
@@ -150,7 +163,7 @@ export default class DayView extends Component {
         const postData = {
             description : editorContentRaw,
             type : this.state.defaultType,
-            apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:MM'),
+            apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:mm'),
             event_time : this.state.defaultEventTime,
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
@@ -169,12 +182,12 @@ export default class DayView extends Component {
         }.bind(this));
     }
 
-    markTodo(eventId) {
-        console.log("markTodo is called");
+    markTodo(eventId, status) {
         console.log(eventId);
         let user =  Session.getSession('prg_lg');
         var postData = {
-            id : eventId
+            id : eventId,
+            status : (status == 1 ? 2 : 1 ) 
         }
 
         $.ajax({
@@ -216,9 +229,8 @@ export default class DayView extends Component {
         this.loadEvents();
     }
 
-    handleTimeChange(time) {
-        console.log(time);     // <- prints "3600" if "01:00" is picked
-        this.setState({ defaultEventTime: time });
+    handleTimeChange(time) {   
+        this.setState({ defaultEventTime: moment(time).format('HH:mm') });
     }
 
     render() {
@@ -242,12 +254,7 @@ export default class DayView extends Component {
                 </div>
             </Popover>
         );
-
-        const timepickerPopover = (
-            <Popover id="calendar-popover-timepicker">
-                <TimePicker onChange={this.handleTimeChange} start="10:00" end="21:00" step={30} />
-            </Popover>
-        );
+        const showSecond = false;
         return (
             <section className="calender-body">
                 <div className="row">
@@ -287,8 +294,23 @@ export default class DayView extends Component {
                                                 <EmojiSuggestions />
                                                 
                                             </div>
-                                            <div className={this.state.showMentions + " shared-users"}>
-                                                <SharedUsers ref="SharedUserField" />
+                                            
+                                            <div className="shared-users-time-panel">
+                                                <div className="col-sm-3">
+                                                    <p>
+                                                        <span className="user-label">Time : {this.state.defaultEventTime} </span>
+                                                    </p>
+                                                    <div className={this.state.showTimePanel + " panel time-panel"}>
+                                                        <TimePicker
+                                                            style={{ width: 100 }}
+                                                            showSecond={showSecond}
+                                                            defaultValue={moment()}
+                                                            onChange={this.handleTimeChange}
+                                                            className="form-control"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <SharedUsers ref="SharedUserField" showPanel={this.state.showUserPanel}/>
                                             </div>
                                         </div>
                                         <div className="calender-input-type">
@@ -314,9 +336,9 @@ export default class DayView extends Component {
                                                 </p>
                                             </div>
                                             <div className="menu-ico">
-                                                <OverlayTrigger trigger="click" placement="bottom" overlay={timepickerPopover}>
-                                                    <p><i className="fa fa-at" aria-hidden="true"></i></p>
-                                                </OverlayTrigger>
+                                                 <p onClick={this._onAtClick.bind(this)} >
+                                                    <i className="fa fa-at" aria-hidden="true"></i>
+                                                </p>
                                             </div>
 
                                             <div className="toggle-wrapper">
