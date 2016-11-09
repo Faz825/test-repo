@@ -10,6 +10,7 @@ import DayTodosList from './DayTodosList';
 import SharedUsers from './SharedUsers';
 
 import { Popover, OverlayTrigger } from 'react-bootstrap';
+import TimePicker from 'react-bootstrap-time-picker';
 
 import {EditorState, RichUtils} from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
@@ -38,6 +39,7 @@ export default class DayView extends Component {
         this.state = {
             currentDay : this.props.dayDate,
             defaultType : 'event',
+            defaultEventTime : moment().format('HH:MM'),
             events : [],
             user : user,
             // suggestions: mentions,
@@ -54,6 +56,7 @@ export default class DayView extends Component {
         this.focus = this.focus.bind(this);
         // this.onSearchChange = this.onSearchChange.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.handleTimeChange = this.handleTimeChange.bind(this);
 
         // this.onSearchChange = ({ value }) => {
 
@@ -148,7 +151,7 @@ export default class DayView extends Component {
             description : editorContentRaw,
             type : this.state.defaultType,
             apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:MM'),
-            event_time : moment().format('HH:MM'),
+            event_time : this.state.defaultEventTime,
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
         };
@@ -168,16 +171,18 @@ export default class DayView extends Component {
 
     markTodo(eventId) {
         console.log("markTodo is called");
+        console.log(eventId);
+        let user =  Session.getSession('prg_lg');
         var postData = {
             id : eventId
         }
 
         $.ajax({
-            url: '/calender/update-event-completion',
+            url: '/calender/event/completion',
             method: "POST",
             dataType: "JSON",
             data: postData,
-            headers : { "prg-auth-header" : this.state.user.token },
+            headers : { "prg-auth-header" : user.token },
         }).done(function (data, text) {
             if(data.status.code == 200){
                 this.loadEvents();
@@ -211,6 +216,11 @@ export default class DayView extends Component {
         this.loadEvents();
     }
 
+    handleTimeChange(time) {
+        console.log(time);     // <- prints "3600" if "01:00" is picked
+        this.setState({ defaultEventTime: time });
+    }
+
     render() {
 
         const typoPopover = (
@@ -230,6 +240,12 @@ export default class DayView extends Component {
                         <span className="underline" onClick={this._onUnderLineClick.bind(this)}>U</span>
                     </p>
                 </div>
+            </Popover>
+        );
+
+        const timepickerPopover = (
+            <Popover id="calendar-popover-timepicker">
+                <TimePicker onChange={this.handleTimeChange} start="10:00" end="21:00" step={30} />
             </Popover>
         );
         return (
@@ -298,8 +314,11 @@ export default class DayView extends Component {
                                                 </p>
                                             </div>
                                             <div className="menu-ico">
-                                                <p><i className="fa fa-at" aria-hidden="true"></i></p>
+                                                <OverlayTrigger trigger="click" placement="bottom" overlay={timepickerPopover}>
+                                                    <p><i className="fa fa-at" aria-hidden="true"></i></p>
+                                                </OverlayTrigger>
                                             </div>
+
                                             <div className="toggle-wrapper">
                                                 <div className={this.state.defaultType == 'event' ? 'btn-toggle active' : 'btn-toggle'} eventType="event" onClick={() => this.changeType('event')} >
                                                     <i className="fa fa-calendar" aria-hidden="true"></i> Event
@@ -334,7 +353,7 @@ export default class DayView extends Component {
                                             <img src="/images/calender/icon-to-do.png" /><span>To-Do's</span>
                                         </div>
                                         <div className="to-do-list-area-content-title-hr"></div>
-                                        <DayTodosList events={this.state.events} />
+                                        <DayTodosList events={this.state.events} onClickItem={this.markTodo.bind(this)} />
                                     </div>
                                 </div>
                             </div>
