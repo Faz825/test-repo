@@ -337,7 +337,7 @@ var CalendarController = {
         var endTimeOfDay = moment(day, 'YYYY-MM-DD').add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
         var _async = require('async');
 
-        var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, status: 1, user_id: user_id};
+        var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, user_id: user_id};
         _async.waterfall([
 
             function getSortedCalenderItems(callback){
@@ -804,7 +804,7 @@ var CalendarController = {
         var moment = require('moment');
         var _async = require('async');
 
-        var event_id = req.query.id;
+        var event_id = req.body.id;
         event_id = Util.toObjectId(event_id);
         var user_id = Util.toObjectId(CurrentSession.id);
 
