@@ -24,6 +24,12 @@ GLOBAL.CalendarStatus = {
     CANCELLED: 4
 };
 
+GLOBAL.CalendarSharedStatus = {
+    REQUEST_PENDING: 1,
+    REQUEST_REJECTED: 2,
+    REQUEST_ACCEPTED: 3
+};
+
 /**
  * CalenderEvent Basic information
  */

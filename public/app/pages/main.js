@@ -15,7 +15,6 @@ class Main extends React.Component {
         }
 
         this.loggedUser= Session.getSession('prg_lg');
-        //this.verifyUser();
     }
 
 
@@ -54,22 +53,6 @@ class Main extends React.Component {
                         {this.props.children ||<Signup />}
                     </SignupLayout>
             )
-        }
-    }
-
-    verifyUser(){
-        if (this.loggedUser) {
-            $.ajax({
-                url: '/verify/me',
-                method: "GET",
-                dataType: "JSON",
-                headers: { 'prg-auth-header':this.loggedUser.token }
-            }).done( function (data, text) {
-                console.log(data);
-                if(data.status.code == 200){
-                    this.setState({verify: true});
-                }
-            }.bind(this));
         }
     }
 

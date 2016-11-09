@@ -49,6 +49,19 @@ var CalendarController = {
         _async.waterfall([
 
             function addNewToDb(callBack){
+
+                var sharedUserList = [];
+
+                if(typeof notifyUsers != 'undefined' && notifyUsers.length > 0) {
+                    for (var i = 0; notifyUsers.length > i; i++) {
+                        var obj = {
+                            user_id:notifyUsers[i],
+                            share_type:CalendarSharedStatus.REQUEST_PENDING
+                        }
+                        sharedUserList.push(obj);
+                    }
+                }
+
                 var eventData = {
                     user_id : UserId,
                     description : req.body.description,
@@ -56,8 +69,8 @@ var CalendarController = {
                     start_date: req.body.apply_date,
                     event_time: req.body.event_time,
                     event_timezone: req.body.event_timezone,
-                    shared_users: notifyUsers
-                }
+                    shared_users: sharedUserList
+                };
 
                 CalendarEvent.addNew(eventData, function(event) {
                     callBack(null, event);
@@ -425,14 +438,23 @@ var CalendarController = {
      */
     updateEvent: function(req,res) {
 
-        var CurrentSession = Util.getCurrentSession(req);
-        var CalendarEvent = require('mongoose').model('CalendarEvent');
+        var CalendarEvent = require('mongoose').model('CalendarEvent'),
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient');
         var moment = require('moment');
         var _async = require('async');
 
         var event_id = req.query.id;
         event_id = Util.toObjectId(event_id);
-        var user_id = Util.toObjectId(CurrentSession.id);
+
+        var user_id = Util.getCurrentSession(req).id,
+            shareUsers = (typeof req.body.shared_users != 'undefined' ? req.body.shared_users : []), //this should be an array
+            isTimeChanged=(typeof req.body.time_changed != 'undefined' ? req.body.time_changed : false),
+            _description = req.body.description,
+            _start_date_time= req.body.apply_date,
+            _event_time= req.body.event_time;
+
+        var sharedUserList = [], notifyUsers = [];
 
         _async.waterfall([
             function getEvents(callBack){
@@ -440,25 +462,124 @@ var CalendarController = {
                     callBack(null, resultSet);
                 });
             },
-            function updateEvent(resultSet, callBack){
+            function compareSharedUsers(resultSet, callBack) {
+
+                if(typeof resultSet != 'undefined') {
+
+                    if(typeof shareUsers != 'undefined' && shareUsers.length > 0) {
+
+                        /*
+                         * If time changed then all user should be requested again
+                         * So all user request set as PENDING again
+                         */
+                        if(isTimeChanged == true) {
+                            for (var i = 0; shareUsers.length > i; i++) {
+                                var obj = {
+                                    user_id:shareUsers[i],
+                                    share_type:CalendarSharedStatus.REQUEST_PENDING
+                                };
+                                sharedUserList.push(obj);
+                                notifyUsers.push(shareUsers[i]);
+                            }
+
+                        } else {
+
+                            /*
+                             * There might be shared users, so their request status kept as it is.
+                             * For new shared users request will save as PENDING
+                             */
+                            for (var i = 0; shareUsers.length > i; i++) {
+
+                                if(typeof resultSet.shared_users != 'undefined' && resultSet.shared_users.length > 0) {
+
+                                    var filterObj = resultSet.shared_users.filter(function(e) {
+                                        return e.user_id.toString() == shareUsers[i].toString();
+                                    });
+                                    if(typeof filterObj != 'undefined' && filterObj.user_id) {
+                                        sharedUserList.push(filterObj);
+                                    } else {
+                                        var obj = {
+                                            user_id:shareUsers[i],
+                                            share_type:CalendarSharedStatus.REQUEST_PENDING
+                                        };
+                                        sharedUserList.push(obj);
+                                        notifyUsers.push(shareUsers[i]);
+                                    }
+
+                                } else {
+                                    var obj = {
+                                        user_id:shareUsers[i],
+                                        share_type:CalendarSharedStatus.REQUEST_PENDING
+                                    };
+                                    sharedUserList.push(obj);
+                                    notifyUsers.push(shareUsers[i]);
+                                }
+                            }
+                        }
+                    }
+
+                    var updateData = {
+                        description : _description,
+                        start_date_time: _start_date_time,
+                        event_time: _event_time,
+                        shared_users: sharedUserList
+                    };
+
+                    callBack(null, updateData);
+
+                } else {
+                    callBack(null, null);
+                }
+            },
+            function updateDbEvent(updateData, callBack){
                 var criteria={
                     _id:event_id
                 };
-                var updateData = {
-                    start_date_time:moment(resultSet.start_date_time).add(1,"day").format('YYYY-MM-DD')
-                };
+
                 CalendarEvent.updateEvent(criteria, updateData, function (res) {
-                    callBack(null, res);
+                    callBack(null, res.status);
                 });
+            },
+            function addNotification(stt, callBack) {
+
+                if(typeof notifyUsers != 'undefined' && notifyUsers.length > 0 && stt != 200){
+                    var _data = {
+                        sender:user_id,
+                        notification_type: isTimeChanged == true ? Notifications.SHARE_CALENDAR_TIME_CHANGED : Notifications.SHARE_CALENDAR_UPDATED,
+                    }
+                    Notification.saveNotification(_data, function(res){
+                        if(res.status == 200){
+                            callBack(null, res.result._id);
+                        }
+
+                    });
+
+                } else {
+                    callBack(null, null);
+                }
+            },
+            function notifyingUsers(notification_id, callBack) {
+
+                if(typeof notification_id != 'undefined' && notifyUsers.length > 0){
+                    var _data = {
+                        notification_id:notification_id,
+                        recipients:notifyUsers
+                    };
+                    NotificationRecipient.saveRecipients(_data, function(res){
+                        callBack(null);
+                    })
+
+                } else{
+                    callBack(null);
+                }
             }
-        ], function(err, resultSet) {
+        ], function(err) {
             var outPut ={};
             if(err) {
                 outPut['status'] = ApiHelper.getMessage(400, err);
                 res.status(400).send(outPut);
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['event'] = resultSet.event;
                 res.status(200).send(outPut);
             }
         });
