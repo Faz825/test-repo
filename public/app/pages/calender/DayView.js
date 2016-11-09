@@ -178,7 +178,7 @@ export default class DayView extends Component {
         }
 
         $.ajax({
-            url: '/calender/event/completion',
+            url: '/calendar/event/completion',
             method: "POST",
             dataType: "JSON",
             data: postData,
