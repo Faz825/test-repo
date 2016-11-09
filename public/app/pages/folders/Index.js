@@ -63,7 +63,7 @@ export default class Index extends React.Component{
             console.log(data);
             if(data.status.code == 200){
                 if(data.folders.length == 0 || data.folders[0] == null){
-                    this.setState({CFName:"My Folder", CFColor:"#ed0677"})
+                    this.setState({CFName:"My Folder", CFColor:"#1b9ed9"})
                     this.addDefaultFolder();
                 } else{
                     let folders = data.folders;
@@ -393,10 +393,10 @@ export default class Index extends React.Component{
                 <div className="container">
                     <section className="folder-header">
                         <div className="row">
-                            <div className="col-sm-3">
+                            <div className="col-sm-2">
                                 <h2>Folders</h2>
                             </div>
-                            <div className="col-sm-4">
+                            <div className="col-sm-5 menu-bar">
                                 <div className="folder-type active">
                                     <h4>My Folders</h4>
                                     <div className="highlighter"></div>
@@ -481,8 +481,10 @@ export class Folder extends React.Component{
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
                 <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop} multiple={false} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*" >
-                    <div className="col-sm-3">
+                    <div className="col-sm-2">
                         <div className="folder-cover-wrapper">
+                            <span class="folder-overlay"></span>
+                            <span class="folder-overlay"></span>
                             <div className="folder-cover">
                                 <div className="folder-overlay"></div>
                                 <div className="content-wrapper" style={{backgroundColor: folderData.folder_color}}>
@@ -499,7 +501,6 @@ export class Folder extends React.Component{
                                     </div>
                                 </OverlayTrigger>
                             </div>
-                            <div className="folder-peak" style={{backgroundColor: folderData.folder_color}}><span className="peak-tail" style={{backgroundColor: folderData.folder_color}}></span></div>
                             {/*
                                 (this.state.files.length > 0)?
                                 <div className="upload-anime">
@@ -514,7 +515,7 @@ export class Folder extends React.Component{
                             </div>
                         </div>
                     </div>
-                    <div className="col-sm-9">
+                    <div className="col-sm-10">
                         <div className="row">
                             <div className="folder-content-wrapper">
                                 <div className="folder-items-wrapper">
@@ -600,7 +601,7 @@ export class SharePopup extends React.Component{
                             <div className="col-sm-12">
                                 <div className="search-people-wrapper">
                                     <i className="fa fa-search" aria-hidden="true"></i>
-                                    <div className="search-people" contentEditable="true" placeholder="Search"></div>
+                                    <input className="form-control search-people" type="text" placeholder="Search"/>
                                 </div>
                             </div>
                         </div>
@@ -660,7 +661,10 @@ export class SharePopup extends React.Component{
                     </section>
                     <section className="folder-footer">
                         <div className="footer-action-wrapper">
-                            <p className="see-all">See All</p>
+                            <div className="see-all">
+                                <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                <p>See All</p>
+                            </div>
                             <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
                                 <p className="add-people">
                                     <i className="fa fa-plus"></i> Add more

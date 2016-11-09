@@ -43,3 +43,6 @@
 
 
 @font-face {font-family: 'Pantra-Medium';src: url('../fonts/webfonts/3249AC_3_0.eot');src: url('../fonts/webfonts/3249AC_3_0.eot?#iefix') format('embedded-opentype'),url('../fonts/webfonts/3249AC_3_0.woff2') format('woff2'),url('../fonts/webfonts/3249AC_3_0.woff') format('woff'),url('../fonts/webfonts/3249AC_3_0.ttf') format('truetype');}
+
+
+@font-face {font-family: 'Andelo-Mono';src: url('../fonts/webfonts/ufonts.com_andale-mono.eot');src: url('../fonts/webfonts/ufonts.com_andale-mono.eot?#iefix') format('embedded-opentype'),url('../fonts/webfonts/ufonts.com_andale-mono.woff2') format('woff2'),url('../fonts/webfonts/ufonts.com_andale-mono.woff') format('woff'),url('../fonts/webfonts/ufonts.com_andale-mono.ttf') format('truetype');}
