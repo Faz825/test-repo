@@ -30,7 +30,7 @@ export default class Calender extends React.Component {
 
 
         $.ajax({
-            url: '/calender/get-all-month',
+            url: '/calendar/month/all',
             method: "GET",
             dataType: "JSON",
             data: postData,

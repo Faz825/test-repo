@@ -70,7 +70,7 @@ NotificationSchema.statics.saveNotification = function (new_notification, callBa
     var notification = new this();
     notification.sender = Util.toObjectId(new_notification.sender);
     notification.notification_type = new_notification.notification_type;
-    if (new_notification.notification_type == Notifications.SHARE_CALENDER) {
+    if (new_notification.notification_type == Notifications.SHARE_CALENDAR) {
         notification.notified_event = (new_notification.notified_event);
         notification.notification_status = "";
     } else if (new_notification.notification_type == Notifications.SHARE_NOTEBOOK

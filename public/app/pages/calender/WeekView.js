@@ -109,7 +109,7 @@ export default class WeekView extends React.Component {
 
     processDataCall(postData) {
         $.ajax({
-            url: '/calender/events/date-range/get',
+            url: '/calendar/events/date_range',
             method: "GET",
             dataType: "JSON",
             data: postData,
