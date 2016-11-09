@@ -2,7 +2,7 @@
  * Created by gihan on 10/26/16.
  */
 
-var CalenderEventHandler = {
+var CalendarEventHandler = {
     init:function() {
 
         var schedule = require('node-schedule');
@@ -16,7 +16,7 @@ var CalenderEventHandler = {
         var j = schedule.scheduleJob(rule, function() {
 
             var _async = require('async'),
-                CalenderEvent = require('mongoose').model('CalenderEvent'),
+                CalendarEvent = require('mongoose').model('CalendarEvent'),
                 moment = require('moment');
 
             console.log("***************************************************");
@@ -32,7 +32,7 @@ var CalenderEventHandler = {
                     var endTimeOfDay = moment(day).add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
                     var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, status: 1};
 
-                    CalenderEvent.getSortedCalenderItems(criteria,function(err, result) {
+                    CalendarEvent.getSortedCalenderItems(criteria,function(err, result) {
                         callBack(null, result.events);
                     });
                 },
@@ -81,7 +81,7 @@ var CalenderEventHandler = {
                             var updateData = {
                                 start_date_time:moment(movableList[i].start_date_time).add(1,"day").format('YYYY-MM-DD HH:mm:ss')
                             };
-                            CalenderEvent.updateEvent(criteria, updateData,function(res) {
+                            CalendarEvent.updateEvent(criteria, updateData,function(res) {
                                 callBack(null,res);
                             });
                         }
@@ -100,4 +100,4 @@ var CalenderEventHandler = {
 
 };
 
-module.exports = CalenderEventHandler;
+module.exports = CalendarEventHandler;

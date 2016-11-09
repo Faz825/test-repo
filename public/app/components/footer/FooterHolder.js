@@ -156,9 +156,9 @@ export default class FooterHolder extends React.Component{
                         </section>
                         <section className={workmodeCSS}>
                             <div className="calender nav-item">
-                                <a href="/calender">
+                                <a href="/calendar">
                                     <div className="icon-holder">
-                                        <img src="/images/nav-icons/cal-icon.png" alt="Calender" />
+                                        <img src="/images/nav-icons/cal-icon.png" alt="Calendar" />
                                     </div>
                                     <p className="nav-title">Calendar</p>                               
                                 </a>

@@ -119,7 +119,7 @@ export default class DayView extends Component {
     loadEvents() {
         console.log("THE CURRENT DAY IS ::: " + this.currentDay);
         $.ajax({
-            url : '/calender/get-events-for-specific-day/',
+            url : '/calendar/day/all',
             method : "POST",
             data : { day : this.currentDay }, 
             dataType : "JSON",
@@ -154,7 +154,7 @@ export default class DayView extends Component {
         };
 
         $.ajax({
-            url: '/calender/add-event',
+            url: '/calendar/event/add',
             method: "POST",
             dataType: "JSON",
             data: postData,
