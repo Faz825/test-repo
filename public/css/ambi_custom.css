@@ -294,3 +294,12 @@
     color: #fff;
 }
 
+/* Footer on collapse */
+footer .notification-alert-holder{
+	transition: all 1s;
+}
+
+footer .notification-alert-holder.hidden{
+	position: fixed;
+	left: 20px;
+}

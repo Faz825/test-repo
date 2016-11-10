@@ -63,7 +63,7 @@ export default class Index extends React.Component{
             console.log(data);
             if(data.status.code == 200){
                 if(data.folders.length == 0 || data.folders[0] == null){
-                    this.setState({CFName:"My Folder", CFColor:"#1b9ed9"})
+                    this.setState({CFName:"My Folder", CFColor:"#1b9ed9"});
                     this.addDefaultFolder();
                 } else{
                     let folders = data.folders;
@@ -385,7 +385,7 @@ export default class Index extends React.Component{
         let _folders = this.state.folders;
         let folderList = _folders.map(function(folder,key){
                             return (
-                                <Folder key={key} folderData={folder} />
+                                <Folder key={key} folderData={folder} folderCount={key} />
                             )
                         });
         return(
@@ -463,7 +463,6 @@ export class Folder extends React.Component{
     }
 
     render(){
-        console.log(this.state.files);
         let folderData = this.props.folderData;
         let ownerImg;
         let i = (
@@ -477,7 +476,6 @@ export class Folder extends React.Component{
         }else{
             ownerImg = folderData.folder_user.profile_image;
         }
-
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
                 <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop} multiple={false} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*" >
@@ -495,11 +493,16 @@ export class Folder extends React.Component{
                                     </div>
                                     <h3>{folderData.folder_name}</h3>
                                 </div>
-                                <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
-                                    <div className="share-folder">
-                                        <i className="fa fa-share-alt" aria-hidden="true"></i>
-                                    </div>
-                                </OverlayTrigger>
+                                {
+                                    (this.props.folderCount != 0)?
+                                        <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                            <div className="share-folder">
+                                                <i className="fa fa-share-alt" aria-hidden="true"></i>
+                                            </div>
+                                        </OverlayTrigger>
+                                    :
+                                        null
+                                }
                             </div>
                             {/*
                                 (this.state.files.length > 0)?
@@ -573,6 +576,32 @@ export class File extends React.Component{
                     </div>
                     <span className="item-type"></span>
                 </div>
+                {
+                    /*
+                    <div className="folder-col">
+                        <div className="folder-item jpg" style="background-image: url(/images/folder/sample_png.png)">
+                            <div className="time-wrapper">
+                                <p className="date-created">July 28, 2016</p>
+                                <p className="time-created">12.34pm</p>
+                            </div>
+                            <div className="folder-title-holder">
+                                <p className="folder-title">Cambodia Final Paper</p>
+                            </div>
+                            <div className="item-type"></div>
+                        </div>
+                    </div>
+                    <div className="folder-item docs">
+                        <div className="time-wrapper">
+                            <p className="date-created">July 28, 2016</p>
+                            <p className="time-created">12.34pm</p>
+                        </div>
+                        <div className="folder-title-holder">
+                            <p className="folder-title">Cambodia Final Paper</p>
+                        </div>
+                        <span className="item-type"></span>
+                    </div>
+                    */
+                }
             </div>
         );
     }

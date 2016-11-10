@@ -8,7 +8,8 @@ export default class FooterHolder extends React.Component{
         super(props);
         this.state ={
             notificationCount:0,
-            loggedUser:Session.getSession('prg_lg')
+            loggedUser:Session.getSession('prg_lg'),
+            isNavHidden : false
         };
         Socket.connect();
         this.listenToNotification();
@@ -68,15 +69,27 @@ export default class FooterHolder extends React.Component{
         this.props.onUpdateNotifiPopupCount(count);
     }
 
+    onNavCollapse(){
+        let isHidden = this.state.isNavHidden;
+
+        if(!this.props.currPage){
+            console.log("sub");
+            this.setState({isNavHidden : !isHidden});
+            this.props.onNavCollapse();
+        }
+    }
+
     render() {
         let _sesData = Session.getSession('prg_lg');
 
         let _secretary_image = _sesData.secretary_image_url;
+        
+        let footerClass = (!this.state.isNavHidden)? "" : "navHidden";
 
         const {
             notificationCount
             }=this.state;
-        let dashboardCSS= (this.props.currPage)? "dashboard-footer" : "";
+        let dashboardCSS= (this.props.currPage)? "dashboard-footer" : " " + footerClass;
         let workmodeCSS = (this.props.blockBottom)? " workmode-switched nav-holder clearfix" : "nav-holder clearfix";
         //console.log("=====Footer Holder======"+this.props.blockBottom)
         //TODO::
@@ -154,70 +167,80 @@ export default class FooterHolder extends React.Component{
                                 </div>
                             </div>
                         </section>
-                        <section className={workmodeCSS}>
-                            <div className="calender nav-item">
-                                <a href="/calendar">
-                                    <div className="icon-holder">
-                                        <img src="/images/nav-icons/cal-icon.png" alt="Calendar" />
-                                    </div>
-                                    <p className="nav-title">Calendar</p>                               
-                                </a>
-                            </div>
-                            <div className="notebooks nav-item">
-                                <a href="#">
-                                    <div className="icon-holder">
-                                        <img src="/images/nav-icons/note-icon.png" alt="notebooks" />
-                                    </div>
-                                    <p className="nav-title">Notebooks</p>
-                                </a>
-                            </div>
-                            <div className="folders nav-item">
-                                <a href="/folders">
-                                    <div className="icon-holder">
-                                        <img src="/images/nav-icons/folder-icon.png" alt="folders" />
-                                    </div>
-                                    <p className="nav-title">Folders</p>
-                                </a>
-                            </div>
-                            <div className="groups nav-item">
-                                <a href="/groups">
-                                    <div className="icon-holder">
-                                        <img src="/images/nav-icons/groups-icon.png" alt="groups" />
-                                    </div>
-                                    <p className="nav-title">Groups</p>
-                                </a>
-                            </div>
-                            <div className="news nav-item">
-                                <a href="#">
-                                    <div className="icon-holder">
-                                        <img src="/images/nav-icons/news-icon.png" alt="news" />
-                                    </div>
-                                    <p className="nav-title">News</p>
-                                </a>
-                            </div>
-                            <div className="interests nav-item">
-                                <a href="#">
-                                    <div className="icon-holder">
-                                        <img src="/images/nav-icons/interest-ison.png" alt="interests" />
-                                    </div>
-                                    <p className="nav-title">Interests</p>
-                                </a>
-                            </div>
-                            <div className="call-center nav-item">
-                                <a href="/chat">
-                                    <div className="icon-holder">
-                                        <img src="/images/nav-icons/call-center-icon.png" alt="call-center" />
-                                    </div>
-                                    <p className="nav-title">Call Center</p>
-                                </a>
-                            </div>
-                        </section>
-                        <section className="work-mode-holder" onClick={this.onWorkmodeClick.bind(this)}>
-                            <div className="icon-holder">
-                                <img src="/images/work-mode-icon.png" alt="work mode icon" />
-                            </div>
-                            <p className="section-title">Work mode</p>
-                        </section>
+                        {
+                            (!this.state.isNavHidden)?
+                            <section className={workmodeCSS}>
+                                <div className="calender nav-item">
+                                    <a href="/calender">
+                                        <div className="icon-holder">
+                                            <img src="/images/nav-icons/cal-icon.png" alt="Calender" />
+                                        </div>
+                                        <p className="nav-title">Calendar</p>                               
+                                    </a>
+                                </div>
+                                <div className="notebooks nav-item">
+                                    <a href="#">
+                                        <div className="icon-holder">
+                                            <img src="/images/nav-icons/note-icon.png" alt="notebooks" />
+                                        </div>
+                                        <p className="nav-title">Notebooks</p>
+                                    </a>
+                                </div>
+                                <div className="folders nav-item">
+                                    <a href="/folders">
+                                        <div className="icon-holder">
+                                            <img src="/images/nav-icons/folder-icon.png" alt="folders" />
+                                        </div>
+                                        <p className="nav-title">Folders</p>
+                                    </a>
+                                </div>
+                                <div className="groups nav-item">
+                                    <a href="/groups">
+                                        <div className="icon-holder">
+                                            <img src="/images/nav-icons/groups-icon.png" alt="groups" />
+                                        </div>
+                                        <p className="nav-title">Groups</p>
+                                    </a>
+                                </div>
+                                <div className="news nav-item">
+                                    <a href="#">
+                                        <div className="icon-holder">
+                                            <img src="/images/nav-icons/news-icon.png" alt="news" />
+                                        </div>
+                                        <p className="nav-title">News</p>
+                                    </a>
+                                </div>
+                                <div className="interests nav-item">
+                                    <a href="#">
+                                        <div className="icon-holder">
+                                            <img src="/images/nav-icons/interest-ison.png" alt="interests" />
+                                        </div>
+                                        <p className="nav-title">Interests</p>
+                                    </a>
+                                </div>
+                                <div className="call-center nav-item">
+                                    <a href="/chat">
+                                        <div className="icon-holder">
+                                            <img src="/images/nav-icons/call-center-icon.png" alt="call-center" />
+                                        </div>
+                                        <p className="nav-title">Call Center</p>
+                                    </a>
+                                </div>
+                            </section>
+                            :
+                            null
+                        }
+                        {
+                            (!this.state.isNavHidden)?
+                            <section className="work-mode-holder" onClick={this.onWorkmodeClick.bind(this)}>
+                                <div className="icon-holder">
+                                    <img src="/images/work-mode-icon.png" alt="work mode icon" />
+                                </div>
+                                <p className="section-title">Work mode</p>
+                            </section>
+                            :
+                            null
+                        }                        
                     </div>
                </div>
             </footer>
