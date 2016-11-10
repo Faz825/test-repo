@@ -396,7 +396,7 @@ var CalendarController = {
 
                     var arrUsers = [];
                     for (var u = 0; u < sharedUsers.length ; u++) {
-                        var userId = sharedUsers[u];
+                        var userId = sharedUsers[u].user_id;
 
 
                         var filterObj = users.filter(function(e) {

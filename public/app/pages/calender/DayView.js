@@ -306,7 +306,6 @@ export default class DayView extends Component {
                                                             showSecond={showSecond}
                                                             defaultValue={moment()}
                                                             onChange={this.handleTimeChange}
-                                                            className="form-control"
                                                         />
                                                     </div>
                                                 </div>
