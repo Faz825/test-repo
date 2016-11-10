@@ -10351,6 +10351,11 @@ header .notification-holder .opt-holder .notifi-alert-holder .notifi-num {
   font-size: 0.75em;
   font-weight: 500;
 }
+@media (min-width: 1024px) and (max-width: 1279px) {
+  header .notification-holder .opt-holder {
+    margin-right: 12px;
+  }
+}
 header .notification-holder .profile-header-thumb {
   float: left;
   width: 55px;
@@ -13159,17 +13164,17 @@ footer .notification-alert-holder .notifi-icon-holder .notifi-icons.social-notif
   }
 }
 footer .nav-holder {
-  width: 79%;
+  width: 79.05%;
   float: left;
   position: relative;
   padding: 15px 0 8px;
-  margin: 0 9px 0;
+  margin: 0 5px 0;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 10px 10px 0 0;
 }
 footer .nav-holder .nav-item {
   float: left;
-  padding: 0 4.2%;
+  padding: 0 4.1%;
   text-align: center;
   position: relative;
   border-right: 1px solid #817f88;
@@ -13202,12 +13207,12 @@ footer .nav-holder .nav-item .nav-title {
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   footer .nav-holder .nav-item {
-    padding: 0 3.3%;
+    padding: 0 3.2%;
   }
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   footer .nav-holder {
-    width: 76%;
+    width: 76.1%;
   }
 }
 footer.dashboard-footer .nav-holder {
@@ -13218,7 +13223,7 @@ footer.dashboard-footer .nav-holder .nav-item .nav-title {
 }
 footer .work-mode-holder {
   float: left;
-  width: 109px;
+  width: 110px;
   height: 98px;
   border: 1px solid #e2e2e2;
   border-radius: 10px 10px 0 0;

@@ -1,4 +1,7 @@
 /* Custom css styles for Ambi layout will go here */
+body{
+	background: #e9ebee;
+}
 /* Common body styles */
 .body-container .sub-container{
 	min-height: calc(100vh - 82px);
@@ -65,38 +68,29 @@
 
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
   height: auto;
-  color: #000000;
-  font-size: 14px;
-  overflow: visible;
+    color: #000000;
+    font-size: 14px;
 }
 
-.calender-body .shared-users-time-panel .panel {
+.calender-body .shared-users {
   -webkit-transition: all 300ms ease;
   -moz-transition: all 300ms ease;
   -ms-transition: all 300ms ease;
   -o-transition: all 300ms ease;
   transition: all 300ms ease;
-  display: none;
 }
-
-.calender-body .shared-users-time-panel .panel.active {
+.calender-body .shared-users input{
+    display: none;
+}
+.calender-body .shared-users.active input {
     display: block;
     border: none;
+    border-bottom: 1px solid #ddd;
     width: 50%;
+    padding-left: 0;
+    margin-bottom: 10px;
     border-radius: 0;
     box-shadow: none;
-}
-
-.calender-body .shared-users-time-panel .panel input {
-  border: 0px;
-  border-bottom: 2px solid #ddd;
-  outline: none;
-  padding: 6px 0px;
-  border-radius: 0px;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  -o-box-shadow: none;
-  box-shadow: none;
 }
 
 /* - ReactAutoSuggest Custom Styles*/
@@ -295,11 +289,46 @@
 }
 
 /* Footer on collapse */
-footer .notification-alert-holder{
-	transition: all 1s;
+.body-container.sub-page{
+	padding-bottom: 100px;
 }
 
-footer .notification-alert-holder.hidden{
+.body-container.nav-hidden{
+	padding: 0;
+}
+
+.settings-icon{
+	transition: all 0.5s ease;
+}
+
+.settings-icon.slideUp{
+	bottom: 130px;
+}
+
+footer.navHidden{
+	width: 132px;
+    height: 99px;
+}
+
+footer .nav-holder,
+footer .work-mode-holder{
+	opacity: 1;
+	transition: opacity 0.3s;
+}
+
+footer .nav-holder.fadeOut,
+footer .work-mode-holder.fadeOut{
+	opacity: 0;
+}
+
+footer .notification-alert-holder.slideOut{
 	position: fixed;
 	left: 20px;
+}
+
+
+@media (max-width: 1024px) {
+	.body-container.nav-hidden{
+		padding-bottom: 100px;
+	}
 }
