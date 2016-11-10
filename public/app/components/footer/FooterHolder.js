@@ -8,7 +8,8 @@ export default class FooterHolder extends React.Component{
         super(props);
         this.state ={
             notificationCount:0,
-            loggedUser:Session.getSession('prg_lg')
+            loggedUser:Session.getSession('prg_lg'),
+            isNavHidden : false
         };
         Socket.connect();
         this.listenToNotification();
@@ -68,15 +69,27 @@ export default class FooterHolder extends React.Component{
         this.props.onUpdateNotifiPopupCount(count);
     }
 
+    onNavCollapse(){
+        let isHidden = this.state.isNavHidden;
+
+        if(!this.props.currPage){
+            console.log("sub");
+            this.setState({isNavHidden : !isHidden});
+            this.props.onNavCollapse();
+        }
+    }
+
     render() {
         let _sesData = Session.getSession('prg_lg');
 
         let _secretary_image = _sesData.secretary_image_url;
+        
+        let footerClass = (!this.state.isNavHidden)? "" : "navHidden";
 
         const {
             notificationCount
             }=this.state;
-        let dashboardCSS= (this.props.currPage)? "dashboard-footer" : "";
+        let dashboardCSS= (this.props.currPage)? "dashboard-footer" : " " + footerClass;
         let workmodeCSS = (this.props.blockBottom)? " workmode-switched nav-holder clearfix" : "nav-holder clearfix";
         //console.log("=====Footer Holder======"+this.props.blockBottom)
         //TODO::
@@ -134,31 +147,32 @@ export default class FooterHolder extends React.Component{
                 </div>
                 **/}
                <div className="container">
-                    <div className="row">
-                        <section className="notification-alert-holder">
-                            <a href="#" className="notifi-brand-icon">
-                                <img src="/images/brand-icon.png" alt="Ambi Icon" />
-                            </a>
-                            <div className="notifi-icon-holder">
-                                <div className="todo-notifi notifi-icons" id="todos" onClick={(event) => this.onNotifiClick(event)}>
-                                    <img src="/images/icons/to-do-icon.png" alt="todos" />
-                                    {notificationCount>0?<span className="has-notifi"></span>:null}
-                                </div>
-                                <div className="social-notifi notifi-icons" id="social" onClick={(event) => this.onNotifiClick(event)}>
-                                    <img src="/images/icons/social-notifi-icon.png" alt="social" />
-                                    {notificationCount>0?<span className="has-notifi"></span>:null}
-                                </div>
-                                <div className="productivity-notifi notifi-icons" id="productivity" onClick={(event) => this.onNotifiClick(event)}>
-                                    <img src="/images/icons/productivity-icon.png" alt="procutivity" />
-                                    {notificationCount>0?<span className="has-notifi"></span>:null}
-                                </div>
+                    <section className={(!this.state.isNavHidden)? "notification-alert-holder" : "notification-alert-holder slideOut"}>
+                        <div className="notifi-brand-icon" onClick={this.onNavCollapse.bind(this)}>
+                            <img src="/images/brand-icon.png" alt="Ambi Icon" />
+                        </div>
+                        <div className="notifi-icon-holder">
+                            <div className="todo-notifi notifi-icons" id="todos" onClick={(event) => this.onNotifiClick(event)}>
+                                <img src="/images/icons/to-do-icon.png" alt="todos" />
+                                {notificationCount>0?<span className="has-notifi"></span>:null}
                             </div>
-                        </section>
+                            <div className="social-notifi notifi-icons" id="social" onClick={(event) => this.onNotifiClick(event)}>
+                                <img src="/images/icons/social-notifi-icon.png" alt="social" />
+                                {notificationCount>0?<span className="has-notifi"></span>:null}
+                            </div>
+                            <div className="productivity-notifi notifi-icons" id="productivity" onClick={(event) => this.onNotifiClick(event)}>
+                                <img src="/images/icons/productivity-icon.png" alt="procutivity" />
+                                {notificationCount>0?<span className="has-notifi"></span>:null}
+                            </div>
+                        </div>
+                    </section>
+                    {
+                        (!this.state.isNavHidden)?
                         <section className={workmodeCSS}>
                             <div className="calender nav-item">
-                                <a href="/calender">
+                                <a href="/calendar">
                                     <div className="icon-holder">
-                                        <img src="/images/nav-icons/cal-icon.png" alt="Calender" />
+                                        <img src="/images/nav-icons/cal-icon.png" alt="Calendar" />
                                     </div>
                                     <p className="nav-title">Calendar</p>                               
                                 </a>
@@ -212,13 +226,20 @@ export default class FooterHolder extends React.Component{
                                 </a>
                             </div>
                         </section>
+                        :
+                        null
+                    }
+                    {
+                        (!this.state.isNavHidden)?
                         <section className="work-mode-holder" onClick={this.onWorkmodeClick.bind(this)}>
                             <div className="icon-holder">
                                 <img src="/images/work-mode-icon.png" alt="work mode icon" />
                             </div>
                             <p className="section-title">Work mode</p>
                         </section>
-                    </div>
+                        :
+                        null
+                    }
                </div>
             </footer>
 

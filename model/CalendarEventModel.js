@@ -7,27 +7,33 @@
 var  mongoose = require('mongoose'),
      Schema   = mongoose.Schema;
 
-GLOBAL.CalenderEventsConfig={
+GLOBAL.CalendarEventsConfig={
     CACHE_PREFIX :"shared_events:"
 };
 
-GLOBAL.CalenderTypes = {
+GLOBAL.CalendarTypes = {
     EVENT: 1,
     TODO: 2,
     TASK: 3
 };
 
-GLOBAL.CalenderStatus = {
+GLOBAL.CalendarStatus = {
     PENDING: 1,
     COMPLETED: 2,
     EXPIRED: 3,
     CANCELLED: 4
 };
 
+GLOBAL.CalendarSharedStatus = {
+    REQUEST_PENDING: 1,
+    REQUEST_REJECTED: 2,
+    REQUEST_ACCEPTED: 3
+};
+
 /**
  * CalenderEvent Basic information
  */
-var CalenderEventSchema = new Schema({
+var CalendarEventSchema = new Schema({
 
     user_id : {
         type : Schema.ObjectId,
@@ -78,7 +84,7 @@ var CalenderEventSchema = new Schema({
 },{collection:"calender_events"});
 
 
-CalenderEventSchema.pre('save', function(next){
+CalendarEventSchema.pre('save', function(next){
     var now = new Date();
     this.updated_at = now;
     if ( !this.created_at ) {
@@ -93,12 +99,12 @@ CalenderEventSchema.pre('save', function(next){
  * @param callBack
  * @return Json
  */
-CalenderEventSchema.statics.addNew = function (eventData,callBack) {
+CalendarEventSchema.statics.addNew = function (eventData,callBack) {
 
     var calenderEvent = new this();
     calenderEvent.user_id = eventData.user_id;
     calenderEvent.description = (eventData.description ? eventData.description : 'No title');
-    calenderEvent.status = CalenderStatus.PENDING;
+    calenderEvent.status = CalendarStatus.PENDING;
     calenderEvent.type = (eventData.type ? eventData.type : 1);
     calenderEvent.start_date_time = eventData.start_date;
     calenderEvent.event_time = eventData.event_time;
@@ -121,7 +127,7 @@ CalenderEventSchema.statics.addNew = function (eventData,callBack) {
  * @param callBack
  * @return Json
  */
-CalenderEventSchema.statics.updateEvent = function (filter, value, callBack) {
+CalendarEventSchema.statics.updateEvent = function (filter, value, callBack) {
 
     var _this = this;
     var options = { multi: true };
@@ -143,7 +149,7 @@ CalenderEventSchema.statics.updateEvent = function (filter, value, callBack) {
  * @param callBack
  * @return Json
  */
-CalenderEventSchema.statics.getEventById = function(id,callBack){
+CalendarEventSchema.statics.getEventById = function(id,callBack){
 
     var _this = this;
 
@@ -170,7 +176,7 @@ CalenderEventSchema.statics.getEventById = function(id,callBack){
  * @param callBack
  * @return Json
  */
-CalenderEventSchema.statics.getOne = function (filter, fields, callBack) {
+CalendarEventSchema.statics.getOne = function (filter, fields, callBack) {
 
     var calenderEvent = new this();
 
@@ -192,7 +198,7 @@ CalenderEventSchema.statics.getOne = function (filter, fields, callBack) {
  * @param callBack
  * @return Json
  */
-CalenderEventSchema.statics.get = function (filter, fields, options, callBack) {
+CalendarEventSchema.statics.get = function (filter, fields, options, callBack) {
 
     var calenderEvent = new this();
     var options = { multi: true };
@@ -210,7 +216,7 @@ CalenderEventSchema.statics.get = function (filter, fields, options, callBack) {
 /**
  * Share Event | DB
  */
-CalenderEventSchema.statics.shareEvent = function(eventId,sharedCriteria,callBack){
+CalendarEventSchema.statics.shareEvent = function(eventId,sharedCriteria,callBack){
 
     var _this = this;
     _this.update({_id:eventId},
@@ -234,7 +240,7 @@ CalenderEventSchema.statics.shareEvent = function(eventId,sharedCriteria,callBac
  * @param data
  * @param callBack
  */
-CalenderEventSchema.statics.updateSharedEvent = function(criteria, data, callBack){
+CalendarEventSchema.statics.updateSharedEvent = function(criteria, data, callBack){
 
     var _this = this;
 
@@ -259,11 +265,11 @@ CalenderEventSchema.statics.updateSharedEvent = function(criteria, data, callBac
  * @param criteria
  * @param callBack
  */
-CalenderEventSchema.statics.getSortedCalenderItems = function(criteria,callBack){
+CalendarEventSchema.statics.getSortedCalenderItems = function(criteria,callBack){
 
     var _this = this;
 
-    _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
+    _this.find(criteria).or([{status: 1}, {status: 2}]).sort({created_at:-1}).exec(function(err,resultSet){
 
         if(!err){
             callBack(null, {
@@ -284,7 +290,7 @@ CalenderEventSchema.statics.getSortedCalenderItems = function(criteria,callBack)
  * @param data object
  *
  */
-CalenderEventSchema.statics.getWeeklyCalenderEvens = function(data,callBack){
+CalendarEventSchema.statics.getWeeklyCalenderEvens = function(data,callBack){
 
     var _this = this;
     var moment = require('moment');
@@ -323,4 +329,4 @@ CalenderEventSchema.statics.getWeeklyCalenderEvens = function(data,callBack){
 
 };
 
-mongoose.model('CalenderEvent', CalenderEventSchema);
+mongoose.model('CalendarEvent', CalendarEventSchema);

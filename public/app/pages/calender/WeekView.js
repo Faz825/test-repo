@@ -66,6 +66,8 @@ export default class WeekView extends React.Component {
         };
         //console.log(postData);
 
+        this.setState({currentWeek:this.currentWeek, weekStartDate:postData.start_date, weekEndDate:postData.end_date});
+
         this.processDataCall(postData);
     }
 
@@ -81,6 +83,7 @@ export default class WeekView extends React.Component {
         //console.log(postData);
 
         this.currentWeek++;
+        this.setState({currentWeek:this.currentWeek, weekStartDate:postData.start_date, weekEndDate:postData.end_date});
 
         this.processDataCall(postData);
 
@@ -98,6 +101,7 @@ export default class WeekView extends React.Component {
         //console.log(postData);
 
         this.currentWeek--;
+        this.setState({currentWeek:this.currentWeek, weekStartDate:postData.start_date, weekEndDate:postData.end_date});
 
         this.processDataCall(postData);
 
@@ -105,7 +109,7 @@ export default class WeekView extends React.Component {
 
     processDataCall(postData) {
         $.ajax({
-            url: '/calender/events/date-range/get',
+            url: '/calendar/events/date_range',
             method: "GET",
             dataType: "JSON",
             data: postData,
@@ -114,7 +118,7 @@ export default class WeekView extends React.Component {
             if(data.status.code == 200){
                 console.log("data loaded 2 ===");
                 console.log(data.events);
-                this.setState({events: data.events, currentWeek:this.currentWeek, weekStartDate:postData.start_date, weekEndDate:postData.end_date});
+                this.setState({events: data.events});
             }
         }.bind(this));
     }

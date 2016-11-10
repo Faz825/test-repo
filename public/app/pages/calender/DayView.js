@@ -9,23 +9,34 @@ import DayEventsList from './DayEventsList';
 import DayTodosList from './DayTodosList';
 import SharedUsers from './SharedUsers';
 
+
+
+import { Popover, OverlayTrigger } from 'react-bootstrap';
+// import TimePicker from 'react-bootstrap-time-picker';
+
+import 'rc-time-picker/assets/index.css';
+import TimePicker from 'rc-time-picker';
+
+
+import DateTime from "react-bootstrap-datetime";
+
 import {EditorState, RichUtils} from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
 
-import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin'; // eslint-disable-line import/no-unresolved
+// import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin'; // eslint-disable-line import/no-unresolved
 import createEmojiPlugin from 'draft-js-emoji-plugin'; 
 
 import {convertFromRaw, convertToRaw} from 'draft-js';
 import editorStyles from './editorStyles.css';
-import mentions from './mentions';
+// import mentions from './mentions';
 
-const mentionPlugin = createMentionPlugin();
-const { MentionSuggestions } = mentionPlugin;
-// const plugins = [mentionPlugin];
+//const mentionPlugin = createMentionPlugin();
+//const { MentionSuggestions } = mentionPlugin;
 
 const emojiPlugin = createEmojiPlugin();
 const { EmojiSuggestions } = emojiPlugin;
-const plugins = [emojiPlugin, mentionPlugin];
+// const plugins = [emojiPlugin, mentionPlugin];
+const plugins = [emojiPlugin];
 
 
 export default class DayView extends Component {
@@ -34,15 +45,16 @@ export default class DayView extends Component {
         super(props);
         let user =  Session.getSession('prg_lg');
         this.state = {
-            currentDay : moment().format('YYYY-MM-DD'),
+            currentDay : this.props.dayDate,
             defaultType : 'event',
+            defaultEventTime : moment().format('HH:mm'),
             events : [],
             user : user,
-            suggestions: mentions,
-            editorState: EditorState.createEmpty(),
-            showMentions : '',
+            // suggestions: mentions,
+            editorState : EditorState.createEmpty(),
+            showTimePanel : '',
+            showUserPanel : '',
         };
-
         this.currentDay = this.state.currentDay;
         this.addEvent = this.addEvent.bind(this);
         this.nextDay = this.nextDay.bind(this);
@@ -52,8 +64,9 @@ export default class DayView extends Component {
         this.focus = this.focus.bind(this);
         // this.onSearchChange = this.onSearchChange.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.handleTimeChange = this.handleTimeChange.bind(this);
 
-        this.onSearchChange = ({ value }) => {
+        // this.onSearchChange = ({ value }) => {
 
             // $.ajax({
             //     url : '/user/get-user-suggestions/'+filter.replace("#", ""),
@@ -69,15 +82,10 @@ export default class DayView extends Component {
             //         console.log(error);
             //     }
             // });
-
-            console.log(" WHAT IS THIS VALUE :::: "+ value);
-
-
-
-            this.setState({
-                suggestions: defaultSuggestionsFilter(value, mentions),
-            });
-        };
+        //     this.setState({
+        //         suggestions: defaultSuggestionsFilter(value, mentions),
+        //     });
+        // };
 
     }
 
@@ -111,8 +119,13 @@ export default class DayView extends Component {
     }
 
     _onHashClick() {
-        let showMentions = this.state.showMentions;
-        this.setState({showMentions : (showMentions == 'active' ? '' : 'active') });
+        let showUserPanel = this.state.showUserPanel;
+        this.setState({showUserPanel : (showUserPanel == 'active' ? '' : 'active') });
+    }
+
+    _onAtClick() {
+        let showTimePanel = this.state.showTimePanel;
+        this.setState({showTimePanel : (showTimePanel == 'active' ? '' : 'active') });
     }
 
     componentDidMount() {
@@ -120,9 +133,9 @@ export default class DayView extends Component {
     }
 
     loadEvents() {
-
+        console.log("THE CURRENT DAY IS ::: " + this.currentDay);
         $.ajax({
-            url : '/calender/get-events-for-specific-day/',
+            url : '/calendar/day/all',
             method : "POST",
             data : { day : this.currentDay }, 
             dataType : "JSON",
@@ -150,14 +163,14 @@ export default class DayView extends Component {
         const postData = {
             description : editorContentRaw,
             type : this.state.defaultType,
-            apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:MM'),
-            event_time : moment().format('HH:MM'),
+            apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:mm'),
+            event_time : this.state.defaultEventTime,
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
         };
 
         $.ajax({
-            url: '/calender/add-event',
+            url: '/calendar/event/add',
             method: "POST",
             dataType: "JSON",
             data: postData,
@@ -169,14 +182,20 @@ export default class DayView extends Component {
         }.bind(this));
     }
 
-    markAsDone(eventId) {
+    markTodo(eventId, status) {
+        console.log(eventId);
+        let user =  Session.getSession('prg_lg');
+        var postData = {
+            id : eventId,
+            status : (status == 1 ? 2 : 1 ) 
+        }
 
         $.ajax({
-            url: '/calender/add-event',
+            url: '/calendar/event/completion',
             method: "POST",
             dataType: "JSON",
             data: postData,
-            headers : { "prg-auth-header" : this.state.user.token },
+            headers : { "prg-auth-header" : user.token },
         }).done(function (data, text) {
             if(data.status.code == 200){
                 this.loadEvents();
@@ -204,14 +223,38 @@ export default class DayView extends Component {
 
     calenderClick(day) {
 
-        console.log(day);
         let clickedDay =  moment(day.date).format('YYYY-MM-DD');
         this.currentDay = clickedDay;
         this.setState({currentDay : clickedDay});
         this.loadEvents();
     }
 
+    handleTimeChange(time) {   
+        this.setState({ defaultEventTime: moment(time).format('HH:mm') });
+    }
+
     render() {
+
+        const typoPopover = (
+            <Popover id="calendar-popover-typo">
+                <div className="menu-ico">
+                    <p>
+                        <span className="bold" onClick={this._onBoldClick.bind(this)}>B</span>
+                    </p>
+                </div>
+                <div className="menu-ico">
+                    <p>
+                        <span className="italic" onClick={this._onItalicClick.bind(this)}>I</span>
+                    </p>
+                </div>
+                <div className="menu-ico">
+                    <p>
+                        <span className="underline" onClick={this._onUnderLineClick.bind(this)}>U</span>
+                    </p>
+                </div>
+            </Popover>
+        );
+        const showSecond = false;
         return (
             <section className="calender-body">
                 <div className="row">
@@ -224,18 +267,15 @@ export default class DayView extends Component {
                                             <i className="fa fa-angle-left" aria-hidden="true"></i>
                                         </div>
                                         <div className="date">
-                                            <p>{moment(this.state.currentDay).format('dddd, D')}</p>
+                                            <p>{moment(this.state.currentDay).format('ddd, D')}</p>
                                         </div>
                                         <div className="date-nav" onClick={() => this.nextDay()}>
                                             <i className="fa fa-angle-right" aria-hidden="true"></i>
                                         </div>
                                     </div>
-                                    <div className="day-wrapper">
-                                        <p>Today</p>
-                                    </div>
                                 </div>
                                 <div className="col-sm-6 calender-date">
-                                    <p>{moment(this.state.currentDay).format('dddd D, YYYY')}</p>
+                                    <p>{moment(this.state.currentDay).format('dddd, MMM D, YYYY')}</p>
                                 </div>
                             </div>
                             <div className="form-holder">
@@ -252,13 +292,25 @@ export default class DayView extends Component {
                                                     placeholder="Type in an Event or a To-do here use # to tag people, @ to set time of the event"
                                                   />
                                                 <EmojiSuggestions />
-                                                <MentionSuggestions
-                                                    onSearchChange={this.onSearchChange}
-                                                    suggestions={this.state.suggestions}
-                                                />
+                                                
                                             </div>
-                                            <div className={this.state.showMentions + " shared-users"}>
-                                                <SharedUsers ref="SharedUserField" />
+                                            
+                                            <div className="shared-users-time-panel">
+                                                <div className="col-sm-3">
+                                                    <p>
+                                                        <span className="user-label">Time : {this.state.defaultEventTime} </span>
+                                                    </p>
+                                                    <div className={this.state.showTimePanel + " panel time-panel"}>
+                                                        <TimePicker
+                                                            style={{ width: 100 }}
+                                                            showSecond={showSecond}
+                                                            defaultValue={moment()}
+                                                            onChange={this.handleTimeChange}
+                                                            className="form-control"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <SharedUsers ref="SharedUserField" showPanel={this.state.showUserPanel}/>
                                             </div>
                                         </div>
                                         <div className="calender-input-type">
@@ -272,30 +324,23 @@ export default class DayView extends Component {
                                             <div className="menu-ico">
                                                 <p><i className="fa fa-smile-o" aria-hidden="true"></i></p>
                                             </div>
+
                                             <div className="menu-ico">
-                                                <p>
-                                                    <button onClick={this._onBoldClick.bind(this)}>B</button>
-                                                </p>
+                                                <OverlayTrigger trigger="click" placement="bottom" overlay={typoPopover}>
+                                                    <p>A</p>
+                                                </OverlayTrigger>
                                             </div>
-                                            <div className="menu-ico">
-                                                <p>
-                                                    <button onClick={this._onItalicClick.bind(this)}>I</button>
-                                                </p>
-                                            </div>
-                                            <div className="menu-ico">
-                                                <p>
-                                                    <button onClick={this._onUnderLineClick.bind(this)}>U</button>
-                                                </p>
-                                            </div>
-                                            
                                             <div className="menu-ico">
                                                 <p onClick={this._onHashClick.bind(this)} >
                                                     <i className="fa fa-hashtag" aria-hidden="true"></i>
                                                 </p>
                                             </div>
                                             <div className="menu-ico">
-                                                <p><i className="fa fa-at" aria-hidden="true"></i></p>
+                                                 <p onClick={this._onAtClick.bind(this)} >
+                                                    <i className="fa fa-at" aria-hidden="true"></i>
+                                                </p>
                                             </div>
+
                                             <div className="toggle-wrapper">
                                                 <div className={this.state.defaultType == 'event' ? 'btn-toggle active' : 'btn-toggle'} eventType="event" onClick={() => this.changeType('event')} >
                                                     <i className="fa fa-calendar" aria-hidden="true"></i> Event
@@ -319,7 +364,7 @@ export default class DayView extends Component {
                                             <span>events</span>
                                         </div>
                                         <div className="events-list-area-content-title-hr"></div>
-                                        <DayEventsList events={this.state.events} day={moment().startOf("day")} />
+                                        <DayEventsList events={this.state.events} />
                                     </div>
                                 </div>
                             </div>
@@ -330,7 +375,7 @@ export default class DayView extends Component {
                                             <img src="/images/calender/icon-to-do.png" /><span>To-Do's</span>
                                         </div>
                                         <div className="to-do-list-area-content-title-hr"></div>
-                                        <DayTodosList events={this.state.events} />
+                                        <DayTodosList events={this.state.events} onClickItem={this.markTodo.bind(this)} />
                                     </div>
                                 </div>
                             </div>

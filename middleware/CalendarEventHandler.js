@@ -2,21 +2,21 @@
  * Created by gihan on 10/26/16.
  */
 
-var CalenderEventHandler = {
+var CalendarEventHandler = {
     init:function() {
 
         var schedule = require('node-schedule');
 
         var rule = new schedule.RecurrenceRule();
-        rule.hour = [12,23];
-        rule.minute = [10,50];
+        rule.hour = 23;
+        rule.minute = 50;
 
         // 0 0 0/8 * * ? - run on every 8 hours
 
         var j = schedule.scheduleJob(rule, function() {
 
             var _async = require('async'),
-                CalenderEvent = require('mongoose').model('CalenderEvent'),
+                CalendarEvent = require('mongoose').model('CalendarEvent'),
                 moment = require('moment');
 
             console.log("***************************************************");
@@ -30,13 +30,13 @@ var CalenderEventHandler = {
                     var day = new Date();
                     var startTimeOfDay = moment(day).format('YYYY-MM-DD'); //format the given date as mongo date object
                     var endTimeOfDay = moment(day).add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
-                    var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, status: 1};
+                    var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, type: 2, status: 1};
 
-                    CalenderEvent.getSortedCalenderItems(criteria,function(err, result) {
+                    CalendarEvent.getSortedCalenderItems(criteria,function(err, result) {
                         callBack(null, result.events);
                     });
                 },
-                function getMovableEventsList(eventsList, callBack){
+                function getMovableEventsList(eventsList, callBack) {
 
                     if(typeof eventsList != "undefined" && eventsList.length > 0) {
                         console.log("eventsList.length--"  + eventsList.length);
@@ -81,7 +81,7 @@ var CalenderEventHandler = {
                             var updateData = {
                                 start_date_time:moment(movableList[i].start_date_time).add(1,"day").format('YYYY-MM-DD HH:mm:ss')
                             };
-                            CalenderEvent.updateEvent(criteria, updateData,function(res) {
+                            CalendarEvent.updateEvent(criteria, updateData,function(res) {
                                 callBack(null,res);
                             });
                         }
@@ -90,9 +90,11 @@ var CalenderEventHandler = {
                     }
                 }
             ], function(err) {
-                console.log("----------------- END SCHEDULE ------------------");
-                console.log("***************************************************");
+
             });
+
+            console.log("----------------- END SCHEDULE ------------------");
+            console.log("***************************************************");
 
         });
 
@@ -100,4 +102,4 @@ var CalenderEventHandler = {
 
 };
 
-module.exports = CalenderEventHandler;
+module.exports = CalendarEventHandler;

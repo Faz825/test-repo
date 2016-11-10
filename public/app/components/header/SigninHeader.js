@@ -101,7 +101,7 @@ export default class Header extends React.Component {
                                 </div>
                     **/}
                 <div className="container">
-                    <div className="row clearfix">
+                    <div className="clearfix">
                         <Logo url ="/images/logo.png" />
                         <GlobalSearch/>
                         <div className="notification-holder clearfix">

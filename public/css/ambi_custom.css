@@ -1,4 +1,7 @@
 /* Custom css styles for Ambi layout will go here */
+body{
+	background: #e9ebee;
+}
 /* Common body styles */
 .body-container .sub-container{
 	min-height: calc(100vh - 82px);
@@ -240,6 +243,37 @@
     background: none;
 }
 
+/* calender pop-over */
+#calendar-popover-typo .menu-ico {
+  display: inline-block;
+}
+
+#calendar-popover-typo .menu-ico p {
+  margin: 0px; 
+}
+
+#calendar-popover-typo .menu-ico span {
+  cursor: pointer;
+  padding: 5px 10px;
+  display: inline-block;
+}
+
+#calendar-popover-typo .menu-ico span.italic {
+  font-style: italic;
+}
+
+#calendar-popover-typo .menu-ico span.bold {
+  font-weight: bold;
+}
+
+#calendar-popover-typo .menu-ico span.underline {
+  text-decoration: underline;
+}
+
+#calendar-popover-typo .menu-ico span:hover {
+  background: #E3F2FF;
+}
+
 /* Folder */
 .folder-cover-wrapper .upload-anime{
 	position: absolute;
@@ -252,4 +286,49 @@
 .folder-cover-wrapper .upload-anime .fa{
 	font-size: 1.5em;
     color: #fff;
+}
+
+/* Footer on collapse */
+.body-container.sub-page{
+	padding-bottom: 100px;
+}
+
+.body-container.nav-hidden{
+	padding: 0;
+}
+
+.settings-icon{
+	transition: all 0.5s ease;
+}
+
+.settings-icon.slideUp{
+	bottom: 130px;
+}
+
+footer.navHidden{
+	width: 132px;
+    height: 99px;
+}
+
+footer .nav-holder,
+footer .work-mode-holder{
+	opacity: 1;
+	transition: opacity 0.3s;
+}
+
+footer .nav-holder.fadeOut,
+footer .work-mode-holder.fadeOut{
+	opacity: 0;
+}
+
+footer .notification-alert-holder.slideOut{
+	position: fixed;
+	left: 20px;
+}
+
+
+@media (max-width: 1024px) {
+	.body-container.nav-hidden{
+		padding-bottom: 100px;
+	}
 }
