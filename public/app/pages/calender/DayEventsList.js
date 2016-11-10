@@ -37,7 +37,7 @@ export default class DayEventsList extends React.Component {
                     <div>
                         <div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
                         <div className="people-list-wrapper">
-                            <span className="people-list">People on this event:</span>
+                            <span className="people-list">People on this event : </span>
                             {usersString ? usersString : 'No shared users'}
                         </div>
                     </div>
