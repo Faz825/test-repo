@@ -177,6 +177,7 @@ export default class DayView extends Component {
             headers : { "prg-auth-header" : this.state.user.token },
         }).done(function (data, text) {
             if(data.status.code == 200){
+                this.setState({editorState : EditorState.createEmpty()});
                 this.loadEvents();
             }
         }.bind(this));
