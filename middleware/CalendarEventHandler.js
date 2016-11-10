@@ -8,8 +8,8 @@ var CalendarEventHandler = {
         var schedule = require('node-schedule');
 
         var rule = new schedule.RecurrenceRule();
-        rule.hour = [12,23];
-        rule.minute = [10,50];
+        rule.hour = 23;
+        rule.minute = 50;
 
         // 0 0 0/8 * * ? - run on every 8 hours
 
@@ -30,13 +30,13 @@ var CalendarEventHandler = {
                     var day = new Date();
                     var startTimeOfDay = moment(day).format('YYYY-MM-DD'); //format the given date as mongo date object
                     var endTimeOfDay = moment(day).add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
-                    var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, status: 1};
+                    var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, type: 2, status: 1};
 
                     CalendarEvent.getSortedCalenderItems(criteria,function(err, result) {
                         callBack(null, result.events);
                     });
                 },
-                function getMovableEventsList(eventsList, callBack){
+                function getMovableEventsList(eventsList, callBack) {
 
                     if(typeof eventsList != "undefined" && eventsList.length > 0) {
                         console.log("eventsList.length--"  + eventsList.length);
@@ -90,9 +90,11 @@ var CalendarEventHandler = {
                     }
                 }
             ], function(err) {
-                console.log("----------------- END SCHEDULE ------------------");
-                console.log("***************************************************");
+
             });
+
+            console.log("----------------- END SCHEDULE ------------------");
+            console.log("***************************************************");
 
         });
 
