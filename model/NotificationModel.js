@@ -30,7 +30,7 @@ var NotificationSchema = new Schema({
         ref: 'NoteBook',
         default: null
     },
-    notified_event: { // if a event request then event id
+    notified_calendar: { // if a calendar request then event/to-do/task  id
         type: Schema.ObjectId,
         ref: 'CalenderEvent',
         default: null
@@ -70,16 +70,24 @@ NotificationSchema.statics.saveNotification = function (new_notification, callBa
     var notification = new this();
     notification.sender = Util.toObjectId(new_notification.sender);
     notification.notification_type = new_notification.notification_type;
-    if (new_notification.notification_type == Notifications.SHARE_CALENDAR) {
-        notification.notified_event = (new_notification.notified_event);
-        notification.notification_status = "";
+
+    if (new_notification.notification_type == Notifications.SHARE_CALENDAR ||
+        new_notification.notification_type == Notifications.SHARE_CALENDAR_RESPONSE ||
+        new_notification.notification_type == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+        new_notification.notification_type == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED ||
+        new_notification.notification_type == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY) {
+        notification.notified_calendar = Util.toObjectId(new_notification.notified_calendar);
+        notification.notification_status = new_notification.notification_status;
+
     } else if (new_notification.notification_type == Notifications.SHARE_NOTEBOOK
         || new_notification.notification_type == Notifications.SHARE_NOTEBOOK_RESPONSE) {
         notification.notified_notebook = Util.toObjectId(new_notification.notified_notebook);
         notification.notification_status = new_notification.notification_status;
+
     } else if(new_notification.notification_type == Notifications.SHARE_FOLDER) {
         notification.notified_folder = Util.toObjectId(new_notification.notified_folder);
         notification.notification_status = new_notification.notification_status;
+
     } else {
         notification.notified_post = Util.toObjectId(new_notification.notified_post);
         notification.notification_status = "";

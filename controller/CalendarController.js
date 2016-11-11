@@ -56,7 +56,7 @@ var CalendarController = {
                     for (var i = 0; notifyUsers.length > i; i++) {
                         var obj = {
                             user_id:notifyUsers[i],
-                            share_type:CalendarSharedStatus.REQUEST_PENDING
+                            share_status:CalendarSharedStatus.REQUEST_PENDING
                         }
                         sharedUserList.push(obj);
                     }
@@ -76,25 +76,26 @@ var CalendarController = {
                     callBack(null, event);
                 });
             },
-            function addNotification(event, callBack) {
+            function addNotification(calEvent, callBack) {
 
                 if(typeof notifyUsers != 'undefined' && notifyUsers.length > 0){
                     var _data = {
                         sender:UserId,
                         notification_type:Notifications.SHARE_CALENDAR,
+                        notified_calendar:calEvent.event._id
                     }
                     Notification.saveNotification(_data, function(res){
                         if(res.status == 200){
-                            callBack(null, res.result._id, event);
+                            callBack(null, res.result._id, calEvent);
                         }
 
                     });
 
                 } else {
-                    callBack(null, null, event);
+                    callBack(null, null, calEvent);
                 }
             },
-            function notifyingUsers(notification_id, event, callBack) {
+            function notifyingUsers(notification_id, calEvent, callBack) {
 
                 if(typeof notification_id != 'undefined' && notifyUsers.length > 0){
                     var _data = {
@@ -102,11 +103,11 @@ var CalendarController = {
                         recipients:notifyUsers
                     };
                     NotificationRecipient.saveRecipients(_data, function(res){
-                        callBack(null, event);
+                        callBack(null, calEvent);
                     })
 
                 } else{
-                    callBack(null, event);
+                    callBack(null, calEvent);
                 }
             }
 
@@ -542,10 +543,11 @@ var CalendarController = {
             },
             function addNotification(stt, callBack) {
 
-                if(typeof notifyUsers != 'undefined' && notifyUsers.length > 0 && stt != 200){
+                if(typeof notifyUsers != 'undefined' && notifyUsers.length > 0 && stt == 200){
                     var _data = {
                         sender:user_id,
-                        notification_type: isTimeChanged == true ? Notifications.SHARE_CALENDAR_TIME_CHANGED : Notifications.SHARE_CALENDAR_UPDATED,
+                        notification_type: isTimeChanged == true ? Notifications.CALENDAR_SCHEDULE_TIME_CHANGED : Notifications.CALENDAR_SCHEDULE_UPDATED,
+                        notified_calendar:event_id
                     }
                     Notification.saveNotification(_data, function(res){
                         if(res.status == 200){
@@ -637,7 +639,7 @@ var CalendarController = {
                             var _data = {
                                 sender: CurrentSession.id,
                                 notification_type: Notifications.SHARE_CALENDAR,
-                                notified_event: event_Id
+                                notified_calendar: event_Id
                             };
                             Notification.saveNotification(_data, function (results) {
                                 if (results.status == 200) {
@@ -833,7 +835,7 @@ var CalendarController = {
                     if (result.status == 200) {
                         callBack(null, result);
                     } else {
-                        callBack(null);
+                        callBack(null, null);
                     }
                 });
             }
