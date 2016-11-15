@@ -45,10 +45,7 @@ export default class SharedUsers extends Component {
     }
 
     getSuggestions(value, data) {
-        console.log(" GET SUGGES");
-        console.log(value);
-        console.log(data);
-
+        
         const escapedValue = Lib.escapeRegexCharacters(value.trim());
         if (escapedValue === '') {
             return [];

@@ -1,5 +1,5 @@
 /**
- * Day Name Component 
+ * Todo list Component
  */
 import React from 'react';
 import moment from 'moment';
@@ -37,7 +37,7 @@ export default class DayTodosList extends React.Component {
 					<div className="checkbox-area">
 						<input id="check1" name="check" value="check1" type="checkbox" />
 						<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id, event.status)} >
-							<p dangerouslySetInnerHTML={{__html: htmlC}} ></p>
+							<div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
 							<p>People in the To-do : {usersString ? usersString : 'No shared users'}</p>
 						</label>
 					</div>

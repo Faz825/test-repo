@@ -111,6 +111,7 @@ CalendarEventSchema.statics.addNew = function (eventData,callBack) {
     calenderEvent.event_timezone = eventData.event_timezone;
     calenderEvent.shared_users = eventData.shared_users;
     calenderEvent.save(function(err,resultSet){
+        
         if(err){
             console.log(err);
             callBack({status:400,error:err});

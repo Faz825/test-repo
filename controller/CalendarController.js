@@ -18,7 +18,7 @@ var CalendarController = {
         var UserId = CurrentSession.id;
 
         CalendarEvent.get({},{},{},function(err, result) {
-            
+
             var outPut ={};
             if(err) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.COMMENT_POST_ID_EMPTY, Alert.ERROR);
@@ -38,7 +38,6 @@ var CalendarController = {
      * @return Json
      */
     addEvent: function(req,res) {
-
         var CurrentSession = Util.getCurrentSession(req);
         var _async = require('async'),
             CalendarEvent = require('mongoose').model('CalendarEvent'),
@@ -61,7 +60,7 @@ var CalendarController = {
                         sharedUserList.push(obj);
                     }
                 }
-
+                
                 var eventData = {
                     user_id : UserId,
                     description : req.body.description,
@@ -352,7 +351,7 @@ var CalendarController = {
 
             function getSortedCalenderItems(callback){
                 CalendarEvent.getSortedCalenderItems(criteria, function(err, result) {
-                    
+
                     var events = [];
                     if(err) {
                         callback(err, null)
@@ -364,7 +363,7 @@ var CalendarController = {
             },
 
             function getUsers(events, callback) {
-                
+
                 var criteria = {
                     user_id: user_id,
                     status: 3
@@ -377,14 +376,14 @@ var CalendarController = {
             },
 
             function composeUsers(events, users, callback) {
-                
+
                 if(events.length == 0) {
                     callback(null, []);
                 }
 
                 for (var e = 0; e < events.length; e++) {
-                    
-                    var event = events[e];  
+
+                    var event = events[e];
                     var sharedUsers = event.shared_users;
 
                     if(sharedUsers.length == 0) {
@@ -409,7 +408,7 @@ var CalendarController = {
                         };
 
                         if(filterObj) {
-                            user.name = filterObj[0].first_name+" "+filterObj[0].last_name; 
+                            user.name = filterObj[0].first_name+" "+filterObj[0].last_name;
                         }
 
                         arrUsers.push(user);
@@ -916,7 +915,7 @@ var CalendarController = {
      * @return Json
      */
     updateEventCompletion: function(req,res) {
-        
+
         var CurrentSession = Util.getCurrentSession(req);
         var CalendarEvent = require('mongoose').model('CalendarEvent');
         var moment = require('moment');
