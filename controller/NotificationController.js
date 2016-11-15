@@ -691,6 +691,7 @@ var NotificationController ={
 
         var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             Post = require('mongoose').model('Post'),
+            User = require('mongoose').model('User'),
             _async = require('async'),
             grep = require('grep-from-array'),
             _arrIndex = require('array-index-of-property'),
@@ -703,94 +704,143 @@ var NotificationController ={
             criteria['notification_category'] = cat;
         }
 
-        _async.waterfall([
-            function getNotificationsList(callBack) {
-                NotificationRecipient.getRecipientNotificationsLimit(criteria,skip,limit,function(resultSet){
-                    var notifications = resultSet.notifications;
+        NotificationRecipient.getRecipientNotificationsLimit(criteria,skip,15,function(resultSet){
+            var notifications = resultSet.notifications;
+            var resultNotifications= [];
+            _async.each(notifications, function(notification, callBack){
 
-                    _async.eachSeries(notifications, function(notification, callBack){
+                var _notificationType = notification.notification_type.toString();
 
-                        var _notificationType = notification.notification_type.toString();
+                _async.waterfall([
 
-                        _async.waterfall([
+                    function trimNotificationsGetSenders(callBack){
 
-                            function tripNotifications(callBack){
+                        if(_notificationType == 'like' || _notificationType == 'comment' || _notificationType == 'share'){
 
-                                if(_notificationType == 'like' || _notificationType == 'comment' || _notificationType == 'share'){
+                            var currentPostId = notification.post_id.toString();
 
-                                    var currentPostId = notification.post_id.toString();
+                            //- Group post objects with same _id and notification_type
+                            var groupedNotificationObj = grep(notifications, function(e){
+                                return (((e.post_id != null ? e.post_id.toString() : null) == currentPostId) && (e.notification_type.toString() == _notificationType));
+                            });
 
-                                    //- Group post objects with same _id and notification_type
-                                    var groupedNotificationObj = grep(notifications, function(e){
-                                        return ((e.post_id.toString() == currentPostId) && (e.notification_type.toString() == _notificationType));
-                                    });
+                            var related_senders = [notification['sender_id']];
 
-                                    var _data = {
-                                        post_data: {},
-                                        related_senders: []
-                                    };
+                            //- Push sender ids of grouped objects and splice
+                            for(var inc = 1; inc < groupedNotificationObj.length; inc++){
 
-                                    //- Push sender ids of grouped objects and splice
-                                    for(var inc = 1; inc < groupedNotificationObj.length; inc++){
+                                related_senders.push(groupedNotificationObj[inc].sender_id);
 
-                                        _data.related_senders.push(groupedNotificationObj[inc].sender_id);
+                                var index = notifications.indexOfProperty('_id', groupedNotificationObj[inc]._id);
+                                notifications.splice(index, 1);
+                            }
 
-                                        var index = notifications.indexOfProperty('_id', groupedNotificationObj[inc]._id);
-                                        notifications.splice(index, 1);
-                                    }
+                            callBack(null, related_senders);
 
+                        }else {
+                            callBack(null, null);
+                        }
+                    },
+                    function getSenders(relatedSenders, callBack){
 
-                                    //- Get Post Details
-                                    Post.db_getPostDetailsOnly({_id:notification.post_id}, function(resultPost){
-                                        _data['post_data']['postOwner'] = resultPost.post.created_by;
+                        if(relatedSenders != null) {
+                            User.getSenderDetails(relatedSenders, function (usersObj) {
+                                // trip same sender pending...
+                                console.log(usersObj.length);
 
-                                        //- Return post details + Senders Arr
-                                        callBack(null, _data);
-                                    });
-
-                                }
-                            },
-                            function (formattedData, callBack) {
-
-                                var formattedNotification = {
-                                    notification_id:notification['notification_id'],
-                                    notification_type:notification['notification_type'],
-                                    read_status: notification['read_status'],
-                                    created_at: DateTime.explainDate(notification['created_at']),
-                                    sender_id:notification['sender_id'].toString(),
-
-                                    //- Post details
-                                    post_id: (notification['post_id'] != null ? notification['post_id'] : ""),
-                                    post_owner: null,
-
-                                    //- Notebook details
-                                    notebook_id: (notification['notebook_id'] != null ? notification['notebook_id'] : ""),
-                                    notebook_name: '',
-
-                                    //- Notification status for (Notebook, Folder, ...)
-                                    notification_status: notification['notification_status']
+                                var senderObj = {
+                                    sender_count: usersObj.length
                                 };
 
-                                callBack(null); //-tmp
-                            }
-                            
-                        ],function(err){
-                            callBack(null);
-                        });
+                                switch (true) {
+                                    case (usersObj.length == 1):
+                                        senderObj['sender_id'] = usersObj[0].sender_id;
+                                        senderObj['sender_name'] = usersObj[0].sender_name;
+                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
+                                        senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                        break;
+                                    case (usersObj.length == 2):
+                                        senderObj['sender_id'] = usersObj[0].sender_id;
+                                        senderObj['sender_name'] = usersObj[0].sender_name + " and " + usersObj[1].sender_name;
+                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
+                                        senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                        break;
+                                    case (usersObj.length == 3):
+                                        senderObj['sender_id'] = usersObj[0].sender_id;
+                                        senderObj['sender_name'] = usersObj[0].sender_name + ", " + usersObj[1].sender_name + " and one other ";
+                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
+                                        senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                        break;
+                                    case (usersObj.length > 3):
+                                        senderObj['sender_id'] = usersObj[0].sender_id;
+                                        senderObj['sender_name'] = usersObj[0].sender_name + ", " + usersObj[1].sender_name + " and " + (usersObj.length - 2) + " others ";
+                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
+                                        senderObj[''] = usersObj[0].sender_user_name;
+                                        break;
+                                }
 
-                    },function(err){
+                                callBack(null, senderObj);
+                            });
+                        }else {
+                            callBack(null, {
+                                sender_count: "",
+                                sender_id: "",
+                                sender_name: "",
+                                sender_profile_picture: "",
+                                sender_user_name: "",
+                            });
+                        }
+                    },
+                    function createNotificationObj(senderData, callBack) {
+
+                        var notificationObj = {
+                            notification_id:notification['notification_id'],
+                            notification_type:notification['notification_type'],
+                            read_status: notification['read_status'],
+                            created_at: DateTime.explainDate(notification['created_at']),
+
+                            //- Sender Info
+                            sender_id: senderData.sender_id,
+                            sender_name: senderData.sender_name,
+                            sender_profile_picture: senderData.sender_profile_picture,
+                            sender_user_name: senderData.sender_user_name,
+                            sender_count: senderData.sender_count,
+
+                            //- Post details
+                            post_id: (notification['post_id'] != null ? notification['post_id'] : ""),
+                            post_owner: null,
+
+                            //- Notebook details
+                            notebook_id: (notification['notebook_id'] != null ? notification['notebook_id'] : ""),
+                            notebook_name: '',
+
+                            //- Notification status for (Notebook, Folder, ...)
+                            notification_status: notification['notification_status']
+                        };
+
+                        if(notification['post_id'] != null){
+
+                            Post.bindNotificationData(notificationObj, function (r) {
+                                callBack(notificationObj);
+                            });
+                        }
+
+                        resultNotifications.push(notificationObj);
+
                         callBack(null);
-                    });
 
+                    }
+
+                ],function(err){
+                    callBack(null);
                 });
-            }
-        ],function(err){
-            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['notifications'] = _formattedNotificationData;
 
-            res.status(200).json(outPut);
+            },function(err){
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['notifications'] = resultNotifications;
+                res.status(200).json(outPut);
+            });
         });
-
     },
 
     updateNotifications: function(req,res){

@@ -545,5 +545,10 @@ PostSchema.statics.formatPost=function(postData){
     }
 
     return outPut;
-}
+};
+
+PostSchema.statics.bindNotificationData = function(formattedObj, callBack){
+
+};
+
 mongoose.model('Post',PostSchema);

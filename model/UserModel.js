@@ -1360,5 +1360,40 @@ UserSchema.statics.getApiVerification = function(data, callback) {
 };
 
 
+UserSchema.statics.getSenderDetails = function(related_senders, callBack) {
+    var _this = this;
+    var _async = require('async');
+
+    var users = [];
+    _async.waterfall([
+        function getUserDetails(){
+            _async.eachSeries(related_senders, function(user, callBack){
+                var query={
+                    q:"user_id:"+user.toString(),
+                    index:'idx_usr'
+                };
+                //Find User from Elastic search
+                ES.search(query,function(csResultSet){
+                    users.push(
+                        {
+                            sender_id : user,
+                            sender_name : csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
+                            sender_user_name : csResultSet.result[0]['user_name'],
+                            profile_image : csResultSet.result[0]['images']['profile_image']['http_url']
+                        }
+                    );
+                    callBack(null);
+                });
+
+            },function(err){
+                callBack(users);
+            });
+        }
+    ],function(err){
+
+    });
+
+};
+
 
 mongoose.model('User',UserSchema);
