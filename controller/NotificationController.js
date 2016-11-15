@@ -692,6 +692,7 @@ var NotificationController ={
         var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             Post = require('mongoose').model('Post'),
             User = require('mongoose').model('User'),
+            NoteBook = require('mongoose').model('NoteBook'),
             _async = require('async'),
             grep = require('grep-from-array'),
             _arrIndex = require('array-index-of-property'),
@@ -707,7 +708,7 @@ var NotificationController ={
         NotificationRecipient.getRecipientNotificationsLimit(criteria,skip,15,function(resultSet){
             var notifications = resultSet.notifications;
             var resultNotifications= [];
-            _async.each(notifications, function(notification, callBack){
+            _async.eachSeries(notifications, function(notification, callBack){
 
                 var _notificationType = notification.notification_type.toString();
 
@@ -745,7 +746,7 @@ var NotificationController ={
 
                         if(relatedSenders != null) {
                             User.getSenderDetails(relatedSenders, function (usersObj) {
-                                // trip same sender pending...
+                                // trim same sender pending...
                                 console.log(usersObj.length);
 
                                 var senderObj = {
@@ -758,24 +759,28 @@ var NotificationController ={
                                         senderObj['sender_name'] = usersObj[0].sender_name;
                                         senderObj['sender_profile_picture'] = usersObj[0].profile_image;
                                         senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                        senderObj['sender_count'] = 0;
                                         break;
                                     case (usersObj.length == 2):
                                         senderObj['sender_id'] = usersObj[0].sender_id;
                                         senderObj['sender_name'] = usersObj[0].sender_name + " and " + usersObj[1].sender_name;
                                         senderObj['sender_profile_picture'] = usersObj[0].profile_image;
                                         senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                        senderObj['sender_count'] = 0;
                                         break;
                                     case (usersObj.length == 3):
                                         senderObj['sender_id'] = usersObj[0].sender_id;
-                                        senderObj['sender_name'] = usersObj[0].sender_name + ", " + usersObj[1].sender_name + " and one other ";
+                                        senderObj['sender_name'] = usersObj[0].sender_name + ", " + usersObj[1].sender_name;
                                         senderObj['sender_profile_picture'] = usersObj[0].profile_image;
                                         senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                        senderObj['sender_count'] = 1;
                                         break;
                                     case (usersObj.length > 3):
                                         senderObj['sender_id'] = usersObj[0].sender_id;
-                                        senderObj['sender_name'] = usersObj[0].sender_name + ", " + usersObj[1].sender_name + " and " + (usersObj.length - 2) + " others ";
+                                        senderObj['sender_name'] = usersObj[0].sender_name + ", " + usersObj[1].sender_name;
                                         senderObj['sender_profile_picture'] = usersObj[0].profile_image;
                                         senderObj[''] = usersObj[0].sender_user_name;
+                                        senderObj['sender_count'] = (usersObj.length - 2);
                                         break;
                                 }
 
@@ -808,11 +813,9 @@ var NotificationController ={
 
                             //- Post details
                             post_id: (notification['post_id'] != null ? notification['post_id'] : ""),
-                            post_owner: null,
 
                             //- Notebook details
                             notebook_id: (notification['notebook_id'] != null ? notification['notebook_id'] : ""),
-                            notebook_name: '',
 
                             //- Notification status for (Notebook, Folder, ...)
                             notification_status: notification['notification_status']
@@ -820,16 +823,21 @@ var NotificationController ={
 
                         if(notification['post_id'] != null){
 
-                            Post.bindNotificationData(notificationObj, function (r) {
-                                callBack(notificationObj);
+                            Post.bindNotificationData(notificationObj, user_id, function (r) {
+                                resultNotifications.push(r);
+                                callBack(null);
                             });
                         }
 
-                        resultNotifications.push(notificationObj);
+                        if(notification['notebook_id'] != null){
 
-                        callBack(null);
-
+                            NoteBook.bindNotificationData(notificationObj, function (r) {
+                                resultNotifications.push(r);
+                                callBack(null);
+                            });
+                        }
                     }
+
 
                 ],function(err){
                     callBack(null);
