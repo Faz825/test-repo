@@ -481,10 +481,9 @@ export class Folder extends React.Component{
                 <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop} multiple={false} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*" >
                     <div className="col-sm-2">
                         <div className="folder-cover-wrapper">
-                            <span class="folder-overlay"></span>
-                            <span class="folder-overlay"></span>
+                            <span className="folder-overlay"></span>
+                            <span className="folder-overlay"></span>
                             <div className="folder-cover">
-                                <div className="folder-overlay"></div>
                                 <div className="content-wrapper" style={{backgroundColor: folderData.folder_color}}>
                                     <div className="logo-wrapper">
                                         <img src={ownerImg} alt={this.state.loggedUser.first_name} className="img-rounded" />

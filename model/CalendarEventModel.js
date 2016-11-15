@@ -69,10 +69,22 @@ var CalendarEventSchema = new Schema({
         type : String,
         default : null
     },
+
     shared_users: {
         type: Array,
         default: []
     },
+
+    moved_nextday: {
+        type : Boolean,
+        default : false
+    },
+
+    moved_nextday_count: {
+        type : Number,
+        default : 0
+    },
+
     created_at : {
         type : Date
     },
