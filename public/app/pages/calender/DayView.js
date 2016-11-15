@@ -105,7 +105,7 @@ export default class DayView extends Component {
         }).done(function (data, text) {
             if(data.status.code == 200){
                 console.log(this.refs.EditorFieldValues);
-                this.refs.EditorFieldValues.setState({editorState : this.refs.EditorFieldValues.onEventAdd()});
+                //this.refs.EditorFieldValues.setState({editorState : this.refs.EditorFieldValues.onEventAdd()});
                 this.loadEvents();
             }
         }.bind(this));
