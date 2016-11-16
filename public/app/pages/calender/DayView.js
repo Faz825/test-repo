@@ -15,7 +15,6 @@ import EditorField from './EditorField';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import {convertFromRaw, convertToRaw} from 'draft-js';
 import { fromJS } from 'immutable';
-import forEach from 'lodash.foreach';
 
 import 'rc-time-picker/assets/index.css';
 import TimePicker from 'rc-time-picker';
