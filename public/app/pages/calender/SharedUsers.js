@@ -45,10 +45,7 @@ export default class SharedUsers extends Component {
     }
 
     getSuggestions(value, data) {
-        console.log(" GET SUGGES");
-        console.log(value);
-        console.log(data);
-
+        
         const escapedValue = Lib.escapeRegexCharacters(value.trim());
         if (escapedValue === '') {
             return [];
@@ -161,18 +158,24 @@ export default class SharedUsers extends Component {
 
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
-                return <span key={key} className="user">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
+                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
             });
         }
 
         return (
-            <div className="invite-people">
-              <Autosuggest suggestions={suggestions}
-                  onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                  getSuggestionValue={this.getSuggestionValue}
-                  renderSuggestion={this.renderSuggestion}
-                  inputProps={inputProps} />
-              {shared_with_list}
+            <div className="invite-people col-sm-9">
+                <p>
+                    <span className="user-label"> People in the event : </span>
+                    {shared_with_list}
+                </p>
+                <div className={this.props.showPanel + " panel user-panel"}>
+                    <Autosuggest suggestions={suggestions}
+                        onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                        getSuggestionValue={this.getSuggestionValue}
+                        renderSuggestion={this.renderSuggestion}
+                        inputProps={inputProps} 
+                    />
+                </div>
             </div>
         )
     }

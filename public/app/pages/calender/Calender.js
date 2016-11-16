@@ -30,7 +30,7 @@ export default class Calender extends React.Component {
 
 
         $.ajax({
-            url: '/calender/get-all-month',
+            url: '/calendar/month/all',
             method: "GET",
             dataType: "JSON",
             data: postData,
@@ -48,20 +48,20 @@ export default class Calender extends React.Component {
         var month = this.state.month;
         month.add(-1, "M");
         this.setState({ month: month });
-        this.getAllEventsForMonth();
+        //this.getAllEventsForMonth();
     }
 
     next() {
         var month = this.state.month;
         month.add(1, "M");
         this.setState({ month: month });
-        this.getAllEventsForMonth();
+        //this.getAllEventsForMonth();
     }
 
     select(day) {
         console.log(day.date);
-        alert("selected : " + day.date._d);
-        //this.props.selected = day.date;
+        //alert("selected : " + day.date._d);
+        this.props.changeView('day', day.date);
         this.forceUpdate();
     }
 
@@ -78,7 +78,7 @@ export default class Calender extends React.Component {
                                         <i className="fa fa-angle-left" aria-hidden="true" onClick={this.previous.bind(this)}></i>
                                     </div>
                                     <div className="date">
-                                        {this.renderMonthLabel()}
+                                        {this.renderMonthNameLabel()}
                                     </div>
                                     <div className="date-nav">
                                         <i className="fa fa-angle-right" aria-hidden="true" onClick={this.next.bind(this)}></i>
@@ -129,7 +129,7 @@ export default class Calender extends React.Component {
 
     renderMonthNameLabel() {
         return(
-            <p>{this.state.month.format("MMMM").toString}</p>
+            <p>{this.state.month.format("MMMM")}</p>
         );
     }
 }

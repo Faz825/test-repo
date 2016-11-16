@@ -1,4 +1,14 @@
 /* Custom css styles for Ambi layout will go here */
+body{
+	background: #e9ebee;
+}
+/* Common body styles */
+.body-container .sub-container{
+	min-height: calc(100vh - 82px);
+    background: #e9ebee;
+}
+
+/* Popup styles */
 .modalPopup.modalPopup{
 	border-radius: 0;
 	padding: 0;
@@ -47,6 +57,7 @@
 	margin: 5px 0 0 0 ;
 }
 
+
 /* -Calender Custom Styles*/
 
 .calender-body .invite-people #react-autowhatever-1 {
@@ -55,12 +66,18 @@
   width: 400px;
   height: auto;
 }
+.calender-container .calender-body .col-sm-9 .calender-view .rc-time-picker {
+  margin-top: 6px;
+}
 
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
   height: auto;
+  color: #000000;
+  font-size: 14px;
+  overflow: visible;
 }
 
-.calender-body .shared-users {
+.calender-body .shared-users-time-panel .panel {
   -webkit-transition: all 300ms ease;
   -moz-transition: all 300ms ease;
   -ms-transition: all 300ms ease;
@@ -69,8 +86,24 @@
   display: none;
 }
 
-.calender-body .shared-users.active { 
-  display: block;
+.calender-body .shared-users-time-panel .panel.active {
+    display: block;
+    border: none;
+    width: 50%;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.calender-body .shared-users-time-panel .panel input {
+  border: 0px;
+  border-bottom: 2px solid #ddd;
+  outline: none;
+  padding: 6px 0px;
+  border-radius: 0px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  box-shadow: none;
 }
 
 /* - ReactAutoSuggest Custom Styles*/
@@ -106,12 +139,29 @@
 	color: #2d5164;
 }
 
+/** auto sugession list view **/
+.user-label{
+    color: #767676;
+    font-size: 14px;
+    margin-right: 10px;
+}
+.selected-users{
+    color: #00a6ef;
+    font-size: 14px;
+    font-weight:normal;
+    margin-right: 10px;
+}
+.selected-users .fa{
+    margin-left: 3px;
+    font-size: 11px;
+}
+
 /* Dashboard time */
 .timeA {
 	font-size: 0.17em;
 	text-transform: uppercase;
 	font-weight: 500;
-	margin-left: 0px;
+	margin-left: 0;
 }
 
 
@@ -206,15 +256,92 @@
     background: none;
 }
 
+/* calender pop-over */
+#calendar-popover-typo .menu-ico {
+  display: inline-block;
+}
+
+#calendar-popover-typo .menu-ico p {
+  margin: 0px; 
+}
+
+#calendar-popover-typo .menu-ico span {
+  cursor: pointer;
+  padding: 5px 10px;
+  display: inline-block;
+}
+
+#calendar-popover-typo .menu-ico span.italic {
+  font-style: italic;
+}
+
+#calendar-popover-typo .menu-ico span.bold {
+  font-weight: bold;
+}
+
+#calendar-popover-typo .menu-ico span.underline {
+  text-decoration: underline;
+}
+
+#calendar-popover-typo .menu-ico span:hover {
+  background: #E3F2FF;
+}
+
 /* Folder */
 .folder-cover-wrapper .upload-anime{
 	position: absolute;
 	top: 10px;
 	left: 15px;
 	z-index: 1;
+	display: none;
 }
 
 .folder-cover-wrapper .upload-anime .fa{
 	font-size: 1.5em;
     color: #fff;
+}
+
+/* Footer on collapse */
+.body-container.sub-page{
+	padding-bottom: 100px;
+}
+
+.body-container.nav-hidden{
+	padding: 0;
+}
+
+.settings-icon{
+	transition: all 0.5s ease;
+}
+
+.settings-icon.slideUp{
+	bottom: 130px;
+}
+
+footer.navHidden{
+	width: 132px;
+    height: 99px;
+}
+
+footer .nav-holder,
+footer .work-mode-holder{
+	opacity: 1;
+	transition: opacity 0.3s;
+}
+
+footer .nav-holder.fadeOut,
+footer .work-mode-holder.fadeOut{
+	opacity: 0;
+}
+
+footer .notification-alert-holder.slideOut{
+	position: fixed;
+	left: 20px;
+}
+
+
+@media (max-width: 1024px) {
+	.body-container.nav-hidden{
+		padding-bottom: 100px;
+	}
 }

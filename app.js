@@ -28,8 +28,8 @@ var Clusters = require('./config/clusters');
 Clusters.init();
 
 //Update calender events handler
-GLOBAL.CalenderEventHandler = require('./middleware/CalenderEventHandler');
-CalenderEventHandler.init();
+GLOBAL.CalendarEventHandler = require('./middleware/CalendarEventHandler');
+CalendarEventHandler.init();
 
 
 var app = express();

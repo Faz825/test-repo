@@ -15,7 +15,7 @@ export default class DayEventsList extends React.Component {
 
     render() {
         let _this = this;
-        let items = this.props.events.map(function(event,key){
+        let  items = this.props.events.map(function(event,key){
             
             if(event.type == 2) {
                 return;
@@ -28,12 +28,20 @@ export default class DayEventsList extends React.Component {
 
             let contentState = convertFromRaw(event.description);
             let htmlC = stateToHTML(contentState);
-
+            let usersString = event.shared_users.map(function(user,userKey){
+                return <span className="selected-people" key={userKey}>{user.name}, </span>
+            });
             return (
                 <li key={key}>
                     <i className="fa fa-circle" aria-hidden="true"></i>
-                    <div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
-                    <i className="fa fa-trash-o pull-right" aria-hidden="true"></i>
+                    <div>
+                        <div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
+                        <div className="people-list-wrapper">
+                            <span className="people-list">People on this event : </span>
+                            {usersString ? usersString : 'No shared users'}
+                        </div>
+                    </div>
+                    <span className="event-time pull-right">{event.event_time}</span>
                 </li>
             );
         });

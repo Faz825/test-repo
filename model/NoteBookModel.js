@@ -362,6 +362,17 @@ NoteBookSchema.statics.sharedNotebookOnUnfriend = function(payLoad, callBack){
 
 };
 
+NoteBookSchema.statics.bindNotificationData = function(notificationObj, callBack){
+
+    this.getNotebookById(notificationObj.notebook_id,function(notebookData){
+
+        notificationObj['notebook_name'] = notebookData.name;
+
+        callBack(notificationObj);
+    });
+
+};
+
 
 
 

@@ -31,7 +31,7 @@ require('../model/FolderModel');
 require('../model/FolderDocsModel');
 require('../model/GroupFolderModel');
 require('../model/GroupFolderDocsModel');
-require('../model/CalenderEventModel');
+require('../model/CalendarEventModel');
 
 /** Load  Controllers
  */
@@ -53,7 +53,7 @@ var DefaultController   = require('../controller/DefaultController'),
     NotificationSMSController     = require('../controller/NotificationSMSController'),
     FolderController     = require('../controller/FolderController');
     GroupFolderController     = require('../controller/GroupFolderController');
-    CalenderController     = require('../controller/CalenderController');
+    CalendarController     = require('../controller/CalendarController');
 
 
 
@@ -84,7 +84,7 @@ GLOBAL.AccessAllow = [
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
     '/notes/edit-note/:note_id','/connections', '/connections/mutual/:uname','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode',
     '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name',
-    '/calender'
+    '/calendar'
 ];
 
 /**
@@ -291,22 +291,20 @@ router.get('/folders/get-all', FolderController.getFolders);
 router.post('/group-folders/add-new', GroupFolderController.addNewFolder);
 router.get('/group-folders/get-all', GroupFolderController.getFolders);
 
-router.post('/calender/add-event', CalenderController.addEvent);
-router.get('/calender/get-all-month', CalenderController.getAllForSpecificMonth);
-router.get('/calender/get-all-week', CalenderController.getAllForSpecificWeek);
-router.get('/calender/get-current-week', CalenderController.getAllEventForCurrentWeek);
-router.get('/calender/get-next-prev-week', CalenderController.getAllEventForNextOrPrevWeek);
-router.get('/calender/get-all-day', CalenderController.getEventsForSpecificDay);
-router.post('/calender/update', CalenderController.updateEvent);
-router.post('/calender/add-event', CalenderController.addEvent);
-router.post('/calender/share-event', CalenderController.shareEvent);
-router.post('/calender/remove-share-user', CalenderController.removeSharedEventUser);
-router.post('/calender/update-share-event-status', CalenderController.updateEventSharedStatus);
-router.get('/calender/get-shared-users', CalenderController.getEventSharedUsers);
+router.post('/calendar/event/add', CalendarController.addEvent);
+router.get('/calendar/month/all', CalendarController.getAllForSpecificMonth);
+router.get('/calendar/week/all', CalendarController.getAllForSpecificWeek);
+router.get('/calendar/week/current', CalendarController.getAllEventForCurrentWeek);
+router.get('/calendar/week/next_prev', CalendarController.getAllEventForNextOrPrevWeek);
+router.post('/calendar/day/all', CalendarController.getEventsForSpecificDay);
+router.post('/calendar/update', CalendarController.updateEvent);
+router.post('/calendar/event/share', CalendarController.shareEvent);
+router.post('/calendar/remove/share_user', CalendarController.removeSharedEventUser);
+router.post('/calendar/update/event_status', CalendarController.updateEventSharedStatus);
+router.get('/calendar/shared_users', CalendarController.getEventSharedUsers);
 
-router.post('/calender/get-events-for-specific-day', CalenderController.getEventsForSpecificDay);
-router.get('/calender/events/date-range/get', CalenderController.getAllForDateRange);
-router.post('/calender/event/completion', CalenderController.updateEventCompletion);
+router.get('/calendar/events/date_range', CalendarController.getAllForDateRange);
+router.post('/calendar/event/completion', CalendarController.updateEventCompletion);
 
 router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
 

@@ -16,7 +16,7 @@ export default class MonthView extends React.Component {
     render() {
         return (
             <div>
-                <Calender selected={moment().startOf("day")} />
+                <Calender selected={moment().startOf("day")} changeView={this.props.setDayView}/>
             </div>
         );
     }

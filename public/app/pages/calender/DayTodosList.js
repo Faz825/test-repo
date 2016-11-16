@@ -1,5 +1,5 @@
 /**
- * Day Name Component 
+ * Todo list Component
  */
 import React from 'react';
 import moment from 'moment';
@@ -13,15 +13,10 @@ export default class DayTodosList extends React.Component {
         this.state = {}; 
     }
 
-    markToDo() {
-    	console.log(" MARK TODO ");
-    }
-
     render() {
 
         let _this = this;
-		let items = this.props.events.map(function(event,key){
-		    
+        let items = this.props.events.map(function(event,key){
             if(event.type == 1) {
                 return;
             }
@@ -33,17 +28,20 @@ export default class DayTodosList extends React.Component {
 
             let contentState = convertFromRaw(event.description);
             let htmlC = stateToHTML(contentState);
+            let usersString = event.shared_users.map(function(user,userKey){
+            	return <span key={userKey}>{user.name}, </span>
+            });
 
 		    return (
-		        <li className="active" key={key}>
+		        <li className={event.status == 2 ? 'active' : ''} key={key}>
 					<div className="checkbox-area">
-						<input id="check1" name="check" value="check1" onChange="{this.markToDo}" type="checkbox" />
-						<label for="check1">
-							<p dangerouslySetInnerHTML={{__html: htmlC}} ></p>
-							<p>People in the event</p>
+						<input id="check1" name="check" value="check1" type="checkbox" />
+						<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id, event.status)} >
+							<div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
+							<p>People in the To-do : {usersString ? usersString : 'No shared users'}</p>
 						</label>
 					</div>
-					<div className="time-wrapper pull-right">{moment(event.start_date_time).format('LT')}</div>
+					<div className="time-wrapper pull-right">{event.event_time}</div>
 				</li>
 		    );
 		});

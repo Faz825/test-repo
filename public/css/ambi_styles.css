@@ -10351,6 +10351,11 @@ header .notification-holder .opt-holder .notifi-alert-holder .notifi-num {
   font-size: 0.75em;
   font-weight: 500;
 }
+@media (min-width: 1024px) and (max-width: 1279px) {
+  header .notification-holder .opt-holder {
+    margin-right: 12px;
+  }
+}
 header .notification-holder .profile-header-thumb {
   float: left;
   width: 55px;
@@ -10533,27 +10538,30 @@ header .notification-holder .profile-header-thumb {
   color: #000000;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .folder-container .folder-header .col-sm-4 {
+  .folder-container .folder-header .menu-bar {
     padding: 0;
   }
 }
-.folder-container .folder-header .col-sm-4 .folder-type {
+.folder-container .folder-header .menu-bar .folder-type {
   position: relative;
-  margin-top: 37px;
-  margin-left: 28px;
+  margin-top: 39px;
+  margin-left: 25px;
   float: left;
   cursor: pointer;
   text-align: center;
+  letter-spacing: -1px;
 }
-.folder-container .folder-header .col-sm-4 .folder-type h4 {
+.folder-container .folder-header .menu-bar .folder-type h4 {
   font-size: 1.375em;
-  font-family: Pantra-Regular;
+  letter-spacing: -1px;
+  font-family: Andelo-Mono;
+  font-weight: 400;
   color: #000000;
 }
-.folder-container .folder-header .col-sm-4 .folder-type:first-child {
-  margin-left: 0px;
+.folder-container .folder-header .menu-bar .folder-type:first-child {
+  margin-left: 70px;
 }
-.folder-container .folder-header .col-sm-4 .folder-type.active .highlighter {
+.folder-container .folder-header .menu-bar .folder-type.active .highlighter {
   position: absolute;
   bottom: 0px;
   left: 0;
@@ -10561,8 +10569,8 @@ header .notification-holder .profile-header-thumb {
   width: 100%;
   background-color: #00a5ef;
 }
-.folder-container .folder-header .col-sm-4 .folder-type.active h4 {
-  font-family: Pantra-Bold;
+.folder-container .folder-header .menu-bar .folder-type.active h4 {
+  font-weight: 700;
 }
 .folder-container .folder-header .crt-folder {
   float: right;
@@ -10595,6 +10603,9 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.875em;
 }
 .folder-container .folder-body .folder {
+  margin-top: 12px;
+}
+.folder-container .folder-body .folder:nth-child(1) {
   margin-top: 20px;
 }
 .folder-container .folder-body .folder .folder-wrapper {
@@ -10611,88 +10622,82 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .drag-shader {
   display: none;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 {
+  position: relative;
+  z-index: 1;
   padding-left: 0px;
-  position: relative;
-  z-index: 1;
+  background-color: #ffffff;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper {
   position: relative;
   background-color: #ffffff;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-peak {
-  position: absolute;
-  top: 0px;
-  right: 22px;
-  width: 100px;
-  height: 91px;
-  background-image: url("../images/folder/shader_default.png");
-  z-index: 0;
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-peak {
-    right: 2px;
-  }
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-peak .peak-tail {
-  position: absolute;
-  border-bottom-right-radius: 5px;
-  content: "";
-  opacity: 0.5;
-  right: 16px;
-  top: 91px;
-  width: 16px;
-  height: 182px;
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover {
-  position: relative;
-  overflow: hidden;
-  border-radius: 5px;
-  width: 225px;
-  height: 300px;
-  z-index: 1;
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover {
-    width: 188px;
-  }
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .folder-overlay {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay {
   position: absolute;
   background-color: #ffffff;
+}
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay:nth-child(1) {
   width: 1px;
   height: 280px;
   top: 10px;
   left: 10px;
   opacity: 0.2;
   box-shadow: 2px 0 0 0 #000000;
+}
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay:nth-child(2) {
+  width: 12px;
+  height: 41px;
+  top: 40px;
+  right: 0px;
+  opacity: 0.7;
+  border-radius: 5px 0px 0px 5px;
+  z-index: 2;
+}
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover {
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px 0px 0px;
+  height: 260px;
   z-index: 1;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .folder-overlay {
+  position: absolute;
+  background-color: #ffffff;
+  width: 1px;
+  height: 243px;
+  top: 10px;
+  left: 10px;
+  opacity: 0.2;
+  box-shadow: 2px 0 0 0 #000000;
+  z-index: 1;
+}
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper {
   position: relative;
-  padding: 75px 0px 66px;
+  padding: 66px 0px 66px;
   overflow: hidden;
   text-align: center;
   height: 100%;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper {
   position: relative;
   margin: 0px auto 0;
   padding: 5px;
-  height: 108px;
-  width: 108px;
+  height: 100px;
+  width: 100px;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper .logo-shader {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper .logo-shader {
   position: absolute;
   border-radius: 100%;
   background-color: #ffffff;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper .logo-shader:nth-child(1) {
-  width: 98px;
-  height: 98px;
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper .logo-shader:nth-child(1) {
+  left: 5px;
+  top: 5px;
+  width: 90px;
+  height: 90px;
   z-index: 4;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper .logo-shader:nth-child(2) {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper .logo-shader:nth-child(2) {
   top: 0;
   left: 0;
   width: 100%;
@@ -10700,24 +10705,26 @@ header .notification-holder .profile-header-thumb {
   opacity: 0.5;
   z-index: 3;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper img {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper img {
   position: relative;
-  width: 98px;
-  height: 98px;
+  width: 90px;
+  height: 90px;
   z-index: 5;
   border-radius: 999px;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
-  margin-top: 22px;
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
+  margin-top: 25px;
   font-size: 1.125em;
   color: #ffffff;
+  font-family: Andelo-Mono;
+  font-weight: 700;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
+  .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
     font-size: 0.9375em;
   }
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .share-folder {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .share-folder {
   position: absolute;
   bottom: 15px;
   right: 15px;
@@ -10725,30 +10732,27 @@ header .notification-holder .profile-header-thumb {
   height: 25px;
   cursor: pointer;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .share-folder i {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .share-folder i {
   font-size: 1.375em;
   color: #ffffff;
   opacity: 0.8;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 {
   position: relative;
-  padding-left: 0px;
-  padding-right: 0px;
   z-index: 0;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper {
   position: relative;
-  margin-right: 15px;
-  padding: 0px 15px 0px 0px;
+  padding: 0px 15px;
   overflow: hidden;
   background-color: #ffffff;
-  height: 300px;
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper {
-  overflow: hidden;
   height: 260px;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
+  overflow: hidden;
+  height: 230px;
+}
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
@@ -10757,13 +10761,13 @@ header .notification-holder .profile-header-thumb {
   padding: 15px;
 }
 @media (min-width: 768px) {
-  .folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col {
+  .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
     float: left;
     width: 20%;
   }
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col {
+  .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
     position: relative;
     min-height: 1px;
     padding-left: 15px;
@@ -10771,68 +10775,68 @@ header .notification-holder .profile-header-thumb {
   }
 }
 @media (min-width: 1024px) and (max-width: 1279px) and (min-width: 768px) {
-  .folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col {
+  .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
     float: left;
     width: 25%;
   }
 }
 
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(1), .folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(2), .folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(3), .folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(4), .folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5) {
-  margin-top: 25px;
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(1), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(2), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(3), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(4), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5) {
+  margin-top: 15px;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5) {
+  .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5) {
     margin-top: 0px;
   }
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item {
-  min-height: 200px;
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item {
+  min-height: 180px;
   border: 1px solid #e1e1e1;
   box-shadow: 1px 0 12px -8px #000000;
   background-size: cover;
   cursor: pointer;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file {
   background-color: #ffffff;
   text-align: center;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file i {
-  margin-top: 65px;
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file i {
+  margin-top: 56px;
   font-size: 1.25em;
   color: #838383;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file p {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file p {
   font-weight: 400;
   margin: 18px 16px;
   color: #000000;
   font-size: 0.875em;
   line-height: 19px;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper {
   color: #000000;
   border-bottom: 1px solid #dbdbdb;
-  margin: 8px 15px 0px;
+  margin: 12px 10px 0;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper p {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper p {
   font-size: 0.75em;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper .date-created {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper .date-created {
   margin-left: 3px;
   margin-top: 8px;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper .time-created {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper .time-created {
   margin: -10px 0 10px 3px;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .folder-title-holder {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .folder-title-holder {
   padding: 10px 14px;
   color: #000000;
   line-height: 18px;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .folder-title-holder .folder-title {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .folder-title-holder .folder-title {
   font-weight: 500;
   font-size: 0.9375em;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .item-type {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .item-type {
   position: absolute;
   bottom: 26px;
   right: 28px;
@@ -10840,26 +10844,26 @@ header .notification-holder .profile-header-thumb {
   width: 29px;
   background: no-repeat 100% 100%;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.docs .item-type {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.docs .item-type {
   background-image: url("../images/folder/types/docs.png");
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.pdf .item-type {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.pdf .item-type {
   background-image: url("../images/folder/types/pdf.png");
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.jpg .time-wrapper, .folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.jpg .folder-title-holder {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.jpg .time-wrapper, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.jpg .folder-title-holder {
   color: #ffffff;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.jpg .item-type {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.jpg .item-type {
   background-image: url("../images/folder/types/jpg.png");
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .see-all {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
   bottom: 12px;
   right: 34px;
   height: 18px;
   cursor: pointer;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .see-all p {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all p {
   margin: -3px 5px 0px 0px;
   float: right;
   text-transform: uppercase;
@@ -10867,7 +10871,7 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.875em;
   color: #000000;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-9 .folder-content-wrapper .see-all i {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all i {
   float: right;
   font-weight: 400;
   color: #00a5ef;
@@ -10875,61 +10879,44 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.see-all .folder-wrapper .drag-shader .drag-title {
   margin-top: 19% !important;
 }
-.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover {
-  height: 510px;
+.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover {
+  height: 470px;
 }
-.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-cover .folder-overlay:nth-child(1) {
+.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .folder-overlay:nth-child(1) {
   height: 490px;
 }
-.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-3 .folder-cover-wrapper .folder-peak .peak-tail {
-  height: 385px;
+.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper {
+  height: 470px;
 }
-.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-9 .folder-content-wrapper {
-  height: 510px;
+.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
+  height: 470px;
 }
-.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-9 .folder-content-wrapper .folder-items-wrapper {
-  height: 510px;
-}
-.folder-container .folder-body .folder.pink .folder-peak,
-.folder-container .folder-body .folder.pink .peak-tail,
 .folder-container .folder-body .folder.pink .folder-cover {
   background-color: #ed0677;
 }
-.folder-container .folder-body .folder.light-blue .folder-peak,
-.folder-container .folder-body .folder.light-blue .peak-tail,
 .folder-container .folder-body .folder.light-blue .folder-cover {
   background-color: #1b9ed9;
 }
-.folder-container .folder-body .folder.light-green .folder-peak,
-.folder-container .folder-body .folder.light-green .peak-tail,
 .folder-container .folder-body .folder.light-green .folder-cover {
   background-color: #a2c73e;
 }
-.folder-container .folder-body .folder.red .folder-peak,
-.folder-container .folder-body .folder.red .folder-peak:after,
 .folder-container .folder-body .folder.red .folder-cover {
   background-color: #b01d5a;
 }
-.folder-container .folder-body .folder.dark-blue .folder-peak,
-.folder-container .folder-body .folder.dark-blue .peak-tail,
 .folder-container .folder-body .folder.dark-blue .folder-cover {
   background-color: #091652;
 }
-.folder-container .folder-body .folder.gray .folder-peak,
-.folder-container .folder-body .folder.gray .peak-tail,
 .folder-container .folder-body .folder.gray .folder-cover {
   background-color: #bbbdbe;
 }
-.folder-container .folder-body .folder.dark-green .folder-peak,
-.folder-container .folder-body .folder.dark-green .peak-tail,
 .folder-container .folder-body .folder.dark-green .folder-cover {
   background-color: #067d41;
 }
-.folder-container .folder-body .folder .folder-wrapper.drag {
+.folder-container .folder-body .folder.drag .folder-wrapper {
   border: 1px solid #848484;
   border-style: dashed;
 }
-.folder-container .folder-body .folder .folder-wrapper.drag .drag-shader {
+.folder-container .folder-body .folder.drag .folder-wrapper .drag-shader {
   position: absolute;
   display: block;
   width: 100%;
@@ -10941,10 +10928,12 @@ header .notification-holder .profile-header-thumb {
   text-align: center;
   opacity: 0.95;
 }
-.folder-container .folder-body .folder .folder-wrapper.drag .drag-shader .drag-title {
-  margin-top: 11%;
-  font-size: 2.0625em;
-  color: #5a5a5a;
+.folder-container .folder-body .folder.drag .folder-wrapper .drag-shader .drag-title {
+  margin-top: 10%;
+  font-size: 1.5em;
+  font-family: Andelo-Mono;
+  font-weight: 700;
+  color: #000000;
 }
 
 .calender-container {
@@ -11083,9 +11072,9 @@ header .notification-holder .profile-header-thumb {
   padding: 3px 5px;
   background: #00a6ef;
   color: #ffffff;
+  text-align: center;
 }
 .calender-container .calender-box > div.week > span.day .squre {
-  height: 36px;
   padding: 0;
   font-size: 1.4em;
 }
@@ -11134,6 +11123,8 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .mini-calender-box.calender-box {
   border: solid 1px #CCC;
+  padding: 30px;
+  border-radius: 10px;
 }
 .calender-container .mini-calender-box.calender-box .header {
   background: #ffffff;
@@ -11150,25 +11141,27 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .mini-calender-box.calender-box .week .day {
   padding-top: 0;
-  font-size: 0.598125em;
+  line-height: 20px !important;
 }
 .calender-container .mini-calender-box.calender-box .week .day:first-child {
   border-left: none;
 }
 .calender-container .mini-calender-box.calender-box .week .day .squre {
   color: #2d5164;
-  padding: 8px;
+  padding: 0px;
+  font-size: 0.598125em;
 }
 .calender-container .mini-calender-box.calender-box .week .day.different-month .squre {
   color: #a8bfcd;
 }
 .calender-container .mini-calender-box.calender-box .week .selected .squre {
   border-radius: 50%;
-  width: 22px !important;
-  height: 22px !important;
-  padding: 4px !important;
+  width: 20px !important;
+  height: 20px !important;
+  padding: 0 !important;
   background: #00a6ef;
-  color: #2d5164;
+  color: #ffffff;
+  margin: 0 auto;
 }
 .calender-container .mini-calender-box.calender-box .week.names .day {
   height: auto !important;
@@ -11255,16 +11248,16 @@ header .notification-holder .profile-header-thumb {
   padding-left: 0;
 }
 .calender-container .calender-body .col-sm-9 .calender-view {
-  margin-top: 28px;
   overflow: hidden;
   -webkit-box-shadow: 1px 0 12px -8px #000000;
   box-shadow: 1px 0 12px -8px #000000;
-  background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header {
   padding: 21px 21px 16px;
   overflow: hidden;
   background-color: #f6f6f6;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper {
   float: left;
@@ -11287,11 +11280,12 @@ header .notification-holder .profile-header-thumb {
   text-align: center;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper .date p {
-  margin: 9px 14px 12px;
+  padding: 10px 14px 10px;
   text-transform: uppercase;
   font-size: 0.75em;
   color: #000000;
   font-weight: 500;
+  margin: 0;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header .day-wrapper {
   margin-left: 16px;
@@ -11325,7 +11319,6 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
   margin: 30px 70px;
   overflow: hidden;
-  height: 45px;
   font-size: 0.875em;
   font-weight: 400;
   color: #bebfbf;
@@ -11420,6 +11413,7 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content {
   padding: 40px 70px;
+  background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-title span {
   font-family: "Work Sans", sans-serif;
@@ -11429,6 +11423,7 @@ header .notification-holder .profile-header-thumb {
   margin-bottom: 0;
   vertical-align: middle;
   text-transform: uppercase;
+  margin-left: 10px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-title-hr {
   width: 100%;
@@ -11441,7 +11436,7 @@ header .notification-holder .profile-header-thumb {
   border-bottom: 1px solid #f6f6f6;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i {
-  vertical-align: middle;
+  vertical-align: top;
   font-size: 1.125em;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i:nth-child(1) {
@@ -11450,15 +11445,35 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i.pull-right {
   margin-top: 2px;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li span {
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div {
   font-family: "Work Sans", sans-serif;
   color: #000000;
   font-size: 0.875em;
   vertical-align: middle;
   font-weight: 400;
+  margin-left: 5px;
+  display: inline-block;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div p {
+  margin-bottom: 0;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .people-list-wrapper {
+  display: block;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .people-list-wrapper .people-list {
+  color: #7f7f7f;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .selected-people {
+  color: #00a6ef;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li .event-time {
+  color: #00a6ef;
+  font-weight: 500;
+  font-size: 0.875em;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content {
   padding: 40px 70px;
+  background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-title span {
   font-family: "Work Sans", sans-serif;
@@ -11468,6 +11483,7 @@ header .notification-holder .profile-header-thumb {
   margin-bottom: 0;
   vertical-align: middle;
   text-transform: uppercase;
+  margin-left: 10px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-title-hr {
   width: 100%;
@@ -11873,101 +11889,132 @@ header .notification-holder .profile-header-thumb {
 .calender-year-view .view-tile-area .month-tiles .month-tile:nth-of-type(2n) {
   margin-right: 0;
 }
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header {
-  background-color: #ffffff;
-  padding: 5% 7%;
-  border-bottom: 1px solid #dee6eb;
-}
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header:before {
-  display: table;
-  content: " ";
-}
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header:after {
-  clear: both;
-  display: table;
-  content: " ";
-}
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header h5 {
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.header {
   float: left;
-  text-align: left;
-  width: 50%;
-  margin: 0;
-  text-transform: uppercase;
-  font-size: 0.9375em;
-  color: #000000;
-  font-weight: 500;
-  margin-bottom: 10px;
-  line-height: 1.4;
-}
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header .month-event-todo-count {
-  width: 50%;
-  float: left;
-}
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header .month-event-todo-count h6.event-count {
-  text-align: right;
   width: 100%;
-  margin: 0;
+  background: transparent !important;
+  height: 40px;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.header > * {
+  height: 40px;
+  line-height: 40px !important;
+  display: inline-block;
+  vertical-align: middle;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.header > i {
+  float: left;
+  width: 40px;
+  font-size: 1.125em;
+  font-weight: bold;
+  position: relative;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  padding: 0 10px;
+  cursor: pointer;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.header > i.fa-angle-left {
+  text-align: left;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.header > i.fa-angle-right {
+  margin-left: -40px;
+  text-align: right !important;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.header > span {
+  float: left;
+  width: 100%;
   text-transform: uppercase;
-  font-size: 0.77875em;
-  font-weight: 500;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  padding-left: 10px;
+  text-align: left;
+  padding-right: 40px;
   color: #00a6ef;
-  margin-bottom: 5px;
 }
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header .month-event-todo-count h6.todo-count {
-  text-align: right;
-  width: 100%;
-  margin: 0;
-  text-transform: uppercase;
-  font-size: 0.77875em;
-  color: #a6c649;
-  font-weight: 500;
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.header > span.middle-month {
+  text-align: center;
+  width: 800px;
+  padding-right: 132px;
+  font-size: 20px;
 }
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-header h3 {
-  float: left;
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.header > span.smaller-month {
   text-align: left;
-  font-size: 1.5575em;
-  color: #c1c1c1;
-  clear: both;
+  width: 180px;
+  font-size: 10px;
+  padding-right: 66px;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week {
+  float: left;
   width: 100%;
-  margin-top: 8px;
-  margin-bottom: 0;
+  border-top: solid 1px #dee6eb;
+  background: white;
 }
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body {
-  background-color: #f6f8fc;
-  padding: 5% 7%;
-  height: 130px;
-  overflow: hidden;
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week:first-child {
+  border-top: none;
 }
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body:before {
-  display: table;
-  content: " ";
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week {
+  border-top: solid 1px #dee6eb;
 }
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body:after {
-  clear: both;
-  display: table;
-  content: " ";
-}
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body .list-items li {
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day {
+  float: left;
+  width: 14.28571429%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  background: white;
+  cursor: pointer;
+  font-weight: normal;
+  padding: 10px 0 4px 0;
+  line-height: 1.1 !important;
+  border-left: solid 1px #dee6eb;
+  position: relative;
   font-family: "Work Sans", sans-serif;
-  font-size: 0.77875em;
-  font-weight: 500;
-  color: black;
-  margin-bottom: 5px;
 }
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body .list-items li:before {
-  content: "\f111";
-  font-family: FontAwesome;
-  line-height: 1;
-  font-size: 8px;
-  float: left;
-  margin-top: 5px;
-  margin-right: 4px;
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day .action-area {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  height: 6px;
 }
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body .list-items li.todo:before {
-  color: #a6c649;
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day .action-area .todo {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #a6c649;
+  display: inline-block;
 }
-.calender-year-view .view-tile-area .month-tiles .month-tile .month-tile-body .list-items li.events:before {
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day .action-area .event {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #00a6ef;
+  display: inline-block;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day.selected .squre {
+  text-align: center;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day-names {
+  font-size: 1.05em;
+  height: 30px;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day:first-child {
+  border-left: none;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day.today {
   color: #00a6ef;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day.different-month {
+  color: #cccccc !important;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day.selected {
+  color: #00a6ef;
+}
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week.names > span {
+  color: #00a6ef;
+  height: 40px;
+  padding: 10px;
 }
 @media screen and (min-width: 50em) {
   .calender-year-view .view-tile-area .month-tiles .month-tile {
@@ -12689,25 +12736,34 @@ header .notification-holder .profile-header-thumb {
   margin-top: 42px;
   text-align: center;
   letter-spacing: -2px;
-  font-weight: 300;
-  font-size: 2.25em;
+  font-family: Andelo-Mono;
+  font-weight: 700;
+  font-size: 1.80125em;
   color: #000000;
 }
 .popup-holder .create-folder-popup .folder-body {
   padding: 10px 15%;
 }
 .popup-holder .create-folder-popup .folder-body .input-group {
-  margin-top: 30px;
+  margin-top: 36px;
+}
+.popup-holder .create-folder-popup .folder-body .input-group.name-holder {
+  margin-top: 21px;
 }
 .popup-holder .create-folder-popup .folder-body .input-group p {
-  font-weight: 400;
+  font-weight: 500;
   color: #000000;
-  font-size: 0.823125em;
+  font-size: 0.9375em;
 }
 .popup-holder .create-folder-popup .folder-body .input-group input {
-  border: 1px solid #e7e7e7;
-  border-radius: 0px;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
   background-color: #f6f6f6;
+  box-shadow: none;
+  font-size: 0.875em;
+  color: #a5a5a5;
+  height: 50px;
+  padding: 15px 20px;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .user-holder {
   float: left;
@@ -12716,6 +12772,7 @@ header .notification-holder .profile-header-thumb {
   margin-top: 10px;
   margin-right: 5px;
   border: 1px solid #1b9ed9;
+  border-radius: 5px;
   padding: 5px;
   color: #1b9ed9;
   font-size: 0.75em;
@@ -12777,6 +12834,7 @@ header .notification-holder .profile-header-thumb {
   color: #ffffff;
   background-color: #00a6ef;
   border-radius: 0px;
+  text-transform: uppercase;
 }
 .popup-holder .share-folder-popup {
   position: relative;
@@ -12784,46 +12842,50 @@ header .notification-holder .profile-header-thumb {
   overflow: hidden;
 }
 .popup-holder .share-folder-popup .folder-header .search-people-wrapper {
-  margin-top: 20px;
-  margin-left: 25px;
+  position: relative;
+  margin-top: 15px;
+  padding-left: 35px;
+  padding-right: 35px;
   overflow: hidden;
 }
 .popup-holder .share-folder-popup .folder-header .search-people-wrapper i {
+  top: 6px;
+  left: 45px;
+  position: absolute;
   padding: 2px;
-  float: left;
   font-size: 0.875em;
-  color: #bebfbf;
+  color: #c0c1c1;
 }
 .popup-holder .share-folder-popup .folder-header .search-people-wrapper .search-people {
-  overflow: hidden;
-  margin-top: -2px;
-  margin-left: 22px;
-  float: left;
-  width: 90%;
-  max-height: 25px;
-  font-size: 0.875em;
+  padding-top: 4px;
+  padding-left: 36px;
+  height: 30px;
+  font-size: 0.75em;
   font-weight: 400;
-  color: #bebfbf;
-  outline: none;
-}
-.popup-holder .share-folder-popup .folder-header .search-people-wrapper .search-people:empty:before {
-  content: attr(placeholder);
+  color: #838383;
+  border: 1px solid #d9dbde;
+  border-radius: 10px;
+  background-color: #e9ebee;
 }
 .popup-holder .share-folder-popup .folder-header .header-wrapper {
-  margin-top: 23px;
+  margin-top: 15px;
   border-top: 1px solid #ebebeb;
   border-bottom: 1px solid #ebebeb;
 }
 .popup-holder .share-folder-popup .folder-header .header-wrapper .popup-title {
-  margin-top: 20px;
-  margin-left: 24px;
+  margin-top: 15px;
+  margin-left: 32px;
+  margin-bottom: 16px;
   text-transform: uppercase;
   font-size: 1.125em;
-  font-weight: 500;
+  font-family: Andelo-Mono;
+  font-weight: 700;
   color: #000000;
+  text-transform: uppercase;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper {
   overflow: hidden;
+  margin-left: 10px;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user {
   overflow: hidden;
@@ -12844,7 +12906,7 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper .name {
   margin-top: 4px;
   font-size: 0.875em;
-  font-weight: 400;
+  font-weight: 700;
   color: #000000;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper .name-title {
@@ -12861,7 +12923,7 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .shared-privacy .owner {
   margin-top: 4px;
   font-size: 0.75em;
-  font-weight: 400;
+  font-weight: 700;
   color: #000000;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .shared-privacy .privacy-selector {
@@ -12869,6 +12931,7 @@ header .notification-holder .profile-header-thumb {
   border: none;
   font-size: 0.75em;
   color: #000000;
+  font-weight: 700;
   cursor: pointer;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action {
@@ -12880,21 +12943,34 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action i {
   padding: 5px 6px;
   color: #1b9ed9;
-  font-size: 0.625em;
+  font-size: 0.5625em;
   border: 1px solid #1b9ed9;
   border-radius: 100%;
 }
 .popup-holder .share-folder-popup .folder-footer .footer-action-wrapper {
-  margin-top: 27px;
+  margin-top: 24px;
   margin-bottom: 8px;
   overflow: hidden;
 }
 .popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .see-all {
   margin-left: 275px;
   float: left;
-  font-size: 0.875em;
   color: #33a2db;
   cursor: pointer;
+  font-size: 0.875em;
+}
+.popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .see-all p {
+  margin: -3px 5px 0px 0px;
+  float: right;
+  text-transform: uppercase;
+  font-family: Andelo-Mono;
+  font-weight: 700;
+  color: #000000;
+}
+.popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .see-all i {
+  float: right;
+  font-weight: 400;
+  color: #00a5ef;
 }
 .popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .add-people {
   margin-right: 22px;
@@ -12916,40 +12992,41 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .share-folder-add-people-popup .input-wrapper {
   position: relative;
-  padding: 0 12px;
+  padding: 0 20px;
 }
 .popup-holder .share-folder-add-people-popup .input-wrapper i {
   position: absolute;
   top: 8px;
-  left: 24px;
+  left: 33px;
 }
 .popup-holder .share-folder-add-people-popup .input-wrapper input {
   margin-top: 3px;
   margin-bottom: 5px;
   padding-top: 5px;
   padding-left: 40px;
-  border-radius: 18px;
+  border-radius: 8px;
   max-height: 30px;
   border: 1px solid #bcbfbf;
   color: #bebfbf;
+  background-color: #e9ebee;
   font-size: 0.75em;
   font-weight: 400;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper {
   overflow: hidden;
+  margin-top: 10px;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion {
   overflow: hidden;
   border-bottom: 1px solid #ebebeb;
-}
-.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:first-child {
-  border-top: 1px solid #ebebeb;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:last-child {
   margin-bottom: 3px;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .user-image {
-  margin-left: 7px;
+  margin-left: 20px;
   float: left;
   width: 38px;
   height: 38px;
@@ -12961,12 +13038,12 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .name-wrapper .name {
   margin-top: 8px;
   font-size: 0.875em;
-  font-weight: 400;
+  font-weight: 500;
   color: #000000;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .action {
   margin-top: 7px;
-  margin-right: 12px;
+  margin-right: 20px;
   float: right;
   cursor: pointer;
 }
@@ -13031,7 +13108,7 @@ footer .notification-alert-holder {
   background: #fff;
   border-radius: 10px 10px 0 0;
   width: 125px;
-  height: 98px;
+  height: 99px;
   border: 1px solid #e2e2e2;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
@@ -13087,17 +13164,17 @@ footer .notification-alert-holder .notifi-icon-holder .notifi-icons.social-notif
   }
 }
 footer .nav-holder {
-  width: 79%;
+  width: 79.05%;
   float: left;
   position: relative;
   padding: 15px 0 8px;
-  margin: 0 9px 0;
+  margin: 0 5px 0;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 10px 10px 0 0;
 }
 footer .nav-holder .nav-item {
   float: left;
-  padding: 0 4.2%;
+  padding: 0 4.1%;
   text-align: center;
   position: relative;
   border-right: 1px solid #817f88;
@@ -13130,12 +13207,12 @@ footer .nav-holder .nav-item .nav-title {
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   footer .nav-holder .nav-item {
-    padding: 0 3.3%;
+    padding: 0 3.2%;
   }
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   footer .nav-holder {
-    width: 76%;
+    width: 76.1%;
   }
 }
 footer.dashboard-footer .nav-holder {
@@ -13146,7 +13223,7 @@ footer.dashboard-footer .nav-holder .nav-item .nav-title {
 }
 footer .work-mode-holder {
   float: left;
-  width: 109px;
+  width: 110px;
   height: 98px;
   border: 1px solid #e2e2e2;
   border-radius: 10px 10px 0 0;

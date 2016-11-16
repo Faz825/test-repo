@@ -3,7 +3,7 @@
 /**
  * The Calender Controller
  */
-var CalenderController = {
+var CalendarController = {
 
     /**
      * Return all events of the loggedin user.
@@ -14,11 +14,11 @@ var CalenderController = {
     getEvents: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
-        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
         var UserId = CurrentSession.id;
 
-        CalenderEvent.get({},{},{},function(err, result) {
-            
+        CalendarEvent.get({},{},{},function(err, result) {
+
             var outPut ={};
             if(err) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.COMMENT_POST_ID_EMPTY, Alert.ERROR);
@@ -38,52 +38,63 @@ var CalenderController = {
      * @return Json
      */
     addEvent: function(req,res) {
-
         var CurrentSession = Util.getCurrentSession(req);
-        console.log(req.body.shared_users.length + " LENGTH IS <<<<  ");
-
         var _async = require('async'),
-            CalenderEvent = require('mongoose').model('CalenderEvent'),
+            CalendarEvent = require('mongoose').model('CalendarEvent'),
             UserId = Util.getCurrentSession(req).id,
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient'),
-            notifyUsers = (req.body.shared_users.length > 0 ? req.body.shared_users : []); //this should be an array
+            notifyUsers = (typeof req.body.shared_users != 'undefined' ? req.body.shared_users : []); //this should be an array
         _async.waterfall([
 
             function addNewToDb(callBack){
+
+                var sharedUserList = [];
+
+                if(typeof notifyUsers != 'undefined' && notifyUsers.length > 0) {
+                    for (var i = 0; notifyUsers.length > i; i++) {
+                        var obj = {
+                            user_id:notifyUsers[i],
+                            share_status:CalendarSharedStatus.REQUEST_PENDING
+                        }
+                        sharedUserList.push(obj);
+                    }
+                }
+                
                 var eventData = {
                     user_id : UserId,
                     description : req.body.description,
-                    type: (req.body.type == "todo" ? CalenderTypes.TODO : CalenderTypes.EVENT),
+                    type: (req.body.type == "todo" ? CalendarTypes.TODO : CalendarTypes.EVENT),
                     start_date: req.body.apply_date,
                     event_time: req.body.event_time,
                     event_timezone: req.body.event_timezone,
-                    shared_users: notifyUsers
-                }
+                    shared_users: sharedUserList
+                };
 
-                CalenderEvent.addNew(eventData, function(event) {
+                CalendarEvent.addNew(eventData, function(event) {
                     callBack(null, event);
                 });
             },
-            function addNotification(event, callBack) {
+            function addNotification(calEvent, callBack) {
 
                 if(typeof notifyUsers != 'undefined' && notifyUsers.length > 0){
                     var _data = {
                         sender:UserId,
-                        notification_type:Notifications.SHARE_CALENDER,
+                        notification_type:Notifications.SHARE_CALENDAR,
+                        notified_calendar:calEvent.event._id
                     }
                     Notification.saveNotification(_data, function(res){
                         if(res.status == 200){
-                            callBack(null, res.result._id, event);
+                            callBack(null, res.result._id, calEvent);
                         }
 
                     });
 
                 } else {
-                    callBack(null, null, event);
+                    callBack(null, null, calEvent);
                 }
             },
-            function notifyingUsers(notification_id, event, callBack) {
+            function notifyingUsers(notification_id, calEvent, callBack) {
 
                 if(typeof notification_id != 'undefined' && notifyUsers.length > 0){
                     var _data = {
@@ -91,11 +102,11 @@ var CalenderController = {
                         recipients:notifyUsers
                     };
                     NotificationRecipient.saveRecipients(_data, function(res){
-                        callBack(null, event);
+                        callBack(null, calEvent);
                     })
 
                 } else{
-                    callBack(null, event);
+                    callBack(null, calEvent);
                 }
             }
 
@@ -123,7 +134,7 @@ var CalenderController = {
     getAllForSpecificMonth: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
-        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
         var UserId = CurrentSession.id;
         var moment = require('moment');
 
@@ -140,11 +151,11 @@ var CalenderController = {
 
         var criteria =  { start_date_time: {$gte: startDate, $lt: endDate}, status: 1, user_id: user_id};
 
-        CalenderEvent.getSortedCalenderItems(criteria,function(err,result) {
+        CalendarEvent.getSortedCalenderItems(criteria,function(err,result) {
 
             var outPut ={};
             if(err) {
-                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_MONTH_EMPTY, Alert.ERROR);
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDAR_MONTH_EMPTY, Alert.ERROR);
                 res.status(400).send(outPut);
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -163,7 +174,7 @@ var CalenderController = {
     getAllForDateRange: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
-        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
         var UserId = CurrentSession.id;
         var moment = require('moment');
 
@@ -180,11 +191,11 @@ var CalenderController = {
 
         var criteria =  { start_date_time: {$gte: startDate, $lt: endDate}, status: 1, user_id: user_id};
 
-        CalenderEvent.getSortedCalenderItems(criteria,function(err,result) {
+        CalendarEvent.getSortedCalenderItems(criteria,function(err,result) {
 
             var outPut ={};
             if(err) {
-                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_MONTH_EMPTY, Alert.ERROR);
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDAR_MONTH_EMPTY, Alert.ERROR);
                 res.status(400).send(outPut);
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -203,7 +214,7 @@ var CalenderController = {
     getAllForSpecificWeek: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
-        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
 
         var data ={};
         data['week'] = req.query.week;
@@ -211,10 +222,10 @@ var CalenderController = {
         data['year'] = req.query.year;
         data['user_id'] = Util.toObjectId(CurrentSession.id);
 
-        CalenderEvent.getWeeklyCalenderEvens(data,function(err, result) {
+        CalendarEvent.getWeeklyCalenderEvens(data,function(err, result) {
             var outPut ={};
             if(err) {
-                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_WEEK_EMPTY, Alert.ERROR);
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDAR_WEEK_EMPTY, Alert.ERROR);
                 res.status(400).send(outPut);
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -235,7 +246,7 @@ var CalenderController = {
     getAllEventForCurrentWeek: function(req,res) {
         var moment = require('moment');
         var CurrentSession = Util.getCurrentSession(req);
-        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
 
         var data ={};
         data['week'] = Math.ceil(moment().format('DD')/7);
@@ -243,10 +254,10 @@ var CalenderController = {
         data['year'] = moment().format('YYYY');
         data['user_id'] = Util.toObjectId(CurrentSession.id);
 
-        CalenderEvent.getWeeklyCalenderEvens(data,function(err, result) {
+        CalendarEvent.getWeeklyCalenderEvens(data,function(err, result) {
             var outPut ={};
             if(err) {
-                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_WEEK_EMPTY, Alert.ERROR);
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDAR_WEEK_EMPTY, Alert.ERROR);
                 res.status(400).send(outPut);
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -267,7 +278,7 @@ var CalenderController = {
     getAllEventForNextOrPrevWeek: function(req,res) {
         var moment = require('moment');
         var CurrentSession = Util.getCurrentSession(req);
-        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
 
         var data ={}, startDateOfWeek,endDateOfWeek;
         data['date'] = req.query.date;
@@ -303,10 +314,10 @@ var CalenderController = {
 
         }
 
-            CalenderEvent.getWeeklyCalenderEvens(data,function(err, result) {
+            CalendarEvent.getWeeklyCalenderEvens(data,function(err, result) {
             var outPut ={};
             if(err) {
-                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_WEEK_EMPTY, Alert.ERROR);
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDAR_WEEK_EMPTY, Alert.ERROR);
                 res.status(400).send(outPut);
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -327,26 +338,95 @@ var CalenderController = {
     getEventsForSpecificDay: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
-        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
         var moment = require('moment');
         var day = req.body.day;
+
         var user_id = Util.toObjectId(CurrentSession.id);
         var startTimeOfDay = moment(day, 'YYYY-MM-DD').format('YYYY-MM-DD'); //format the given date as mongo date object
         var endTimeOfDay = moment(day, 'YYYY-MM-DD').add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
+        var _async = require('async');
 
-        var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, status: 1, user_id: user_id};
+        var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, user_id: user_id};
+        _async.waterfall([
 
-        CalenderEvent.getSortedCalenderItems(criteria,function(err, result) {
+            function getSortedCalenderItems(callback){
+                CalendarEvent.getSortedCalenderItems(criteria, function(err, result) {
 
-            var outPut ={};
-            if(err) {
-                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDER_WEEK_EMPTY, Alert.ERROR);
-                res.status(400).send(outPut);
-            } else {
-                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['events'] = result.events;
-                res.status(200).send(outPut);
+                    var events = [];
+                    if(err) {
+                        callback(err, null)
+                    } else {
+                        events = result.events;
+                        callback(null, events)
+                    }
+                });
+            },
+
+            function getUsers(events, callback) {
+
+                var criteria = {
+                    user_id: user_id,
+                    status: 3
+                };
+                var User = require('mongoose').model('User');
+                User.getConnectionUsers(criteria, function (result) {
+                    var friends = result.friends;
+                    callback(null, events, friends);
+                });
+            },
+
+            function composeUsers(events, users, callback) {
+
+                if(events.length == 0) {
+                    callback(null, []);
+                }
+
+                for (var e = 0; e < events.length; e++) {
+
+                    var event = events[e];
+                    var sharedUsers = event.shared_users;
+
+                    if(sharedUsers.length == 0) {
+                        if(e+1 == (events.length)) {
+                            callback(null, events)
+
+                        }
+                    }
+
+                    var arrUsers = [];
+                    for (var u = 0; u < sharedUsers.length ; u++) {
+                        var userId = sharedUsers[u].user_id;
+
+
+                        var filterObj = users.filter(function(e) {
+                          return e.user_id == userId;
+                        });
+
+                        var user = {
+                            'id' : userId,
+                            'name' : 'Unknown'
+                        };
+
+                        if(filterObj) {
+                            user.name = filterObj[0].first_name+" "+filterObj[0].last_name;
+                        }
+
+                        arrUsers.push(user);
+                        events[e].shared_users = arrUsers;
+
+                        if(u+1 == sharedUsers.length && e+1 == events.length) {
+                            callback(null, events);
+                        }
+                    }
+                }
             }
+        ],function(err, events){
+            var outPut = {};
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['events'] = events;
+            res.status(200).send(outPut);
+            return;
         });
     },
 
@@ -358,40 +438,149 @@ var CalenderController = {
      */
     updateEvent: function(req,res) {
 
-        var CurrentSession = Util.getCurrentSession(req);
-        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var CalendarEvent = require('mongoose').model('CalendarEvent'),
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient');
         var moment = require('moment');
         var _async = require('async');
 
         var event_id = req.query.id;
         event_id = Util.toObjectId(event_id);
-        var user_id = Util.toObjectId(CurrentSession.id);
+
+        var user_id = Util.getCurrentSession(req).id,
+            shareUsers = (typeof req.body.shared_users != 'undefined' ? req.body.shared_users : []), //this should be an array
+            isTimeChanged=(typeof req.body.time_changed != 'undefined' ? req.body.time_changed : false),
+            _description = req.body.description,
+            _start_date_time= req.body.apply_date,
+            _event_time= req.body.event_time;
+
+        var sharedUserList = [], notifyUsers = [];
 
         _async.waterfall([
             function getEvents(callBack){
-                CalenderEvent.getEventById(event_id,function(resultSet){
+                CalendarEvent.getEventById(event_id,function(resultSet){
                     callBack(null, resultSet);
                 });
             },
-            function updateEvent(resultSet, callBack){
+            function compareSharedUsers(resultSet, callBack) {
+
+                if(typeof resultSet != 'undefined') {
+
+                    if(typeof shareUsers != 'undefined' && shareUsers.length > 0) {
+
+                        /*
+                         * If time changed then all user should be requested again
+                         * So all user request set as PENDING again
+                         */
+                        if(isTimeChanged == true) {
+                            for (var i = 0; shareUsers.length > i; i++) {
+                                var obj = {
+                                    user_id:shareUsers[i],
+                                    share_type:CalendarSharedStatus.REQUEST_PENDING
+                                };
+                                sharedUserList.push(obj);
+                                notifyUsers.push(shareUsers[i]);
+                            }
+
+                        } else {
+
+                            /*
+                             * There might be shared users, so their request status kept as it is.
+                             * For new shared users request will save as PENDING
+                             */
+                            for (var i = 0; shareUsers.length > i; i++) {
+
+                                if(typeof resultSet.shared_users != 'undefined' && resultSet.shared_users.length > 0) {
+
+                                    var filterObj = resultSet.shared_users.filter(function(e) {
+                                        return e.user_id.toString() == shareUsers[i].toString();
+                                    });
+                                    if(typeof filterObj != 'undefined' && filterObj.user_id) {
+                                        sharedUserList.push(filterObj);
+                                    } else {
+                                        var obj = {
+                                            user_id:shareUsers[i],
+                                            share_type:CalendarSharedStatus.REQUEST_PENDING
+                                        };
+                                        sharedUserList.push(obj);
+                                        notifyUsers.push(shareUsers[i]);
+                                    }
+
+                                } else {
+                                    var obj = {
+                                        user_id:shareUsers[i],
+                                        share_type:CalendarSharedStatus.REQUEST_PENDING
+                                    };
+                                    sharedUserList.push(obj);
+                                    notifyUsers.push(shareUsers[i]);
+                                }
+                            }
+                        }
+                    }
+
+                    var updateData = {
+                        description : _description,
+                        start_date_time: _start_date_time,
+                        event_time: _event_time,
+                        shared_users: sharedUserList
+                    };
+
+                    callBack(null, updateData);
+
+                } else {
+                    callBack(null, null);
+                }
+            },
+            function updateDbEvent(updateData, callBack){
                 var criteria={
                     _id:event_id
                 };
-                var updateData = {
-                    start_date_time:moment(resultSet.start_date_time).add(1,"day").format('YYYY-MM-DD')
-                };
-                CalenderEvent.updateEvent(criteria, updateData, function (res) {
-                    callBack(null, res);
+
+                CalendarEvent.updateEvent(criteria, updateData, function (res) {
+                    callBack(null, res.status);
                 });
+            },
+            function addNotification(stt, callBack) {
+
+                if(typeof notifyUsers != 'undefined' && notifyUsers.length > 0 && stt == 200){
+                    var _data = {
+                        sender:user_id,
+                        notification_type: isTimeChanged == true ? Notifications.CALENDAR_SCHEDULE_TIME_CHANGED : Notifications.CALENDAR_SCHEDULE_UPDATED,
+                        notified_calendar:event_id
+                    }
+                    Notification.saveNotification(_data, function(res){
+                        if(res.status == 200){
+                            callBack(null, res.result._id);
+                        }
+
+                    });
+
+                } else {
+                    callBack(null, null);
+                }
+            },
+            function notifyingUsers(notification_id, callBack) {
+
+                if(typeof notification_id != 'undefined' && notifyUsers.length > 0){
+                    var _data = {
+                        notification_id:notification_id,
+                        recipients:notifyUsers
+                    };
+                    NotificationRecipient.saveRecipients(_data, function(res){
+                        callBack(null);
+                    })
+
+                } else{
+                    callBack(null);
+                }
             }
-        ],function(err, resultSet){
+        ], function(err) {
             var outPut ={};
             if(err) {
                 outPut['status'] = ApiHelper.getMessage(400, err);
                 res.status(400).send(outPut);
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['event'] = resultSet.event;
                 res.status(200).send(outPut);
             }
         });
@@ -405,7 +594,7 @@ var CalenderController = {
     shareEvent: function (req, res) {
 
         var _async = require('async'),
-            CalenderEvent = require('mongoose').model('CalenderEvent'),
+            CalendarEvent = require('mongoose').model('CalendarEvent'),
             CurrentSession = Util.getCurrentSession(req),
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient');
@@ -416,7 +605,7 @@ var CalenderController = {
 
         _async.waterfall([
             function getEvent(callBack) {
-                var event = CalenderEvent.getEventById(event_Id, function (resultSet) {
+                var event = CalendarEvent.getEventById(event_Id, function (resultSet) {
                     callBack(null, resultSet);
                 });
             },
@@ -427,13 +616,13 @@ var CalenderController = {
                         _async.each(notifyUsers, function (notifyUser, callBack) {
                             var _sharingUser = {
                                 user_id: notifyUser,
-                                shared_status: CalenderStatus.PENDING
+                                shared_status: CalendarStatus.PENDING
                             };
                             sharedUsers.push(_sharingUser);
                             var _sharedUsers = {
                                 shared_users: sharedUsers
                             }
-                            CalenderEvent.shareEvent(event_Id, _sharedUsers, function (resultS) {
+                            CalendarEvent.shareEvent(event_Id, _sharedUsers, function (resultS) {
                                 callBack(null);
                             });
 
@@ -448,8 +637,8 @@ var CalenderController = {
 
                             var _data = {
                                 sender: CurrentSession.id,
-                                notification_type: Notifications.SHARE_CALENDER,
-                                notified_event: event_Id
+                                notification_type: Notifications.SHARE_CALENDAR,
+                                notified_calendar: event_Id
                             };
                             Notification.saveNotification(_data, function (results) {
                                 if (results.status == 200) {
@@ -504,7 +693,7 @@ var CalenderController = {
     getEventSharedUsers:function(req,res){
 
         var _async = require('async'),
-            CalenderEvent = require('mongoose').model('CalenderEvent'),
+            CalendarEvent = require('mongoose').model('CalendarEvent'),
             User = require('mongoose').model('User'),
             CurrentSession = Util.getCurrentSession(req),
             eventId = req.query.eventId;
@@ -514,7 +703,7 @@ var CalenderController = {
 
         _async.waterfall([
             function getEevent(callBack){
-                CalenderEvent.getEventById(event_Id,function(resultSet){
+                CalendarEvent.getEventById(event_Id,function(resultSet){
                     callBack(null,resultSet);
                 });
             },
@@ -523,7 +712,7 @@ var CalenderController = {
                     var sharedUsers = resultSet.shared_users;
                     _async.each(sharedUsers, function(sharedUser, callBack){
 
-                        if(sharedUser.shared_status == CalenderStatus.PENDING || sharedUser.shared_status == CalenderStatus.COMPLETED) {
+                        if(sharedUser.shared_status == CalendarStatus.PENDING || sharedUser.shared_status == CalendarStatus.COMPLETED) {
                             var usrObj = {};
                             _async.waterfall([
 
@@ -608,7 +797,7 @@ var CalenderController = {
      */
     removeSharedEventUser:function(req,res){
 
-        var  CalenderEvent = require('mongoose').model('CalenderEvent'),
+        var  CalendarEvent = require('mongoose').model('CalendarEvent'),
             _async = require('async'),
             own_user_id = Util.getCurrentSession(req).id,
             _arrIndex = require('array-index-of-property');
@@ -621,7 +810,7 @@ var CalenderController = {
 
         _async.waterfall([
             function getEvent(callBack) {
-                var event = CalenderEvent.getEventById(event_id, function (resultSet) {
+                var event = CalendarEvent.getEventById(event_id, function (resultSet) {
                     callBack(null, resultSet);
                 });
             },
@@ -641,11 +830,11 @@ var CalenderController = {
                     user_id:Util.toObjectId(own_user_id),
                     'shared_users.user_id':shared_user_id
                 };
-                CalenderEvent.updateSharedEvent(criteria, _udata, function(err,result){
+                CalendarEvent.updateSharedEvent(criteria, _udata, function(err,result){
                     if (result.status == 200) {
                         callBack(null, result);
                     } else {
-                        callBack(null);
+                        callBack(null, null);
                     }
                 });
             }
@@ -667,7 +856,7 @@ var CalenderController = {
      */
     updateEventSharedStatus:function(req,res){
 
-        var  CalenderEvent = require('mongoose').model('CalenderEvent'),
+        var  CalendarEvent = require('mongoose').model('CalendarEvent'),
             _async = require('async'),
             user_id = Util.getCurrentSession(req).id;
 
@@ -682,7 +871,7 @@ var CalenderController = {
             'shared_users.user_id':user_id
         };
 
-        CalenderEvent.updateSharedEvent(criteria, _udata, function(result){
+        CalendarEvent.updateSharedEvent(criteria, _udata, function(result){
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 result: result
@@ -730,17 +919,18 @@ var CalenderController = {
     updateEventCompletion: function(req,res) {
 
         var CurrentSession = Util.getCurrentSession(req);
-        var CalenderEvent = require('mongoose').model('CalenderEvent');
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
         var moment = require('moment');
         var _async = require('async');
 
-        var event_id = req.query.id;
+        var event_id = req.body.id;
+        var status = req.body.status;
         event_id = Util.toObjectId(event_id);
         var user_id = Util.toObjectId(CurrentSession.id);
 
         _async.waterfall([
             function getEvents(callBack){
-                CalenderEvent.getEventById(event_id,function(resultSet){
+                CalendarEvent.getEventById(event_id,function(resultSet){
                     callBack(null, resultSet);
                 });
             },
@@ -749,9 +939,9 @@ var CalenderController = {
                     _id:event_id
                 };
                 var updateData = {
-                    status:CalenderStatus.COMPLETED
+                    status:status
                 };
-                CalenderEvent.updateEvent(criteria, updateData, function (res) {
+                CalendarEvent.updateEvent(criteria, updateData, function (res) {
                     callBack(null);
                 });
             }
@@ -768,4 +958,4 @@ var CalenderController = {
     },
 };
 
-module.exports = CalenderController;
+module.exports = CalendarController;

@@ -54,7 +54,8 @@ export default class AmbiLayout extends React.Component{
             socialNotifications:_socialNotifications,
             isShowingModal: false,
             notifiType: "",
-            notificationCount: ""
+            notificationCount: "",
+            isNavHidden: false
         };
 
         this.quickChatUsers = [];
@@ -202,12 +203,18 @@ export default class AmbiLayout extends React.Component{
         this.setState({notificationCount : c});
     }
 
+    onNavCollapse(){
+    	console.log("called");
+    	let isVissible = this.state.isNavHidden;
+		this.setState({isNavHidden: !isVissible});
+    }
 
 	render(){
+		let dashbrdClass = (this.props.children)? "sub-page" : "";
 		return(
 			<div className="app-holder">
 				<SigninHeader quickChat={this.loadQuickChat.bind(this)} />
-				<section className="body-container">
+				<section className={(!this.state.isNavHidden)? "body-container " + dashbrdClass : "body-container nav-hidden"}>
 		      		{this.props.children || <AmbiDashboard />}
 				</section>
 				<InCallPane/>
@@ -230,8 +237,8 @@ export default class AmbiLayout extends React.Component{
                 }
                 <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)}/>
                 <FooterHolder blockBottom={this.state.rightBottom} blockSocialNotification={this.state.socialNotifications} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)} onUpdateNotifiPopupCount={this.updateNotificationPopCount.bind(this)}
-                	currPage={(this.props.children)? null : "dashboard"}/>
-                <span className="settings-icon"></span>
+                	currPage={(this.props.children)? null : "dashboard"} onNavCollapse={this.onNavCollapse.bind(this)}/>
+                <span className={(!this.state.isNavHidden)? "settings-icon" : "settings-icon slideUp"}></span>
 			</div>
 		);
 	}
