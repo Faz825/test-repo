@@ -3,8 +3,9 @@
  */
 import React from 'react';
 import Session from '../../middleware/Session';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
 
 import EditorField from './EditorField';
 
@@ -15,11 +16,10 @@ export default class WeekView extends React.Component {
             currentWeek:0,
             events:[],
             weekStartDate:'',
-            weekEndDate:''
+            weekEndDate:'',
         }
         this.loggedUser =  Session.getSession('prg_lg');
         this.currentWeek = 0;
-
     }
 
     componentDidMount() {
@@ -66,7 +66,6 @@ export default class WeekView extends React.Component {
             start_date:week_start,
             end_date:week_end
         };
-        //console.log(postData);
 
         this.setState({currentWeek:this.currentWeek, weekStartDate:postData.start_date, weekEndDate:postData.end_date});
 
@@ -270,13 +269,77 @@ export class DailyEvents extends React.Component {
 export class WeekDayEventPopUp extends React.Component {
     constructor(props) {
         super(props);
+        let user = Session.getSession('prg_lg');
         this.state = {
-            eventType:'EVENT'
+            user:user,
+            eventType:'EVENT',
+            sharedWithIds:[],
+            defaultEventTime:moment().format('HH:mm')
         }
+        this.sharedWithIds = [];
+
+        this.addEvent = this.addEvent.bind(this);
     }
 
     changeEventType(type) {
         this.setState({eventType:type});
+    }
+
+    setSharedUsers(selected) {
+        var arrEntries = selected._root.entries;
+        if(this.sharedWithIds.indexOf(arrEntries[3][1])==-1){
+            this.sharedWithIds.push(arrEntries[3][1]);
+            this.setState({sharedWithIds: this.sharedWithIds, isAlreadySelected:false})
+        } else{
+            this.setState({isAlreadySelected:true});
+            console.log("already selected" + this.state.isAlreadySelected)
+        }
+    }
+
+    setTime(selected) {
+        var arrEntries = selected._root.entries;
+        var time = arrEntries[1][1];
+        let year = this.props.curr_date.year();
+        let month = this.props.curr_date.month();
+        let date = this.props.curr_date.day();
+        let timeWithDay = year+'/'+month+'/'+date+' '+time;
+        this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
+    }
+
+    addEvent(event) {
+
+        console.log(this);
+        console.log("^^^^^^^^^^^^^^^^^^^");
+        const Editor = this.refs.EditorFieldValues.state.editorState;
+        const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
+        const editorContentRaw = convertToRaw(contentState);
+
+        // get shared users from SharedUsers field
+        const sharedUsers = this.state.sharedWithIds;
+        const postData = {
+            description : editorContentRaw,
+            type : this.state.eventType,
+            apply_date : this.props.curr_date.format('MM DD YYYY HH:mm'),
+            event_time : this.state.defaultEventTime,
+            event_timezone : moment.tz.guess(),
+            shared_users : sharedUsers,
+        };
+
+        $.ajax({
+            url: '/calendar/event/add',
+            method: "POST",
+            dataType: "JSON",
+            data: JSON.stringify(postData),
+            headers : { "prg-auth-header" : this.state.user.token },
+            contentType: "application/json; charset=utf-8",
+        }).done(function (data, text) {
+            if(data.status.code == 200){
+                console.log(this.refs.EditorFieldValues);
+                const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+                this.refs.EditorFieldValues.setState({editorState});
+                this.props.handleClose();
+            }
+        }.bind(this));
     }
 
     render() {
@@ -298,7 +361,7 @@ export class WeekDayEventPopUp extends React.Component {
                                     <p>{this.props.curr_date.format('DD')}</p>
                                 </div>
                                 <div className="calendar-input-area">
-                                    <div className="input" contentEditable="true" placeholder="Type in an Event or a To-do here use # to tag people, @ to set time of the event"></div>
+                                    <EditorField ref="EditorFieldValues" setTime={this.setTime.bind(this)} setSharedUsers={this.setSharedUsers.bind(this)} />
                                 </div>
                             </div>
                             <div className="model-footer">
@@ -337,7 +400,7 @@ export class WeekDayEventPopUp extends React.Component {
 
                                         </li>
                                         <li>
-                                            <button className="menu-ico-txt btn">
+                                            <button className="menu-ico-txt btn" onClick={this.addEvent}>
                                                 Enter
                                             </button>
                                         </li>
