@@ -438,6 +438,7 @@ export class Folder extends React.Component{
         this.state={
             loggedUser : Session.getSession('prg_lg'),
             isCollapsed : true,
+            isProgressBarActive : false,
             files: []
         };
         this.files = [];
@@ -446,6 +447,52 @@ export class Folder extends React.Component{
         this.onDrop = this.onDrop.bind(this);
         this.onOpenClick = this.onOpenClick.bind(this);
         this.onDropAccepted = this.onDropAccepted.bind(this);
+        this.filesData = [{
+            "_id" : "582ae658247ffffc240b08b9",
+            "created_at" : "2016-11-15T10:41:28.850Z",
+            "updated_at" : "2016-11-15T10:41:28.850Z",
+            "content_type" : "doc",
+            "name" : "PEF - Anuthiga Sriskanthan - DOC",
+            "file_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+            "folder_id" : "581976edb9c941e31dbdf106",
+            "user_id" : "574bcb96272a6fd40768cf0f",
+            "__v" : 0
+        },
+        {
+            "_id" : "582ae658247ffffc240b08b9",
+            "created_at" : "2016-11-15T10:41:28.850Z",
+            "updated_at" : "2016-11-15T10:41:28.850Z",
+            "content_type" : "xlsx",
+            "name" : "PEF - Anuthiga Sriskanthan",
+            "file_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+            "folder_id" : "581976edb9c941e31dbdf106",
+            "user_id" : "574bcb96272a6fd40768cf0f",
+            "__v" : 0
+        },
+        {
+            "_id" : "582c2d3a1461f4050b1764c5",
+            "created_at" : "2016-11-16T09:56:10.043Z",
+            "updated_at" : "2016-11-16T09:56:10.043Z",
+            "content_type" : "gif",
+            "name" : "babymartonline.com-check-list",
+            "thumb_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
+            "file_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
+            "folder_id" : "581976edb9c941e31dbdf106",
+            "user_id" : "574bcb96272a6fd40768cf0f",
+            "__v" : 0
+        },
+        {
+            "_id" : "582be27c639078842cbc24f6",
+            "created_at" : "2016-11-16T04:37:16.889Z",
+            "updated_at" : "2016-11-16T04:37:16.889Z",
+            "content_type" : "jpg",
+            "name" : "babymartonline.com-check-list",
+            "thumb_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+            "file_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+            "folder_id" : "581976edb9c941e31dbdf106",
+            "user_id" : "574bcb96272a6fd40768cf0f",
+            "__v" : 0
+        }];
 
     }
 
@@ -455,6 +502,7 @@ export class Folder extends React.Component{
         console.log(this.active_folder_id);
         console.log("onDropAccepted");
         console.log(accepted_files)
+
         for(let i = 0; i < accepted_files.length; i++) {
             _readFile(accepted_files[i]);
         }
@@ -484,7 +532,7 @@ export class Folder extends React.Component{
                     };
                     context.uploadHandler(payLoad);
                     context.files.push(payLoad);
-                    context.setState({files:this.files});
+                    context.setState({files:this.files, isProgressBarActive: true});
                 };
 
             })(_this);
@@ -496,7 +544,6 @@ export class Folder extends React.Component{
 
     uploadHandler(uploadContent){
         console.log(uploadContent)
-
         $.ajax({
             url: '/ajax/upload/folderDoc',
             method: "POST",
@@ -555,6 +602,14 @@ export class Folder extends React.Component{
         }else{
             ownerImg = folderData.folder_user.profile_image;
         }
+
+        let _fileList = this.filesData.map(function(file,key){
+
+                            return (
+                                <File fileData={this.filesData} key={key} />
+                            )
+                        });
+
         return(
 
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
@@ -571,6 +626,15 @@ export class Folder extends React.Component{
                                         <span className="logo-shader"></span>
                                     </div>
                                     <h3>{folderData.folder_name}</h3>
+                                    {
+                                        (this.state.isProgressBarActive)?
+                                        <div className="upload-anime">
+                                            <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                                        </div>
+                                        :
+                                        null
+                                        
+                                    }
                                 </div>
                                 {
                                     (this.props.folderCount != 0)?
@@ -582,18 +646,6 @@ export class Folder extends React.Component{
                                     :
                                         null
                                 }
-                            </div>
-                            {/*
-                                (this.state.files.length > 0)?
-                                <div className="upload-anime">
-                                    <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                                </div>
-                                :
-                                null
-                                */
-                            }
-                            <div className="upload-anime">
-                                <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                             </div>
                         </div>
                     </div>
@@ -608,7 +660,7 @@ export class Folder extends React.Component{
                                                     <p>Upload new file or image</p>
                                                 </div>
                                         </div>
-                                        {/* files component */}
+                                        {_fileList}                                        
                                     </div>
                                     {
                                         /*(this.state.isCollapsed)?
