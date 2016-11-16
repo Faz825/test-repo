@@ -439,9 +439,90 @@ export class Folder extends React.Component{
             loggedUser : Session.getSession('prg_lg'),
             isCollapsed : true,
             files: []
-        }
+        };
+        this.files = [];
+        this.active_folder_id = 0;
 
         this.onDrop = this.onDrop.bind(this);
+        this.onOpenClick = this.onOpenClick.bind(this);
+        this.onDropAccepted = this.onDropAccepted.bind(this);
+
+    }
+
+    onDropAccepted(accepted_files){
+        let _this = this;
+        console.log("onDropAccepted");
+        console.log(this.active_folder_id);
+        console.log("onDropAccepted");
+        console.log(accepted_files)
+        for(let i = 0; i < accepted_files.length; i++) {
+            _readFile(accepted_files[i]);
+        }
+
+        function _readFile(file){
+
+            var reader = new FileReader();
+            reader.onload = (function(context) {
+                //console.log(dataArr);
+                //console.log(file)
+
+                return function(e) {
+                    var src = e.target.result;
+                    var upload_index = _this.files.length;
+
+                    var payLoad ={
+                        content:src,
+                        upload_id:_this.active_folder_id,
+                        upload_index:upload_index,
+                        name:file.name,
+                        preview:file.preview,
+                        size:file.size,
+                        type:file.type,
+                        isUploaded:false,
+                        file_path:'',
+                        thumb_path:''
+                    };
+                    context.uploadHandler(payLoad);
+                    context.files.push(payLoad);
+                    context.setState({files:this.files});
+                };
+
+            })(_this);
+
+            reader.readAsDataURL(file);
+        }
+
+    }
+
+    uploadHandler(uploadContent){
+        console.log(uploadContent)
+
+        $.ajax({
+            url: '/ajax/upload/folderDoc',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            data:uploadContent
+
+        }).done(function (data, text) {
+            if (data.status.code == 200) {
+                for(var a=0;a<this.files.length;a++) {
+                    if (this.files[a].upload_index == data.upload.upload_index) {
+                        this.files[a].isUploaded = true;
+                        this.files[a].file_path = data.upload.file_path;
+                        this.files[a].thumb_path = data.upload.thumb_path;
+                    }
+                }
+                this.setState({files:this.files});
+
+            }
+        }.bind(this)).error(function (request, status, error) {
+
+            console.log(request.status)
+            console.log(status);
+            console.log(error);
+        });
+
     }
 
     onFldrExpand(){
@@ -450,16 +531,14 @@ export class Folder extends React.Component{
         this.setState({isCollapsed : !isCollapsed});
     }
 
-    onDrop(acceptedFiles, rejectedFiles) {
-      this.setState({
-        files: acceptedFiles
-      });
-      console.log('Accepted files: ', acceptedFiles);
-      console.log('Rejected files: ', rejectedFiles);
+    onDrop(folder_id) {
+        this.active_folder_id = folder_id;
+        console.log("onDrop")
+        console.log(this.active_folder_id);
     }
 
-    onOpenClick() {
-      this.dropzone.open();
+    onOpenClick(folder_id) {
+        this.dropzone.open(folder_id);
     }
 
     render(){
@@ -480,7 +559,8 @@ export class Folder extends React.Component{
 
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
-                <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop} multiple={false} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*" >
+                <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={(event)=>{this.onDrop(folderData.folder_id)}}
+                          multiple={true} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*" onDropAccepted={this.onDropAccepted}>
                     <div className="col-sm-3">
                         <div className="folder-cover-wrapper">
                             <div className="folder-cover">
@@ -519,7 +599,7 @@ export class Folder extends React.Component{
                             <div className="folder-content-wrapper">
                                 <div className="folder-items-wrapper">
                                     <div className="inner-wrapper">
-                                        <div className="folder-col" onClick={this.onOpenClick.bind(this)}>
+                                        <div className="folder-col" onClick={this.onOpenClick.bind(this)} onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
                                                 <div className="folder-item upload-file">
                                                     <i className="fa fa-plus"></i>
                                                     <p>Upload new file or image</p>

@@ -231,6 +231,7 @@ router.post('/comment/delete', CommentController.deleteComment);
 router.post('/skill-info/save', UserController.saveSkillInfo);
 
 router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
+router.post('/ajax/upload/folderDoc', UploadController.uploadFolderDocument);
 
 
 //CONNECTIONS

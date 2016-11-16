@@ -41,6 +41,7 @@
     "mongoose-schema-extend": "0.2.0",
     "morgan": "~1.6.1",
     "node-schedule": "^1.2.0",
+    "node-thumbnail": "^0.7.0",
     "node-uuid": "^1.4.7",
     "nodemailer": "^2.1.0",
     "passport": "~0.2.0",

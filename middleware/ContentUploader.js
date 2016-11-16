@@ -74,7 +74,6 @@ var ContentUploader ={
 
         });
 
-
     },
 
     /**
@@ -191,6 +190,7 @@ var ContentUploader ={
             function uploadFile(callBack){
 
                 _this.uploadToCDN(payLoad,function(cdnReturn){
+                    console.log(JSON.stringify(cdnReturn))
                     if(cdnReturn.status == 200){
                         callBack(null,cdnReturn);
                     }else{
@@ -525,6 +525,99 @@ var ContentUploader ={
                         console.log(err)
                         callBack(null);
                     }
+                });
+
+            }
+
+        ], function(err){
+            callBack({status:200, upload_meta:_upload_meta});
+
+        })
+
+
+    },
+
+
+    /**
+     * Upload image folder document to S3 bucket
+     * @param callBack
+     */
+    uploadFolderImageDocumentToCDN:function(payLoad,callBack){
+        console.log("uploadFolderImageDocumentToCDN")
+
+        var uuid = require('node-uuid');
+        var fs = require('fs');
+        var _async = require('async');
+
+        var file_id = uuid.v1();
+        var bucket = this.getUploadPath(payLoad.entity_id);
+        var _upload_meta = {};
+        var _this = this;
+
+        _async.waterfall([
+
+            function uploadActualImage(callBack){
+
+                console.log("uploadActualImage")
+
+                var newFileName = file_id + "_"+payLoad.orig_entity_tag+payLoad.ext;
+                var _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+payLoad.entity_id+"/"+newFileName;
+                var origFileBody;
+
+                fs.readFile(payLoad.orig_file, function(err, fileBody){
+                    origFileBody = fileBody;
+
+                    _this.s3.putObject({
+                        Bucket: bucket,
+                        Key: newFileName,
+                        Body: origFileBody,
+                        ACL: 'public-read'
+
+                    }, function (err, data) {
+                        if (!err) {
+                            _upload_meta = {
+                                file_path:_http_url
+                            };
+                            callBack(null);
+                            return 0;
+                        }else{
+                            console.log("UPLOAD ERROR")
+                            console.log(err)
+                            callBack({status:400,error:err});
+                            return 0;
+                        }
+                    });
+
+                });
+
+            },
+            function uploadThumbnailImage(callBack){
+                console.log("uploadThumbnailImage")
+
+                var newFileName = file_id + "_"+payLoad.thumb_entity_tag+payLoad.ext;
+                var _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+payLoad.entity_id+"/"+newFileName;
+                var thumbFileBody;
+
+                fs.readFile(payLoad.thumb_file, function(err, fileBody){
+                    thumbFileBody = fileBody;
+
+                    _this.s3.putObject({
+                        Bucket: bucket,
+                        Key: newFileName,
+                        Body: thumbFileBody,
+                        ACL: 'public-read'
+
+                    }, function (err, data) {
+                        if (!err) {
+                            _upload_meta['thumb_path'] = _http_url;
+                            callBack(null);
+                        }else{
+                            console.log("UPLOAD ERROR")
+                            console.log(err)
+                            callBack(null);
+                        }
+                    });
+
                 });
 
             }
