@@ -1,6 +1,9 @@
 /**
  * Day view of the calender
  */
+
+'use strict';
+
 import React, { Component } from 'react';
 import moment from 'moment-timezone';
 import Session from '../../middleware/Session';
@@ -10,16 +13,12 @@ import DayTodosList from './DayTodosList';
 import SharedUsers from './SharedUsers';
 import EditorField from './EditorField';
 
-
-
 import { Popover, OverlayTrigger } from 'react-bootstrap';
-import {convertFromRaw, convertToRaw} from 'draft-js';
+import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
 import { fromJS } from 'immutable';
 
 import 'rc-time-picker/assets/index.css';
 import TimePicker from 'rc-time-picker';
-
-import DateTime from "react-bootstrap-datetime";
 
 export default class DayView extends Component {
 
@@ -104,7 +103,8 @@ export default class DayView extends Component {
         }).done(function (data, text) {
             if(data.status.code == 200){
                 console.log(this.refs.EditorFieldValues);
-                //this.refs.EditorFieldValues.setState({editorState : this.refs.EditorFieldValues.onEventAdd()});
+                const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+                this.refs.EditorFieldValues.setState({editorState});
                 this.loadEvents();
             }
         }.bind(this));
@@ -184,6 +184,17 @@ export default class DayView extends Component {
         this.refs.SharedUserField.getSuggestionValue(userObj);
     }
 
+    setTime(selected) {
+
+        var arrEntries = selected._root.entries;
+        var time = arrEntries[1][1];
+        let year = moment(this.state.currentDay).year();
+        let month = moment(this.state.currentDay).month();
+        let date = moment(this.state.currentDay).day();
+        let timeWithDay = year+'/'+month+'/'+date+' '+time;
+        this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
+    }
+
     render() {
 
         const typoPopover = (
@@ -233,7 +244,7 @@ export default class DayView extends Component {
                                 <div className="row calender-input">
                                     <div className="col-sm-12">
                                         <div className="input" id="editor-holder" >
-                                            <EditorField ref="EditorFieldValues" setSharedUsers={this.setSharedUsers.bind(this)} />
+                                            <EditorField ref="EditorFieldValues" setTime={this.setTime.bind(this)} setSharedUsers={this.setSharedUsers.bind(this)} />
 
                                             <div className="shared-users-time-panel">
                                                 <div className="col-sm-3">
@@ -311,7 +322,7 @@ export default class DayView extends Component {
                                 <div className="col-sm-12">
                                     <div className="to-do-list-area-content">
                                         <div className="to-do-list-area-content-title">
-                                            <img src="/images/calender/icon-to-do.png" /><span>To-Do's</span>
+                                            <img src="/images/calender/icon-to-do.png" /><span>To-Do	&rsquo;s</span>
                                         </div>
                                         <div className="to-do-list-area-content-title-hr"></div>
                                         <DayTodosList events={this.state.events} onClickItem={this.markTodo.bind(this)} />

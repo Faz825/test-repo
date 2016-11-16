@@ -6,6 +6,8 @@ import Session from '../../middleware/Session';
 import moment from 'moment';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 
+import EditorField from './EditorField';
+
 export default class WeekView extends React.Component {
     constructor(props) {
         super(props);
@@ -349,4 +351,3 @@ export class WeekDayEventPopUp extends React.Component {
         );
     }
 }
-

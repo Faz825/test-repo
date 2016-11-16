@@ -12,7 +12,9 @@ import createEmojiPlugin from 'draft-js-emoji-plugin';
 
 import {convertFromRaw, convertToRaw} from 'draft-js';
 import { fromJS } from 'immutable';
+import timeSuggestions from './timeSuggestions';
 
+// plugins for mentioning the person
 const mentionPlugin = createMentionPlugin({
     entityMutability: 'IMMUTABLE',
     mentionPrefix: '#',
@@ -22,11 +24,21 @@ const mentionPlugin = createMentionPlugin({
     )
 });
 
-const { MentionSuggestions } = mentionPlugin;
+// plugins for mentioning the time
+const mentionPlugin2 = createMentionPlugin({
+    timeSuggestions,
+    entityMutability: 'IMMUTABLE',
+    mentionPrefix: '@'
+});
+
+// mentions for persons
+const MentionSuggestions = mentionPlugin.MentionSuggestions;
+// mentions for time
+const MentionSuggestions2 = mentionPlugin2.MentionSuggestions;
 
 const emojiPlugin = createEmojiPlugin();
 const { EmojiSuggestions } = emojiPlugin;
-const plugins = [mentionPlugin, emojiPlugin];
+const plugins = [mentionPlugin, emojiPlugin, mentionPlugin2];
 
 export default class EditorField extends Component {
 
@@ -35,14 +47,14 @@ export default class EditorField extends Component {
         let user =  Session.getSession('prg_lg');
         this.state = {
             user : user,
-            suggestions: fromJS([]),
+            suggestions : fromJS([]),
+            suggestions2 : timeSuggestions,
             editorState : EditorState.createEmpty(),
         };
 
         this.focus = this.focus.bind(this);
         this.handleKeyCommand = this.handleKeyCommand.bind(this);
         this.onChange = this.onChange.bind(this);
-
 
         this.onSearchChange = ({ value }) => {
             $.ajax({
@@ -64,6 +76,11 @@ export default class EditorField extends Component {
             });
         };
 
+        this.onSearchChange2 = ({ value }) => {
+            this.setState({
+                suggestions2: defaultSuggestionsFilter(value, timeSuggestions),
+            });
+        };
     }
 
     focus() {
@@ -98,12 +115,17 @@ export default class EditorField extends Component {
                     plugins={plugins}
                     ref={(element) => { this.editor = element; }}
                     placeholder="Type in an Event or a To-do here use # to tag people, @ to set time of the event"
-                  />
+                />
                 <EmojiSuggestions />
                 <MentionSuggestions
                     onSearchChange={this.onSearchChange}
                     suggestions={this.state.suggestions}
                     onAddMention={this.props.setSharedUsers.bind(this)}
+                />
+                <MentionSuggestions2
+                    onSearchChange={this.onSearchChange2}
+                    suggestions={this.state.suggestions2}
+                    onAddMention={this.props.setTime.bind(this)}
                 />
             </div>
         );
