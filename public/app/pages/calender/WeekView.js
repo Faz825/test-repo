@@ -274,11 +274,19 @@ export class WeekDayEventPopUp extends React.Component {
             user:user,
             eventType:'EVENT',
             sharedWithIds:[],
-            defaultEventTime:moment().format('HH:mm')
+            defaultEventTime:moment().format('HH:mm'),
+            getEditor : false
         }
         this.sharedWithIds = [];
-
         this.addEvent = this.addEvent.bind(this);
+    }
+
+    componentDidMount() {
+        this.setState({getEditor : true});
+    }
+
+    componentWillUnmount() {
+        this.setState({getEditor : false});
     }
 
     changeEventType(type) {
@@ -308,10 +316,8 @@ export class WeekDayEventPopUp extends React.Component {
 
     addEvent(event) {
 
-        console.log(this);
-        console.log("^^^^^^^^^^^^^^^^^^^");
-        const Editor = this.refs.EditorFieldValues.state.editorState;
-        const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
+        const Editor = this.editor.state.editorState;
+        const contentState = this.editor.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
 
         // get shared users from SharedUsers field
@@ -334,9 +340,8 @@ export class WeekDayEventPopUp extends React.Component {
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
-                console.log(this.refs.EditorFieldValues);
-                const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
-                this.refs.EditorFieldValues.setState({editorState});
+                const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
+                this.editor.setState({editorState});
                 this.props.handleClose();
             }
         }.bind(this));
@@ -361,7 +366,13 @@ export class WeekDayEventPopUp extends React.Component {
                                     <p>{this.props.curr_date.format('DD')}</p>
                                 </div>
                                 <div className="calendar-input-area">
-                                    <EditorField ref="EditorFieldValues" setTime={this.setTime.bind(this)} setSharedUsers={this.setSharedUsers.bind(this)} />
+                                    {this.state.getEditor ?
+                                        <EditorField
+                                            ref={(element) => { this.editor = element; }}
+                                            setTime={this.setTime.bind(this)}
+                                            setSharedUsers={this.setSharedUsers.bind(this)}
+                                        />
+                                    : null }
                                 </div>
                             </div>
                             <div className="model-footer">
