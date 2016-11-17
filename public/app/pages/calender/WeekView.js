@@ -109,6 +109,8 @@ export default class WeekView extends React.Component {
     }
 
     processDataCall(postData) {
+        console.log(" I AM CALLED 1 ");
+        console.log(postData);
         $.ajax({
             url: '/calendar/events/date_range',
             method: "GET",
@@ -149,7 +151,7 @@ export default class WeekView extends React.Component {
                             </div>
                         </div>
 
-                        <WeekDays week_startDt={this.state.weekStartDate} events={this.state.events}/>
+                        <WeekDays week_startDt={this.state.weekStartDate} events={this.state.events} loadData={this.processDataCall.bind(this)} />
 
                     </div>
                 </div>
@@ -175,7 +177,7 @@ export class WeekDays extends React.Component {
             if(i > 0) {
                 dateObj = moment(this.props.week_startDt).add(i,"days");
             }
-            days.push(<LoadDayList current_date={dateObj} weekly_events={this.props.events} key={i}/>);
+            days.push(<LoadDayList current_date={dateObj} weekly_events={this.props.events} loadData={this.props.loadData} key={i}/>);
 
         }
 
@@ -235,7 +237,7 @@ export class LoadDayList extends React.Component {
                     {<DailyEvents daily_events={this.getEventsForTheDay()}/>}
                 </div>
                 {this.state.showDailyPopUp ?
-                    <WeekDayEventPopUp handleClose={this.handleClose.bind(this)} curr_date={currDt}/>
+                    <WeekDayEventPopUp handleClose={this.handleClose.bind(this)} loadData={this.props.loadData} curr_date={currDt}/>
                     : null
                 }
             </div>
@@ -343,6 +345,16 @@ export class WeekDayEventPopUp extends React.Component {
                 const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
                 this.editor.setState({editorState});
                 this.props.handleClose();
+
+                // loadd data
+                let week_start = moment().startOf('week').day("Sunday").format('YYYY-MM-DD');
+                let week_end = moment().startOf('week').day("Sunday").weekday(7).format('YYYY-MM-DD');
+                let postData = {
+                    start_date:week_start,
+                    end_date:week_end
+                };
+                console.log(" I AM CALLED 2 ");
+                this.props.loadData(postData);
             }
         }.bind(this));
     }
