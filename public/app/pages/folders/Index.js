@@ -433,6 +433,7 @@ export class Folder extends React.Component{
             isCollapsed : true,
             isProgressBarActive : false,
             files: [],
+            fileUplaodPreview: {},
             filesData:this.props.folderData.documents
         };
         this.files = [];
@@ -441,8 +442,11 @@ export class Folder extends React.Component{
         this.onDrop = this.onDrop.bind(this);
         this.onOpenClick = this.onOpenClick.bind(this);
         this.onDropAccepted = this.onDropAccepted.bind(this);
+        this.uploadHandler = this.uploadHandler.bind(this);
 
-        this.filesData = this.props.folderData.documents; console.log("FILEDATA ===" + this.props.folderData.folder_name);console.log(this.filesData)
+        this.filesData = this.props.folderData.documents; 
+        console.log("FILEDATA ===" + this.props.folderData.folder_name);
+        console.log(this.filesData)
         this.filesData = [
             {
                 document_id : "582ae658247ffffc240b08b9",
@@ -450,7 +454,10 @@ export class Folder extends React.Component{
                 document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
                 document_thumb_path : null,
                 document_type : "doc",
-                document_updated_at : "2016-11-15T10:41:28.850Z",
+                updated_at:{
+                    createdDate: "Oct 11, 2016",
+                    createdTime: "9:31 am"
+                },
                 document_user : "574bcb96272a6fd40768cf0f"
             },
             {
@@ -459,7 +466,10 @@ export class Folder extends React.Component{
                 document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
                 document_thumb_path : null,
                 document_type : "xlsx",
-                document_updated_at : "2016-11-15T10:41:28.850Z",
+                updated_at:{
+                    createdDate: "Oct 11, 2016",
+                    createdTime: "9:31 am"
+                },
                 document_user : "574bcb96272a6fd40768cf0f"
             },
             {
@@ -468,7 +478,10 @@ export class Folder extends React.Component{
                 document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
                 document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
                 document_type : "gif",
-                document_updated_at : "2016-11-16T09:56:10.043Z",
+                updated_at:{
+                    createdDate: "Oct 11, 2016",
+                    createdTime: "9:31 am"
+                },
                 document_user : "574bcb96272a6fd40768cf0f"
             },
             {
@@ -477,7 +490,10 @@ export class Folder extends React.Component{
                 document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
                 document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
                 document_type : "jpg",
-                document_updated_at : "2016-11-16T04:37:16.889Z",
+                updated_at:{
+                    createdDate: "Oct 11, 2016",
+                    createdTime: "9:31 am"
+                },
                 document_user : "574bcb96272a6fd40768cf0f"
             }
         ];
@@ -486,10 +502,10 @@ export class Folder extends React.Component{
 
     onDropAccepted(accepted_files){
         let _this = this;
-        console.log("onDropAccepted");
-        console.log(this.active_folder_id);
-        console.log("onDropAccepted");
-        console.log(accepted_files)
+        //console.log("onDropAccepted");
+        //console.log(this.active_folder_id);
+        //console.log("onDropAccepted");
+        console.log(accepted_files);
 
         for(let i = 0; i < accepted_files.length; i++) {
             _readFile(accepted_files[i]);
@@ -564,7 +580,10 @@ export class Folder extends React.Component{
                 document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
                 document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
                 document_type : "jpg",
-                document_updated_at : "2016-11-16T04:37:16.889Z",
+                updated_at:{
+                    createdDate: "Oct 11, 2016",
+                    createdTime: "9:31 am"
+                },
                 document_user : "574bcb96272a6fd40768cf0f"
             };
             this.filesData.unshift(_dummyData) // add the uploaded document to existing document list. this should update the document list of that folder.
@@ -573,7 +592,7 @@ export class Folder extends React.Component{
             console.log(request.status)
             console.log(status);
             console.log(error);
-        });
+        }.bind(this));
 
     }
 
@@ -585,8 +604,8 @@ export class Folder extends React.Component{
 
     onDrop(folder_id) {
         this.active_folder_id = folder_id;
-        console.log("onDrop")
-        console.log(this.active_folder_id);
+        //console.log("onDrop")
+       // console.log(this.active_folder_id);
     }
 
     onOpenClick(folder_id) {
@@ -609,13 +628,23 @@ export class Folder extends React.Component{
             ownerImg = folderData.folder_user.profile_image;
         }
 
-        let _fileList = this.state.filesData.map(function(file,key){
-
+        let _fileList = this.filesData.map(function(file,key){
+            console.log(key);
                             return (
                                 <File fileData={file} key={key} />
                             )
                         });
+        
+        // if(Object.keys(this.state.fileUplaodPreview).length != 0){
+        //     let _fileListPreview = this.state.fileUplaodPreview.map(function(file,key){
+        //         console.log(key);
+        //                         return (
+        //                             <FilePreview fileData={file} key={key} />
+        //                         )
+        //                     });            
+        // }
 
+        console.log(this.state.files);
         return(
 
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
@@ -670,7 +699,8 @@ export class Folder extends React.Component{
                                                     <p>Upload new file or image</p>
                                                 </div>
                                         </div>
-                                        {_fileList}                                        
+                                        <FilePreview />                                                    
+                                        {_fileList}
                                     </div>
                                     {
                                         (this.state.filesData.length > 4)?
@@ -708,17 +738,52 @@ export class File extends React.Component{
     }
 
     render(){
+        let data = this.props.fileData;
+
+        console.log(data);
+        
+        let thumbIMg = "";
+
+        if (data.document_type == "jpg") {
+            thumbIMg = {
+                backgroundImage: 'url(' + data.document_thumb_path + ')'
+            }
+        }
+
+        return(
+            <div className="folder-col">
+                <div className={"folder-item " + data.document_type}>
+                    <div className="time-wrapper">
+                        <p className="date-created">{data.updated_at.createdDate}</p>
+                        <p className="time-created">{data.updated_at.createdTime}</p>
+                    </div>
+                    <div className="folder-title-holder">
+                        <p className="folder-title">{data.document_name}</p>
+                    </div>
+                    <span className="item-type"></span>
+                </div>
+            </div>
+        );
+    }
+}
+
+export class FilePreview extends React.Component{
+    constructor(props){
+        super(props);
+
+        this.state={}
+    }
+
+    render(){
         return(
             <div className="folder-col">
                 <div className="folder-item pdf">
-                    <div className="time-wrapper">
-                        <p className="date-created">July 28, 2016</p>
-                        <p className="time-created">12.34pm</p>
-                    </div>
                     <div className="folder-title-holder">
                         <p className="folder-title">Cambodia Final Paper</p>
                     </div>
-                    <span className="item-type"></span>
+                    <div className="upload-anime">
+                        <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                    </div>
                 </div>
                 {
                     /*
