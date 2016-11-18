@@ -187,7 +187,7 @@ var CalendarController = {
         var startDate = moment(start_date).format('YYYY-MM-DD');
 
         // Clone the value before .endOf()
-        var endDate = moment(end_date).format('YYYY-MM-DD');
+        var endDate = moment(end_date).add(1,'d').format('YYYY-MM-DD');
 
         var criteria =  { start_date_time: {$gte: startDate, $lt: endDate}, status: 1, user_id: user_id};
 

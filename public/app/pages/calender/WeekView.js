@@ -4,10 +4,15 @@
 import React from 'react';
 import Session from '../../middleware/Session';
 import moment from 'moment-timezone';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
 
 import EditorField from './EditorField';
+import SharedUsers from './SharedUsers';
+
+import 'rc-time-picker/assets/index.css';
+import TimePicker from 'rc-time-picker';
 
 export default class WeekView extends React.Component {
     constructor(props) {
@@ -177,7 +182,7 @@ export class WeekDays extends React.Component {
             if(i > 0) {
                 dateObj = moment(this.props.week_startDt).add(i,"days");
             }
-            days.push(<LoadDayList current_date={dateObj} weekly_events={this.props.events} loadData={this.props.loadData} key={i}/>);
+            days.push(<LoadDayList current_date={dateObj} weekly_events={this.props.events} loadData={this.props.loadData} week_startDt={this.props.week_startDt} key={i}/>);
 
         }
 
@@ -237,7 +242,7 @@ export class LoadDayList extends React.Component {
                     {<DailyEvents daily_events={this.getEventsForTheDay()}/>}
                 </div>
                 {this.state.showDailyPopUp ?
-                    <WeekDayEventPopUp handleClose={this.handleClose.bind(this)} loadData={this.props.loadData} curr_date={currDt}/>
+                    <WeekDayEventPopUp handleClose={this.handleClose.bind(this)} loadData={this.props.loadData} curr_date={currDt} week_startDt={this.props.week_startDt}/>
                     : null
                 }
             </div>
@@ -274,10 +279,14 @@ export class WeekDayEventPopUp extends React.Component {
         let user = Session.getSession('prg_lg');
         this.state = {
             user:user,
-            eventType:'EVENT',
+            eventType:'event',
             sharedWithIds:[],
             defaultEventTime:moment().format('HH:mm'),
-            getEditor : false
+            getEditor : false,
+            showTimePanel : '',
+            showTimePanelWindow : false,
+            showUserPanel : '',
+            showUserPanelWindow : false
         }
         this.sharedWithIds = [];
         this.addEvent = this.addEvent.bind(this);
@@ -316,6 +325,22 @@ export class WeekDayEventPopUp extends React.Component {
         this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
     }
 
+    _onHashClick() {
+        let showUserPanel = this.state.showUserPanel;
+        let showUserPanelWindow = this.state.showUserPanelWindow;
+        this.setState({showUserPanel : (showUserPanel == 'active' ? '' : 'active'), showUserPanelWindow : (showUserPanelWindow == true ? false : true) });
+    }
+
+    _onAtClick() {
+        let showTimePanel = this.state.showTimePanel;
+        let showTimePanelWindow = this.state.showTimePanelWindow;
+        this.setState({showTimePanel : (showTimePanel == 'active' ? '' : 'active'), showTimePanelWindow : (showTimePanelWindow == true ? false : true) });
+    }
+
+    handleTimeChange(time) {
+        this.setState({ defaultEventTime: moment(time).format('HH:mm'),  });
+    }
+
     addEvent(event) {
 
         const Editor = this.editor.state.editorState;
@@ -346,9 +371,10 @@ export class WeekDayEventPopUp extends React.Component {
                 this.editor.setState({editorState});
                 this.props.handleClose();
 
-                // loadd data
-                let week_start = moment().startOf('week').day("Sunday").format('YYYY-MM-DD');
-                let week_end = moment().startOf('week').day("Sunday").weekday(7).format('YYYY-MM-DD');
+                // load data
+                let week_start = moment(this.props.week_startDt).format('YYYY-MM-DD');
+                let week_end = moment(this.props.week_startDt).weekday(7).format('YYYY-MM-DD');
+
                 let postData = {
                     start_date:week_start,
                     end_date:week_end
@@ -359,7 +385,42 @@ export class WeekDayEventPopUp extends React.Component {
         }.bind(this));
     }
 
+    _onBoldClick() {
+        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'BOLD'));
+    }
+
+    _onItalicClick() {
+        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'ITALIC'));
+    }
+
+    _onUnderLineClick() {
+        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'UNDERLINE'));
+    }
+
     render() {
+
+        const showSecond = false;
+
+        const typoPopover = (
+            <Popover id="calendar-popover-typo">
+                <div className="menu-ico">
+                    <p>
+                        <span className="bold" onClick={this._onBoldClick.bind(this)}>B</span>
+                    </p>
+                </div>
+                <div className="menu-ico">
+                    <p>
+                        <span className="italic" onClick={this._onItalicClick.bind(this)}>I</span>
+                    </p>
+                </div>
+                <div className="menu-ico">
+                    <p>
+                        <span className="underline" onClick={this._onUnderLineClick.bind(this)}>U</span>
+                    </p>
+                </div>
+            </Popover>
+        );
+
         return(
             <ModalContainer onClose={this.props.handleClose} zIndex={9999}>
                 <ModalDialog onClose={this.props.handleClose} className="modalPopup">
@@ -386,6 +447,29 @@ export class WeekDayEventPopUp extends React.Component {
                                         />
                                     : null }
                                 </div>
+                                <div className="shared-users-time-panel">
+                                    {this.state.showTimePanelWindow ?
+                                        <div className="col-sm-3">
+                                            <p>
+                                                <span className="user-label">Time : {this.state.defaultEventTime} </span>
+                                            </p>
+                                            <div className={this.state.showTimePanel + " panel time-panel"}>
+                                                <TimePicker
+                                                    style={{ width: 100 }}
+                                                    showSecond={showSecond}
+                                                    defaultValue={moment()}
+                                                    onChange={this.handleTimeChange.bind(this)}
+                                                    />
+                                            </div>
+                                        </div>
+                                        : null}
+                                    {this.state.showUserPanelWindow ?
+                                        <div className="col-sm-6">
+                                            <SharedUsers  showPanel={this.state.showUserPanel}/>
+                                        </div>
+                                        : null }
+
+                                </div>
                             </div>
                             <div className="model-footer">
                                 <div className="input-items-outer-wrapper">
@@ -397,26 +481,28 @@ export class WeekDayEventPopUp extends React.Component {
                                         </li>
                                         <li>
                                             <button className="menu-ico">
-                                                <p>A</p>
+                                                <OverlayTrigger trigger="click" placement="bottom" overlay={typoPopover}>
+                                                    <p>A</p>
+                                                </OverlayTrigger>
                                             </button>
                                         </li>
                                         <li>
-                                            <button className="menu-ico">
+                                            <button onClick={this._onHashClick.bind(this)} className="menu-ico">
                                                 <i className="fa fa-hashtag" aria-hidden="true"></i>
                                             </button>
                                         </li>
 
                                         <li>
-                                            <button className="menu-ico">
+                                            <button onClick={this._onAtClick.bind(this)} className="menu-ico">
                                                 <i className="fa fa-at" aria-hidden="true"></i>
                                             </button>
                                         </li>
                                         <li>
                                             <div className="btn-group">
-                                                <button type="button" className={"menu-ico-group btn " + (this.state.eventType == 'EVENT' ? "active" : null)} onClick={() => this.changeEventType('EVENT')}>
+                                                <button type="button" className={"menu-ico-group btn " + (this.state.eventType == 'event' ? "active" : null)} onClick={() => this.changeEventType('event')}>
                                                     Event
                                                 </button>
-                                                <button type="button" className={"menu-ico-group btn " + (this.state.eventType == 'TODO' ? "active" : null)} onClick={() => this.changeEventType('TODO')}>
+                                                <button type="button" className={"menu-ico-group btn " + (this.state.eventType == 'todo' ? "active" : null)} onClick={() => this.changeEventType('todo')}>
                                                     To-do
                                                 </button>
                                             </div>
