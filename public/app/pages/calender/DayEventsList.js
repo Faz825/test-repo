@@ -1,5 +1,5 @@
 /**
- * Day Name Component 
+ * Day Name Component
  */
 import React from 'react';
 import moment from 'moment';
@@ -8,15 +8,15 @@ import {stateToHTML} from 'draft-js-export-html';
 
 export default class DayEventsList extends React.Component {
 
-	constructor(props) {
+		constructor(props) {
         super(props);
-        this.state = {}; 
+        this.state = {};
     }
 
     render() {
         let _this = this;
         let  items = this.props.events.map(function(event,key){
-            
+
             if(event.type == 2) {
                 return;
             }
@@ -42,6 +42,7 @@ export default class DayEventsList extends React.Component {
                         </div>
                     </div>
                     <span className="event-time pull-right">{event.event_time}</span>
+										<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
                 </li>
             );
         });
@@ -53,8 +54,3 @@ export default class DayEventsList extends React.Component {
         )
     }
 }
-
-
-
-
-
