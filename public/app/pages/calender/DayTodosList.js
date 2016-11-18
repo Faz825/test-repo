@@ -10,7 +10,7 @@ export default class DayTodosList extends React.Component {
 
 	constructor(props) {
         super(props);
-        this.state = {}; 
+        this.state = {};
     }
 
     render() {
@@ -34,15 +34,16 @@ export default class DayTodosList extends React.Component {
 
 		    return (
 		        <li className={event.status == 2 ? 'active' : ''} key={key}>
-					<div className="checkbox-area">
-						<input id="check1" name="check" value="check1" type="checkbox" />
-						<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id, event.status)} >
-							<div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
-							<p>People in the To-do : {usersString ? usersString : 'No shared users'}</p>
-						</label>
-					</div>
-					<div className="time-wrapper pull-right">{event.event_time}</div>
-				</li>
+								<div className="checkbox-area">
+										<input id="check1" name="check" value="check1" type="checkbox" />
+										<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id, event.status)} >
+												<div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
+												<p>People in the To-do : {usersString ? usersString : 'No shared users'}</p>
+										</label>
+								</div>
+								<div className="time-wrapper pull-right">{event.event_time}</div>
+								<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
+						</li>
 		    );
 		});
 
@@ -53,8 +54,3 @@ export default class DayTodosList extends React.Component {
 		);
     }
 }
-
-
-
-
-

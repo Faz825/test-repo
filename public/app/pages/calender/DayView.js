@@ -131,6 +131,11 @@ export default class DayView extends Component {
         }.bind(this));
     }
 
+    clickEdit(eventId) {
+        console.log("The Edit is clicked");
+        console.log(eventId);
+    }
+
     nextDay() {
         let nextDay = moment(this.state.currentDay).add(1,'days').format('YYYY-MM-DD');
         this.currentDay = nextDay;
@@ -314,7 +319,10 @@ export default class DayView extends Component {
                                             <span>events</span>
                                         </div>
                                         <div className="events-list-area-content-title-hr"></div>
-                                        <DayEventsList events={this.state.events} />
+                                        <DayEventsList
+                                            events={this.state.events}
+                                            clickEdit={this.clickEdit.bind(this)}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -325,7 +333,11 @@ export default class DayView extends Component {
                                             <img src="/images/calender/icon-to-do.png" /><span>To-Do	&rsquo;s</span>
                                         </div>
                                         <div className="to-do-list-area-content-title-hr"></div>
-                                        <DayTodosList events={this.state.events} onClickItem={this.markTodo.bind(this)} />
+                                        <DayTodosList
+                                            events={this.state.events}
+                                            onClickItem={this.markTodo.bind(this)}
+                                            clickEdit={this.clickEdit.bind(this)}
+                                        />
                                     </div>
                                 </div>
                             </div>
