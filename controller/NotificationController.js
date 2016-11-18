@@ -665,7 +665,6 @@ var NotificationController ={
                 callBack(null);
 
             },
-
             function doSortingBefore(callBack) {
                 //sorting the list by created date
                 _formattedNotificationData.sort(function(a,b){
@@ -693,6 +692,8 @@ var NotificationController ={
             Post = require('mongoose').model('Post'),
             User = require('mongoose').model('User'),
             NoteBook = require('mongoose').model('NoteBook'),
+            Folder = require('mongoose').model('Folders'),
+            Calendar = require('mongoose').model('CalendarEvent'),
             _async = require('async'),
             grep = require('grep-from-array'),
             _arrIndex = require('array-index-of-property'),
@@ -716,13 +717,56 @@ var NotificationController ={
 
                     function trimNotificationsGetSenders(callBack){
 
-                        if(_notificationType == 'like' || _notificationType == 'comment' || _notificationType == 'share'){
+                        if(_notificationType == 'like' || _notificationType == 'comment' || _notificationType == 'share') {
 
                             var currentPostId = notification.post_id.toString();
 
                             //- Group post objects with same _id and notification_type
-                            var groupedNotificationObj = grep(notifications, function(e){
+                            var groupedNotificationObj = grep(notifications, function (e) {
                                 return (((e.post_id != null ? e.post_id.toString() : null) == currentPostId) && (e.notification_type.toString() == _notificationType));
+                            });
+
+                            var related_senders = [notification['sender_id']];
+
+                            //- Push sender ids of grouped objects and splice
+                            for (var inc = 1; inc < groupedNotificationObj.length; inc++) {
+
+                                related_senders.push(groupedNotificationObj[inc].sender_id);
+
+                                var index = notifications.indexOfProperty('_id', groupedNotificationObj[inc]._id);
+                                notifications.splice(index, 1);
+                            }
+
+                            callBack(null, related_senders);
+                        }else if(_notificationType == 'share_notebook' || _notificationType == 'share_notebook_response'){
+
+                                var currentNotebookId = notification.notebook_id.toString();
+
+                                //- Group notebook objects with same _id and notification_type
+                                var groupedNotificationObj = grep(notifications, function(e){
+                                    return (((e.notebook_id != null ? e.notebook_id.toString() : null) == currentNotebookId) && (e.notification_type.toString() == _notificationType));
+                                });
+
+                                var related_senders = [notification['sender_id']];
+
+                                //- Push sender ids of grouped objects and splice
+                                for(var inc = 1; inc < groupedNotificationObj.length; inc++){
+
+                                    related_senders.push(groupedNotificationObj[inc].sender_id);
+
+                                    var index = notifications.indexOfProperty('_id', groupedNotificationObj[inc]._id);
+                                    notifications.splice(index, 1);
+                                }
+
+                                callBack(null, related_senders);
+
+                        }else if(_notificationType == 'share_folder'){
+
+                            var currentFolderId = notification.folder_id.toString();
+
+                            //- Group folder objects with same _id and notification_type
+                            var groupedNotificationObj = grep(notifications, function(e){
+                                return (((e.folder_id != null ? e.folder_id.toString() : null) == currentFolderId) && (e.notification_type.toString() == _notificationType));
                             });
 
                             var related_senders = [notification['sender_id']];
@@ -737,7 +781,27 @@ var NotificationController ={
                             }
 
                             callBack(null, related_senders);
+                        }else if(_notificationType == 'share_calendar' || _notificationType == 'share_calendar_response'|| _notificationType == 'calendar_schedule_updated' || _notificationType == 'calendar_schedule_time_changed' || _notificationType == 'calendar_schedule_carried_next_day'){
 
+                            var currentCalendarId = notification.calendar_id.toString();
+
+                            //- Group calendar objects with same _id and notification_type
+                            var groupedNotificationObj = grep(notifications, function(e){
+                                return (((e.calendar_id != null ? e.calendar_id.toString() : null) == currentCalendarId) && (e.notification_type.toString() == _notificationType));
+                            });
+
+                            var related_senders = [notification['sender_id']];
+
+                            //- Push sender ids of grouped objects and splice
+                            for(var inc = 1; inc < groupedNotificationObj.length; inc++){
+
+                                related_senders.push(groupedNotificationObj[inc].sender_id);
+
+                                var index = notifications.indexOfProperty('_id', groupedNotificationObj[inc]._id);
+                                notifications.splice(index, 1);
+                            }
+
+                            callBack(null, related_senders);
                         }else {
                             callBack(null, null);
                         }
@@ -817,12 +881,17 @@ var NotificationController ={
                             //- Notebook details
                             notebook_id: (notification['notebook_id'] != null ? notification['notebook_id'] : ""),
 
+                            //- Notebook details
+                            folder_id: (notification['folder_id'] != null ? notification['folder_id'] : ""),
+
+                            //- Notebook details
+                            calendar_id: (notification['calendar_id'] != null ? notification['calendar_id'] : ""),
+
                             //- Notification status for (Notebook, Folder, ...)
-                            notification_status: notification['notification_status']
+                            //notification_status: notification['notification_status']
                         };
 
                         if(notification['post_id'] != null){
-
                             Post.bindNotificationData(notificationObj, user_id, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
@@ -830,12 +899,27 @@ var NotificationController ={
                         }
 
                         if(notification['notebook_id'] != null){
-
                             NoteBook.bindNotificationData(notificationObj, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
                         }
+
+                        if(notification['folder_id'] != null){
+                            Folder.bindNotificationData(notificationObj, function (r) {
+                                resultNotifications.push(r);
+                                callBack(null);
+                            });
+                        }
+
+                        if(notification['calendar_id'] != null){
+                            Calendar.bindNotificationData(notificationObj, function (r) {
+                                console.log('***---**');console.log(r);console.log('**--***');
+                                resultNotifications.push(r);
+                                callBack(null);
+                            });
+                        }
+
                     }
 
 
@@ -844,6 +928,11 @@ var NotificationController ={
                 });
 
             },function(err){
+                outPut['header'] ={
+                    total_result:resultNotifications.length,
+                    result_per_page:Config.NOTIFICATION_RESULT_PER_PAGE,
+                    total_pages:Math.ceil(resultNotifications.length/Config.NOTIFICATION_RESULT_PER_PAGE)
+                };
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
                 outPut['notifications'] = resultNotifications;
                 res.status(200).json(outPut);

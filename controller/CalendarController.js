@@ -64,6 +64,7 @@ var CalendarController = {
                 var eventData = {
                     user_id : UserId,
                     description : req.body.description,
+                    plain_text : req.body.plain_text,
                     type: (req.body.type == "todo" ? CalendarTypes.TODO : CalendarTypes.EVENT),
                     start_date: req.body.apply_date,
                     event_time: req.body.event_time,
@@ -451,6 +452,7 @@ var CalendarController = {
             shareUsers = (typeof req.body.shared_users != 'undefined' ? req.body.shared_users : []), //this should be an array
             isTimeChanged=(typeof req.body.time_changed != 'undefined' ? req.body.time_changed : false),
             _description = req.body.description,
+            _plain_text = req.body.plain_text,
             _start_date_time= req.body.apply_date,
             _event_time= req.body.event_time;
 
@@ -463,7 +465,6 @@ var CalendarController = {
                 });
             },
             function compareSharedUsers(resultSet, callBack) {
-
                 if(typeof resultSet != 'undefined') {
 
                     if(typeof shareUsers != 'undefined' && shareUsers.length > 0) {
@@ -520,6 +521,7 @@ var CalendarController = {
 
                     var updateData = {
                         description : _description,
+                        plain_text :_plain_text,
                         start_date_time: _start_date_time,
                         event_time: _event_time,
                         shared_users: sharedUserList
