@@ -547,7 +547,17 @@ export class Folder extends React.Component{
                     }
                 }
                 this.setState({files:this.files});
-                this.props.onLoadFolders();
+                //this.props.onLoadFolders();
+                let _dummyData = {
+                    document_id : "582be27c639078842cbc24f6",
+                    document_name : "DUMMY DATA",
+                    document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+                    document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+                    document_type : "jpg",
+                    document_updated_at : "2016-11-16T04:37:16.889Z",
+                    document_user : "574bcb96272a6fd40768cf0f"
+                };
+                this.filesData.unshift(_dummyData)
                 //this.filesData.unshift(data.document) // add the uploaded document to existing document list. this should update the document list of that folder.
                 console.log(this.filesData)
 
@@ -558,7 +568,7 @@ export class Folder extends React.Component{
              * have this inside error for testing purpose.
              * */
 
-            let _dummyData = {
+            let _dummyData = [{
                 document_id : "582be27c639078842cbc24f6",
                 document_name : "DUMMY DATA",
                 document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
@@ -566,14 +576,14 @@ export class Folder extends React.Component{
                 document_type : "jpg",
                 document_updated_at : "2016-11-16T04:37:16.889Z",
                 document_user : "574bcb96272a6fd40768cf0f"
-            };
+            }];
             this.filesData.unshift(_dummyData) // add the uploaded document to existing document list. this should update the document list of that folder.
             console.log(this.filesData)
 
             console.log(request.status)
             console.log(status);
             console.log(error);
-        });
+        }.bind(this));
 
     }
 
@@ -599,7 +609,7 @@ export class Folder extends React.Component{
         let ownerImg;
         let i = (
             <Popover id="popover-contained" style={{maxWidth: "635px", width: "635px"}}>
-                <SharePopup  folderData={folderData} onLoadFolders={_this.props.onLoadFolders}/>
+                <SharePopup folderData={folderData} onLoadFolders={_this.props.onLoadFolders}/>
             </Popover>
         );
 
@@ -761,7 +771,7 @@ export class SharePopup extends React.Component{
             scrollProp: 'hidden',
             isShowingModal : false,
             userToRemove: null
-        }
+        };
 
         this.sharedUsers = [];
         this.loadSharedUsers();
@@ -790,11 +800,13 @@ export class SharePopup extends React.Component{
     }
 
     loadSharedUsers() {
+        console.log("loadSharedUsers");
+        console.log(this.props.folderData)
         $.ajax({
-            url: '/folder/shared-users',
+            url: '/folders/shared-users',
             method: "POST",
             dataType: "JSON",
-            data:{folder_id:this.props.notebook.notebook_id},
+            data:{folder_id:this.props.folderData.folder_id, folder_name:this.props.folderData.folder_name,},
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200) {
@@ -904,9 +916,11 @@ export class SharePopup extends React.Component{
 
     render(){
 
+        let _folderData = this.props.folderData;
+
         let i = (
             <Popover id="popover-contained" className="share-folder-popover add-new-user" style={{maxWidth: "280px", width: "280px", marginTop: "6.2%", marginLeft: "20%"}}>
-                <SharePopupNewUsr  notebook={_notebook} onShareuser={this.props.onUserAdd} onLoadNotes={this.props.onLoadNotes}/>
+                <SharePopupNewUsr  folderData={_folderData} onLoadFolders={this.props.onLoadFolders}/>
             </Popover>
         );
 

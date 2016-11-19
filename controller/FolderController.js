@@ -199,6 +199,114 @@ var FolderController ={
         });
     },
 
+    getSharedUsers: function(req,res){
+
+        console.log("Folder - getSharedUsers");
+
+        var _async = require('async'),
+            Folder = require('mongoose').model('Folder'),
+            User = require('mongoose').model('User'),
+            folderId = req.body.folder_id;
+        var folderName = req.body.folder_name; console.log(folderName)
+
+        var dataArray = [];
+
+        _async.waterfall([
+            function getFolder(callBack){
+                Folder.getFolderById(folderId,function(resultSet){
+                    callBack(null,resultSet);
+                });
+            },
+            function getSharedUsers(resultSet, callBack) {
+                console.log("====== getSharedUsers =====")
+                var sharedUsers = resultSet.shared_users;
+                 console.log(resultSet.shared_users);
+
+
+                _async.each(sharedUsers, function(sharedUser, callBack){
+
+                    // console.log(sharedUser);
+
+                    if(sharedUser.status == FolderSharedRequest.REQUEST_ACCEPTED || sharedUser.status == FolderSharedRequest.REQUEST_PENDING) {
+                        var usrObj = {};
+                        _async.waterfall([
+
+                            function getEsSharedUsers(callBack){
+
+                                console.log("====== getSharedUsers =====")
+
+                                var query={
+                                    q:"user_id:"+sharedUser.user_id.toString(),
+                                    index:'idx_usr'
+                                };
+                                //Find User from Elastic search
+                                ES.search(query,function(csResultSet){
+
+                                    console.log(JSON.stringify(csResultSet.result[0]));
+
+                                    usrObj.user_name = csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'];
+                                    usrObj.profile_image = csResultSet.result[0]['images']['profile_image']['http_url'];
+
+                                    callBack(null);
+                                });
+
+                            },
+                            function getSharedUserMoreDetails(callBack) {
+
+                                console.log("====== getSharedUsers =====")
+
+                                var criteria = {_id:sharedUser.user_id.toString()},
+                                    showOptions ={
+                                        w_exp:true,
+                                        edu:true
+                                    };
+
+                                User.getUser(criteria,showOptions,function(resultSet){
+
+                                    usrObj.country = resultSet.user.country;
+                                    usrObj.school = resultSet.user.education_details[0].school;
+                                    usrObj.degree = resultSet.user.education_details[0].degree;
+                                    usrObj.company_name = resultSet.user.working_experiences[0].company_name;
+                                    usrObj.company_location = resultSet.user.working_experiences[0].location;
+                                    callBack(null);
+                                })
+                            },
+                            function finalFunction(callBack) {
+
+                                usrObj.user_id = sharedUser.user_id;
+                                usrObj.folder_id = folderId;
+                                usrObj.shared_type = sharedUser.shared_type;
+                                usrObj.shared_status = sharedUser.status;
+
+                                dataArray.push(usrObj);
+                                callBack(null);
+                            }
+
+                        ], function(err) {
+                            callBack(null);
+                        });
+
+                    }else{
+                        callBack(null);
+                    }
+
+                },function(err){
+                    callBack(null);
+                });
+
+            }
+        ],function(err){
+            // console.log("finally ---");
+            // console.log(dataArray);
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                results: dataArray
+            };
+            res.status(200).json(outPut);
+        })
+
+    },
+
     getFolder: function (req, res) {
 
         var Folders = require('mongoose').model('Folders');
