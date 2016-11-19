@@ -305,16 +305,15 @@ body{
 }
 
 /* Folder */
-.folder-cover-wrapper .upload-anime{
-	position: absolute;
-	top: 10px;
-	left: 15px;
-	z-index: 1;
+.folder-item .upload-anime{
+  margin: 20px 0 0;
+  z-index: 1;
+  text-align: center;
 }
 
-.folder-cover-wrapper .upload-anime .fa{
-	font-size: 1.5em;
-    color: #fff;
+.folder-item .upload-anime .fa{
+  font-size: 2em;
+  color: #000;
 }
 
 /* Footer on collapse */
