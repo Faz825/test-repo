@@ -305,6 +305,7 @@ router.get('/calendar/shared_users', CalendarController.getEventSharedUsers);
 
 router.get('/calendar/events/date_range', CalendarController.getAllForDateRange);
 router.post('/calendar/event/completion', CalendarController.updateEventCompletion);
+router.post('/calendar/event/get', CalendarController.getEvent);
 
 router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
 

@@ -15,7 +15,11 @@ import EditorField from './EditorField';
 
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
+import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
+
 import { fromJS } from 'immutable';
+
+import forEach from 'lodash.foreach';
 
 import 'rc-time-picker/assets/index.css';
 import TimePicker from 'rc-time-picker';
@@ -82,6 +86,10 @@ export default class DayView extends Component {
         const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
 
+        console.log("WHEN ADD");
+        console.log(contentState);
+        console.log(editorContentRaw);
+
         // get shared users from SharedUsers field
         const sharedUsers = this.refs.SharedUserField.sharedWithIds;
         const postData = {
@@ -132,8 +140,32 @@ export default class DayView extends Component {
     }
 
     clickEdit(eventId) {
-        console.log("The Edit is clicked");
-        console.log(eventId);
+        $.ajax({
+            url : '/calendar/event/get',
+            method : "POST",
+            data : { eventId : eventId },
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
+                if (data.status.code == 200) {
+                    console.log(data.event);
+                    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                    var rawContent = data.event.description;
+                    if(typeof(rawContent.entityMap) === 'undefined' || rawContent.entityMap === null ) {
+                        rawContent.entityMap = {};
+                    }
+                    forEach(rawContent.entityMap, function(value, key) {
+                        value.data.mention = fromJS(value.data.mention)
+                    });
+                    const contentState = convertFromRaw(rawContent);
+                    const editorState = EditorState.createWithContent(contentState);
+                    this.refs.EditorFieldValues.setState({editorState : editorState, sharedWithNames : data.event.shared_users});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
     }
 
     nextDay() {

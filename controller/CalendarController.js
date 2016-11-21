@@ -6,6 +6,74 @@
 var CalendarController = {
 
     /**
+     * Return a specific event by a given ID
+     * @param req
+     * @param res
+     * @return Json
+    */
+    getEvent: function(req,res) {
+
+        var eventId = req.body.eventId;
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
+        var User = require('mongoose').model('User');
+        var _async = require('async');
+        _async.waterfall([
+            function getEvent(callBack){
+                CalendarEvent.getEventById(eventId, function(result) {
+                    if(result.error) {
+                        callBack(result.error, null);
+                    }
+                    callBack(null, result);
+                });
+            },
+
+            function getUser(event, callBack) {
+
+                var arrUsers = event.shared_users;
+                for (var i = 0; i < arrUsers.length; i++) {
+                    var objUser = arrUsers[i];
+                    var name = "";
+                    User.findUser({user_id: objUser.user_id}, function (userResult) {
+                        if(userResult.error) {
+                            callBack(userResult.error, null);
+                        }
+                        // objUser.id =  objUser.user_id;
+                        name = userResult.first_name + " " + userResult.last_name;
+                        arrUsers.push(name);
+                        if(i == arrUsers.length-1) {
+                            event.sharedWithNames = arrUsers;
+                            callBack(null, event);
+                        }
+                    });
+
+                }
+
+            }
+        ],function(err, event){
+            var outPut = {};
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['event'] = event;
+            res.status(200).send(outPut);
+            return;
+        });
+
+        // CalendarEvent.getEventById(eventId, function(resultSet) {
+        //     var outPut ={};
+        //     console.log(resultSet);
+        //     if(resultSet.error) {
+        //         console.log(resultSet);
+        //         outPut['status'] = ApiHelper.getMessage(400, Alert.COMMENT_POST_ID_EMPTY, Alert.ERROR);
+        //         outPut['event'] = null;
+        //         res.status(400).send(outPut);
+        //     }
+        //     console.log("NO ERROR THE RESULT SET IS ");
+        //     outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+        //     outPut['event'] = resultSet;
+        //     res.status(200).send(outPut);
+        // });
+    },
+
+    /**
      * Return all events of the loggedin user.
      * @param req
      * @param res
@@ -60,7 +128,7 @@ var CalendarController = {
                         sharedUserList.push(obj);
                     }
                 }
-                
+
                 var eventData = {
                     user_id : UserId,
                     description : req.body.description,
