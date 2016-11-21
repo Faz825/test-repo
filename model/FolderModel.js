@@ -274,4 +274,21 @@ FolderSchema.statics.updateFolder = function(criteria, data, callBack){
 };
 
 
+/**
+ * This is to get the folder name of given folder_id
+ * @param criteria
+ * @param data
+ * @param callBack
+ */
+FolderSchema.statics.bindNotificationData = function(notificationObj, callBack){
+
+    this.getFolderById(notificationObj.folder_id,function(folderData){
+
+        notificationObj['folder_name'] = folderData.name;
+
+        callBack(notificationObj);
+    });
+
+};
+
 mongoose.model('Folders',FolderSchema);

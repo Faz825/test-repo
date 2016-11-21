@@ -1,5 +1,5 @@
 /**
- * Upload controller will handle all Uploads for anu content upload for the system
+ * Upload controller will handle all Uploads for content upload for the system
  * TODO : This service should be separate from the main thread if this is dealing with larg user base
  */
 
@@ -37,9 +37,11 @@ var UploadController = {
     },
 
     uploadFolderDocument:function(req,res){
+
         var outPut ={},
             _async = require('async'),
             document = {},
+            saved_document = {},
             CurrentSession = Util.getCurrentSession(req);
 
         var binaryData = Util.decodeBase64Image(req.body.content);
@@ -60,10 +62,12 @@ var UploadController = {
             document.name = nameArr[0];
         }
 
-        document.content_type = req.body.type;
+        document.content_type = extension.substr(1);
         document.user_id = Util.toObjectId(CurrentSession.id);
         document.folder_id = Util.toObjectId(req.body.upload_id);
         document.upload_index = req.body.upload_index;
+
+        console.log(document);
 
         _async.waterfall([
 
@@ -160,13 +164,24 @@ var UploadController = {
                 console.log("saveDocumentToDB")
                 var FolderDocs = require('mongoose').model('FolderDocs');
                 FolderDocs.addNewDocument(document, function(res){
+                    console.log(res);
+                    saved_document = {
+                        document_id:res.document._id,
+                        document_name:res.document.name,
+                        document_type:res.document.content_type,
+                        document_user:res.document.user_id,
+                        document_path:res.document.file_path,
+                        document_thumb_path:res.document.thumb_path,
+                        document_updated_at:res.document.updated_at
+                    }
                     callback(null);
                 })
             }
         ], function(err){
             console.log("callback")
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['upload']   = document;
+            outPut['upload_index']   = document.upload_index;
+            outPut['document'] = saved_document;
             res.status(200).json(outPut);
 
         });

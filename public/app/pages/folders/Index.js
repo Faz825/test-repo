@@ -60,7 +60,6 @@ export default class Index extends React.Component{
             dataType: "JSON",
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
-            console.log(data);
             if(data.status.code == 200){
                 if(data.folders.length == 0 || data.folders[0] == null){
                     this.setState({CFName:"My Folder", CFColor:"#1b9ed9"});
@@ -75,8 +74,6 @@ export default class Index extends React.Component{
     }
 
     addDefaultFolder(){
-
-        console.log("addDefaultFolder")
 
         $.ajax({
             url: '/folders/add-new',
@@ -223,10 +220,6 @@ export default class Index extends React.Component{
         }
 
         if(this.state.CFName && this.state.CFColor){
-            console.log("this.state.CFName ==> "+this.state.CFName);
-            console.log("this.state.CFColor ==> "+this.state.CFColor);
-            console.log("this.state.sharedWithIds ==> "+this.state.sharedWithIds);
-            console.log("this.state.sharedWithUsernames ==> "+this.state.sharedWithUsernames);
 
             $.ajax({
                 url: '/folders/add-new',
@@ -236,10 +229,9 @@ export default class Index extends React.Component{
                 data:{folder_name:this.state.CFName, folder_color:this.state.CFColor, shared_with:this.state.sharedWithIds},
                 success: function (data, text) {
                     if (data.status.code == 200) {
-                        console.log("folder_id ==> "+data.folder_id)
                         this.loadFolders();
                         this.setState({isShowingModal: false, CFName : "", CFColor : ""});
-                        console.log(this.state.CFName, this.state.CFColor);
+
                         let _notificationData = {
                             folder_id:data.folder_id,
                             notification_type:"share_folder",
@@ -383,9 +375,10 @@ export default class Index extends React.Component{
 
     render(){
         let _folders = this.state.folders;
+        let _this = this;
         let folderList = _folders.map(function(folder,key){
                             return (
-                                <Folder key={key} folderData={folder} folderCount={key} />
+                                <Folder key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(_this)} />
                             )
                         });
         return(
@@ -439,7 +432,9 @@ export class Folder extends React.Component{
             loggedUser : Session.getSession('prg_lg'),
             isCollapsed : true,
             isProgressBarActive : false,
-            files: []
+            files: [],
+            fileUplaodPreview: {},
+            filesData:this.props.folderData.documents
         };
         this.files = [];
         this.active_folder_id = 0;
@@ -447,61 +442,70 @@ export class Folder extends React.Component{
         this.onDrop = this.onDrop.bind(this);
         this.onOpenClick = this.onOpenClick.bind(this);
         this.onDropAccepted = this.onDropAccepted.bind(this);
-        this.filesData = [{
-            "_id" : "582ae658247ffffc240b08b9",
-            "created_at" : "2016-11-15T10:41:28.850Z",
-            "updated_at" : "2016-11-15T10:41:28.850Z",
-            "content_type" : "doc",
-            "name" : "PEF - Anuthiga Sriskanthan - DOC",
-            "file_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-            "folder_id" : "581976edb9c941e31dbdf106",
-            "user_id" : "574bcb96272a6fd40768cf0f",
-            "__v" : 0
-        },
-        {
-            "_id" : "582ae658247ffffc240b08b9",
-            "created_at" : "2016-11-15T10:41:28.850Z",
-            "updated_at" : "2016-11-15T10:41:28.850Z",
-            "content_type" : "xlsx",
-            "name" : "PEF - Anuthiga Sriskanthan",
-            "file_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-            "folder_id" : "581976edb9c941e31dbdf106",
-            "user_id" : "574bcb96272a6fd40768cf0f",
-            "__v" : 0
-        },
-        {
-            "_id" : "582c2d3a1461f4050b1764c5",
-            "created_at" : "2016-11-16T09:56:10.043Z",
-            "updated_at" : "2016-11-16T09:56:10.043Z",
-            "content_type" : "gif",
-            "name" : "babymartonline.com-check-list",
-            "thumb_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
-            "file_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
-            "folder_id" : "581976edb9c941e31dbdf106",
-            "user_id" : "574bcb96272a6fd40768cf0f",
-            "__v" : 0
-        },
-        {
-            "_id" : "582be27c639078842cbc24f6",
-            "created_at" : "2016-11-16T04:37:16.889Z",
-            "updated_at" : "2016-11-16T04:37:16.889Z",
-            "content_type" : "jpg",
-            "name" : "babymartonline.com-check-list",
-            "thumb_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-            "file_path" : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-            "folder_id" : "581976edb9c941e31dbdf106",
-            "user_id" : "574bcb96272a6fd40768cf0f",
-            "__v" : 0
-        }];
+        this.uploadHandler = this.uploadHandler.bind(this);
+
+        this.filesData = this.props.folderData.documents; 
+        console.log("FILEDATA ===" + this.props.folderData.folder_name);
+        console.log(this.filesData)
+        this.filesData = [
+            {
+                document_id : "582ae658247ffffc240b08b9",
+                document_name : "PEF - Anuthiga Sriskanthan - DOC",
+                document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+                document_thumb_path : null,
+                document_type : "doc",
+                updated_at:{
+                    createdDate: "Oct 11, 2016",
+                    createdTime: "9:31 am"
+                },
+                document_user : "574bcb96272a6fd40768cf0f"
+            },
+            {
+                document_id : "582ae658247ffffc240b08b9",
+                document_name : "PEF - Anuthiga Sriskanthan",
+                document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+                document_thumb_path : null,
+                document_type : "xlsx",
+                updated_at:{
+                    createdDate: "Oct 11, 2016",
+                    createdTime: "9:31 am"
+                },
+                document_user : "574bcb96272a6fd40768cf0f"
+            },
+            {
+                document_id : "582c2d3a1461f4050b1764c5",
+                document_name : "babymartonline.com-check-list",
+                document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
+                document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
+                document_type : "gif",
+                updated_at:{
+                    createdDate: "Oct 11, 2016",
+                    createdTime: "9:31 am"
+                },
+                document_user : "574bcb96272a6fd40768cf0f"
+            },
+            {
+                document_id : "582be27c639078842cbc24f6",
+                document_name : "babymartonline.com-check-list",
+                document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+                document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+                document_type : "jpg",
+                updated_at:{
+                    createdDate: "Oct 11, 2016",
+                    createdTime: "9:31 am"
+                },
+                document_user : "574bcb96272a6fd40768cf0f"
+            }
+        ];
 
     }
 
     onDropAccepted(accepted_files){
         let _this = this;
-        console.log("onDropAccepted");
-        console.log(this.active_folder_id);
-        console.log("onDropAccepted");
-        console.log(accepted_files)
+        //console.log("onDropAccepted");
+        //console.log(this.active_folder_id);
+        //console.log("onDropAccepted");
+        console.log(accepted_files);
 
         for(let i = 0; i < accepted_files.length; i++) {
             _readFile(accepted_files[i]);
@@ -554,21 +558,41 @@ export class Folder extends React.Component{
         }).done(function (data, text) {
             if (data.status.code == 200) {
                 for(var a=0;a<this.files.length;a++) {
-                    if (this.files[a].upload_index == data.upload.upload_index) {
-                        this.files[a].isUploaded = true;
-                        this.files[a].file_path = data.upload.file_path;
-                        this.files[a].thumb_path = data.upload.thumb_path;
+                    if (this.files[a].upload_index == data.upload_index) {
+                        this.files.splice(a,1); // remove the progressbar of uploaded document
                     }
                 }
                 this.setState({files:this.files});
+                this.props.onLoadFolders();
+                //this.filesData.unshift(data.document) // add the uploaded document to existing document list. this should update the document list of that folder.
+                console.log(this.filesData)
 
             }
         }.bind(this)).error(function (request, status, error) {
 
+            /**
+             * have this inside error for testing purpose.
+             * */
+
+            let _dummyData = {
+                document_id : "582be27c639078842cbc24f6",
+                document_name : "DUMMY DATA",
+                document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+                document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+                document_type : "jpg",
+                updated_at:{
+                    createdDate: "Oct 11, 2016",
+                    createdTime: "9:31 am"
+                },
+                document_user : "574bcb96272a6fd40768cf0f"
+            };
+            this.filesData.unshift(_dummyData) // add the uploaded document to existing document list. this should update the document list of that folder.
+            console.log(this.filesData)
+
             console.log(request.status)
             console.log(status);
             console.log(error);
-        });
+        }.bind(this));
 
     }
 
@@ -580,8 +604,8 @@ export class Folder extends React.Component{
 
     onDrop(folder_id) {
         this.active_folder_id = folder_id;
-        console.log("onDrop")
-        console.log(this.active_folder_id);
+        //console.log("onDrop")
+       // console.log(this.active_folder_id);
     }
 
     onOpenClick(folder_id) {
@@ -589,11 +613,12 @@ export class Folder extends React.Component{
     }
 
     render(){
+        let _this = this;
         let folderData = this.props.folderData;
         let ownerImg;
         let i = (
             <Popover id="popover-contained" style={{maxWidth: "635px", width: "635px"}}>
-                <SharePopup />
+                <SharePopup  folderData={folderData} onLoadFolders={_this.props.onLoadFolders}/>
             </Popover>
         );
 
@@ -604,12 +629,22 @@ export class Folder extends React.Component{
         }
 
         let _fileList = this.filesData.map(function(file,key){
-
+            console.log(key);
                             return (
-                                <File fileData={this.filesData} key={key} />
+                                <File fileData={file} key={key} />
                             )
                         });
+        
+        // if(Object.keys(this.state.fileUplaodPreview).length != 0){
+        //     let _fileListPreview = this.state.fileUplaodPreview.map(function(file,key){
+        //         console.log(key);
+        //                         return (
+        //                             <FilePreview fileData={file} key={key} />
+        //                         )
+        //                     });            
+        // }
 
+        console.log(this.state.files);
         return(
 
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
@@ -640,7 +675,11 @@ export class Folder extends React.Component{
                                     (this.props.folderCount != 0)?
                                         <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
                                             <div className="share-folder">
-                                                <i className="fa fa-share-alt" aria-hidden="true"></i>
+                                                {
+                                                    (folderData.is_shared) ?
+                                                        <i className="fa fa-users" aria-hidden="true"></i> :
+                                                        <i className="fa fa-share-alt" aria-hidden="true"></i>
+                                                }
                                             </div>
                                         </OverlayTrigger>
                                     :
@@ -660,19 +699,23 @@ export class Folder extends React.Component{
                                                     <p>Upload new file or image</p>
                                                 </div>
                                         </div>
-                                        {_fileList}                                        
+                                        <FilePreview />                                                    
+                                        {_fileList}
                                     </div>
                                     {
-                                        /*(this.state.isCollapsed)?
-                                            <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
-                                                <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
-                                                <p>See All</p>
-                                            </div>
-                                        :
-                                            <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
-                                                <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
-                                                <p>See Less</p>
-                                            </div>*/
+                                        (this.state.filesData.length > 4)?
+                                            (this.state.isCollapsed)?
+                                                <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
+                                                    <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                                    <p>See All</p>
+                                                </div>
+                                                :
+                                                <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
+                                                    <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                                    <p>See Less</p>
+                                                </div>
+                                            :
+                                            null
                                     }
                                 </div>
                             </div>
@@ -695,17 +738,52 @@ export class File extends React.Component{
     }
 
     render(){
+        let data = this.props.fileData;
+
+        console.log(data);
+        
+        let thumbIMg = "";
+
+        if (data.document_type == "jpg") {
+            thumbIMg = {
+                backgroundImage: 'url(' + data.document_thumb_path + ')'
+            }
+        }
+
+        return(
+            <div className="folder-col">
+                <div className={"folder-item " + data.document_type}>
+                    <div className="time-wrapper">
+                        <p className="date-created">{data.updated_at.createdDate}</p>
+                        <p className="time-created">{data.updated_at.createdTime}</p>
+                    </div>
+                    <div className="folder-title-holder">
+                        <p className="folder-title">{data.document_name}</p>
+                    </div>
+                    <span className="item-type"></span>
+                </div>
+            </div>
+        );
+    }
+}
+
+export class FilePreview extends React.Component{
+    constructor(props){
+        super(props);
+
+        this.state={}
+    }
+
+    render(){
         return(
             <div className="folder-col">
                 <div className="folder-item pdf">
-                    <div className="time-wrapper">
-                        <p className="date-created">July 28, 2016</p>
-                        <p className="time-created">12.34pm</p>
-                    </div>
                     <div className="folder-title-holder">
                         <p className="folder-title">Cambodia Final Paper</p>
                     </div>
-                    <span className="item-type"></span>
+                    <div className="upload-anime">
+                        <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                    </div>
                 </div>
                 {
                     /*
@@ -742,14 +820,158 @@ export class SharePopup extends React.Component{
     constructor(props) {
         super(props);
         this.state={
+            loggedUser:Session.getSession('prg_lg'),
+            sharedUsers:[],
+            seeAllSharedUsers:false,
+            scrollProp: 'hidden',
+            isShowingModal : false,
+            userToRemove: null
         }
+
+        this.sharedUsers = [];
+        this.loadSharedUsers();
+        this.onPermissionChanged = this.onPermissionChanged.bind(this);
+        this.onRemoveSharedUser = this.onRemoveSharedUser.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
+        this.allSharedUsers = this.allSharedUsers.bind(this);
+        this.getPopupRemoveUser = this.getPopupRemoveUser.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+    }
+
+    handleScroll() {
+        if(this.state.seeAllSharedUsers){
+            this.setState({scrollProp : 'scroll'});
+        }else{
+            this.setState({scrollProp : 'hidden'});
+        }
+
+    }
+
+    allSharedUsers(){
+        this.setState({seeAllSharedUsers : true}, function (){
+            this.handleScroll();
+        });
+    }
+
+    loadSharedUsers() {
+        $.ajax({
+            url: '/folder/shared-users',
+            method: "POST",
+            dataType: "JSON",
+            data:{folder_id:this.props.notebook.notebook_id},
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200) {
+                this.sharedUsers = data.results;
+                this.setState({sharedUsers:data.results});
+            }
+        }.bind(this));
+
+
+    }
+
+    filterSharedUsers(notebook_id, event) {
+
+        let value = event.target.value;
+
+        if(value.length >= 1){
+            $.ajax({
+                url: '/filter-shared-users/'+notebook_id+'/'+value,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.setState({
+                            sharedUsers: data.users
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        }else{
+            this.loadSharedUsers();
+        }
+    }
+
+    onPermissionChanged(e, user) {
+
+        let _fieldValue = e.target.value;
+
+        if(user.shared_type != _fieldValue) {
+            $.ajax({
+                url: '/notebook/shared-permission/change',
+                method: "POST",
+                dataType: "JSON",
+                data:{notebook_id:user.notebook_id, shared_type:_fieldValue, user_id:user.user_id},
+                headers: { 'prg-auth-header':this.state.loggedUser.token }
+            }).done(function (data, text) {
+                if(data.status.code == 200) {
+                    console.log("done updating permissions -----");
+                    this.loadSharedUsers();
+                }
+            }.bind(this));
+        }
+    }
+
+    onRemoveSharedUser() {
+        let user = this.state.userToRemove;
+        $.ajax({
+            url: '/notebook/shared-user/remove',
+            method: "POST",
+            dataType: "JSON",
+            data:{notebook_id:user.notebook_id, user_id:user.user_id},
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200) {
+                console.log("done removing shared user -----");
+                if(data.update_status) {
+                    this.props.onLoadNotes();
+                    this.loadSharedUsers();
+                }
+            }
+        }.bind(this));
+    }
+
+    handleClick(user) {
+        this.setState({
+            isShowingModal: true,
+            userToRemove: user
+        });
+    }
+
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
+
+    getPopupRemoveUser(){
+        let user = this.state.userToRemove;
+        return(
+            <div>
+                {this.state.isShowingModal &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="35%" style={{marginTop: "-100px"}}>
+                        <div className="col-xs-12 shared-user-r-popup">
+                            <p>Do you want to remove the shared user?</p>
+                            <button className="btn btn-popup" onClick={this.onRemoveSharedUser.bind(this)}>Yes</button>
+                            <button className="btn btn-popup reject">No</button>
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
     }
 
     render(){
 
         let i = (
             <Popover id="popover-contained" className="share-folder-popover add-new-user" style={{maxWidth: "280px", width: "280px", marginTop: "6.2%", marginLeft: "20%"}}>
-                <SharePopupNewUsr />
+                <SharePopupNewUsr  notebook={_notebook} onShareuser={this.props.onUserAdd} onLoadNotes={this.props.onLoadNotes}/>
             </Popover>
         );
 

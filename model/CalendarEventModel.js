@@ -46,6 +46,11 @@ var CalendarEventSchema = new Schema({
         default : null
     },
 
+    plain_text : {
+        type : String,
+        default : null
+    },
+
     status : {
         type : Number,
         default : 1 /* 1 - pending | 2 - completed | 3 - expired, 4 - cancelled */
@@ -116,6 +121,7 @@ CalendarEventSchema.statics.addNew = function (eventData,callBack) {
     var calenderEvent = new this();
     calenderEvent.user_id = eventData.user_id;
     calenderEvent.description = (eventData.description ? eventData.description : 'No title');
+    calenderEvent.plain_text = (eventData.plain_text ? eventData.plain_text : 'No title');
     calenderEvent.status = CalendarStatus.PENDING;
     calenderEvent.type = (eventData.type ? eventData.type : 1);
     calenderEvent.start_date_time = eventData.start_date;
@@ -338,6 +344,23 @@ CalendarEventSchema.statics.getWeeklyCalenderEvens = function(data,callBack){
             console.log("Server error while getSortedCalenderItems --------");
             callBack({status:400,error:err}, null);
         }
+    });
+
+};
+
+/**
+ *
+ * get the Calender event plain_text of given id
+ * @param data object
+ *
+ */
+CalendarEventSchema.statics.bindNotificationData = function(notificationObj, callBack){
+
+    this.getEventById(notificationObj.calendar_id,function(calendarData){
+
+        notificationObj['calendar_description'] = calendarData.plain_text;
+
+        callBack(notificationObj);
     });
 
 };

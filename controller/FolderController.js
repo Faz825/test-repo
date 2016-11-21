@@ -117,38 +117,26 @@ var FolderController ={
 
     getFolders: function (req, res) {
 
-        console.log("getFolders")
-
         var Folders = require('mongoose').model('Folders'),
             User = require('mongoose').model('User'),
             CurrentSession = Util.getCurrentSession(req),
             _async = require('async'),
             grep = require('grep-from-array'),
-            FolderDocs = require('mongoose').model('FolderDocs'),
-            _this = this;
+            FolderDocs = require('mongoose').model('FolderDocs');
 
         var user_id = CurrentSession.id;
         var criteria = {user_id:Util.toObjectId(user_id)};
-        var my_doc;
-
 
         _async.waterfall([
             function getFolders(callBack){
-                console.log("1 - getFolders")
                 Folders.getFolders(criteria,function(resultSet){
                     callBack(null,resultSet.folders);
                 });
             },
             function getDocumentsDB(folders,callBack){
-                console.log("2 - getDocumentsDB")
-                var _documents = [];
-                _async.eachSeries(folders, function(folder, callBack){
-                    //var _acceptedSharedUsers = 0
-                    //for(var inc = 0; inc < folder.shared_users.length; inc++){
-                    //    if(folder.shared_users[inc].status == FolderSharedRequest.REQUEST_ACCEPTED){
-                    //        _acceptedSharedUsers++;
-                    //    }
-                    //}
+                var _folders = [];
+
+                _async.eachSeries(folders, function(folder, callBackFolder){
 
                     var _folder = {
                         folder_id:folder._id,
@@ -157,21 +145,41 @@ var FolderController ={
                         folder_user:folder.user_id,
                         folder_shared_users:folder.shared_users,
                         folder_updated_at:folder.updated_at,
-                        //is_shared: (_acceptedSharedUsers > 0)? true:false,
-                        //shared_privacy: FolderSharedMode.READ_WRITE,
                         owned_by: 'me',
                         documents:[]
                     }, documents_criteria = {
                         folder_id: Util.toObjectId(folder._id)
                     };
                     FolderDocs.getDocuments(documents_criteria,function(resultSet){
-                        _folder.documents = resultSet.documents;
-                        _documents.push(_folder);
-                        callBack(null);
+
+                        var _documents = [];
+
+                        _async.eachSeries(resultSet.documents, function(doc, callBackDocument){
+
+                            var _doc = {
+                                document_id:doc._id,
+                                document_name:doc.name,
+                                document_type:doc.content_type,
+                                document_user:doc.user_id,
+                                document_path:doc.file_path,
+                                document_thumb_path:doc.thumb_path,
+                                document_updated_at:doc.updated_at
+                            };
+                            _documents.push(_doc);
+                            callBackDocument(null);
+
+                        },function(err){
+
+                            _folder.documents = _documents;
+                            _folders.push(_folder);
+                            callBackFolder(null);
+
+                        });
+
                     });
                 },function(err){
                     console.log("async eachseries callback")
-                    callBack(null,_documents);
+                    callBack(null,_folders);
                 });
             }
 
