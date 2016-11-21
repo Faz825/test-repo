@@ -119,6 +119,7 @@ var CalendarController = {
                 var eventData = {
                     user_id : UserId,
                     description : req.body.description,
+                    plain_text : req.body.plain_text,
                     type: (req.body.type == "todo" ? CalendarTypes.TODO : CalendarTypes.EVENT),
                     start_date: req.body.apply_date,
                     event_time: req.body.event_time,
@@ -500,13 +501,14 @@ var CalendarController = {
         var moment = require('moment');
         var _async = require('async');
 
-        var event_id = req.query.id;
+        var event_id = req.body.id;
         event_id = Util.toObjectId(event_id);
 
         var user_id = Util.getCurrentSession(req).id,
             shareUsers = (typeof req.body.shared_users != 'undefined' ? req.body.shared_users : []), //this should be an array
             isTimeChanged=(typeof req.body.time_changed != 'undefined' ? req.body.time_changed : false),
             _description = req.body.description,
+            _plain_text = req.body.plain_text,
             _start_date_time= req.body.apply_date,
             _event_time= req.body.event_time;
 
