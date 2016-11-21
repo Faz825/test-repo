@@ -209,6 +209,10 @@ export default class DayView extends Component {
         this.currentDay = nextDay;
         this.setState({currentDay : nextDay});
         this.loadEvents();
+
+        // rest editor.
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
     }
 
     previousDay() {
@@ -216,6 +220,10 @@ export default class DayView extends Component {
         this.currentDay = prevDay;
         this.setState({currentDay : prevDay});
         this.loadEvents();
+
+        // rest editor.
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
     }
 
     changeType(eventType) {
@@ -228,6 +236,10 @@ export default class DayView extends Component {
         this.currentDay = clickedDay;
         this.setState({currentDay : clickedDay});
         this.loadEvents();
+
+        // rest editor.
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
     }
 
     handleTimeChange(time) {
