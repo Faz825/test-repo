@@ -86,10 +86,6 @@ export default class DayView extends Component {
         const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
 
-        console.log("WHEN ADD");
-        console.log(contentState);
-        console.log(editorContentRaw);
-
         // get shared users from SharedUsers field
         const sharedUsers = this.refs.SharedUserField.sharedWithIds;
         const postData = {
@@ -148,8 +144,6 @@ export default class DayView extends Component {
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
                 if (data.status.code == 200) {
-                    console.log(data.event);
-                    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                     var rawContent = data.event.description;
                     if(typeof(rawContent.entityMap) === 'undefined' || rawContent.entityMap === null ) {
                         rawContent.entityMap = {};
