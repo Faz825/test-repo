@@ -10,17 +10,17 @@ var CalendarController = {
      * @param req
      * @param res
      * @return Json
-     */
-    getEvent: function (req, res) {
+    */
+    getEvent: function(req,res) {
 
         var eventId = req.body.eventId;
         var CalendarEvent = require('mongoose').model('CalendarEvent');
         var User = require('mongoose').model('User');
         var _async = require('async');
         _async.waterfall([
-            function getEvent(callBack) {
-                CalendarEvent.getEventById(eventId, function (result) {
-                    if (result.error) {
+            function getEvent(callBack){
+                CalendarEvent.getEventById(eventId, function(result) {
+                    if(result.error) {
                         callBack(result.error, null);
                     }
                     callBack(null, result);
@@ -28,24 +28,33 @@ var CalendarController = {
             },
 
             function getUser(event, callBack) {
-
+                event.sharedWithNames = [];
+                event.sharedWithIds = [];
                 var arrUsers = event.shared_users;
-                if (arrUsers.length == 0) {
+                var arrNames = [];
+                var arrIds = [];
+
+                if(arrUsers.length == 0) {
                     callBack(null, event);
                 }
 
+                var fetched = 0;
                 for (var i = 0; i < arrUsers.length; i++) {
                     var objUser = arrUsers[i];
                     var name = "";
                     User.findUser({user_id: objUser.user_id}, function (userResult) {
-                        if (userResult.error) {
+                        if(userResult.error) {
                             callBack(userResult.error, null);
                         }
-                        // objUser.id =  objUser.user_id;
-                        name = userResult.first_name + " " + userResult.last_name;
-                        arrUsers.push(name);
-                        if (i == arrUsers.length - 1) {
-                            event.sharedWithNames = arrUsers;
+
+                        name = userResult.user.first_name + " " + userResult.user.last_name;
+                        arrNames.push(name);
+                        arrIds.push(userResult.user._id);
+
+
+                        if(++fetched == arrUsers.length) {
+                            event.sharedWithNames = arrNames;
+                            event.sharedWithIds = arrIds;
                             callBack(null, event);
                         }
                     });
@@ -717,8 +726,8 @@ var CalendarController = {
         var startTimeOfDay = moment(day, 'YYYY-MM-DD').format('YYYY-MM-DD'); //format the given date as mongo date object
         var endTimeOfDay = moment(day, 'YYYY-MM-DD').add(1, "day").format('YYYY-MM-DD'); //get the next day of given date
         var _async = require('async');
+        var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, user_id: user_id};
 
-        var criteria = {start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay}, user_id: user_id};
         _async.waterfall([
 
             function getSortedCalenderItems(callback) {

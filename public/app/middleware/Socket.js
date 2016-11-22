@@ -58,6 +58,46 @@ class Socket{
         this.socket.emit('folder share notification', _data);
     }
 
+    sendCalendarShareNotification(data){
+        console.log("sendCalendarShareNotification");
+        console.log(data)
+        var _data = {
+            user:this.loggedUser.user_name,
+            data:data
+        };
+        this.socket.emit('calendar share notification', _data);
+    }
+
+    sendCalendarShareResponseNotification(data){
+        console.log("sendCalendarShareResponseNotification");
+        console.log(data)
+        var _data = {
+            user:this.loggedUser.user_name,
+            data:data
+        };
+        this.socket.emit('calendar share notification', _data);
+    }
+
+    sendCalendarScheduleUpdateNotification(data){
+        console.log("sendCalendarScheduleUpdateNotification");
+        console.log(data)
+        var _data = {
+            user:this.loggedUser.user_name,
+            data:data
+        };
+        this.socket.emit('calendar share notification', _data);
+    }
+
+    sendCalendarScheduleTimeChangedNotification(data){
+        console.log("sendCalendarScheduleTimeChangedNotification");
+        console.log(data)
+        var _data = {
+            user:this.loggedUser.user_name,
+            data:data
+        };
+        this.socket.emit('calendar share notification', _data);
+    }
+
     listenToNotification(callback){
 
         this.socket.on('notification',function(data){

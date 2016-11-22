@@ -19,7 +19,7 @@ var NotificationController ={
             _notifications = {}, _redisIds = [], notifications = {},
             _unreadCount = 0, _formattedNotificationData = [], _postIds = [], _userIds = [],
             _users = {}, _postData = {}, _totalNotifications = 0, outPut = {}, _noOfNotifications = 0, _notebookIds = [], notebookData = [],
-            _folderIds = [], _folderData = [];
+            _folderIds = [], _folderData = [], _calendarIds = [], _calendarData = [];
 
         _async.waterfall([
             function getNotificationCount(callBack){
@@ -71,9 +71,14 @@ var NotificationController ={
                             if(notifications[i]['notification_type'] == Notifications.BIRTHDAY ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK_RESPONSE ||
-                                notifications[i]['notification_type'] == Notifications.SHARE_FOLDER){
+                                notifications[i]['notification_type'] == Notifications.SHARE_FOLDER ||
+                                notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR ||
+                                notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR_RESPONSE ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY){
                                 _type = notifications[i]['notification_type']
-                            } else{
+                            } else {
                                 _type = notifications[i]['post_id']+notifications[i]['notification_type'];
                                 _redisIds.push("post:"+notifications[i]['notification_type']+":"+notifications[i]['post_id']);
                                 if(_postIds.indexOf(notifications[i]['post_id'].toString()) == -1){
@@ -86,6 +91,7 @@ var NotificationController ={
                                     post_id:notifications[i]['post_id'],
                                     notebook_id:notifications[i]['notebook_id'],
                                     folder_id:notifications[i]['notified_folder'],
+                                    calendar_id:notifications[i]['calendar_id'],
                                     notification_type:notifications[i]['notification_type'],
                                     read_status:notifications[i]['read_status'],
                                     post_owner:null,
@@ -97,7 +103,8 @@ var NotificationController ={
                                     notification_status:notifications[i]['notification_status'],
                                     sender_id:notifications[i]['sender_id'].toString(),
                                     notebook_name:'',
-                                    folder_name:''
+                                    folder_name:'',
+                                    calendar_text:''
                                 };
                                 if(_types.indexOf(_type) == -1){
                                     _types.push(_type);
@@ -116,6 +123,7 @@ var NotificationController ={
                                     post_id:notifications[i]['post_id'],
                                     notebook_id:notifications[i]['notebook_id'],
                                     folder_id:notifications[i]['notified_folder'],
+                                    calendar_id:notifications[i]['calendar_id'],
                                     notification_type:notifications[i]['notification_type'],
                                     read_status:notifications[i]['read_status'],
                                     post_owner:null,
@@ -127,7 +135,8 @@ var NotificationController ={
                                     notification_status:notifications[i]['notification_status'],
                                     sender_id:notifications[i]['sender_id'].toString(),
                                     notebook_name:'',
-                                    folder_name:''
+                                    folder_name:'',
+                                    calendar_text:''
                                 };
                                 if(_types.indexOf(_type) == -1){
                                     _types.push(_type);
@@ -139,12 +148,50 @@ var NotificationController ={
                                     _folderIds.push(notifications[i]['notified_folder']);
                                 }
                                 _noOfNotifications++;
+
+                            } else if(notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR ||
+                                notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR_RESPONSE ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY){
+
+                                var calendarObj = {
+                                    post_id:notifications[i]['post_id'],
+                                    notebook_id:notifications[i]['notebook_id'],
+                                    folder_id:notifications[i]['notified_folder'],
+                                    calendar_id:notifications[i]['calendar_id'],
+                                    notification_type:notifications[i]['notification_type'],
+                                    read_status:notifications[i]['read_status'],
+                                    post_owner:null,
+                                    created_at:notifications[i]['created_at'],
+                                    senders:[notifications[i]['sender_id'].toString()],
+                                    sender_count:0,
+                                    notification_ids:[],
+                                    notification_id:notifications[i]['notification_id'],
+                                    notification_status:notifications[i]['notification_status'],
+                                    sender_id:notifications[i]['sender_id'].toString(),
+                                    notebook_name:'',
+                                    folder_name:'',
+                                    calendar_text:''
+                                };
+                                if(_types.indexOf(_type) == -1){
+                                    _types.push(_type);
+                                    _notifications[_type] = [calendarObj];
+                                } else {
+                                    _notifications[_type].push(calendarObj);
+                                }
+                                if(_calendarIds.indexOf(notifications[i]['calendar_id']) == -1 && typeof notifications[i]['calendar_id'] != 'undefined') {
+                                    _calendarIds.push(notifications[i]['calendar_id']);
+                                }
+                                _noOfNotifications++;
+
                             } else if(_types.indexOf(_type) == -1){
                                 _types.push(_type)
                                 _notifications[_type] = {
                                     post_id:notifications[i]['post_id'],
                                     notebook_id:'',
                                     folder_id:notifications[i]['notified_folder'],
+                                    calendar_id:'',
                                     notification_type:notifications[i]['notification_type'],
                                     read_status:notifications[i]['read_status'],
                                     post_owner:null,
@@ -156,7 +203,8 @@ var NotificationController ={
                                     notification_status:'',
                                     sender_id:notifications[i]['sender_id'].toString(),
                                     notebook_name:'',
-                                    folder_name:''
+                                    folder_name:'',
+                                    calendar_text:''
                                 };
                                 _noOfNotifications++;
                             }
@@ -191,7 +239,12 @@ var NotificationController ={
                             if(notifications[i]['notification_type'] == Notifications.BIRTHDAY ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK_RESPONSE ||
-                                notifications[i]['notification_type'] == Notifications.SHARE_FOLDER){
+                                notifications[i]['notification_type'] == Notifications.SHARE_FOLDER ||
+                                notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR ||
+                                notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR_RESPONSE ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY){
                                 _type = notifications[i]['notification_type']
                             } else{
                                 _type = notifications[i]['post_id']+notifications[i]['notification_type'];
@@ -207,6 +260,7 @@ var NotificationController ={
                                     post_id:notifications[i]['post_id'],
                                     notebook_id:notifications[i]['notebook_id'],
                                     folder_id:notifications[i]['notified_folder'],
+                                    calendar_id:notifications[i]['calendar_id'],
                                     notification_type:notifications[i]['notification_type'],
                                     read_status:notifications[i]['read_status'],
                                     post_owner:null,
@@ -218,7 +272,8 @@ var NotificationController ={
                                     notification_status:notifications[i]['notification_status'],
                                     sender_id:notifications[i]['sender_id'].toString(),
                                     notebook_name:'',
-                                    folder_name:''
+                                    folder_name:'',
+                                    calendar_text:''
                                 };
                                 if(_types.indexOf(_type) == -1){
                                     _types.push(_type);
@@ -236,6 +291,7 @@ var NotificationController ={
                                     post_id:notifications[i]['post_id'],
                                     notebook_id:notifications[i]['notebook_id'],
                                     folder_id:notifications[i]['notified_folder'],
+                                    calendar_id:notifications[i]['calendar_id'],
                                     notification_type:notifications[i]['notification_type'],
                                     read_status:notifications[i]['read_status'],
                                     post_owner:null,
@@ -247,7 +303,8 @@ var NotificationController ={
                                     notification_status:notifications[i]['notification_status'],
                                     sender_id:notifications[i]['sender_id'].toString(),
                                     notebook_name:'',
-                                    folder_name:''
+                                    folder_name:'',
+                                    calendar_text:''
                                 };
                                 if(_types.indexOf(_type) == -1){
                                     _types.push(_type);
@@ -259,11 +316,49 @@ var NotificationController ={
                                     _folderIds.push(notifications[i]['notified_folder']);
                                 }
                                 _noOfNotifications++;
+
+                            } else if(notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR ||
+                                notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR_RESPONSE ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED ||
+                                notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY){
+
+                                var calendarObj = {
+                                    post_id:notifications[i]['post_id'],
+                                    notebook_id:notifications[i]['notebook_id'],
+                                    folder_id:notifications[i]['notified_folder'],
+                                    calendar_id:notifications[i]['calendar_id'],
+                                    notification_type:notifications[i]['notification_type'],
+                                    read_status:notifications[i]['read_status'],
+                                    post_owner:null,
+                                    created_at:notifications[i]['created_at'],
+                                    senders:[notifications[i]['sender_id'].toString()],
+                                    sender_count:0,
+                                    notification_ids:[],
+                                    notification_id:notifications[i]['notification_id'],
+                                    notification_status:notifications[i]['notification_status'],
+                                    sender_id:notifications[i]['sender_id'].toString(),
+                                    notebook_name:'',
+                                    folder_name:'',
+                                    calendar_text:''
+                                };
+                                if(_types.indexOf(_type) == -1){
+                                    _types.push(_type);
+                                    _notifications[_type] = [calendarObj];
+                                } else {
+                                    _notifications[_type].push(calendarObj);
+                                }
+                                if(_calendarIds.indexOf(notifications[i]['calendar_id']) == -1 && typeof notifications[i]['calendar_id'] != 'undefined') {
+                                    _calendarIds.push(notifications[i]['calendar_id']);
+                                }
+                                _noOfNotifications++;
+
                             } else if(_types.indexOf(_type) == -1){
                                 _notifications[_type] = {
                                     post_id:notifications[i]['post_id'],
                                     notebook_id:'',
                                     folder_id:notifications[i]['notified_folder'],
+                                    calendar_id:notifications[i]['calendar_id'],
                                     notification_type:notifications[i]['notification_type'],
                                     read_status:notifications[i]['read_status'],
                                     post_owner:null,
@@ -275,13 +370,15 @@ var NotificationController ={
                                     notification_status:'',
                                     sender_id:notifications[i]['sender_id'].toString(),
                                     notebook_name:'',
-                                    folder_name:''
+                                    folder_name:'',
+                                    calendar_text:''
                                 };
                                 _types.push(_type)
                                 _notifications[_type] = {
                                     post_id:notifications[i]['post_id'],
                                     notebook_id:'',
                                     folder_id:notifications[i]['notified_folder'],
+                                    calendar_id:notifications[i]['calendar_id'],
                                     notification_type:notifications[i]['notification_type'],
                                     read_status:notifications[i]['read_status'],
                                     post_owner:null,
@@ -293,7 +390,8 @@ var NotificationController ={
                                     notification_status:'',
                                     sender_id:notifications[i]['sender_id'].toString(),
                                     notebook_name:'',
-                                    folder_name:''
+                                    folder_name:'',
+                                    calendar_text:''
                                 };
                                 _noOfNotifications++;
                             }
@@ -359,6 +457,25 @@ var NotificationController ={
                     callBack(null);
                 }
             },
+            function getCalendarData(callBack){
+                var CalendarEvent = require('mongoose').model('CalendarEvent');
+                if(_calendarIds.length > 0) {
+                    _async.each(_calendarIds, function (_calId, callBack) {
+                        CalendarEvent.getEventById(_calId,function(resultSet){
+                            var _data = {
+                                calendar_id : _calId,
+                                calendar_text : resultSet.plain_text
+                            };
+                            _calendarData.push(_data);
+                            callBack(null);
+                        });
+                    }, function (err) {
+                        callBack(null);
+                    });
+                } else {
+                    callBack(null);
+                }
+            },
             function getDetails(callBack){
                 for(var i = 0; i < notifications.length; i++){
 
@@ -383,7 +500,12 @@ var NotificationController ={
 
                     } else if(notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK ||
                         notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK_RESPONSE ||
-                        notifications[i]['notification_type'] == Notifications.SHARE_FOLDER) {
+                        notifications[i]['notification_type'] == Notifications.SHARE_FOLDER ||
+                        notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR ||
+                        notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR_RESPONSE ||
+                        notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+                        notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED ||
+                        notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY) {
                         if (_userIds.indexOf(notifications[i]['sender_id'].toString()) == -1) {
                             _userIds.push(notifications[i]['sender_id'].toString());
                         }
@@ -537,12 +659,43 @@ var NotificationController ={
 
                 callBack(null);
             },
+            function setCalendarText(callBack){
+                if(_calendarData.length > 0) {
+                    for (var key in _notifications) {
+                        if (key == Notifications.SHARE_CALENDAR ||
+                            key == Notifications.SHARE_CALENDAR_RESPONSE ||
+                            key == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+                            key == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED ||
+                            key == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY) {
+                            var obj = _notifications[key];
+                            for (var i in obj) {
+                                if(typeof _notifications[key][i].calendar_id != 'undefined') {
+                                    for (var k in _calendarData) {
+                                        if(_calendarData[k].calendar_id == _notifications[key][i].calendar_id) {
+                                            _notifications[key][i]['calendar_text'] = _calendarData[k].calendar_text;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                callBack(null);
+            },
             function finalizeData(callBack){
 
                 for (var key in _notifications) {
 
                     var obj = _notifications[key];
-                    if(key != Notifications.SHARE_NOTEBOOK && key != Notifications.SHARE_NOTEBOOK_RESPONSE && key != Notifications.SHARE_FOLDER) {
+                    if(key != Notifications.SHARE_NOTEBOOK &&
+                        key != Notifications.SHARE_NOTEBOOK_RESPONSE &&
+                        key != Notifications.SHARE_FOLDER &&
+                        key != Notifications.SHARE_CALENDAR &&
+                        key != Notifications.SHARE_CALENDAR_RESPONSE &&
+                        key != Notifications.CALENDAR_SCHEDULE_UPDATED &&
+                        key != Notifications.CALENDAR_SCHEDULE_TIME_CHANGED &&
+                        key != Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY) {
 
                         if(obj.senders.length > 0){
 
@@ -627,7 +780,7 @@ var NotificationController ={
                                 notification_status:obj[i]['notification_status'] == "REQUEST_ACCEPTED" ? "accepted" : "declined",
                                 notebook_name:obj[i]['notebook_name'],
                                 sender_id:obj[i]['sender_id'],
-                                folder_id:obj[i].folder_id
+                                folder_id:''
                             };
 
                             _formattedNotificationData.push(_data);
@@ -648,11 +801,41 @@ var NotificationController ={
                                 sender_user_name:_users[obj[i].senders[0]]['user_name'],
                                 sender_count:obj[i].sender_count,
                                 birthday:'',
-                                notebook_id:obj[i].notebook_id,
+                                notebook_id:'',
                                 notification_id:obj[i].notification_id,
                                 notification_status:obj[i]['notification_status'] == "REQUEST_ACCEPTED" ? "accepted" : "declined",
                                 folder_id:obj[i].folder_id,
                                 folder_name:obj[i]['folder_name'],
+                                sender_id:obj[i]['sender_id']
+                            };
+
+                            _formattedNotificationData.push(_data);
+                        }
+                    } else if(key == Notifications.SHARE_CALENDAR ||
+                        key == Notifications.SHARE_CALENDAR_RESPONSE ||
+                        key == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+                        key == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED ||
+                        key == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY){
+
+                        for (var i in obj) {
+                            var _data = {
+                                post_id:obj[i].post_id,
+                                notification_type:obj[i].notification_type,
+                                read_status:obj[i].read_status,
+                                created_at:DateTime.explainDate(obj[i].created_at),
+                                post_owner_username:'   ',
+                                post_owner_name:_users[obj[i].senders[0]]['name'],
+                                sender_profile_picture:_users[obj[i].senders[0]]['profile_image'],
+                                sender_name:_users[obj[i].senders[0]]['name'],
+                                sender_user_name:_users[obj[i].senders[0]]['user_name'],
+                                sender_count:key == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY ? 0 : obj[i].sender_count,
+                                birthday:'',
+                                notebook_id:'',
+                                notification_id:obj[i].notification_id,
+                                notification_status:obj[i]['notification_status'] == "REQUEST_ACCEPTED" ? "accepted" : "declined",
+                                folder_id:'',
+                                calendar_id:obj[i].calendar_id,
+                                calendar_text:obj[i]['calendar_text'],
                                 sender_id:obj[i]['sender_id']
                             };
 

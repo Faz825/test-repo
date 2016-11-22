@@ -62,7 +62,7 @@ var CalendarEventSchema = new Schema({
     },
 
     start_date_time : {
-        type : Date
+        type : String
     },
 
     event_time : {
@@ -128,8 +128,9 @@ CalendarEventSchema.statics.addNew = function (eventData,callBack) {
     calenderEvent.event_time = eventData.event_time;
     calenderEvent.event_timezone = eventData.event_timezone;
     calenderEvent.shared_users = eventData.shared_users;
+
     calenderEvent.save(function(err,resultSet){
-        
+
         if(err){
             console.log(err);
             callBack({status:400,error:err});
@@ -172,7 +173,7 @@ CalendarEventSchema.statics.getEventById = function(id,callBack){
 
     var _this = this;
 
-    _this.findOne({_id: id}).exec(function (err, resultSet) {
+    _this.findOne({_id: id}).lean().exec(function (err, resultSet) {
         if (!err) {
             if (resultSet == null) {
                 callBack(null);

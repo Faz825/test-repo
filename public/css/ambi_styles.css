@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.6 (http://getbootstrap.com)
- * Copyright 2011-2015 Twitter, Inc.
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,7 +1418,6 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3119,7 +3118,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3672,7 +3670,6 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10249,17 +10246,17 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/* 
-  Method to use:
-  @include @border {
-    border ($style,  $sides, $emptySides){
-  }
+/*
+	Method to use:
+	@include @border {
+		border ($style,  $sides, $emptySides){
+	}
 */
-/* 
-  Method to use:
-  @include @mixin {
-    content
-  }
+/*
+	Method to use:
+	@include @mixin {
+		content
+	}
 */
 header {
   background: #fff;
@@ -10545,7 +10542,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-header .menu-bar .folder-type {
   position: relative;
   margin-top: 39px;
-  margin-left: 25px;
+  margin-left: 60px;
   float: left;
   cursor: pointer;
   text-align: center;
@@ -10554,30 +10551,27 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-header .menu-bar .folder-type h4 {
   font-size: 1.375em;
   letter-spacing: -1px;
-  font-family: Andelo-Mono;
   font-weight: 400;
   color: #000000;
 }
 .folder-container .folder-header .menu-bar .folder-type:first-child {
-  margin-left: 70px;
+  margin-left: 80px;
 }
 .folder-container .folder-header .menu-bar .folder-type.active .highlighter {
   position: absolute;
   bottom: 0px;
-  left: 0;
+  left: -10%;
   height: 4px;
-  width: 100%;
+  width: 120%;
   background-color: #00a5ef;
-}
-.folder-container .folder-header .menu-bar .folder-type.active h4 {
-  font-weight: 700;
 }
 .folder-container .folder-header .crt-folder {
   float: right;
   margin-top: 30px;
+  margin-right: 10px;
 }
 .folder-container .folder-header .crt-folder .btn-crt-folder {
-  padding: 9px 22px 9px 18px;
+  padding: 9px 28px 9px 28px;
   background-color: #00a5ef;
   color: #ffffff;
   font-size: 0.875em;
@@ -10586,7 +10580,6 @@ header .notification-holder .profile-header-thumb {
   position: relative;
   float: right;
   margin-top: 30px;
-  margin-right: 11px;
   width: 150px;
 }
 .folder-container .folder-header .search-folder .inner-addon i {
@@ -10656,7 +10649,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover {
   position: relative;
   overflow: hidden;
-  border-radius: 5px 0px 0px;
+  border-radius: 8px 0px 0px;
   height: 260px;
   z-index: 1;
 }
@@ -10716,8 +10709,8 @@ header .notification-holder .profile-header-thumb {
   margin-top: 25px;
   font-size: 1.125em;
   color: #ffffff;
-  font-family: Andelo-Mono;
-  font-weight: 700;
+  font-weight: 400;
+  letter-spacing: -1px;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
@@ -10835,6 +10828,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .folder-title-holder .folder-title {
   font-weight: 500;
   font-size: 0.9375em;
+  word-break: break-all;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .item-type {
   position: absolute;
@@ -10842,18 +10836,17 @@ header .notification-holder .profile-header-thumb {
   right: 28px;
   height: 36px;
   width: 29px;
-  background: no-repeat 100% 100%;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.docs .item-type {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.doc .item-type {
   background-image: url("../images/folder/types/docs.png");
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.pdf .item-type {
   background-image: url("../images/folder/types/pdf.png");
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.jpg .time-wrapper, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.jpg .folder-title-holder {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .time-wrapper, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .folder-title-holder {
   color: #ffffff;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.jpg .item-type {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .item-type {
   background-image: url("../images/folder/types/jpg.png");
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
@@ -10876,20 +10869,26 @@ header .notification-holder .profile-header-thumb {
   font-weight: 400;
   color: #00a5ef;
 }
+.folder-container .folder-body .folder.see-all .folder-wrapper {
+  display: flex;
+}
 .folder-container .folder-body .folder.see-all .folder-wrapper .drag-shader .drag-title {
   margin-top: 19% !important;
 }
+.folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-2 .folder-cover-wrapper {
+  height: 100%;
+}
 .folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover {
-  height: 470px;
+  height: 100%;
 }
 .folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .folder-overlay:nth-child(1) {
-  height: 490px;
+  height: 95.5%;
 }
 .folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper {
-  height: 470px;
+  height: auto;
 }
 .folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
-  height: 470px;
+  height: auto;
 }
 .folder-container .folder-body .folder.pink .folder-cover {
   background-color: #ed0677;
