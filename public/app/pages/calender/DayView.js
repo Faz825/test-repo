@@ -89,8 +89,7 @@ export default class DayView extends Component {
         const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
         const strTime = this.state.defaultEventTime;
         const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
-        console.log(dateWithTime);
-        console.log("ADD EVEHT ");
+
         const Editor = this.refs.EditorFieldValues.state.editorState;
         const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
@@ -217,9 +216,10 @@ export default class DayView extends Component {
                     });
 
                     const contentState = convertFromRaw(rawContent);
-                    const editorState = EditorState.createWithContent(contentState);
+                    const toUpdateEditorState = EditorState.createWithContent(contentState);
+                    const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, contentState);
 
-                    this.refs.EditorFieldValues.setState({editorState : editorState});
+                    this.refs.EditorFieldValues.setState({ editorState });
                     this.refs.SharedUserField.setState({
                         sharedWithNames: data.event.sharedWithNames,
                         sharedWithIds: data.event.sharedWithIds,
