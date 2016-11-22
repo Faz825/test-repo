@@ -309,6 +309,51 @@ CalendarEventSchema.statics.getSortedCalenderItems = function(criteria,callBack)
  * @param data object
  *
  */
+CalendarEventSchema.statics.getWeeklyCalenderEvensForSharedUser = function(data,callBack){
+
+    var _this = this;
+    var moment = require('moment');
+    var week = data['week'],month = (data['month'] -1),year = data['year'];
+
+    var startDateOfWeek = moment([year, month]).add((week-1)*7,"days");
+    var endDateOfWeek = moment([year,month]).add((week*7)+1,"days").subtract(1,"millisecond");
+
+    if(week == 5){
+        endDateOfWeek =  moment([year, month]).endOf('month').subtract(1,"millisecond");
+    }
+
+    //get days betweek the week
+    var dateArray = [];
+    var currentDate = startDateOfWeek;
+    while (currentDate <= endDateOfWeek) {
+        dateArray.push(currentDate);
+        currentDate = moment(currentDate).add(1, 'days');
+    }
+
+    var criteria =  { start_date_time: {$gte: startDateOfWeek, $lt: endDateOfWeek }, _id: data['_id']};
+
+    _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
+        if(!err){
+            callBack(null, {
+                status:200,
+                events:resultSet,
+                week:week,
+                days:dateArray
+            });
+        } else {
+            console.log("Server error while getSortedCalenderItems --------");
+            callBack({status:400,error:err}, null);
+        }
+    });
+
+};
+
+/**
+ *
+ * Get Calender events, for the given week
+ * @param data object
+ *
+ */
 CalendarEventSchema.statics.getWeeklyCalenderEvens = function(data,callBack){
 
     var _this = this;
@@ -361,6 +406,71 @@ CalendarEventSchema.statics.bindNotificationData = function(notificationObj, cal
         notificationObj['calendar_description'] = calendarData.plain_text;
 
         callBack(notificationObj);
+    });
+
+};
+
+/**
+ * Get Events | Get shared event to user
+ */
+CalendarEventSchema.statics.ch_getSharedEvents = function(userId,payload,callBack){
+
+    var _this = this;
+    var _cache_key = "idx_user:"+CalendarEventsConfig.CACHE_PREFIX+userId;
+
+    var query={
+        q:payload.q,
+        index:_cache_key
+    };
+
+    //Find User from Elastic search
+    ES.search(query,function(csResultSet){
+        if(csResultSet == null){
+            callBack(null);
+        }else{
+            callBack(csResultSet);
+        }
+
+    });
+
+};
+
+/**
+ * Share Event | Cache based on User
+ * {Create Index}
+ */
+CalendarEventSchema.statics.ch_shareEventCreateIndex = function(userId,data,callBack){
+
+    var _cache_key = "idx_user:"+CalendarEventsConfig.CACHE_PREFIX+userId;
+    var payLoad={
+        index:_cache_key,
+        id:data.user_id.toString(),
+        type: 'shared_events',
+        data:data
+    }
+
+    ES.createIndex(payLoad,function(resultSet){
+        callBack(resultSet)
+    });
+
+};
+
+/**
+ * Share Event | Cache based on User
+ * {Update Event List}
+ */
+CalendarEventSchema.statics.ch_shareEventUpdateIndex = function(userId,data,callBack){
+
+    var _cache_key = "idx_user:"+CalendarEventsConfig.CACHE_PREFIX+userId;
+    var payLoad={
+        index:_cache_key,
+        id:data.user_id.toString(),
+        type: 'shared_events',
+        data:data
+    }
+
+    ES.update(payLoad,function(resultSet){
+        callBack(resultSet)
     });
 
 };
