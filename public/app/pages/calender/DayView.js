@@ -86,10 +86,11 @@ export default class DayView extends Component {
 
     addEvent(event) {
 
-        const strDate = moment(this.state.currentDay).format('MM DD YYYY');
+        const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
         const strTime = this.state.defaultEventTime;
-        const dateWithTime = moment(strDate + ' ' + strTime, "MM DD YYYY HH:mm").format('MM DD YYYY HH:mm');
-
+        const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+        console.log(dateWithTime);
+        console.log("ADD EVEHT ");
         const Editor = this.refs.EditorFieldValues.state.editorState;
         const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
@@ -119,6 +120,11 @@ export default class DayView extends Component {
                 console.log(this.refs.EditorFieldValues);
                 const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
                 this.refs.EditorFieldValues.setState({editorState});
+                this.refs.SharedUserField.setState({
+                    sharedWithNames: [],
+                    sharedWithIds: [],
+                });
+
                 this.loadEvents();
             }
         }.bind(this));
@@ -128,6 +134,11 @@ export default class DayView extends Component {
      * update a given event or a todo.
     */
     updateEvent() {
+
+      const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
+      const strTime = this.state.defaultEventTime;
+      const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+
       const Editor = this.refs.EditorFieldValues.state.editorState;
       const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
       const editorContentRaw = convertToRaw(contentState);
@@ -139,8 +150,8 @@ export default class DayView extends Component {
           description : editorContentRaw,
           plain_text : plainText,
           type : this.state.defaultType,
-          apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:mm'),
-          event_time : this.state.defaultEventTime,
+          apply_date : dateWithTime,
+          event_time : strTime,
           shared_users : sharedUsers,
           id : this.state.editEventId
       };
@@ -157,6 +168,10 @@ export default class DayView extends Component {
               console.log(this.refs.EditorFieldValues);
               const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
               this.refs.EditorFieldValues.setState({editorState});
+              this.refs.SharedUserField.setState({
+                  sharedWithNames: [],
+                  sharedWithIds: [],
+              });
               this.loadEvents();
           }
       }.bind(this));
@@ -184,7 +199,6 @@ export default class DayView extends Component {
     }
 
     clickEdit(eventId) {
-        console.log("EVENT ID IS ::::: " + eventId);
         $.ajax({
             url : '/calendar/event/get',
             method : "POST",
@@ -193,8 +207,7 @@ export default class DayView extends Component {
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
                 if (data.status.code == 200) {
-                    console.log(" EVENT TIME ");
-                    console.log(data);
+
                     var rawContent = data.event.description;
                     if(typeof(rawContent.entityMap) === 'undefined' || rawContent.entityMap === null ) {
                         rawContent.entityMap = {};
@@ -202,10 +215,20 @@ export default class DayView extends Component {
                     forEach(rawContent.entityMap, function(value, key) {
                         value.data.mention = fromJS(value.data.mention)
                     });
+
                     const contentState = convertFromRaw(rawContent);
                     const editorState = EditorState.createWithContent(contentState);
-                    this.refs.EditorFieldValues.setState({editorState : editorState, sharedWithNames : data.event.shared_users});
-                    this.setState({editOn : true, editEventId : eventId, defaultType : (data.event.type == 1 ? 'event' : 'todo')});
+
+                    this.refs.EditorFieldValues.setState({editorState : editorState});
+                    this.refs.SharedUserField.setState({
+                        sharedWithNames: data.event.sharedWithNames,
+                        sharedWithIds: data.event.sharedWithIds,
+                    });
+                    this.setState({
+                        editOn : true,
+                        editEventId : eventId,
+                        defaultType : (data.event.type == 1 ? 'event' : 'todo')
+                    });
                     this.handleTimeChange(data.event.start_date_time);
                 }
             }.bind(this),
@@ -225,6 +248,10 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
+        this.refs.SharedUserField.setState({
+            sharedWithNames: [],
+            sharedWithIds: [],
+        });
     }
 
     previousDay() {
@@ -237,6 +264,10 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
+        this.refs.SharedUserField.setState({
+            sharedWithNames: [],
+            sharedWithIds: [],
+        });
     }
 
     changeType(eventType) {
@@ -254,6 +285,10 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
+        this.refs.SharedUserField.setState({
+            sharedWithNames: [],
+            sharedWithIds: [],
+        });
     }
 
     handleTimeChange(time) {

@@ -28,24 +28,34 @@ var CalendarController = {
             },
 
             function getUser(event, callBack) {
-
+                event.sharedWithNames = [];
+                event.sharedWithIds = [];
                 var arrUsers = event.shared_users;
+                var arrNames = [];
+                var arrIds = [];
+
                 if(arrUsers.length == 0) {
                     callBack(null, event);
                 }
 
+                var fetched = 0;
                 for (var i = 0; i < arrUsers.length; i++) {
                     var objUser = arrUsers[i];
                     var name = "";
-                    User.findUser({user_id: objUser.user_id}, function (userResult) {
+
+                    User.findUser({_id : objUser.user_id}, function (userResult) {
                         if(userResult.error) {
                             callBack(userResult.error, null);
                         }
-                        // objUser.id =  objUser.user_id;
-                        name = userResult.first_name + " " + userResult.last_name;
-                        arrUsers.push(name);
-                        if(i == arrUsers.length-1) {
-                            event.sharedWithNames = arrUsers;
+
+                        name = userResult.user.first_name + " " + userResult.user.last_name;
+                        arrNames.push(name);
+                        arrIds.push(userResult.user._id);
+
+
+                        if(++fetched == arrUsers.length) {
+                            event.sharedWithNames = arrNames;
+                            event.sharedWithIds = arrIds;
                             callBack(null, event);
                         }
                     });
@@ -397,13 +407,12 @@ var CalendarController = {
         var CalendarEvent = require('mongoose').model('CalendarEvent');
         var moment = require('moment');
         var day = req.body.day;
-
         var user_id = Util.toObjectId(CurrentSession.id);
         var startTimeOfDay = moment(day, 'YYYY-MM-DD').format('YYYY-MM-DD'); //format the given date as mongo date object
         var endTimeOfDay = moment(day, 'YYYY-MM-DD').add(1,"day").format('YYYY-MM-DD'); //get the next day of given date
         var _async = require('async');
-
         var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, user_id: user_id};
+
         _async.waterfall([
 
             function getSortedCalenderItems(callback){
