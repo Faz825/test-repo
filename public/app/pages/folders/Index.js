@@ -52,7 +52,7 @@ export default class Index extends React.Component{
 
     loadFolders(){
 
-        console.log("loadFolders")
+        //console.log("loadFolders")
 
         $.ajax({
             url: '/folders/get-all',
@@ -66,7 +66,7 @@ export default class Index extends React.Component{
                     this.addDefaultFolder();
                 } else{
                     let folders = data.folders;
-                    console.log(folders);
+                    //console.log(folders);
                     this.setState({folders: folders});
                 }
             }
@@ -433,7 +433,6 @@ export class Folder extends React.Component{
             isCollapsed : true,
             isProgressBarActive : false,
             files: [],
-            fileUplaodPreview: {},
             filesData:this.props.folderData.documents
         };
         this.files = [];
@@ -445,80 +444,84 @@ export class Folder extends React.Component{
         this.uploadHandler = this.uploadHandler.bind(this);
 
         this.filesData = this.props.folderData.documents; 
-        console.log("FILEDATA ===" + this.props.folderData.folder_name);
-        console.log(this.filesData)
-        this.filesData = [
-            {
-                document_id : "582ae658247ffffc240b08b9",
-                document_name : "PEF - Anuthiga Sriskanthan - DOC",
-                document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-                document_thumb_path : null,
-                document_type : "doc",
-                updated_at:{
-                    createdDate: "Oct 11, 2016",
-                    createdTime: "9:31 am"
-                },
-                document_user : "574bcb96272a6fd40768cf0f"
-            },
-            {
-                document_id : "582ae658247ffffc240b08b9",
-                document_name : "PEF - Anuthiga Sriskanthan",
-                document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-                document_thumb_path : null,
-                document_type : "xlsx",
-                updated_at:{
-                    createdDate: "Oct 11, 2016",
-                    createdTime: "9:31 am"
-                },
-                document_user : "574bcb96272a6fd40768cf0f"
-            },
-            {
-                document_id : "582c2d3a1461f4050b1764c5",
-                document_name : "babymartonline.com-check-list",
-                document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
-                document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
-                document_type : "gif",
-                updated_at:{
-                    createdDate: "Oct 11, 2016",
-                    createdTime: "9:31 am"
-                },
-                document_user : "574bcb96272a6fd40768cf0f"
-            },
-            {
-                document_id : "582be27c639078842cbc24f6",
-                document_name : "babymartonline.com-check-list",
-                document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-                document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-                document_type : "jpg",
-                updated_at:{
-                    createdDate: "Oct 11, 2016",
-                    createdTime: "9:31 am"
-                },
-                document_user : "574bcb96272a6fd40768cf0f"
-            }
-        ];
+        //console.log("FILEDATA ===" + this.props.folderData.folder_name);
+        //console.log(this.filesData)
+        //this.filesData = [
+        //    {
+        //        document_id : "582ae658247ffffc240b08b9",
+        //        document_name : "PEF - Anuthiga Sriskanthan - DOC",
+        //        document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+        //        document_thumb_path : null,
+        //        document_type : "doc",
+        //        document_updated_at:{
+        //            createdDate: "Oct 11, 2016",
+        //            createdTime: "9:31 am"
+        //        },
+        //        document_user : "574bcb96272a6fd40768cf0f"
+        //    },
+        //    {
+        //        document_id : "582ae658247ffffc240b08b9",
+        //        document_name : "PEF - Anuthiga Sriskanthan",
+        //        document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+        //        document_thumb_path : null,
+        //        document_type : "xlsx",
+        //        document_updated_at:{
+        //            createdDate: "Oct 11, 2016",
+        //            createdTime: "9:31 am"
+        //        },
+        //        document_user : "574bcb96272a6fd40768cf0f"
+        //    },
+        //    {
+        //        document_id : "582c2d3a1461f4050b1764c5",
+        //        document_name : "babymartonline.com-check-list",
+        //        document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
+        //        document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
+        //        document_type : "gif",
+        //        document_updated_at:{
+        //            createdDate: "Oct 11, 2016",
+        //            createdTime: "9:31 am"
+        //        },
+        //        document_user : "574bcb96272a6fd40768cf0f"
+        //    },
+        //    {
+        //        document_id : "582be27c639078842cbc24f6",
+        //        document_name : "babymartonline.com-check-list",
+        //        document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+        //        document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+        //        document_type : "jpg",
+        //        document_updated_at:{
+        //            createdDate: "Oct 11, 2016",
+        //            createdTime: "9:31 am"
+        //        },
+        //        document_user : "574bcb96272a6fd40768cf0f"
+        //    }
+        //];
 
     }
 
     onDropAccepted(accepted_files){
+        //console.log("onDropAccepted")
         let _this = this;
         //console.log("onDropAccepted");
         //console.log(this.active_folder_id);
         //console.log("onDropAccepted");
-        console.log(accepted_files);
+        //console.log(accepted_files);
 
         for(let i = 0; i < accepted_files.length; i++) {
             _readFile(accepted_files[i]);
         }
 
         function _readFile(file){
+            //console.log("_readFile")
 
             var reader = new FileReader();
             reader.onload = (function(context) {
                 //console.log(dataArr);
                 //console.log(file)
+                //console.log("onload")
 
                 return function(e) {
+                    //console.log("return function")
                     var src = e.target.result;
                     var upload_index = _this.files.length;
 
@@ -536,7 +539,8 @@ export class Folder extends React.Component{
                     };
                     context.uploadHandler(payLoad);
                     context.files.push(payLoad);
-                    context.setState({files:this.files, isProgressBarActive: true});
+                    context.setState({files:context.files, isProgressBarActive: true});
+                    console.log("file upload started ... show the spinner")
                 };
 
             })(_this);
@@ -547,7 +551,7 @@ export class Folder extends React.Component{
     }
 
     uploadHandler(uploadContent){
-        console.log(uploadContent)
+        //console.log(uploadContent)
         $.ajax({
             url: '/ajax/upload/folderDoc',
             method: "POST",
@@ -563,9 +567,21 @@ export class Folder extends React.Component{
                     }
                 }
                 this.setState({files:this.files});
+                console.log("file upload finished ... hide the spinner");
+                console.log("Gonna call loadFolders")
                 this.props.onLoadFolders();
+                //let _dummyData = {
+                //    document_id : "582be27c639078842cbc24f6",
+                //    document_name : "DUMMY DATA",
+                //    document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+                //    document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+                //    document_type : "jpg",
+                //    document_updated_at : "2016-11-16T04:37:16.889Z",
+                //    document_user : "574bcb96272a6fd40768cf0f"
+                //};
+                //this.filesData.unshift(_dummyData)
                 //this.filesData.unshift(data.document) // add the uploaded document to existing document list. this should update the document list of that folder.
-                console.log(this.filesData)
+                //console.log(this.filesData)
 
             }
         }.bind(this)).error(function (request, status, error) {
@@ -574,18 +590,18 @@ export class Folder extends React.Component{
              * have this inside error for testing purpose.
              * */
 
-            let _dummyData = {
+            let _dummyData = [{
                 document_id : "582be27c639078842cbc24f6",
                 document_name : "DUMMY DATA",
                 document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
                 document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
                 document_type : "jpg",
-                updated_at:{
+                document_updated_at:{
                     createdDate: "Oct 11, 2016",
                     createdTime: "9:31 am"
                 },
                 document_user : "574bcb96272a6fd40768cf0f"
-            };
+            }];
             this.filesData.unshift(_dummyData) // add the uploaded document to existing document list. this should update the document list of that folder.
             console.log(this.filesData)
 
@@ -597,7 +613,7 @@ export class Folder extends React.Component{
     }
 
     onFldrExpand(){
-        console.log("clicked");
+        //console.log("clicked");
         let isCollapsed = this.state.isCollapsed;
         this.setState({isCollapsed : !isCollapsed});
     }
@@ -618,7 +634,7 @@ export class Folder extends React.Component{
         let ownerImg;
         let i = (
             <Popover id="popover-contained" style={{maxWidth: "635px", width: "635px"}}>
-                <SharePopup  folderData={folderData} onLoadFolders={_this.props.onLoadFolders}/>
+                <SharePopup folderData={folderData} onLoadFolders={_this.props.onLoadFolders}/>
             </Popover>
         );
 
@@ -629,22 +645,19 @@ export class Folder extends React.Component{
         }
 
         let _fileList = this.filesData.map(function(file,key){
-            console.log(key);
+            //console.log(key);
                             return (
                                 <File fileData={file} key={key} />
                             )
                         });
-        
-        // if(Object.keys(this.state.fileUplaodPreview).length != 0){
-        //     let _fileListPreview = this.state.fileUplaodPreview.map(function(file,key){
-        //         console.log(key);
-        //                         return (
-        //                             <FilePreview fileData={file} key={key} />
-        //                         )
-        //                     });            
-        // }
 
-        console.log(this.state.files);
+        let _uploadFileList = this.state.files.map(function(uploadFile,key){
+            return(
+                <FilePreview uploadData={uploadFile} key={key}/>
+            )
+
+        });
+
         return(
 
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
@@ -661,15 +674,6 @@ export class Folder extends React.Component{
                                         <span className="logo-shader"></span>
                                     </div>
                                     <h3>{folderData.folder_name}</h3>
-                                    {
-                                        (this.state.isProgressBarActive)?
-                                        <div className="upload-anime">
-                                            <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                                        </div>
-                                        :
-                                        null
-                                        
-                                    }
                                 </div>
                                 {
                                     (this.props.folderCount != 0)?
@@ -699,11 +703,11 @@ export class Folder extends React.Component{
                                                     <p>Upload new file or image</p>
                                                 </div>
                                         </div>
-                                        <FilePreview />                                                    
+                                        {_uploadFileList}
                                         {_fileList}
                                     </div>
                                     {
-                                        (this.state.filesData.length > 4)?
+                                        (this.state.filesData.length + this.state.files.length > 4)?
                                             (this.state.isCollapsed)?
                                                 <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
                                                     <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
@@ -739,8 +743,6 @@ export class File extends React.Component{
 
     render(){
         let data = this.props.fileData;
-
-        console.log(data);
         
         let thumbIMg = "";
 
@@ -754,8 +756,8 @@ export class File extends React.Component{
             <div className="folder-col">
                 <div className={"folder-item " + data.document_type}>
                     <div className="time-wrapper">
-                        <p className="date-created">{data.updated_at.createdDate}</p>
-                        <p className="time-created">{data.updated_at.createdTime}</p>
+                        <p className="date-created">{data.document_updated_at.createdDate}</p>
+                        <p className="time-created">{data.document_updated_at.createdTime}</p>
                     </div>
                     <div className="folder-title-holder">
                         <p className="folder-title">{data.document_name}</p>
@@ -771,46 +773,23 @@ export class FilePreview extends React.Component{
     constructor(props){
         super(props);
 
-        this.state={}
+        this.state={
+            fileData : this.props.uploadData
+        }
     }
 
     render(){
+        //console.log(this.state.fileData)
         return(
             <div className="folder-col">
                 <div className="folder-item pdf">
                     <div className="folder-title-holder">
-                        <p className="folder-title">Cambodia Final Paper</p>
+                        <p className="folder-title">{this.state.fileData.name}</p>
                     </div>
                     <div className="upload-anime">
                         <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                     </div>
                 </div>
-                {
-                    /*
-                    <div className="folder-col">
-                        <div className="folder-item jpg" style="background-image: url(/images/folder/sample_png.png)">
-                            <div className="time-wrapper">
-                                <p className="date-created">July 28, 2016</p>
-                                <p className="time-created">12.34pm</p>
-                            </div>
-                            <div className="folder-title-holder">
-                                <p className="folder-title">Cambodia Final Paper</p>
-                            </div>
-                            <div className="item-type"></div>
-                        </div>
-                    </div>
-                    <div className="folder-item docs">
-                        <div className="time-wrapper">
-                            <p className="date-created">July 28, 2016</p>
-                            <p className="time-created">12.34pm</p>
-                        </div>
-                        <div className="folder-title-holder">
-                            <p className="folder-title">Cambodia Final Paper</p>
-                        </div>
-                        <span className="item-type"></span>
-                    </div>
-                    */
-                }
             </div>
         );
     }
@@ -822,13 +801,15 @@ export class SharePopup extends React.Component{
         this.state={
             loggedUser:Session.getSession('prg_lg'),
             sharedUsers:[],
+            owner:{},
             seeAllSharedUsers:false,
             scrollProp: 'hidden',
             isShowingModal : false,
             userToRemove: null
-        }
+        };
 
         this.sharedUsers = [];
+        this.owner = {};
         this.loadSharedUsers();
         this.onPermissionChanged = this.onPermissionChanged.bind(this);
         this.onRemoveSharedUser = this.onRemoveSharedUser.bind(this);
@@ -855,16 +836,19 @@ export class SharePopup extends React.Component{
     }
 
     loadSharedUsers() {
+        console.log("loadSharedUsers");
+        console.log(this.props.folderData)
         $.ajax({
-            url: '/folder/shared-users',
+            url: '/folders/shared-users',
             method: "POST",
             dataType: "JSON",
-            data:{folder_id:this.props.notebook.notebook_id},
+            data:{folder_id:this.props.folderData.folder_id},
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200) {
-                this.sharedUsers = data.results;
-                this.setState({sharedUsers:data.results});
+                this.sharedUsers = data.sharedWith;
+                this.owner = data.owner;
+                this.setState({sharedUsers:data.sharedWith, owner:this.owner});
             }
         }.bind(this));
 
@@ -969,11 +953,16 @@ export class SharePopup extends React.Component{
 
     render(){
 
+        let _folderData = this.props.folderData;
+
         let i = (
             <Popover id="popover-contained" className="share-folder-popover add-new-user" style={{maxWidth: "280px", width: "280px", marginTop: "6.2%", marginLeft: "20%"}}>
-                <SharePopupNewUsr  notebook={_notebook} onShareuser={this.props.onUserAdd} onLoadNotes={this.props.onLoadNotes}/>
+                <SharePopupNewUsr  folderData={_folderData} onLoadFolders={this.props.onLoadFolders}/>
             </Popover>
         );
+
+        //console.log("OWNER ==>");
+        //console.log(this.state.owner)
 
         return(
             <div className="popup-holder">
@@ -998,60 +987,48 @@ export class SharePopup extends React.Component{
                     <section className="folder-body">
                         <div className="shared-user-wrapper">
                             <div className="shared-user">
-                                <img className="user-image img-circle" src="assets/images/user_2.png" alt="User"/>
+                                <img className="user-image img-circle" src={this.state.owner.profile_image} alt="User"/>
                                     <div className="name-wrapper">
-                                        <p className="name">Leonard Green</p>
-                                        <p className="name-title">University of california, Barkeley</p>
+                                        <p className="name">{this.state.owner.user_name}</p>
+                                        {
+                                            (typeof this.state.owner.school != 'undefined') ?
+                                                <p className="name-title">{this.state.owner.school}</p>
+                                                :
+                                                <p className="name-title">{this.state.owner.company_name}</p>
+                                        }
                                     </div>
                                     <div className="shared-privacy">
                                         <p className="owner">(Owner)</p>
                                     </div>
                             </div>
-                            <div className="shared-user">
-                                <img className="user-image img-circle" src="assets/images/user_1.png" alt="User"/>
-                                    <div className="name-wrapper">
-                                        <p className="name">Saad Ei Yamani</p>
-                                        <p className="name-title">University of california, Barkeley</p>
-                                    </div>
-                                    <div className="shared-privacy">
-                                        <select className="privacy-selector">
-                                            <option value="">Read Only</option>
-                                            <option value="">Read/Write</option>
-                                        </select>
-                                    </div>
-                                    <div className="action">
-                                        <i className="fa fa-minus" aria-hidden="true"></i>
-                                    </div>
-                            </div>
-                            <div className="shared-user">
-                                <img className="user-image img-circle" src="assets/images/user-rounded.png" alt="User"/>
-                                    <div className="name-wrapper">
-                                        <p className="name">Gerald Edwards</p>
-                                        <p className="name-title">University of california, Barkeley</p>
-                                    </div>
-                                    <div className="shared-privacy">
-                                        <select className="privacy-selector">
-                                            <option value="">Read Only</option>
-                                            <option value="">Read/Write</option>
-                                        </select>
-                                    </div>
-                                    <div className="action">
-                                        <i className="fa fa-minus" aria-hidden="true"></i>
-                                    </div>
-                            </div>
+                            <SharedUsers folder={_folderData}
+                                         sharedUserList={this.state.sharedUsers}
+                                         changePermissions={this.onPermissionChanged.bind(this)}
+                                         removeSharedUser={this.getPopupRemoveUser.bind(this)}
+                                         handleClick={this.handleClick.bind(this)}
+                                         scrollProp={this.state.scrollProp}/>
                         </div>
                     </section>
                     <section className="folder-footer">
                         <div className="footer-action-wrapper">
                             <div className="see-all">
-                                <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
-                                <p>See All</p>
+                                {
+                                    (this.state.sharedUsers.length > 2) ?
+                                        <div onClick={this.allSharedUsers.bind(this)}>
+                                            <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                            <p>See All</p>
+                                        </div> : null
+                                }
+
                             </div>
-                            <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
-                                <p className="add-people">
-                                    <i className="fa fa-plus"></i> Add more
-                                </p>
-                            </OverlayTrigger>
+                            {
+                                (_folderData.owned_by == 'me')?
+                                    <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
+                                        <p className="add-people">
+                                            <i className="fa fa-plus"></i> Add more
+                                        </p>
+                                    </OverlayTrigger> : null
+                            }
                         </div>
                     </section>
                 </section>
@@ -1064,8 +1041,126 @@ export class SharePopup extends React.Component{
 export class SharePopupNewUsr extends React.Component{
     constructor(props) {
         super(props);
-        this.state={};
+        this.state={
+            value: '',
+            suggestions: [],
+            addNewUserValue: '',
+            isShowingModal: false,
+            userToAdd: null
+        };
 
+        this.loadNewUsers = this.loadNewUsers.bind(this);
+        this.shareFolder = this.shareFolder.bind(this);
+        this._handleAddNewUser = this._handleAddNewUser.bind(this);
+        this.getPopupAddUser = this.getPopupAddUser.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.loadNewUsers();
+    }
+
+    _handleAddNewUser (e){
+        console.log("_handleAddNewUser")
+        this.setState({
+            addNewUserValue: e.target.value
+        },function (){
+            this.loadNewUsers();
+        });
+
+    }
+
+    loadNewUsers() {
+        console.log("====loadNewUsers=====");
+        let folder = this.props.folderData;console.log(folder);
+        let value = this.state.addNewUserValue;console.log(value);
+        //if(value.length >= 1){
+            $.ajax({
+                url: '/get-folder-users/'+folder.folder_id+'/'+value,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        console.log(data.users)
+                        this.setState({
+                            suggestions: data.users
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        //}else{
+        //    this.setState({
+        //        suggestions: []
+        //    });
+        //}
+    }
+
+    shareFolder(user){
+
+        let loggedUser = Session.getSession('prg_lg');
+        let folder = this.props.folderData;
+        let _folder = {
+            folderId:folder.folder_id,
+            userId:user.user_id
+        };
+
+        $.ajax({
+            url: '/folders/share-folder',
+            method: "POST",
+            dataType: "JSON",
+            data:_folder,
+            headers: { 'prg-auth-header':loggedUser.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200){
+
+                let _notificationData = {
+                    notebook_id:notebook.notebook_id,
+                    notification_type:"share_notebook",
+                    notification_sender:loggedUser,
+                    notification_receiver:user.user_name
+                };
+
+                Socket.sendNotebookNotification(_notificationData);
+
+                this.setState({
+                    notebook: notebook.notebook_name,
+                    userToAdd: user,
+                    isShowingModal: true
+                }, function(){
+                    this.getPopupAddUser();
+                    this.loadNewUsers();
+                });
+
+
+                this.props.onLoadNotes();
+                this.props.onShareuser();
+            }
+        }.bind(this));
+
+    }
+
+    handleClose() {
+        this.setState({isShowingModal: false});
+    }
+
+    getPopupAddUser(){
+        let user = this.state.userToAdd;
+        return(
+            <div>
+                {this.state.isShowingModal &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="35%" style={{marginTop: "-100px"}}>
+                        <div className="col-xs-12 shared-user-r-popup">
+                            <p>{this.state.notebook} shared invitation send to {user.first_name} {user.last_name} successfully...</p>
+                            <button className="btn btn-popup">Ok</button>
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
     }
 
     render() {
@@ -1073,37 +1168,122 @@ export class SharePopupNewUsr extends React.Component{
         const { value, suggestions } = this.state;
         let _this = this;
 
+        let _newUserList = suggestions.map(function(suggestion,key){
+            return(
+                <div className="suggestions-wrapper" key={key}>
+                    <div className="suggestion">
+                        <img className="user-image img-circle" src={suggestion.images.profile_image.http_url} alt="User"/>
+
+                        <div className="name-wrapper">
+                            <p className="name">{suggestion.first_name} {suggestion.last_name}</p>
+                        </div>
+                        <div className="action" onClick={()=>_this.shareFolder(suggestion)}>
+                            <i className="fa fa-plus" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            )
+
+        });
+
+
+
         return (
-            <div className="popup-holder">
+            <div className="popup-holder" >
                 <section className="share-folder-add-people-popup">
                     <div className="input-wrapper">
                         <i className="fa fa-search"></i>
-                        <input type="text" className="form-control" placeholder="Type name"/>
+                        <input type="text" className="form-control" placeholder="Type name" onChange={this._handleAddNewUser}/>
                     </div>
-                    <div className="suggestions-wrapper">
-                        <div className="suggestion">
-                            <img className="user-image img-circle" src="assets/images/user_1.png" alt="User"/>
-                                <div className="name-wrapper">
-                                    <p className="name">Saa Katamor</p>
-                                </div>
-                                <div className="action">
-                                    <i className="fa fa-plus" aria-hidden="true"></i>
-                                </div>
-                        </div>
-                        <div className="suggestion">
-                            <img className="user-image img-circle" src="assets/images/user_2.png" alt="User"/>
-                                <div className="name-wrapper">
-                                    <p className="name">Soham Khan</p>
-                                </div>
-                                <div className="action">
-                                    <i className="fa fa-plus" aria-hidden="true"></i>
-                                </div>
-                        </div>
-                    </div>
+                    {_newUserList}
+                    {this.getPopupAddUser()}
                 </section>
             </div>
         )
+
     }
 
 
+}
+
+export class  SharedUsers extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state={
+            sharedUsers: this.props.sharedUserList
+        }
+    }
+
+    render() {
+
+        let _this = this;
+        let _folder = this.props.folder;
+        let _allUsers = this.props.sharedUserList.map(function(user,key){
+
+            return (
+                <div key={key}>
+                    {
+                        (user.shared_status == 3) ?
+                            <div className="shared-user" key={key}>
+                                <img className="user-image img-circle" src={user.profile_image} alt="User"/>
+                                <div className="name-wrapper">
+                                    <p className="name">{user.user_name}</p>
+                                    {
+                                        (typeof user.school != 'undefined') ?
+                                            <p className="name-title">{user.school}</p>
+                                            :
+                                            <p className="name-title">{user.company_name}</p>
+                                    }
+                                </div>
+                                {
+                                    (_folder.owned_by == 'me')?
+                                        <div>
+                                            <div className="shared-privacy">
+                                                <select className="privacy-selector" onChange={(event)=>_this.props.changePermissions(event, user)} value={user.shared_type}>
+                                                    <option value="1">Read Only</option>
+                                                    <option value="2">Read/Write</option>
+                                                </select>
+                                            </div>
+                                            <div className="action" onClick={()=>_this.props.handleClick(user)}>
+                                                    <i className="fa fa-minus" aria-hidden="true"></i>
+                                            </div>
+                                            {_this.props.removeSharedUser()}
+                                        </div>
+                                        : null
+                                }
+                            </div> :
+                            <div className="shared-user" key={key}>
+                                <img className="user-image img-circle" src={user.profile_image} alt="User"/>
+                                <div className="name-wrapper">
+                                    <p className="name">{user.user_name}</p>
+                                    {
+                                        (typeof user.school != 'undefined') ?
+                                            <p className="name-title">{user.school}</p>
+                                            :
+                                            <p className="name-title">{user.company_name}</p>
+                                    }
+                                </div>
+                                {
+                                    (_folder.owned_by == 'me')?
+                                        <div>
+                                            <div className="shared-privacy">Request Pending</div>
+                                            <div className="action" onClick={()=>_this.props.handleClick(user)}>
+                                                    <i className="fa fa-minus" aria-hidden="true"></i>
+                                            </div>
+                                            {_this.props.removeSharedUser()}
+                                        </div>
+                                        : null
+                                }
+                            </div>
+                    }
+                    </div>
+            )
+        });
+
+        return (
+            <div className="shared-users-container" style={{overflowY: this.props.scrollProp}}>
+                {_allUsers}
+            </div>
+        )
+    }
 }

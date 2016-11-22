@@ -24,6 +24,9 @@ var FolderController ={
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient');
 
+        //console.log(req.body.shared_with);
+        //console.log(_shared_with)
+
         _async.waterfall([
 
             function addFolderToDB(callBack){
@@ -31,6 +34,7 @@ var FolderController ={
                 console.log("addFolderToDB");
 
                 for(var i = 0; i < _shared_with.length; i++){
+                    console.log("_shared_with = "+i)
                     var randColor = _randColor.randomColor({
                         luminosity: 'light',
                         hue: 'random'
@@ -39,12 +43,14 @@ var FolderController ={
                     var _sharingUser = {
                         user_id: _shared_with[i],
                         user_note_color: randColor,
-                        shared_type: FolderSharedRequest.READ_WRITE,
+                        shared_type: FolderSharedMode.READ_WRITE,
                         status: FolderSharedRequest.REQUEST_PENDING
                     };
 
                     sharedUsers.push(_sharingUser);
                 }
+
+                //console.log(sharedUsers)
 
                 var _folder = {
                     name:req.body.folder_name,
@@ -150,6 +156,7 @@ var FolderController ={
                     }, documents_criteria = {
                         folder_id: Util.toObjectId(folder._id)
                     };
+
                     FolderDocs.getDocuments(documents_criteria,function(resultSet){
 
                         var _documents = [];
@@ -163,7 +170,7 @@ var FolderController ={
                                 document_user:doc.user_id,
                                 document_path:doc.file_path,
                                 document_thumb_path:doc.thumb_path,
-                                document_updated_at:doc.updated_at
+                                document_updated_at:DateTime.noteCreatedDate(doc.updated_at)
                             };
                             _documents.push(_doc);
                             callBackDocument(null);
@@ -197,6 +204,181 @@ var FolderController ={
             };
             res.status(200).json(outPut);
         });
+    },
+
+    getSharedUsers: function(req,res){
+
+        //console.log("Folder - getSharedUsers");
+
+        var _async = require('async'),
+            Folder = require('mongoose').model('Folders'),
+            User = require('mongoose').model('User'),
+            folderId = req.body.folder_id;
+        var folderName = req.body.folder_name; console.log(folderName);
+
+        var dataArray = [],
+            owner = {};
+
+        _async.waterfall([
+            function getFolder(callBack){
+                Folder.getFolderById(folderId,function(resultSet){
+                    callBack(null,resultSet);
+                });
+            },
+            function getOwner(resultSet, callBack){
+                //console.log("====== getOwner =====")
+                var folderData = resultSet;
+
+                _async.waterfall([
+
+                    function getEsOwner(callBack){
+
+                        //console.log("====== getEsSharedUsers =====")
+
+                        var query={
+                            q:"user_id:"+folderData.user_id.toString(),
+                            index:'idx_usr'
+                        };
+                        //Find User from Elastic search
+                        ES.search(query,function(csResultSet){
+
+                            //console.log(JSON.stringify(csResultSet.result[0]));
+
+                            owner.user_name = csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'];
+                            owner.profile_image = csResultSet.result[0]['images']['profile_image']['http_url'];
+
+                            callBack(null);
+                        });
+
+                    },
+                    function getOwnerMoreDetails(callBack) {
+
+                        //console.log("====== getSharedUserMoreDetails =====")
+
+                        var criteria = {_id:folderData.user_id.toString()},
+                            showOptions ={
+                                w_exp:true,
+                                edu:true
+                            };
+
+                        User.getUser(criteria,showOptions,function(resultSet){
+
+                            //console.log(JSON.stringify(resultSet));
+
+                            owner.country = resultSet.user.country;
+                            owner.school = resultSet.user.education_details[0].school;
+                            owner.degree = resultSet.user.education_details[0].degree;
+                            owner.company_name = resultSet.user.working_experiences[0].company_name;
+                            owner.company_location = resultSet.user.working_experiences[0].location;
+                            callBack(null);
+                        })
+                    },
+                    function finalFunction(callBack) {
+
+                        owner.user_id = folderData.user_id;
+                        //owner.folder_id = folderId;
+                        //owner.shared_type = sharedUser.shared_type;
+                        //owner.shared_status = sharedUser.status;
+
+                        callBack(null);
+                    }
+
+                ], function(err) {
+                    callBack(null, folderData);
+                });
+
+            },
+            function getSharedUsers(resultSet, callBack) {
+                //console.log("====== getSharedUsers =====")
+                var sharedUsers = resultSet.shared_users;
+                 //console.log(resultSet.shared_users);
+
+
+                _async.each(sharedUsers, function(sharedUser, callBack){
+
+                    // console.log(sharedUser);
+
+                    if(sharedUser.status == FolderSharedRequest.REQUEST_ACCEPTED || sharedUser.status == FolderSharedRequest.REQUEST_PENDING) {
+                        var usrObj = {};
+                        _async.waterfall([
+
+                            function getEsSharedUsers(callBack){
+
+                                //console.log("====== getEsSharedUsers =====")
+
+                                var query={
+                                    q:"user_id:"+sharedUser.user_id.toString(),
+                                    index:'idx_usr'
+                                };
+                                //Find User from Elastic search
+                                ES.search(query,function(csResultSet){
+
+                                    //console.log(JSON.stringify(csResultSet.result[0]));
+
+                                    usrObj.user_name = csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'];
+                                    usrObj.profile_image = csResultSet.result[0]['images']['profile_image']['http_url'];
+
+                                    callBack(null);
+                                });
+
+                            },
+                            function getSharedUserMoreDetails(callBack) {
+
+                                //console.log("====== getSharedUserMoreDetails =====")
+
+                                var criteria = {_id:sharedUser.user_id.toString()},
+                                    showOptions ={
+                                        w_exp:true,
+                                        edu:true
+                                    };
+
+                                User.getUser(criteria,showOptions,function(resultSet){
+
+                                    //console.log(JSON.stringify(resultSet));
+
+                                    usrObj.country = resultSet.user.country;
+                                    usrObj.school = resultSet.user.education_details[0].school;
+                                    usrObj.degree = resultSet.user.education_details[0].degree;
+                                    usrObj.company_name = resultSet.user.working_experiences[0].company_name;
+                                    usrObj.company_location = resultSet.user.working_experiences[0].location;
+                                    callBack(null);
+                                })
+                            },
+                            function finalFunction(callBack) {
+
+                                usrObj.user_id = sharedUser.user_id;
+                                usrObj.folder_id = folderId;
+                                usrObj.shared_type = sharedUser.shared_type;
+                                usrObj.shared_status = sharedUser.status;
+
+                                dataArray.push(usrObj);
+                                callBack(null);
+                            }
+
+                        ], function(err) {
+                            callBack(null);
+                        });
+
+                    }else{
+                        callBack(null);
+                    }
+
+                },function(err){
+                    callBack(null);
+                });
+
+            }
+        ],function(err){
+             //console.log("finally ---");
+             //console.log(JSON.stringify(dataArray));
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                owner:owner,
+                sharedWith: dataArray
+            };
+            res.status(200).json(outPut);
+        })
+
     },
 
     getFolder: function (req, res) {

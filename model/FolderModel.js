@@ -71,6 +71,7 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
     _folder.color  	= _data.color;
     _folder.isDefault  	= _data.isDefault;
     _folder.user_id		= _data.user_id;
+    _folder.shared_users = _data.shared_users;
 
     _folder.save(function(err,resultSet){
 

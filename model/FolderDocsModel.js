@@ -95,7 +95,7 @@ FolderDocsSchema.statics.addNewDocument = function(DocumentData,callBack){
 FolderDocsSchema.statics.getDocuments = function(criteria,callBack){
     var _this = this;
 
-    _this.find(criteria).exec(function(err,resultSet){
+    _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
         if(!err){
             callBack({
                 status:200,
