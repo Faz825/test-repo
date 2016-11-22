@@ -502,8 +502,7 @@ var CalendarController = {
      * @return Json
      */
     updateEvent: function(req,res) {
-        console.log("Update call is called");
-        console.log(req.body);
+
         var CalendarEvent = require('mongoose').model('CalendarEvent'),
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient');

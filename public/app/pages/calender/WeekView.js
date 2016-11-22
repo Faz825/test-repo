@@ -424,7 +424,7 @@ export class WeekDayEventPopUp extends React.Component {
         return(
             <ModalContainer onClose={this.props.handleClose} zIndex={9999}>
                 <ModalDialog onClose={this.props.handleClose} className="modalPopup">
-                    <div className="popup-holder">
+                    <div className="popup-holder week-view-editor-popup-holder">
                         <div className="calendar-week-popup-wrapper">
                             <div className="model-header">
                                 <div className="model-title-wrapper">
