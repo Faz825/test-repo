@@ -2037,6 +2037,99 @@ var UserControler ={
 
     },
 
+
+
+    /**
+     * Load User Connections for Shared Folder
+     * @param req
+     * @param res
+     */
+    getFolderUsers:function(req,res){
+        console.log("getFolderUsers")
+        var User = require('mongoose').model('User'),
+            Folder = require('mongoose').model('Folders'),
+            Connection = require('mongoose').model('Connection'),
+            _async = require('async'),
+            grep = require('grep-from-array'),
+            CurrentSession = Util.getCurrentSession(req),
+            my_connections,
+            alreadySharedUsers = [],
+            filteredConnections = [],
+            criteria = {};
+
+        _async.waterfall([
+
+            function getConnectionsAndSharedUsers(callback){
+                console.log("getConnectionsAndSharedUsers")
+                _async.parallel([
+
+                    function getMyConnections(callback){
+                        console.log("getMyConnections"); console.log(req.params['name'])
+                        if(typeof req.params['name'] != 'undefined' && req.params['name'] != null){
+                            criteria = {
+                                user_id :CurrentSession.id,
+                                q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*'
+                            };
+                        } else{
+                            criteria = {
+                                user_id :CurrentSession.id
+                            };
+                        }
+                        console.log(criteria)
+                        Connection.getMyConnectionData(criteria,function(resultSet) {
+                            console.log("=======================Connections==============")
+                            console.log(resultSet)
+                            my_connections = resultSet.results;
+                            callback(null);
+                        });
+                    },
+                    function getSharedUsers(callback){
+                        console.log("getSharedUsers")
+                        var folderId = req.params['folder'];
+
+                        Folder.getFolderById(folderId,function(resultSet){
+                            for(var i = 0; i < resultSet.shared_users.length; i++){
+                                alreadySharedUsers.push(resultSet.shared_users[i].user_id);
+                            }
+                            callback(null);
+                        });
+                    }
+
+                ], function(err){
+                    callback(null);
+
+                })
+
+            },
+            function getNotSharedUsers(callback){
+                console.log("getFolderUsers")
+                if(alreadySharedUsers != null && my_connections != null){
+
+                    for(var i = 0; i < my_connections.length; i++){
+                        if(alreadySharedUsers.indexOf(my_connections[i].user_id) == -1){
+                            filteredConnections.push(my_connections[i]);
+                        }
+                    }
+                    callback(null)
+                } else{
+                    callback(null)
+                }
+            }
+        ], function (err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            var outPut = {
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                users: filteredConnections
+            }
+            res.status(200).json(outPut);
+        });
+
+    },
+
+
     /**
      * Filter User Connections
      * @param req

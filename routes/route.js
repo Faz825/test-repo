@@ -292,6 +292,9 @@ router.post('/group-folders/add-new', GroupFolderController.addNewFolder);
 router.get('/group-folders/get-all', GroupFolderController.getFolders);
 router.post('/folders/shared-users', FolderController.getSharedUsers);
 
+router.get('/get-folder-users/:folder/:name', UserController.getFolderUsers);
+router.get('/get-folder-users/:folder', UserController.getFolderUsers);
+
 router.post('/calendar/event/add', CalendarController.addEvent);
 router.get('/calendar/month/all', CalendarController.getAllForSpecificMonth);
 router.get('/calendar/week/all', CalendarController.getAllForSpecificWeek);
