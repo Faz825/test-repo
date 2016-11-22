@@ -42,7 +42,7 @@ export default class DayEventsList extends React.Component {
                         </div>
                     </div>
                     <span className="event-time pull-right">{event.event_time}</span>
-						<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
+										<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
                 </li>
             );
         });

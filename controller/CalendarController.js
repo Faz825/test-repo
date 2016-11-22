@@ -42,7 +42,7 @@ var CalendarController = {
                 for (var i = 0; i < arrUsers.length; i++) {
                     var objUser = arrUsers[i];
                     var name = "";
-                    User.findUser({user_id: objUser.user_id}, function (userResult) {
+                    User.findUser({_id: objUser.user_id}, function (userResult) {
                         if(userResult.error) {
                             callBack(userResult.error, null);
                         }
@@ -109,7 +109,7 @@ var CalendarController = {
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             notifyUsers = (typeof req.body.shared_users != 'undefined' ? req.body.shared_users : []); //this should be an array
-        console.log(req.body);
+
         _async.waterfall([
 
             function addNewToDb(callBack) {
@@ -785,7 +785,7 @@ var CalendarController = {
                                 });
                             });
                         } else {
-                            callBack(null, null);
+                            callBack(null, resultSet.eventsDb);
                         }
 
                     }
@@ -809,6 +809,10 @@ var CalendarController = {
             },
 
             function composeUsers(events, users, callback) {
+
+                if (events == null || events == null) {
+                    callback(null, []);
+                }
 
                 if (events.length == 0) {
                     callback(null, []);

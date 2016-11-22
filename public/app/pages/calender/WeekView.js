@@ -322,6 +322,7 @@ export class WeekDayEventPopUp extends React.Component {
         let month = this.props.curr_date.month();
         let date = this.props.curr_date.day();
         let timeWithDay = year+'/'+month+'/'+date+' '+time;
+
         this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
     }
 
@@ -343,17 +344,25 @@ export class WeekDayEventPopUp extends React.Component {
 
     addEvent(event) {
 
+
+        const strDate = this.props.curr_date.format('YYYY-MM-DD');
+        const strTime = this.state.defaultEventTime;
+        const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+
         const Editor = this.editor.state.editorState;
         const contentState = this.editor.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
+        const plainText = contentState.getPlainText();
 
         // get shared users from SharedUsers field
         const sharedUsers = this.state.sharedWithIds;
+        // const sharedUsers = this.refs.SharedUserField.sharedWithIds;
         const postData = {
             description : editorContentRaw,
+            plain_text : plainText,
             type : this.state.eventType,
-            apply_date : this.props.curr_date.format('MM DD YYYY HH:mm'),
-            event_time : this.state.defaultEventTime,
+            apply_date : dateWithTime,
+            event_time : strTime,
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
         };
