@@ -10911,11 +10911,11 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.dark-green .folder-cover {
   background-color: #067d41;
 }
-.folder-container .folder-body .folder.drag .folder-wrapper {
+.folder-container .folder-body .folder .folder-wrapper.drag {
   border: 1px solid #848484;
   border-style: dashed;
 }
-.folder-container .folder-body .folder.drag .folder-wrapper .drag-shader {
+.folder-container .folder-body .folder .folder-wrapper.drag .drag-shader {
   position: absolute;
   display: block;
   width: 100%;
@@ -10927,7 +10927,7 @@ header .notification-holder .profile-header-thumb {
   text-align: center;
   opacity: 0.95;
 }
-.folder-container .folder-body .folder.drag .folder-wrapper .drag-shader .drag-title {
+.folder-container .folder-body .folder .folder-wrapper.drag .drag-shader .drag-title {
   margin-top: 10%;
   font-size: 1.5em;
   font-family: Andelo-Mono;
