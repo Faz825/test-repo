@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import Session from '../../middleware/Session';
 
-import {EditorState, RichUtils} from 'draft-js';
+import { EditorState, RichUtils} from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
 
 import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin'; // eslint-disable-line import/no-unresolved

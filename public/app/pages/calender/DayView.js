@@ -15,7 +15,11 @@ import EditorField from './EditorField';
 
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
+import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
+
 import { fromJS } from 'immutable';
+
+import forEach from 'lodash.foreach';
 
 import 'rc-time-picker/assets/index.css';
 import TimePicker from 'rc-time-picker';
@@ -33,12 +37,16 @@ export default class DayView extends Component {
             user : user,
             showTimePanel : '',
             showUserPanel : '',
+            editOn : false,
+            editEventId : ''
         };
         this.currentDay = this.state.currentDay;
         this.addEvent = this.addEvent.bind(this);
+        this.updateEvent = this.updateEvent.bind(this);
         this.nextDay = this.nextDay.bind(this);
         this.changeType = this.changeType.bind(this);
         this.handleTimeChange = this.handleTimeChange.bind(this);
+
     }
 
     _onHashClick() {
@@ -78,17 +86,23 @@ export default class DayView extends Component {
 
     addEvent(event) {
 
+        const strDate = moment(this.state.currentDay).format('MM DD YYYY');
+        const strTime = this.state.defaultEventTime;
+        const dateWithTime = moment(strDate + ' ' + strTime, "MM DD YYYY HH:mm").format('MM DD YYYY HH:mm');
+
         const Editor = this.refs.EditorFieldValues.state.editorState;
         const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
+        const plainText = contentState.getPlainText();
 
         // get shared users from SharedUsers field
         const sharedUsers = this.refs.SharedUserField.sharedWithIds;
         const postData = {
             description : editorContentRaw,
+            plain_text : plainText,
             type : this.state.defaultType,
-            apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:mm'),
-            event_time : this.state.defaultEventTime,
+            apply_date : dateWithTime,
+            event_time : strTime,
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
         };
@@ -108,6 +122,44 @@ export default class DayView extends Component {
                 this.loadEvents();
             }
         }.bind(this));
+    }
+
+    /*
+     * update a given event or a todo.
+    */
+    updateEvent() {
+      const Editor = this.refs.EditorFieldValues.state.editorState;
+      const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
+      const editorContentRaw = convertToRaw(contentState);
+      const plainText = contentState.getPlainText();
+
+      // get shared users from SharedUsers field
+      const sharedUsers = this.refs.SharedUserField.sharedWithIds;
+      const postData = {
+          description : editorContentRaw,
+          plain_text : plainText,
+          type : this.state.defaultType,
+          apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:mm'),
+          event_time : this.state.defaultEventTime,
+          shared_users : sharedUsers,
+          id : this.state.editEventId
+      };
+
+      $.ajax({
+          url: '/calendar/update',
+          method: "POST",
+          dataType: "JSON",
+          data: JSON.stringify(postData),
+          headers : { "prg-auth-header" : this.state.user.token },
+          contentType: "application/json; charset=utf-8",
+      }).done(function (data, text) {
+          if(data.status.code == 200){
+              console.log(this.refs.EditorFieldValues);
+              const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+              this.refs.EditorFieldValues.setState({editorState});
+              this.loadEvents();
+          }
+      }.bind(this));
     }
 
     markTodo(eventId, status) {
@@ -132,8 +184,35 @@ export default class DayView extends Component {
     }
 
     clickEdit(eventId) {
-        console.log("The Edit is clicked");
-        console.log(eventId);
+        console.log("EVENT ID IS ::::: " + eventId);
+        $.ajax({
+            url : '/calendar/event/get',
+            method : "POST",
+            data : { eventId : eventId },
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
+                if (data.status.code == 200) {
+                    console.log(" EVENT TIME ");
+                    console.log(data);
+                    var rawContent = data.event.description;
+                    if(typeof(rawContent.entityMap) === 'undefined' || rawContent.entityMap === null ) {
+                        rawContent.entityMap = {};
+                    }
+                    forEach(rawContent.entityMap, function(value, key) {
+                        value.data.mention = fromJS(value.data.mention)
+                    });
+                    const contentState = convertFromRaw(rawContent);
+                    const editorState = EditorState.createWithContent(contentState);
+                    this.refs.EditorFieldValues.setState({editorState : editorState, sharedWithNames : data.event.shared_users});
+                    this.setState({editOn : true, editEventId : eventId, defaultType : (data.event.type == 1 ? 'event' : 'todo')});
+                    this.handleTimeChange(data.event.start_date_time);
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
     }
 
     nextDay() {
@@ -141,6 +220,11 @@ export default class DayView extends Component {
         this.currentDay = nextDay;
         this.setState({currentDay : nextDay});
         this.loadEvents();
+
+        // rest editor.
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
+        this.setState({editOn : false});
     }
 
     previousDay() {
@@ -148,6 +232,11 @@ export default class DayView extends Component {
         this.currentDay = prevDay;
         this.setState({currentDay : prevDay});
         this.loadEvents();
+
+        // rest editor.
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
+        this.setState({editOn : false});
     }
 
     changeType(eventType) {
@@ -160,6 +249,11 @@ export default class DayView extends Component {
         this.currentDay = clickedDay;
         this.setState({currentDay : clickedDay});
         this.loadEvents();
+
+        // rest editor.
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
+        this.setState({editOn : false});
     }
 
     handleTimeChange(time) {
@@ -304,9 +398,14 @@ export default class DayView extends Component {
                                                     <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
                                                 </div>
                                             </div>
-                                            <div className="btn-enter" onClick={this.addEvent}>
-                                                <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
-                                            </div>
+                                            { this.state.editOn == false ?
+                                                <div className="btn-enter" onClick={this.addEvent}>
+                                                    <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
+                                                </div>
+                                            :   <div className="btn-enter" onClick={this.updateEvent}>
+                                                    <i className="fa fa-paper-plane" aria-hidden="true"></i> Update
+                                                </div>
+                                            }
                                         </div>
                                     </div>
                                 </div>

@@ -6,6 +6,61 @@
 var CalendarController = {
 
     /**
+     * Return a specific event by a given ID
+     * @param req
+     * @param res
+     * @return Json
+    */
+    getEvent: function(req,res) {
+
+        var eventId = req.body.eventId;
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
+        var User = require('mongoose').model('User');
+        var _async = require('async');
+        _async.waterfall([
+            function getEvent(callBack){
+                CalendarEvent.getEventById(eventId, function(result) {
+                    if(result.error) {
+                        callBack(result.error, null);
+                    }
+                    callBack(null, result);
+                });
+            },
+
+            function getUser(event, callBack) {
+
+                var arrUsers = event.shared_users;
+                if(arrUsers.length == 0) {
+                    callBack(null, event);
+                }
+
+                for (var i = 0; i < arrUsers.length; i++) {
+                    var objUser = arrUsers[i];
+                    var name = "";
+                    User.findUser({user_id: objUser.user_id}, function (userResult) {
+                        if(userResult.error) {
+                            callBack(userResult.error, null);
+                        }
+                        // objUser.id =  objUser.user_id;
+                        name = userResult.first_name + " " + userResult.last_name;
+                        arrUsers.push(name);
+                        if(i == arrUsers.length-1) {
+                            event.sharedWithNames = arrUsers;
+                            callBack(null, event);
+                        }
+                    });
+                }
+            }
+        ],function(err, event){
+            var outPut = {};
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['event'] = event;
+            res.status(200).send(outPut);
+            return;
+        });
+    },
+
+    /**
      * Return all events of the loggedin user.
      * @param req
      * @param res
@@ -60,7 +115,7 @@ var CalendarController = {
                         sharedUserList.push(obj);
                     }
                 }
-                
+
                 var eventData = {
                     user_id : UserId,
                     description : req.body.description,
@@ -188,7 +243,7 @@ var CalendarController = {
         var startDate = moment(start_date).format('YYYY-MM-DD');
 
         // Clone the value before .endOf()
-        var endDate = moment(end_date).add(1,'d').format('YYYY-MM-DD');
+        var endDate = moment(end_date).format('YYYY-MM-DD');
 
         var criteria =  { start_date_time: {$gte: startDate, $lt: endDate}, status: 1, user_id: user_id};
 
@@ -438,14 +493,15 @@ var CalendarController = {
      * @return Json
      */
     updateEvent: function(req,res) {
-
+        console.log("Update call is called");
+        console.log(req.body);
         var CalendarEvent = require('mongoose').model('CalendarEvent'),
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient');
         var moment = require('moment');
         var _async = require('async');
 
-        var event_id = req.query.id;
+        var event_id = req.body.id;
         event_id = Util.toObjectId(event_id);
 
         var user_id = Util.getCurrentSession(req).id,
@@ -465,6 +521,7 @@ var CalendarController = {
                 });
             },
             function compareSharedUsers(resultSet, callBack) {
+
                 if(typeof resultSet != 'undefined') {
 
                     if(typeof shareUsers != 'undefined' && shareUsers.length > 0) {
@@ -521,7 +578,6 @@ var CalendarController = {
 
                     var updateData = {
                         description : _description,
-                        plain_text :_plain_text,
                         start_date_time: _start_date_time,
                         event_time: _event_time,
                         shared_users: sharedUserList
