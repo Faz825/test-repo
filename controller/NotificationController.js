@@ -63,7 +63,6 @@ var NotificationController ={
                     NotificationRecipient.getRecipientNotifications(criteria, days, function(resultSet){
 
                         notifications = resultSet.notifications;
-
                         var _types = [], _type = '';
 
                         for(var i = 0; i < notifications.length; i++){
@@ -1071,7 +1070,7 @@ var NotificationController ={
                             calendar_id: (notification['calendar_id'] != null ? notification['calendar_id'] : ""),
 
                             //- Notification status for (Notebook, Folder, ...)
-                            //notification_status: notification['notification_status']
+                            notification_status: notification['notification_status']
                         };
 
                         if(notification['post_id'] != null){
@@ -1383,6 +1382,7 @@ var NotificationController ={
 
 
     },
+
     updateNotebookNotifications: function(req,res){
 
         var NotificationRecipient = require('mongoose').model('NotificationRecipient'),

@@ -621,8 +621,7 @@ var NotesController ={
 
 
                 _async.each(sharedUsers, function(sharedUser, callBack){
-
-                    // console.log(sharedUser);
+                     //console.log(sharedUser);
 
                     if(sharedUser.status == NoteBookSharedRequest.REQUEST_ACCEPTED || sharedUser.status == NoteBookSharedRequest.REQUEST_PENDING) {
                         var usrObj = {};
@@ -633,12 +632,13 @@ var NotesController ={
                                     q:"user_id:"+sharedUser.user_id.toString(),
                                     index:'idx_usr'
                                 };
+
                                 //Find User from Elastic search
                                 ES.search(query,function(csResultSet){
-
-                                    usrObj.user_name = csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'];
-                                    usrObj.profile_image = csResultSet.result[0]['images']['profile_image']['http_url'];
-
+                                    if(csResultSet.result.length >0 && csResultSet.results != null){
+                                        usrObj.user_name = csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'];
+                                        usrObj.profile_image = csResultSet.result[0]['images']['profile_image']['http_url'];
+                                    }
                                     callBack(null);
                                 });
 
@@ -877,10 +877,12 @@ var NotesController ={
                 var criteria = {};
 
                 NoteBook.getNotebooks(criteria,function(resultSet){
+                    console.log(resultSet);
                     callBack(null,resultSet);
                 });
             },
             function updateSharedUsersNoteColor(resultSet, callBack){
+
                 _async.eachSeries(resultSet.notebooks, function(notebook,callBack){
 
                     var _notebook_shared_users = notebook.shared_users;

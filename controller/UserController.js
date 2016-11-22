@@ -577,11 +577,8 @@ var UserControler ={
         var req_connected_users = JSON.parse(req.body.connected_users);
         var req_unconnected_users = JSON.parse(req.body.unconnected_users);
 
-
-
         var Connection = require('mongoose').model('Connection'),
             User       = require('mongoose').model('User');
-
 
         User.saveUpdates(CurrentSession.id,{status:5},function(updateDataSet){
             Connection.sendConnectionRequest(CurrentSession.id,req_connected_users,req_unconnected_users, function (resultSet) {
@@ -605,14 +602,13 @@ var UserControler ={
         var CurrentSession = Util.getCurrentSession(req);
         CurrentSession['status']    = 6;
         Util.addToSession(req,CurrentSession);
+
         var outPut ={};
         outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
         outPut['user']=CurrentSession;
 
         var req_news_categories = JSON.parse(req.body.news_categories);
         var un_selected_categories = JSON.parse(req.body.un_selected);
-
-
 
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
             User                  = require('mongoose').model('User');
@@ -656,7 +652,7 @@ var UserControler ={
         }
 
         User.saveUpdates(CurrentSession.id,{status:7},function(updateDataSet){
-
+console.log(data);
                 //IF PROFILE IMAGE NOT FOUND
                 if(typeof req.body.profileImg == 'undefined' || req.body.profileImg == "") {
                     var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
@@ -981,7 +977,6 @@ var UserControler ={
         //GET EXPERIENCED SKILLS
         var existing_skills =[],deleted_skills=[];
 
-
         for(var a =0;a<skill_sets.experienced.add.length;a++){
             existing_skills.push({
                 skill_id:skill_sets.experienced.add[a],
@@ -989,7 +984,6 @@ var UserControler ={
 
             })
         }
-
 
         for(var a =0;a<skill_sets.day_to_day_comforts.add.length;a++){
             existing_skills.push({
@@ -1007,8 +1001,6 @@ var UserControler ={
         var userId = Util.getCurrentSession(req).id
 
         //TODO : If user added new skills that are not in Skill Collection
-
-
 
         async.parallel([
 
@@ -1051,11 +1043,11 @@ var UserControler ={
      */
     getSkills:function(req,res){
         var User = require('mongoose').model('User');
-
         var criteria = {user_name:req.params['uname']},
             showOptions ={
                 skill:true
             };
+
         User.getUser(criteria,showOptions,function(resultSet) {
             var outPut = {};
             if (resultSet.status != 200) {
@@ -1076,6 +1068,8 @@ var UserControler ={
         })
 
     },
+
+
     forgotPassword:function(req,res){
 
         var async = require('async'),
@@ -1227,6 +1221,7 @@ var UserControler ={
         var CurrentSession = Util.getCurrentSession(req);
 
         Connection.getConnectionCount(CurrentSession.id,function(connectionCount){
+            console.log(connectionCount);
             var outPut = {};
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['connection_count'] = connectionCount;
@@ -1558,7 +1553,6 @@ var UserControler ={
     saveArticle:function(req,res){
 
         var req_saved_articles = JSON.parse(req.body.saved_articles);
-
         var SavedArticle = require('mongoose').model('SavedArticle');
 
         SavedArticle.saveArticle(req_saved_articles, function(resultSet){
@@ -2160,7 +2154,7 @@ var UserControler ={
                     //console.log("=======================Connections==============")
                     //console.log(resultSet)
                     my_connections = esResultSet.result;
-                    console.log(my_connections);
+                   // console.log(my_connections);
                     _async.waterfall([
                         function getSharedUsers(callback){
 
@@ -2212,10 +2206,6 @@ var UserControler ={
         });
 
     }
-
-
-
-
 
 };
 
