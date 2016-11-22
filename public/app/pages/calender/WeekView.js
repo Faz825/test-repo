@@ -7,6 +7,7 @@ import moment from 'moment-timezone';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
+import Socket  from '../../middleware/Socket';
 
 import EditorField from './EditorField';
 import SharedUsers from './SharedUsers';
@@ -114,7 +115,6 @@ export default class WeekView extends React.Component {
     }
 
     processDataCall(postData) {
-        console.log(" I AM CALLED 1 ");
         console.log(postData);
         $.ajax({
             url: '/calendar/events/date_range',
@@ -124,8 +124,6 @@ export default class WeekView extends React.Component {
             headers: { 'prg-auth-header':this.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200){
-                console.log("data loaded 2 ===");
-                console.log(data.events);
                 this.setState({events: data.events});
             }
         }.bind(this));
@@ -288,6 +286,8 @@ export class WeekDayEventPopUp extends React.Component {
             showUserPanel : '',
             showUserPanelWindow : false
         }
+
+        this.loggedUser = user;
         this.sharedWithIds = [];
         this.addEvent = this.addEvent.bind(this);
     }
@@ -371,6 +371,17 @@ export class WeekDayEventPopUp extends React.Component {
                 this.editor.setState({editorState});
                 this.props.handleClose();
 
+                if(typeof sharedUsers != 'undefined' && sharedUsers.length > 0) {
+                    let _notificationData = {
+                        cal_event_id:data.events._id,
+                        notification_type:"calendar_share_notification",
+                        notification_sender:this.loggedUser,
+                        notification_receiver:sharedUsers
+                    };
+
+                    Socket.sendCalendarShareNotification(_notificationData);
+                }
+
                 // load data
                 let week_start = moment(this.props.week_startDt).format('YYYY-MM-DD');
                 let week_end = moment(this.props.week_startDt).weekday(7).format('YYYY-MM-DD');
@@ -379,7 +390,6 @@ export class WeekDayEventPopUp extends React.Component {
                     start_date:week_start,
                     end_date:week_end
                 };
-                console.log(" I AM CALLED 2 ");
                 this.props.loadData(postData);
             }
         }.bind(this));

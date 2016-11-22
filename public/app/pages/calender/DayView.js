@@ -12,6 +12,7 @@ import DayEventsList from './DayEventsList';
 import DayTodosList from './DayTodosList';
 import SharedUsers from './SharedUsers';
 import EditorField from './EditorField';
+import Socket  from '../../middleware/Socket';
 
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
@@ -41,6 +42,7 @@ export default class DayView extends Component {
             editEventId : ''
         };
         this.currentDay = this.state.currentDay;
+        this.loggedUser = user;
         this.addEvent = this.addEvent.bind(this);
         this.updateEvent = this.updateEvent.bind(this);
         this.nextDay = this.nextDay.bind(this);
@@ -123,6 +125,18 @@ export default class DayView extends Component {
                     sharedWithNames: [],
                     sharedWithIds: [],
                 });
+
+                if(typeof sharedUsers != 'undefined' && sharedUsers.length > 0) {
+                    let _notificationData = {
+                        cal_event_id:data.events._id,
+                        notification_type:"calendar_share_notification",
+                        notification_sender:this.loggedUser,
+                        notification_receiver:sharedUsers
+                    };
+
+                    Socket.sendCalendarShareNotification(_notificationData);
+                }
+
 
                 this.loadEvents();
             }
