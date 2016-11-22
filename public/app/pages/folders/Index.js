@@ -401,14 +401,14 @@ export default class Index extends React.Component{
                                 </div>
                             </div>
                             <div className="col-sm-5">
-                                <div className="crt-folder">
-                                    <button className="btn btn-crt-folder" onClick={this.handleClick.bind(this)}><i className="fa fa-plus"></i> Create Folder</button>
-                                </div>
                                 <div className="search-folder">
                                     <div className="inner-addon">
                                         <i className="fa fa-search"></i>
                                         <input type="text" className="form-control" placeholder="Search"/>
                                     </div>
+                                </div>
+                                <div className="crt-folder">
+                                    <button className="btn btn-crt-folder" onClick={this.handleClick.bind(this)}><i className="fa fa-plus"></i> Create Folder</button>
                                 </div>
                             </div>
                         </div>
@@ -697,7 +697,7 @@ export class Folder extends React.Component{
                             <div className="folder-content-wrapper">
                                 <div className="folder-items-wrapper">
                                     <div className="inner-wrapper">
-                                        <div className="folder-col" onClick={this.onOpenClick.bind(this)} onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
+                                        <div className="folder-col"  onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
                                                 <div className="folder-item upload-file">
                                                     <i className="fa fa-plus"></i>
                                                     <p>Upload new file or image</p>
