@@ -101,7 +101,8 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
                 post_id:"$notificationData.notified_post",
                 notebook_id:"$notificationData.notified_notebook",
                 notification_status:"$notificationData.notification_status",
-                notified_folder:"$notificationData.notified_folder"
+                notified_folder:"$notificationData.notified_folder",
+                calendar_id:"$notificationData.notified_calendar"
             }
         },
         { $sort:{ "created_at":-1}}

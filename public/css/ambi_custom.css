@@ -326,6 +326,18 @@ body{
   color: #000;
 }
 
+.folder-item .item-type{
+  background-image: url(../images/folder/types/common-type.png);
+}
+
+.shared-user .shared-privacy .pending{
+  font-size: 0.8em;
+}
+
+.folder .folder-wrapper{
+  border: 1px solid transparent;
+}
+
 /* Footer on collapse */
 .body-container.sub-page{
 	padding-bottom: 100px;

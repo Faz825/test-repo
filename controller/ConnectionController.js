@@ -453,7 +453,6 @@ var ConnectionController ={
                 };
 
                 Connection.unfriendUser(criteria,function(resultSet){
-                    console.log('connections');
                     callback(null);
                 });
             },
@@ -464,7 +463,6 @@ var ConnectionController ={
                 };
 
                 NoteBook.sharedNotebookOnUnfriend(criteria,function(resultSet){
-                    console.log('1');
                     callback(null);
                 });
             },
@@ -475,7 +473,6 @@ var ConnectionController ={
                 };
 
                 NoteBook.sharedNotebookOnUnfriend(criteria,function(resultSet){
-                    console.log('2');
                     callback(null);
                 });
             }

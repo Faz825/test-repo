@@ -47,11 +47,12 @@ export default class Index extends React.Component{
         this.getSuggestionValue = this.getSuggestionValue.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
         this.removeUser = this.removeUser.bind(this);
+        this.loadFolders = this.loadFolders.bind(this);
         this.loadFolders();
     }
 
     loadFolders(){
-
+console.log("adeh");
         //console.log("loadFolders")
 
         $.ajax({
@@ -378,7 +379,7 @@ export default class Index extends React.Component{
         let _this = this;
         let folderList = _folders.map(function(folder,key){
                             return (
-                                <Folder key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(_this)} />
+                                <Folder key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} />
                             )
                         });
         return(
@@ -401,14 +402,14 @@ export default class Index extends React.Component{
                                 </div>
                             </div>
                             <div className="col-sm-5">
-                                <div className="crt-folder">
-                                    <button className="btn btn-crt-folder" onClick={this.handleClick.bind(this)}><i className="fa fa-plus"></i> Create Folder</button>
-                                </div>
                                 <div className="search-folder">
                                     <div className="inner-addon">
                                         <i className="fa fa-search"></i>
                                         <input type="text" className="form-control" placeholder="Search"/>
                                     </div>
+                                </div>
+                                <div className="crt-folder">
+                                    <button className="btn btn-crt-folder" onClick={this.handleClick.bind(this)}><i className="fa fa-plus"></i> Create Folder</button>
                                 </div>
                             </div>
                         </div>
@@ -444,58 +445,58 @@ export class Folder extends React.Component{
         this.uploadHandler = this.uploadHandler.bind(this);
 
         this.filesData = this.props.folderData.documents; 
-        //console.log("FILEDATA ===" + this.props.folderData.folder_name);
-        //console.log(this.filesData)
-        //this.filesData = [
-        //    {
-        //        document_id : "582ae658247ffffc240b08b9",
-        //        document_name : "PEF - Anuthiga Sriskanthan - DOC",
-        //        document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-        //        document_thumb_path : null,
-        //        document_type : "doc",
-        //        document_updated_at:{
-        //            createdDate: "Oct 11, 2016",
-        //            createdTime: "9:31 am"
-        //        },
-        //        document_user : "574bcb96272a6fd40768cf0f"
-        //    },
-        //    {
-        //        document_id : "582ae658247ffffc240b08b9",
-        //        document_name : "PEF - Anuthiga Sriskanthan",
-        //        document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-        //        document_thumb_path : null,
-        //        document_type : "xlsx",
-        //        document_updated_at:{
-        //            createdDate: "Oct 11, 2016",
-        //            createdTime: "9:31 am"
-        //        },
-        //        document_user : "574bcb96272a6fd40768cf0f"
-        //    },
-        //    {
-        //        document_id : "582c2d3a1461f4050b1764c5",
-        //        document_name : "babymartonline.com-check-list",
-        //        document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
-        //        document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
-        //        document_type : "gif",
-        //        document_updated_at:{
-        //            createdDate: "Oct 11, 2016",
-        //            createdTime: "9:31 am"
-        //        },
-        //        document_user : "574bcb96272a6fd40768cf0f"
-        //    },
-        //    {
-        //        document_id : "582be27c639078842cbc24f6",
-        //        document_name : "babymartonline.com-check-list",
-        //        document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-        //        document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-        //        document_type : "jpg",
-        //        document_updated_at:{
-        //            createdDate: "Oct 11, 2016",
-        //            createdTime: "9:31 am"
-        //        },
-        //        document_user : "574bcb96272a6fd40768cf0f"
-        //    }
-        //];
+        console.log("FILEDATA ===" + this.props.folderData.folder_name);
+        console.log(this.filesData)
+        this.filesData = [
+           {
+               document_id : "582ae658247ffffc240b08b9",
+               document_name : "PEF - Anuthiga Sriskanthan - DOC",
+               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+               document_thumb_path : null,
+               document_type : "doc",
+               document_updated_at:{
+                   createdDate: "Oct 11, 2016",
+                   createdTime: "9:31 am"
+               },
+               document_user : "574bcb96272a6fd40768cf0f"
+           },
+           {
+               document_id : "582ae658247ffffc240b08b9",
+               document_name : "PEF - Anuthiga Sriskanthan",
+               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+               document_thumb_path : null,
+               document_type : "xlsx",
+               document_updated_at:{
+                   createdDate: "Oct 11, 2016",
+                   createdTime: "9:31 am"
+               },
+               document_user : "574bcb96272a6fd40768cf0f"
+           },
+           {
+               document_id : "582c2d3a1461f4050b1764c5",
+               document_name : "babymartonline.com-check-list",
+               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
+               document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
+               document_type : "gif",
+               document_updated_at:{
+                   createdDate: "Oct 11, 2016",
+                   createdTime: "9:31 am"
+               },
+               document_user : "574bcb96272a6fd40768cf0f"
+           },
+           {
+               document_id : "582be27c639078842cbc24f6",
+               document_name : "babymartonline.com-check-list",
+               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+               document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+               document_type : "jpg",
+               document_updated_at:{
+                   createdDate: "Oct 11, 2016",
+                   createdTime: "9:31 am"
+               },
+               document_user : "574bcb96272a6fd40768cf0f"
+           }
+        ];
 
     }
 
@@ -590,7 +591,7 @@ export class Folder extends React.Component{
              * have this inside error for testing purpose.
              * */
 
-            let _dummyData = [{
+            let _dummyData = {
                 document_id : "582be27c639078842cbc24f6",
                 document_name : "DUMMY DATA",
                 document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
@@ -601,10 +602,11 @@ export class Folder extends React.Component{
                     createdTime: "9:31 am"
                 },
                 document_user : "574bcb96272a6fd40768cf0f"
-            }];
+            };
             this.filesData.unshift(_dummyData) // add the uploaded document to existing document list. this should update the document list of that folder.
             console.log(this.filesData)
-
+            console.log("Gonna call loadFolders")
+            this.props.onLoadFolders();
             console.log(request.status)
             console.log(status);
             console.log(error);
@@ -616,6 +618,7 @@ export class Folder extends React.Component{
         //console.log("clicked");
         let isCollapsed = this.state.isCollapsed;
         this.setState({isCollapsed : !isCollapsed});
+        console.log(isCollapsed);
     }
 
     onDrop(folder_id) {
@@ -645,7 +648,6 @@ export class Folder extends React.Component{
         }
 
         let _fileList = this.filesData.map(function(file,key){
-            //console.log(key);
                             return (
                                 <File fileData={file} key={key} />
                             )
@@ -659,7 +661,6 @@ export class Folder extends React.Component{
         });
 
         return(
-
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
                 <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={(event)=>{this.onDrop(folderData.folder_id)}} multiple={true} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*" onDropAccepted={this.onDropAccepted}>
                     <div className="col-sm-2">
@@ -697,7 +698,7 @@ export class Folder extends React.Component{
                             <div className="folder-content-wrapper">
                                 <div className="folder-items-wrapper">
                                     <div className="inner-wrapper">
-                                        <div className="folder-col" onClick={this.onOpenClick.bind(this)} onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
+                                        <div className="folder-col"  onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
                                                 <div className="folder-item upload-file">
                                                     <i className="fa fa-plus"></i>
                                                     <p>Upload new file or image</p>
@@ -707,7 +708,7 @@ export class Folder extends React.Component{
                                         {_fileList}
                                     </div>
                                     {
-                                        (this.state.filesData.length + this.state.files.length > 4)?
+                                        (this.filesData.length + this.state.files.length > 4)?
                                             (this.state.isCollapsed)?
                                                 <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
                                                     <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
@@ -741,20 +742,27 @@ export class File extends React.Component{
         this.state={}
     }
 
+    showConfirm(id){
+        console.log(id);
+       //this.props.showConfirm(id);
+    }
+
     render(){
         let data = this.props.fileData;
         
-        let thumbIMg = "";
+        let thumbIMg = {},
+            imgClass = "";
 
-        if (data.document_type == "jpg") {
+        if (data.document_thumb_path) {
+            imgClass = "image";
             thumbIMg = {
-                backgroundImage: 'url(' + data.document_thumb_path + ')'
+                backgroundImage: 'url('+data.document_thumb_path+')'
             }
         }
 
         return(
             <div className="folder-col">
-                <div className={"folder-item " + data.document_type}>
+                <div className={"folder-item " + data.document_type + " " + imgClass} style={thumbIMg}>
                     <div className="time-wrapper">
                         <p className="date-created">{data.document_updated_at.createdDate}</p>
                         <p className="time-created">{data.document_updated_at.createdTime}</p>
@@ -763,6 +771,7 @@ export class File extends React.Component{
                         <p className="folder-title">{data.document_name}</p>
                     </div>
                     <span className="item-type"></span>
+                    <span className="doc-delete-btn" onClick={()=>this.showConfirm(data.document_id)}></span>
                 </div>
             </div>
         );
@@ -1266,7 +1275,9 @@ export class  SharedUsers extends React.Component {
                                 {
                                     (_folder.owned_by == 'me')?
                                         <div>
-                                            <div className="shared-privacy">Request Pending</div>
+                                            <div className="shared-privacy">
+                                                <p className="pending">Request Pending</p>
+                                            </div>
                                             <div className="action" onClick={()=>_this.props.handleClick(user)}>
                                                     <i className="fa fa-minus" aria-hidden="true"></i>
                                             </div>
