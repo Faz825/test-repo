@@ -433,6 +433,10 @@ export class Folder extends React.Component{
             isCollapsed : true,
             isProgressBarActive : false,
             files: [],
+            showConfirm:false,
+            isShowingModal : false,
+            deleteFileId:0,
+            filesData:this.props.folderData.documents
         };
         this.files = [];
         this.active_folder_id = 0;
@@ -441,61 +445,68 @@ export class Folder extends React.Component{
         this.onOpenClick = this.onOpenClick.bind(this);
         this.onDropAccepted = this.onDropAccepted.bind(this);
         this.uploadHandler = this.uploadHandler.bind(this);
+        this.onShowConfirm = this.onShowConfirm.bind(this);
 
-        this.filesData = this.props.folderData.documents; 
-        //console.log("FILEDATA ===" + this.props.folderData.folder_name);
-        //console.log(this.filesData)
-        //this.filesData = [
-        //   {
-        //       document_id : "582ae658247ffffc240b08b9",
-        //       document_name : "PEF - Anuthiga Sriskanthan - DOC",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-        //       document_thumb_path : null,
-        //       document_type : "doc",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   },
-        //   {
-        //       document_id : "582ae658247ffffc240b08b9",
-        //       document_name : "PEF - Anuthiga Sriskanthan",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-        //       document_thumb_path : null,
-        //       document_type : "xlsx",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   },
-        //   {
-        //       document_id : "582c2d3a1461f4050b1764c5",
-        //       document_name : "babymartonline.com-check-list",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
-        //       document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
-        //       document_type : "gif",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   },
-        //   {
-        //       document_id : "582be27c639078842cbc24f6",
-        //       document_name : "babymartonline.com-check-list",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-        //       document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-        //       document_type : "jpg",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   }
-        //];
+        this.filesData = this.props.folderData.documents;
+        this.filesData = [
+           {
+               document_id : "582ae658247ffffc240b08b9",
+               document_name : "PEF - Anuthiga Sriskanthan - DOC",
+               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+               document_thumb_path : null,
+               document_type : "doc",
+               document_updated_at:{
+                   createdDate: "Oct 11, 2016",
+                   createdTime: "9:31 am"
+               },
+               document_user : "574bcb96272a6fd40768cf0f"
+           },
+           {
+               document_id : "582ae658247ffffc240b08b9",
+               document_name : "PEF - Anuthiga Sriskanthan",
+               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+               document_thumb_path : null,
+               document_type : "xlsx",
+               document_updated_at:{
+                   createdDate: "Oct 11, 2016",
+                   createdTime: "9:31 am"
+               },
+               document_user : "574bcb96272a6fd40768cf0f"
+           },
+           {
+               document_id : "582c2d3a1461f4050b1764c5",
+               document_name : "babymartonline.com-check-list",
+               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
+               document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
+               document_type : "gif",
+               document_updated_at:{
+                   createdDate: "Oct 11, 2016",
+                   createdTime: "9:31 am"
+               },
+               document_user : "574bcb96272a6fd40768cf0f"
+           },
+           {
+               document_id : "582be27c639078842cbc24f6",
+               document_name : "babymartonline.com-check-list",
+               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+               document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+               document_type : "jpg",
+               document_updated_at:{
+                   createdDate: "Oct 11, 2016",
+                   createdTime: "9:31 am"
+               },
+               document_user : "574bcb96272a6fd40768cf0f"
+           }
+        ];
 
+    }
+
+    handleClick() {
+        this.setState({isShowingModal: true});
+    }
+
+    handleClose() {
+        this.setState({isShowingModal: false});
     }
 
     onDropAccepted(accepted_files){
@@ -600,20 +611,48 @@ export class Folder extends React.Component{
     }
 
     onFldrExpand(){
-        //console.log("clicked");
         let isCollapsed = this.state.isCollapsed;
         this.setState({isCollapsed : !isCollapsed});
-        //console.log(isCollapsed);
     }
 
     onDrop(folder_id) {
         this.active_folder_id = folder_id;
-        //console.log("onDrop")
-       // console.log(this.active_folder_id);
     }
 
     onOpenClick(folder_id) {
         this.dropzone.open(folder_id);
+    }
+
+    deleteFile(){
+        console.log("delete");
+        this.setState({showConfirm:false});
+    }
+
+    onShowConfirm(file_id){
+        console.log(file_id);
+        this.setState({showConfirm:true, deleteFileId:file_id});
+    }
+
+    closeConfirmPopup(){
+        this.setState({showConfirm:false, deleteFileId:0});
+    }
+
+    getConfirmationPopup(){
+        return(
+            <div>
+                {this.state.showConfirm &&
+                <ModalContainer zIndex={9999}>
+                    <ModalDialog width="30%" style={{marginTop : "-100px"}}>
+                        <div className="col-xs-12">
+                            <p className="confirmation_p">Are you sure to delete this file?</p>
+                        </div>
+                        <p className="add-note-cat btn" onClick={this.deleteFile.bind(this)}>Yes</p>
+                        <p className="add-note-cat confirm-no btn" onClick={this.closeConfirmPopup.bind(this)}>No</p>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        );
     }
 
     render(){
@@ -634,7 +673,7 @@ export class Folder extends React.Component{
 
         let _fileList = this.filesData.map(function(file,key){
                             return (
-                                <File fileData={file} key={key} />
+                                <File fileData={file} key={key} showConfirm={_this.onShowConfirm.bind(this)}/>
                             )
                         });
 
@@ -715,6 +754,7 @@ export class Folder extends React.Component{
                         <p className="drag-title">Drag and Drop Link/Folder here</p>
                     </div>
                 </Dropzone>
+                {this.getConfirmationPopup()}
             </div>
         );
     }
@@ -727,9 +767,8 @@ export class File extends React.Component{
         this.state={}
     }
 
-    showConfirm(id){
-        console.log(id);
-       //this.props.showConfirm(id);
+    onShowConfirm(id){
+       this.props.showConfirm(id);
     }
 
     render(){
@@ -748,16 +787,24 @@ export class File extends React.Component{
         return(
             <div className="folder-col">
                 <div className={"folder-item " + data.document_type + " " + imgClass} style={thumbIMg}>
-                    <div className="time-wrapper">
-                        <p className="date-created">{data.document_updated_at.createdDate}</p>
-                        <p className="time-created">{data.document_updated_at.createdTime}</p>
+                    <div className="inner-wrapper">
+                        <div className="time-wrapper">
+                            <p className="date-created">{data.document_updated_at.createdDate}</p>
+                            <p className="time-created">{data.document_updated_at.createdTime}</p>
+                        </div>
+                        <div className="folder-title-holder">
+                            <p className="folder-title">{data.document_name}</p>
+                        </div>
+                        <span className="item-type"></span>                        
                     </div>
-                    <div className="folder-title-holder">
-                        <p className="folder-title">{data.document_name}</p>
-                    </div>
-                    <span className="item-type"></span>
-                    <span className="doc-delete-btn" onClick={()=>this.showConfirm(data.document_id)}></span>
+                    {
+                        (data.document_thumb_path)?
+                            <span className="img-overlay"></span>
+                        :
+                            null
+                    }
                 </div>
+                <i className="fa fa-minus doc-delete-btn" aria-hidden="true" onClick={()=>this.onShowConfirm(data.document_id)}></i>
             </div>
         );
     }
@@ -953,6 +1000,9 @@ export class SharePopup extends React.Component{
                 <SharePopupNewUsr  folderData={_folderData} onLoadFolders={this.props.onLoadFolders}/>
             </Popover>
         );
+
+        //console.log("OWNER ==>");
+        //console.log(this.state.owner)
 
         return(
             <div className="popup-holder">
