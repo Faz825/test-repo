@@ -13,7 +13,6 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.13.2",
     "chai": "^3.5.0",
-    "chai-http": "^3.0.0",
     "cities": "^1.1.2",
     "connect-mongo": "^0.8.2 ",
     "connect-redis": "^3.0.2",
@@ -44,7 +43,6 @@
     "mongoose": "^4.4.1",
     "mongoose-schema-extend": "0.2.0",
     "morgan": "~1.6.1",
-    "mpromise": "^0.5.5",
     "node-schedule": "^1.2.0",
     "node-thumbnail": "^0.7.0",
     "node-uuid": "^1.4.7",
@@ -88,9 +86,6 @@
     "gulp-streamify": "0.0.4",
     "gulp-uglify": "^1.5.3",
     "mocha": "^3.1.2",
-    "mockery": "^2.0.0",
-    "node-mocks-http": "^1.5.4",
-    "should": "^11.1.1",
     "style-loader": "^0.13.1",
     "vinyl-source-stream": "^1.1.0"
   }

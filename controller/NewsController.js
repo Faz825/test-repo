@@ -187,11 +187,12 @@ var NewsController ={
         var News = require('mongoose').model('News');
 
         var categoryId = req.params.category;
-        //console.log(categoryId);
+
         var criteria = {
-            search:{_id:Util.toObjectId(categoryId)},
+            search:{_id:categoryId},
             return_fields:{channels:1} // for now only getting channels
         };
+
 
         News.findNews(criteria,function(resultSet){
             res.status(200).json(resultSet);
@@ -249,9 +250,7 @@ var NewsController ={
             "_id":categoryId,
             "channels._id": channelId
         };
-
         News.addRecordToSubDocument(criteria,{"channels.$.articles":article},function(resultSet){
-           console.log(resultSet);
             if(resultSet.status == 200){
                 res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
             }else{
