@@ -28,7 +28,16 @@ var FolderDocsSchema = new Schema({
         ref: 'Folders',
         default:null
     },
-    shared_users:[],
+    file_path:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    thumb_path:{
+        type:String,
+        trim:true,
+        default:null
+    },
     created_at:{
         type:Date
     },
@@ -55,10 +64,12 @@ FolderDocsSchema.pre('save', function(next){
 FolderDocsSchema.statics.addNewDocument = function(DocumentData,callBack){
 
     var newDocument = new this();
-    newDocument.name 	= DocumentData.name;
-    newDocument.content  	= DocumentData.content;
-    newDocument.user_id		= DocumentData.user_id;
+    newDocument.name 	        = DocumentData.name;
+    newDocument.content_type  	= DocumentData.content_type;
+    newDocument.user_id		    = DocumentData.user_id;
     newDocument.folder_id		= DocumentData.folder_id;
+    newDocument.file_path		= DocumentData.file_path;
+    newDocument.thumb_path		= DocumentData.thumb_path;
 
     newDocument.save(function(err,resultSet){
 
@@ -84,7 +95,7 @@ FolderDocsSchema.statics.addNewDocument = function(DocumentData,callBack){
 FolderDocsSchema.statics.getDocuments = function(criteria,callBack){
     var _this = this;
 
-    _this.find(criteria).exec(function(err,resultSet){
+    _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
         if(!err){
             callBack({
                 status:200,

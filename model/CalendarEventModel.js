@@ -46,6 +46,11 @@ var CalendarEventSchema = new Schema({
         default : null
     },
 
+    plain_text : {
+        type : String,
+        default : null
+    },
+
     status : {
         type : Number,
         default : 1 /* 1 - pending | 2 - completed | 3 - expired, 4 - cancelled */
@@ -57,7 +62,7 @@ var CalendarEventSchema = new Schema({
     },
 
     start_date_time : {
-        type : Date
+        type : String
     },
 
     event_time : {
@@ -69,10 +74,22 @@ var CalendarEventSchema = new Schema({
         type : String,
         default : null
     },
+
     shared_users: {
         type: Array,
         default: []
     },
+
+    moved_nextday: {
+        type : Boolean,
+        default : false
+    },
+
+    moved_nextday_count: {
+        type : Number,
+        default : 0
+    },
+
     created_at : {
         type : Date
     },
@@ -104,13 +121,16 @@ CalendarEventSchema.statics.addNew = function (eventData,callBack) {
     var calenderEvent = new this();
     calenderEvent.user_id = eventData.user_id;
     calenderEvent.description = (eventData.description ? eventData.description : 'No title');
+    calenderEvent.plain_text = (eventData.plain_text ? eventData.plain_text : 'No title');
     calenderEvent.status = CalendarStatus.PENDING;
     calenderEvent.type = (eventData.type ? eventData.type : 1);
     calenderEvent.start_date_time = eventData.start_date;
     calenderEvent.event_time = eventData.event_time;
     calenderEvent.event_timezone = eventData.event_timezone;
     calenderEvent.shared_users = eventData.shared_users;
+
     calenderEvent.save(function(err,resultSet){
+
         if(err){
             console.log(err);
             callBack({status:400,error:err});
@@ -153,7 +173,7 @@ CalendarEventSchema.statics.getEventById = function(id,callBack){
 
     var _this = this;
 
-    _this.findOne({_id: id}).exec(function (err, resultSet) {
+    _this.findOne({_id: id}).lean().exec(function (err, resultSet) {
         if (!err) {
             if (resultSet == null) {
                 callBack(null);
@@ -290,6 +310,51 @@ CalendarEventSchema.statics.getSortedCalenderItems = function(criteria,callBack)
  * @param data object
  *
  */
+CalendarEventSchema.statics.getWeeklyCalenderEvensForSharedUser = function(data,callBack){
+
+    var _this = this;
+    var moment = require('moment');
+    var week = data['week'],month = (data['month'] -1),year = data['year'];
+
+    var startDateOfWeek = moment([year, month]).add((week-1)*7,"days");
+    var endDateOfWeek = moment([year,month]).add((week*7)+1,"days").subtract(1,"millisecond");
+
+    if(week == 5){
+        endDateOfWeek =  moment([year, month]).endOf('month').subtract(1,"millisecond");
+    }
+
+    //get days betweek the week
+    var dateArray = [];
+    var currentDate = startDateOfWeek;
+    while (currentDate <= endDateOfWeek) {
+        dateArray.push(currentDate);
+        currentDate = moment(currentDate).add(1, 'days');
+    }
+
+    var criteria =  { start_date_time: {$gte: startDateOfWeek, $lt: endDateOfWeek }, _id: data['_id']};
+
+    _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
+        if(!err){
+            callBack(null, {
+                status:200,
+                events:resultSet,
+                week:week,
+                days:dateArray
+            });
+        } else {
+            console.log("Server error while getSortedCalenderItems --------");
+            callBack({status:400,error:err}, null);
+        }
+    });
+
+};
+
+/**
+ *
+ * Get Calender events, for the given week
+ * @param data object
+ *
+ */
 CalendarEventSchema.statics.getWeeklyCalenderEvens = function(data,callBack){
 
     var _this = this;
@@ -325,6 +390,88 @@ CalendarEventSchema.statics.getWeeklyCalenderEvens = function(data,callBack){
             console.log("Server error while getSortedCalenderItems --------");
             callBack({status:400,error:err}, null);
         }
+    });
+
+};
+
+/**
+ *
+ * get the Calender event plain_text of given id
+ * @param data object
+ *
+ */
+CalendarEventSchema.statics.bindNotificationData = function(notificationObj, callBack){
+
+    this.getEventById(notificationObj.calendar_id,function(calendarData){
+
+        notificationObj['calendar_description'] = calendarData.plain_text;
+
+        callBack(notificationObj);
+    });
+
+};
+
+/**
+ * Get Events | Get shared event to user
+ */
+CalendarEventSchema.statics.ch_getSharedEvents = function(userId,payload,callBack){
+
+    var _this = this;
+    var _cache_key = "idx_user:"+CalendarEventsConfig.CACHE_PREFIX+userId;
+
+    var query={
+        q:payload.q,
+        index:_cache_key
+    };
+
+    //Find User from Elastic search
+    ES.search(query,function(csResultSet){
+        if(csResultSet == null){
+            callBack(null);
+        }else{
+            callBack(csResultSet);
+        }
+
+    });
+
+};
+
+/**
+ * Share Event | Cache based on User
+ * {Create Index}
+ */
+CalendarEventSchema.statics.ch_shareEventCreateIndex = function(userId,data,callBack){
+
+    var _cache_key = "idx_user:"+CalendarEventsConfig.CACHE_PREFIX+userId;
+    var payLoad={
+        index:_cache_key,
+        id:data.user_id.toString(),
+        type: 'shared_events',
+        data:data
+    }
+
+    ES.createIndex(payLoad,function(resultSet){
+        callBack(resultSet)
+    });
+
+};
+
+/**
+ * Share Event | Cache based on User
+ * {Update Event List}
+ */
+CalendarEventSchema.statics.ch_shareEventUpdateIndex = function(userId,data,callBack){
+
+    var _cache_key = "idx_user:"+CalendarEventsConfig.CACHE_PREFIX+userId;
+    var payLoad={
+        index:_cache_key,
+        id:data.user_id.toString(),
+        type: 'shared_events',
+        data:data
+    }
+
+    ES.update(payLoad,function(resultSet){
+        callBack(resultSet)
     });
 
 };

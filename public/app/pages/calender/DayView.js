@@ -1,6 +1,9 @@
 /**
  * Day view of the calender
  */
+
+'use strict';
+
 import React, { Component } from 'react';
 import moment from 'moment-timezone';
 import Session from '../../middleware/Session';
@@ -8,36 +11,19 @@ import MiniCalender from './MiniCalender';
 import DayEventsList from './DayEventsList';
 import DayTodosList from './DayTodosList';
 import SharedUsers from './SharedUsers';
-
-
+import EditorField from './EditorField';
+import Socket  from '../../middleware/Socket';
 
 import { Popover, OverlayTrigger } from 'react-bootstrap';
-// import TimePicker from 'react-bootstrap-time-picker';
+import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
+import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
+
+import { fromJS } from 'immutable';
+
+import forEach from 'lodash.foreach';
 
 import 'rc-time-picker/assets/index.css';
 import TimePicker from 'rc-time-picker';
-
-
-import DateTime from "react-bootstrap-datetime";
-
-import {EditorState, RichUtils} from 'draft-js';
-import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
-
-// import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin'; // eslint-disable-line import/no-unresolved
-import createEmojiPlugin from 'draft-js-emoji-plugin'; 
-
-import {convertFromRaw, convertToRaw} from 'draft-js';
-import editorStyles from './editorStyles.css';
-// import mentions from './mentions';
-
-//const mentionPlugin = createMentionPlugin();
-//const { MentionSuggestions } = mentionPlugin;
-
-const emojiPlugin = createEmojiPlugin();
-const { EmojiSuggestions } = emojiPlugin;
-// const plugins = [emojiPlugin, mentionPlugin];
-const plugins = [emojiPlugin];
-
 
 export default class DayView extends Component {
 
@@ -50,72 +36,19 @@ export default class DayView extends Component {
             defaultEventTime : moment().format('HH:mm'),
             events : [],
             user : user,
-            // suggestions: mentions,
-            editorState : EditorState.createEmpty(),
             showTimePanel : '',
             showUserPanel : '',
+            editOn : false,
+            editEventId : ''
         };
         this.currentDay = this.state.currentDay;
+        this.loggedUser = user;
         this.addEvent = this.addEvent.bind(this);
+        this.updateEvent = this.updateEvent.bind(this);
         this.nextDay = this.nextDay.bind(this);
         this.changeType = this.changeType.bind(this);
-        // this.onChange = (editorState) => this.setState({editorState});
-        this.handleKeyCommand = this.handleKeyCommand.bind(this);
-        this.focus = this.focus.bind(this);
-        // this.onSearchChange = this.onSearchChange.bind(this);
-        this.onChange = this.onChange.bind(this);
         this.handleTimeChange = this.handleTimeChange.bind(this);
 
-        // this.onSearchChange = ({ value }) => {
-
-            // $.ajax({
-            //     url : '/user/get-user-suggestions/'+filter.replace("#", ""),
-            //     method : "GET",
-            //     dataType : "JSON",
-            //     headers : { "prg-auth-header" : this.state.user.token },
-            //     success : function (data, text) {
-            //         if (data.status.code == 200) {
-            //             this.setState({ suggestions: defaultSuggestionsFilter(value, data.suggested_users)});
-            //         }
-            //     }.bind(this),
-            //     error: function (request, status, error) {
-            //         console.log(error);
-            //     }
-            // });
-        //     this.setState({
-        //         suggestions: defaultSuggestionsFilter(value, mentions),
-        //     });
-        // };
-
-    }
-
-    focus() {
-        this.editor.focus();
-    }
-
-    onChange(editorState) {
-        this.setState({editorState}); 
-    }
-
-    handleKeyCommand(command) {
-        const newState = RichUtils.handleKeyCommand(this.state.editorState, command);
-        if (newState) {
-            this.onChange(newState);
-            return 'handled';
-        }
-        return 'not-handled';
-    }
-
-    _onBoldClick() {
-        this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
-    }
-
-    _onItalicClick() {
-        this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'ITALIC'));
-    }
-
-    _onUnderLineClick() {
-        this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'UNDERLINE'));
     }
 
     _onHashClick() {
@@ -133,16 +66,16 @@ export default class DayView extends Component {
     }
 
     loadEvents() {
-        console.log("THE CURRENT DAY IS ::: " + this.currentDay);
+
         $.ajax({
             url : '/calendar/day/all',
             method : "POST",
-            data : { day : this.currentDay }, 
+            data : { day : this.currentDay },
             dataType : "JSON",
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
-                console.log(data);
                 if (data.status.code == 200) {
+                    console.log(data.events);
                     this.setState({events: data.events});
                 }
             }.bind(this),
@@ -155,16 +88,23 @@ export default class DayView extends Component {
 
     addEvent(event) {
 
-        const Editor = this.state.editorState;
-        const contentState = this.state.editorState.getCurrentContent();
+        const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
+        const strTime = this.state.defaultEventTime;
+        const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+
+        const Editor = this.refs.EditorFieldValues.state.editorState;
+        const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
+        const plainText = contentState.getPlainText();
+
         // get shared users from SharedUsers field
         const sharedUsers = this.refs.SharedUserField.sharedWithIds;
         const postData = {
             description : editorContentRaw,
+            plain_text : plainText,
             type : this.state.defaultType,
-            apply_date : moment(this.state.currentDay).format('MM DD YYYY HH:mm'),
-            event_time : this.state.defaultEventTime,
+            apply_date : dateWithTime,
+            event_time : strTime,
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
         };
@@ -173,14 +113,93 @@ export default class DayView extends Component {
             url: '/calendar/event/add',
             method: "POST",
             dataType: "JSON",
-            data: postData,
+            data: JSON.stringify(postData),
             headers : { "prg-auth-header" : this.state.user.token },
+            contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
-                this.setState({editorState : EditorState.createEmpty()});
+                console.log(this.refs.EditorFieldValues);
+                const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+                this.refs.EditorFieldValues.setState({editorState});
+                this.refs.SharedUserField.setState({
+                    sharedWithNames: [],
+                    sharedWithIds: [],
+                });
+
+                if(typeof sharedUsers != 'undefined' && sharedUsers.length > 0) {
+                    let _notificationData = {
+                        cal_event_id:data.events._id,
+                        notification_type:"calendar_share_notification",
+                        notification_sender:this.loggedUser,
+                        notification_receiver:sharedUsers
+                    };
+
+                    Socket.sendCalendarShareNotification(_notificationData);
+                }
+
+
                 this.loadEvents();
             }
         }.bind(this));
+    }
+
+    /*
+     * update a given event or a todo.
+    */
+    updateEvent() {
+
+      const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
+      const strTime = this.state.defaultEventTime;
+      const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+
+      const Editor = this.refs.EditorFieldValues.state.editorState;
+      const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
+      const editorContentRaw = convertToRaw(contentState);
+      const plainText = contentState.getPlainText();
+
+      // get shared users from SharedUsers field
+      const sharedUsers = this.refs.SharedUserField.sharedWithIds;
+      const postData = {
+          description : editorContentRaw,
+          plain_text : plainText,
+          type : this.state.defaultType,
+          apply_date : dateWithTime,
+          event_time : strTime,
+          shared_users : sharedUsers,
+          id : this.state.editEventId
+      };
+
+      $.ajax({
+          url: '/calendar/update',
+          method: "POST",
+          dataType: "JSON",
+          data: JSON.stringify(postData),
+          headers : { "prg-auth-header" : this.state.user.token },
+          contentType: "application/json; charset=utf-8",
+      }).done(function (data, text) {
+          if(data.status.code == 200){
+              console.log(this.refs.EditorFieldValues);
+              const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+              this.refs.EditorFieldValues.setState({editorState});
+              this.refs.SharedUserField.setState({
+                  sharedWithNames: [],
+                  sharedWithIds: [],
+              });
+
+              if(typeof sharedUsers != 'undefined' && sharedUsers.length > 0) {
+                  let _notificationData = {
+                      cal_event_id:postData.id,
+                      notification_type:data.event_time.isTimeChanged == true ? "calendar_schedule_time_changed" : "calendar_schedule_updated",
+                      notification_sender:this.loggedUser,
+                      notification_receiver:sharedUsers
+                  };
+
+                  Socket.sendCalendarShareNotification(_notificationData);
+              }
+
+              this.loadEvents();
+          }
+      }.bind(this));
     }
 
     markTodo(eventId, status) {
@@ -188,7 +207,7 @@ export default class DayView extends Component {
         let user =  Session.getSession('prg_lg');
         var postData = {
             id : eventId,
-            status : (status == 1 ? 2 : 1 ) 
+            status : (status == 1 ? 2 : 1 )
         }
 
         $.ajax({
@@ -204,11 +223,61 @@ export default class DayView extends Component {
         }.bind(this));
     }
 
+    clickEdit(eventId) {
+        $.ajax({
+            url : '/calendar/event/get',
+            method : "POST",
+            data : { eventId : eventId },
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
+                if (data.status.code == 200) {
+
+                    var rawContent = data.event.description;
+                    if(typeof(rawContent.entityMap) === 'undefined' || rawContent.entityMap === null ) {
+                        rawContent.entityMap = {};
+                    }
+                    forEach(rawContent.entityMap, function(value, key) {
+                        value.data.mention = fromJS(value.data.mention)
+                    });
+
+                    const contentState = convertFromRaw(rawContent);
+                    const toUpdateEditorState = EditorState.createWithContent(contentState);
+                    const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, contentState);
+
+                    this.refs.EditorFieldValues.setState({ editorState });
+                    this.refs.SharedUserField.setState({
+                        sharedWithNames: data.event.sharedWithNames,
+                        sharedWithIds: data.event.sharedWithIds,
+                    });
+                    this.setState({
+                        editOn : true,
+                        editEventId : eventId,
+                        defaultType : (data.event.type == 1 ? 'event' : 'todo')
+                    });
+                    this.handleTimeChange(data.event.start_date_time);
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
     nextDay() {
         let nextDay = moment(this.state.currentDay).add(1,'days').format('YYYY-MM-DD');
         this.currentDay = nextDay;
         this.setState({currentDay : nextDay});
         this.loadEvents();
+
+        // rest editor.
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
+        this.setState({editOn : false});
+        this.refs.SharedUserField.setState({
+            sharedWithNames: [],
+            sharedWithIds: [],
+        });
     }
 
     previousDay() {
@@ -216,6 +285,15 @@ export default class DayView extends Component {
         this.currentDay = prevDay;
         this.setState({currentDay : prevDay});
         this.loadEvents();
+
+        // rest editor.
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
+        this.setState({editOn : false});
+        this.refs.SharedUserField.setState({
+            sharedWithNames: [],
+            sharedWithIds: [],
+        });
     }
 
     changeType(eventType) {
@@ -228,10 +306,53 @@ export default class DayView extends Component {
         this.currentDay = clickedDay;
         this.setState({currentDay : clickedDay});
         this.loadEvents();
+
+        // rest editor.
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
+        this.setState({editOn : false});
+        this.refs.SharedUserField.setState({
+            sharedWithNames: [],
+            sharedWithIds: [],
+        });
     }
 
-    handleTimeChange(time) {   
+    handleTimeChange(time) {
         this.setState({ defaultEventTime: moment(time).format('HH:mm') });
+    }
+
+    _onBoldClick() {
+        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'BOLD'));
+    }
+
+    _onItalicClick() {
+        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'ITALIC'));
+    }
+
+    _onUnderLineClick() {
+        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'UNDERLINE'));
+    }
+
+    setSharedUsers(selected) {
+        var arrEntries = selected._root.entries;
+
+        var userObj = {
+            user_id : arrEntries[3][1],
+            first_name : arrEntries[0][1],
+            last_name : ''
+        };
+        this.refs.SharedUserField.getSuggestionValue(userObj);
+    }
+
+    setTime(selected) {
+
+        var arrEntries = selected._root.entries;
+        var time = arrEntries[1][1];
+        let year = moment(this.state.currentDay).year();
+        let month = moment(this.state.currentDay).month();
+        let date = moment(this.state.currentDay).day();
+        let timeWithDay = year+'/'+month+'/'+date+' '+time;
+        this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
     }
 
     render() {
@@ -283,19 +404,8 @@ export default class DayView extends Component {
                                 <div className="row calender-input">
                                     <div className="col-sm-12">
                                         <div className="input" id="editor-holder" >
-                                            <div className={editorStyles.editor} onClick={this.focus}>
-                                                <Editor
-                                                    editorState={this.state.editorState}
-                                                    handleKeyCommand={this.handleKeyCommand}
-                                                    onChange={this.onChange}
-                                                    plugins={plugins}
-                                                    ref={(element) => { this.editor = element; }}
-                                                    placeholder="Type in an Event or a To-do here use # to tag people, @ to set time of the event"
-                                                  />
-                                                <EmojiSuggestions />
-                                                
-                                            </div>
-                                            
+                                            <EditorField ref="EditorFieldValues" setTime={this.setTime.bind(this)} setSharedUsers={this.setSharedUsers.bind(this)} />
+
                                             <div className="shared-users-time-panel">
                                                 <div className="col-sm-3">
                                                     <p>
@@ -349,9 +459,14 @@ export default class DayView extends Component {
                                                     <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
                                                 </div>
                                             </div>
-                                            <div className="btn-enter" onClick={this.addEvent}>
-                                                <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
-                                            </div>
+                                            { this.state.editOn == false ?
+                                                <div className="btn-enter" onClick={this.addEvent}>
+                                                    <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
+                                                </div>
+                                            :   <div className="btn-enter" onClick={this.updateEvent}>
+                                                    <i className="fa fa-paper-plane" aria-hidden="true"></i> Update
+                                                </div>
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -364,7 +479,10 @@ export default class DayView extends Component {
                                             <span>events</span>
                                         </div>
                                         <div className="events-list-area-content-title-hr"></div>
-                                        <DayEventsList events={this.state.events} />
+                                        <DayEventsList
+                                            events={this.state.events}
+                                            clickEdit={this.clickEdit.bind(this)}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -372,10 +490,14 @@ export default class DayView extends Component {
                                 <div className="col-sm-12">
                                     <div className="to-do-list-area-content">
                                         <div className="to-do-list-area-content-title">
-                                            <img src="/images/calender/icon-to-do.png" /><span>To-Do's</span>
+                                            <img src="/images/calender/icon-to-do.png" /><span>To-Do	&rsquo;s</span>
                                         </div>
                                         <div className="to-do-list-area-content-title-hr"></div>
-                                        <DayTodosList events={this.state.events} onClickItem={this.markTodo.bind(this)} />
+                                        <DayTodosList
+                                            events={this.state.events}
+                                            onClickItem={this.markTodo.bind(this)}
+                                            clickEdit={this.clickEdit.bind(this)}
+                                        />
                                     </div>
                                 </div>
                             </div>

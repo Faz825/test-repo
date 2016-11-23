@@ -20,6 +20,7 @@ body{
 	right: -21px;
 	left: auto;
 	cursor: pointer;
+	z-index: 1;
 }
 
 .errorMsg{
@@ -32,11 +33,13 @@ body{
 .invite-people #react-autowhatever-1{
 	width: 100%;
 	float: left;
-	position: relative;
+	position: absolute;
 	top: auto;
 	left: auto;
-	height: 120px;
 	overflow-y: scroll;
+	z-index: 9999;
+	background: #ffffff;
+	border: 1px solid #dddddd;
 }
 
 .invite-people .suggestion-item{
@@ -180,10 +183,10 @@ body{
     position: relative;
     opacity: 1;
     z-index: 0;
-} 
+}
 
-.day-view-text-editor { 
-  border : 0px;  
+.day-view-text-editor {
+  border : 0px;
   width: 100%;
   padding: 30px 70px;
     overflow: hidden;
@@ -197,7 +200,7 @@ body{
 }
 
 .day-view-text-editor .custom-editor-field-suggestion {
-  color: #00a6ef; 
+  color: #00a6ef;
 }
 
 .day-view-text-editor-holder .suggestions-holder {
@@ -223,7 +226,7 @@ body{
 
 .day-view-text-editor-holder .suggestions-holder li {
   display: block;
-  border-bottom: 1px solid #eee; 
+  border-bottom: 1px solid #eee;
   padding: 10px 5px;
   overflow: hidden;
   min-width: 200px;
@@ -256,13 +259,52 @@ body{
     background: none;
 }
 
+.calender-container .calender-body .col-sm-9 .calender-view .list-unstyled li .edit-icon {
+	color: #ddd;
+	font-size: 15px;
+	margin-right: 10px;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .list-unstyled li:hover .edit-icon {
+	opacity: 1;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area-content-list li .edit-icon {
+	line-height: 41px;
+	color: #dddddd;
+}
+
+.calender-container .calender-box > div.week > span.day .event-area > ul li {
+	width: 11em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 /* calender pop-over */
+div.rc-time-picker-panel {
+	z-index: 9999;
+}
+a.rc-time-picker-panel-clear-btn {
+	display: none;
+}
+
+.week-view-editor-popup-holder {
+	overflow: visible;
+}
+
+#calendar-popover-typo {
+	z-index: 9999;
+}
+
 #calendar-popover-typo .menu-ico {
   display: inline-block;
 }
 
 #calendar-popover-typo .menu-ico p {
-  margin: 0px; 
+  margin: 0px;
 }
 
 #calendar-popover-typo .menu-ico span {
@@ -288,17 +330,67 @@ body{
 }
 
 /* Folder */
-.folder-cover-wrapper .upload-anime{
-	position: absolute;
-	top: 10px;
-	left: 15px;
-	z-index: 1;
-	display: none;
+.folder-item .upload-anime{
+  margin: 20px 0 0;
+  z-index: 1;
+  text-align: center;
 }
 
-.folder-cover-wrapper .upload-anime .fa{
-	font-size: 1.5em;
-    color: #fff;
+.folder-item .upload-anime .fa{
+  font-size: 2em;
+  color: #000;
+}
+
+.folder-item .item-type{
+  background-image: url(../images/folder/types/common-type.png);
+}
+
+.shared-user .shared-privacy .pending{
+  font-size: 0.8em;
+}
+
+.folder .folder-wrapper{
+  border: 1px solid transparent;
+}
+
+.folder .folder-item{
+  position: relative;
+}
+
+.folder-col .inner-wrapper{
+  position: relative;
+  z-index: 1;
+  float: left;
+  height: 180px;
+}
+
+.folder-item .img-overlay{
+  display: block;
+  width: 100%;
+  height: 180px;
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.4);
+}
+
+.folder-col .doc-delete-btn{
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  color: #B1105D;
+  cursor: pointer;
+  z-index: 2;
+  display: none;
+}
+
+.folder-col:hover .doc-delete-btn{
+  display: block;
+}
+
+.share-popover-contained .arrow {
+    top: 130px !important;
 }
 
 /* Footer on collapse */

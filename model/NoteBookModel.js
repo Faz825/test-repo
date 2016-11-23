@@ -212,7 +212,7 @@ NoteBookSchema.statics.getNotebookById = function(id,callBack){
 
             callBack(resultSet);
         } else {
-            console.log(err)
+            console.log(err);
             callBack({status: 400, error: err})
         }
     });
@@ -267,8 +267,8 @@ NoteBookSchema.statics.sharedNotebookOnUnfriend = function(payLoad, callBack){
             });
         },
         function getESSharedNotebookList(resultSet, callBack) {
-            console.log('results.....');
-            console.log(resultSet);
+            //console.log('results.....');
+            //console.log(resultSet);
             if(resultSet) {
                 var query = {
                     q: "_id:" + payLoad.user_id.toString()
@@ -308,7 +308,7 @@ NoteBookSchema.statics.sharedNotebookOnUnfriend = function(payLoad, callBack){
                 for (var inc = 0; inc < dbNotebookList.length; inc++) {
                     var index = esNotebookList.indexOf(dbNotebookList[inc]._id.toString());
 
-                    console.log('index captured for ' + dbNotebookList[inc].name + ' ' + dbNotebookList[inc]._id + ' index ' + index + ' es id ' + esNotebookList[index]);
+                    //console.log('index captured for ' + dbNotebookList[inc].name + ' ' + dbNotebookList[inc]._id + ' index ' + index + ' es id ' + esNotebookList[index]);
 
                     if (index != -1) {
                         dbRemovingList.push(esNotebookList[inc]);
@@ -338,7 +338,7 @@ NoteBookSchema.statics.sharedNotebookOnUnfriend = function(payLoad, callBack){
             if(dbNotebookList != null) {
                 _async.each(dbNotebookList, function (dbNotebook, callBack) {
 
-                    console.log('deleting... ' + dbNotebook);
+                   // console.log('deleting... ' + dbNotebook);
 
                     _this.collection.update(
                         {_id: Util.toObjectId(dbNotebook)},
@@ -358,6 +358,17 @@ NoteBookSchema.statics.sharedNotebookOnUnfriend = function(payLoad, callBack){
         callBack({
             status:200
         });
+    });
+
+};
+
+NoteBookSchema.statics.bindNotificationData = function(notificationObj, callBack){
+
+    this.getNotebookById(notificationObj.notebook_id,function(notebookData){
+
+        notificationObj['notebook_name'] = notebookData.name;
+
+        callBack(notificationObj);
     });
 
 };

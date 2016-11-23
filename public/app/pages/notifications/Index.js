@@ -236,7 +236,14 @@ export default class Index extends React.Component{
 
     redirectToNotification(_notification){
 
-        if(_notification.notification_type != 'Birthday' && _notification.notification_type != "share_notebook" && _notification.notification_type != "share_folder"){
+        if(_notification.notification_type != 'Birthday' &&
+            _notification.notification_type != "share_notebook" &&
+            _notification.notification_type != "share_folder" &&
+            _notification.notification_type != 'share_calendar' &&
+            _notification.notification_type != 'share_calendar_response' &&
+            _notification.notification_type != 'calendar_schedule_updated' &&
+            _notification.notification_type != 'calendar_schedule_time_changed' &&
+            _notification.notification_type != 'calendar_schedule_carried_next_day') {
 
             if(!_notification.read_status) {
                 $.ajax({
@@ -261,8 +268,6 @@ export default class Index extends React.Component{
                     window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
                 }
             }
-
-
 
         }
 
@@ -587,11 +592,23 @@ export class Notification extends React.Component{
                                 {notification.notification_type != 'Birthday' &&
                                     notification.notification_type != 'share_notebook' &&
                                     notification.notification_type != 'share_notebook_response' &&
-                                    notification.notification_type != 'share_folder'
+                                    notification.notification_type != 'share_folder' &&
+                                    notification.notification_type != 'share_calendar' &&
+                                    notification.notification_type != 'share_calendar_response' &&
+                                    notification.notification_type != 'calendar_schedule_updated' &&
+                                    notification.notification_type != 'calendar_schedule_time_changed' &&
+                                    notification.notification_type != 'calendar_schedule_carried_next_day'
                                     ? notification.post_owner_name +" post":null}
-                                {notification.notification_type == 'share_notebook' ? notification.post_owner_name +" has invited you to collaborate on " + notification.notebook_name :null}
-                                {notification.notification_type == 'share_notebook_response' ? notification.post_owner_name + " has " + notification.notification_status + " your invitation to collaborate on " + notification.notebook_name :null}
+                                {/*{notification.notification_type == 'share_notebook' ? notification.post_owner_name +" has invited you to collaborate on " + notification.notebook_name :null}*/}
+                                {/*{notification.notification_type == 'share_notebook_response' ? notification.post_owner_name + " has " + notification.notification_status + " your invitation to collaborate on " + notification.notebook_name :null}*/}
+                                {notification.notification_type == 'share_notebook' ? notification.sender_name +" has invited you to collaborate on " + notification.notebook_name :null}
+                                {notification.notification_type == 'share_notebook_response' ? notification.sender_name + " has " + notification.notification_status + " your invitation to collaborate on " + notification.notebook_name :null}
                                 {notification.notification_type == 'share_folder' ? " has invited you to collaborate on " + notification.folder_name :null}
+                                {notification.notification_type == 'share_calendar' ? notification.sender_name + " has shared you a calendar event - " + notification.calendar_text :null}
+                                {notification.notification_type == 'calendar_schedule_updated' ? notification.sender_name + " has updated a shared calendar event - " + notification.calendar_text :null}
+                                {notification.notification_type == 'calendar_schedule_time_changed' ? notification.sender_name + " has completely updated a shared calendar event - " + notification.calendar_text :null}
+                                {notification.notification_type == 'share_calendar_response' ? notification.sender_name + " has " + notification.notification_status + " your invitation to calendar event - " + notification.calendar_text :null}
+                                {notification.notification_type == 'calendar_schedule_carried_next_day' ?  " calendar event moved to next day - " + notification.calendar_text :null}
                             </p>
                             <p className="chat-date">{notification.created_at.time_a_go}</p>
 
@@ -600,6 +617,12 @@ export class Notification extends React.Component{
 
                             {notification.notification_type == 'share_folder'  && !notification.read_status ? <button className="btn btn-default" >Accept</button> : null}
                             {notification.notification_type == 'share_folder'  && !notification.read_status ? <button className="btn btn-default reject" >Decline</button> : null}
+
+                            {notification.notification_type == 'share_calendar'  && !notification.read_status ? <button className="btn btn-default" >Accept</button> : null}
+                            {notification.notification_type == 'share_calendar'  && !notification.read_status ? <button className="btn btn-default reject" >Decline</button> : null}
+
+                            {notification.notification_type == 'calendar_schedule_time_changed'  && !notification.read_status ? <button className="btn btn-default" >Accept</button> : null}
+                            {notification.notification_type == 'calendar_schedule_time_changed'  && !notification.read_status ? <button className="btn btn-default reject" >Decline</button> : null}
 
                         </div>
                     </a>

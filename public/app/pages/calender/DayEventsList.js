@@ -1,22 +1,27 @@
 /**
- * Day Name Component 
+ * Day Name Component
  */
 import React from 'react';
 import moment from 'moment';
 import {convertFromRaw, convertToRaw} from 'draft-js';
 import {stateToHTML} from 'draft-js-export-html';
 
+import Session from '../../middleware/Session';
+
 export default class DayEventsList extends React.Component {
 
-	constructor(props) {
+		constructor(props) {
+				let user =  Session.getSession('prg_lg');
         super(props);
-        this.state = {}; 
+        this.state = {
+						user : user
+				};
     }
 
     render() {
         let _this = this;
         let  items = this.props.events.map(function(event,key){
-            
+
             if(event.type == 2) {
                 return;
             }
@@ -31,6 +36,7 @@ export default class DayEventsList extends React.Component {
             let usersString = event.shared_users.map(function(user,userKey){
                 return <span className="selected-people" key={userKey}>{user.name}, </span>
             });
+
             return (
                 <li key={key}>
                     <i className="fa fa-circle" aria-hidden="true"></i>
@@ -42,6 +48,10 @@ export default class DayEventsList extends React.Component {
                         </div>
                     </div>
                     <span className="event-time pull-right">{event.event_time}</span>
+										{event.user_id == _this.state.user.id ?
+												<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
+												: ''
+										}
                 </li>
             );
         });
@@ -53,8 +63,3 @@ export default class DayEventsList extends React.Component {
         )
     }
 }
-
-
-
-
-

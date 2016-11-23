@@ -577,11 +577,8 @@ var UserControler ={
         var req_connected_users = JSON.parse(req.body.connected_users);
         var req_unconnected_users = JSON.parse(req.body.unconnected_users);
 
-
-
         var Connection = require('mongoose').model('Connection'),
             User       = require('mongoose').model('User');
-
 
         User.saveUpdates(CurrentSession.id,{status:5},function(updateDataSet){
             Connection.sendConnectionRequest(CurrentSession.id,req_connected_users,req_unconnected_users, function (resultSet) {
@@ -605,14 +602,13 @@ var UserControler ={
         var CurrentSession = Util.getCurrentSession(req);
         CurrentSession['status']    = 6;
         Util.addToSession(req,CurrentSession);
+
         var outPut ={};
         outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
         outPut['user']=CurrentSession;
 
         var req_news_categories = JSON.parse(req.body.news_categories);
         var un_selected_categories = JSON.parse(req.body.un_selected);
-
-
 
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
             User                  = require('mongoose').model('User');
@@ -656,7 +652,7 @@ var UserControler ={
         }
 
         User.saveUpdates(CurrentSession.id,{status:7},function(updateDataSet){
-
+console.log(data);
                 //IF PROFILE IMAGE NOT FOUND
                 if(typeof req.body.profileImg == 'undefined' || req.body.profileImg == "") {
                     var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
@@ -981,7 +977,6 @@ var UserControler ={
         //GET EXPERIENCED SKILLS
         var existing_skills =[],deleted_skills=[];
 
-
         for(var a =0;a<skill_sets.experienced.add.length;a++){
             existing_skills.push({
                 skill_id:skill_sets.experienced.add[a],
@@ -989,7 +984,6 @@ var UserControler ={
 
             })
         }
-
 
         for(var a =0;a<skill_sets.day_to_day_comforts.add.length;a++){
             existing_skills.push({
@@ -1007,8 +1001,6 @@ var UserControler ={
         var userId = Util.getCurrentSession(req).id
 
         //TODO : If user added new skills that are not in Skill Collection
-
-
 
         async.parallel([
 
@@ -1051,11 +1043,11 @@ var UserControler ={
      */
     getSkills:function(req,res){
         var User = require('mongoose').model('User');
-
         var criteria = {user_name:req.params['uname']},
             showOptions ={
                 skill:true
             };
+
         User.getUser(criteria,showOptions,function(resultSet) {
             var outPut = {};
             if (resultSet.status != 200) {
@@ -1076,6 +1068,8 @@ var UserControler ={
         })
 
     },
+
+
     forgotPassword:function(req,res){
 
         var async = require('async'),
@@ -1227,6 +1221,7 @@ var UserControler ={
         var CurrentSession = Util.getCurrentSession(req);
 
         Connection.getConnectionCount(CurrentSession.id,function(connectionCount){
+            console.log(connectionCount);
             var outPut = {};
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['connection_count'] = connectionCount;
@@ -1558,7 +1553,6 @@ var UserControler ={
     saveArticle:function(req,res){
 
         var req_saved_articles = JSON.parse(req.body.saved_articles);
-
         var SavedArticle = require('mongoose').model('SavedArticle');
 
         SavedArticle.saveArticle(req_saved_articles, function(resultSet){
@@ -1923,17 +1917,29 @@ var UserControler ={
                     for(var i = 0; i < my_connections.length; i++){
                         if(unique_ids.indexOf(my_connections[i].user_id) == -1){
                             unique_ids.push(my_connections[i].user_id);
-                            suggested_users.push(my_connections[i]);
+                            
+                            var userObj = {
+                                name : my_connections[i].first_name + ' '+my_connections[i].last_name,
+                                title: (my_connections[i].cur_designation ? my_connections[i].cur_designation : 'Unknown'),
+                                avatar : my_connections[i].images.profile_image.http_url,
+                                user_id : my_connections[i].user_id
+                            }
+                            suggested_users.push(userObj);
                         }
                     }
                     for(var j = 0; j < all_users.length; j++){
                         if(unique_ids.indexOf(all_users[j].user_id) == -1){
                             unique_ids.push(all_users[j].user_id);
-                            suggested_users.push(all_users[j]);
+                            
+                            var userObjTwo = {
+                                name : all_users[j].first_name + ' '+all_users[j].last_name,
+                                title: (all_users[j].cur_designation ? all_users[j].cur_designation : 'Unknown'),
+                                avatar : all_users[j].images.profile_image.http_url,
+                                user_id : all_users[i].user_id
+                            }
+                            suggested_users.push(userObjTwo);
                         }
                     }
-
-                    //console.log(suggested_users);
 
                     callback(null)
                 }
@@ -2025,6 +2031,99 @@ var UserControler ={
 
     },
 
+
+
+    /**
+     * Load User Connections for Shared Folder
+     * @param req
+     * @param res
+     */
+    getFolderUsers:function(req,res){
+        console.log("getFolderUsers")
+        var User = require('mongoose').model('User'),
+            Folder = require('mongoose').model('Folders'),
+            Connection = require('mongoose').model('Connection'),
+            _async = require('async'),
+            grep = require('grep-from-array'),
+            CurrentSession = Util.getCurrentSession(req),
+            my_connections,
+            alreadySharedUsers = [],
+            filteredConnections = [],
+            criteria = {};
+
+        _async.waterfall([
+
+            function getConnectionsAndSharedUsers(callback){
+                console.log("getConnectionsAndSharedUsers")
+                _async.parallel([
+
+                    function getMyConnections(callback){
+                        console.log("getMyConnections"); console.log(req.params['name'])
+                        if(typeof req.params['name'] != 'undefined' && req.params['name'] != null){
+                            criteria = {
+                                user_id :CurrentSession.id,
+                                q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*'
+                            };
+                        } else{
+                            criteria = {
+                                user_id :CurrentSession.id
+                            };
+                        }
+                        console.log(criteria)
+                        Connection.getMyConnectionData(criteria,function(resultSet) {
+                            console.log("=======================Connections==============")
+                            console.log(resultSet)
+                            my_connections = resultSet.results;
+                            callback(null);
+                        });
+                    },
+                    function getSharedUsers(callback){
+                        console.log("getSharedUsers")
+                        var folderId = req.params['folder'];
+
+                        Folder.getFolderById(folderId,function(resultSet){
+                            for(var i = 0; i < resultSet.shared_users.length; i++){
+                                alreadySharedUsers.push(resultSet.shared_users[i].user_id);
+                            }
+                            callback(null);
+                        });
+                    }
+
+                ], function(err){
+                    callback(null);
+
+                })
+
+            },
+            function getNotSharedUsers(callback){
+                console.log("getFolderUsers")
+                if(alreadySharedUsers != null && my_connections != null){
+
+                    for(var i = 0; i < my_connections.length; i++){
+                        if(alreadySharedUsers.indexOf(my_connections[i].user_id) == -1){
+                            filteredConnections.push(my_connections[i]);
+                        }
+                    }
+                    callback(null)
+                } else{
+                    callback(null)
+                }
+            }
+        ], function (err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            var outPut = {
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                users: filteredConnections
+            }
+            res.status(200).json(outPut);
+        });
+
+    },
+
+
     /**
      * Filter User Connections
      * @param req
@@ -2055,7 +2154,91 @@ var UserControler ={
                     //console.log("=======================Connections==============")
                     //console.log(resultSet)
                     my_connections = esResultSet.result;
-                    console.log(my_connections);
+                   // console.log(my_connections);
+                    _async.waterfall([
+                        function getSharedUsers(callback){
+
+                            NoteBook.getNotebookById(notebookId,function(resultSet){
+
+                                var _notebookSharedUsers = resultSet.shared_users;
+                                if(_notebookSharedUsers != null){
+                                    for( var inc = 0; inc < _notebookSharedUsers.length; inc++){
+                                        var  _user = grep(my_connections, function(e){ return e.user_id == _notebookSharedUsers[inc].user_id; });
+                                        if(_user.length == 1){
+                                            var index = my_connections.indexOfProperty('user_id', _user[0].user_id);
+                                            if(_notebookSharedUsers[inc].status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
+                                                var usrObj = {
+                                                    user_id: my_connections[index].user_id,
+                                                    notebook_id: notebookId,
+                                                    shared_type: my_connections[index].shared_type,
+                                                    shared_status: _notebookSharedUsers[inc].status,
+                                                    user_name: my_connections[index].first_name + " " + my_connections[index].last_name,
+                                                    profile_image: my_connections[index].images.profile_image.http_url
+                                                };
+                                                shared_users.push(usrObj);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                callback(null);
+                            });
+
+                        }
+                    ], function (err, resultSet) {
+                        callback(null, shared_users);
+                    });
+
+                })
+
+            }
+
+        ], function (err, resultSet) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            var outPut = {
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                users: resultSet
+            }
+            res.status(200).json(outPut);
+        });
+
+    },
+
+
+    /**
+     * Filter User Connections
+     * @param req
+     * @param res
+     */
+    filterFolderSharedUsers:function(req,res){
+        var User = require('mongoose').model('User'),
+            NoteBook = require('mongoose').model('Folders'),
+            Connection = require('mongoose').model('Connection'),
+            _async = require('async'),
+            grep = require('grep-from-array'),
+            _arrIndex = require('array-index-of-property'),
+            CurrentSession = Util.getCurrentSession(req),
+            outPut = {},
+            my_connections = [],
+            shared_users = [];
+
+        _async.waterfall([
+
+            function getConnectedUsers(callback) {
+                var criteria = {
+                    q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*',
+                    index:'idx_usr',
+                    //q:req.params['name']+'*'
+                }
+                var notebookId = req.params['notebook'];
+                ES.search(criteria,function(esResultSet){
+                    //console.log("=======================Connections==============")
+                    //console.log(resultSet)
+                    my_connections = esResultSet.result;
+                    // console.log(my_connections);
                     _async.waterfall([
                         function getSharedUsers(callback){
 
@@ -2107,10 +2290,6 @@ var UserControler ={
         });
 
     }
-
-
-
-
 
 };
 

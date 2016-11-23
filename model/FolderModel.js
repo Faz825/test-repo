@@ -71,6 +71,7 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
     _folder.color  	= _data.color;
     _folder.isDefault  	= _data.isDefault;
     _folder.user_id		= _data.user_id;
+    _folder.shared_users = _data.shared_users;
 
     _folder.save(function(err,resultSet){
 
@@ -186,7 +187,7 @@ FolderSchema.statics.addFolderToCache = function(data, callBack){
 FolderSchema.statics.getFolders = function(criteria,callBack){
 
     var _this = this;
-    _this.find(criteria).exec(function(err,resultSet){
+    _this.find(criteria).sort({created_at:1}).exec(function(err,resultSet){
         if(!err){
             callBack({
                 status:200,
@@ -273,5 +274,77 @@ FolderSchema.statics.updateFolder = function(criteria, data, callBack){
     });
 };
 
+/**
+ * Share Folder | DB
+ */
+FolderSchema.statics.shareFolder = function(folderId,sharedCriteria,callBack){
+
+    var _this = this;
+    //_this.update({_id:folderId},
+    //    {$set:sharedCriteria},function(err,resultSet){
+    //
+    //        if(!err){
+    //            callBack({
+    //                status:200
+    //            });
+    //        }else{
+    //            console.log("Server Error --------")
+    //            callBack({status:400,error:err});
+    //        }
+    //    });
+
+    _this.update({_id:folderId},
+        {$push:sharedCriteria},function(err,resultSet){
+
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
+/**
+ * Remove Shared user | DB
+ */
+FolderSchema.statics.removeSharedUser = function(folderId,sharedCriteria,callBack){
+
+    var _this = this;
+
+    _this.update({_id:folderId},
+        { $pull: sharedCriteria},function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
+
+/**
+ * This is to get the folder name of given folder_id
+ * @param criteria
+ * @param data
+ * @param callBack
+ */
+FolderSchema.statics.bindNotificationData = function(notificationObj, callBack){
+
+    this.getFolderById(notificationObj.folder_id,function(folderData){
+
+        notificationObj['folder_name'] = folderData.name;
+
+        callBack(notificationObj);
+    });
+
+};
 
 mongoose.model('Folders',FolderSchema);

@@ -745,7 +745,7 @@ ConnectionSchema.statics.unfriendUser = function(criteria,callBack){
 
             ES.delete(payLoad,function(resultSet){
                 console.log("own connection removeIndex");
-                console.log(resultSet);
+                //console.log(resultSet);
                 callBack(null);
             });
 
@@ -761,7 +761,7 @@ ConnectionSchema.statics.unfriendUser = function(criteria,callBack){
 
             ES.delete(payLoad,function(resultSet){
                 console.log("friend's connection removeIndex");
-                console.log(resultSet);
+                //console.log(resultSet);
                 callBack(null);
             });
 

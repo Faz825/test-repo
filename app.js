@@ -16,6 +16,7 @@ GLOBAL.Config = require('./config/app.config');
 
 require('./config/alert.message');
 require('./config/notification');
+require('./config/mimetypes');
 GLOBAL.ApiHelper = require('./middleware/ApiHelper');
 GLOBAL.ContentUploader = require('./middleware/ContentUploader');
 ContentUploader.init();

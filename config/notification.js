@@ -7,7 +7,8 @@ GLOBAL.Notifications = {
     SHARE_NOTEBOOK_RESPONSE:"share_notebook_response",
     SHARE_CALENDAR:"share_calendar",
     SHARE_CALENDAR_RESPONSE:"share_calendar_response",
-    SHARE_CALENDAR_UPDATED:"share_calendar_updated",
-    SHARE_CALENDAR_TIME_CHANGED:"share_calendar_time_changed",
+    CALENDAR_SCHEDULE_UPDATED:"calendar_schedule_updated",
+    CALENDAR_SCHEDULE_TIME_CHANGED:"calendar_schedule_time_changed",
+    CALENDAR_SCHEDULE_CARRIED_NEXT_DAY:"calendar_schedule_carried_next_day",
     SHARE_FOLDER:"share_folder"
 };

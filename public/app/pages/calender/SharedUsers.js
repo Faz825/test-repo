@@ -17,7 +17,7 @@ export default class SharedUsers extends Component {
             sharedWithIds : [],
             isAlreadySelected : false
         };
-        
+
         this.users = [];
         this.sharedWithIds = [];
         this.sharedWithNames = [];
@@ -45,9 +45,6 @@ export default class SharedUsers extends Component {
     }
 
     getSuggestions(value, data) {
-        console.log(" GET SUGGES");
-        console.log(value);
-        console.log(data);
 
         const escapedValue = Lib.escapeRegexCharacters(value.trim());
         if (escapedValue === '') {
@@ -105,19 +102,6 @@ export default class SharedUsers extends Component {
     }
 
     getSuggestionValue(suggestion) {
-        if(this.sharedWithIds.indexOf(suggestion.user_id)==-1){
-            this.sharedWithIds.push(suggestion.user_id);
-            this.sharedWithNames.push(suggestion.first_name+" "+suggestion.last_name);
-            this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false})
-        } else{
-            this.setState({isAlreadySelected:true});
-            console.log("already selected" + this.state.isAlreadySelected)
-        }
-
-        return "";
-    }
-
-    getSuggestionValue(suggestion) {
 
         if(this.sharedWithIds.indexOf(suggestion.user_id)==-1){
             this.sharedWithIds.push(suggestion.user_id);
@@ -139,7 +123,7 @@ export default class SharedUsers extends Component {
     }
 
     renderSuggestion(suggestion) {
-        return (            
+        return (
             <div id={suggestion.user_id} className="suggestion-item">
                 <img className="suggestion-img" src={suggestion.images.profile_image.http_url} alt={suggestion.first_name} />
                 <span>{suggestion.first_name+" "+suggestion.last_name}</span>
@@ -159,6 +143,8 @@ export default class SharedUsers extends Component {
 
         let shared_with_list = [];
 
+        console.log(this.state);
+        console.log("***********************************************");
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
                 return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
@@ -176,7 +162,7 @@ export default class SharedUsers extends Component {
                         onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                         getSuggestionValue={this.getSuggestionValue}
                         renderSuggestion={this.renderSuggestion}
-                        inputProps={inputProps} 
+                        inputProps={inputProps}
                     />
                 </div>
             </div>

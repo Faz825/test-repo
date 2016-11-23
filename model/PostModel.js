@@ -545,5 +545,27 @@ PostSchema.statics.formatPost=function(postData){
     }
 
     return outPut;
-}
+};
+
+PostSchema.statics.bindNotificationData = function(notificationObj, user_id, callBack){
+
+    var criteria = {
+        _id: Util.toObjectId(notificationObj.post_id)
+    };
+
+    this.db_getPost(criteria, function (postData){
+
+        notificationObj['post_owner_username'] = postData.post.created_by.user_name;
+
+        if(user_id.toString() == postData.post.created_by.user_id.toString()){
+            notificationObj['post_owner_name'] = "your";
+        }else{
+            notificationObj['post_owner_name'] = postData.post.created_by.first_name+" "+postData.post.created_by.last_name;
+        }
+
+        callBack(notificationObj);
+    });
+
+};
+
 mongoose.model('Post',PostSchema);

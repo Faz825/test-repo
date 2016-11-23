@@ -1278,8 +1278,6 @@ UserSchema.statics.authenticate = function(data, callback) {
                     },
                     function getSecretary(profileData,callBack){
 
-
-
                         if( profileData.secretary_id != null){
                             Secretary.getSecretaryById(profileData.secretary_id,function(secretary){
                                 profileData['secretary_image_url'] = secretary.image_name;
@@ -1293,7 +1291,6 @@ UserSchema.statics.authenticate = function(data, callback) {
                     },
                     function getProfileImage(profileData,callBack){
 
-
                         if(profileData != null){
                             Upload.getProfileImage(profileData.id.toString(),function(profileImageData){
                                 profileData['profile_image'] = (profileImageData.status != 400)?profileImageData.image.profile_image.http_url:"";
@@ -1304,8 +1301,6 @@ UserSchema.statics.authenticate = function(data, callback) {
                             callBack(null,null)
                         }
                     }
-
-
 
                 ],function(err,profileData) {
                     var outPut = {};
@@ -1319,11 +1314,6 @@ UserSchema.statics.authenticate = function(data, callback) {
                         return 0;
                     }
                 })
-
-
-
-
-
             }
         }else{
             console.log("Server Error --------")
@@ -1359,6 +1349,41 @@ UserSchema.statics.getApiVerification = function(data, callback) {
 
 };
 
+
+UserSchema.statics.getSenderDetails = function(related_senders, callBack) {
+    var _this = this;
+    var _async = require('async');
+
+    var users = [];
+    _async.waterfall([
+        function getUserDetails(){
+            _async.eachSeries(related_senders, function(user, callBack){
+                var query={
+                    q:"user_id:"+user.toString(),
+                    index:'idx_usr'
+                };
+                //Find User from Elastic search
+                ES.search(query,function(csResultSet){
+                    users.push(
+                        {
+                            sender_id : user,
+                            sender_name : csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
+                            sender_user_name : csResultSet.result[0]['user_name'],
+                            profile_image : csResultSet.result[0]['images']['profile_image']['http_url']
+                        }
+                    );
+                    callBack(null);
+                });
+
+            },function(err){
+                callBack(users);
+            });
+        }
+    ],function(err){
+
+    });
+
+};
 
 
 mongoose.model('User',UserSchema);

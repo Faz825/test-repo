@@ -231,6 +231,7 @@ router.post('/comment/delete', CommentController.deleteComment);
 router.post('/skill-info/save', UserController.saveSkillInfo);
 
 router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
+router.post('/ajax/upload/folderDoc', UploadController.uploadFolderDocument);
 
 
 //CONNECTIONS
@@ -279,7 +280,7 @@ router.post('/notes/delete-note', NotesController.deleteNote);
 router.post('/introduction/update', UserController.updateIntroduction);
 router.get('/introduction/:uname',UserController.retrieveIntroduction);
 router.get('/notifications/get-notifications',NotificationController.getNotifications);
-// router.get('/notifications/get-notifications',NotificationController.getNotificationsList);
+router.get('/notifications/get-notifications-list',NotificationController.getNotificationsList);
 router.post('/notifications/update-notifications',NotificationController.updateNotifications);
 router.post('/notifications/notebook-update',NotificationController.updateNotebookNotifications);
 router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);
@@ -289,21 +290,29 @@ router.post('/folders/add-new', FolderController.addNewFolder);
 router.get('/folders/get-all', FolderController.getFolders);
 router.post('/group-folders/add-new', GroupFolderController.addNewFolder);
 router.get('/group-folders/get-all', GroupFolderController.getFolders);
+router.post('/folders/shared-users', FolderController.getSharedUsers);
+router.post('/folders/share-folder', FolderController.shareFolder);
+router.post('/folder/shared-user/remove', FolderController.removeSharedFolderUser);
+
+router.get('/get-folder-users/:folder/:name', UserController.getFolderUsers);
+router.get('/get-folder-users/:folder', UserController.getFolderUsers);
+router.get('/filter-folder-shared-users/:folder/:name', UserController.filterFolderSharedUsers);
 
 router.post('/calendar/event/add', CalendarController.addEvent);
 router.get('/calendar/month/all', CalendarController.getAllForSpecificMonth);
-router.get('/calendar/week/all', CalendarController.getAllForSpecificWeek);
-router.get('/calendar/week/current', CalendarController.getAllEventForCurrentWeek);
-router.get('/calendar/week/next_prev', CalendarController.getAllEventForNextOrPrevWeek);
+//router.get('/calendar/week/all', CalendarController.getAllForSpecificWeek);
+//router.get('/calendar/week/current', CalendarController.getAllEventForCurrentWeek);
+//router.get('/calendar/week/next_prev', CalendarController.getAllEventForNextOrPrevWeek);
 router.post('/calendar/day/all', CalendarController.getEventsForSpecificDay);
 router.post('/calendar/update', CalendarController.updateEvent);
-router.post('/calendar/event/share', CalendarController.shareEvent);
+//router.post('/calendar/event/share', CalendarController.shareEvent);
 router.post('/calendar/remove/share_user', CalendarController.removeSharedEventUser);
 router.post('/calendar/update/event_status', CalendarController.updateEventSharedStatus);
 router.get('/calendar/shared_users', CalendarController.getEventSharedUsers);
 
 router.get('/calendar/events/date_range', CalendarController.getAllForDateRange);
 router.post('/calendar/event/completion', CalendarController.updateEventCompletion);
+router.post('/calendar/event/get', CalendarController.getEvent);
 
 router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
 
