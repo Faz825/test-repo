@@ -281,10 +281,10 @@ var CalendarController = {
 
         // month in moment is 0 based, so 9 is actually october, subtract 1 to compensate
         // array is 'year', 'month', 'day', etc
-        var startDate = moment([year, month]).add(-1, "month");
+        var startDate = moment([year, month]).add(-1, "month").format('YYYY-MM-DD');
 
         // Clone the value before .endOf()
-        var endDate = moment(startDate).endOf('month');
+        var endDate = moment(startDate).endOf('month').format('YYYY-MM-DD');
 
         var criteria = {start_date_time: {$gte: startDate, $lt: endDate}, status: 1, user_id: user_id};
 

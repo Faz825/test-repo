@@ -453,6 +453,7 @@ var ConnectionController ={
                 };
 
                 Connection.unfriendUser(criteria,function(resultSet){
+                    console.log('connections');
                     callback(null);
                 });
             },
