@@ -346,6 +346,10 @@ a.rc-time-picker-panel-clear-btn {
   border: 1px solid transparent;
 }
 
+.share-popover-contained .arrow {
+    top: 130px !important;
+}
+
 /* Footer on collapse */
 .body-container.sub-page{
 	padding-bottom: 100px;

@@ -621,7 +621,7 @@ export class Folder extends React.Component{
         let folderData = this.props.folderData;
         let ownerImg;
         let i = (
-            <Popover id="popover-contained" style={{maxWidth: "635px", width: "635px"}}>
+            <Popover id="popover-contained" className="share-popover-contained" style={{maxWidth: "635px", width: "635px"}}>
                 <SharePopup folderData={folderData} onLoadFolders={_this.props.onLoadFolders}/>
             </Popover>
         );
@@ -1263,7 +1263,7 @@ export class  SharedUsers extends React.Component {
         });
 
         return (
-            <div className="shared-users-container" style={{overflowY: this.props.scrollProp}}>
+            <div className="shared-users-container" style={{overflowY: this.props.scrollProp, overflowX: 'hidden', maxHeight: '155px'}}>
                 {_allUsers}
             </div>
         )
