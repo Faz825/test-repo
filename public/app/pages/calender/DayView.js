@@ -185,6 +185,18 @@ export default class DayView extends Component {
                   sharedWithNames: [],
                   sharedWithIds: [],
               });
+
+              if(typeof sharedUsers != 'undefined' && sharedUsers.length > 0) {
+                  let _notificationData = {
+                      cal_event_id:postData.id,
+                      notification_type:data.event_time.isTimeChanged == true ? "calendar_schedule_time_changed" : "calendar_schedule_updated",
+                      notification_sender:this.loggedUser,
+                      notification_receiver:sharedUsers
+                  };
+
+                  Socket.sendCalendarShareNotification(_notificationData);
+              }
+
               this.loadEvents();
           }
       }.bind(this));
