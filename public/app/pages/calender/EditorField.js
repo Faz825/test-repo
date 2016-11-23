@@ -57,23 +57,27 @@ export default class EditorField extends Component {
         this.onChange = this.onChange.bind(this);
 
         this.onSearchChange = ({ value }) => {
-            $.ajax({
-                url : '/user/get-user-suggestions/'+value.replace("#", ""),
-                method : "GET",
-                dataType : "JSON",
-                headers : { "prg-auth-header" : this.state.user.token },
-                success : function (data, text) {
-                    if (data.status.code == 200) {
-                        this.setState({ suggestions: defaultSuggestionsFilter(value, fromJS(data.suggested_users))});
+            var str = value.replace("#", "");
+            if(str.length > 0) {
+                $.ajax({
+                    url : '/user/get-user-suggestions/'+str,
+                    method : "GET",
+                    dataType : "JSON",
+                    headers : { "prg-auth-header" : this.state.user.token },
+                    success : function (data, text) {
+                        if (data.status.code == 200) {
+                            this.setState({ suggestions: defaultSuggestionsFilter(value, fromJS(data.suggested_users))});
+                        }
+                    }.bind(this),
+                    error: function (request, status, error) {
+                        console.log(error);
                     }
-                }.bind(this),
-                error: function (request, status, error) {
-                    console.log(error);
-                }
-            });
-            this.setState({
-                suggestions: defaultSuggestionsFilter(value, this.state.suggestions),
-            });
+                });
+            } else {
+                this.setState({
+                    suggestions: defaultSuggestionsFilter(value, this.state.suggestions),
+                });
+            }
         };
 
         this.onSearchChange2 = ({ value }) => {
