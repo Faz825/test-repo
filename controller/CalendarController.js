@@ -296,8 +296,53 @@ var CalendarController = {
                     callBack(null, resultSet.events);
                 });
             },
+            //function getSharedEvents(resultSet, callBack) {
+            //    if (resultSet) {
+            //        var user_id = CurrentSession.id;
+            //
+            //        var query = {
+            //            q: "_id:" + user_id.toString()
+            //        };
+            //        CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet) {
+            //
+            //            var sharedEvents = esResultSet.result[0].events;
+            //
+            //            _async.each(sharedEvents, function (sharedEvent, callBack) {
+            //
+            //                var condition = {start_date_time: {$gte: startDate, $lt: endDate}, _id: sharedEvent};
+            //
+            //                CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+            //
+            //                    if (result.events[0] != null && typeof result.events[0] != 'undefined') {
+            //                        var _Shared_users = result.events[0].shared_users;
+            //
+            //                        if(_Shared_users != null && typeof _Shared_users != 'undefined'){
+            //
+            //                            for(var inc = 0; inc < _Shared_users.length; inc++){
+            //
+            //                                if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+            //                                    _Events.push(result.events[0]);
+            //                                }
+            //                            }
+            //                        }
+            //                    }
+            //                    callBack(null);
+            //                });
+            //            }, function (err) {
+            //                callBack(null, _Events);
+            //            });
+            //        });
+            //    } else {
+            //        callBack(null, _Events);
+            //    }
+            //
+            //},
             function getSharedEvents(resultSet, callBack) {
-                if (resultSet) {
+                console.log("getSharedEvents -->>");
+                if (typeof resultSet != 'undefined' && resultSet) {
+
+                    console.log("11111 -->>");
+
                     var user_id = CurrentSession.id;
 
                     var query = {
@@ -305,32 +350,47 @@ var CalendarController = {
                     };
                     CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet) {
 
-                        var sharedEvents = esResultSet.result[0].events;
+                        console.log("22222 -->>");
+                        if(typeof esResultSet != 'undefined' && esResultSet) {
+                            console.log("33333 -->>");
+                            var sharedEvents = esResultSet.result[0].events;
+                            console.log(sharedEvents);
+                            _async.each(sharedEvents, function (sharedEvent, callBack) {
+                                console.log("44444 -->>");
+                                var condition = {
+                                    start_date_time: {$gte: startDate, $lt: endDate},
+                                    _id: sharedEvent,
+                                };
 
-                        _async.each(sharedEvents, function (sharedEvent, callBack) {
+                                CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+                                    console.log("55555 -->>");
+                                    if(typeof result != 'undefined' && result) {
+                                        console.log("66666 -->>");
+                                        if (result.events[0] != null && typeof result.events[0] != 'undefined') {
+                                            var _Shared_users = result.events[0].shared_users;
 
-                            var condition = {start_date_time: {$gte: startDate, $lt: endDate}, _id: sharedEvent};
+                                            if(_Shared_users != null && typeof _Shared_users != 'undefined'){
 
-                            CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+                                                for(var inc = 0; inc < _Shared_users.length; inc++){
 
-                                if (result.events[0] != null && typeof result.events[0] != 'undefined') {
-                                    var _Shared_users = result.events[0].shared_users;
-
-                                    if(_Shared_users != null && typeof _Shared_users != 'undefined'){
-
-                                        for(var inc = 0; inc < _Shared_users.length; inc++){
-
-                                            if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
-                                                _Events.push(result.events[0]);
+                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+                                                        _Events.push(result.events[0]);
+                                                    }
+                                                }
                                             }
+
                                         }
                                     }
-                                }
-                                callBack(null);
+                                    callBack(null);
+
+                                });
+                            }, function (err) {
+                                callBack(null, _Events);
                             });
-                        }, function (err) {
+                        } else {
                             callBack(null, _Events);
-                        });
+                        }
+
                     });
                 } else {
                     callBack(null, _Events);
@@ -388,8 +448,53 @@ var CalendarController = {
                     callBack(null, resultSet.events);
                 });
             },
+            //function getSharedEvents(resultSet, callBack) {
+            //    if (resultSet) {
+            //        var user_id = CurrentSession.id;
+            //
+            //        var query = {
+            //            q: "_id:" + user_id.toString()
+            //        };
+            //        CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet) {
+            //
+            //            var sharedEvents = esResultSet.result[0].events;
+            //
+            //            _async.each(sharedEvents, function (sharedEvent, callBack) {
+            //
+            //                var condition = {start_date_time: {$gte: startDate, $lt: endDate}, _id: sharedEvent};
+            //
+            //                CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+            //
+            //                    if (result.events[0] != null && typeof result.events[0] != 'undefined') {
+            //                        var _Shared_users = result.events[0].shared_users;
+            //
+            //                        if(_Shared_users != null && typeof _Shared_users != 'undefined'){
+            //
+            //                            for(var inc = 0; inc < _Shared_users.length; inc++){
+            //
+            //                                if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+            //                                    _Events.push(result.events[0]);
+            //                                }
+            //                            }
+            //                        }
+            //                    }
+            //                    callBack(null);
+            //                });
+            //            }, function (err) {
+            //                callBack(null, _Events);
+            //            });
+            //        });
+            //    } else {
+            //        callBack(null, _Events);
+            //    }
+            //
+            //},
             function getSharedEvents(resultSet, callBack) {
-                if (resultSet) {
+                console.log("getSharedEvents -->>");
+                if (typeof resultSet != 'undefined' && resultSet) {
+
+                    console.log("11111 -->>");
+
                     var user_id = CurrentSession.id;
 
                     var query = {
@@ -397,32 +502,47 @@ var CalendarController = {
                     };
                     CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet) {
 
-                        var sharedEvents = esResultSet.result[0].events;
+                        console.log("22222 -->>");
+                        if(typeof esResultSet != 'undefined' && esResultSet) {
+                            console.log("33333 -->>");
+                            var sharedEvents = esResultSet.result[0].events;
+                            console.log(sharedEvents);
+                            _async.each(sharedEvents, function (sharedEvent, callBack) {
+                                console.log("44444 -->>");
+                                var condition = {
+                                    start_date_time: {$gte: startDate, $lt: endDate},
+                                    _id: sharedEvent,
+                                };
 
-                        _async.each(sharedEvents, function (sharedEvent, callBack) {
+                                CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+                                    console.log("55555 -->>");
+                                    if(typeof result != 'undefined' && result) {
+                                        console.log("66666 -->>");
+                                        if (result.events[0] != null && typeof result.events[0] != 'undefined') {
+                                            var _Shared_users = result.events[0].shared_users;
 
-                            var condition = {start_date_time: {$gte: startDate, $lt: endDate}, _id: sharedEvent};
+                                            if(_Shared_users != null && typeof _Shared_users != 'undefined'){
 
-                            CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+                                                for(var inc = 0; inc < _Shared_users.length; inc++){
 
-                                if (result.events[0] != null && typeof result.events[0] != 'undefined') {
-                                    var _Shared_users = result.events[0].shared_users;
-
-                                    if(_Shared_users != null && typeof _Shared_users != 'undefined'){
-
-                                        for(var inc = 0; inc < _Shared_users.length; inc++){
-
-                                            if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
-                                                _Events.push(result.events[0]);
+                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+                                                        _Events.push(result.events[0]);
+                                                    }
+                                                }
                                             }
+
                                         }
                                     }
-                                }
-                                callBack(null);
+                                    callBack(null);
+
+                                });
+                            }, function (err) {
+                                callBack(null, _Events);
                             });
-                        }, function (err) {
+                        } else {
                             callBack(null, _Events);
-                        });
+                        }
+
                     });
                 } else {
                     callBack(null, _Events);
