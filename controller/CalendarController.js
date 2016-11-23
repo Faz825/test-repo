@@ -338,7 +338,7 @@ var CalendarController = {
                         });
                     });
                 } else {
-                    callBack(null, null);
+                    callBack(null, _Events);
                 }
 
             }
@@ -435,7 +435,7 @@ var CalendarController = {
                         });
                     });
                 } else {
-                    callBack(null, null);
+                    callBack(null, _Events);
                 }
 
             }
@@ -530,7 +530,7 @@ var CalendarController = {
                         });
                     });
                 } else {
-                    callBack(null, null);
+                    callBack(null, _Events);
                 }
 
             }
@@ -628,7 +628,7 @@ var CalendarController = {
                         });
                     });
                 } else {
-                    callBack(null, null);
+                    callBack(null, _Events);
                 }
 
             }
@@ -785,7 +785,7 @@ var CalendarController = {
                                 });
                             });
                         } else {
-                            callBack(null, resultSet.eventsDb);
+                            callBack(null, _Events);
                         }
 
                     }
@@ -809,10 +809,6 @@ var CalendarController = {
             },
 
             function composeUsers(events, users, callback) {
-
-                if (events == null || events == null) {
-                    callback(null, []);
-                }
 
                 if (events.length == 0) {
                     callback(null, []);
@@ -860,9 +856,14 @@ var CalendarController = {
             }
         ], function (err, events) {
             var outPut = {};
-            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['events'] = events;
-            res.status(200).send(outPut);
+            if(err){
+                outPut['error'] = err;
+                res.status(400).send(outPut);
+            }else{
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['events'] = events;
+                res.status(200).send(outPut);
+            }
         });
     },
 
