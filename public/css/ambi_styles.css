@@ -10832,8 +10832,8 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .item-type {
   position: absolute;
-  bottom: 26px;
-  right: 28px;
+  bottom: 10px;
+  right: 13px;
   height: 36px;
   width: 29px;
 }
