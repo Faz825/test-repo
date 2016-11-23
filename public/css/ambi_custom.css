@@ -33,11 +33,13 @@ body{
 .invite-people #react-autowhatever-1{
 	width: 100%;
 	float: left;
-	position: relative;
+	position: absolute;
 	top: auto;
 	left: auto;
-	height: 120px;
 	overflow-y: scroll;
+	z-index: 9999;
+	background: #ffffff;
+	border: 1px solid #dddddd;
 }
 
 .invite-people .suggestion-item{
@@ -275,6 +277,12 @@ body{
 }
 
 /* calender pop-over */
+div.rc-time-picker-panel {
+	z-index: 9999;
+}
+a.rc-time-picker-panel-clear-btn {
+	display: none;
+}
 
 .week-view-editor-popup-holder {
 	overflow: visible;

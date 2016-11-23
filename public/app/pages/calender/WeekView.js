@@ -339,7 +339,7 @@ export class WeekDayEventPopUp extends React.Component {
     }
 
     handleTimeChange(time) {
-        this.setState({ defaultEventTime: moment(time).format('HH:mm'),  });
+        this.setState({ defaultEventTime: moment(time).format('HH:mm')});
     }
 
     addEvent(event) {
@@ -478,7 +478,7 @@ export class WeekDayEventPopUp extends React.Component {
                                                     showSecond={showSecond}
                                                     defaultValue={moment()}
                                                     onChange={this.handleTimeChange.bind(this)}
-                                                    />
+                                                />
                                             </div>
                                         </div>
                                         : null}
