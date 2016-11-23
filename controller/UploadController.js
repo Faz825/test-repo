@@ -172,8 +172,9 @@ var UploadController = {
                         document_user:res.document.user_id,
                         document_path:res.document.file_path,
                         document_thumb_path:res.document.thumb_path,
-                        document_updated_at:res.document.updated_at
-                    }
+                        document_updated_at:DateTime.noteCreatedDate(res.document.updated_at)
+                    };
+
                     callback(null);
                 })
             }

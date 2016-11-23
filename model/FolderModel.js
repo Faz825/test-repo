@@ -187,7 +187,7 @@ FolderSchema.statics.addFolderToCache = function(data, callBack){
 FolderSchema.statics.getFolders = function(criteria,callBack){
 
     var _this = this;
-    _this.find(criteria).exec(function(err,resultSet){
+    _this.find(criteria).sort({created_at:1}).exec(function(err,resultSet){
         if(!err){
             callBack({
                 status:200,
@@ -280,8 +280,21 @@ FolderSchema.statics.updateFolder = function(criteria, data, callBack){
 FolderSchema.statics.shareFolder = function(folderId,sharedCriteria,callBack){
 
     var _this = this;
+    //_this.update({_id:folderId},
+    //    {$set:sharedCriteria},function(err,resultSet){
+    //
+    //        if(!err){
+    //            callBack({
+    //                status:200
+    //            });
+    //        }else{
+    //            console.log("Server Error --------")
+    //            callBack({status:400,error:err});
+    //        }
+    //    });
+
     _this.update({_id:folderId},
-        {$set:sharedCriteria},function(err,resultSet){
+        {$push:sharedCriteria},function(err,resultSet){
 
             if(!err){
                 callBack({

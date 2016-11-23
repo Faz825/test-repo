@@ -52,7 +52,6 @@ export default class Index extends React.Component{
     }
 
     loadFolders(){
-console.log("adeh");
         //console.log("loadFolders")
 
         $.ajax({
@@ -434,7 +433,6 @@ export class Folder extends React.Component{
             isCollapsed : true,
             isProgressBarActive : false,
             files: [],
-            filesData:this.props.folderData.documents
         };
         this.files = [];
         this.active_folder_id = 0;
@@ -445,58 +443,58 @@ export class Folder extends React.Component{
         this.uploadHandler = this.uploadHandler.bind(this);
 
         this.filesData = this.props.folderData.documents; 
-        console.log("FILEDATA ===" + this.props.folderData.folder_name);
-        console.log(this.filesData)
-        this.filesData = [
-           {
-               document_id : "582ae658247ffffc240b08b9",
-               document_name : "PEF - Anuthiga Sriskanthan - DOC",
-               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-               document_thumb_path : null,
-               document_type : "doc",
-               document_updated_at:{
-                   createdDate: "Oct 11, 2016",
-                   createdTime: "9:31 am"
-               },
-               document_user : "574bcb96272a6fd40768cf0f"
-           },
-           {
-               document_id : "582ae658247ffffc240b08b9",
-               document_name : "PEF - Anuthiga Sriskanthan",
-               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-               document_thumb_path : null,
-               document_type : "xlsx",
-               document_updated_at:{
-                   createdDate: "Oct 11, 2016",
-                   createdTime: "9:31 am"
-               },
-               document_user : "574bcb96272a6fd40768cf0f"
-           },
-           {
-               document_id : "582c2d3a1461f4050b1764c5",
-               document_name : "babymartonline.com-check-list",
-               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
-               document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
-               document_type : "gif",
-               document_updated_at:{
-                   createdDate: "Oct 11, 2016",
-                   createdTime: "9:31 am"
-               },
-               document_user : "574bcb96272a6fd40768cf0f"
-           },
-           {
-               document_id : "582be27c639078842cbc24f6",
-               document_name : "babymartonline.com-check-list",
-               document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-               document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-               document_type : "jpg",
-               document_updated_at:{
-                   createdDate: "Oct 11, 2016",
-                   createdTime: "9:31 am"
-               },
-               document_user : "574bcb96272a6fd40768cf0f"
-           }
-        ];
+        //console.log("FILEDATA ===" + this.props.folderData.folder_name);
+        //console.log(this.filesData)
+        //this.filesData = [
+        //   {
+        //       document_id : "582ae658247ffffc240b08b9",
+        //       document_name : "PEF - Anuthiga Sriskanthan - DOC",
+        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+        //       document_thumb_path : null,
+        //       document_type : "doc",
+        //       document_updated_at:{
+        //           createdDate: "Oct 11, 2016",
+        //           createdTime: "9:31 am"
+        //       },
+        //       document_user : "574bcb96272a6fd40768cf0f"
+        //   },
+        //   {
+        //       document_id : "582ae658247ffffc240b08b9",
+        //       document_name : "PEF - Anuthiga Sriskanthan",
+        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+        //       document_thumb_path : null,
+        //       document_type : "xlsx",
+        //       document_updated_at:{
+        //           createdDate: "Oct 11, 2016",
+        //           createdTime: "9:31 am"
+        //       },
+        //       document_user : "574bcb96272a6fd40768cf0f"
+        //   },
+        //   {
+        //       document_id : "582c2d3a1461f4050b1764c5",
+        //       document_name : "babymartonline.com-check-list",
+        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
+        //       document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
+        //       document_type : "gif",
+        //       document_updated_at:{
+        //           createdDate: "Oct 11, 2016",
+        //           createdTime: "9:31 am"
+        //       },
+        //       document_user : "574bcb96272a6fd40768cf0f"
+        //   },
+        //   {
+        //       document_id : "582be27c639078842cbc24f6",
+        //       document_name : "babymartonline.com-check-list",
+        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+        //       document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+        //       document_type : "jpg",
+        //       document_updated_at:{
+        //           createdDate: "Oct 11, 2016",
+        //           createdTime: "9:31 am"
+        //       },
+        //       document_user : "574bcb96272a6fd40768cf0f"
+        //   }
+        //];
 
     }
 
@@ -569,21 +567,9 @@ export class Folder extends React.Component{
                 }
                 this.setState({files:this.files});
                 console.log("file upload finished ... hide the spinner");
-                console.log("Gonna call loadFolders")
+                let _data = data.document;
+                this.filesData.unshift(_data); // add the uploaded document to existing document list. this should update the document list of that folder.
                 this.props.onLoadFolders();
-                //let _dummyData = {
-                //    document_id : "582be27c639078842cbc24f6",
-                //    document_name : "DUMMY DATA",
-                //    document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-                //    document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-                //    document_type : "jpg",
-                //    document_updated_at : "2016-11-16T04:37:16.889Z",
-                //    document_user : "574bcb96272a6fd40768cf0f"
-                //};
-                //this.filesData.unshift(_dummyData)
-                //this.filesData.unshift(data.document) // add the uploaded document to existing document list. this should update the document list of that folder.
-                //console.log(this.filesData)
-
             }
         }.bind(this)).error(function (request, status, error) {
 
@@ -591,22 +577,21 @@ export class Folder extends React.Component{
              * have this inside error for testing purpose.
              * */
 
-            let _dummyData = {
-                document_id : "582be27c639078842cbc24f6",
-                document_name : "DUMMY DATA",
-                document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-                document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-                document_type : "jpg",
-                document_updated_at:{
-                    createdDate: "Oct 11, 2016",
-                    createdTime: "9:31 am"
-                },
-                document_user : "574bcb96272a6fd40768cf0f"
-            };
-            this.filesData.unshift(_dummyData) // add the uploaded document to existing document list. this should update the document list of that folder.
-            console.log(this.filesData)
-            console.log("Gonna call loadFolders")
-            this.props.onLoadFolders();
+            //let _dummyData = {
+            //    document_id : "582be27c639078842cbc24f6",
+            //    document_name : "DUMMY DATA",
+            //    document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+            //    document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+            //    document_type : "jpg",
+            //    document_updated_at:{
+            //        createdDate: "Oct 11, 2016",
+            //        createdTime: "9:31 am"
+            //    },
+            //    document_user : "574bcb96272a6fd40768cf0f"
+            //};
+            //this.filesData.unshift(_dummyData) // add the uploaded document to existing document list. this should update the document list of that folder.
+            //console.log(this.filesData)
+            //this.props.onLoadFolders();
             console.log(request.status)
             console.log(status);
             console.log(error);
@@ -618,7 +603,7 @@ export class Folder extends React.Component{
         //console.log("clicked");
         let isCollapsed = this.state.isCollapsed;
         this.setState({isCollapsed : !isCollapsed});
-        console.log(isCollapsed);
+        //console.log(isCollapsed);
     }
 
     onDrop(folder_id) {
@@ -844,8 +829,8 @@ export class SharePopup extends React.Component{
     }
 
     loadSharedUsers() {
-        console.log("loadSharedUsers");
-        console.log(this.props.folderData)
+        //console.log("loadSharedUsers");
+        //console.log(this.props.folderData)
         $.ajax({
             url: '/folders/shared-users',
             method: "POST",
@@ -969,9 +954,6 @@ export class SharePopup extends React.Component{
             </Popover>
         );
 
-        //console.log("OWNER ==>");
-        //console.log(this.state.owner)
-
         return(
             <div className="popup-holder">
                 <section className="share-folder-popup">
@@ -1066,7 +1048,6 @@ export class SharePopupNewUsr extends React.Component{
     }
 
     _handleAddNewUser (e){
-        console.log("_handleAddNewUser")
         this.setState({
             addNewUserValue: e.target.value
         },function (){
@@ -1075,9 +1056,8 @@ export class SharePopupNewUsr extends React.Component{
     }
 
     loadNewUsers() {
-        console.log("====loadNewUsers=====");
-        let folder = this.props.folderData;console.log(folder);
-        let value = this.state.addNewUserValue;console.log(value);
+        let folder = this.props.folderData;//console.log(folder);
+        let value = this.state.addNewUserValue;//console.log(value);
 
         $.ajax({
             url: '/get-folder-users/'+folder.folder_id+'/'+value,
@@ -1085,7 +1065,7 @@ export class SharePopupNewUsr extends React.Component{
             dataType: "JSON",
             success: function (data, text) {
                 if(data.status.code == 200){
-                    console.log(data.users)
+                    //console.log(data.users)
                     this.setState({
                         suggestions: data.users
                     });
@@ -1102,10 +1082,10 @@ export class SharePopupNewUsr extends React.Component{
 
     shareFolder(user){
 
-        console.log(user);
+        //console.log(user);
 
         let loggedUser = Session.getSession('prg_lg');
-        let folder = this.props.folderData; console.log(folder)
+        let folder = this.props.folderData; //console.log(folder)
         let _folder = {
             folderId:folder.folder_id,
             userId:user.user_id
@@ -1138,9 +1118,7 @@ export class SharePopupNewUsr extends React.Component{
                     this.loadNewUsers();
                 });
 
-
-                this.props.onLoadNotes();
-                this.props.onShareuser();
+                this.props.onLoadFolders();
             }
         }.bind(this));
 
@@ -1191,8 +1169,6 @@ export class SharePopupNewUsr extends React.Component{
 
         });
 
-
-
         return (
             <div className="popup-holder" >
                 <section className="share-folder-add-people-popup">
@@ -1207,7 +1183,6 @@ export class SharePopupNewUsr extends React.Component{
         )
 
     }
-
 
 }
 

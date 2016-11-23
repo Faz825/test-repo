@@ -423,7 +423,7 @@ var FolderController ={
                 console.log(sharedUsers);
 
                 var _sharedUsers = {
-                    shared_users: sharedUsers
+                    shared_users:{$each:sharedUsers}
                 };
 
                 Folders.shareFolder(folder_id,_sharedUsers,function(resultSet){
