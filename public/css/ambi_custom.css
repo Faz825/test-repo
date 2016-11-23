@@ -353,6 +353,46 @@ a.rc-time-picker-panel-clear-btn {
   border: 1px solid transparent;
 }
 
+.folder .folder-item{
+  position: relative;
+}
+
+.folder-col .inner-wrapper{
+  position: relative;
+  z-index: 1;
+  float: left;
+  height: 180px;
+}
+
+.folder-item .img-overlay{
+  display: block;
+  width: 100%;
+  height: 180px;
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.4);
+}
+
+.folder-col .doc-delete-btn{
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  color: #B1105D;
+  cursor: pointer;
+  z-index: 2;
+  display: none;
+}
+
+.folder-col:hover .doc-delete-btn{
+  display: block;
+}
+
+.share-popover-contained .arrow {
+    top: 130px !important;
+}
+
 /* Footer on collapse */
 .body-container.sub-page{
 	padding-bottom: 100px;

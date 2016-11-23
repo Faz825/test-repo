@@ -433,6 +433,10 @@ export class Folder extends React.Component{
             isCollapsed : true,
             isProgressBarActive : false,
             files: [],
+            showConfirm:false,
+            isShowingModal : false,
+            deleteFileId:0,
+            filesData:this.props.folderData.documents
         };
         this.files = [];
         this.active_folder_id = 0;
@@ -441,10 +445,9 @@ export class Folder extends React.Component{
         this.onOpenClick = this.onOpenClick.bind(this);
         this.onDropAccepted = this.onDropAccepted.bind(this);
         this.uploadHandler = this.uploadHandler.bind(this);
+        this.onShowConfirm = this.onShowConfirm.bind(this);
 
-        this.filesData = this.props.folderData.documents; 
-        //console.log("FILEDATA ===" + this.props.folderData.folder_name);
-        //console.log(this.filesData)
+        this.filesData = this.props.folderData.documents;
         //this.filesData = [
         //   {
         //       document_id : "582ae658247ffffc240b08b9",
@@ -496,6 +499,14 @@ export class Folder extends React.Component{
         //   }
         //];
 
+    }
+
+    handleClick() {
+        this.setState({isShowingModal: true});
+    }
+
+    handleClose() {
+        this.setState({isShowingModal: false});
     }
 
     onDropAccepted(accepted_files){
@@ -600,20 +611,48 @@ export class Folder extends React.Component{
     }
 
     onFldrExpand(){
-        //console.log("clicked");
         let isCollapsed = this.state.isCollapsed;
         this.setState({isCollapsed : !isCollapsed});
-        //console.log(isCollapsed);
     }
 
     onDrop(folder_id) {
         this.active_folder_id = folder_id;
-        //console.log("onDrop")
-       // console.log(this.active_folder_id);
     }
 
     onOpenClick(folder_id) {
         this.dropzone.open(folder_id);
+    }
+
+    deleteFile(){
+        console.log("delete");
+        this.setState({showConfirm:false});
+    }
+
+    onShowConfirm(file_id){
+        console.log(file_id);
+        this.setState({showConfirm:true, deleteFileId:file_id});
+    }
+
+    closeConfirmPopup(){
+        this.setState({showConfirm:false, deleteFileId:0});
+    }
+
+    getConfirmationPopup(){
+        return(
+            <div>
+                {this.state.showConfirm &&
+                <ModalContainer zIndex={9999}>
+                    <ModalDialog width="30%" style={{marginTop : "-100px"}}>
+                        <div className="col-xs-12">
+                            <p className="confirmation_p">Are you sure to delete this file?</p>
+                        </div>
+                        <p className="add-note-cat btn" onClick={this.deleteFile.bind(this)}>Yes</p>
+                        <p className="add-note-cat confirm-no btn" onClick={this.closeConfirmPopup.bind(this)}>No</p>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        );
     }
 
     render(){
@@ -621,7 +660,7 @@ export class Folder extends React.Component{
         let folderData = this.props.folderData;
         let ownerImg;
         let i = (
-            <Popover id="popover-contained" style={{maxWidth: "635px", width: "635px"}}>
+            <Popover id="popover-contained" className="share-popover-contained" style={{maxWidth: "635px", width: "635px"}}>
                 <SharePopup folderData={folderData} onLoadFolders={_this.props.onLoadFolders}/>
             </Popover>
         );
@@ -634,7 +673,7 @@ export class Folder extends React.Component{
 
         let _fileList = this.filesData.map(function(file,key){
                             return (
-                                <File fileData={file} key={key} />
+                                <File fileData={file} key={key} showConfirm={_this.onShowConfirm.bind(this)}/>
                             )
                         });
 
@@ -715,6 +754,7 @@ export class Folder extends React.Component{
                         <p className="drag-title">Drag and Drop Link/Folder here</p>
                     </div>
                 </Dropzone>
+                {this.getConfirmationPopup()}
             </div>
         );
     }
@@ -727,9 +767,8 @@ export class File extends React.Component{
         this.state={}
     }
 
-    showConfirm(id){
-        console.log(id);
-       //this.props.showConfirm(id);
+    onShowConfirm(id){
+       this.props.showConfirm(id);
     }
 
     render(){
@@ -748,16 +787,24 @@ export class File extends React.Component{
         return(
             <div className="folder-col">
                 <div className={"folder-item " + data.document_type + " " + imgClass} style={thumbIMg}>
-                    <div className="time-wrapper">
-                        <p className="date-created">{data.document_updated_at.createdDate}</p>
-                        <p className="time-created">{data.document_updated_at.createdTime}</p>
+                    <div className="inner-wrapper">
+                        <div className="time-wrapper">
+                            <p className="date-created">{data.document_updated_at.createdDate}</p>
+                            <p className="time-created">{data.document_updated_at.createdTime}</p>
+                        </div>
+                        <div className="folder-title-holder">
+                            <p className="folder-title">{data.document_name}</p>
+                        </div>
+                        <span className="item-type"></span>                        
                     </div>
-                    <div className="folder-title-holder">
-                        <p className="folder-title">{data.document_name}</p>
-                    </div>
-                    <span className="item-type"></span>
-                    <span className="doc-delete-btn" onClick={()=>this.showConfirm(data.document_id)}></span>
+                    {
+                        (data.document_thumb_path)?
+                            <span className="img-overlay"></span>
+                        :
+                            null
+                    }
                 </div>
+                <i className="fa fa-minus doc-delete-btn" aria-hidden="true" onClick={()=>this.onShowConfirm(data.document_id)}></i>
             </div>
         );
     }
@@ -799,10 +846,12 @@ export class SharePopup extends React.Component{
             seeAllSharedUsers:false,
             scrollProp: 'hidden',
             isShowingModal : false,
-            userToRemove: null
+            userToRemove: null,
+            sharedFilterValue: ''
         };
 
         this.sharedUsers = [];
+        this.sharedUsersWithoutFilter = [];
         this.owner = {};
         this.loadSharedUsers();
         this.onPermissionChanged = this.onPermissionChanged.bind(this);
@@ -835,11 +884,12 @@ export class SharePopup extends React.Component{
             url: '/folders/shared-users',
             method: "POST",
             dataType: "JSON",
-            data:{folder_id:this.props.folderData.folder_id},
+            data:{folder_id:this.props.folderData.folder_id, filter_value:this.state.sharedFilterValue},
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200) {
                 this.sharedUsers = data.sharedWith;
+                this.sharedUsersWithoutFilter = data.sharedWith;
                 this.owner = data.owner;
                 this.setState({sharedUsers:data.sharedWith, owner:this.owner});
             }
@@ -848,31 +898,61 @@ export class SharePopup extends React.Component{
 
     }
 
-    filterSharedUsers(notebook_id, event) {
+    getSuggestions(value, data) {
+        console.log("getSuggestions");
+        console.log(value);
+        const escapedValue = Lib.escapeRegexCharacters(value.trim()); 
+        if (escapedValue === '') { 
+            return data; 
+        } 
+        const regex = new RegExp('^' + escapedValue, 'i'); 
+        return data.filter(data => regex.test(data.first_name+" "+data.last_name));
+     }
 
-        let value = event.target.value;
 
-        if(value.length >= 1){
-            $.ajax({
-                url: '/filter-shared-users/'+notebook_id+'/'+value,
-                method: "GET",
-                dataType: "JSON",
-                success: function (data, text) {
-                    if(data.status.code == 200){
-                        this.setState({
-                            sharedUsers: data.users
-                        });
-                    }
-                }.bind(this),
-                error: function (request, status, error) {
-                    console.log(request.responseText);
-                    console.log(status);
-                    console.log(error);
-                }.bind(this)
-            });
-        }else{
-            this.loadSharedUsers();
-        }
+
+    filterSharedUsers(folder_id, event) {
+        console.log("filterSharedUsers");
+
+        let value = event.target.value;console.log(value);
+        var data = this.getSuggestions(value, this.sharedUsersWithoutFilter);
+        this.setState({sharedUsers: data});
+        this.setState({sharedFilterValue:value});
+
+        //const escapedValue = Lib.escapeRegexCharacters(value.trim());
+        //const regex = new RegExp('^' + escapedValue, 'i');
+        //
+        //if (escapedValue === '') {
+        //    this.setState({sharedUsers:this.sharedUsersWithoutFilter});
+        //} else{
+        //    var data = this.sharedUsersWithoutFilter;
+        //    var filtered = data.filter(data => regex.test(this.sharedUsersWithoutFilter.first_name+" "+this.sharedUsersWithoutFilter.last_name));console.log(filtered)
+        //    this.setState({sharedUsers:filtered});
+        //}
+
+        //return data.filter(data => regex.test(data.first_name+" "+data.last_name));
+
+        //if(value.length >= 1){
+        //    $.ajax({
+        //        url: '/filter-shared-users/'+notebook_id+'/'+value,
+        //        method: "GET",
+        //        dataType: "JSON",
+        //        success: function (data, text) {
+        //            if(data.status.code == 200){
+        //                this.setState({
+        //                    sharedUsers: data.users
+        //                });
+        //            }
+        //        }.bind(this),
+        //        error: function (request, status, error) {
+        //            console.log(request.responseText);
+        //            console.log(status);
+        //            console.log(error);
+        //        }.bind(this)
+        //    });
+        //}else{
+        //    this.loadSharedUsers();
+        //}
     }
 
     onPermissionChanged(e, user) {
@@ -881,7 +961,7 @@ export class SharePopup extends React.Component{
 
         if(user.shared_type != _fieldValue) {
             $.ajax({
-                url: '/notebook/shared-permission/change',
+                url: '/folder/shared-permission/change',
                 method: "POST",
                 dataType: "JSON",
                 data:{notebook_id:user.notebook_id, shared_type:_fieldValue, user_id:user.user_id},
@@ -896,20 +976,18 @@ export class SharePopup extends React.Component{
     }
 
     onRemoveSharedUser() {
-        let user = this.state.userToRemove;
+        let user = this.state.userToRemove; console.log(user);
         $.ajax({
-            url: '/notebook/shared-user/remove',
+            url: '/folder/shared-user/remove',
             method: "POST",
             dataType: "JSON",
-            data:{notebook_id:user.notebook_id, user_id:user.user_id},
+            data:{folder_id:user.folder_id, user_id:user.user_id},
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200) {
                 console.log("done removing shared user -----");
-                if(data.update_status) {
-                    this.props.onLoadNotes();
-                    this.loadSharedUsers();
-                }
+                this.props.onLoadFolders();
+                this.loadSharedUsers();
             }
         }.bind(this));
     }
@@ -954,6 +1032,9 @@ export class SharePopup extends React.Component{
             </Popover>
         );
 
+        //console.log("OWNER ==>");
+        //console.log(this.state.owner)
+
         return(
             <div className="popup-holder">
                 <section className="share-folder-popup">
@@ -962,7 +1043,7 @@ export class SharePopup extends React.Component{
                             <div className="col-sm-12">
                                 <div className="search-people-wrapper">
                                     <i className="fa fa-search" aria-hidden="true"></i>
-                                    <input className="form-control search-people" type="text" placeholder="Search"/>
+                                    <input className="form-control search-people" type="text" placeholder="Search" onChange={(event)=>this.filterSharedUsers(_folderData.folder_id, event)}/>
                                 </div>
                             </div>
                         </div>
@@ -1263,7 +1344,7 @@ export class  SharedUsers extends React.Component {
         });
 
         return (
-            <div className="shared-users-container" style={{overflowY: this.props.scrollProp}}>
+            <div className="shared-users-container" style={{overflowY: this.props.scrollProp, overflowX: 'hidden', maxHeight: '155px'}}>
                 {_allUsers}
             </div>
         )

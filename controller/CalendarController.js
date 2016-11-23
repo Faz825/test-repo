@@ -296,23 +296,8 @@ var CalendarController = {
                     callBack(null, resultSet.events);
                 });
             },
-            function isESIndexExists(resultSet, callBack) {
-                var user_id = CurrentSession.id;
-                var _cache_key = "idx_user:" + CalendarEventsConfig.CACHE_PREFIX + user_id;
-                var query = {
-                    index: _cache_key,
-                    id: user_id,
-                    type: 'shared_events',
-                };
-                ES.isIndexExists(query, function (esResultSet) {
-                    callBack(null, {
-                        eventsDb: resultSet,
-                        isExists: esResultSet
-                    });
-                });
-            },
             function getSharedEvents(resultSet, callBack) {
-                if (resultSet.isExists) {
+                if (resultSet) {
                     var user_id = CurrentSession.id;
 
                     var query = {
@@ -329,7 +314,17 @@ var CalendarController = {
                             CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
 
                                 if (result.events[0] != null && typeof result.events[0] != undefined) {
-                                    _Events.push(result.events[0]);
+                                    var _Shared_users = result.events[0].shared_users;
+
+                                    if(_Shared_users != null && typeof _Shared_users != undefined){
+
+                                        for(var inc = 0; inc < _Shared_users.length; inc++){
+
+                                            if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+                                                _Events.push(result.events[0]);
+                                            }
+                                        }
+                                    }
                                 }
                                 callBack(null);
                             });
@@ -393,23 +388,8 @@ var CalendarController = {
                     callBack(null, resultSet.events);
                 });
             },
-            function isESIndexExists(resultSet, callBack) {
-                var user_id = CurrentSession.id;
-                var _cache_key = "idx_user:" + CalendarEventsConfig.CACHE_PREFIX + user_id;
-                var query = {
-                    index: _cache_key,
-                    id: user_id,
-                    type: 'shared_events',
-                };
-                ES.isIndexExists(query, function (esResultSet) {
-                    callBack(null, {
-                        eventsDb: resultSet,
-                        isExists: esResultSet
-                    });
-                });
-            },
             function getSharedEvents(resultSet, callBack) {
-                if (resultSet.isExists) {
+                if (resultSet) {
                     var user_id = CurrentSession.id;
 
                     var query = {
@@ -426,7 +406,17 @@ var CalendarController = {
                             CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
 
                                 if (result.events[0] != null && typeof result.events[0] != undefined) {
-                                    _Events.push(result.events[0]);
+                                    var _Shared_users = result.events[0].shared_users;
+
+                                    if(_Shared_users != null && typeof _Shared_users != undefined){
+
+                                        for(var inc = 0; inc < _Shared_users.length; inc++){
+
+                                            if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+                                                _Events.push(result.events[0]);
+                                            }
+                                        }
+                                    }
                                 }
                                 callBack(null);
                             });
@@ -740,23 +730,8 @@ var CalendarController = {
                             callBack(null, resultSet.events);
                         });
                     },
-                    function isESIndexExists(resultSet, callBack) {
-                        var user_id = CurrentSession.id;
-                        var _cache_key = "idx_user:" + CalendarEventsConfig.CACHE_PREFIX + user_id;
-                        var query = {
-                            index: _cache_key,
-                            id: user_id,
-                            type: 'shared_events',
-                        };
-                        ES.isIndexExists(query, function (esResultSet) {
-                            callBack(null, {
-                                eventsDb: resultSet,
-                                isExists: esResultSet
-                            });
-                        });
-                    },
                     function getSharedEvents(resultSet, callBack) {
-                        if (resultSet.isExists) {
+                        if (resultSet) {
                             var user_id = CurrentSession.id;
 
                             var query = {
@@ -770,13 +745,24 @@ var CalendarController = {
 
                                     var condition = {
                                         start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay},
-                                        _id: sharedEvent
+                                        _id: sharedEvent,
                                     };
 
                                     CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
 
                                         if (result.events[0] != null && typeof result.events[0] != undefined) {
-                                            _Events.push(result.events[0]);
+                                            var _Shared_users = result.events[0].shared_users;
+
+                                            if(_Shared_users != null && typeof _Shared_users != undefined){
+
+                                                for(var inc = 0; inc < _Shared_users.length; inc++){
+
+                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+                                                        _Events.push(result.events[0]);
+                                                    }
+                                                }
+                                            }
+
                                         }
                                         callBack(null);
                                     });
@@ -965,6 +951,7 @@ var CalendarController = {
 
                     var updateData = {
                         description: _description,
+                        plain_text: _plain_text,
                         start_date_time: _start_date_time,
                         event_time: _event_time,
                         shared_users: sharedUserList

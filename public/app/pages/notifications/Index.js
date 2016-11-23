@@ -604,11 +604,11 @@ export class Notification extends React.Component{
                                 {notification.notification_type == 'share_notebook' ? notification.sender_name +" has invited you to collaborate on " + notification.notebook_name :null}
                                 {notification.notification_type == 'share_notebook_response' ? notification.sender_name + " has " + notification.notification_status + " your invitation to collaborate on " + notification.notebook_name :null}
                                 {notification.notification_type == 'share_folder' ? " has invited you to collaborate on " + notification.folder_name :null}
-                                {notification.notification_type == 'share_calendar' ? notification.sender_name + " has shared you a calendar event " + notification.calendar_text :null}
-                                {notification.notification_type == 'calendar_schedule_updated' ? notification.sender_name + " has updated a shared calendar event " + notification.calendar_text :null}
-                                {notification.notification_type == 'calendar_schedule_time_changed' ? notification.sender_name + " has completely updated a shared calendar event " + notification.calendar_text :null}
-                                {notification.notification_type == 'share_calendar_response' ? notification.sender_name + " has " + notification.notification_status + " your invitation to calendar event " + notification.calendar_text :null}
-                                {notification.notification_type == 'calendar_schedule_carried_next_day' ? notification.calendar_text + " - calendar event moved to next day" :null}
+                                {notification.notification_type == 'share_calendar' ? notification.sender_name + " has shared you a calendar event - " + notification.calendar_text :null}
+                                {notification.notification_type == 'calendar_schedule_updated' ? notification.sender_name + " has updated a shared calendar event - " + notification.calendar_text :null}
+                                {notification.notification_type == 'calendar_schedule_time_changed' ? notification.sender_name + " has completely updated a shared calendar event - " + notification.calendar_text :null}
+                                {notification.notification_type == 'share_calendar_response' ? notification.sender_name + " has " + notification.notification_status + " your invitation to calendar event - " + notification.calendar_text :null}
+                                {notification.notification_type == 'calendar_schedule_carried_next_day' ?  " calendar event moved to next day - " + notification.calendar_text :null}
                             </p>
                             <p className="chat-date">{notification.created_at.time_a_go}</p>
 
