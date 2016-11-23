@@ -308,6 +308,27 @@ FolderSchema.statics.shareFolder = function(folderId,sharedCriteria,callBack){
 
 };
 
+/**
+ * Remove Shared user | DB
+ */
+FolderSchema.statics.removeSharedUser = function(folderId,sharedCriteria,callBack){
+
+    var _this = this;
+
+    _this.update({_id:folderId},
+        { $pull: sharedCriteria},function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
+
+};
+
 
 /**
  * This is to get the folder name of given folder_id

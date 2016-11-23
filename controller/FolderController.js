@@ -276,7 +276,7 @@ var FolderController ={
                     function finalFunction(callBack) {
 
                         owner.user_id = folderData.user_id;
-                        //owner.folder_id = folderId;
+                        owner.folder_id = folderId;
                         //owner.shared_type = sharedUser.shared_type;
                         //owner.shared_status = sharedUser.status;
 
@@ -500,6 +500,38 @@ var FolderController ={
             } else {
                 res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
             }
+        });
+
+    },
+
+    /**
+     * folder owner can remove shared users from db and ES
+     * @param req
+     * @param res
+     */
+    removeSharedFolderUser:function(req,res){
+
+        var Folder = require('mongoose').model('Folders');
+        var folder_id = req.body.folder_id,
+            shared_user_id = [req.body.user_id];
+
+        var _sharedUsers = {
+            shared_users:{user_id:{$in:shared_user_id}}
+        };
+
+        Folder.removeSharedUser(folder_id,_sharedUsers,function(result){
+            if(result.status == 200){
+                var outPut ={
+                    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+                };
+                res.status(200).json(outPut);
+            } else{
+                var outPut ={
+                    status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
+                };
+                res.status(400).json(outPut);
+            }
+
         });
 
     }

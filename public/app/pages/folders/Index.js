@@ -799,10 +799,12 @@ export class SharePopup extends React.Component{
             seeAllSharedUsers:false,
             scrollProp: 'hidden',
             isShowingModal : false,
-            userToRemove: null
+            userToRemove: null,
+            sharedFilterValue: ''
         };
 
         this.sharedUsers = [];
+        this.sharedUsersWithoutFilter = [];
         this.owner = {};
         this.loadSharedUsers();
         this.onPermissionChanged = this.onPermissionChanged.bind(this);
@@ -835,11 +837,12 @@ export class SharePopup extends React.Component{
             url: '/folders/shared-users',
             method: "POST",
             dataType: "JSON",
-            data:{folder_id:this.props.folderData.folder_id},
+            data:{folder_id:this.props.folderData.folder_id, filter_value:this.state.sharedFilterValue},
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200) {
                 this.sharedUsers = data.sharedWith;
+                this.sharedUsersWithoutFilter = data.sharedWith;
                 this.owner = data.owner;
                 this.setState({sharedUsers:data.sharedWith, owner:this.owner});
             }
@@ -848,31 +851,61 @@ export class SharePopup extends React.Component{
 
     }
 
-    filterSharedUsers(notebook_id, event) {
+    getSuggestions(value, data) {
+        console.log("getSuggestions");
+        console.log(value);
+        const escapedValue = Lib.escapeRegexCharacters(value.trim()); 
+        if (escapedValue === '') { 
+            return data; 
+        } 
+        const regex = new RegExp('^' + escapedValue, 'i'); 
+        return data.filter(data => regex.test(data.first_name+" "+data.last_name));
+     }
 
-        let value = event.target.value;
 
-        if(value.length >= 1){
-            $.ajax({
-                url: '/filter-shared-users/'+notebook_id+'/'+value,
-                method: "GET",
-                dataType: "JSON",
-                success: function (data, text) {
-                    if(data.status.code == 200){
-                        this.setState({
-                            sharedUsers: data.users
-                        });
-                    }
-                }.bind(this),
-                error: function (request, status, error) {
-                    console.log(request.responseText);
-                    console.log(status);
-                    console.log(error);
-                }.bind(this)
-            });
-        }else{
-            this.loadSharedUsers();
-        }
+
+    filterSharedUsers(folder_id, event) {
+        console.log("filterSharedUsers");
+
+        let value = event.target.value;console.log(value);
+        var data = this.getSuggestions(value, this.sharedUsersWithoutFilter);
+        this.setState({sharedUsers: data});
+        this.setState({sharedFilterValue:value});
+
+        //const escapedValue = Lib.escapeRegexCharacters(value.trim());
+        //const regex = new RegExp('^' + escapedValue, 'i');
+        //
+        //if (escapedValue === '') {
+        //    this.setState({sharedUsers:this.sharedUsersWithoutFilter});
+        //} else{
+        //    var data = this.sharedUsersWithoutFilter;
+        //    var filtered = data.filter(data => regex.test(this.sharedUsersWithoutFilter.first_name+" "+this.sharedUsersWithoutFilter.last_name));console.log(filtered)
+        //    this.setState({sharedUsers:filtered});
+        //}
+
+        //return data.filter(data => regex.test(data.first_name+" "+data.last_name));
+
+        //if(value.length >= 1){
+        //    $.ajax({
+        //        url: '/filter-shared-users/'+notebook_id+'/'+value,
+        //        method: "GET",
+        //        dataType: "JSON",
+        //        success: function (data, text) {
+        //            if(data.status.code == 200){
+        //                this.setState({
+        //                    sharedUsers: data.users
+        //                });
+        //            }
+        //        }.bind(this),
+        //        error: function (request, status, error) {
+        //            console.log(request.responseText);
+        //            console.log(status);
+        //            console.log(error);
+        //        }.bind(this)
+        //    });
+        //}else{
+        //    this.loadSharedUsers();
+        //}
     }
 
     onPermissionChanged(e, user) {
@@ -881,7 +914,7 @@ export class SharePopup extends React.Component{
 
         if(user.shared_type != _fieldValue) {
             $.ajax({
-                url: '/notebook/shared-permission/change',
+                url: '/folder/shared-permission/change',
                 method: "POST",
                 dataType: "JSON",
                 data:{notebook_id:user.notebook_id, shared_type:_fieldValue, user_id:user.user_id},
@@ -896,20 +929,18 @@ export class SharePopup extends React.Component{
     }
 
     onRemoveSharedUser() {
-        let user = this.state.userToRemove;
+        let user = this.state.userToRemove; console.log(user);
         $.ajax({
-            url: '/notebook/shared-user/remove',
+            url: '/folder/shared-user/remove',
             method: "POST",
             dataType: "JSON",
-            data:{notebook_id:user.notebook_id, user_id:user.user_id},
+            data:{folder_id:user.folder_id, user_id:user.user_id},
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200) {
                 console.log("done removing shared user -----");
-                if(data.update_status) {
-                    this.props.onLoadNotes();
-                    this.loadSharedUsers();
-                }
+                this.props.onLoadFolders();
+                this.loadSharedUsers();
             }
         }.bind(this));
     }
@@ -962,7 +993,7 @@ export class SharePopup extends React.Component{
                             <div className="col-sm-12">
                                 <div className="search-people-wrapper">
                                     <i className="fa fa-search" aria-hidden="true"></i>
-                                    <input className="form-control search-people" type="text" placeholder="Search"/>
+                                    <input className="form-control search-people" type="text" placeholder="Search" onChange={(event)=>this.filterSharedUsers(_folderData.folder_id, event)}/>
                                 </div>
                             </div>
                         </div>
