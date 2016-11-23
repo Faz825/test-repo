@@ -826,7 +826,6 @@ export class SharePopup extends React.Component{
         }else{
             this.setState({scrollProp : 'hidden'});
         }
-
     }
 
     allSharedUsers(){
@@ -1064,47 +1063,45 @@ export class SharePopupNewUsr extends React.Component{
         },function (){
             this.loadNewUsers();
         });
-
     }
 
     loadNewUsers() {
         console.log("====loadNewUsers=====");
         let folder = this.props.folderData;console.log(folder);
         let value = this.state.addNewUserValue;console.log(value);
-        //if(value.length >= 1){
-            $.ajax({
-                url: '/get-folder-users/'+folder.folder_id+'/'+value,
-                method: "GET",
-                dataType: "JSON",
-                success: function (data, text) {
-                    if(data.status.code == 200){
-                        console.log(data.users)
-                        this.setState({
-                            suggestions: data.users
-                        });
-                    }
-                }.bind(this),
-                error: function (request, status, error) {
-                    console.log(request.responseText);
-                    console.log(status);
-                    console.log(error);
-                }.bind(this)
-            });
-        //}else{
-        //    this.setState({
-        //        suggestions: []
-        //    });
-        //}
+
+        $.ajax({
+            url: '/get-folder-users/'+folder.folder_id+'/'+value,
+            method: "GET",
+            dataType: "JSON",
+            success: function (data, text) {
+                if(data.status.code == 200){
+                    console.log(data.users)
+                    this.setState({
+                        suggestions: data.users
+                    });
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(request.responseText);
+                console.log(status);
+                console.log(error);
+            }.bind(this)
+        });
+
     }
 
     shareFolder(user){
 
+        console.log(user);
+
         let loggedUser = Session.getSession('prg_lg');
-        let folder = this.props.folderData;
+        let folder = this.props.folderData; console.log(folder)
         let _folder = {
             folderId:folder.folder_id,
             userId:user.user_id
         };
+        let sharedWithUsernames = [user.user_name];
 
         $.ajax({
             url: '/folders/share-folder',
@@ -1116,16 +1113,15 @@ export class SharePopupNewUsr extends React.Component{
             if(data.status.code == 200){
 
                 let _notificationData = {
-                    notebook_id:notebook.notebook_id,
-                    notification_type:"share_notebook",
+                    folder_id:data.folder_id,
+                    notification_type:"share_folder",
                     notification_sender:loggedUser,
-                    notification_receiver:user.user_name
+                    notification_receivers:sharedWithUsernames
                 };
 
-                Socket.sendNotebookNotification(_notificationData);
+                Socket.sendFolderNotification(_notificationData);
 
                 this.setState({
-                    notebook: notebook.notebook_name,
                     userToAdd: user,
                     isShowingModal: true
                 }, function(){

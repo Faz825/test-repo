@@ -291,6 +291,7 @@ router.get('/folders/get-all', FolderController.getFolders);
 router.post('/group-folders/add-new', GroupFolderController.addNewFolder);
 router.get('/group-folders/get-all', GroupFolderController.getFolders);
 router.post('/folders/shared-users', FolderController.getSharedUsers);
+router.post('/folders/share-folder', FolderController.shareFolder);
 
 router.get('/get-folder-users/:folder/:name', UserController.getFolderUsers);
 router.get('/get-folder-users/:folder', UserController.getFolderUsers);

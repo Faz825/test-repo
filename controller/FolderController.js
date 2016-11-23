@@ -381,6 +381,108 @@ var FolderController ={
 
     },
 
+    shareFolder: function(req,res){
+        console.log("shareFolder")
+
+        var Folders = require('mongoose').model('Folders'),
+            shared_with = [req.body.userId],
+            folder_id = req.body.folderId,
+            _randColor = require('randomcolor'),
+            sharedUsers = [],
+            _async = require('async'),
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient');
+
+        console.log("folder_id ==> "+folder_id);
+        console.log("shared_with ==> ",shared_with);
+
+        _async.waterfall([
+
+            function addSharedUserToFolder(callBack){
+
+                console.log("addFolderToDB");
+
+                for(var i = 0; i < shared_with.length; i++){
+
+                    var randColor = _randColor.randomColor({
+                        luminosity: 'light',
+                        hue: 'random'
+                    });
+
+                    var _sharingUser = {
+                        user_id: shared_with[i],
+                        user_note_color: randColor,
+                        shared_type: FolderSharedMode.READ_WRITE,
+                        status: FolderSharedRequest.REQUEST_PENDING
+                    };
+
+                    sharedUsers.push(_sharingUser);
+
+                }
+
+                console.log(sharedUsers);
+
+                var _sharedUsers = {
+                    shared_users: sharedUsers
+                };
+
+                Folders.shareFolder(folder_id,_sharedUsers,function(resultSet){
+                    callBack(null);
+                });
+
+            },
+            function addNotification(callBack){
+                console.log("addNotification");
+
+                if(shared_with.length > 0 && typeof folder_id != 'undefined'){
+                    var _data = {
+                        sender:Util.getCurrentSession(req).id,
+                        notification_type:Notifications.SHARE_FOLDER,
+                        notified_folder:folder_id
+                    }
+                    Notification.saveNotification(_data, function(res){
+                        if(res.status == 200){
+                            callBack(null, res.result._id);
+                        }
+                    });
+                } else{
+                    callBack(null, null);
+                }
+            },
+            function notifyingUsers(notification_id, callBack){
+                console.log("notifyingUsers");
+
+                if(typeof notification_id != 'undefined' && shared_with.length > 0){
+
+                    var _data = {
+                        notification_id:notification_id,
+                        recipients:shared_with
+                    };
+                    NotificationRecipient.saveRecipients(_data, function(res) {
+                        callBack(null);
+                    });
+
+                } else {
+                    callBack(null);
+                }
+            }
+
+        ],function(err){
+            console.log("async waterfall callback");
+
+            if(err){
+                var outPut ={
+                    status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
+                };
+                res.status(400).json(outPut);
+            }
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
+            res.status(200).json(outPut);
+        });
+    },
+
     getFolder: function (req, res) {
 
         var Folders = require('mongoose').model('Folders');
