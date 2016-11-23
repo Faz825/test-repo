@@ -276,6 +276,13 @@ body{
 	color: #dddddd;
 }
 
+.calender-container .calender-box > div.week > span.day .event-area > ul li {
+	width: 11em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 /* calender pop-over */
 div.rc-time-picker-panel {
 	z-index: 9999;
