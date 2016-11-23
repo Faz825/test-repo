@@ -686,7 +686,7 @@ export class Folder extends React.Component{
 
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
-                <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={(event)=>{this.onDrop(folderData.folder_id)}} multiple={true} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*" onDropAccepted={this.onDropAccepted}>
+                <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={(event)=>{this.onDrop(folderData.folder_id)}} multiple={true} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*, text/plain" onDropAccepted={this.onDropAccepted}>
                     <div className="col-sm-2">
                         <div className="folder-cover-wrapper">
                             <span className="folder-overlay"></span>
