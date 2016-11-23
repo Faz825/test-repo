@@ -7,6 +7,7 @@ import moment from 'moment-timezone';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
+import Socket  from '../../middleware/Socket';
 
 import EditorField from './EditorField';
 import SharedUsers from './SharedUsers';
@@ -114,7 +115,6 @@ export default class WeekView extends React.Component {
     }
 
     processDataCall(postData) {
-        console.log(" I AM CALLED 1 ");
         console.log(postData);
         $.ajax({
             url: '/calendar/events/date_range',
@@ -124,8 +124,6 @@ export default class WeekView extends React.Component {
             headers: { 'prg-auth-header':this.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200){
-                console.log("data loaded 2 ===");
-                console.log(data.events);
                 this.setState({events: data.events});
             }
         }.bind(this));
@@ -288,6 +286,8 @@ export class WeekDayEventPopUp extends React.Component {
             showUserPanel : '',
             showUserPanelWindow : false
         }
+
+        this.loggedUser = user;
         this.sharedWithIds = [];
         this.addEvent = this.addEvent.bind(this);
     }
@@ -322,6 +322,7 @@ export class WeekDayEventPopUp extends React.Component {
         let month = this.props.curr_date.month();
         let date = this.props.curr_date.day();
         let timeWithDay = year+'/'+month+'/'+date+' '+time;
+
         this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
     }
 
@@ -343,17 +344,25 @@ export class WeekDayEventPopUp extends React.Component {
 
     addEvent(event) {
 
+
+        const strDate = this.props.curr_date.format('YYYY-MM-DD');
+        const strTime = this.state.defaultEventTime;
+        const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+
         const Editor = this.editor.state.editorState;
         const contentState = this.editor.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
+        const plainText = contentState.getPlainText();
 
         // get shared users from SharedUsers field
         const sharedUsers = this.state.sharedWithIds;
+        // const sharedUsers = this.refs.SharedUserField.sharedWithIds;
         const postData = {
             description : editorContentRaw,
+            plain_text : plainText,
             type : this.state.eventType,
-            apply_date : this.props.curr_date.format('MM DD YYYY HH:mm'),
-            event_time : this.state.defaultEventTime,
+            apply_date : dateWithTime,
+            event_time : strTime,
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
         };
@@ -371,6 +380,17 @@ export class WeekDayEventPopUp extends React.Component {
                 this.editor.setState({editorState});
                 this.props.handleClose();
 
+                if(typeof sharedUsers != 'undefined' && sharedUsers.length > 0) {
+                    let _notificationData = {
+                        cal_event_id:data.events._id,
+                        notification_type:"calendar_share_notification",
+                        notification_sender:this.loggedUser,
+                        notification_receiver:sharedUsers
+                    };
+
+                    Socket.sendCalendarShareNotification(_notificationData);
+                }
+
                 // load data
                 let week_start = moment(this.props.week_startDt).format('YYYY-MM-DD');
                 let week_end = moment(this.props.week_startDt).weekday(7).format('YYYY-MM-DD');
@@ -379,7 +399,6 @@ export class WeekDayEventPopUp extends React.Component {
                     start_date:week_start,
                     end_date:week_end
                 };
-                console.log(" I AM CALLED 2 ");
                 this.props.loadData(postData);
             }
         }.bind(this));
@@ -424,7 +443,7 @@ export class WeekDayEventPopUp extends React.Component {
         return(
             <ModalContainer onClose={this.props.handleClose} zIndex={9999}>
                 <ModalDialog onClose={this.props.handleClose} className="modalPopup">
-                    <div className="popup-holder">
+                    <div className="popup-holder week-view-editor-popup-holder">
                         <div className="calendar-week-popup-wrapper">
                             <div className="model-header">
                                 <div className="model-title-wrapper">

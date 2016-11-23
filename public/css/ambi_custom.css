@@ -20,6 +20,7 @@ body{
 	right: -21px;
 	left: auto;
 	cursor: pointer;
+	z-index: 1;
 }
 
 .errorMsg{
@@ -274,6 +275,15 @@ body{
 }
 
 /* calender pop-over */
+
+.week-view-editor-popup-holder {
+	overflow: visible;
+}
+
+#calendar-popover-typo {
+	z-index: 9999;
+}
+
 #calendar-popover-typo .menu-ico {
   display: inline-block;
 }
@@ -314,6 +324,18 @@ body{
 .folder-item .upload-anime .fa{
   font-size: 2em;
   color: #000;
+}
+
+.folder-item .item-type{
+  background-image: url(../images/folder/types/common-type.png);
+}
+
+.shared-user .shared-privacy .pending{
+  font-size: 0.8em;
+}
+
+.folder .folder-wrapper{
+  border: 1px solid transparent;
 }
 
 /* Footer on collapse */

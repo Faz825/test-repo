@@ -298,12 +298,12 @@ router.get('/get-folder-users/:folder', UserController.getFolderUsers);
 
 router.post('/calendar/event/add', CalendarController.addEvent);
 router.get('/calendar/month/all', CalendarController.getAllForSpecificMonth);
-router.get('/calendar/week/all', CalendarController.getAllForSpecificWeek);
-router.get('/calendar/week/current', CalendarController.getAllEventForCurrentWeek);
-router.get('/calendar/week/next_prev', CalendarController.getAllEventForNextOrPrevWeek);
+//router.get('/calendar/week/all', CalendarController.getAllForSpecificWeek);
+//router.get('/calendar/week/current', CalendarController.getAllEventForCurrentWeek);
+//router.get('/calendar/week/next_prev', CalendarController.getAllEventForNextOrPrevWeek);
 router.post('/calendar/day/all', CalendarController.getEventsForSpecificDay);
 router.post('/calendar/update', CalendarController.updateEvent);
-router.post('/calendar/event/share', CalendarController.shareEvent);
+//router.post('/calendar/event/share', CalendarController.shareEvent);
 router.post('/calendar/remove/share_user', CalendarController.removeSharedEventUser);
 router.post('/calendar/update/event_status', CalendarController.updateEventSharedStatus);
 router.get('/calendar/shared_users', CalendarController.getEventSharedUsers);

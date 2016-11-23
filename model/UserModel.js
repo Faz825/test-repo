@@ -1278,8 +1278,6 @@ UserSchema.statics.authenticate = function(data, callback) {
                     },
                     function getSecretary(profileData,callBack){
 
-
-
                         if( profileData.secretary_id != null){
                             Secretary.getSecretaryById(profileData.secretary_id,function(secretary){
                                 profileData['secretary_image_url'] = secretary.image_name;
@@ -1293,7 +1291,6 @@ UserSchema.statics.authenticate = function(data, callback) {
                     },
                     function getProfileImage(profileData,callBack){
 
-
                         if(profileData != null){
                             Upload.getProfileImage(profileData.id.toString(),function(profileImageData){
                                 profileData['profile_image'] = (profileImageData.status != 400)?profileImageData.image.profile_image.http_url:"";
@@ -1304,8 +1301,6 @@ UserSchema.statics.authenticate = function(data, callback) {
                             callBack(null,null)
                         }
                     }
-
-
 
                 ],function(err,profileData) {
                     var outPut = {};
@@ -1319,11 +1314,6 @@ UserSchema.statics.authenticate = function(data, callback) {
                         return 0;
                     }
                 })
-
-
-
-
-
             }
         }else{
             console.log("Server Error --------")
