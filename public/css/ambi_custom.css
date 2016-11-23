@@ -350,7 +350,7 @@ a.rc-time-picker-panel-clear-btn {
   position: relative;
 }
 
-.folder-wrapper .inner-wrapper{
+.folder-col .inner-wrapper{
   position: relative;
   z-index: 1;
   float: left;
