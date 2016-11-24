@@ -10651,7 +10651,6 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover {
   position: relative;
   overflow: hidden;
-  border-radius: 8px 0px 0px;
   height: 260px;
   z-index: 1;
 }
@@ -10840,7 +10839,7 @@ header .notification-holder .profile-header-thumb {
   height: 36px;
   width: 29px;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.doc .item-type {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.doc .item-type, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.docx .item-type {
   background-image: url("../images/folder/types/docs.png");
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.pdf .item-type {
@@ -11727,81 +11726,27 @@ header .notification-holder .profile-header-thumb {
   display: table;
   content: " ";
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper {
-  overflow: hidden;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper:last-child {
-  margin-top: 17px;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .header-wrapper p {
-  color: #00a6ef;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li:before {
-  color: #00a6ef;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .header-wrapper p {
-  color: #a6c649;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li:before {
-  color: #a6c649;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper {
-  overflow: hidden;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper img {
-  float: left;
-  height: 16px;
-  margin-left: 5px;
-  margin-top: 3px;
-  width: 14px;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper p {
-  float: left;
-  margin-left: 10px;
-  font-weight: 700;
-  color: #00a6ef;
-  text-transform: uppercase;
-  font-size: 0.855625em;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper {
-  overflow: hidden;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items {
-  margin-top: -2px;
-  margin-left: 25px;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li {
   font-family: "Work Sans", sans-serif;
+  font-size: 0.77875em;
   font-weight: 500;
   color: black;
-  margin-top: -15px;
   margin-bottom: 5px;
-  overflow: hidden;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li:first-child {
-  margin-top: 0px;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li:before {
   content: "\f111";
   font-family: FontAwesome;
   line-height: 1;
   font-size: 8px;
   float: left;
-  margin-top: 6px;
+  margin-top: 5px;
   margin-right: 4px;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li .item {
-  float: left;
-  font-weight: 400;
-  color: #000000;
-  font-size: 0.743125em;
-  margin-left: 4px;
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li.todo:before {
+  color: #a6c649;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li .time {
-  float: right;
-  font-weight: 400;
-  color: #999999;
-  font-size: 0.743125em;
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li.events:before {
+  color: #00a6ef;
 }
 @media screen and (min-width: 50em) {
   .calender-week-view .view-tile-area .week-tiles .day-tile {
