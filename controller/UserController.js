@@ -652,7 +652,6 @@ var UserControler ={
         }
 
         User.saveUpdates(CurrentSession.id,{status:7},function(updateDataSet){
-console.log(data);
                 //IF PROFILE IMAGE NOT FOUND
                 if(typeof req.body.profileImg == 'undefined' || req.body.profileImg == "") {
                     var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
