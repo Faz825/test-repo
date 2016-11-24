@@ -500,7 +500,7 @@ export class WeekDayEventPopUp extends React.Component {
                                         </li>
                                         <li>
                                             <button className="menu-ico">
-                                                <OverlayTrigger trigger="click" placement="bottom" overlay={typoPopover}>
+                                                <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
                                                     <p>A</p>
                                                 </OverlayTrigger>
                                             </button>
