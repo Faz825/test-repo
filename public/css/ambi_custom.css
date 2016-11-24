@@ -362,6 +362,7 @@ a.rc-time-picker-panel-clear-btn {
   z-index: 1;
   float: left;
   height: 180px;
+  width: 100%;
 }
 
 .folder-item .img-overlay{
