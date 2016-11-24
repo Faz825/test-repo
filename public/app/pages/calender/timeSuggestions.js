@@ -8,7 +8,7 @@ for (var i = 0; i <= 23; i++) {
             name : String("0" + i).slice(-2)+'.'+String("0" + j).slice(-2),
             value : String("0" + i).slice(-2)+':'+String("0" + j).slice(-2),
             title : '',
-            avatar : '',
+            avatar : '/images/clock.png',
         }
         timeArr.push(timeObj);
     }
