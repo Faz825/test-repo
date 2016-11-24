@@ -244,7 +244,8 @@ var FolderController ={
 
                             //console.log(JSON.stringify(csResultSet.result[0]));
 
-                            owner.user_name = csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'];
+                            owner.first_name = csResultSet.result[0]['first_name'];
+                            owner.last_name = csResultSet.result[0]['last_name'];
                             owner.profile_image = csResultSet.result[0]['images']['profile_image']['http_url'];
 
                             callBack(null);
@@ -315,7 +316,8 @@ var FolderController ={
 
                                     //console.log(JSON.stringify(csResultSet.result[0]));
 
-                                    usrObj.user_name = csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'];
+                                    usrObj.first_name = csResultSet.result[0]['first_name'];
+                                    usrObj.last_name = csResultSet.result[0]['last_name'];
                                     usrObj.profile_image = csResultSet.result[0]['images']['profile_image']['http_url'];
 
                                     callBack(null);

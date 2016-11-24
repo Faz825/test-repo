@@ -1060,7 +1060,7 @@ export class SharePopup extends React.Component{
                             <div className="shared-user">
                                 <img className="user-image img-circle" src={this.state.owner.profile_image} alt="User"/>
                                     <div className="name-wrapper">
-                                        <p className="name">{this.state.owner.user_name}</p>
+                                        <p className="name">{this.state.owner.first_name} {this.state.owner.last_name}</p>
                                         {
                                             (typeof this.state.owner.school != 'undefined') ?
                                                 <p className="name-title">{this.state.owner.school}</p>
@@ -1084,7 +1084,7 @@ export class SharePopup extends React.Component{
                         <div className="footer-action-wrapper">
                             <div className="see-all">
                                 {
-                                    (this.state.sharedUsers.length > 2) ?
+                                    (!this.state.seeAllSharedUsers && this.state.sharedUsers.length > 2) ?
                                         <div onClick={this.allSharedUsers.bind(this)}>
                                             <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
                                             <p>See All</p>
@@ -1288,7 +1288,7 @@ export class  SharedUsers extends React.Component {
                             <div className="shared-user" key={key}>
                                 <img className="user-image img-circle" src={user.profile_image} alt="User"/>
                                 <div className="name-wrapper">
-                                    <p className="name">{user.user_name}</p>
+                                    <p className="name">{user.first_name} {user.last_name}</p>
                                     {
                                         (typeof user.school != 'undefined') ?
                                             <p className="name-title">{user.school}</p>
@@ -1316,7 +1316,7 @@ export class  SharedUsers extends React.Component {
                             <div className="shared-user" key={key}>
                                 <img className="user-image img-circle" src={user.profile_image} alt="User"/>
                                 <div className="name-wrapper">
-                                    <p className="name">{user.user_name}</p>
+                                    <p className="name">{user.first_name} {user.last_name}</p>
                                     {
                                         (typeof user.school != 'undefined') ?
                                             <p className="name-title">{user.school}</p>
