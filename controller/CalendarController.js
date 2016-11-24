@@ -297,7 +297,9 @@ var CalendarController = {
                 });
             },
             function getSharedEvents(resultSet, callBack) {
-                if (resultSet) {
+
+                if (typeof resultSet != 'undefined' && resultSet) {
+
                     var user_id = CurrentSession.id;
 
                     var query = {
@@ -305,32 +307,45 @@ var CalendarController = {
                     };
                     CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet) {
 
-                        var sharedEvents = esResultSet.result[0].events;
+                        if(typeof esResultSet != 'undefined' && esResultSet) {
+                            var sharedEvents = esResultSet.result[0].events;
 
-                        _async.each(sharedEvents, function (sharedEvent, callBack) {
+                            _async.each(sharedEvents, function (sharedEvent, callBack) {
 
-                            var condition = {start_date_time: {$gte: startDate, $lt: endDate}, _id: sharedEvent};
+                                var condition = {
+                                    start_date_time: {$gte: startDate, $lt: endDate},
+                                    _id: sharedEvent,
+                                };
 
-                            CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+                                CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
 
-                                if (result.events[0] != null && typeof result.events[0] != undefined) {
-                                    var _Shared_users = result.events[0].shared_users;
+                                    if(typeof result != 'undefined' && result) {
 
-                                    if(_Shared_users != null && typeof _Shared_users != undefined){
+                                        if (result.events[0] != null && typeof result.events[0] != 'undefined') {
+                                            var _Shared_users = result.events[0].shared_users;
 
-                                        for(var inc = 0; inc < _Shared_users.length; inc++){
+                                            if(_Shared_users != null && typeof _Shared_users != 'undefined'){
 
-                                            if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
-                                                _Events.push(result.events[0]);
+                                                for(var inc = 0; inc < _Shared_users.length; inc++){
+
+                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+                                                        _Events.push(result.events[0]);
+                                                    }
+                                                }
                                             }
+
                                         }
                                     }
-                                }
-                                callBack(null);
+                                    callBack(null);
+
+                                });
+                            }, function (err) {
+                                callBack(null, _Events);
                             });
-                        }, function (err) {
+                        } else {
                             callBack(null, _Events);
-                        });
+                        }
+
                     });
                 } else {
                     callBack(null, _Events);
@@ -388,8 +403,11 @@ var CalendarController = {
                     callBack(null, resultSet.events);
                 });
             },
+
             function getSharedEvents(resultSet, callBack) {
-                if (resultSet) {
+
+                if (typeof resultSet != 'undefined' && resultSet) {
+
                     var user_id = CurrentSession.id;
 
                     var query = {
@@ -397,32 +415,46 @@ var CalendarController = {
                     };
                     CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet) {
 
-                        var sharedEvents = esResultSet.result[0].events;
+                        if(typeof esResultSet != 'undefined' && esResultSet) {
 
-                        _async.each(sharedEvents, function (sharedEvent, callBack) {
+                            var sharedEvents = esResultSet.result[0].events;
 
-                            var condition = {start_date_time: {$gte: startDate, $lt: endDate}, _id: sharedEvent};
+                            _async.each(sharedEvents, function (sharedEvent, callBack) {
 
-                            CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+                                var condition = {
+                                    start_date_time: {$gte: startDate, $lt: endDate},
+                                    _id: sharedEvent,
+                                };
 
-                                if (result.events[0] != null && typeof result.events[0] != undefined) {
-                                    var _Shared_users = result.events[0].shared_users;
+                                CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
 
-                                    if(_Shared_users != null && typeof _Shared_users != undefined){
+                                    if(typeof result != 'undefined' && result) {
 
-                                        for(var inc = 0; inc < _Shared_users.length; inc++){
+                                        if (result.events[0] != null && typeof result.events[0] != 'undefined') {
+                                            var _Shared_users = result.events[0].shared_users;
 
-                                            if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
-                                                _Events.push(result.events[0]);
+                                            if(_Shared_users != null && typeof _Shared_users != 'undefined'){
+
+                                                for(var inc = 0; inc < _Shared_users.length; inc++){
+
+                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+                                                        _Events.push(result.events[0]);
+                                                    }
+                                                }
                                             }
+
                                         }
                                     }
-                                }
-                                callBack(null);
+                                    callBack(null);
+
+                                });
+                            }, function (err) {
+                                callBack(null, _Events);
                             });
-                        }, function (err) {
+                        } else {
                             callBack(null, _Events);
-                        });
+                        }
+
                     });
                 } else {
                     callBack(null, _Events);
@@ -508,7 +540,7 @@ var CalendarController = {
 
                             CalendarEvent.getWeeklyCalenderEvensForSharedUser(dataVal, function (err, result) {
 
-                                if (result.events[0] != null && typeof result.events[0] != undefined) {
+                                if (result.events[0] != null && typeof result.events[0] != 'undefined') {
                                     _Events.push(result.events[0]);
                                     _Week = result.week;
                                     _Days = result.days;
@@ -606,7 +638,7 @@ var CalendarController = {
 
                             CalendarEvent.getWeeklyCalenderEvensForSharedUser(dataVal, function (err, result) {
                                 //console.log(result);
-                                if (result.events[0] != null && typeof result.events[0] != undefined) {
+                                if (result.events[0] != null && typeof result.events[0] != 'undefined') {
                                     _Events.push(result.events[0]);
                                     _Week = result.week;
                                     _Days = result.days;
@@ -720,18 +752,26 @@ var CalendarController = {
 
         _async.waterfall([
 
-            function getSortedCalenderItems(callback) {
+            function getSortedCalenderItems(callBack) {
 
                 _async.waterfall([
                     function getEventsFromDB(callBack) {
+
                         CalendarEvent.getSortedCalenderItems(criteria, function (err, resultSet) {
 
-                            _Events = resultSet.events;
-                            callBack(null, resultSet.events);
+                            if(err) {
+                                callBack(null, null);
+                            } else {
+                                _Events = resultSet.events;
+                                callBack(null, resultSet.events);
+                            }
+
                         });
                     },
                     function getSharedEvents(resultSet, callBack) {
-                        if (resultSet) {
+
+                        if (typeof resultSet != 'undefined' && resultSet) {
+
                             var user_id = CurrentSession.id;
 
                             var query = {
@@ -739,36 +779,46 @@ var CalendarController = {
                             };
                             CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet) {
 
-                                var sharedEvents = esResultSet.result[0].events;
+                                if(typeof esResultSet != 'undefined' && esResultSet) {
 
-                                _async.each(sharedEvents, function (sharedEvent, callBack) {
+                                    var sharedEvents = esResultSet.result[0].events;
 
-                                    var condition = {
-                                        start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay},
-                                        _id: sharedEvent,
-                                    };
+                                    _async.each(sharedEvents, function (sharedEvent, callBack) {
 
-                                    CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+                                        var condition = {
+                                            start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay},
+                                            _id: sharedEvent,
+                                        };
 
-                                        if (result.events[0] != null && typeof result.events[0] != undefined) {
-                                            var _Shared_users = result.events[0].shared_users;
+                                        CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
 
-                                            if(_Shared_users != null && typeof _Shared_users != undefined){
+                                            if(typeof result != 'undefined' && result) {
 
-                                                for(var inc = 0; inc < _Shared_users.length; inc++){
+                                                if (result.events[0] != null && typeof result.events[0] != 'undefined') {
+                                                    var _Shared_users = result.events[0].shared_users;
 
-                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
-                                                        _Events.push(result.events[0]);
+                                                    if(_Shared_users != null && typeof _Shared_users != 'undefined'){
+
+                                                        for(var inc = 0; inc < _Shared_users.length; inc++){
+
+                                                            if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+                                                                _Events.push(result.events[0]);
+                                                            }
+                                                        }
                                                     }
+
                                                 }
                                             }
+                                            callBack(null);
 
-                                        }
-                                        callBack(null);
+                                        });
+                                    }, function (err) {
+                                        callBack(null, _Events);
                                     });
-                                }, function (err) {
+                                } else {
                                     callBack(null, _Events);
-                                });
+                                }
+
                             });
                         } else {
                             callBack(null, _Events);
@@ -776,12 +826,12 @@ var CalendarController = {
 
                     }
                 ], function (err, _Events) {
-                    callback(null, _Events);
+                    callBack(null, _Events);
 
                 });
             },
 
-            function getUsers(events, callback) {
+            function getUsers(events, callBack) {
 
                 var criteria = {
                     user_id: user_id,
@@ -790,14 +840,14 @@ var CalendarController = {
                 var User = require('mongoose').model('User');
                 User.getConnectionUsers(criteria, function (result) {
                     var friends = result.friends;
-                    callback(null, events, friends);
+                    callBack(null, events, friends);
                 });
             },
 
-            function composeUsers(events, users, callback) {
+            function composeUsers(events, users, callBack) {
 
                 if (events.length == 0) {
-                    callback(null, []);
+                    callBack(null, []);
                 }
 
                 for (var e = 0; e < events.length; e++) {
@@ -807,7 +857,7 @@ var CalendarController = {
 
                     if (sharedUsers.length == 0) {
                         if (e + 1 == (events.length)) {
-                            callback(null, events)
+                            callBack(null, events)
 
                         }
                     }
@@ -835,12 +885,13 @@ var CalendarController = {
                         events[e].shared_users = arrUsers;
 
                         if (u + 1 == sharedUsers.length && e + 1 == events.length) {
-                            callback(null, events);
+                            callBack(null, events);
                         }
                     }
                 }
             }
         ], function (err, events) {
+
             var outPut = {};
             if(err){
                 outPut['error'] = err;

@@ -142,9 +142,7 @@ export default class SharedUsers extends Component {
         };
 
         let shared_with_list = [];
-
-        console.log(this.state);
-        console.log("***********************************************");
+        
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
                 return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
