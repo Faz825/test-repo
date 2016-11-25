@@ -1537,7 +1537,7 @@ var CalendarController = {
                 var _data = {
                     sender:user_id,
                     notification_type:Notifications.SHARE_CALENDAR_RESPONSE,
-                    notified_event:req.body.event_id,
+                    notified_calendar:req.body.event_id,
                     notification_status:req.body.status.toString()
                 }
                 Notification.saveNotification(_data, function(res){
