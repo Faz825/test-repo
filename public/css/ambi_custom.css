@@ -548,8 +548,8 @@ footer .notification-alert-holder.slideOut{
           transform: scale(0);
 }
 
-/* 
- * Mentions 
+/*
+ * Mentions
  */
 
 .draftJsMentionPlugin__mention__29BEd, .draftJsMentionPlugin__mention__29BEd:visited {
@@ -628,4 +628,12 @@ footer .notification-alert-holder.slideOut{
   box-sizing: border-box;
   -webkit-transform: scale(0);
           transform: scale(0);
+}
+
+/* custom styles for ipad view */
+@media (min-width: 768px) {
+		.calender-container .mini-calender-box.calender-box .header span {
+			padding-left: 0px;
+    	padding-right: 0px;
+		}
 }
