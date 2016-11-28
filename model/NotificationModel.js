@@ -84,7 +84,7 @@ NotificationSchema.statics.saveNotification = function (new_notification, callBa
         notification.notified_notebook = Util.toObjectId(new_notification.notified_notebook);
         notification.notification_status = new_notification.notification_status;
 
-    } else if(new_notification.notification_type == Notifications.SHARE_FOLDER) {
+    } else if(new_notification.notification_type == Notifications.SHARE_FOLDER  || new_notification.notification_type == Notifications.SHARE_FOLDER_RESPONSE) {
         notification.notified_folder = Util.toObjectId(new_notification.notified_folder);
         notification.notification_status = new_notification.notification_status;
 

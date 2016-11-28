@@ -55,7 +55,7 @@ export default class Index extends React.Component{
             let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
 
 
-            if(_notificationType == "share_notebook" || _notificationType == "share_notebook_response" || _notificationType == "share_folder") {
+            if(_notificationType == "share_notebook" || _notificationType == "share_notebook_response" || _notificationType == "share_folder" || _notificationType == "share_folder_response") {
 
                 console.log("came to load >>" + _notificationType);
                 _this.loadNotifications();
@@ -254,7 +254,7 @@ export default class Index extends React.Component{
                     headers: { 'prg-auth-header':this.state.loggedUser.token }
                 }).done( function (data, text) {
 
-                    if(_notification.notification_type == "share_notebook_response") {
+                    if(_notification.notification_type == "share_notebook_response" || _notification.notification_type == "share_folder_response") {
                         this.loadNotifications();
                     } else {
                         window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
@@ -264,7 +264,7 @@ export default class Index extends React.Component{
 
             } else {
 
-                if(_notification.notification_type != "share_notebook_response") {
+                if(_notification.notification_type != "share_notebook_response" && _notification.notification_type != "share_folder_response") {
                     window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
                 }
             }
@@ -297,7 +297,7 @@ export default class Index extends React.Component{
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             for (var i = 0; i < this.elementsList.length; i++){
-                if(this.elementsList[i].notification_type != 'share_notebook') {
+                if(this.elementsList[i].notification_type != 'share_notebook' && this.elementsList[i].notification_type != 'share_folder') {
                     this.elementsList[i].read_status = true;
                 }
             }
@@ -414,6 +414,44 @@ export default class Index extends React.Component{
         }
     }
 
+    onUpdateSharedFolder(notification, status) {
+
+        console.log("onUpdateSharedFolder");
+        console.log(notification);
+        console.log(status)
+
+        if(typeof notification.folder_id != 'undefined' && notification.notification_type == "share_folder" && !notification.read_status){
+
+            $.ajax({
+                url: '/notifications/folder-update',
+                method: "POST",
+                dataType: "JSON",
+                data:{folder_id:notification.folder_id, notification_type:notification.notification_type, notification_id:notification.notification_id, status:status, notification_sender:notification.sender_id},
+                headers: { 'prg-auth-header':this.state.loggedUser.token }
+            }).done( function (data, text) {
+                console.log("HEREEEE")
+
+                let _notificationData = {
+                    folder_id:notification.folder_id,
+                    notification_type:"share_folder_response",
+                    notification_sender:this.state.loggedUser,
+                    notification_receiver:notification.sender_user_name
+                };
+
+                console.log(_notificationData);console.log(status);
+
+                Socket.sendFolderNotification(_notificationData);
+
+                if(status == 'REQUEST_REJECTED') {
+                    this.loadNotifications();
+                } else {
+                    window.location.href = '/folders';
+                }
+
+            }.bind(this));
+        }
+    }
+
     render() {
         let loggedUser = this.state.loggedUser;
         let _secretary_image = loggedUser.secretary_image_url;
@@ -524,7 +562,8 @@ export default class Index extends React.Component{
                                                     <div className="chat-notification-header" id="unread_chat_list">
                                                         <Notification notifications = {elementsList}
                                                                       clickNotification = {this.redirectToNotification.bind(this)}
-                                                                      updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)}/>
+                                                                      updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)}
+                                                                      updateFolder = {this.onUpdateSharedFolder.bind(this)}/>
                                                     </div>
                                                 </Scrollbars>
                                                 :
@@ -532,7 +571,8 @@ export default class Index extends React.Component{
                                                     <div className="chat-notification-header" id="unread_chat_list">
                                                         <Notification notifications = {elementsList}
                                                                       clickNotification = {this.redirectToNotification.bind(this)}
-                                                                      updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)}/>
+                                                                      updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)}
+                                                                      updateFolder = {this.onUpdateSharedFolder.bind(this)}/>
                                                     </div>
                                                     :
                                                     null
@@ -593,6 +633,7 @@ export class Notification extends React.Component{
                                     notification.notification_type != 'share_notebook' &&
                                     notification.notification_type != 'share_notebook_response' &&
                                     notification.notification_type != 'share_folder' &&
+                                    notification.notification_type != 'share_folder_response' &&
                                     notification.notification_type != 'share_calendar' &&
                                     notification.notification_type != 'share_calendar_response' &&
                                     notification.notification_type != 'calendar_schedule_updated' &&
@@ -604,6 +645,7 @@ export class Notification extends React.Component{
                                 {notification.notification_type == 'share_notebook' ? notification.sender_name +" has invited you to collaborate on " + notification.notebook_name :null}
                                 {notification.notification_type == 'share_notebook_response' ? notification.sender_name + " has " + notification.notification_status + " your invitation to collaborate on " + notification.notebook_name :null}
                                 {notification.notification_type == 'share_folder' ? " has invited you to collaborate on " + notification.folder_name :null}
+                                {notification.notification_type == 'share_folder_response' ? " has " +notification.notification_status+ " your invitation to collaborate on " + notification.folder_name :null}
                                 {notification.notification_type == 'share_calendar' ? notification.sender_name + " has shared you a calendar event - " + notification.calendar_text :null}
                                 {notification.notification_type == 'calendar_schedule_updated' ? notification.sender_name + " has updated a shared calendar event - " + notification.calendar_text :null}
                                 {notification.notification_type == 'calendar_schedule_time_changed' ? notification.sender_name + " has completely updated a shared calendar event - " + notification.calendar_text :null}
@@ -615,8 +657,8 @@ export class Notification extends React.Component{
                             {notification.notification_type == 'share_notebook'  && !notification.read_status ? <button className="btn btn-default" onClick={()=>_this.props.updateNoteBook(notification, 'REQUEST_ACCEPTED')}>Accept</button> : null}
                             {notification.notification_type == 'share_notebook'  && !notification.read_status ? <button className="btn btn-default reject" onClick={()=>_this.props.updateNoteBook(notification, 'REQUEST_REJECTED')}>Decline</button> : null}
 
-                            {notification.notification_type == 'share_folder'  && !notification.read_status ? <button className="btn btn-default" >Accept</button> : null}
-                            {notification.notification_type == 'share_folder'  && !notification.read_status ? <button className="btn btn-default reject" >Decline</button> : null}
+                            {notification.notification_type == 'share_folder'  && !notification.read_status ? <button className="btn btn-default" onClick={()=>_this.props.updateFolder(notification, 'REQUEST_ACCEPTED')}>Accept</button> : null}
+                            {notification.notification_type == 'share_folder'  && !notification.read_status ? <button className="btn btn-default reject" onClick={()=>_this.props.updateFolder(notification, 'REQUEST_REJECTED')}>Decline</button> : null}
 
                             {notification.notification_type == 'share_calendar'  && !notification.read_status ? <button className="btn btn-default" >Accept</button> : null}
                             {notification.notification_type == 'share_calendar'  && !notification.read_status ? <button className="btn btn-default reject" >Decline</button> : null}

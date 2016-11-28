@@ -250,7 +250,7 @@ NotificationRecipientSchema.statics.updateRecipientNotificationRefactored = func
             _async.eachSeries(notificationRecipients, function(notificationRecipient, callBack){
 
                 Notification.getFirstNotification({_id: notificationRecipient.notification_id},function(notification){
-                    if(notification.result.notification_type != 'share_notebook'){
+                    if(notification.result.notification_type != 'share_notebook' && notification.result.notification_type != 'share_folder'){
                         var updateData = {read_status: true};
                         _this.update(
                             {_id: notificationRecipient._id}, {$set:updateData}, function(err,resultSet){

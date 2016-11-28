@@ -31,13 +31,15 @@ export default class Index extends React.Component{
             sharedWithIds : [],
             sharedWithNames : [],
             sharedWithUsernames : [],
-            folders : []
+            folders : [],
+            addFolder : false
         };
 
         this.users = [];
         this.sharedWithIds = [];
         this.sharedWithNames = [];
         this.sharedWithUsernames = [];
+        this.loadFolderRequest = true;
 
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -48,32 +50,47 @@ export default class Index extends React.Component{
         this.renderSuggestion = this.renderSuggestion.bind(this);
         this.removeUser = this.removeUser.bind(this);
         this.loadFolders = this.loadFolders.bind(this);
+        console.log("folder constructor");
+
+    }
+
+    componentDidMount(){
+        console.log("Index - componentDidMount");
         this.loadFolders();
     }
 
+    componentWillUnmount(){
+        this.loadFolderRequest = false;
+    }
+
     loadFolders(){
-        //console.log("loadFolders")
+        console.log("loadFolders");
 
         $.ajax({
             url: '/folders/get-all',
             method: "GET",
             dataType: "JSON",
-            headers: { 'prg-auth-header':this.state.loggedUser.token }
-        }).done( function (data, text) {
-            if(data.status.code == 200){
-                if(data.folders.length == 0 || data.folders[0] == null){
-                    this.setState({CFName:"My Folder", CFColor:"#1b9ed9"});
-                    this.addDefaultFolder();
-                } else{
-                    let folders = data.folders;
-                    //console.log(folders);
-                    this.setState({folders: folders});
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            success : function (data, text) {
+                if(data.status.code == 200 && this.loadFolderRequest){
+                    if(data.folders.length == 0 || data.folders[0] == null){
+                        this.setState({CFName:"My Folder", CFColor:"#1b9ed9"});
+                        this.addDefaultFolder();
+                    } else{
+                        let folders = data.folders;
+                        console.log(folders);
+                        this.setState({folders: folders});
+                    }
                 }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
             }
-        }.bind(this));
+        });
     }
 
     addDefaultFolder(){
+        console.log("addDefaultFolder")
 
         $.ajax({
             url: '/folders/add-new',
@@ -83,8 +100,9 @@ export default class Index extends React.Component{
             data:{folder_name:this.state.CFName, folder_color:this.state.CFColor, shared_with:this.state.sharedWithIds, isDefault:1},
             success: function (data, text) {
                 if (data.status.code == 200) {
-                    this.loadFolders();
                     this.setState({CFName : "", CFColor : ""});
+                    this.loadFolders();
+
                 }
             }.bind(this),
             error: function (request, status, error) {
@@ -92,7 +110,6 @@ export default class Index extends React.Component{
                 console.log(error);
             }
         });
-
     }
 
     removeUser(key){
@@ -126,7 +143,7 @@ export default class Index extends React.Component{
     }
 
     renderSuggestion(suggestion) {
-        return (            
+        return (
             <div id={suggestion.user_id} className="suggestion-item">
                 <img className="suggestion-img" src={suggestion.images.profile_image.http_url} alt={suggestion.first_name} />
                 <span>{suggestion.first_name+" "+suggestion.last_name}</span>
@@ -219,7 +236,9 @@ export default class Index extends React.Component{
             this.setState({isFolderClrEmpty: false});
         }
 
-        if(this.state.CFName && this.state.CFColor){
+        if(this.state.CFName && this.state.CFColor && this.state.addFolder){
+
+            this.setState({addFolder : false});
 
             $.ajax({
                 url: '/folders/add-new',
@@ -230,7 +249,7 @@ export default class Index extends React.Component{
                 success: function (data, text) {
                     if (data.status.code == 200) {
                         this.loadFolders();
-                        this.setState({isShowingModal: false, CFName : "", CFColor : ""});
+                        this.setState({isShowingModal: false, CFName : "", CFColor : "", addFolder : true});
 
                         let _notificationData = {
                             folder_id:data.folder_id,
@@ -343,11 +362,11 @@ export default class Index extends React.Component{
                                     <div className="row invite-people">
                                         <div className="col-sm-12 input-group">
                                             <p>Invite some people</p>
-                                            <Autosuggest suggestions={suggestions}
+                                            {<Autosuggest suggestions={suggestions}
                                                          onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                                                          getSuggestionValue={this.getSuggestionValue}
                                                          renderSuggestion={this.renderSuggestion}
-                                                         inputProps={inputProps} />
+                                                         inputProps={inputProps} />}
                                             {
                                                 (this.state.sharedWithNames.length > 0)?
                                                     <div className="user-holder">{shared_with_list}</div> : null
@@ -374,13 +393,15 @@ export default class Index extends React.Component{
     }
 
     render(){
-        let _folders = this.state.folders;
+
         let _this = this;
+        let _folders = this.state.folders;
         let folderList = _folders.map(function(folder,key){
-                            return (
-                                <Folder key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} />
-                            )
-                        });
+            return (
+                <Folder key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} />
+            )
+        });
+
         return(
             <section className="folder-container sub-container">
                 <div className="container">

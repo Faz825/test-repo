@@ -280,18 +280,6 @@ FolderSchema.statics.updateFolder = function(criteria, data, callBack){
 FolderSchema.statics.shareFolder = function(folderId,sharedCriteria,callBack){
 
     var _this = this;
-    //_this.update({_id:folderId},
-    //    {$set:sharedCriteria},function(err,resultSet){
-    //
-    //        if(!err){
-    //            callBack({
-    //                status:200
-    //            });
-    //        }else{
-    //            console.log("Server Error --------")
-    //            callBack({status:400,error:err});
-    //        }
-    //    });
 
     _this.update({_id:folderId},
         {$push:sharedCriteria},function(err,resultSet){
@@ -327,6 +315,29 @@ FolderSchema.statics.removeSharedUser = function(folderId,sharedCriteria,callBac
             }
         });
 
+};
+
+/**
+ * Update Shared folder
+ * @param criteria
+ * @param data
+ * @param callBack
+ */
+FolderSchema.statics.updateSharedFolder = function(criteria, data, callBack){
+
+    var _this = this;
+
+    _this.update(criteria, data, {multi:true}, function(err,resultSet){
+        if(!err){
+            callBack({
+                status:200
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+    });
 };
 
 

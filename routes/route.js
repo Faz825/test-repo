@@ -154,6 +154,7 @@ router.get('/connections', DefaultController.index);
 router.get('/connections/mutual/:uname', DefaultController.index);
 router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
+router.get('/folders', DefaultController.index);
 
 router.get('/get-connected-users/:notebook/:name', UserController.getNotesSharedUsers);
 router.get('/filter-shared-users/:notebook/:name', UserController.filterNoteBookSharedUsers);
@@ -293,10 +294,10 @@ router.get('/group-folders/get-all', GroupFolderController.getFolders);
 router.post('/folders/shared-users', FolderController.getSharedUsers);
 router.post('/folders/share-folder', FolderController.shareFolder);
 router.post('/folder/shared-user/remove', FolderController.removeSharedFolderUser);
-
 router.get('/get-folder-users/:folder/:name', UserController.getFolderUsers);
 router.get('/get-folder-users/:folder', UserController.getFolderUsers);
 router.get('/filter-folder-shared-users/:folder/:name', UserController.filterFolderSharedUsers);
+router.post('/notifications/folder-update',NotificationController.updateFolderNotifications);
 
 router.post('/calendar/event/add', CalendarController.addEvent);
 router.get('/calendar/month/all', CalendarController.getAllForSpecificMonth);
