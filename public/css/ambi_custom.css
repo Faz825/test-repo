@@ -159,6 +159,22 @@ body{
     font-size: 11px;
 }
 
+/* calender popup close */
+.model-header .model-title-inner-wrapper.week-popup{
+  padding: 0 38px 0 0;
+}
+
+.model-header .calender-popup-closeBtn{
+  display: block;
+  width: 34px;
+  height: 34px;
+  background: url(../images/close-button.png) no-repeat 0 0;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  right: 2px;
+}
+
 /* Dashboard time */
 .timeA {
 	font-size: 0.17em;
