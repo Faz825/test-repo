@@ -53,12 +53,12 @@ export default class DayView extends Component {
 
     _onHashClick() {
         let showUserPanel = this.state.showUserPanel;
-        this.setState({showUserPanel : (showUserPanel == 'active' ? '' : 'active') });
+        this.setState({showUserPanel : (showUserPanel == 'active' ? '' : 'active'), showTimePanel:'' });
     }
 
     _onAtClick() {
         let showTimePanel = this.state.showTimePanel;
-        this.setState({showTimePanel : (showTimePanel == 'active' ? '' : 'active') });
+        this.setState({showTimePanel : (showTimePanel == 'active' ? '' : 'active'), showUserPanel:'' });
     }
 
     componentDidMount() {
@@ -96,6 +96,10 @@ export default class DayView extends Component {
         const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
         const plainText = contentState.getPlainText();
+
+        if(!plainText) {
+            return;
+        }
 
         // get shared users from SharedUsers field
         const sharedUsers = this.refs.SharedUserField.sharedWithIds;
@@ -157,6 +161,10 @@ export default class DayView extends Component {
       const editorContentRaw = convertToRaw(contentState);
       const plainText = contentState.getPlainText();
 
+        if(!plainText) {
+            return;
+        }
+
       // get shared users from SharedUsers field
       const sharedUsers = this.refs.SharedUserField.sharedWithIds;
       const postData = {
@@ -196,8 +204,8 @@ export default class DayView extends Component {
 
                   Socket.sendCalendarShareNotification(_notificationData);
               }
-
               this.loadEvents();
+              this.setState({editOn : false, showUserPanel:'', showTimePanel:''});
           }
       }.bind(this));
     }
@@ -436,7 +444,7 @@ export default class DayView extends Component {
                                             </div>
 
                                             <div className="menu-ico">
-                                                <OverlayTrigger trigger="click" placement="bottom" overlay={typoPopover}>
+                                                <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
                                                     <p>A</p>
                                                 </OverlayTrigger>
                                             </div>

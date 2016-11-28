@@ -10620,6 +10620,7 @@ header .notification-holder .profile-header-thumb {
   z-index: 1;
   padding-left: 0px;
   background-color: #ffffff;
+  border-radius: 8px 0px 0px 8px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper {
   position: relative;
@@ -10631,11 +10632,12 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay:nth-child(1) {
   width: 1px;
-  height: 280px;
+  height: 93%;
   top: 10px;
   left: 10px;
   opacity: 0.2;
   box-shadow: 2px 0 0 0 #000000;
+  z-index: 2;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay:nth-child(2) {
   width: 12px;
@@ -10649,7 +10651,6 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover {
   position: relative;
   overflow: hidden;
-  border-radius: 8px 0px 0px;
   height: 260px;
   z-index: 1;
 }
@@ -10670,6 +10671,7 @@ header .notification-holder .profile-header-thumb {
   overflow: hidden;
   text-align: center;
   height: 100%;
+  border-radius: 8px 0px 0px 8px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper {
   position: relative;
@@ -10837,7 +10839,7 @@ header .notification-holder .profile-header-thumb {
   height: 36px;
   width: 29px;
 }
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.doc .item-type {
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.doc .item-type, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.docx .item-type {
   background-image: url("../images/folder/types/docs.png");
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.pdf .item-type {
@@ -11658,6 +11660,7 @@ header .notification-holder .profile-header-thumb {
   margin-bottom: 8px;
   width: calc(50% - 4px);
   margin-right: 8px;
+  border-radius: 8px;
   -webkit-box-shadow: 0px 0px 6px 1px #c4c4c4;
   box-shadow: 0px 0px 6px 1px #c4c4c4;
 }
@@ -11665,7 +11668,7 @@ header .notification-holder .profile-header-thumb {
   margin-right: 0;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header {
-  background-color: #ffffff;
+  background-color: #f6f6f6;
   padding: 5% 7%;
   border-bottom: 1px solid #dee6eb;
 }
@@ -11709,7 +11712,7 @@ header .notification-holder .profile-header-thumb {
   margin-bottom: 0;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body {
-  background-color: #f6f8fc;
+  background-color: #ffffff;
   padding: 5% 7%;
   height: 215px;
   overflow-y: scroll;
