@@ -50,66 +50,108 @@ var FolderController ={
             _async = require('async'),
             _folder_id = 0,
             Notification = require('mongoose').model('Notification'),
-            NotificationRecipient = require('mongoose').model('NotificationRecipient');
+            NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            canAdd = true,
+            _folder = {};
 
         _async.waterfall([
 
-            function addFolderToDB(callBack){
+            function checkIfDefault(callBack){
 
-                if(typeof req.body.isDefault == 'undefined'){
-                    console.log("this is not default folder...")
+                if(typeof req.body.isDefault != 'undefined' && req.body.isDefault == 1){
+                    var criteria = {user_id:Util.toObjectId(Util.getCurrentSession(req).id)};
+                    Folders.getFolders(criteria,function(resultSet){
+                        if(resultSet.folders.length > 0){
 
-                    for(var i = 0; i < _shared_with.length; i++){
-                        //console.log("_shared_with = "+i)
-                        var randColor = _randColor.randomColor({
-                            luminosity: 'light',
-                            hue: 'random'
-                        });
+                            canAdd = false;
 
-                        var _sharingUser = {
-                            user_id: _shared_with[i],
-                            user_note_color: randColor,
-                            shared_type: FolderSharedMode.READ_WRITE,
-                            status: FolderSharedRequest.REQUEST_PENDING
-                        };
+                            _folder = {
+                                folder_id:resultSet.folders[0]._id,
+                                folder_name:resultSet.folders[0].name,
+                                folder_color:resultSet.folders[0].color,
+                                folder_user:resultSet.folders[0].user_id,
+                                folder_shared_users:resultSet.folders[0].shared_users,
+                                folder_updated_at:resultSet.folders[0].updated_at,
+                                owned_by: 'me',
+                                documents:[]
+                            }
+                            var outPut ={
+                                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                                folder:_folder
+                            };
+                            res.status(200).json(outPut);
 
-                        sharedUsers.push(_sharingUser);
-                    }
+                        } else{
+
+                            callBack(null);
+
+                        }
+
+                    });
 
                 }
 
-                var _folder = {
-                    name:req.body.folder_name,
-                    color:req.body.folder_color,
-                    isDefault:req.body.isDefault,
-                    user_id:Util.getCurrentSession(req).id,
-                    shared_users:sharedUsers
-                };
+            },
 
-                Folders.addNewFolder(_folder,function(resultSet){
-                    //console.log(resultSet.folder)
-                    _folder_id = resultSet.folder._id;
-                    if(typeof req.body.isDefault != 'undefined' && req.body.isDefault == 1){
-                        console.log("this is default folder... sending response")
-                        var _folder = {
-                            folder_id:resultSet.folder._id,
-                            folder_name:resultSet.folder.name,
-                            folder_color:resultSet.folder.color,
-                            folder_user:resultSet.folder.user_id,
-                            folder_shared_users:resultSet.folder.shared_users,
-                            folder_updated_at:resultSet.folder.updated_at,
-                            owned_by: 'me',
-                            documents:[]
+            function addFolderToDB(callBack){
+
+                for(var i = 0; i < _shared_with.length; i++){
+                    //console.log("_shared_with = "+i)
+                    var randColor = _randColor.randomColor({
+                        luminosity: 'light',
+                        hue: 'random'
+                    });
+
+                    var _sharingUser = {
+                        user_id: _shared_with[i],
+                        user_note_color: randColor,
+                        shared_type: FolderSharedMode.READ_WRITE,
+                        status: FolderSharedRequest.REQUEST_PENDING
+                    };
+
+                    sharedUsers.push(_sharingUser);
+                }
+
+                if(canAdd){
+
+                    var _folderrr = {
+                        name:req.body.folder_name,
+                        color:req.body.folder_color,
+                        isDefault:req.body.isDefault,
+                        user_id:Util.getCurrentSession(req).id,
+                        shared_users:sharedUsers
+                    };
+
+                    Folders.addNewFolder(_folderrr,function(resultSet){
+                        //console.log(resultSet.folder)
+                        _folder_id = resultSet.folder._id;
+                        if(typeof req.body.isDefault != 'undefined' && req.body.isDefault == 1){
+                            console.log("this is default folder... sending response")
+                            _folder = {
+                                folder_id:resultSet.folder._id,
+                                folder_name:resultSet.folder.name,
+                                folder_color:resultSet.folder.color,
+                                folder_user:resultSet.folder.user_id,
+                                folder_shared_users:resultSet.folder.shared_users,
+                                folder_updated_at:resultSet.folder.updated_at,
+                                owned_by: 'me',
+                                documents:[]
+                            }
+                            var outPut ={
+                                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                                folder:_folder
+                            };
+                            res.status(200).json(outPut);
+                        } else{
+                            callBack(null);
                         }
-                        var outPut ={
-                            status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                            folder:_folder
-                        };
-                        res.status(200).json(outPut);
-                    } else{
-                        callBack(null);
-                    }
-                });
+                    });
+
+                } else{
+                    callBack(null);
+                }
+
+
 
             },
             function addNotification(callBack){
