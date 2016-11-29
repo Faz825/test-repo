@@ -32,7 +32,7 @@ export default class Index extends React.Component{
             sharedWithNames : [],
             sharedWithUsernames : [],
             folders : [],
-            addFolder : false
+            addFolder : true
         };
 
         this.users = [];
@@ -50,7 +50,7 @@ export default class Index extends React.Component{
         this.renderSuggestion = this.renderSuggestion.bind(this);
         this.removeUser = this.removeUser.bind(this);
         this.loadFolders = this.loadFolders.bind(this);
-        console.log("folder constructor");
+        console.log("folder index constructor");
 
     }
 
@@ -60,6 +60,7 @@ export default class Index extends React.Component{
     }
 
     componentWillUnmount(){
+        console.log("Index - componentWillUnmount");
         this.loadFolderRequest = false;
     }
 
@@ -90,26 +91,30 @@ export default class Index extends React.Component{
     }
 
     addDefaultFolder(){
-        console.log("addDefaultFolder")
 
-        $.ajax({
-            url: '/folders/add-new',
-            method: "POST",
-            dataType: "JSON",
-            headers: { 'prg-auth-header':this.state.loggedUser.token },
-            data:{folder_name:this.state.CFName, folder_color:this.state.CFColor, shared_with:this.state.sharedWithIds, isDefault:1},
-            success: function (data, text) {
-                if (data.status.code == 200) {
-                    this.setState({CFName : "", CFColor : ""});
-                    this.loadFolders();
+        if(this.loadFolderRequest){
+            console.log("addDefaultFolder")
 
+            $.ajax({
+                url: '/folders/add-new',
+                method: "POST",
+                dataType: "JSON",
+                headers: { 'prg-auth-header':this.state.loggedUser.token },
+                data:{folder_name:this.state.CFName, folder_color:this.state.CFColor, shared_with:this.state.sharedWithIds, isDefault:1},
+                success: function (data, text) {
+                    if (data.status.code == 200 && this.loadFolderRequest) {
+                        this.setState({CFName : "", CFColor : ""});
+                        this.loadFolders();
+
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(status);
+                    console.log(error);
                 }
-            }.bind(this),
-            error: function (request, status, error) {
-                console.log(status);
-                console.log(error);
-            }
-        });
+            });
+        }
+
     }
 
     removeUser(key){
@@ -920,8 +925,8 @@ export class SharePopup extends React.Component{
     }
 
     getSuggestions(value, data) {
-        console.log("getSuggestions");
-        console.log(value);
+        //console.log("getSuggestions");
+        //console.log(value);
         const escapedValue = Lib.escapeRegexCharacters(value.trim()); 
         if (escapedValue === '') { 
             return data; 
@@ -933,47 +938,13 @@ export class SharePopup extends React.Component{
 
 
     filterSharedUsers(folder_id, event) {
-        console.log("filterSharedUsers");
+        //console.log("filterSharedUsers");
 
-        let value = event.target.value;console.log(value);
+        let value = event.target.value;//console.log(value);
         var data = this.getSuggestions(value, this.sharedUsersWithoutFilter);
         this.setState({sharedUsers: data});
         this.setState({sharedFilterValue:value});
 
-        //const escapedValue = Lib.escapeRegexCharacters(value.trim());
-        //const regex = new RegExp('^' + escapedValue, 'i');
-        //
-        //if (escapedValue === '') {
-        //    this.setState({sharedUsers:this.sharedUsersWithoutFilter});
-        //} else{
-        //    var data = this.sharedUsersWithoutFilter;
-        //    var filtered = data.filter(data => regex.test(this.sharedUsersWithoutFilter.first_name+" "+this.sharedUsersWithoutFilter.last_name));console.log(filtered)
-        //    this.setState({sharedUsers:filtered});
-        //}
-
-        //return data.filter(data => regex.test(data.first_name+" "+data.last_name));
-
-        //if(value.length >= 1){
-        //    $.ajax({
-        //        url: '/filter-shared-users/'+notebook_id+'/'+value,
-        //        method: "GET",
-        //        dataType: "JSON",
-        //        success: function (data, text) {
-        //            if(data.status.code == 200){
-        //                this.setState({
-        //                    sharedUsers: data.users
-        //                });
-        //            }
-        //        }.bind(this),
-        //        error: function (request, status, error) {
-        //            console.log(request.responseText);
-        //            console.log(status);
-        //            console.log(error);
-        //        }.bind(this)
-        //    });
-        //}else{
-        //    this.loadSharedUsers();
-        //}
     }
 
     onPermissionChanged(e, user) {
