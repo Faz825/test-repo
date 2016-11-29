@@ -89,6 +89,8 @@ var FolderController ={
 
                     });
 
+                } else{
+                    callBack(null);
                 }
 
             },
