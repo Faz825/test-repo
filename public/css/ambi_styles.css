@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,6 +1418,7 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3118,6 +3119,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3670,6 +3672,7 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10246,17 +10249,17 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/*
-	Method to use:
-	@include @border {
-		border ($style,  $sides, $emptySides){
-	}
+/* 
+  Method to use:
+  @include @border {
+    border ($style,  $sides, $emptySides){
+  }
 */
-/*
-	Method to use:
-	@include @mixin {
-		content
-	}
+/* 
+  Method to use:
+  @include @mixin {
+    content
+  }
 */
 header {
   background: #fff;
@@ -12973,6 +12976,7 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .share-opt-holder {
   float: right;
+  margin: 0 22px 0 0;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .shared-privacy {
   margin-left: 47px;

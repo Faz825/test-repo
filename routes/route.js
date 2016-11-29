@@ -154,7 +154,6 @@ router.get('/connections', DefaultController.index);
 router.get('/connections/mutual/:uname', DefaultController.index);
 router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
-router.get('/folders', DefaultController.index);
 
 router.get('/get-connected-users/:notebook/:name', UserController.getNotesSharedUsers);
 router.get('/filter-shared-users/:notebook/:name', UserController.filterNoteBookSharedUsers);
@@ -287,6 +286,7 @@ router.post('/notifications/notebook-update',NotificationController.updateNotebo
 router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);
 router.get('/notifications/get-details',NotificationController.getDetails);
 router.get('/notifications/get-notification-count',NotificationController.getNotificationCount);
+router.get('/folders/get-count', FolderController.getCount);
 router.post('/folders/add-new', FolderController.addNewFolder);
 router.get('/folders/get-all', FolderController.getFolders);
 router.post('/group-folders/add-new', GroupFolderController.addNewFolder);

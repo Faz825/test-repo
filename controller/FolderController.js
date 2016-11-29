@@ -6,6 +6,34 @@
 
 var FolderController ={
 
+    getCount:function(req,res){
+        console.log("getCount")
+
+        var Folders = require('mongoose').model('Folders'),
+            CurrentSession = Util.getCurrentSession(req);
+        var user_id = CurrentSession.id;
+        var criteria = {user_id:Util.toObjectId(user_id)};
+
+        Folders.getCount(criteria,function(resultSet){
+            console.log("COUNT -------> "+resultSet.result)
+            if(resultSet.status == 200){
+                var outPut ={
+                    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                    count:resultSet.result
+                };
+                res.status(200).json(outPut);
+            } else{
+                var outPut ={
+                    status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR),
+                };
+                res.status(400).json(outPut);
+            }
+
+        });
+
+
+    },
+
     /**
      * Adding New Folder
      * @param req
@@ -22,16 +50,52 @@ var FolderController ={
             _async = require('async'),
             _folder_id = 0,
             Notification = require('mongoose').model('Notification'),
-            NotificationRecipient = require('mongoose').model('NotificationRecipient');
-
-        //console.log(req.body.shared_with);
-        //console.log(_shared_with)
+            NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            canAdd = true,
+            _folder = {};
 
         _async.waterfall([
 
-            function addFolderToDB(callBack){
+            function checkIfDefault(callBack){
 
-                //console.log("addFolderToDB");
+                if(typeof req.body.isDefault != 'undefined' && req.body.isDefault == 1){
+                    var criteria = {user_id:Util.toObjectId(Util.getCurrentSession(req).id)};
+                    Folders.getFolders(criteria,function(resultSet){
+                        if(resultSet.folders.length > 0){
+
+                            canAdd = false;
+
+                            _folder = {
+                                folder_id:resultSet.folders[0]._id,
+                                folder_name:resultSet.folders[0].name,
+                                folder_color:resultSet.folders[0].color,
+                                folder_user:resultSet.folders[0].user_id,
+                                folder_shared_users:resultSet.folders[0].shared_users,
+                                folder_updated_at:resultSet.folders[0].updated_at,
+                                owned_by: 'me',
+                                documents:[]
+                            }
+                            var outPut ={
+                                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                                folder:_folder
+                            };
+                            res.status(200).json(outPut);
+
+                        } else{
+
+                            callBack(null);
+
+                        }
+
+                    });
+
+                } else{
+                    callBack(null);
+                }
+
+            },
+
+            function addFolderToDB(callBack){
 
                 for(var i = 0; i < _shared_with.length; i++){
                     //console.log("_shared_with = "+i)
@@ -50,21 +114,46 @@ var FolderController ={
                     sharedUsers.push(_sharingUser);
                 }
 
-                //console.log(sharedUsers)
+                if(canAdd){
 
-                var _folder = {
-                    name:req.body.folder_name,
-                    color:req.body.folder_color,
-                    isDefault:req.body.isDefault,
-                    user_id:Util.getCurrentSession(req).id,
-                    shared_users:sharedUsers
-                };
+                    var _folderrr = {
+                        name:req.body.folder_name,
+                        color:req.body.folder_color,
+                        isDefault:req.body.isDefault,
+                        user_id:Util.getCurrentSession(req).id,
+                        shared_users:sharedUsers
+                    };
 
-                Folders.addNewFolder(_folder,function(resultSet){
-                    //console.log(resultSet.folder)
-                    _folder_id = resultSet.folder._id;
+                    Folders.addNewFolder(_folderrr,function(resultSet){
+                        //console.log(resultSet.folder)
+                        _folder_id = resultSet.folder._id;
+                        if(typeof req.body.isDefault != 'undefined' && req.body.isDefault == 1){
+                            console.log("this is default folder... sending response")
+                            _folder = {
+                                folder_id:resultSet.folder._id,
+                                folder_name:resultSet.folder.name,
+                                folder_color:resultSet.folder.color,
+                                folder_user:resultSet.folder.user_id,
+                                folder_shared_users:resultSet.folder.shared_users,
+                                folder_updated_at:resultSet.folder.updated_at,
+                                owned_by: 'me',
+                                documents:[]
+                            }
+                            var outPut ={
+                                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                                folder:_folder
+                            };
+                            res.status(200).json(outPut);
+                        } else{
+                            callBack(null);
+                        }
+                    });
+
+                } else{
                     callBack(null);
-                });
+                }
+
+
 
             },
             function addNotification(callBack){
@@ -193,7 +282,7 @@ var FolderController ={
             }
 
         ],function(err,resultSet){
-            console.log("async waterfall callback")
+            console.log("loadFolders ..sending response")
             if(err){
                 var outPut ={
                     status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR),
