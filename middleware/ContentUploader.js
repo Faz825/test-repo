@@ -59,7 +59,7 @@ var ContentUploader ={
                         callBack(null,cdnReturn.upload_meta);
                     });
                 }else{
-                    callBack(null,null);
+                    callBack(null,{status:400,error:null});
                 }
 
             }
@@ -155,7 +155,7 @@ var ContentUploader ={
                         callBack(null,cdnReturn.upload_meta);
                     });
                 }else{
-                    callBack(null,null);
+                    callBack(null,{status:400,error:null});
                 }
 
             }

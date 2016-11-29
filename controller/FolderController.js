@@ -31,10 +31,10 @@ var FolderController ={
 
             function addFolderToDB(callBack){
 
-                console.log("addFolderToDB");
+                //console.log("addFolderToDB");
 
                 for(var i = 0; i < _shared_with.length; i++){
-                    console.log("_shared_with = "+i)
+                    //console.log("_shared_with = "+i)
                     var randColor = _randColor.randomColor({
                         luminosity: 'light',
                         hue: 'random'
@@ -61,14 +61,14 @@ var FolderController ={
                 };
 
                 Folders.addNewFolder(_folder,function(resultSet){
-                    console.log(resultSet.folder)
+                    //console.log(resultSet.folder)
                     _folder_id = resultSet.folder._id;
                     callBack(null);
                 });
 
             },
             function addNotification(callBack){
-                console.log("addNotification");
+                //console.log("addNotification");
 
                 if(_shared_with.length > 0 && _folder_id != 0){
                     var _data = {
@@ -86,7 +86,7 @@ var FolderController ={
                 }
             },
             function notifyingUsers(notification_id, callBack){
-                console.log("notifyingUsers");
+                //console.log("notifyingUsers");
 
                 if(typeof notification_id != 'undefined' && _shared_with.length > 0){
 
@@ -104,7 +104,7 @@ var FolderController ={
             }
 
         ],function(err){
-            console.log("async waterfall callback");
+            //console.log("async waterfall callback");
 
             if(err){
                 var outPut ={
@@ -122,6 +122,8 @@ var FolderController ={
     },
 
     getFolders: function (req, res) {
+
+        console.log("getFolders")
 
         var Folders = require('mongoose').model('Folders'),
             User = require('mongoose').model('User'),
@@ -244,7 +246,8 @@ var FolderController ={
 
                             //console.log(JSON.stringify(csResultSet.result[0]));
 
-                            owner.user_name = csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'];
+                            owner.first_name = csResultSet.result[0]['first_name'];
+                            owner.last_name = csResultSet.result[0]['last_name'];
                             owner.profile_image = csResultSet.result[0]['images']['profile_image']['http_url'];
 
                             callBack(null);
@@ -315,7 +318,8 @@ var FolderController ={
 
                                     //console.log(JSON.stringify(csResultSet.result[0]));
 
-                                    usrObj.user_name = csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'];
+                                    usrObj.first_name = csResultSet.result[0]['first_name'];
+                                    usrObj.last_name = csResultSet.result[0]['last_name'];
                                     usrObj.profile_image = csResultSet.result[0]['images']['profile_image']['http_url'];
 
                                     callBack(null);
@@ -382,7 +386,7 @@ var FolderController ={
     },
 
     shareFolder: function(req,res){
-        console.log("shareFolder")
+        //console.log("shareFolder")
 
         var Folders = require('mongoose').model('Folders'),
             shared_with = [req.body.userId],
@@ -393,14 +397,14 @@ var FolderController ={
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient');
 
-        console.log("folder_id ==> "+folder_id);
-        console.log("shared_with ==> ",shared_with);
+        //console.log("folder_id ==> "+folder_id);
+        //console.log("shared_with ==> ",shared_with);
 
         _async.waterfall([
 
             function addSharedUserToFolder(callBack){
 
-                console.log("addFolderToDB");
+                //console.log("addFolderToDB");
 
                 for(var i = 0; i < shared_with.length; i++){
 
@@ -420,7 +424,7 @@ var FolderController ={
 
                 }
 
-                console.log(sharedUsers);
+                //console.log(sharedUsers);
 
                 var _sharedUsers = {
                     shared_users:{$each:sharedUsers}
@@ -432,7 +436,7 @@ var FolderController ={
 
             },
             function addNotification(callBack){
-                console.log("addNotification");
+                //console.log("addNotification");
 
                 if(shared_with.length > 0 && typeof folder_id != 'undefined'){
                     var _data = {
@@ -450,7 +454,7 @@ var FolderController ={
                 }
             },
             function notifyingUsers(notification_id, callBack){
-                console.log("notifyingUsers");
+                //console.log("notifyingUsers");
 
                 if(typeof notification_id != 'undefined' && shared_with.length > 0){
 
@@ -468,7 +472,7 @@ var FolderController ={
             }
 
         ],function(err){
-            console.log("async waterfall callback");
+            //console.log("async waterfall callback");
 
             if(err){
                 var outPut ={

@@ -71,6 +71,7 @@ var NotificationController ={
                                 notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK_RESPONSE ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_FOLDER ||
+                                notifications[i]['notification_type'] == Notifications.SHARE_FOLDER_RESPONSE ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR_RESPONSE ||
                                 notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_UPDATED ||
@@ -117,7 +118,7 @@ var NotificationController ={
 
                                 _noOfNotifications++;
 
-                            } else if(notifications[i]['notification_type'] == Notifications.SHARE_FOLDER){
+                            } else if(notifications[i]['notification_type'] == Notifications.SHARE_FOLDER || notifications[i]['notification_type'] == Notifications.SHARE_FOLDER_RESPONSE){
                                 var folderObj = {
                                     post_id:notifications[i]['post_id'],
                                     notebook_id:notifications[i]['notebook_id'],
@@ -239,6 +240,7 @@ var NotificationController ={
                                 notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK_RESPONSE ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_FOLDER ||
+                                notifications[i]['notification_type'] == Notifications.SHARE_FOLDER_RESPONSE ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR ||
                                 notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR_RESPONSE ||
                                 notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_UPDATED ||
@@ -285,7 +287,7 @@ var NotificationController ={
                                 }
                                 _noOfNotifications++;
 
-                            } else if(notifications[i]['notification_type'] == Notifications.SHARE_FOLDER){
+                            } else if(notifications[i]['notification_type'] == Notifications.SHARE_FOLDER || notifications[i]['notification_type'] == Notifications.SHARE_FOLDER_RESPONSE){
                                 var folderObj = {
                                     post_id:notifications[i]['post_id'],
                                     notebook_id:notifications[i]['notebook_id'],
@@ -500,6 +502,7 @@ var NotificationController ={
                     } else if(notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK ||
                         notifications[i]['notification_type'] == Notifications.SHARE_NOTEBOOK_RESPONSE ||
                         notifications[i]['notification_type'] == Notifications.SHARE_FOLDER ||
+                        notifications[i]['notification_type'] == Notifications.SHARE_FOLDER_RESPONSE ||
                         notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR ||
                         notifications[i]['notification_type'] == Notifications.SHARE_CALENDAR_RESPONSE ||
                         notifications[i]['notification_type'] == Notifications.CALENDAR_SCHEDULE_UPDATED ||
@@ -641,7 +644,7 @@ var NotificationController ={
             function setFolderName(callBack){
                 if(_folderData.length > 0) {
                     for (var key in _notifications) {
-                        if (key == Notifications.SHARE_FOLDER) {
+                        if (key == Notifications.SHARE_FOLDER || key == Notifications.SHARE_FOLDER_RESPONSE) {
                             var obj = _notifications[key];
                             for (var i in obj) {
                                 if(typeof _notifications[key][i].folder_id != 'undefined') {
@@ -690,6 +693,7 @@ var NotificationController ={
                     if(key != Notifications.SHARE_NOTEBOOK &&
                         key != Notifications.SHARE_NOTEBOOK_RESPONSE &&
                         key != Notifications.SHARE_FOLDER &&
+                        key != Notifications.SHARE_FOLDER_RESPONSE &&
                         key != Notifications.SHARE_CALENDAR &&
                         key != Notifications.SHARE_CALENDAR_RESPONSE &&
                         key != Notifications.CALENDAR_SCHEDULE_UPDATED &&
@@ -748,7 +752,7 @@ var NotificationController ={
                             }
 
                             if(obj.senders.length == 3){
-                                _data['sender_name'] += ', '+ _notificationSenders[obj.senders[1]]['name'];
+                                _data['sender_name'] += ', '+ _users[obj.senders[1]]['name'];
                                 if(obj.sender_count == 0){
                                     _data['sender_name'] += ' and ';
                                 }else{
@@ -785,7 +789,7 @@ var NotificationController ={
                             _formattedNotificationData.push(_data);
                         }
 
-                    } else if(key == Notifications.SHARE_FOLDER){
+                    } else if(key == Notifications.SHARE_FOLDER || key == Notifications.SHARE_FOLDER_RESPONSE){
 
                         for (var i in obj) {
                             var _data = {
@@ -942,7 +946,7 @@ var NotificationController ={
 
                                 callBack(null, related_senders);
 
-                        }else if(_notificationType == 'share_folder'){
+                        }else if(_notificationType == 'share_folder' || _notificationType == 'share_folder_response'){
 
                             var currentFolderId = notification.folder_id.toString();
 
@@ -1131,7 +1135,7 @@ var NotificationController ={
             user_id = Util.getCurrentSession(req).id;
 
 
-        if(typeof req.body.notification_type != 'undefined' && req.body.notification_type == Notifications.SHARE_NOTEBOOK_RESPONSE) {
+        if(typeof req.body.notification_type != 'undefined' && (req.body.notification_type == Notifications.SHARE_NOTEBOOK_RESPONSE || req.body.notification_type == Notifications.SHARE_FOLDER_RESPONSE)) {
 
             var _criteria = {notification_id:Util.toObjectId(req.body.notification_id), recipient:Util.toObjectId(user_id)};
             NotificationRecipient.updateRecipientNotification(_criteria, _data, function(result){
@@ -1475,6 +1479,92 @@ var NotificationController ={
             function notifyingUsers(notification_id, callBack){
 
                 var userList = [req.body.updating_user];
+                if(typeof notification_id != 'undefined' && userList.length > 0){
+
+                    var _data = {
+                        notification_id:notification_id,
+                        recipients:userList
+                    };
+
+                    NotificationRecipient.saveRecipients(_data, function(res){
+                        callBack(null);
+                    })
+
+                } else{
+                    callBack(null);
+                }
+            }
+        ],function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
+            res.status(200).json(outPut);
+        })
+
+
+    },
+
+
+    /**
+     * user responded to shared folder request
+     * @param req
+     * @param res
+     */
+
+    updateFolderNotifications: function(req,res){
+
+        console.log("updateFolderNotifications")
+
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            Notification = require('mongoose').model('Notification'),
+            Folder = require('mongoose').model('Folders'),
+            _async = require('async'),
+            _data = {read_status:true},
+            user_id = Util.getCurrentSession(req).id;
+
+        _async.waterfall([
+            function updateNotifications(callBack){
+                console.log("updateNotifications")
+                var _criteria = {notification_id:Util.toObjectId(req.body.notification_id), recipient:Util.toObjectId(user_id)};
+                NotificationRecipient.updateRecipientNotification(_criteria, _data, function(res){
+                    callBack(null);
+                });
+            },
+            function updateSharedStatus(callBack) {
+                console.log("updateSharedStatus")
+                var shared_status = req.body.status == 'REQUEST_REJECTED' ?
+                    NoteBookSharedRequest.REQUEST_REJECTED : NoteBookSharedRequest.REQUEST_ACCEPTED;
+
+                var _udata = {
+                    'shared_users.$.status':shared_status
+                };
+                var criteria = {
+                    _id:Util.toObjectId(req.body.folder_id),
+                    'shared_users.user_id':user_id
+                };
+
+                Folder.updateSharedFolder(criteria, _udata, function(res){
+                    callBack(null);
+                });
+            },
+            function addNotification(callBack){
+                console.log("addNotification")
+                var _data = {
+                    sender:user_id,
+                    notification_type:Notifications.SHARE_FOLDER_RESPONSE,
+                    notified_folder:req.body.folder_id,
+                    notification_status:req.body.status.toString()
+                }
+                Notification.saveNotification(_data, function(res){
+                    if(res.status == 200) {
+                        callBack(null,res.result._id);
+                    }
+                });
+
+            },
+            function notifyingUsers(notification_id, callBack){
+                console.log("notifyingUsers")
+                var userList = [req.body.notification_sender];
                 if(typeof notification_id != 'undefined' && userList.length > 0){
 
                     var _data = {
