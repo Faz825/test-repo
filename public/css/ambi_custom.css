@@ -411,6 +411,14 @@ a.rc-time-picker-panel-clear-btn {
     top: 130px !important;
 }
 
+.folder-content-wrapper .error-text{
+  position: absolute;
+  top: 5px;
+  left: 0;
+  font-size: 0.8em;
+  color: #CB0606;
+}
+
 /* Footer on collapse */
 .body-container.sub-page{
 	padding-bottom: 100px;

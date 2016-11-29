@@ -462,6 +462,7 @@ export class Folder extends React.Component{
             showConfirm:false,
             isShowingModal : false,
             deleteFileId:0,
+            notAccepted: false,
             filesData:this.props.folderData.documents
         };
         this.files = [];
@@ -470,6 +471,7 @@ export class Folder extends React.Component{
         this.onDrop = this.onDrop.bind(this);
         this.onOpenClick = this.onOpenClick.bind(this);
         this.onDropAccepted = this.onDropAccepted.bind(this);
+        this.onDropRejected = this.onDropRejected.bind(this);
         this.uploadHandler = this.uploadHandler.bind(this);
         this.onShowConfirm = this.onShowConfirm.bind(this);
 
@@ -587,7 +589,12 @@ export class Folder extends React.Component{
     }
     
     onDropRejected(rejected_files){
-        console.log(rejected_files);
+        let _this = this;
+        this.setState({notAccepted : true});
+
+        setTimeout(function(){ 
+            _this.setState({notAccepted : false});
+        }, 2500)
     }
 
     uploadHandler(uploadContent){
@@ -750,6 +757,12 @@ export class Folder extends React.Component{
                     <div className="col-sm-10">
                         <div className="row">
                             <div className="folder-content-wrapper">
+                            {
+                                (this.state.notAccepted)?
+                                <p className="error-text">File type is not accepted.</p>
+                                :
+                                null
+                            }
                                 <div className="folder-items-wrapper">
                                     <div className="inner-wrapper">
                                         <div className="folder-col"  onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
