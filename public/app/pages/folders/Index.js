@@ -307,7 +307,7 @@ export default class Index extends React.Component{
             <div>
                 {this.state.isShowingModal &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} className="modalPopup" width="50%">
+                    <ModalDialog onClose={this.handleClose.bind(this)} className="modalPopup" width="40%">
                         <div className="popup-holder">
                             <section className="create-folder-popup">
                                 <section className="folder-header">
@@ -474,7 +474,7 @@ export class Folder extends React.Component{
         this.onShowConfirm = this.onShowConfirm.bind(this);
 
         this.filesData = this.props.folderData.documents;
-        //this.filesData = [
+        // this.filesData = [
         //   {
         //       document_id : "582ae658247ffffc240b08b9",
         //       document_name : "PEF - Anuthiga Sriskanthan - DOC",
@@ -523,7 +523,7 @@ export class Folder extends React.Component{
         //       },
         //       document_user : "574bcb96272a6fd40768cf0f"
         //   }
-        //];
+        // ];
 
     }
 
@@ -585,6 +585,10 @@ export class Folder extends React.Component{
         }
 
     }
+    
+    onDropRejected(rejected_files){
+        console.log(rejected_files);
+    }
 
     uploadHandler(uploadContent){
         //console.log(uploadContent)
@@ -614,7 +618,7 @@ export class Folder extends React.Component{
              * have this inside error for testing purpose.
              * */
 
-            //let _dummyData = {
+            // let _dummyData = {
             //    document_id : "582be27c639078842cbc24f6",
             //    document_name : "DUMMY DATA",
             //    document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
@@ -625,10 +629,10 @@ export class Folder extends React.Component{
             //        createdTime: "9:31 am"
             //    },
             //    document_user : "574bcb96272a6fd40768cf0f"
-            //};
-            //this.filesData.unshift(_dummyData) // add the uploaded document to existing document list. this should update the document list of that folder.
-            //console.log(this.filesData)
-            //this.props.onLoadFolders();
+            // };
+            // this.filesData.unshift(_dummyData) // add the uploaded document to existing document list. this should update the document list of that folder.
+            // console.log(this.filesData)
+            this.props.onLoadFolders();
             console.log(request.status)
             console.log(status);
             console.log(error);
@@ -712,7 +716,7 @@ export class Folder extends React.Component{
 
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
-                <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={(event)=>{this.onDrop(folderData.folder_id)}} multiple={true} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*, text/plain" onDropAccepted={this.onDropAccepted}>
+                <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={(event)=>{this.onDrop(folderData.folder_id)}} multiple={true} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*, text/plain" onDropAccepted={this.onDropAccepted} onDropRejected={this.onDropRejected}>
                     <div className="col-sm-2">
                         <div className="folder-cover-wrapper">
                             <span className="folder-overlay"></span>
@@ -1117,15 +1121,18 @@ export class SharePopupNewUsr extends React.Component{
         this._handleAddNewUser = this._handleAddNewUser.bind(this);
         this.getPopupAddUser = this.getPopupAddUser.bind(this);
         this.handleClose = this.handleClose.bind(this);
-        this.loadNewUsers();
     }
 
     _handleAddNewUser (e){
-        this.setState({
-            addNewUserValue: e.target.value
-        },function (){
-            this.loadNewUsers();
-        });
+        if (e.target.value == "") {
+            this.setState({suggestions: []});
+        }else{
+            this.setState({
+                addNewUserValue: e.target.value
+            },function (){
+                this.loadNewUsers();
+            });            
+        }
     }
 
     loadNewUsers() {
@@ -1290,7 +1297,7 @@ export class  SharedUsers extends React.Component {
                                 </div>
                                 {
                                     (_folder.owned_by == 'me')?
-                                        <div>
+                                        <div className="share-opt-holder clearfix">
                                             <div className="shared-privacy">
                                                 <select className="privacy-selector" onChange={(event)=>_this.props.changePermissions(event, user)} value={user.shared_type}>
                                                     <option value="1">Read Only</option>
@@ -1318,7 +1325,7 @@ export class  SharedUsers extends React.Component {
                                 </div>
                                 {
                                     (_folder.owned_by == 'me')?
-                                        <div>
+                                        <div className="share-opt-holder clearfix">
                                             <div className="shared-privacy">
                                                 <p className="pending">Request Pending</p>
                                             </div>
