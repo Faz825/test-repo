@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.6 (http://getbootstrap.com)
- * Copyright 2011-2015 Twitter, Inc.
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,7 +1418,6 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3119,7 +3118,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3672,7 +3670,6 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10249,17 +10246,17 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/* 
-  Method to use:
-  @include @border {
-    border ($style,  $sides, $emptySides){
-  }
+/*
+	Method to use:
+	@include @border {
+		border ($style,  $sides, $emptySides){
+	}
 */
-/* 
-  Method to use:
-  @include @mixin {
-    content
-  }
+/*
+	Method to use:
+	@include @mixin {
+		content
+	}
 */
 header {
   background: #fff;
@@ -11690,7 +11687,7 @@ header .notification-holder .profile-header-thumb {
   margin: 0;
   text-transform: uppercase;
   font-size: 0.934375em;
-  color: #00a6ef;
+  color: #ed1e7a;
   font-weight: 500;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header h6 {
@@ -11728,27 +11725,81 @@ header .notification-holder .profile-header-thumb {
   display: table;
   content: " ";
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper {
+  overflow: hidden;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper:last-child {
+  margin-top: 17px;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .header-wrapper p {
+  color: #00a6ef;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li:before {
+  color: #00a6ef;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .header-wrapper p {
+  color: #a6c649;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li:before {
+  color: #a6c649;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper {
+  overflow: hidden;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper img {
+  float: left;
+  height: 16px;
+  margin-left: 5px;
+  margin-top: 3px;
+  width: 14px;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper p {
+  float: left;
+  margin-left: 10px;
+  font-weight: 700;
+  color: #00a6ef;
+  text-transform: uppercase;
+  font-size: 0.855625em;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper {
+  overflow: hidden;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items {
+  margin-top: -2px;
+  margin-left: 25px;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li {
   font-family: "Work Sans", sans-serif;
-  font-size: 0.77875em;
   font-weight: 500;
   color: black;
+  margin-top: -15px;
   margin-bottom: 5px;
+  overflow: hidden;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li:before {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li:first-child {
+  margin-top: 0px;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li:before {
   content: "\f111";
   font-family: FontAwesome;
   line-height: 1;
   font-size: 8px;
   float: left;
-  margin-top: 5px;
+  margin-top: 6px;
   margin-right: 4px;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li.todo:before {
-  color: #a6c649;
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li .item {
+  float: left;
+  font-weight: 400;
+  color: #000000;
+  font-size: 0.743125em;
+  margin-left: 4px;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .list-items li.events:before {
-  color: #00a6ef;
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li .time {
+  float: right;
+  font-weight: 400;
+  color: #999999;
+  font-size: 0.743125em;
 }
 @media screen and (min-width: 50em) {
   .calender-week-view .view-tile-area .week-tiles .day-tile {
@@ -12574,7 +12625,7 @@ header .notification-holder .profile-header-thumb {
 .popup-holder {
   overflow: hidden;
   background-color: #ffffff;
-  border-radius: 5px;
+  border-radius: 8px;
 }
 .popup-holder .calendar-week-popup-wrapper {
   width: 680px;
@@ -12634,7 +12685,7 @@ header .notification-holder .profile-header-thumb {
   font-family: "Work Sans", sans-serif;
   font-weight: 700;
   font-size: 1.640625em;
-  color: #000000;
+  color: #ed1e7a;
   margin: 0;
   text-transform: uppercase;
 }
@@ -12685,6 +12736,7 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper {
   display: inline-block;
+  color: #bcbfbf;
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li {
   display: inline-block;
@@ -12921,7 +12973,6 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .share-opt-holder {
   float: right;
-  margin: 0 22px 0 0;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .shared-privacy {
   margin-left: 47px;

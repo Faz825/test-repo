@@ -14,6 +14,7 @@ import SharedUsers from './SharedUsers';
 
 import 'rc-time-picker/assets/index.css';
 import TimePicker from 'rc-time-picker';
+import GroupArray from 'group-array';
 
 export default class WeekView extends React.Component {
     constructor(props) {
@@ -256,17 +257,60 @@ export class DailyEvents extends React.Component {
 
     render() {
 
-        let _events = this.props.daily_events.map(function(event, key){
-            let _text = event.description.blocks[0].text;
-            return(
-                <li className={event.type == 1 ? "events" : "todo"} key={key}>{_text}</li>
-            );
-        });
+        // console.log(this.props.daily_events);
+
+        let groupedEvents = GroupArray(this.props.daily_events, 'type');
+
+        let _events = null,_todos = null;
+
+        if(typeof groupedEvents['1'] != "undefined"){
+            _events = groupedEvents['1'].map(function(event, key){
+                let _text = event.description.blocks[0].text;
+                return(
+                    <li className="events" key={key}>
+                        <p className="item">{_text}</p>
+                        {/*<p className="time">1pm</p>*/}
+                    </li>
+                );
+            });
+        }
+        if(typeof groupedEvents['2'] != "undefined"){
+            _todos = groupedEvents['2'].map(function(event, key){
+                let _text = event.description.blocks[0].text;
+                return(
+                    <li className="events" key={key}>
+                        <p className="item">{_text}</p>
+                        {/*<p className="time">1pm</p>*/}
+                    </li>
+                );
+            });
+        }
 
         return(
-            <ul className="list-items">
-                {_events}
-            </ul>
+            <div>
+                <div className="content-wrapper events">
+                    <div className="header-wrapper">
+                        <img src="/images/calender/icon-events.png"/>
+                            <p>Events</p>
+                    </div>
+                    <div className="body-wrapper">
+                        <ul className="list-items">
+                            {_events}
+                        </ul>
+                    </div>
+                </div>
+                <div className="content-wrapper todos">
+                    <div className="header-wrapper">
+                        <img src="/images/calender/icon-to-do.png"/>
+                            <p>Todo's</p>
+                    </div>
+                    <div className="body-wrapper">
+                        <ul className="list-items">
+                            {_todos}
+                        </ul>
+                    </div>
+                </div>
+            </div>
         );
     }
 }

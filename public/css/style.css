@@ -5001,7 +5001,8 @@ textarea{
 }
 
 .public-DraftEditorPlaceholder-inner{
-	color: #999;
+	/*color: #999;*/
+	color: #000000;
 }
 .confirmation_p{
 	color: #2d5164;
