@@ -72,12 +72,6 @@ export default class Index extends React.Component{
                                 </div>
                             </div>
                             <div className="col-sm-4">
-                                <div className="search-folder">
-                                    <span className="inner-addon">
-                                        <i className="fa fa-search"></i>
-                                        <input type="text" className="form-control" placeholder="Search"/>
-                                    </span>
-                                </div>
                             </div>
                         </div>
                     </section>

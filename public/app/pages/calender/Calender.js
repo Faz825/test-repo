@@ -6,6 +6,7 @@ import DayNames from './DayNames';
 import Week from './Week';
 import Session from '../../middleware/Session';
 import moment from 'moment';
+import WeekDayEventPopUp from './WeekDayEventPopUp';
 
 export default class Calender extends React.Component {
 
@@ -13,7 +14,9 @@ export default class Calender extends React.Component {
         super(props);
         this.state ={
             month:this.props.selected.clone(),
-            events:[]
+            events:[],
+            showDailyPopUp: false,
+            currDate:moment().format('YYYY-MM-DD HH:mm')
         };
         this.loggedUser = Session.getSession('prg_lg');
         this.getAllEventsForMonth();
@@ -61,11 +64,27 @@ export default class Calender extends React.Component {
     select(day) {
         console.log(day.date);
         //alert("selected : " + day.date._d);
-        this.props.changeView('day', day.date);
-        this.forceUpdate();
+        //this.props.changeView('day', day.date);
+        //this.forceUpdate();
+        this.setState({showDailyPopUp: true, currDate: moment(day.date)});
+    }
+
+    handleClick() {
+        this.setState({showDailyPopUp: true});
+    }
+
+    handleClose() {
+        this.setState({showDailyPopUp: false});
+    }
+
+    loadData() {
+        this.getAllEventsForMonth();
     }
 
     render() {
+
+        let currDt = moment(this.state.currDate);
+
         return(
             <div className="calender-body">
                 <div className="row">
@@ -96,6 +115,10 @@ export default class Calender extends React.Component {
                                 <DayNames />
                                 {this.renderWeeks()}
                             </div>
+                            {this.state.showDailyPopUp ?
+                                <WeekDayEventPopUp handleClose={this.handleClose.bind(this)} loadData={this.loadData.bind(this)} curr_date={currDt} week_startDt={currDt}/>
+                                : null
+                            }
                         </div>
 
                     </div>

@@ -3556,19 +3556,25 @@ textarea{
 	width: 80%;
 }
 
-.notifi-inner-wrapper .btn-default{
-	background: #61b3de;
-	padding: 7px 12px;
-	text-transform: uppercase;
-	color: #fff;
-	border-radius: 5px;
-	font-family: 'montserratsemi_bold', sans-serif;
-	font-size: 0.6em;
-	display: inline-block;
+.notifi-inner-wrapper .btn-default,
+.notifi-inner-wrapper .btn-default:focus,
+.notifi-inner-wrapper .btn-default:hover{
+    background: #00a5ef;
+    padding: 10px 15px;
+    text-transform: capitalize;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-family: 'montserratsemi_bold', sans-serif;
+    font-size: 0.8em;
+    display: inline-block;
+    margin-right: 10px;
 }
 
-.notifi-inner-wrapper .btn-default.reject{
-	background: #e82107;
+.notifi-inner-wrapper .btn-default.reject,
+.notifi-inner-wrapper .btn-default.reject:focus,
+.notifi-inner-wrapper .btn-default.reject:hover{
+	background: #989ba0;
 }
 
 .notifi-inner-wrapper .notification-body .connection-name,
@@ -5001,7 +5007,8 @@ textarea{
 }
 
 .public-DraftEditorPlaceholder-inner{
-	color: #999;
+	/*color: #999;*/
+	color: #000000;
 }
 .confirmation_p{
 	color: #2d5164;
