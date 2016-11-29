@@ -39,8 +39,15 @@ export default class DayView extends Component {
             showTimePanel : '',
             showUserPanel : '',
             editOn : false,
-            editEventId : ''
+            editEventId : '',
+            showTimePanelWindow : false,
+            showUserPanelWindow : false,
+            sharedWithIds:[],
+            sharedWithNames: [],
         };
+
+        this.sharedWithIds = [];
+        this.sharedWithNames = [];
         this.currentDay = this.state.currentDay;
         this.loggedUser = user;
         this.addEvent = this.addEvent.bind(this);
@@ -53,12 +60,14 @@ export default class DayView extends Component {
 
     _onHashClick() {
         let showUserPanel = this.state.showUserPanel;
-        this.setState({showUserPanel : (showUserPanel == 'active' ? '' : 'active'), showTimePanel:'' });
+        let showUserPanelWindow = this.state.showUserPanelWindow;
+        this.setState({showUserPanel : (showUserPanel == 'active' ? '' : 'active'), showUserPanelWindow : (showUserPanelWindow == true ? false : true) });
     }
 
     _onAtClick() {
         let showTimePanel = this.state.showTimePanel;
-        this.setState({showTimePanel : (showTimePanel == 'active' ? '' : 'active'), showUserPanel:'' });
+        let showTimePanelWindow = this.state.showTimePanelWindow;
+        this.setState({showTimePanel : (showTimePanel == 'active' ? '' : 'active'), showTimePanelWindow : (showTimePanelWindow == true ? false : true) });
     }
 
     componentDidMount() {
@@ -92,8 +101,8 @@ export default class DayView extends Component {
         const strTime = this.state.defaultEventTime;
         const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
 
-        const Editor = this.refs.EditorFieldValues.state.editorState;
-        const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
+        const Editor = this.editor.state.editorState;
+        const contentState = this.editor.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
         const plainText = contentState.getPlainText();
 
@@ -122,9 +131,9 @@ export default class DayView extends Component {
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
-                console.log(this.refs.EditorFieldValues);
-                const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
-                this.refs.EditorFieldValues.setState({editorState});
+                console.log(this.editor);
+                const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
+                this.editor.setState({editorState});
                 this.refs.SharedUserField.setState({
                     sharedWithNames: [],
                     sharedWithIds: [],
@@ -156,8 +165,8 @@ export default class DayView extends Component {
       const strTime = this.state.defaultEventTime;
       const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
 
-      const Editor = this.refs.EditorFieldValues.state.editorState;
-      const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
+      const Editor = this.editor.state.editorState;
+      const contentState = this.editor.state.editorState.getCurrentContent();
       const editorContentRaw = convertToRaw(contentState);
       const plainText = contentState.getPlainText();
 
@@ -186,9 +195,9 @@ export default class DayView extends Component {
           contentType: "application/json; charset=utf-8",
       }).done(function (data, text) {
           if(data.status.code == 200){
-              console.log(this.refs.EditorFieldValues);
-              const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
-              this.refs.EditorFieldValues.setState({editorState});
+              console.log(this.editor);
+              const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
+              this.editor.setState({editorState});
               this.refs.SharedUserField.setState({
                   sharedWithNames: [],
                   sharedWithIds: [],
@@ -251,9 +260,9 @@ export default class DayView extends Component {
 
                     const contentState = convertFromRaw(rawContent);
                     const toUpdateEditorState = EditorState.createWithContent(contentState);
-                    const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, contentState);
+                    const editorState = EditorState.push(this.editor.state.editorState, contentState);
 
-                    this.refs.EditorFieldValues.setState({ editorState });
+                    this.editor.setState({ editorState });
                     this.refs.SharedUserField.setState({
                         sharedWithNames: data.event.sharedWithNames,
                         sharedWithIds: data.event.sharedWithIds,
@@ -279,8 +288,8 @@ export default class DayView extends Component {
         this.loadEvents();
 
         // rest editor.
-        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
-        this.refs.EditorFieldValues.setState({editorState});
+        const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
+        this.editor.setState({editorState});
         this.setState({editOn : false});
         this.refs.SharedUserField.setState({
             sharedWithNames: [],
@@ -295,8 +304,8 @@ export default class DayView extends Component {
         this.loadEvents();
 
         // rest editor.
-        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
-        this.refs.EditorFieldValues.setState({editorState});
+        const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
+        this.editor.setState({editorState});
         this.setState({editOn : false});
         this.refs.SharedUserField.setState({
             sharedWithNames: [],
@@ -316,8 +325,8 @@ export default class DayView extends Component {
         this.loadEvents();
 
         // rest editor.
-        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
-        this.refs.EditorFieldValues.setState({editorState});
+        const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
+        this.editor.setState({editorState});
         this.setState({editOn : false});
         this.refs.SharedUserField.setState({
             sharedWithNames: [],
@@ -330,26 +339,41 @@ export default class DayView extends Component {
     }
 
     _onBoldClick() {
-        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'BOLD'));
+        this.editor.onChange(RichUtils.toggleInlineStyle(this.editor.state.editorState, 'BOLD'));
     }
 
     _onItalicClick() {
-        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'ITALIC'));
+        this.editor.onChange(RichUtils.toggleInlineStyle(this.editor.state.editorState, 'ITALIC'));
     }
 
     _onUnderLineClick() {
-        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'UNDERLINE'));
+        this.editor.onChange(RichUtils.toggleInlineStyle(this.editor.state.editorState, 'UNDERLINE'));
     }
 
     setSharedUsers(selected) {
         var arrEntries = selected._root.entries;
+        if(this.sharedWithIds.indexOf(arrEntries[3][1])==-1){
+            this.sharedWithIds.push(arrEntries[3][1]);
+            this.sharedWithNames.push(arrEntries[0][1]);
+            this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false})
+        } else{
+            this.setState({isAlreadySelected:true});
+            console.log("already selected" + this.state.isAlreadySelected)
+        }
+    }
 
-        var userObj = {
-            user_id : arrEntries[3][1],
-            first_name : arrEntries[0][1],
-            last_name : ''
-        };
-        this.refs.SharedUserField.getSuggestionValue(userObj);
+    setSharedUsersFromDropDown(selected) {
+
+        if(this.sharedWithIds.indexOf(selected.user_id)==-1){
+            this.sharedWithIds.push(selected.user_id);
+            this.sharedWithNames.push(selected.first_name+" "+selected.last_name);
+            this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false});
+
+        } else{
+            this.setState({isAlreadySelected:true});
+            console.log("already selected" + this.state.isAlreadySelected)
+        }
+        return "";
     }
 
     setTime(selected) {
@@ -364,7 +388,14 @@ export default class DayView extends Component {
     }
 
     render() {
-
+        let shared_with_list = [];
+        if(this.state.sharedWithNames.length > 0){
+            shared_with_list = this.state.sharedWithNames.map((name,key)=>{
+                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
+            });
+        } else {
+            shared_with_list = <span className="user-label">Only me</span>
+        }
         const typoPopover = (
             <Popover id="calendar-popover-typo">
                 <div className="menu-ico">
@@ -419,16 +450,27 @@ export default class DayView extends Component {
                                                     <p>
                                                         <span className="user-label">Time : {this.state.defaultEventTime} </span>
                                                     </p>
-                                                    <div className={this.state.showTimePanel + " panel time-panel"}>
-                                                        <TimePicker
-                                                            style={{ width: 100 }}
-                                                            showSecond={showSecond}
-                                                            defaultValue={moment()}
-                                                            onChange={this.handleTimeChange}
-                                                        />
-                                                    </div>
+                                                    {this.state.showTimePanelWindow ?
+                                                        <div className={this.state.showTimePanel + " panel time-panel"}>
+                                                            <TimePicker
+                                                                style={{ width: 100 }}
+                                                                showSecond={showSecond}
+                                                                defaultValue={moment()}
+                                                                onChange={this.handleTimeChange}
+                                                            />
+                                                        </div>
+                                                    : null }
                                                 </div>
-                                                <SharedUsers ref="SharedUserField" showPanel={this.state.showUserPanel}/>
+
+                                                <div className="col-sm-6 invite-people ">
+                                                    <p>
+                                                        <span className="user-label"> People in the event : </span>
+                                                        {shared_with_list}
+                                                    </p>
+                                                    {this.state.showUserPanelWindow ?
+                                                        <SharedUsers ref="SharedUserField" setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}  showPanel={this.state.showUserPanel}/>
+                                                    : null }
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="calender-input-type">

@@ -65,16 +65,16 @@ export default class WeekDayEventPopUp extends React.Component {
 
     setSharedUsersFromDropDown(selected) {
 
-      if(this.sharedWithIds.indexOf(selected.user_id)==-1){
-          this.sharedWithIds.push(selected.user_id);
-          this.sharedWithNames.push(selected.first_name+" "+selected.last_name);
-          this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false});
+        if(this.sharedWithIds.indexOf(selected.user_id)==-1){
+            this.sharedWithIds.push(selected.user_id);
+            this.sharedWithNames.push(selected.first_name+" "+selected.last_name);
+            this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false});
 
-      } else{
-          this.setState({isAlreadySelected:true});
-          console.log("already selected" + this.state.isAlreadySelected)
-      }
-      return "";
+        } else{
+            this.setState({isAlreadySelected:true});
+            console.log("already selected" + this.state.isAlreadySelected)
+        }
+        return "";
     }
 
     setTime(selected) {
