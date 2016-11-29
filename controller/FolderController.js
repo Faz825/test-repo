@@ -6,6 +6,34 @@
 
 var FolderController ={
 
+    getCount:function(req,res){
+        console.log("getCount")
+
+        var Folders = require('mongoose').model('Folders'),
+            CurrentSession = Util.getCurrentSession(req);
+        var user_id = CurrentSession.id;
+        var criteria = {user_id:Util.toObjectId(user_id)};
+
+        Folders.getCount(criteria,function(resultSet){
+            console.log("COUNT -------> "+resultSet.result)
+            if(resultSet.status == 200){
+                var outPut ={
+                    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                    count:resultSet.result
+                };
+                res.status(200).json(outPut);
+            } else{
+                var outPut ={
+                    status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR),
+                };
+                res.status(400).json(outPut);
+            }
+
+        });
+
+
+    },
+
     /**
      * Adding New Folder
      * @param req
@@ -24,33 +52,31 @@ var FolderController ={
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient');
 
-        //console.log(req.body.shared_with);
-        //console.log(_shared_with)
-
         _async.waterfall([
 
             function addFolderToDB(callBack){
 
-                //console.log("addFolderToDB");
+                if(typeof req.body.isDefault == 'undefined'){
+                    console.log("this is not default folder...")
 
-                for(var i = 0; i < _shared_with.length; i++){
-                    //console.log("_shared_with = "+i)
-                    var randColor = _randColor.randomColor({
-                        luminosity: 'light',
-                        hue: 'random'
-                    });
+                    for(var i = 0; i < _shared_with.length; i++){
+                        //console.log("_shared_with = "+i)
+                        var randColor = _randColor.randomColor({
+                            luminosity: 'light',
+                            hue: 'random'
+                        });
 
-                    var _sharingUser = {
-                        user_id: _shared_with[i],
-                        user_note_color: randColor,
-                        shared_type: FolderSharedMode.READ_WRITE,
-                        status: FolderSharedRequest.REQUEST_PENDING
-                    };
+                        var _sharingUser = {
+                            user_id: _shared_with[i],
+                            user_note_color: randColor,
+                            shared_type: FolderSharedMode.READ_WRITE,
+                            status: FolderSharedRequest.REQUEST_PENDING
+                        };
 
-                    sharedUsers.push(_sharingUser);
+                        sharedUsers.push(_sharingUser);
+                    }
+
                 }
-
-                //console.log(sharedUsers)
 
                 var _folder = {
                     name:req.body.folder_name,
@@ -63,7 +89,26 @@ var FolderController ={
                 Folders.addNewFolder(_folder,function(resultSet){
                     //console.log(resultSet.folder)
                     _folder_id = resultSet.folder._id;
-                    callBack(null);
+                    if(typeof req.body.isDefault != 'undefined' && req.body.isDefault == 1){
+                        console.log("this is default folder... sending response")
+                        var _folder = {
+                            folder_id:resultSet.folder._id,
+                            folder_name:resultSet.folder.name,
+                            folder_color:resultSet.folder.color,
+                            folder_user:resultSet.folder.user_id,
+                            folder_shared_users:resultSet.folder.shared_users,
+                            folder_updated_at:resultSet.folder.updated_at,
+                            owned_by: 'me',
+                            documents:[]
+                        }
+                        var outPut ={
+                            status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                            folder:_folder
+                        };
+                        res.status(200).json(outPut);
+                    } else{
+                        callBack(null);
+                    }
                 });
 
             },
@@ -193,7 +238,7 @@ var FolderController ={
             }
 
         ],function(err,resultSet){
-            console.log("async waterfall callback")
+            console.log("loadFolders ..sending response")
             if(err){
                 var outPut ={
                     status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR),

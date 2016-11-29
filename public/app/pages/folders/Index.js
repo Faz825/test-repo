@@ -40,6 +40,7 @@ export default class Index extends React.Component{
         this.sharedWithNames = [];
         this.sharedWithUsernames = [];
         this.loadFolderRequest = true;
+        this.defaultFolder = [];
 
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -49,19 +50,49 @@ export default class Index extends React.Component{
         this.getSuggestionValue = this.getSuggestionValue.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
         this.removeUser = this.removeUser.bind(this);
-        this.loadFolders = this.loadFolders.bind(this);
         console.log("folder index constructor");
-
     }
 
     componentDidMount(){
         console.log("Index - componentDidMount");
-        this.loadFolders();
+        this.checkDefaultFolder();
     }
 
     componentWillUnmount(){
         console.log("Index - componentWillUnmount");
         this.loadFolderRequest = false;
+    }
+
+    checkDefaultFolder(){
+        console.log("checkDefaultFolder");
+
+        if(this.defaultFolder.length == 0){
+            let _dF = {
+                CFName:"My Folder",
+                CFColor:"#1b9ed9"
+            };
+            this.defaultFolder.push(_dF);
+
+            $.ajax({
+                url: '/folders/get-count',
+                method: "GET",
+                dataType: "JSON",
+                headers: {'prg-auth-header': this.state.loggedUser.token}
+            }).done( function (data, text){
+                console.log("checkDefaultFolder - got response")
+                if(data.status.code == 200 && this.loadFolderRequest){
+                    if(data.count == 0){
+                        console.log("checkDefaultFolder - no default folder - going to call addDefaultFolder")
+                        this.setState({CFName:"My Folder", CFColor:"#1b9ed9"});
+                        this.addDefaultFolder();
+                    } else{
+                        console.log("checkDefaultFolder - have default folder - going to call loadFolders")
+                        this.loadFolders();
+                    }
+                }
+            }.bind(this));
+
+        }
     }
 
     loadFolders(){
@@ -71,48 +102,43 @@ export default class Index extends React.Component{
             url: '/folders/get-all',
             method: "GET",
             dataType: "JSON",
-            headers: { 'prg-auth-header':this.state.loggedUser.token },
-            success : function (data, text) {
-                if(data.status.code == 200 && this.loadFolderRequest){
-                    if(data.folders.length == 0 || data.folders[0] == null){
-                        this.setState({CFName:"My Folder", CFColor:"#1b9ed9"});
-                        this.addDefaultFolder();
-                    } else{
-                        let folders = data.folders;
-                        console.log(folders);
-                        this.setState({folders: folders});
-                    }
-                }
-            }.bind(this),
-            error: function (request, status, error) {
-                console.log(error);
+            headers: {'prg-auth-header': this.state.loggedUser.token}
+        }).done( function (data, text){
+            console.log("loadFolders - got response")
+            if(data.status.code == 200 && this.loadFolderRequest){
+                let folders = data.folders;
+                console.log(folders);
+                this.setState({folders: folders});
             }
-        });
+        }.bind(this));
     }
 
     addDefaultFolder(){
 
-        if(this.loadFolderRequest){
+        if(this.loadFolderRequest && this.defaultFolder.length == 1){
             console.log("addDefaultFolder")
 
             $.ajax({
                 url: '/folders/add-new',
                 method: "POST",
                 dataType: "JSON",
-                headers: { 'prg-auth-header':this.state.loggedUser.token },
-                data:{folder_name:this.state.CFName, folder_color:this.state.CFColor, shared_with:this.state.sharedWithIds, isDefault:1},
-                success: function (data, text) {
-                    if (data.status.code == 200 && this.loadFolderRequest) {
-                        this.setState({CFName : "", CFColor : ""});
-                        this.loadFolders();
-
-                    }
-                }.bind(this),
-                error: function (request, status, error) {
-                    console.log(status);
-                    console.log(error);
+                headers: {'prg-auth-header': this.state.loggedUser.token},
+                data: {
+                    folder_name: this.state.CFName,
+                    folder_color: this.state.CFColor,
+                    shared_with: this.state.sharedWithIds,
+                    isDefault: 1
                 }
-            });
+            }).done( function (data, text){
+                if (data.status.code == 200 && this.loadFolderRequest) {
+                    console.log("addDefaultFolder - got response - going to call loadFolders")
+                    this.setState({CFName : "", CFColor : ""});
+                    let folders = [data.folder];
+                    console.log(folders);
+                    this.setState({folders: folders});
+
+                }
+            }.bind(this));
         }
 
     }
@@ -632,7 +658,7 @@ export class Folder extends React.Component{
             // };
             // this.filesData.unshift(_dummyData) // add the uploaded document to existing document list. this should update the document list of that folder.
             // console.log(this.filesData)
-            this.props.onLoadFolders();
+            //this.props.onLoadFolders();
             console.log(request.status)
             console.log(status);
             console.log(error);
@@ -691,7 +717,7 @@ export class Folder extends React.Component{
         let ownerImg;
         let i = (
             <Popover id="popover-contained" className="share-popover-contained" style={{maxWidth: "635px", width: "635px"}}>
-                <SharePopup folderData={folderData} onLoadFolders={_this.props.onLoadFolders}/>
+                <SharePopup folderData={folderData}/>
             </Popover>
         );
 
@@ -953,6 +979,10 @@ export class SharePopup extends React.Component{
 
     onPermissionChanged(e, user) {
 
+        console.log("onPermissionChanged");
+        console.log(e.target.value);
+        console.log(user);
+
         let _fieldValue = e.target.value;
 
         if(user.shared_type != _fieldValue) {
@@ -960,7 +990,7 @@ export class SharePopup extends React.Component{
                 url: '/folder/shared-permission/change',
                 method: "POST",
                 dataType: "JSON",
-                data:{notebook_id:user.notebook_id, shared_type:_fieldValue, user_id:user.user_id},
+                data:{folder_id:user.folder_id, shared_type:_fieldValue, user_id:user.user_id},
                 headers: { 'prg-auth-header':this.state.loggedUser.token }
             }).done(function (data, text) {
                 if(data.status.code == 200) {
@@ -982,8 +1012,8 @@ export class SharePopup extends React.Component{
         }).done( function (data, text) {
             if(data.status.code == 200) {
                 console.log("done removing shared user -----");
-                this.props.onLoadFolders();
-                this.loadSharedUsers();
+                //this.props.onLoadFolders();
+                //this.loadSharedUsers();
             }
         }.bind(this));
     }
@@ -1024,7 +1054,7 @@ export class SharePopup extends React.Component{
 
         let i = (
             <Popover id="popover-contained" className="share-folder-popover add-new-user" style={{maxWidth: "280px", width: "280px", marginTop: "6.2%", marginLeft: "20%"}}>
-                <SharePopupNewUsr  folderData={_folderData} onLoadFolders={this.props.onLoadFolders}/>
+                <SharePopupNewUsr  folderData={_folderData}/>
             </Popover>
         );
 
@@ -1195,10 +1225,10 @@ export class SharePopupNewUsr extends React.Component{
                     isShowingModal: true
                 }, function(){
                     this.getPopupAddUser();
-                    this.loadNewUsers();
+                    //this.loadNewUsers();
                 });
 
-                this.props.onLoadFolders();
+                //this.props.onLoadFolders();
             }
         }.bind(this));
 

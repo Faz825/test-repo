@@ -62,6 +62,30 @@ FolderSchema.pre('save', function(next){
 });
 
 /**
+ * Get folder count based on criteria
+ * @param criteria
+ * @param callBack
+ */
+FolderSchema.statics.getCount = function(criteria,callBack){
+
+    this.count(criteria).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    })
+
+};
+
+/**
  * Create New Folder
  */
 FolderSchema.statics.addNewFolder = function(_data,callBack){
