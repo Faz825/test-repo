@@ -106,7 +106,8 @@ export default class SharedUsers extends Component {
         if(this.sharedWithIds.indexOf(suggestion.user_id)==-1){
             this.sharedWithIds.push(suggestion.user_id);
             this.sharedWithNames.push(suggestion.first_name+" "+suggestion.last_name);
-            this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false})
+            this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false});
+            this.props.setSharedUsersFromDropDown(suggestion);
         } else{
             this.setState({isAlreadySelected:true});
             console.log("already selected" + this.state.isAlreadySelected)
@@ -141,28 +142,22 @@ export default class SharedUsers extends Component {
             className: 'form-control',
         };
 
-        let shared_with_list = [];
-        
-        if(this.state.sharedWithNames.length > 0){
-            shared_with_list = this.state.sharedWithNames.map((name,key)=>{
-                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
-            });
-        }
+        // let shared_with_list = [];
+
+        // if(this.state.sharedWithNames.length > 0){
+        //     shared_with_list = this.state.sharedWithNames.map((name,key)=>{
+        //         return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
+        //     });
+        // }
 
         return (
-            <div className="invite-people col-sm-9">
-                <p>
-                    <span className="user-label"> People in the event : </span>
-                    {shared_with_list}
-                </p>
-                <div className={this.props.showPanel + " panel user-panel"}>
-                    <Autosuggest suggestions={suggestions}
-                        onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                        getSuggestionValue={this.getSuggestionValue}
-                        renderSuggestion={this.renderSuggestion}
-                        inputProps={inputProps}
-                    />
-                </div>
+            <div className={this.props.showPanel + " panel user-panel"}>
+                <Autosuggest suggestions={suggestions}
+                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                    getSuggestionValue={this.getSuggestionValue}
+                    renderSuggestion={this.renderSuggestion}
+                    inputProps={inputProps}
+                />
             </div>
         )
     }

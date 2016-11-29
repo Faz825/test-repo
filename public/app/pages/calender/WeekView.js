@@ -296,7 +296,7 @@ export class DailyEvents extends React.Component {
                 <div className="content-wrapper todos">
                     <div className="header-wrapper">
                         <img src="/images/calender/icon-to-do.png"/>
-                            <p>Todo's</p>
+                            <p>Todo	&rsquo;s</p>
                     </div>
                     <div className="body-wrapper">
                         <ul className="list-items">
