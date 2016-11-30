@@ -683,6 +683,7 @@ footer .notification-alert-holder.slideOut{
     -moz-box-shadow: none !important;
     -o-box-shadow: none !important;
     box-shadow: none !important;
+    margin-top: -5px !important;
 }
 
 /* custom styles for ipad view */
