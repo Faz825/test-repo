@@ -350,6 +350,7 @@ a.rc-time-picker-panel-clear-btn {
 		overflow: visible;
 }
 
+.calender-view .form-holder #editor-holder .DraftEditor-root,
 .popup-holder.week-view-editor-popup-holder .DraftEditor-root {
 		min-height: 57px;
 }
@@ -671,10 +672,32 @@ footer .notification-alert-holder.slideOut{
           transform: scale(0);
 }
 
+.shared-users-time-panel .react-autosuggest__container input,
+.shared-users-time-panel .rc-time-picker-input {
+    border: 0px !important;
+    border-bottom: 2px solid #ddd !important;
+    outline: none !important;
+    padding: 6px 0px !important;
+    border-radius: 0px !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    -o-box-shadow: none !important;
+    box-shadow: none !important;
+    margin-top: -5px !important;
+}
+
 /* custom styles for ipad view */
 @media (min-width: 768px) {
 		.calender-container .mini-calender-box.calender-box .header span {
 			padding-left: 0px;
     	padding-right: 0px;
 		}
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.people-list {
+		color: #7f7f7f;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.selected-people {
+		color: #7f7f7f;
 }

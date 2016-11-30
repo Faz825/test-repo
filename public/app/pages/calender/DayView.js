@@ -516,42 +516,53 @@ export default class DayView extends Component {
                                 <div className="row input-menu">
                                     <div className="col-sm-12">
                                         <div className="items-wrapper">
-                                            <div className="menu-ico">
-                                                <p><i className="fa fa-smile-o" aria-hidden="true"></i></p>
-                                            </div>
+                                            <ul className="input-items-wrapper pull-right">
+                                                <li>
+                                                    <button className="menu-ico">
+                                                        <i className="fa fa-smile-o" aria-hidden="true"></i>
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button className="menu-ico">
+                                                        <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
+                                                            <p>A</p>
+                                                        </OverlayTrigger>
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button onClick={this._onHashClick.bind(this)} className="menu-ico">
+                                                        <i className="fa fa-hashtag" aria-hidden="true"></i>
+                                                    </button>
+                                                </li>
 
-                                            <div className="menu-ico">
-                                                <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
-                                                    <p>A</p>
-                                                </OverlayTrigger>
-                                            </div>
-                                            <div className="menu-ico">
-                                                <p onClick={this._onHashClick.bind(this)} >
-                                                    <i className="fa fa-hashtag" aria-hidden="true"></i>
-                                                </p>
-                                            </div>
-                                            <div className="menu-ico">
-                                                 <p onClick={this._onAtClick.bind(this)} >
-                                                    <i className="fa fa-at" aria-hidden="true"></i>
-                                                </p>
-                                            </div>
+                                                <li>
+                                                    <button onClick={this._onAtClick.bind(this)} className="menu-ico">
+                                                        <i className="fa fa-at" aria-hidden="true"></i>
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <div className="btn-group">
+                                                        <button type="button" className={"menu-ico-group btn event " + (this.state.defaultType == 'event' ? "active" : null)} eventType="event" onClick={() => this.changeType('event')}>
+                                                            <i className="fa fa-calendar" aria-hidden="true"></i> Event
+                                                        </button>
+                                                        <button type="button" className={"menu-ico-group btn todo " + (this.state.defaultType == 'todo' ? "active" : null)} eventType="todo" onClick={() => this.changeType('todo')}>
+                                                            <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
+                                                        </button>
+                                                    </div>
 
-                                            <div className="toggle-wrapper">
-                                                <div className={this.state.defaultType == 'event' ? 'btn-toggle active' : 'btn-toggle'} eventType="event" onClick={() => this.changeType('event')} >
-                                                    <i className="fa fa-calendar" aria-hidden="true"></i> Event
-                                                </div>
-                                                <div className={this.state.defaultType == 'todo' ? 'btn-toggle active' : 'btn-toggle'} eventType="todo" onClick={() => this.changeType('todo')} >
-                                                    <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
-                                                </div>
-                                            </div>
-                                            { this.state.editOn == false ?
-                                                <div className="btn-enter" onClick={this.addEvent}>
-                                                    <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
-                                                </div>
-                                            :   <div className="btn-enter" onClick={this.updateEvent}>
-                                                    <i className="fa fa-paper-plane" aria-hidden="true"></i> Update
-                                                </div>
-                                            }
+                                                </li>
+                                                <li>
+                                                    { this.state.editOn == false ?
+                                                        <button className="menu-ico-txt btn" onClick={this.addEvent}>
+                                                            <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
+                                                        </button>
+                                                        :
+                                                        <div className="menu-ico-txt btn" onClick={this.updateEvent}>
+                                                            <i className="fa fa-paper-plane" aria-hidden="true"></i> Update
+                                                        </div>
+                                                    }
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
