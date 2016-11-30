@@ -101,8 +101,8 @@ export default class DayView extends Component {
         const strTime = this.state.defaultEventTime;
         const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
 
-        const Editor = this.editor.state.editorState;
-        const contentState = this.editor.state.editorState.getCurrentContent();
+        const Editor = this.refs.EditorFieldValues.state.editorState;
+        const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
         const editorContentRaw = convertToRaw(contentState);
         const plainText = contentState.getPlainText();
 
@@ -111,7 +111,7 @@ export default class DayView extends Component {
         }
 
         // get shared users from SharedUsers field
-        const sharedUsers = this.refs.SharedUserField.sharedWithIds;
+        const sharedUsers = this.sharedWithIds;
         const postData = {
             description : editorContentRaw,
             plain_text : plainText,
@@ -131,10 +131,14 @@ export default class DayView extends Component {
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
-                console.log(this.editor);
-                const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
-                this.editor.setState({editorState});
-                this.refs.SharedUserField.setState({
+                console.log(this.refs.EditorFieldValues);
+                const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+                this.refs.EditorFieldValues.setState({editorState});
+                // this.refs.SharedUserField.setState({
+                //     sharedWithNames: [],
+                //     sharedWithIds: [],
+                // });
+                this.setState({
                     sharedWithNames: [],
                     sharedWithIds: [],
                 });
@@ -165,8 +169,8 @@ export default class DayView extends Component {
       const strTime = this.state.defaultEventTime;
       const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
 
-      const Editor = this.editor.state.editorState;
-      const contentState = this.editor.state.editorState.getCurrentContent();
+      const Editor = this.refs.EditorFieldValues.state.editorState;
+      const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
       const editorContentRaw = convertToRaw(contentState);
       const plainText = contentState.getPlainText();
 
@@ -175,7 +179,7 @@ export default class DayView extends Component {
         }
 
       // get shared users from SharedUsers field
-      const sharedUsers = this.refs.SharedUserField.sharedWithIds;
+      const sharedUsers = this.sharedWithIds;
       const postData = {
           description : editorContentRaw,
           plain_text : plainText,
@@ -195,10 +199,14 @@ export default class DayView extends Component {
           contentType: "application/json; charset=utf-8",
       }).done(function (data, text) {
           if(data.status.code == 200){
-              console.log(this.editor);
-              const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
-              this.editor.setState({editorState});
-              this.refs.SharedUserField.setState({
+              console.log(this.refs.EditorFieldValues);
+              const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+              this.refs.EditorFieldValues.setState({editorState});
+              // this.refs.SharedUserField.setState({
+              //     sharedWithNames: [],
+              //     sharedWithIds: [],
+              // });
+              this.setState({
                   sharedWithNames: [],
                   sharedWithIds: [],
               });
@@ -260,10 +268,14 @@ export default class DayView extends Component {
 
                     const contentState = convertFromRaw(rawContent);
                     const toUpdateEditorState = EditorState.createWithContent(contentState);
-                    const editorState = EditorState.push(this.editor.state.editorState, contentState);
+                    const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, contentState);
 
-                    this.editor.setState({ editorState });
-                    this.refs.SharedUserField.setState({
+                    this.refs.EditorFieldValues.setState({ editorState });
+                    // this.refs.SharedUserField.setState({
+                    //     sharedWithNames: data.event.sharedWithNames,
+                    //     sharedWithIds: data.event.sharedWithIds,
+                    // });
+                    this.setState({
                         sharedWithNames: data.event.sharedWithNames,
                         sharedWithIds: data.event.sharedWithIds,
                     });
@@ -288,10 +300,14 @@ export default class DayView extends Component {
         this.loadEvents();
 
         // rest editor.
-        const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
-        this.editor.setState({editorState});
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        this.refs.SharedUserField.setState({
+        // this.refs.SharedUserField.setState({
+        //     sharedWithNames: [],
+        //     sharedWithIds: [],
+        // });
+        this.setState({
             sharedWithNames: [],
             sharedWithIds: [],
         });
@@ -304,10 +320,14 @@ export default class DayView extends Component {
         this.loadEvents();
 
         // rest editor.
-        const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
-        this.editor.setState({editorState});
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        this.refs.SharedUserField.setState({
+        // this.refs.SharedUserField.setState({
+        //     sharedWithNames: [],
+        //     sharedWithIds: [],
+        // });
+        this.setState({
             sharedWithNames: [],
             sharedWithIds: [],
         });
@@ -325,10 +345,14 @@ export default class DayView extends Component {
         this.loadEvents();
 
         // rest editor.
-        const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
-        this.editor.setState({editorState});
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+        this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        this.refs.SharedUserField.setState({
+        // this.refs.SharedUserField.setState({
+        //     sharedWithNames: [],
+        //     sharedWithIds: [],
+        // });
+        this.setState({
             sharedWithNames: [],
             sharedWithIds: [],
         });
