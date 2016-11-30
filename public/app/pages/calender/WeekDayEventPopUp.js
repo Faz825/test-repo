@@ -24,6 +24,7 @@ export default class WeekDayEventPopUp extends React.Component {
             user:user,
             eventType:'event',
             sharedWithIds:[],
+            sharedWithNames: [],
             defaultEventTime:moment().format('HH:mm'),
             getEditor : false,
             showTimePanel : '',
@@ -34,6 +35,7 @@ export default class WeekDayEventPopUp extends React.Component {
 
         this.loggedUser = user;
         this.sharedWithIds = [];
+        this.sharedWithNames = [];
         this.addEvent = this.addEvent.bind(this);
     }
 
@@ -53,11 +55,32 @@ export default class WeekDayEventPopUp extends React.Component {
         var arrEntries = selected._root.entries;
         if(this.sharedWithIds.indexOf(arrEntries[3][1])==-1){
             this.sharedWithIds.push(arrEntries[3][1]);
-            this.setState({sharedWithIds: this.sharedWithIds, isAlreadySelected:false})
+            this.sharedWithNames.push(arrEntries[0][1]);
+            this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false})
         } else{
             this.setState({isAlreadySelected:true});
             console.log("already selected" + this.state.isAlreadySelected)
         }
+    }
+
+    setSharedUsersFromDropDown(selected) {
+
+      if(this.sharedWithIds.indexOf(selected.user_id)==-1){
+          this.sharedWithIds.push(selected.user_id);
+          this.sharedWithNames.push(selected.first_name+" "+selected.last_name);
+          this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false});
+
+      } else{
+          this.setState({isAlreadySelected:true});
+          console.log("already selected" + this.state.isAlreadySelected)
+      }
+      return "";
+    }
+
+    removeUser(key){
+        this.sharedWithIds.splice(key,1);
+        this.sharedWithNames.splice(key,1);
+        this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
     }
 
     setTime(selected) {
@@ -154,15 +177,15 @@ export default class WeekDayEventPopUp extends React.Component {
     }
 
     _onBoldClick() {
-        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'BOLD'));
+        this.editor.onChange(RichUtils.toggleInlineStyle(this.editor.state.editorState, 'BOLD'));
     }
 
     _onItalicClick() {
-        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'ITALIC'));
+        this.editor.onChange(RichUtils.toggleInlineStyle(this.editor.state.editorState, 'ITALIC'));
     }
 
     _onUnderLineClick() {
-        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'UNDERLINE'));
+        this.editor.onChange(RichUtils.toggleInlineStyle(this.editor.state.editorState, 'UNDERLINE'));
     }
 
     render() {
@@ -189,6 +212,15 @@ export default class WeekDayEventPopUp extends React.Component {
             </Popover>
         );
 
+        let shared_with_list = [];
+        let _this = this;
+        if(this.state.sharedWithNames.length > 0){
+            shared_with_list = this.state.sharedWithNames.map((name,key)=>{
+                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{_this.removeUser(key)}}></i></span>
+            });
+        } else {
+            shared_with_list = <span className="user-label">Only me</span>
+        }
         return(
             <ModalContainer zIndex={9999}>
                 <ModalDialog className="modalPopup">
@@ -217,11 +249,12 @@ export default class WeekDayEventPopUp extends React.Component {
                                         : null }
                                 </div>
                                 <div className="shared-users-time-panel">
-                                    {this.state.showTimePanelWindow ?
+
                                         <div className="col-sm-3">
                                             <p>
                                                 <span className="user-label">Time : {this.state.defaultEventTime} </span>
                                             </p>
+                                            {this.state.showTimePanelWindow ?
                                             <div className={this.state.showTimePanel + " panel time-panel"}>
                                                 <TimePicker
                                                     style={{ width: 100 }}
@@ -230,14 +263,21 @@ export default class WeekDayEventPopUp extends React.Component {
                                                     onChange={this.handleTimeChange.bind(this)}
                                                     />
                                             </div>
+                                            : null}
                                         </div>
-                                        : null}
-                                    {this.state.showUserPanelWindow ?
-                                        <div className="col-sm-6">
-                                            <SharedUsers  showPanel={this.state.showUserPanel}/>
+                                        <div className="invite-people col-sm-6">
+                                            <p>
+                                                <span className="user-label"> People in the event : </span>
+                                                {shared_with_list}
+                                            </p>
+                                            {this.state.showUserPanelWindow ?
+                                                <SharedUsers
+                                                    setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
+                                                    showPanel={this.state.showUserPanel}
+                                                    removeUser={this.removeUser}
+                                                />
+                                              : null }
                                         </div>
-                                        : null }
-
                                 </div>
                             </div>
                             <div className="model-footer">
