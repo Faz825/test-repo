@@ -692,3 +692,11 @@ footer .notification-alert-holder.slideOut{
     	padding-right: 0px;
 		}
 }
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.people-list {
+		color: #7f7f7f;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.selected-people {
+		color: #7f7f7f;
+}

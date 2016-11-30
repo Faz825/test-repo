@@ -34,10 +34,10 @@ export default class DayTodosList extends React.Component {
 						let usersString = [];
 						if(event.shared_users.length > 0 ) {
 								usersString = event.shared_users.map(function(user,userKey){
-		                return <span key={userKey}>{user.name}, </span>
+		                return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
 		            });
 						} else {
-								usersString = <span>Only me</span>
+								usersString = <span className="people-list" >Only me</span>
 						}
 
 		    return (
