@@ -281,10 +281,10 @@ var CalendarController = {
 
         // month in moment is 0 based, so 9 is actually october, subtract 1 to compensate
         // array is 'year', 'month', 'day', etc
-        var startDate = moment([year, month]).add(-1, "month").format('YYYY-MM-DD');
+        var startDate = moment([year, Number(month - 1)]).startOf('month').format('YYYY-MM-DD');
 
         // Clone the value before .endOf()
-        var endDate = moment(startDate).endOf('month').format('YYYY-MM-DD');
+        var endDate = moment([year, Number(month - 1)]).endOf('month').add(1, 'day').format('YYYY-MM-DD');
 
         var criteria = {start_date_time: {$gte: startDate, $lt: endDate}, status: 1, user_id: user_id};
 
@@ -391,7 +391,7 @@ var CalendarController = {
         var startDate = moment(start_date).format('YYYY-MM-DD');
 
         // Clone the value before .endOf()
-        var endDate = moment(end_date).format('YYYY-MM-DD');
+        var endDate = moment(end_date).add(1,'day').format('YYYY-MM-DD');
 
         var criteria = {start_date_time: {$gte: startDate, $lt: endDate}, status: 1, user_id: user_id};
 
@@ -1470,10 +1470,16 @@ var CalendarController = {
             Notification = require('mongoose').model('Notification'),
             CalendarEvent = require('mongoose').model('CalendarEvent'),
             _async = require('async'),
-            _data = {notification_status:true},
+            _data = {read_status:true},
             user_id = Util.getCurrentSession(req).id;
 
         _async.waterfall([
+            function updateNotifications(callBack){
+                var _criteria = {notification_id:Util.toObjectId(req.body.notification_id), recipient:Util.toObjectId(user_id)};
+                NotificationRecipient.updateRecipientNotification(_criteria, _data, function(res){
+                    callBack(null);
+                });
+            },
             function updateSharedStatus(callBack) {
                 var shared_status = req.body.status == CalendarSharedStatus.REQUEST_REJECTED ?
                     CalendarSharedStatus.REQUEST_REJECTED : CalendarSharedStatus.REQUEST_ACCEPTED;
@@ -1650,7 +1656,7 @@ var CalendarController = {
                 res.status(200).send(outPut);
             }
         });
-    },
+    }
 };
 
 module.exports = CalendarController;
