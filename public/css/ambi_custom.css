@@ -350,6 +350,7 @@ a.rc-time-picker-panel-clear-btn {
 		overflow: visible;
 }
 
+.calender-view .form-holder #editor-holder .DraftEditor-root,
 .popup-holder.week-view-editor-popup-holder .DraftEditor-root {
 		min-height: 57px;
 }
@@ -669,6 +670,19 @@ footer .notification-alert-holder.slideOut{
   box-sizing: border-box;
   -webkit-transform: scale(0);
           transform: scale(0);
+}
+
+.shared-users-time-panel .react-autosuggest__container input,
+.shared-users-time-panel .rc-time-picker-input {
+    border: 0px !important;
+    border-bottom: 2px solid #ddd !important;
+    outline: none !important;
+    padding: 6px 0px !important;
+    border-radius: 0px !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    -o-box-shadow: none !important;
+    box-shadow: none !important;
 }
 
 /* custom styles for ipad view */
