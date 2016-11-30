@@ -11382,6 +11382,7 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .btn-group button {
   outline: none;
+  padding: 0 17px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-group {
   background: #ffffff;
@@ -11413,6 +11414,7 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.75em;
   font-weight: 500;
   color: #ffffff;
+  padding: 0px 25px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content {
   padding: 40px 70px;
@@ -11459,6 +11461,9 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div p {
   margin-bottom: 0;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div p.pending {
+  color: #989ba0;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .people-list-wrapper {
   display: block;
@@ -11740,11 +11745,17 @@ header .notification-holder .profile-header-thumb {
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li:before {
   color: #00a6ef;
 }
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items .pending {
+  color: #989ba0;
+}
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .header-wrapper p {
   color: #a6c649;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li:before {
   color: #a6c649;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items .pending {
+  color: #989ba0;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper {
   overflow: hidden;
@@ -11871,11 +11882,20 @@ header .notification-holder .profile-header-thumb {
 .calender-month-view .view-tile-area .color-1 {
   color: #00a6ef;
 }
+.calender-month-view .view-tile-area .color-1.pending {
+  color: #989ba0;
+}
 .calender-month-view .view-tile-area .color-2 {
   color: #f11379;
 }
+.calender-month-view .view-tile-area .color-2.pending {
+  color: #989ba0;
+}
 .calender-month-view .view-tile-area .color-3 {
   color: #a6c649;
+}
+.calender-month-view .view-tile-area .color-3.pending {
+  color: #989ba0;
 }
 .calender-month-view .remove-padding {
   padding: 0;
@@ -12882,9 +12902,18 @@ header .notification-holder .profile-header-thumb {
   margin: 0;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area {
+  position: relative;
   width: calc(100% - 188px);
   float: left;
   margin-left: 20px;
+  margin-bottom: 80px;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .shared-users-time-panel {
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  bottom: -90px;
+  left: -15px;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .input {
   width: 100%;
@@ -12953,6 +12982,7 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .btn-group button {
   outline: none;
+  padding: 0 17px;
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group {
   background: #ffffff;
@@ -12984,6 +13014,7 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.75em;
   font-weight: 500;
   color: #ffffff;
+  padding: 0px 25px;
 }
 .popup-holder .create-folder-popup {
   overflow: hidden;
@@ -13176,6 +13207,7 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .share-opt-holder {
   float: right;
+  margin: 0 22px 0 0;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .shared-privacy {
   margin-left: 47px;

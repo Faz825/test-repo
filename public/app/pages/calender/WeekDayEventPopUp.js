@@ -247,23 +247,23 @@ export default class WeekDayEventPopUp extends React.Component {
                                             setSharedUsers={this.setSharedUsers.bind(this)}
                                             />
                                         : null }
-                                </div>
-                                <div className="shared-users-time-panel">
+
+                                    <div className="shared-users-time-panel">
 
                                         <div className="col-sm-3">
                                             <p>
                                                 <span className="user-label">Time : {this.state.defaultEventTime} </span>
                                             </p>
                                             {this.state.showTimePanelWindow ?
-                                            <div className={this.state.showTimePanel + " panel time-panel"}>
-                                                <TimePicker
-                                                    style={{ width: 100 }}
-                                                    showSecond={showSecond}
-                                                    defaultValue={moment()}
-                                                    onChange={this.handleTimeChange.bind(this)}
+                                                <div className={this.state.showTimePanel + " panel time-panel"}>
+                                                    <TimePicker
+                                                        style={{ width: 100 }}
+                                                        showSecond={showSecond}
+                                                        defaultValue={moment()}
+                                                        onChange={this.handleTimeChange.bind(this)}
                                                     />
-                                            </div>
-                                            : null}
+                                                </div>
+                                                : null}
                                         </div>
                                         <div className="invite-people col-sm-6">
                                             <p>
@@ -276,9 +276,11 @@ export default class WeekDayEventPopUp extends React.Component {
                                                     showPanel={this.state.showUserPanel}
                                                     removeUser={this.removeUser}
                                                 />
-                                              : null }
+                                                : null }
                                         </div>
+                                    </div>
                                 </div>
+
                             </div>
                             <div className="model-footer">
                                 <div className="input-items-outer-wrapper">
@@ -308,18 +310,18 @@ export default class WeekDayEventPopUp extends React.Component {
                                         </li>
                                         <li>
                                             <div className="btn-group">
-                                                <button type="button" className={"menu-ico-group btn " + (this.state.eventType == 'event' ? "active" : null)} onClick={() => this.changeEventType('event')}>
-                                                    Event
+                                                <button type="button" className={"menu-ico-group btn event " + (this.state.eventType == 'event' ? "active" : null)} onClick={() => this.changeEventType('event')}>
+                                                    <i className="fa fa-calendar" aria-hidden="true"></i> Event
                                                 </button>
-                                                <button type="button" className={"menu-ico-group btn " + (this.state.eventType == 'todo' ? "active" : null)} onClick={() => this.changeEventType('todo')}>
-                                                    To-do
+                                                <button type="button" className={"menu-ico-group btn todo " + (this.state.eventType == 'todo' ? "active" : null)} onClick={() => this.changeEventType('todo')}>
+                                                    <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
                                                 </button>
                                             </div>
 
                                         </li>
                                         <li>
                                             <button className="menu-ico-txt btn" onClick={this.addEvent}>
-                                                Enter
+                                                <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
                                             </button>
                                         </li>
                                     </ul>

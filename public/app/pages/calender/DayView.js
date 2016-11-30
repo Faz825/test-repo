@@ -542,11 +542,11 @@ export default class DayView extends Component {
                                                 </li>
                                                 <li>
                                                     <div className="btn-group">
-                                                        <button type="button" className={"menu-ico-group btn " + (this.state.defaultType == 'event' ? "active" : null)} eventType="event" onClick={() => this.changeType('event')}>
-                                                            Event
+                                                        <button type="button" className={"menu-ico-group btn event " + (this.state.defaultType == 'event' ? "active" : null)} eventType="event" onClick={() => this.changeType('event')}>
+                                                            <i className="fa fa-calendar" aria-hidden="true"></i> Event
                                                         </button>
-                                                        <button type="button" className={"menu-ico-group btn " + (this.state.defaultType == 'todo' ? "active" : null)} eventType="todo" onClick={() => this.changeType('todo')}>
-                                                            To-do
+                                                        <button type="button" className={"menu-ico-group btn todo " + (this.state.defaultType == 'todo' ? "active" : null)} eventType="todo" onClick={() => this.changeType('todo')}>
+                                                            <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
                                                         </button>
                                                     </div>
 
@@ -554,7 +554,7 @@ export default class DayView extends Component {
                                                 <li>
                                                     { this.state.editOn == false ?
                                                         <button className="menu-ico-txt btn" onClick={this.addEvent}>
-                                                            Enter
+                                                            <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
                                                         </button>
                                                         :
                                                         <div className="menu-ico-txt btn" onClick={this.updateEvent}>
