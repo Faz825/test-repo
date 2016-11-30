@@ -339,15 +339,15 @@ export default class DayView extends Component {
     }
 
     _onBoldClick() {
-        this.editor.onChange(RichUtils.toggleInlineStyle(this.editor.state.editorState, 'BOLD'));
+        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'BOLD'));
     }
 
     _onItalicClick() {
-        this.editor.onChange(RichUtils.toggleInlineStyle(this.editor.state.editorState, 'ITALIC'));
+        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'ITALIC'));
     }
 
     _onUnderLineClick() {
-        this.editor.onChange(RichUtils.toggleInlineStyle(this.editor.state.editorState, 'UNDERLINE'));
+        this.refs.EditorFieldValues.onChange(RichUtils.toggleInlineStyle(this.refs.EditorFieldValues.state.editorState, 'UNDERLINE'));
     }
 
     setSharedUsers(selected) {
@@ -374,6 +374,12 @@ export default class DayView extends Component {
             console.log("already selected" + this.state.isAlreadySelected)
         }
         return "";
+    }
+
+    removeUser(key){
+        this.sharedWithIds.splice(key,1);
+        this.sharedWithNames.splice(key,1);
+        this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
     }
 
     setTime(selected) {
@@ -468,7 +474,12 @@ export default class DayView extends Component {
                                                         {shared_with_list}
                                                     </p>
                                                     {this.state.showUserPanelWindow ?
-                                                        <SharedUsers ref="SharedUserField" setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}  showPanel={this.state.showUserPanel}/>
+                                                        <SharedUsers
+                                                            ref="SharedUserField"
+                                                            setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
+                                                            showPanel={this.state.showUserPanel}
+                                                            removeUser={this.removeUser}
+                                                        />
                                                     : null }
                                                 </div>
                                             </div>

@@ -65,16 +65,22 @@ export default class WeekDayEventPopUp extends React.Component {
 
     setSharedUsersFromDropDown(selected) {
 
-        if(this.sharedWithIds.indexOf(selected.user_id)==-1){
-            this.sharedWithIds.push(selected.user_id);
-            this.sharedWithNames.push(selected.first_name+" "+selected.last_name);
-            this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false});
+      if(this.sharedWithIds.indexOf(selected.user_id)==-1){
+          this.sharedWithIds.push(selected.user_id);
+          this.sharedWithNames.push(selected.first_name+" "+selected.last_name);
+          this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false});
 
-        } else{
-            this.setState({isAlreadySelected:true});
-            console.log("already selected" + this.state.isAlreadySelected)
-        }
-        return "";
+      } else{
+          this.setState({isAlreadySelected:true});
+          console.log("already selected" + this.state.isAlreadySelected)
+      }
+      return "";
+    }
+
+    removeUser(key){
+        this.sharedWithIds.splice(key,1);
+        this.sharedWithNames.splice(key,1);
+        this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
     }
 
     setTime(selected) {
@@ -207,9 +213,10 @@ export default class WeekDayEventPopUp extends React.Component {
         );
 
         let shared_with_list = [];
+        let _this = this;
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
-                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
+                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{_this.removeUser(key)}}></i></span>
             });
         } else {
             shared_with_list = <span className="user-label">Only me</span>
@@ -264,7 +271,11 @@ export default class WeekDayEventPopUp extends React.Component {
                                                 {shared_with_list}
                                             </p>
                                             {this.state.showUserPanelWindow ?
-                                                <SharedUsers setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)} showPanel={this.state.showUserPanel}/>
+                                                <SharedUsers
+                                                    setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
+                                                    showPanel={this.state.showUserPanel}
+                                                    removeUser={this.removeUser}
+                                                />
                                               : null }
                                         </div>
                                 </div>

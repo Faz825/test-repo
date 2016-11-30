@@ -34,6 +34,7 @@ export default class SharedUsers extends Component {
         this.sharedWithIds.splice(key,1);
         this.sharedWithNames.splice(key,1);
         this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
+        this.props.removeUser(key);
     }
 
     renderToken(token) {
