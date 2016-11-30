@@ -12906,14 +12906,6 @@ header .notification-holder .profile-header-thumb {
   width: calc(100% - 188px);
   float: left;
   margin-left: 20px;
-  margin-bottom: 80px;
-}
-.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .shared-users-time-panel {
-  overflow: hidden;
-  position: absolute;
-  width: 100%;
-  bottom: -90px;
-  left: -15px;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .input {
   width: 100%;
