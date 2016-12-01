@@ -326,14 +326,6 @@ a.rc-time-picker-panel-clear-btn {
 		margin-left: -14px;
 }
 
-.calender-view .to-do-list-area-content-list {
-		min-height: 218px;
-}
-
-.calender-view .events-list-area-content-list {
-		min-height: 112px;
-}
-
 #calendar-popover-typo {
 	z-index: 9999;
 }
