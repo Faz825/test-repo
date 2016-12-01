@@ -60,7 +60,7 @@ export default class EditorField extends Component {
             var str = value.replace("#", "");
             if(str.length > 0) {
                 $.ajax({
-                    url : '/user/get-user-suggestions/'+str,
+                    url : '/connection/get/'+str,
                     method : "GET",
                     dataType : "JSON",
                     headers : { "prg-auth-header" : this.state.user.token },
