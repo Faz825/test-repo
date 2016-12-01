@@ -2,6 +2,11 @@
 body{
 	background: #e9ebee;
 }
+
+.branding{
+  width: 238px;
+}
+
 /* Common body styles */
 .body-container .sub-container{
 	min-height: calc(100vh - 82px);

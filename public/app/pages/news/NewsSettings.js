@@ -178,7 +178,7 @@ export default class NewsSettings extends React.Component{
             <div className="newsCatHolder container-fluid">
                 <div className="row row-clr pg-news-page-content">
                     <div className="row row-clr pg-news-page-header">
-                        <div className="col-xs-10 col-xs-offset-1">
+                        <div className="container">
                             <div className="row">
                                 <div className="col-xs-6">
                                     <h2 className="pg-connections-page-header-title">News</h2>
@@ -215,7 +215,7 @@ export default class NewsSettings extends React.Component{
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-10 col-xs-offset-1">
+                    <div className="container">
                         <SavedArticles />
                         {
                             _news_category_template
