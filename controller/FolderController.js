@@ -6,8 +6,13 @@
 
 var FolderController ={
 
+    /**
+     * get owned folder count
+     * @param req
+     * @param res
+     */
+
     getCount:function(req,res){
-        console.log("getCount")
 
         var Folders = require('mongoose').model('Folders'),
             CurrentSession = Util.getCurrentSession(req);
@@ -15,7 +20,6 @@ var FolderController ={
         var criteria = {user_id:Util.toObjectId(user_id)};
 
         Folders.getCount(criteria,function(resultSet){
-            console.log("COUNT -------> "+resultSet.result)
             if(resultSet.status == 200){
                 var outPut ={
                     status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
@@ -28,9 +32,7 @@ var FolderController ={
                 };
                 res.status(400).json(outPut);
             }
-
         });
-
 
     },
 
@@ -40,8 +42,6 @@ var FolderController ={
      * @param res
      */
     addNewFolder:function(req,res){
-
-        console.log("addNewFolder")
 
         var Folders = require('mongoose').model('Folders'),
             _shared_with = (typeof req.body.shared_with != 'undefined' && req.body.shared_with.length > 0) ? req.body.shared_with : [],
@@ -56,15 +56,13 @@ var FolderController ={
 
         _async.waterfall([
 
-            function checkIfDefault(callBack){
+            function checkIfDefaultExist(callBack){
 
-                if(typeof req.body.isDefault != 'undefined' && req.body.isDefault == 1){
+                if(typeof req.body.isDefault != 'undefined' && req.body.isDefault == 1){ //default folder
                     var criteria = {user_id:Util.toObjectId(Util.getCurrentSession(req).id)};
                     Folders.getFolders(criteria,function(resultSet){
-                        if(resultSet.folders.length > 0){
-
+                        if(resultSet.folders.length > 0){ //but default folder already exist, don't need to go further
                             canAdd = false;
-
                             _folder = {
                                 folder_id:resultSet.folders[0]._id,
                                 folder_name:resultSet.folders[0].name,
@@ -74,21 +72,16 @@ var FolderController ={
                                 folder_updated_at:resultSet.folders[0].updated_at,
                                 owned_by: 'me',
                                 documents:[]
-                            }
+                            };
                             var outPut ={
                                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                                 folder:_folder
                             };
                             res.status(200).json(outPut);
-
                         } else{
-
                             callBack(null);
-
                         }
-
                     });
-
                 } else{
                     callBack(null);
                 }
@@ -96,6 +89,8 @@ var FolderController ={
             },
 
             function addFolderToDB(callBack){
+
+                console.log("addFolderToDB")
 
                 for(var i = 0; i < _shared_with.length; i++){
                     //console.log("_shared_with = "+i)
@@ -125,7 +120,7 @@ var FolderController ={
                     };
 
                     Folders.addNewFolder(_folderrr,function(resultSet){
-                        //console.log(resultSet.folder)
+                        console.log(resultSet)
                         _folder_id = resultSet.folder._id;
                         if(typeof req.body.isDefault != 'undefined' && req.body.isDefault == 1){
                             console.log("this is default folder... sending response")
@@ -152,8 +147,6 @@ var FolderController ={
                 } else{
                     callBack(null);
                 }
-
-
 
             },
             function addNotification(callBack){
@@ -625,6 +618,37 @@ var FolderController ={
                 res.status(400).json(outPut);
             }
 
+        });
+
+    },
+
+    /**
+     * change shared permission
+     * @param req
+     * @param res
+     */
+    updateFolderSharedPermission:function(req,res){
+        var Folder = require('mongoose').model('Folders'),
+            own_user_id = Util.getCurrentSession(req).id;
+
+        var shared_type = req.body.shared_type == 2 ? FolderSharedMode.READ_WRITE : FolderSharedMode.READ_ONLY,
+            shared_user_id = req.body.user_id;
+
+        var _udata = {
+            'shared_users.$.shared_type':shared_type
+        };
+
+        var criteria = {
+            _id:Util.toObjectId(req.body.folder_id),
+            user_id:Util.toObjectId(own_user_id),
+            'shared_users.user_id':shared_user_id
+        };
+
+        Folder.updateSharedFolder(criteria, _udata, function(result){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
+            res.status(200).json(outPut);
         });
 
     }
