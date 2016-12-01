@@ -128,7 +128,7 @@ export default class WeekView extends React.Component {
         return (
 
             <section className="calender-body">
-                <div className="row">
+                <div className="row calendar-main-row">
                     <div className="calender-week-view">
                         <div className="view-header">
                             <div className="col-sm-6 remove-padding">
@@ -296,7 +296,7 @@ export class DailyEvents extends React.Component {
                 <div className="content-wrapper todos">
                     <div className="header-wrapper">
                         <img src="/images/calender/icon-to-do.png"/>
-                            <p>Todo's</p>
+                            <p>Todo	&rsquo;s</p>
                     </div>
                     <div className="body-wrapper">
                         <ul className="list-items">

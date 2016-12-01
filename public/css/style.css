@@ -50,13 +50,12 @@ a:focus{
 	padding: 0;
 }
 
-.pg-logo-wrapper {
-	/*left: 115px;*/
-	/*position: absolute;*/
+.logoHolder {
+	margin: 10px 0 0 0;
 }
-.pgs-main-nav-area ul {padding-left:0px;margin-bottom:0px;text-align:right;padding-top:19px;}
+.pgs-main-nav-area ul {padding-left:0px;margin-bottom:0px;text-align:center;padding-top:19px;}
 
-.pgs-main-nav-area ul li {list-style:none;float:left;}
+.pgs-main-nav-area ul li {list-style:none; display: inline-block;}
 
 .pgs-main-nav-area ul:after {
 	visibility: hidden;
@@ -333,11 +332,16 @@ a:focus{
 	clear: right;
 	height: 0;
 }
-.pgs-middle-sign-wrapper {padding-top:95px; min-height: 100vh;}
+.pgs-middle-sign-wrapper {padding-top:95px; min-height: calc(100vh - 82px);}
 .pgs-middle-sign-wrapper.changePassword,
 .pgs-middle-sign-wrapper.changedPassword,
 .pgs-middle-sign-wrapper.forgotPassword {
 	padding-top:13%;
+}
+
+.pgs-middle-sign-wrapper .pgs-middle-sign-wrapper-inner{
+	float: none;
+	margin: 0 auto;
 }
 
 .pgs-middle-sign-wrapper-inner {float:none;margin:0 auto;}
@@ -571,7 +575,7 @@ a:focus{
 
 .pgs-middle-sign-wrapper-secratery-box-active {border-color:#61b3de;box-shadow: 0px 0px 5px -1px #000;}
 
-.pgs-sec-active-pic {display:none;}
+.pgs-middle-sign-wrapper-secratery-box .pgs-sec-active-pic {display:none;}
 
 .pgs-middle-sign-wrapper-secratery-box:hover .pgs-sec-active-pic {display:block;}
 
@@ -588,6 +592,10 @@ a:focus{
 /*About You page*/
 
 .pgs-middle-about-wrapper {height: 100%; padding-top:130px;padding-bottom: 50px;position: relative;z-index: 500; background-color: rgba(0, 0, 0, 0.6);}
+
+.pgs-middle-sign-wrapper{
+	margin-bottom: -100px;
+}
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.3),
 only screen and (-o-min-device-pixel-ratio: 13/10),
@@ -700,6 +708,10 @@ input[type=number]::-webkit-outer-spin-button {
 .pgs-establish-connection-box p {margin:0;font: 10px 'montserratregular', sans-serif;color: #2d5164;}
 
 .pgs-establish-connection-box a {cursor: pointer; text-decoration:none;background-color:#61b3de;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;width:110px;padding:9px 0px;display:block;font: 10px 'montserratsemi_bold', sans-serif;color: #fff;text-transform:uppercase;text-align:center;float:right;margin-top:5px;}
+
+.pgs-establish-connection-box a:hover{
+	color: #fff;
+}
 
 .pgs-establish-connection-box a:after {
 	visibility: hidden;
@@ -1992,6 +2004,9 @@ textarea{
 	text-decoration: none;
 	text-transform: uppercase;
 	cursor: pointer;
+}
+.newsCatHolder.container-fluid{
+	padding: 0;
 }
 .pg-news-page-content .pg-news-page-header{
 	margin-bottom: 25px;

@@ -11352,70 +11352,75 @@ header .notification-holder .profile-header-thumb {
   float: right;
   overflow: hidden;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .menu-ico {
-  margin: 3px 7px 0px 0px;
-  float: left;
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper {
+  display: inline-block;
+  color: #bcbfbf;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li {
+  display: inline-block;
+  margin-right: 10px;
+  background-color: #ffffff;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li button {
+  font-weight: 500;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico {
+  background: transparent;
+  border: 1px solid #bcbfbf;
+  border-radius: 4px;
   text-align: center;
   width: 35px;
   height: 35px;
-  border: 1px solid #bcbfbf;
+  outline: none;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico p {
+  margin-bottom: 0;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .btn-group {
+  border: 1px solid #c4c4c4;
   border-radius: 4px;
-}
-.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .menu-ico:first-child {
-  padding: 2px;
-}
-.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .menu-ico p {
+  margin-left: 0;
+  height: 40px;
   text-transform: uppercase;
-  font-size: 1.25em;
-  color: #bcbfbf;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper {
-  overflow: hidden;
-  float: left;
-  border: 1px solid #bcbfbf;
-  border-radius: 4px;
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .btn-group button {
+  outline: none;
+  padding: 0 17px;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper .btn-toggle {
-  padding: 10px;
-  float: left;
-  text-align: center;
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-group {
+  background: #ffffff;
+  color: #ffffff;
+  box-shadow: none;
+  height: 100%;
   text-transform: uppercase;
   font-size: 0.75em;
   font-weight: 500;
-  background-color: #ffffff;
-  color: #a6c649;
-  width: 90px;
-  height: 40px;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper .btn-toggle:first-child {
-  border-right: 1px solid #bcbfbf;
-}
-.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper .btn-toggle.active {
-  background-color: #3e3e3e;
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-group.event {
   color: #00a6ef;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .toggle-wrapper .btn-toggle i {
-  margin-right: 5px;
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-group.todo {
+  color: #a6c649;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .btn-enter {
-  margin-left: 7px;
-  padding-top: 10px;
-  overflow: hidden;
-  float: left;
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-group.active {
+  background-color: #3e3e3e;
+  color: #ffffff;
+  box-shadow: none;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-txt.btn {
+  text-transform: uppercase;
+  height: 40px;
   border: 1px solid #00a6ef;
   border-radius: 4px;
   background-color: #00a6ef;
   text-align: center;
-  text-transform: uppercase;
   font-size: 0.75em;
   font-weight: 500;
   color: #ffffff;
-  width: 110px;
-  height: 40px;
-  cursor: pointer;
+  padding: 0px 25px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content {
-  padding: 40px 70px;
+  padding: 40px 70px 0;
   background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-title span {
@@ -11433,6 +11438,9 @@ header .notification-holder .profile-header-thumb {
   border: 0;
   border-top: 4px solid #f6f6f6;
   margin-top: 15px;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list {
+  min-height: 180px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li {
   padding: 20px 0px 20px 30px;
@@ -11460,6 +11468,9 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div p {
   margin-bottom: 0;
 }
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div p.pending {
+  color: #989ba0;
+}
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .people-list-wrapper {
   display: block;
 }
@@ -11475,7 +11486,7 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.875em;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content {
-  padding: 40px 70px;
+  padding: 40px 70px 60px;
   background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-title span {
@@ -11493,6 +11504,9 @@ header .notification-holder .profile-header-thumb {
   border: 0;
   border-top: 4px solid #f6f6f6;
   margin-top: 15px;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list {
+  min-height: 180px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li {
   padding: 20px 30px;
@@ -11740,11 +11754,17 @@ header .notification-holder .profile-header-thumb {
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li:before {
   color: #00a6ef;
 }
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items .pending {
+  color: #989ba0;
+}
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .header-wrapper p {
   color: #a6c649;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li:before {
   color: #a6c649;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items .pending {
+  color: #989ba0;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper {
   overflow: hidden;
@@ -11871,11 +11891,20 @@ header .notification-holder .profile-header-thumb {
 .calender-month-view .view-tile-area .color-1 {
   color: #00a6ef;
 }
+.calender-month-view .view-tile-area .color-1.pending {
+  color: #989ba0;
+}
 .calender-month-view .view-tile-area .color-2 {
   color: #f11379;
 }
+.calender-month-view .view-tile-area .color-2.pending {
+  color: #989ba0;
+}
 .calender-month-view .view-tile-area .color-3 {
   color: #a6c649;
+}
+.calender-month-view .view-tile-area .color-3.pending {
+  color: #989ba0;
 }
 .calender-month-view .remove-padding {
   padding: 0;
@@ -12625,6 +12654,186 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.8525em;
 }
 
+.call-center-container {
+  background-color: #e9ebee;
+}
+.call-center-container .call-center-header h2 {
+  margin-top: 36px;
+  font-size: 2.1875em;
+  font-family: Pantra-Bold;
+  text-transform: uppercase;
+  letter-spacing: -2px;
+  color: #000000;
+}
+.call-center-container .call-center-header .crt-call {
+  float: right;
+  margin-top: 30px;
+  margin-right: 10px;
+}
+.call-center-container .call-center-header .crt-call .btn-crt-call {
+  padding: 9px 28px 9px 28px;
+  background-color: #00a5ef;
+  color: #ffffff;
+  font-size: 0.875em;
+}
+.call-center-container .call-center-header .search-call {
+  position: relative;
+  float: right;
+  margin-top: 30px;
+  width: 150px;
+}
+.call-center-container .call-center-header .search-call .inner-addon i {
+  position: absolute;
+  padding: 10px;
+  left: 29px;
+  font-weight: 400;
+  pointer-events: none;
+}
+.call-center-container .call-center-header .search-call .inner-addon input {
+  border-radius: 7px;
+  padding-left: 58px;
+  height: 40px;
+  font-size: 0.875em;
+}
+.call-center-container .contacts-holder {
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0px 0px 7px 3px #d6d8da;
+  min-height: 75vh;
+  background-color: #f6f6f6;
+}
+.call-center-container .contacts-holder .contact-header {
+  overflow: hidden;
+}
+.call-center-container .contacts-holder .contact-header .user-status .image-wrapper {
+  float: left;
+  position: relative;
+}
+.call-center-container .contacts-holder .contact-header .user-status .image-wrapper img {
+  margin-top: 20px;
+  margin-left: 70px;
+  width: 54px;
+  height: 54px;
+}
+.call-center-container .contacts-holder .contact-header .user-status .image-wrapper .status {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 13px;
+  height: 13px;
+  background-color: #63c66c;
+  border: 3px solid #ffffff;
+  border-radius: 100%;
+}
+.call-center-container .contacts-holder .contact-header .user-status .name-wrapper {
+  float: left;
+  margin-top: 25px;
+  margin-left: 18px;
+}
+.call-center-container .contacts-holder .contact-header .user-status .name-wrapper .name {
+  margin-bottom: 0;
+  font-size: 1em;
+  font-weight: 500;
+  color: #000000;
+}
+.call-center-container .contacts-holder .contact-header .user-status .name-wrapper .status {
+  font-size: 0.75em;
+  font-weight: 400;
+  color: #000000;
+}
+.call-center-container .contacts-holder .contact-header .rw-contact-menu {
+  background-color: #ffffff;
+  text-align: center;
+  font-size: 0.751875em;
+  font-weight: 400;
+  color: #000000;
+}
+.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-4 {
+  padding: 12px;
+  border-bottom: 4px solid #e9ebee;
+  cursor: pointer;
+}
+.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-4.active {
+  font-weight: 500;
+  border-bottom: 4px solid #00a5ef;
+}
+.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-2-4 {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding: 15px;
+  border-bottom: 4px solid #e9ebee;
+  cursor: pointer;
+}
+@media (min-width: 768px) {
+  .call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-2-4 {
+    float: left;
+    width: 20%;
+  }
+}
+.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-2-4.active {
+  font-weight: 500;
+  border-bottom: 4px solid #00a5ef;
+}
+.call-center-container .contacts-holder .contacts-list .contact-group .group-name {
+  margin-left: 71px;
+  margin-bottom: 3px;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: #00a5ef;
+}
+.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper {
+  overflow: hidden;
+  padding: 0 6%;
+  border-top: 1px solid #dee6eb;
+}
+.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item {
+  overflow: hidden;
+  margin-top: 6px;
+}
+.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper {
+  float: left;
+  position: relative;
+}
+.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper img {
+  width: 51px;
+  height: 51px;
+}
+.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 13px;
+  height: 13px;
+  background-color: #63c66c;
+  border: 3px solid #ffffff;
+  border-radius: 100%;
+}
+.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper {
+  float: left;
+  margin-left: 18px;
+}
+.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .name {
+  margin-top: 5px;
+  margin-bottom: 0;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: #000000;
+}
+.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .status {
+  font-size: 0.75em;
+  font-weight: 400;
+  color: #000000;
+}
+.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type {
+  text-align: center;
+}
+.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type img {
+  margin-top: 14px;
+  font-size: 1.5625em;
+}
+
 .popup-holder {
   overflow: hidden;
   background-color: #ffffff;
@@ -12634,6 +12843,7 @@ header .notification-holder .profile-header-thumb {
   width: 680px;
   border: 1px solid #ddd;
   position: relative;
+  border-radius: 8px;
 }
 .popup-holder .calendar-week-popup-wrapper .model-header:before {
   display: table;
@@ -12701,6 +12911,7 @@ header .notification-holder .profile-header-thumb {
   margin: 0;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area {
+  position: relative;
   width: calc(100% - 188px);
   float: left;
   margin-left: 20px;
@@ -12727,6 +12938,8 @@ header .notification-holder .profile-header-thumb {
   width: 100%;
   padding: 10px;
   border-top: 1px solid #dcdcdc;
+  background-color: #f6f6f6;
+  border-radius: 8px;
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper:before {
   display: table;
@@ -12744,13 +12957,14 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li {
   display: inline-block;
   margin-right: 10px;
+  background-color: #ffffff;
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li button {
   font-weight: 500;
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico {
   background: transparent;
-  border: 1px solid #d3dfe8;
+  border: 1px solid #bcbfbf;
   border-radius: 4px;
   text-align: center;
   width: 35px;
@@ -12767,23 +12981,41 @@ header .notification-holder .profile-header-thumb {
   height: 40px;
   text-transform: uppercase;
 }
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .btn-group button {
+  outline: none;
+  padding: 0 17px;
+}
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group {
-  background: #989ba0;
+  background: #ffffff;
   color: #ffffff;
   box-shadow: none;
   height: 100%;
   text-transform: uppercase;
+  font-size: 0.75em;
+  font-weight: 500;
+}
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group.event {
+  color: #00a6ef;
+}
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group.todo {
+  color: #a6c649;
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group.active {
-  background-color: #ffffff;
-  color: #00a6ef;
+  background-color: #3e3e3e;
+  color: #ffffff;
   box-shadow: none;
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-txt.btn {
-  background: #00a6ef;
-  color: #fff;
   text-transform: uppercase;
   height: 40px;
+  border: 1px solid #00a6ef;
+  border-radius: 4px;
+  background-color: #00a6ef;
+  text-align: center;
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #ffffff;
+  padding: 0px 25px;
 }
 .popup-holder .create-folder-popup {
   overflow: hidden;
@@ -12795,8 +13027,6 @@ header .notification-holder .profile-header-thumb {
   margin-top: 42px;
   text-align: center;
   letter-spacing: -2px;
-  font-family: Andelo-Mono;
-  font-weight: 700;
   font-size: 1.80125em;
   color: #000000;
 }

@@ -8,7 +8,7 @@ const Logo =(props)=>{
     return (
         <div className="branding">
             <a href="/">
-                <img src={props.url} alt="ambi" />
+                <img src={props.url} alt="ambi" className="img-responsive" />
             </a>
         </div>
     )

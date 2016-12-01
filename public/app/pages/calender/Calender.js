@@ -51,14 +51,14 @@ export default class Calender extends React.Component {
         var month = this.state.month;
         month.add(-1, "M");
         this.setState({ month: month });
-        //this.getAllEventsForMonth();
+        this.getAllEventsForMonth();
     }
 
     next() {
         var month = this.state.month;
         month.add(1, "M");
         this.setState({ month: month });
-        //this.getAllEventsForMonth();
+        this.getAllEventsForMonth();
     }
 
     select(day) {
@@ -87,7 +87,7 @@ export default class Calender extends React.Component {
 
         return(
             <div className="calender-body">
-                <div className="row">
+                <div className="row calendar-main-row">
                     <div className="calender-month-view">
 
                         <div className="view-header">

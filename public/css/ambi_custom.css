@@ -2,6 +2,11 @@
 body{
 	background: #e9ebee;
 }
+
+.branding{
+  width: 238px;
+}
+
 /* Common body styles */
 .body-container .sub-container{
 	min-height: calc(100vh - 82px);
@@ -78,6 +83,15 @@ body{
   color: #000000;
   font-size: 14px;
   overflow: visible;
+	margin: 30px 22px 19px 22px;
+}
+
+.calender-container .selected-time {
+		color: #f11379;
+}
+
+.calender-containe span.selected-time {
+	color: #ed1e7a;
 }
 
 .calender-body .shared-users-time-panel .panel {
@@ -107,6 +121,10 @@ body{
   -moz-box-shadow: none;
   -o-box-shadow: none;
   box-shadow: none;
+}
+
+.calender-container .calender-body.day-view .col-sm-9 .calender-view .input-menu {
+		padding: 6px 20px 5px 20px;
 }
 
 /* - ReactAutoSuggest Custom Styles*/
@@ -312,6 +330,29 @@ a.rc-time-picker-panel-clear-btn {
     min-height: 165px;
 }
 
+/* Calendar styles */
+.calender-container .calender-header .calendar-main-nav {
+		text-align: center;
+}
+
+.calender-container .calender-header .calendar-main-nav .calender-type {
+		float: none;
+		display: inline-block;
+		margin-bottom: 37px;
+}
+
+.calender-container .calender-header .calendar-main-nav .calender-type:nth-child(1) {
+		margin-left: -14px;
+}
+
+.calender-container .calendar-main-row {
+		margin-left: 0px;
+}
+
+.calender-container .calender-header div h2 {
+		margin-top: 38px;
+}
+
 #calendar-popover-typo {
 	z-index: 9999;
 }
@@ -345,6 +386,27 @@ a.rc-time-picker-panel-clear-btn {
 #calendar-popover-typo .menu-ico span:hover {
   background: #E3F2FF;
 }
+
+.popup-holder.week-view-editor-popup-holder {
+		overflow: visible;
+}
+
+.calender-view .form-holder #editor-holder .DraftEditor-root{
+		min-height: 25px;
+}
+
+.popup-holder.week-view-editor-popup-holder .DraftEditor-root {
+		min-height: 57px;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-date-wrapper h4 {
+		font-size: 1.1em;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group.active {
+		z-index: 1;
+}
+
 
 /* Folder */
 .folder-item .upload-anime{
@@ -482,7 +544,6 @@ footer .notification-alert-holder.slideOut{
   background:#fff;
 }
 .DraftEditor-editorContainer{background-color:rgba(255,255,255,0);border-left:.1px solid transparent;position:relative;z-index:1}.public-DraftEditor-block{position:relative}.DraftEditor-alignLeft .public-DraftStyleDefault-block{text-align:left}.DraftEditor-alignLeft .public-DraftEditorPlaceholder-root{left:0;text-align:left}.DraftEditor-alignCenter .public-DraftStyleDefault-block{text-align:center}.DraftEditor-alignCenter .public-DraftEditorPlaceholder-root{margin:0 auto;text-align:center;width:100%}.DraftEditor-alignRight .public-DraftStyleDefault-block{text-align:right}.DraftEditor-alignRight .public-DraftEditorPlaceholder-root{right:0;text-align:right}.public-DraftEditorPlaceholder-root{color:#9197a3;position:absolute;z-index:0}.public-DraftEditorPlaceholder-hasFocus{color:#bdc1c9}.DraftEditorPlaceholder-hidden{display:none}.public-DraftStyleDefault-block{position:relative;white-space:pre-wrap}.public-DraftStyleDefault-ltr{direction:ltr;text-align:left}.public-DraftStyleDefault-rtl{direction:rtl;text-align:right}.public-DraftStyleDefault-listLTR{direction:ltr}.public-DraftStyleDefault-listRTL{direction:rtl}.public-DraftStyleDefault-ol,.public-DraftStyleDefault-ul{margin:16px 0;padding:0}.public-DraftStyleDefault-depth0.public-DraftStyleDefault-listLTR{margin-left:1.5em}.public-DraftStyleDefault-depth0.public-DraftStyleDefault-listRTL{margin-right:1.5em}.public-DraftStyleDefault-depth1.public-DraftStyleDefault-listLTR{margin-left:3em}.public-DraftStyleDefault-depth1.public-DraftStyleDefault-listRTL{margin-right:3em}.public-DraftStyleDefault-depth2.public-DraftStyleDefault-listLTR{margin-left:4.5em}.public-DraftStyleDefault-depth2.public-DraftStyleDefault-listRTL{margin-right:4.5em}.public-DraftStyleDefault-depth3.public-DraftStyleDefault-listLTR{margin-left:6em}.public-DraftStyleDefault-depth3.public-DraftStyleDefault-listRTL{margin-right:6em}.public-DraftStyleDefault-depth4.public-DraftStyleDefault-listLTR{margin-left:7.5em}.public-DraftStyleDefault-depth4.public-DraftStyleDefault-listRTL{margin-right:7.5em}.public-DraftStyleDefault-unorderedListItem{list-style-type:square;position:relative}.public-DraftStyleDefault-unorderedListItem.public-DraftStyleDefault-depth0{list-style-type:disc}.public-DraftStyleDefault-unorderedListItem.public-DraftStyleDefault-depth1{list-style-type:circle}.public-DraftStyleDefault-orderedListItem{list-style-type:none;position:relative}.public-DraftStyleDefault-orderedListItem.public-DraftStyleDefault-listLTR:before{left:-36px;position:absolute;text-align:right;width:30px}.public-DraftStyleDefault-orderedListItem.public-DraftStyleDefault-listRTL:before{position:absolute;right:-36px;text-align:left;width:30px}.public-DraftStyleDefault-orderedListItem:before{content:counter(ol0) ". ";counter-increment:ol0}.public-DraftStyleDefault-orderedListItem.public-DraftStyleDefault-depth1:before{content:counter(ol1) ". ";counter-increment:ol1}.public-DraftStyleDefault-orderedListItem.public-DraftStyleDefault-depth2:before{content:counter(ol2) ". ";counter-increment:ol2}.public-DraftStyleDefault-orderedListItem.public-DraftStyleDefault-depth3:before{content:counter(ol3) ". ";counter-increment:ol3}.public-DraftStyleDefault-orderedListItem.public-DraftStyleDefault-depth4:before{content:counter(ol4) ". ";counter-increment:ol4}.public-DraftStyleDefault-depth0.public-DraftStyleDefault-reset{counter-reset:ol0}.public-DraftStyleDefault-depth1.public-DraftStyleDefault-reset{counter-reset:ol1}.public-DraftStyleDefault-depth2.public-DraftStyleDefault-reset{counter-reset:ol2}.public-DraftStyleDefault-depth3.public-DraftStyleDefault-reset{counter-reset:ol3}.public-DraftStyleDefault-depth4.public-DraftStyleDefault-reset{counter-reset:ol4}
-
 
 /*
  * Draft JS EMOJI plugin
@@ -655,10 +716,32 @@ footer .notification-alert-holder.slideOut{
           transform: scale(0);
 }
 
+.shared-users-time-panel .react-autosuggest__container input,
+.shared-users-time-panel .rc-time-picker-input {
+    border: 0px !important;
+    border-bottom: 2px solid #ddd !important;
+    outline: none !important;
+    padding: 6px 0px !important;
+    border-radius: 0px !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    -o-box-shadow: none !important;
+    box-shadow: none !important;
+    margin-top: -5px !important;
+}
+
 /* custom styles for ipad view */
 @media (min-width: 768px) {
 		.calender-container .mini-calender-box.calender-box .header span {
 			padding-left: 0px;
     	padding-right: 0px;
 		}
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.people-list {
+		color: #7f7f7f;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.selected-people {
+		color: #7f7f7f;
 }

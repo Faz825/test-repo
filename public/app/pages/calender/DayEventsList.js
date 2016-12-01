@@ -33,9 +33,15 @@ export default class DayEventsList extends React.Component {
 
             let contentState = convertFromRaw(event.description);
             let htmlC = stateToHTML(contentState);
-            let usersString = event.shared_users.map(function(user,userKey){
-                return <span className="selected-people" key={userKey}>{user.name}, </span>
-            });
+						let usersString = [];
+						if(event.shared_users.length > 0 ) {
+								usersString = event.shared_users.map(function(user,userKey){
+										
+		                return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
+		            });
+						} else {
+								usersString = <span className="people-list">Only me</span>
+						}
 
             return (
                 <li key={key}>
@@ -44,7 +50,7 @@ export default class DayEventsList extends React.Component {
                         <div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
                         <div className="people-list-wrapper">
                             <span className="people-list">People on this event : </span>
-                            {usersString ? usersString : 'No shared users'}
+                            {usersString}
                         </div>
                     </div>
                     <span className="event-time pull-right">{event.event_time}</span>

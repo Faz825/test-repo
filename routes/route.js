@@ -238,6 +238,7 @@ router.post('/ajax/upload/folderDoc', UploadController.uploadFolderDocument);
 router.get('/connection/requests', ConnectionController.getRequestedConnections);
 router.get('/connection/me', ConnectionController.getMyConnections);
 router.get('/connection/search/:q', ConnectionController.searchConnection);
+router.get('/connection/get/:q', ConnectionController.getConnections);
 router.get('/connection/me/sort/:option', ConnectionController.getMySortedConnections);
 router.get('/connection/me/unfriend', ConnectionController.getMyConnectionsBindUnfriendConnections);
 router.get('/connection/get-mutual/:uid', ConnectionController.getMutualConnections);

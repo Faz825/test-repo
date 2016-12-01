@@ -39,8 +39,15 @@ export default class DayView extends Component {
             showTimePanel : '',
             showUserPanel : '',
             editOn : false,
-            editEventId : ''
+            editEventId : '',
+            showTimePanelWindow : false,
+            showUserPanelWindow : false,
+            sharedWithIds:[],
+            sharedWithNames: [],
         };
+
+        this.sharedWithIds = [];
+        this.sharedWithNames = [];
         this.currentDay = this.state.currentDay;
         this.loggedUser = user;
         this.addEvent = this.addEvent.bind(this);
@@ -53,12 +60,14 @@ export default class DayView extends Component {
 
     _onHashClick() {
         let showUserPanel = this.state.showUserPanel;
-        this.setState({showUserPanel : (showUserPanel == 'active' ? '' : 'active'), showTimePanel:'' });
+        let showUserPanelWindow = this.state.showUserPanelWindow;
+        this.setState({showUserPanel : (showUserPanel == 'active' ? '' : 'active'), showUserPanelWindow : (showUserPanelWindow == true ? false : true) });
     }
 
     _onAtClick() {
         let showTimePanel = this.state.showTimePanel;
-        this.setState({showTimePanel : (showTimePanel == 'active' ? '' : 'active'), showUserPanel:'' });
+        let showTimePanelWindow = this.state.showTimePanelWindow;
+        this.setState({showTimePanel : (showTimePanel == 'active' ? '' : 'active'), showTimePanelWindow : (showTimePanelWindow == true ? false : true) });
     }
 
     componentDidMount() {
@@ -102,7 +111,7 @@ export default class DayView extends Component {
         }
 
         // get shared users from SharedUsers field
-        const sharedUsers = this.refs.SharedUserField.sharedWithIds;
+        const sharedUsers = this.sharedWithIds;
         const postData = {
             description : editorContentRaw,
             plain_text : plainText,
@@ -125,7 +134,11 @@ export default class DayView extends Component {
                 console.log(this.refs.EditorFieldValues);
                 const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
                 this.refs.EditorFieldValues.setState({editorState});
-                this.refs.SharedUserField.setState({
+                // this.refs.SharedUserField.setState({
+                //     sharedWithNames: [],
+                //     sharedWithIds: [],
+                // });
+                this.setState({
                     sharedWithNames: [],
                     sharedWithIds: [],
                 });
@@ -166,7 +179,7 @@ export default class DayView extends Component {
         }
 
       // get shared users from SharedUsers field
-      const sharedUsers = this.refs.SharedUserField.sharedWithIds;
+      const sharedUsers = this.sharedWithIds;
       const postData = {
           description : editorContentRaw,
           plain_text : plainText,
@@ -189,7 +202,11 @@ export default class DayView extends Component {
               console.log(this.refs.EditorFieldValues);
               const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
               this.refs.EditorFieldValues.setState({editorState});
-              this.refs.SharedUserField.setState({
+              // this.refs.SharedUserField.setState({
+              //     sharedWithNames: [],
+              //     sharedWithIds: [],
+              // });
+              this.setState({
                   sharedWithNames: [],
                   sharedWithIds: [],
               });
@@ -254,7 +271,11 @@ export default class DayView extends Component {
                     const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, contentState);
 
                     this.refs.EditorFieldValues.setState({ editorState });
-                    this.refs.SharedUserField.setState({
+                    // this.refs.SharedUserField.setState({
+                    //     sharedWithNames: data.event.sharedWithNames,
+                    //     sharedWithIds: data.event.sharedWithIds,
+                    // });
+                    this.setState({
                         sharedWithNames: data.event.sharedWithNames,
                         sharedWithIds: data.event.sharedWithIds,
                     });
@@ -282,7 +303,11 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        this.refs.SharedUserField.setState({
+        // this.refs.SharedUserField.setState({
+        //     sharedWithNames: [],
+        //     sharedWithIds: [],
+        // });
+        this.setState({
             sharedWithNames: [],
             sharedWithIds: [],
         });
@@ -298,7 +323,11 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        this.refs.SharedUserField.setState({
+        // this.refs.SharedUserField.setState({
+        //     sharedWithNames: [],
+        //     sharedWithIds: [],
+        // });
+        this.setState({
             sharedWithNames: [],
             sharedWithIds: [],
         });
@@ -319,7 +348,11 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        this.refs.SharedUserField.setState({
+        // this.refs.SharedUserField.setState({
+        //     sharedWithNames: [],
+        //     sharedWithIds: [],
+        // });
+        this.setState({
             sharedWithNames: [],
             sharedWithIds: [],
         });
@@ -343,13 +376,34 @@ export default class DayView extends Component {
 
     setSharedUsers(selected) {
         var arrEntries = selected._root.entries;
+        if(this.sharedWithIds.indexOf(arrEntries[3][1])==-1){
+            this.sharedWithIds.push(arrEntries[3][1]);
+            this.sharedWithNames.push(arrEntries[0][1]);
+            this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false})
+        } else{
+            this.setState({isAlreadySelected:true});
+            console.log("already selected" + this.state.isAlreadySelected)
+        }
+    }
 
-        var userObj = {
-            user_id : arrEntries[3][1],
-            first_name : arrEntries[0][1],
-            last_name : ''
-        };
-        this.refs.SharedUserField.getSuggestionValue(userObj);
+    setSharedUsersFromDropDown(selected) {
+
+        if(this.sharedWithIds.indexOf(selected.user_id)==-1){
+            this.sharedWithIds.push(selected.user_id);
+            this.sharedWithNames.push(selected.first_name+" "+selected.last_name);
+            this.setState({sharedWithIds:this.sharedWithIds, sharedWithNames:this.sharedWithNames, isAlreadySelected:false});
+
+        } else{
+            this.setState({isAlreadySelected:true});
+            console.log("already selected" + this.state.isAlreadySelected)
+        }
+        return "";
+    }
+
+    removeUser(key){
+        this.sharedWithIds.splice(key,1);
+        this.sharedWithNames.splice(key,1);
+        this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
     }
 
     setTime(selected) {
@@ -364,7 +418,14 @@ export default class DayView extends Component {
     }
 
     render() {
-
+        let shared_with_list = [];
+        if(this.state.sharedWithNames.length > 0){
+            shared_with_list = this.state.sharedWithNames.map((name,key)=>{
+                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
+            });
+        } else {
+            shared_with_list = <span className="user-label">Only me</span>
+        }
         const typoPopover = (
             <Popover id="calendar-popover-typo">
                 <div className="menu-ico">
@@ -386,11 +447,11 @@ export default class DayView extends Component {
         );
         const showSecond = false;
         return (
-            <section className="calender-body">
-                <div className="row">
+            <section className="calender-body day-view">
+                <div className="row calendar-main-row">
                     <div className="col-sm-9">
                         <div className="calender-view">
-                            <div className="view-header">
+                            <div className="view-header row">
                                 <div className="col-sm-6">
                                     <div className="date-wrapper">
                                         <div className="date-nav" onClick={() => this.previousDay()}>
@@ -414,21 +475,37 @@ export default class DayView extends Component {
                                         <div className="input" id="editor-holder" >
                                             <EditorField ref="EditorFieldValues" setTime={this.setTime.bind(this)} setSharedUsers={this.setSharedUsers.bind(this)} />
 
-                                            <div className="shared-users-time-panel">
+                                            <div className="shared-users-time-panel row">
                                                 <div className="col-sm-3">
                                                     <p>
-                                                        <span className="user-label">Time : {this.state.defaultEventTime} </span>
+                                                        <span className="user-label">Time <span className="selected-time">{this.state.defaultEventTime}</span></span>
                                                     </p>
-                                                    <div className={this.state.showTimePanel + " panel time-panel"}>
-                                                        <TimePicker
-                                                            style={{ width: 100 }}
-                                                            showSecond={showSecond}
-                                                            defaultValue={moment()}
-                                                            onChange={this.handleTimeChange}
-                                                        />
-                                                    </div>
+                                                    {this.state.showTimePanelWindow ?
+                                                        <div className={this.state.showTimePanel + " panel time-panel"}>
+                                                            <TimePicker
+                                                                style={{ width: 100 }}
+                                                                showSecond={showSecond}
+                                                                defaultValue={moment()}
+                                                                onChange={this.handleTimeChange}
+                                                            />
+                                                        </div>
+                                                    : null }
                                                 </div>
-                                                <SharedUsers ref="SharedUserField" showPanel={this.state.showUserPanel}/>
+
+                                                <div className="col-sm-6 invite-people ">
+                                                    <p>
+                                                        <span className="user-label"> People in the event : </span>
+                                                        {shared_with_list}
+                                                    </p>
+                                                    {this.state.showUserPanelWindow ?
+                                                        <SharedUsers
+                                                            ref="SharedUserField"
+                                                            setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
+                                                            showPanel={this.state.showUserPanel}
+                                                            removeUser={this.removeUser}
+                                                        />
+                                                    : null }
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="calender-input-type">
@@ -439,42 +516,53 @@ export default class DayView extends Component {
                                 <div className="row input-menu">
                                     <div className="col-sm-12">
                                         <div className="items-wrapper">
-                                            <div className="menu-ico">
-                                                <p><i className="fa fa-smile-o" aria-hidden="true"></i></p>
-                                            </div>
+                                            <ul className="input-items-wrapper pull-right">
+                                                <li>
+                                                    <button className="menu-ico">
+                                                        <i className="fa fa-smile-o" aria-hidden="true"></i>
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button className="menu-ico">
+                                                        <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
+                                                            <p>A</p>
+                                                        </OverlayTrigger>
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button onClick={this._onHashClick.bind(this)} className="menu-ico">
+                                                        <i className="fa fa-hashtag" aria-hidden="true"></i>
+                                                    </button>
+                                                </li>
 
-                                            <div className="menu-ico">
-                                                <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
-                                                    <p>A</p>
-                                                </OverlayTrigger>
-                                            </div>
-                                            <div className="menu-ico">
-                                                <p onClick={this._onHashClick.bind(this)} >
-                                                    <i className="fa fa-hashtag" aria-hidden="true"></i>
-                                                </p>
-                                            </div>
-                                            <div className="menu-ico">
-                                                 <p onClick={this._onAtClick.bind(this)} >
-                                                    <i className="fa fa-at" aria-hidden="true"></i>
-                                                </p>
-                                            </div>
+                                                <li>
+                                                    <button onClick={this._onAtClick.bind(this)} className="menu-ico">
+                                                        <i className="fa fa-at" aria-hidden="true"></i>
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <div className="btn-group">
+                                                        <button type="button" className={"menu-ico-group btn event " + (this.state.defaultType == 'event' ? "active" : null)} eventType="event" onClick={() => this.changeType('event')}>
+                                                            <i className="fa fa-calendar" aria-hidden="true"></i> Event
+                                                        </button>
+                                                        <button type="button" className={"menu-ico-group btn todo " + (this.state.defaultType == 'todo' ? "active" : null)} eventType="todo" onClick={() => this.changeType('todo')}>
+                                                            <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
+                                                        </button>
+                                                    </div>
 
-                                            <div className="toggle-wrapper">
-                                                <div className={this.state.defaultType == 'event' ? 'btn-toggle active' : 'btn-toggle'} eventType="event" onClick={() => this.changeType('event')} >
-                                                    <i className="fa fa-calendar" aria-hidden="true"></i> Event
-                                                </div>
-                                                <div className={this.state.defaultType == 'todo' ? 'btn-toggle active' : 'btn-toggle'} eventType="todo" onClick={() => this.changeType('todo')} >
-                                                    <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
-                                                </div>
-                                            </div>
-                                            { this.state.editOn == false ?
-                                                <div className="btn-enter" onClick={this.addEvent}>
-                                                    <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
-                                                </div>
-                                            :   <div className="btn-enter" onClick={this.updateEvent}>
-                                                    <i className="fa fa-paper-plane" aria-hidden="true"></i> Update
-                                                </div>
-                                            }
+                                                </li>
+                                                <li>
+                                                    { this.state.editOn == false ?
+                                                        <button className="menu-ico-txt btn" onClick={this.addEvent}>
+                                                            <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
+                                                        </button>
+                                                        :
+                                                        <div className="menu-ico-txt btn" onClick={this.updateEvent}>
+                                                            <i className="fa fa-paper-plane" aria-hidden="true"></i> Update
+                                                        </div>
+                                                    }
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
