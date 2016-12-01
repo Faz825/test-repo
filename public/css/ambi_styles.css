@@ -11505,6 +11505,9 @@ header .notification-holder .profile-header-thumb {
   border-top: 4px solid #f6f6f6;
   margin-top: 15px;
 }
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list {
+  min-height: 180px;
+}
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li {
   padding: 20px 30px;
   border-bottom: 1px solid #d9d9d9;
