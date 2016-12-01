@@ -27,6 +27,10 @@ var ES = {
      */
     createIndex:function(payLoad,callBack){
 
+        console.log("ES - createIndex");
+        console.log("======================");
+        console.log(payLoad);
+
         var _esData = {
             index:payLoad.index,
             type:payLoad.type,
@@ -36,17 +40,19 @@ var ES = {
         if(typeof payLoad.tag_fields != 'undefined' ){
             _esData['tags'] = [];
             for(var i=0;i< payLoad.tag_fields.length;i++){
-
                 _esData['tags'].push(payLoad.data[payLoad.tag_fields[i]]);
             }
         }
 
         _esData['body'] = payLoad.data;
         this.esClient.index(_esData, function (error, response) {
-            if(error)
+            if(error){
+                console.log("ES - createIndex - Error")
                 console.log(error);
-
-
+            }
+            console.log("NOT ERROR");
+            console.log("======================");
+            console.log(response);
             callBack(response);
 
 

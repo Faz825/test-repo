@@ -978,8 +978,6 @@ export class SharePopup extends React.Component{
         return data.filter(data => regex.test(data.first_name+" "+data.last_name));
      }
 
-
-
     filterSharedUsers(folder_id, event) {
         //console.log("filterSharedUsers");
 

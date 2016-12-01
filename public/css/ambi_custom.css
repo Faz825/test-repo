@@ -2,6 +2,11 @@
 body{
 	background: #e9ebee;
 }
+
+.branding{
+  width: 238px;
+}
+
 /* Common body styles */
 .body-container .sub-container{
 	min-height: calc(100vh - 82px);
@@ -78,6 +83,15 @@ body{
   color: #000000;
   font-size: 14px;
   overflow: visible;
+	margin: 30px 22px 19px 22px;
+}
+
+.calender-container .selected-time {
+		color: #f11379;
+}
+
+.calender-containe span.selected-time {
+	color: #ed1e7a;
 }
 
 .calender-body .shared-users-time-panel .panel {
@@ -107,6 +121,10 @@ body{
   -moz-box-shadow: none;
   -o-box-shadow: none;
   box-shadow: none;
+}
+
+.calender-container .calender-body.day-view .col-sm-9 .calender-view .input-menu {
+		padding: 6px 20px 5px 20px;
 }
 
 /* - ReactAutoSuggest Custom Styles*/
@@ -312,6 +330,29 @@ a.rc-time-picker-panel-clear-btn {
     min-height: 165px;
 }
 
+/* Calendar styles */
+.calender-container .calender-header .calendar-main-nav {
+		text-align: center;
+}
+
+.calender-container .calender-header .calendar-main-nav .calender-type {
+		float: none;
+		display: inline-block;
+		margin-bottom: 37px;
+}
+
+.calender-container .calender-header .calendar-main-nav .calender-type:nth-child(1) {
+		margin-left: -14px;
+}
+
+.calender-container .calendar-main-row {
+		margin-left: 0px;
+}
+
+.calender-container .calender-header div h2 {
+		margin-top: 38px;
+}
+
 #calendar-popover-typo {
 	z-index: 9999;
 }
@@ -350,7 +391,10 @@ a.rc-time-picker-panel-clear-btn {
 		overflow: visible;
 }
 
-.calender-view .form-holder #editor-holder .DraftEditor-root,
+.calender-view .form-holder #editor-holder .DraftEditor-root{
+		min-height: 25px;
+}
+
 .popup-holder.week-view-editor-popup-holder .DraftEditor-root {
 		min-height: 57px;
 }

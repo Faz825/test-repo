@@ -8,7 +8,7 @@ var  mongoose = require('mongoose'),
     Schema   = mongoose.Schema,
     uuid = require('node-uuid');
 
-GLOBAL.FolderConfig={
+GLOBAL.GroupFolderConfig={
     CACHE_PREFIX :"group_shared_folders:",
     ES_INDEX_NAME:"group_idx_folders:"
 };

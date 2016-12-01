@@ -514,7 +514,60 @@ var ConnectionController ={
 
     },
 
-}
 
+    /**
+     * Get my connections
+     * @param req
+     * @param res
+     * @return outPut.status
+     * @return outPut.suggested_users{name : '', title: '', avatar : '', user_id : '' }
+     */
+    getConnections:function(req,res){
+        var User = require('mongoose').model('User'),
+            Connection = require('mongoose').model('Connection'),
+            CurrentSession = Util.getCurrentSession(req);
+
+        var _user_id = CurrentSession.id,
+            _search = req.params['q'];
+
+        var criteria = {
+            user_id :_user_id,
+            q:'first_name:'+_search+'* OR last_name:'+_search+'*'
+        };
+        var suggested_users = [];
+
+        Connection.getMyConnectionData(criteria,function(resultSet){
+
+            if(resultSet.results.length == 0) {
+                var outPut = {
+                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                    suggested_users: suggested_users
+                };
+                res.status(200).send(outPut);
+            }
+
+            for(var i = 0; i < resultSet.results.length; i++){
+                var user = resultSet.results[i];
+                var userObj = {
+                    name : user.first_name + ' '+user.last_name,
+                    title: (user.cur_designation ? user.cur_designation : 'Unknown'),
+                    avatar : user.images.profile_image.http_url,
+                    user_id : user.user_id
+                }
+                suggested_users.push(userObj);
+
+                if(i+1 == resultSet.results.length){
+                    var outPut = {
+                        status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                        suggested_users: suggested_users
+                    };
+                    res.status(200).send(outPut);
+                }
+            }
+            return 0;
+        });
+
+    },
+}
 
 module.exports = ConnectionController;

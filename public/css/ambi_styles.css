@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,6 +1418,7 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3118,6 +3119,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3670,6 +3672,7 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10246,17 +10249,17 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/*
-	Method to use:
-	@include @border {
-		border ($style,  $sides, $emptySides){
-	}
+/* 
+  Method to use:
+  @include @border {
+    border ($style,  $sides, $emptySides){
+  }
 */
-/*
-	Method to use:
-	@include @mixin {
-		content
-	}
+/* 
+  Method to use:
+  @include @mixin {
+    content
+  }
 */
 header {
   background: #fff;
@@ -11417,7 +11420,7 @@ header .notification-holder .profile-header-thumb {
   padding: 0px 25px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content {
-  padding: 40px 70px;
+  padding: 40px 70px 0;
   background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-title span {
@@ -11435,6 +11438,9 @@ header .notification-holder .profile-header-thumb {
   border: 0;
   border-top: 4px solid #f6f6f6;
   margin-top: 15px;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list {
+  min-height: 180px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li {
   padding: 20px 0px 20px 30px;
@@ -11480,7 +11486,7 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.875em;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content {
-  padding: 40px 70px;
+  padding: 40px 70px 60px;
   background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-title span {
@@ -11498,6 +11504,9 @@ header .notification-holder .profile-header-thumb {
   border: 0;
   border-top: 4px solid #f6f6f6;
   margin-top: 15px;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list {
+  min-height: 180px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li {
   padding: 20px 30px;
@@ -13018,8 +13027,6 @@ header .notification-holder .profile-header-thumb {
   margin-top: 42px;
   text-align: center;
   letter-spacing: -2px;
-  font-family: Andelo-Mono;
-  font-weight: 700;
   font-size: 1.80125em;
   color: #000000;
 }

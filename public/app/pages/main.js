@@ -41,7 +41,6 @@ class Main extends React.Component {
 
         if (this.loggedUser && this.state.verify === true) {
             return (
-                    // <DefaultLayout>
                     <AmbiLayout>
                         {this.props.children}
                     </AmbiLayout>

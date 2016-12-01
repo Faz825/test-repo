@@ -447,11 +447,11 @@ export default class DayView extends Component {
         );
         const showSecond = false;
         return (
-            <section className="calender-body">
-                <div className="row">
+            <section className="calender-body day-view">
+                <div className="row calendar-main-row">
                     <div className="col-sm-9">
                         <div className="calender-view">
-                            <div className="view-header">
+                            <div className="view-header row">
                                 <div className="col-sm-6">
                                     <div className="date-wrapper">
                                         <div className="date-nav" onClick={() => this.previousDay()}>
@@ -475,10 +475,10 @@ export default class DayView extends Component {
                                         <div className="input" id="editor-holder" >
                                             <EditorField ref="EditorFieldValues" setTime={this.setTime.bind(this)} setSharedUsers={this.setSharedUsers.bind(this)} />
 
-                                            <div className="shared-users-time-panel">
+                                            <div className="shared-users-time-panel row">
                                                 <div className="col-sm-3">
                                                     <p>
-                                                        <span className="user-label">Time : {this.state.defaultEventTime} </span>
+                                                        <span className="user-label">Time <span className="selected-time">{this.state.defaultEventTime}</span></span>
                                                     </p>
                                                     {this.state.showTimePanelWindow ?
                                                         <div className={this.state.showTimePanel + " panel time-panel"}>
