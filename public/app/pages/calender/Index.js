@@ -12,7 +12,7 @@ import CalenderView from './MonthView';
 import moment from 'moment';
 
 export default class Index extends React.Component{
-    
+
     constructor(props) {
 
         if(Session.getSession('prg_lg') == null){
@@ -49,7 +49,7 @@ export default class Index extends React.Component{
     setView(view) {
         this.setState({ current : view});
     }
-    
+
     render() {
 
         return (
@@ -57,10 +57,10 @@ export default class Index extends React.Component{
                 <div className="container">
                     <section className="calender-header">
                         <div className="row">
-                            <div className="col-sm-2">
+                            <div className="col-sm-3">
                                 <h2>Calendar</h2>
                             </div>
-                            <div className="col-sm-5 col-sm-offset-1">
+                            <div className="col-sm-6 calendar-main-nav">
                                 <div className={ this.state.current == 'day' ? 'calender-type active' : 'calender-type'} view="day" onClick={() => this.setView('day')} >
                                     <h4>Day</h4>
                                 </div>
@@ -71,7 +71,7 @@ export default class Index extends React.Component{
                                     <h4>Month</h4>
                                 </div>
                             </div>
-                            <div className="col-sm-4">
+                            <div className="col-sm-3">
                             </div>
                         </div>
                     </section>

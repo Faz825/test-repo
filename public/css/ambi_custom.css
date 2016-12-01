@@ -312,6 +312,28 @@ a.rc-time-picker-panel-clear-btn {
     min-height: 165px;
 }
 
+/* Calendar styles */
+.calender-container .calender-header .calendar-main-nav {
+		text-align: center;
+}
+
+.calender-container .calender-header .calendar-main-nav .calender-type {
+		float: none;
+		display: inline-block;
+}
+
+.calender-container .calender-header .calendar-main-nav .calender-type:nth-child(1) {
+		margin-left: -14px;
+}
+
+.calender-view .to-do-list-area-content-list {
+		min-height: 218px;
+}
+
+.calender-view .events-list-area-content-list {
+		min-height: 112px;
+}
+
 #calendar-popover-typo {
 	z-index: 9999;
 }
