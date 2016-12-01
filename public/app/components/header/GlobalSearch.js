@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import Autosuggest from 'react-autosuggest';
-import Lib from '../../middleware/Lib'
+import Lib from '../../middleware/Lib';
 
 export default class GlobalSearch extends React.Component{
     constructor(props) {
@@ -91,6 +91,7 @@ export default class GlobalSearch extends React.Component{
     }
 
     renderSuggestion(suggestion) {
+        console.log(suggestion);
         let img = suggestion.images.profile_image.http_url;
 
         if (typeof img == 'undefined'){
@@ -125,20 +126,6 @@ export default class GlobalSearch extends React.Component{
 
         return(
             <div className="search-holder">
-                {
-                    /** <input type="text" className="form-control" placeholder="Search..." /> 
-                    <div className="col-xs-7">
-                <div className="row row-clr pg-header-search">
-                    <Autosuggest suggestions={suggestions}
-                                 onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                                 getSuggestionValue={this.getSuggestionValue}
-                                 renderSuggestion={this.renderSuggestion}
-                                 inputProps={inputProps} />
-                    <a href="#"><img className="img-responsive search-icon" alt="search" src="/images/pg-home-v6_17.png" /></a>
-                </div>
-            </div>
-                    **/
-                }
                 <Autosuggest suggestions={suggestions}
                                  onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                                  getSuggestionValue={this.getSuggestionValue}
