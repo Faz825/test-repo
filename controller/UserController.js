@@ -1916,27 +1916,27 @@ var UserControler ={
                     for(var i = 0; i < my_connections.length; i++){
                         if(unique_ids.indexOf(my_connections[i].user_id) == -1){
                             unique_ids.push(my_connections[i].user_id);
-                            
-                            var userObj = {
-                                name : my_connections[i].first_name + ' '+my_connections[i].last_name,
-                                title: (my_connections[i].cur_designation ? my_connections[i].cur_designation : 'Unknown'),
-                                avatar : my_connections[i].images.profile_image.http_url,
-                                user_id : my_connections[i].user_id
-                            }
-                            suggested_users.push(userObj);
+                            suggested_users.push(my_connections[i]);
+                            // var userObj = {
+                            //     name : my_connections[i].first_name + ' '+my_connections[i].last_name,
+                            //     title: (my_connections[i].cur_designation ? my_connections[i].cur_designation : 'Unknown'),
+                            //     avatar : my_connections[i].images.profile_image.http_url,
+                            //     user_id : my_connections[i].user_id
+                            // }
+                            // suggested_users.push(userObj);
                         }
                     }
                     for(var j = 0; j < all_users.length; j++){
                         if(unique_ids.indexOf(all_users[j].user_id) == -1){
                             unique_ids.push(all_users[j].user_id);
-                            
-                            var userObjTwo = {
-                                name : all_users[j].first_name + ' '+all_users[j].last_name,
-                                title: (all_users[j].cur_designation ? all_users[j].cur_designation : 'Unknown'),
-                                avatar : all_users[j].images.profile_image.http_url,
-                                user_id : all_users[i].user_id
-                            }
-                            suggested_users.push(userObjTwo);
+                            suggested_users.push(all_users[j]);
+                            // var userObjTwo = {
+                            //     name : all_users[j].first_name + ' '+all_users[j].last_name,
+                            //     title: (all_users[j].cur_designation ? all_users[j].cur_designation : 'Unknown'),
+                            //     avatar : all_users[j].images.profile_image.http_url,
+                            //     user_id : all_users[i].user_id
+                            // }
+                            // suggested_users.push(userObjTwo);
                         }
                     }
 
