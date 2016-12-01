@@ -296,6 +296,7 @@ router.post('/folders/share-folder', FolderController.shareFolder);
 router.post('/folder/shared-user/remove', FolderController.removeSharedFolderUser);
 router.get('/get-folder-users/:folder/:name', UserController.getFolderUsers);
 router.get('/get-folder-users/:folder', UserController.getFolderUsers);
+router.post('/folder/shared-permission/change', FolderController.updateFolderSharedPermission);
 router.get('/filter-folder-shared-users/:folder/:name', UserController.filterFolderSharedUsers);
 router.post('/notifications/folder-update',NotificationController.updateFolderNotifications);
 

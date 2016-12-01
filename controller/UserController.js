@@ -1866,6 +1866,7 @@ var UserControler ={
      * @param res
      */
     getUserSuggestions:function(req,res){
+
         var User = require('mongoose').model('User'),
             Connection = require('mongoose').model('Connection'),
             _async = require('async'),
