@@ -408,6 +408,17 @@ a.rc-time-picker-panel-clear-btn {
 		padding: 7px 10px;
 }
 
+/* event list */
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description,
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label div.event-description p {
+		color: #bebfbf;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description.accepted,
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label div.event-description.accepted p {
+		color: #00a6ef;
+}
+
 
 /* Folder */
 .folder-item .upload-anime{
