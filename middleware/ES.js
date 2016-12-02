@@ -27,9 +27,9 @@ var ES = {
      */
     createIndex:function(payLoad,callBack){
 
-        console.log("ES - createIndex");
-        console.log("======================");
-        console.log(payLoad);
+        //console.log("ES - createIndex");
+        //console.log("======================");
+        //console.log(payLoad);
 
         var _esData = {
             index:payLoad.index,
@@ -50,9 +50,9 @@ var ES = {
                 console.log("ES - createIndex - Error")
                 console.log(error);
             }
-            console.log("NOT ERROR");
-            console.log("======================");
-            console.log(response);
+            //console.log("NOT ERROR");
+            //console.log("======================");
+            //console.log(response);
             callBack(response);
 
 
