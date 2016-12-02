@@ -157,6 +157,7 @@ export default class NewsSettings extends React.Component{
 
     }
     render() {
+        console.log(this.state.news_categories);
 
         const {
             news_categories
@@ -322,6 +323,7 @@ export class NewsCategory extends React.Component{
     }
 
     render(){
+        console.log(this.props.newsCategory.channels);
         let _opt_class = this.props.newsCategory.category.toLowerCase();
         let _selected = (this.props.newsCategory.is_favorite)?"selected":"";
         let _this = this;
@@ -351,7 +353,7 @@ export class NewsCategory extends React.Component{
                         </div>
                     </div>
                 </div>
-                {this.getPopup()}
+                {this.getPopup()} 
             </div>
         )
     }

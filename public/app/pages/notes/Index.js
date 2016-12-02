@@ -426,10 +426,10 @@ export default class Index extends React.Component {
 
     render() {
         return (
-            <div className="notesCatHolder container-fluid">
+            <div className="notesCatHolder">
                 <div className="row row-clr pg-notes-page-content">
                     <div className="row row-clr pg-notes-page-header">
-                        <div className="col-xs-10 col-xs-offset-1">
+                        <div className="container">
                             <div className="row">
                                 <div className="col-xs-6">
                                     <h2 className="pg-connections-page-header-title">Notes</h2>
@@ -489,7 +489,7 @@ export class NoteCategory extends React.Component{
 
         let _noteBooks = notebooks.map(function(notebook,key){
             let i = (
-                <Popover id="popover-contained"  positionTop="150px" className="popup-holder">
+                <Popover id="popover-contained"  positionTop="150px" className="popup-holder share-popover">
                     <SharePopup notebook={notebook} onUserAdd={_this.userAdded} onLoadNotes={_this.props.onLoadNotes}/>
                 </Popover>
             );
@@ -521,7 +521,7 @@ export class NoteCategory extends React.Component{
         });
 
         return (
-            <div className="col-xs-10 col-xs-offset-1">
+            <div className="container">
                 {_noteBooks}
             </div>
         );
