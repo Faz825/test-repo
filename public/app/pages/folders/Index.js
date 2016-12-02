@@ -502,56 +502,56 @@ export class Folder extends React.Component{
         this.onShowConfirm = this.onShowConfirm.bind(this);
 
         this.filesData = this.props.folderData.documents;
-        // this.filesData = [
-        //   {
-        //       document_id : "582ae658247ffffc240b08b9",
-        //       document_name : "PEF - Anuthiga Sriskanthan - DOC",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-        //       document_thumb_path : null,
-        //       document_type : "doc",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   },
-        //   {
-        //       document_id : "582ae658247ffffc240b08b9",
-        //       document_name : "PEF - Anuthiga Sriskanthan",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-        //       document_thumb_path : null,
-        //       document_type : "xlsx",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   },
-        //   {
-        //       document_id : "582c2d3a1461f4050b1764c5",
-        //       document_name : "babymartonline.com-check-list",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
-        //       document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
-        //       document_type : "gif",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   },
-        //   {
-        //       document_id : "582be27c639078842cbc24f6",
-        //       document_name : "babymartonline.com-check-list",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-        //       document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-        //       document_type : "jpg",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   }
-        // ];
+        this.filesData = [
+          {
+              document_id : "582ae658247ffffc240b08b9",
+              document_name : "PEF - Anuthiga Sriskanthan - DOC",
+              document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+              document_thumb_path : null,
+              document_type : "doc",
+              document_updated_at:{
+                  createdDate: "Oct 11, 2016",
+                  createdTime: "9:31 am"
+              },
+              document_user : "574bcb96272a6fd40768cf0f"
+          },
+          {
+              document_id : "582ae658247ffffc240b08b9",
+              document_name : "PEF - Anuthiga Sriskanthan",
+              document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+              document_thumb_path : null,
+              document_type : "xlsx",
+              document_updated_at:{
+                  createdDate: "Oct 11, 2016",
+                  createdTime: "9:31 am"
+              },
+              document_user : "574bcb96272a6fd40768cf0f"
+          },
+          {
+              document_id : "582c2d3a1461f4050b1764c5",
+              document_name : "babymartonline.com-check-list",
+              document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
+              document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
+              document_type : "gif",
+              document_updated_at:{
+                  createdDate: "Oct 11, 2016",
+                  createdTime: "9:31 am"
+              },
+              document_user : "574bcb96272a6fd40768cf0f"
+          },
+          {
+              document_id : "582be27c639078842cbc24f6",
+              document_name : "babymartonline.com-check-list",
+              document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+              document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+              document_type : "jpg",
+              document_updated_at:{
+                  createdDate: "Oct 11, 2016",
+                  createdTime: "9:31 am"
+              },
+              document_user : "574bcb96272a6fd40768cf0f"
+          }
+        ];
 
     }
 

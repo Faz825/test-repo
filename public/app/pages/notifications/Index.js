@@ -524,11 +524,11 @@ export default class Index extends React.Component{
         );
 
         return (
-            <div className="notificationsHolder container-fluid">
+            <div className="notificationsHolder">
                 <div className="row row-clr pg-news-page-content">
                     <div className="row row-clr">
-                        <div className="col-xs-10 col-xs-offset-1">
-                            <div className="row notification-header">
+                        <div className="container">
+                            <div className="notification-header">
                                 <div className="pg-middle-content-top-middle-secretary">
                                     <SecretaryThumbnail url={_secretary_image}/>
                                 </div>
@@ -541,7 +541,7 @@ export default class Index extends React.Component{
                                     <button className="btn btn-default">Text me to do's</button>
                                 </OverlayTrigger>
                             </div>
-                            <div className="row notification-box-holder">
+                            <div className="notification-box-holder">
                                 <div className="col-sm-4 notification-box">
                                     <div className="notifi-inner-wrapper">
                                         <div className="box-header-wrapper clearfix">

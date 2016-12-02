@@ -2831,9 +2831,7 @@ textarea{
 
 /* Chat Window */
 .pg-middle-chat-screen-area{
-	margin-top: 70px;
 	padding: 0;
-	width: calc(100% - 220px);
 	min-height: 80vh;
 }
 
@@ -3575,7 +3573,7 @@ textarea{
 .notifi-inner-wrapper .btn-default:focus,
 .notifi-inner-wrapper .btn-default:hover{
     background: #00a5ef;
-    padding: 10px 15px;
+    padding: 7px 14px;
     text-transform: capitalize;
     color: #fff;
     border: none;
@@ -3985,9 +3983,14 @@ textarea{
 	border-right-color: transparent;
 }
 
+.popup-holder.share-popover{
+	max-width: 445px;
+}
+
 .popup-holder .popover-content{
 	background: #e8eef2;
 	padding: 0;
+	max-width: 445px;
 }
 
 .popup-holder .popover-content .share-popup-holder{
@@ -4000,7 +4003,7 @@ textarea{
 
 .popup-holder .header-holder .title{
 	font-size: 1.143em;
-	margin: 7px 0 0 50px;
+	margin: 7px 50px 0 0;
 	float: left;
 	color: #2d5164;
     font-weight: 600;
@@ -5121,7 +5124,6 @@ textarea{
 	font: 10px "montserratregular",sans-serif;
 	border: 1px solid #90a2b1;
 	padding: 6px 0 5px 8px;
-	margin-left: 10px;
 }
 
 .popup-header .note-title{
