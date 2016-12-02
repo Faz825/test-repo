@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import moment from 'moment';
+import Session from '../../middleware/Session';
 
 export default class Week extends React.Component {
 
@@ -67,6 +68,9 @@ export default class Week extends React.Component {
 export class DailyEvents extends React.Component {
     constructor(props) {
         super(props);
+
+        this.loggedUser = Session.getSession('prg_lg');
+        this.isPending = this.isPending.bind(this);
     }
 
     render() {
@@ -80,8 +84,20 @@ export class DailyEvents extends React.Component {
         );
     }
 
+    isPending(event) {
+        if(event.user_id == this.loggedUser.id) {
+            return false;
+        }
+        for(let _suser in event.shared_users) {
+            if(event.shared_users[_suser].user_id == this.loggedUser.id && event.shared_users[_suser].shared_status == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     renderSelectedDate() {
-        let count = 0;
+        let count = 0, _this = this;
         let _events = this.props.daily_events.map(function(event,key){
             let _text = event.description.blocks[0].text;
             count++;
@@ -89,7 +105,9 @@ export class DailyEvents extends React.Component {
                 return;
             }
             return(
-                <li className={event.type == 1 ? "color-1" : "color-3"} key={key}>{_text}</li>
+                <li className={_this.isPending(event) == false ? event.type == 1 ? "color-1" : "color-3" : "pending"}
+                    key={key}>{_text}
+                </li>
             );
         });
 

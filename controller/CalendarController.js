@@ -1485,7 +1485,7 @@ var CalendarController = {
                     CalendarSharedStatus.REQUEST_REJECTED : CalendarSharedStatus.REQUEST_ACCEPTED;
 
                 var _udata = {
-                    'shared_users.$.status':shared_status
+                    'shared_users.$.shared_status':shared_status
                 };
                 var criteria = {
                     _id:Util.toObjectId(req.body.event_id),

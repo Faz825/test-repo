@@ -177,6 +177,12 @@ class Chat{
 
         function bit6Auth(isNewUser) {
             if(Session.getSession('prg_lg') != null){
+
+                if (b6.session.authenticated) {
+                    console.log('User is logged in');
+                    return true;
+                }
+
                 // Convert username to an identity URI
                 var ident = 'usr:proglobe_' + Session.getSession('prg_lg').user_name;
                 var pass = 'proglobe_'+Session.getSession('prg_lg').id;
