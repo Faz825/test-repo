@@ -11453,6 +11453,9 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i:nth-child(1) {
   color: #00a6ef;
 }
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li.pending p, .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li.pending i {
+  color: #989ba0;
+}
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i.pull-right {
   margin-top: 2px;
 }
@@ -11467,9 +11470,6 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div p {
   margin-bottom: 0;
-}
-.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div p.pending {
-  color: #989ba0;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .people-list-wrapper {
   display: block;
@@ -11754,7 +11754,10 @@ header .notification-holder .profile-header-thumb {
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li:before {
   color: #00a6ef;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items .pending {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li.pending::before {
+  color: #989ba0;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li.pending p {
   color: #989ba0;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .header-wrapper p {
@@ -11763,7 +11766,10 @@ header .notification-holder .profile-header-thumb {
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li:before {
   color: #a6c649;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items .pending {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li.pending::before {
+  color: #989ba0;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li.pending p {
   color: #989ba0;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper {
@@ -12695,27 +12701,27 @@ header .notification-holder .profile-header-thumb {
   height: 40px;
   font-size: 0.875em;
 }
-.call-center-container .contacts-holder {
+.call-center-container .call-center-inner-holder {
   overflow: hidden;
   border-radius: 8px;
   box-shadow: 0px 0px 7px 3px #d6d8da;
   min-height: 75vh;
   background-color: #f6f6f6;
 }
-.call-center-container .contacts-holder .contact-header {
+.call-center-container .call-center-inner-holder .inner-header {
   overflow: hidden;
 }
-.call-center-container .contacts-holder .contact-header .user-status .image-wrapper {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper {
   float: left;
   position: relative;
 }
-.call-center-container .contacts-holder .contact-header .user-status .image-wrapper img {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper img {
   margin-top: 20px;
   margin-left: 70px;
   width: 54px;
   height: 54px;
 }
-.call-center-container .contacts-holder .contact-header .user-status .image-wrapper .status {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status {
   position: absolute;
   bottom: 0px;
   right: 0px;
@@ -12725,39 +12731,40 @@ header .notification-holder .profile-header-thumb {
   border: 3px solid #ffffff;
   border-radius: 100%;
 }
-.call-center-container .contacts-holder .contact-header .user-status .name-wrapper {
+.call-center-container .call-center-inner-holder .inner-header .user-status .name-wrapper {
   float: left;
   margin-top: 25px;
   margin-left: 18px;
 }
-.call-center-container .contacts-holder .contact-header .user-status .name-wrapper .name {
+.call-center-container .call-center-inner-holder .inner-header .user-status .name-wrapper .name {
   margin-bottom: 0;
   font-size: 1em;
   font-weight: 500;
   color: #000000;
 }
-.call-center-container .contacts-holder .contact-header .user-status .name-wrapper .status {
+.call-center-container .call-center-inner-holder .inner-header .user-status .name-wrapper .status {
   font-size: 0.75em;
   font-weight: 400;
   color: #000000;
 }
-.call-center-container .contacts-holder .contact-header .rw-contact-menu {
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu {
   background-color: #ffffff;
   text-align: center;
   font-size: 0.751875em;
   font-weight: 400;
   color: #000000;
 }
-.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-4 {
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-4 {
   padding: 12px;
   border-bottom: 4px solid #e9ebee;
   cursor: pointer;
 }
-.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-4.active {
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-4.active {
   font-weight: 500;
   border-bottom: 4px solid #00a5ef;
 }
-.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-2-4 {
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4 {
+  position: relative;
   position: relative;
   min-height: 1px;
   padding-left: 15px;
@@ -12767,71 +12774,211 @@ header .notification-holder .profile-header-thumb {
   cursor: pointer;
 }
 @media (min-width: 768px) {
-  .call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-2-4 {
+  .call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4 {
     float: left;
     width: 20%;
   }
 }
-.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-2-4.active {
-  font-weight: 500;
-  border-bottom: 4px solid #00a5ef;
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4 .selector {
+  position: absolute;
+  height: 5px;
+  width: 60%;
+  bottom: -5px;
+  left: 20%;
+  background-color: transparent;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .group-name {
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4.active {
+  font-weight: 500;
+}
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4.active .selector {
+  background-color: #00a5ef;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .group-name {
   margin-left: 71px;
   margin-bottom: 3px;
   font-size: 0.875em;
   font-weight: 500;
   color: #00a5ef;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper {
   overflow: hidden;
   padding: 0 6%;
   border-top: 1px solid #dee6eb;
+  background-color: #ffffff;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item {
   overflow: hidden;
   margin-top: 6px;
+  margin-bottom: 10px;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper {
   float: left;
   position: relative;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper img {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper img {
   width: 51px;
   height: 51px;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status {
   position: absolute;
   bottom: 0px;
   right: 0px;
   width: 13px;
   height: 13px;
-  background-color: #63c66c;
-  border: 3px solid #ffffff;
   border-radius: 100%;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.online {
+  background-color: #63c66c;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.work-mode {
+  background-color: #de2424;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.offline {
+  background-color: #ffffff;
+  border: 2px solid #6ac374;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper {
   float: left;
   margin-left: 18px;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .name {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .name {
   margin-top: 5px;
   margin-bottom: 0;
   font-size: 0.875em;
   font-weight: 500;
   color: #000000;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .status {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .status {
   font-size: 0.75em;
   font-weight: 400;
   color: #000000;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type {
   text-align: center;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type img {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type img {
   margin-top: 14px;
   font-size: 1.5625em;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper {
+  float: right;
+  margin-top: 7px;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  border: 1px solid #06a7ef;
+  border-radius: 100%;
+  background-color: #ffffff;
+  outline: none;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico.video {
+  margin-right: 16px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper {
+  overflow: hidden;
+  padding: 0 6%;
+  border-top: 1px solid #dee6eb;
+  background-color: #ffffff;
+  height: 50vh;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item {
+  overflow: hidden;
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper {
+  float: left;
+  position: relative;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper img {
+  width: 51px;
+  height: 51px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper .status {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 13px;
+  height: 13px;
+  border-radius: 100%;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper .status.online {
+  background-color: #63c66c;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper .status.work-mode {
+  background-color: #de2424;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper .status.offline {
+  background-color: #ffffff;
+  border: 2px solid #6ac374;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .name-wrapper {
+  float: left;
+  margin-left: 18px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .name-wrapper .name {
+  margin-top: 5px;
+  margin-bottom: 0;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: #000000;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .name-wrapper .status {
+  font-size: 0.75em;
+  font-weight: 400;
+  color: #000000;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type {
+  text-align: center;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-count {
+  display: inline-block;
+  color: #ffffff;
+  background-color: #bcbebe;
+  font-size: 0.875em;
+  font-weight: 500;
+  border-radius: 100%;
+  width: 27px;
+  height: 27px;
+  padding-top: 2px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-count.missed {
+  background-color: #de2424;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type img {
+  display: inline-block;
+  font-size: 1.5625em;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-time {
+  display: inline-block;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: #000000;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-time.missed {
+  color: #de2424;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .call-ico-wrapper {
+  float: right;
+  margin-top: 7px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .call-ico-wrapper .call-ico {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  border: 1px solid #06a7ef;
+  border-radius: 100%;
+  background-color: #ffffff;
+  outline: none;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .call-ico-wrapper .call-ico.video {
+  margin-right: 16px;
 }
 
 .popup-holder {
