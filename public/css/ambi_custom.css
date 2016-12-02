@@ -128,27 +128,27 @@ body{
 .search-holder .react-autosuggest__suggestions-container{
 	z-index: 1;
 }
-.search-holder #react-autowhatever-1{
+.search-holder .react-autosuggest__suggestion {
 	max-height: 335px;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	top: 48px;
 	width: 100%;
 }
-.search-holder #react-autowhatever-1 a:hover{
+.search-holder .react-autosuggest__suggestion a:hover{
 	text-decoration: none;
 }
-.search-holder #react-autowhatever-1 .suggestion{
+.search-holder .react-autosuggest__suggestion .suggestion{
 	overflow: hidden;
 	position: relative;
 }
-.search-holder #react-autowhatever-1 .suggestion .img-holder{
+.search-holder .react-autosuggest__suggestion .suggestion .img-holder{
 	width: 30px;
 	height: 30px;
 	margin-right: 15px;
 	float: left;
 }
-.search-holder #react-autowhatever-1 .suggestion span{
+.search-holder .react-autosuggest__suggestion .suggestion span{
 	float: left;
 	margin-top: 8px;
 	line-height: 1;
