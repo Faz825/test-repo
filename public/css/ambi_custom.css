@@ -86,12 +86,9 @@ body{
 	margin: 30px 22px 19px 22px;
 }
 
+.popup-holder .selected-time,
 .calender-container .selected-time {
 		color: #f11379;
-}
-
-.calender-containe span.selected-time {
-	color: #ed1e7a;
 }
 
 .calender-body .shared-users-time-panel .panel {
@@ -396,7 +393,7 @@ a.rc-time-picker-panel-clear-btn {
 }
 
 .popup-holder.week-view-editor-popup-holder .DraftEditor-root {
-		min-height: 57px;
+		min-height: 131px;
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-date-wrapper h4 {
@@ -405,6 +402,10 @@ a.rc-time-picker-panel-clear-btn {
 
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group.active {
 		z-index: 1;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-header div.model-title-wrapper {
+		padding: 7px 10px;
 }
 
 
@@ -591,7 +592,7 @@ footer .notification-alert-holder.slideOut{
 }
 
 .draftJsEmojiPlugin__emojiSuggestionsEntryFocused__XDntY {
-  background-color: #e6f3ff;
+  background-color: #00a6ef;
 }
 
 .draftJsEmojiPlugin__emojiSuggestionsEntryText__2sPjk {

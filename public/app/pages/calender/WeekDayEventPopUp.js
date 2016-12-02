@@ -246,40 +246,39 @@ export default class WeekDayEventPopUp extends React.Component {
                                             setTime={this.setTime.bind(this)}
                                             setSharedUsers={this.setSharedUsers.bind(this)}
                                             />
-                                        : null }
-                                </div>
-                                <div className="shared-users-time-panel">
-
-                                    <div className="col-sm-3">
-                                        <p>
-                                            <span className="user-label">Time : {this.state.defaultEventTime} </span>
-                                        </p>
-                                        {this.state.showTimePanelWindow ?
-                                            <div className={this.state.showTimePanel + " panel time-panel"}>
-                                                <TimePicker
-                                                    style={{ width: 100 }}
-                                                    showSecond={showSecond}
-                                                    defaultValue={moment()}
-                                                    onChange={this.handleTimeChange.bind(this)}
+                                    : null }
+                                    <div className="shared-users-time-panel row">
+                                        <div className="col-sm-3">
+                                            <p>
+                                                <span className="user-label">Time <span className="selected-time">{this.state.defaultEventTime}</span></span>
+                                            </p>
+                                            {this.state.showTimePanelWindow ?
+                                                <div className={this.state.showTimePanel + " panel time-panel"}>
+                                                    <TimePicker
+                                                        style={{ width: 100 }}
+                                                        showSecond={showSecond}
+                                                        defaultValue={moment()}
+                                                        onChange={this.handleTimeChange.bind(this)}
+                                                    />
+                                                </div>
+                                                : null}
+                                        </div>
+                                        <div className="invite-people col-sm-9">
+                                            <p>
+                                                <span className="user-label"> People in the event : </span>
+                                                {shared_with_list}
+                                            </p>
+                                            {this.state.showUserPanelWindow ?
+                                                <SharedUsers
+                                                    setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
+                                                    showPanel={this.state.showUserPanel}
+                                                    removeUser={this.removeUser}
                                                 />
-                                            </div>
-                                            : null}
-                                    </div>
-                                    <div className="invite-people col-sm-6">
-                                        <p>
-                                            <span className="user-label"> People in the event : </span>
-                                            {shared_with_list}
-                                        </p>
-                                        {this.state.showUserPanelWindow ?
-                                            <SharedUsers
-                                                setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
-                                                showPanel={this.state.showUserPanel}
-                                                removeUser={this.removeUser}
-                                            />
                                             : null }
+                                        </div>
                                     </div>
-                                </div>
 
+                                </div>
                             </div>
                             <div className="model-footer">
                                 <div className="input-items-outer-wrapper">
