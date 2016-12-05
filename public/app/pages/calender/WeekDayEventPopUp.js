@@ -30,13 +30,16 @@ export default class WeekDayEventPopUp extends React.Component {
             showTimePanel : '',
             showTimePanelWindow : false,
             showUserPanel : '',
-            showUserPanelWindow : false
+            showUserPanelWindow : false,
+            msgOn : false,
+            errorMsg : ''
         }
 
         this.loggedUser = user;
         this.sharedWithIds = [];
         this.sharedWithNames = [];
         this.addEvent = this.addEvent.bind(this);
+        this.toggleMsg = this.toggleMsg.bind(this);
     }
 
     componentDidMount() {
@@ -110,8 +113,11 @@ export default class WeekDayEventPopUp extends React.Component {
         this.setState({ defaultEventTime: moment(time).format('HH:mm')});
     }
 
-    addEvent(event) {
+    toggleMsg() {
+        this.setState({ msgOn: !this.state.msgOn });
+    }
 
+    addEvent(event) {
 
         const strDate = this.props.curr_date.format('YYYY-MM-DD');
         const strTime = this.state.defaultEventTime;
@@ -122,7 +128,19 @@ export default class WeekDayEventPopUp extends React.Component {
         const editorContentRaw = convertToRaw(contentState);
         const plainText = contentState.getPlainText();
 
+        // front-end validations
+        // TODO: remove this msg showing method after implementing a global way to show error message
         if(!plainText) {
+            this.setState({errorMsg : 'Please add the event description'});
+            this.toggleMsg();
+            setTimeout(this.toggleMsg, 3000);
+            return;
+        }
+
+        if(dateWithTime < moment().format('YYYY-MM-DD HH:mm')) {
+            this.setState({errorMsg : 'Please add a future date and time'});
+            this.toggleMsg();
+            setTimeout(this.toggleMsg, 3000);
             return;
         }
 
@@ -282,6 +300,11 @@ export default class WeekDayEventPopUp extends React.Component {
                             </div>
                             <div className="model-footer">
                                 <div className="input-items-outer-wrapper">
+                                    <div className="msg-holder pull-left">
+                                        {this.state.msgOn ?
+                                            <p className="text-danger">{this.state.errorMsg}</p>
+                                        : null }
+                                    </div>
                                     <ul className="input-items-wrapper pull-right">
                                         <li>
                                             <button className="menu-ico">

@@ -44,6 +44,8 @@ export default class DayView extends Component {
             showUserPanelWindow : false,
             sharedWithIds:[],
             sharedWithNames: [],
+            msgOn : false,
+            errorMsg : ''
         };
 
         this.sharedWithIds = [];
@@ -55,6 +57,7 @@ export default class DayView extends Component {
         this.nextDay = this.nextDay.bind(this);
         this.changeType = this.changeType.bind(this);
         this.handleTimeChange = this.handleTimeChange.bind(this);
+        this.toggleMsg = this.toggleMsg.bind(this);
 
     }
 
@@ -95,6 +98,10 @@ export default class DayView extends Component {
 
     }
 
+    toggleMsg() {
+        this.setState({ msgOn: !this.state.msgOn });
+    }
+
     addEvent(event) {
 
         const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
@@ -106,7 +113,18 @@ export default class DayView extends Component {
         const editorContentRaw = convertToRaw(contentState);
         const plainText = contentState.getPlainText();
 
+        // front-end alidations
         if(!plainText) {
+            this.setState({errorMsg : 'Please add the event description'});
+            this.toggleMsg();
+            setTimeout(this.toggleMsg, 3000);
+            return;
+        }
+
+        if(dateWithTime < moment().format('YYYY-MM-DD HH:mm')) {
+            this.setState({errorMsg : 'Please add a future date and time'});
+            this.toggleMsg();
+            setTimeout(this.toggleMsg, 3000);
             return;
         }
 
@@ -131,13 +149,10 @@ export default class DayView extends Component {
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
-                console.log(this.refs.EditorFieldValues);
+
                 const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
                 this.refs.EditorFieldValues.setState({editorState});
-                // this.refs.SharedUserField.setState({
-                //     sharedWithNames: [],
-                //     sharedWithIds: [],
-                // });
+
                 this.setState({
                     sharedWithNames: [],
                     sharedWithIds: [],
@@ -153,8 +168,6 @@ export default class DayView extends Component {
 
                     Socket.sendCalendarShareNotification(_notificationData);
                 }
-
-
                 this.loadEvents();
             }
         }.bind(this));
@@ -515,6 +528,11 @@ export default class DayView extends Component {
                                 </div>
                                 <div className="row input-menu">
                                     <div className="col-sm-12">
+                                        <div className="msg-holder pull-left">
+                                            {this.state.msgOn ?
+                                                <p className="text-danger">{this.state.errorMsg}</p>
+                                            : null }
+                                        </div>
                                         <div className="items-wrapper">
                                             <ul className="input-items-wrapper pull-right">
                                                 <li>
