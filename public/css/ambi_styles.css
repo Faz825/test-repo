@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.6 (http://getbootstrap.com)
- * Copyright 2011-2015 Twitter, Inc.
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,7 +1418,6 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3119,7 +3118,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3672,7 +3670,6 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10249,17 +10246,17 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/* 
-  Method to use:
-  @include @border {
-    border ($style,  $sides, $emptySides){
-  }
+/*
+	Method to use:
+	@include @border {
+		border ($style,  $sides, $emptySides){
+	}
 */
-/* 
-  Method to use:
-  @include @mixin {
-    content
-  }
+/*
+	Method to use:
+	@include @mixin {
+		content
+	}
 */
 header {
   background: #fff;
@@ -12677,7 +12674,7 @@ header .notification-holder .profile-header-thumb {
   margin-right: 10px;
 }
 .call-center-container .call-center-header .crt-call .btn-crt-call {
-  padding: 9px 28px 9px 28px;
+  padding: 9px 35px;
   background-color: #00a5ef;
   color: #ffffff;
   font-size: 0.875em;
@@ -12702,6 +12699,7 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.875em;
 }
 .call-center-container .call-center-inner-holder {
+  margin-top: 18px;
   overflow: hidden;
   border-radius: 8px;
   box-shadow: 0px 0px 7px 3px #d6d8da;
@@ -12720,6 +12718,7 @@ header .notification-holder .profile-header-thumb {
   margin-left: 70px;
   width: 54px;
   height: 54px;
+  border-radius: 100%;
 }
 .call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status {
   position: absolute;
@@ -12727,9 +12726,19 @@ header .notification-holder .profile-header-thumb {
   right: 0px;
   width: 13px;
   height: 13px;
+  border-radius: 100%;
+}
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.online {
   background-color: #63c66c;
   border: 3px solid #ffffff;
-  border-radius: 100%;
+}
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.work-mode {
+  background-color: #de2424;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.offline {
+  background-color: #ffffff;
+  border: 2px solid #6ac374;
 }
 .call-center-container .call-center-inner-holder .inner-header .user-status .name-wrapper {
   float: left;
@@ -12818,6 +12827,7 @@ header .notification-holder .profile-header-thumb {
 .call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper img {
   width: 51px;
   height: 51px;
+  border-radius: 100%;
 }
 .call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status {
   position: absolute;
@@ -12858,9 +12868,19 @@ header .notification-holder .profile-header-thumb {
 .call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type {
   text-align: center;
 }
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type img {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type.user span {
   margin-top: 14px;
-  font-size: 1.5625em;
+  width: 18px;
+  height: 20px;
+  display: inline-block;
+  background-image: url("../images/call-center/contact-user-ico.png");
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type.group span {
+  margin-top: 14px;
+  width: 36px;
+  height: 20px;
+  display: inline-block;
+  background-image: url("../images/call-center/contact-users-ico.png");
 }
 .call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper {
   float: right;
@@ -12885,6 +12905,11 @@ header .notification-holder .profile-header-thumb {
   background-color: #ffffff;
   height: 50vh;
 }
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .call-center-container .call-center-inner-holder .recent-list .list-wrapper {
+    padding: 0 7%;
+  }
+}
 .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item {
   overflow: hidden;
   margin-top: 6px;
@@ -12897,6 +12922,7 @@ header .notification-holder .profile-header-thumb {
 .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper img {
   width: 51px;
   height: 51px;
+  border-radius: 100%;
 }
 .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper .status {
   position: absolute;
@@ -12936,8 +12962,44 @@ header .notification-holder .profile-header-thumb {
 }
 .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type {
   text-align: center;
+  margin-top: 15px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type.missed .call-time {
+  color: #de2424;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type.missed .call-count {
+  background-color: #de2424;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type.missed .video {
+  display: inline-block;
+  vertical-align: middle;
+  width: 20px;
+  height: 13px;
+  background-image: url("../images/call-center/video-ico-missed.png");
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type.missed .phone {
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+  background-image: url("../images/call-center/phone-ico-missed.png");
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .video {
+  display: inline-block;
+  vertical-align: middle;
+  width: 20px;
+  height: 13px;
+  background-image: url("../images/call-center/video-ico.png");
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .phone {
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+  background-image: url("../images/call-center/phone-ico.png");
 }
 .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-count {
+  margin-right: 43px;
   display: inline-block;
   color: #ffffff;
   background-color: #bcbebe;
@@ -12948,21 +13010,22 @@ header .notification-holder .profile-header-thumb {
   height: 27px;
   padding-top: 2px;
 }
-.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-count.missed {
-  background-color: #de2424;
-}
-.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type img {
-  display: inline-block;
-  font-size: 1.5625em;
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-count {
+    margin-right: 33px;
+  }
 }
 .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-time {
+  margin-left: 40px;
   display: inline-block;
   font-size: 0.875em;
   font-weight: 500;
   color: #000000;
 }
-.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-time.missed {
-  color: #de2424;
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-time {
+    margin-left: 30px;
+  }
 }
 .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .call-ico-wrapper {
   float: right;
@@ -12982,7 +13045,6 @@ header .notification-holder .profile-header-thumb {
 }
 
 .popup-holder {
-  overflow: hidden;
   background-color: #ffffff;
   border-radius: 8px;
 }
@@ -13505,6 +13567,14 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .share-folder-popover.add-new-user .arrow {
   display: none;
+}
+.popup-holder .active-call-container {
+  position: relative;
+  margin: 0px -10px;
+  overflow: hidden;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
 }
 
 .settings-icon {
