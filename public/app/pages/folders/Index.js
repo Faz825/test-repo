@@ -50,21 +50,17 @@ export default class Index extends React.Component{
         this.getSuggestionValue = this.getSuggestionValue.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
         this.removeUser = this.removeUser.bind(this);
-        console.log("folder index constructor");
     }
 
     componentDidMount(){
-        console.log("Index - componentDidMount");
         this.checkDefaultFolder();
     }
 
     componentWillUnmount(){
-        console.log("Index - componentWillUnmount");
         this.loadFolderRequest = false;
     }
 
     checkDefaultFolder(){
-        console.log("checkDefaultFolder");
 
         if(this.defaultFolder.length == 0){
             let _dF = {
@@ -79,14 +75,11 @@ export default class Index extends React.Component{
                 dataType: "JSON",
                 headers: {'prg-auth-header': this.state.loggedUser.token}
             }).done( function (data, text){
-                console.log("checkDefaultFolder - got response")
                 if(data.status.code == 200 && this.loadFolderRequest){
                     if(data.count == 0){
-                        console.log("checkDefaultFolder - no default folder - going to call addDefaultFolder")
                         this.setState({CFName:"My Folder", CFColor:"#1b9ed9"});
                         this.addDefaultFolder();
                     } else{
-                        console.log("checkDefaultFolder - have default folder - going to call loadFolders")
                         this.loadFolders();
                     }
                 }
@@ -96,7 +89,6 @@ export default class Index extends React.Component{
     }
 
     loadFolders(){
-        console.log("loadFolders");
 
         $.ajax({
             url: '/folders/get-all',
@@ -104,10 +96,8 @@ export default class Index extends React.Component{
             dataType: "JSON",
             headers: {'prg-auth-header': this.state.loggedUser.token}
         }).done( function (data, text){
-            console.log("loadFolders - got response")
             if(data.status.code == 200 && this.loadFolderRequest){
                 let folders = data.folders;
-                console.log(folders);
                 this.setState({folders: folders});
             }
         }.bind(this));
@@ -116,7 +106,6 @@ export default class Index extends React.Component{
     addDefaultFolder(){
 
         if(this.loadFolderRequest && this.defaultFolder.length == 1){
-            console.log("addDefaultFolder")
 
             $.ajax({
                 url: '/folders/add-new',
@@ -131,12 +120,9 @@ export default class Index extends React.Component{
                 }
             }).done( function (data, text){
                 if (data.status.code == 200 && this.loadFolderRequest) {
-                    console.log("addDefaultFolder - got response - going to call loadFolders")
                     this.setState({CFName : "", CFColor : ""});
                     let folders = [data.folder];
-                    console.log(folders);
                     this.setState({folders: folders});
-
                 }
             }.bind(this));
         }
@@ -721,7 +707,7 @@ export class Folder extends React.Component{
     render(){
         let _this = this;
         let folderData = this.props.folderData;
-        let ownerImg;
+        let ownerImg, ownerName;
         let i = (
             <Popover id="popover-contained" className="share-popover-contained" style={{maxWidth: "635px", width: "635px"}}>
                 <SharePopup folderData={folderData}/>
@@ -730,8 +716,10 @@ export class Folder extends React.Component{
 
         if(folderData.owned_by == "me"){
             ownerImg = (this.state.loggedUser.profile_image == "")? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image;
+            ownerName = this.state.loggedUser.first_name;
         }else{
-            ownerImg = folderData.folder_user.profile_image;
+            ownerImg = (folderData.folder_user.profile_image == "")? "/images/default-profile-pic.png" : folderData.folder_user.profile_image;
+            ownerName = folderData.folder_user.first_name;
         }
 
         let _fileList = this.filesData.map(function(file,key){
@@ -749,80 +737,141 @@ export class Folder extends React.Component{
 
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
-                <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={(event)=>{this.onDrop(folderData.folder_id)}} multiple={true} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*, text/plain" onDropAccepted={this.onDropAccepted} onDropRejected={this.onDropRejected}>
-                    <div className="col-sm-2">
-                        <div className="folder-cover-wrapper">
-                            <span className="folder-overlay"></span>
-                            <span className="folder-overlay"></span>
-                            <div className="folder-cover">
-                                <div className="content-wrapper" style={{backgroundColor: folderData.folder_color}}>
-                                    <div className="logo-wrapper">
-                                        <img src={ownerImg} alt={this.state.loggedUser.first_name} className="img-rounded" />
-                                        <span className="logo-shader"></span>
-                                        <span className="logo-shader"></span>
-                                    </div>
-                                    <h3>{folderData.folder_name}</h3>
-                                </div>
-                                {
-                                    (this.props.folderCount != 0)?
-                                        <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
-                                            <div className="share-folder">
-                                                {
-                                                    (folderData.is_shared) ?
-                                                        <i className="fa fa-users" aria-hidden="true"></i> :
-                                                        <i className="fa fa-share-alt" aria-hidden="true"></i>
-                                                }
+                {
+                    (folderData.shared_mode == 2)?
+                        <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={(event)=>{this.onDrop(folderData.folder_id)}} multiple={true} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*, text/plain" onDropAccepted={this.onDropAccepted} onDropRejected={this.onDropRejected}>
+                            <div className="col-sm-2">
+                                <div className="folder-cover-wrapper">
+                                    <span className="folder-overlay"></span>
+                                    <span className="folder-overlay"></span>
+                                    <div className="folder-cover">
+                                        <div className="content-wrapper" style={{backgroundColor: folderData.folder_color}}>
+                                            <div className="logo-wrapper">
+                                                <img src={ownerImg} alt={ownerName} className="img-rounded" />
+                                                <span className="logo-shader"></span>
+                                                <span className="logo-shader"></span>
                                             </div>
-                                        </OverlayTrigger>
-                                    :
-                                        null
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-sm-10">
-                        <div className="row">
-                            <div className="folder-content-wrapper">
-                            {
-                                (this.state.notAccepted)?
-                                <p className="error-text">File type is not accepted.</p>
-                                :
-                                null
-                            }
-                                <div className="folder-items-wrapper">
-                                    <div className="inner-wrapper">
-                                        <div className="folder-col"  onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
-                                                <div className="folder-item upload-file">
-                                                    <i className="fa fa-plus"></i>
-                                                    <p>Upload new file or image</p>
-                                                </div>
+                                            <h3>{folderData.folder_name}</h3>
                                         </div>
-                                        {_uploadFileList}
-                                        {_fileList}
-                                    </div>
-                                    {
-                                        (this.filesData.length + this.state.files.length > 4)?
-                                            (this.state.isCollapsed)?
-                                                <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
-                                                    <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
-                                                    <p>See All</p>
-                                                </div>
+                                        {
+                                            (this.props.folderCount != 0)?
+                                                <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                                    <div className="share-folder">
+                                                        {
+                                                            (folderData.is_shared) ?
+                                                                <i className="fa fa-users" aria-hidden="true"></i> :
+                                                                <i className="fa fa-share-alt" aria-hidden="true"></i>
+                                                        }
+                                                    </div>
+                                                </OverlayTrigger>
                                                 :
-                                                <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
-                                                    <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
-                                                    <p>See Less</p>
+                                                null
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-sm-10">
+                                <div className="row">
+                                    <div className="folder-content-wrapper">
+                                        {
+                                            (this.state.notAccepted)?
+                                                <p className="error-text">File type is not accepted.</p>
+                                                :
+                                                null
+                                        }
+                                        <div className="folder-items-wrapper">
+                                            <div className="inner-wrapper">
+                                                <div className="folder-col"  onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
+                                                    <div className="folder-item upload-file">
+                                                        <i className="fa fa-plus"></i>
+                                                        <p>Upload new file or image</p>
+                                                    </div>
                                                 </div>
-                                            :
-                                            null
-                                    }
+                                                {_uploadFileList}
+                                                {_fileList}
+                                            </div>
+                                            {
+                                                (this.filesData.length + this.state.files.length > 4)?
+                                                    (this.state.isCollapsed)?
+                                                        <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
+                                                            <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                                            <p>See All</p>
+                                                        </div>
+                                                        :
+                                                        <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
+                                                            <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                                            <p>See Less</p>
+                                                        </div>
+                                                    :
+                                                    null
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="drag-shader">
+                                <p className="drag-title">Drag and Drop Link/Folder here</p>
+                            </div>
+                        </Dropzone> :
+                        <div className="folder-wrapper">
+                            <div className="col-sm-2">
+                                <div className="folder-cover-wrapper">
+                                    <span className="folder-overlay"></span>
+                                    <span className="folder-overlay"></span>
+                                    <div className="folder-cover">
+                                        <div className="content-wrapper" style={{backgroundColor: folderData.folder_color}}>
+                                            <div className="logo-wrapper">
+                                                <img src={ownerImg} alt={ownerName} className="img-rounded" />
+                                                <span className="logo-shader"></span>
+                                                <span className="logo-shader"></span>
+                                            </div>
+                                            <h3>{folderData.folder_name}</h3>
+                                        </div>
+                                        {
+                                            (this.props.folderCount != 0)?
+                                                <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                                    <div className="share-folder">
+                                                        {
+                                                            (folderData.is_shared) ?
+                                                                <i className="fa fa-users" aria-hidden="true"></i> :
+                                                                <i className="fa fa-share-alt" aria-hidden="true"></i>
+                                                        }
+                                                    </div>
+                                                </OverlayTrigger>
+                                                :
+                                                null
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-sm-10">
+                                <div className="row">
+                                    <div className="folder-content-wrapper">
+                                        <div className="folder-items-wrapper">
+                                            <div className="inner-wrapper">
+                                                {_fileList}
+                                            </div>
+                                            {
+                                                (this.filesData.length + this.state.files.length > 4)?
+                                                    (this.state.isCollapsed)?
+                                                        <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
+                                                            <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                                            <p>See All</p>
+                                                        </div>
+                                                        :
+                                                        <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
+                                                            <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                                            <p>See Less</p>
+                                                        </div>
+                                                    :
+                                                    null
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="drag-shader">
-                        <p className="drag-title">Drag and Drop Link/Folder here</p>
-                    </div>
-                </Dropzone>
+                }
                 {this.getConfirmationPopup()}
             </div>
         );
@@ -833,7 +882,9 @@ export class File extends React.Component{
     constructor(props){
         super(props);
 
-        this.state={}
+        this.state={
+            loggedUser : Session.getSession('prg_lg'),
+        }
     }
 
     onShowConfirm(id){
@@ -842,6 +893,12 @@ export class File extends React.Component{
 
     render(){
         let data = this.props.fileData;
+
+        //console.log("logged user ===> ");
+        //console.log(this.state.loggedUser);
+        //
+        //console.log("document user ===> ");
+        //console.log(data.document_user);
         
         let thumbIMg = {},
             imgClass = "";
@@ -873,7 +930,11 @@ export class File extends React.Component{
                             null
                     }
                 </div>
-                <i className="fa fa-minus doc-delete-btn" aria-hidden="true" onClick={()=>this.onShowConfirm(data.document_id)}></i>
+                {
+                    (this.state.loggedUser.id == data.document_user) ?
+                        <i className="fa fa-minus doc-delete-btn" aria-hidden="true" onClick={()=>this.onShowConfirm(data.document_id)}></i> : null
+                }
+
             </div>
         );
     }
@@ -1341,8 +1402,8 @@ export class  SharedUsers extends React.Component {
                                         <div className="share-opt-holder clearfix">
                                             <div className="shared-privacy">
                                                 <select className="privacy-selector" onChange={(event)=>_this.props.changePermissions(event, user)} value={user.shared_type}>
-                                                    <option value="1">Read Only</option>
-                                                    <option value="2">Read/Write</option>
+                                                    <option value="1">View Only</option>
+                                                    <option value="2">View/Upload</option>
                                                 </select>
                                             </div>
                                             <div className="action" onClick={()=>_this.props.handleClick(user)}>

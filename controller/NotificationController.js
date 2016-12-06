@@ -1547,6 +1547,39 @@ var NotificationController ={
                     callBack(null);
                 });
             },
+            function addFolderToES(callBack){
+                console.log("addFolderToES");
+                console.log(req.body.status);
+
+                if(req.body.status == "REQUEST_ACCEPTED"){
+
+                    Folder.getFolderById(Util.toObjectId(req.body.folder_id), function(result){
+
+                        console.log("folder info");
+                        console.log(result);
+                        var _esFolder = {
+                            cache_key:FolderConfig.ES_INDEX_SHARED_FOLDER+user_id.toString(),
+                            folder_id:result._id,
+                            folder_name:result.name,
+                            folder_color:result.color,
+                            folder_owner:result.user_id,
+                            folder_user:user_id,
+                            folder_updated_at:result.updated_at,
+                            folder_shared_mode:FolderSharedMode.VIEW_ONLY
+                        };
+
+                        Folder.addFolderToCache(_esFolder, function(res){
+                            callBack(null);
+                        });
+
+                    });
+
+                } else{
+                    callBack(null);
+                }
+
+                // Need to do the add document to ES
+            },
             function addNotification(callBack){
                 console.log("addNotification")
                 var _data = {
@@ -1560,7 +1593,6 @@ var NotificationController ={
                         callBack(null,res.result._id);
                     }
                 });
-
             },
             function notifyingUsers(notification_id, callBack){
                 console.log("notifyingUsers")

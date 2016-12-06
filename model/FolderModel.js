@@ -13,8 +13,8 @@ GLOBAL.FolderConfig = {
     ES_INDEX_OWN_FOLDER : "own_folders:"
 };
 GLOBAL.FolderSharedMode = {
-    READ_ONLY: 1,
-    READ_WRITE: 2
+    VIEW_ONLY: 1,
+    VIEW_UPLOAD: 2
 };
 GLOBAL.FolderSharedRequest = {
     REQUEST_PENDING: 1,
@@ -112,7 +112,8 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
                 folder_color:resultSet.color,
                 folder_owner:resultSet.user_id,
                 folder_user:resultSet.user_id,
-                folder_updated_at:resultSet.updated_at
+                folder_updated_at:resultSet.updated_at,
+                folder_shared_mode:FolderSharedMode.VIEW_UPLOAD
             };
 
             _this.addFolderToCache(_esFolder, function(err){
@@ -148,7 +149,8 @@ FolderSchema.statics.addFolderToCache = function(data, callBack){
         folder_name:data.folder_name,
         folder_color:data.folder_color,
         folder_owner:data.folder_owner,
-        folder_updated_at:data.folder_updated_at
+        folder_updated_at:data.folder_updated_at,
+        folder_shared_mode:data.folder_shared_mode
     };
     var _type = "";
 
@@ -193,6 +195,25 @@ FolderSchema.statics.getFolders = function(criteria,callBack){
             callBack({status:400,error:err});
         }
     })
+
+};
+
+/**
+ * Get Folders
+ */
+FolderSchema.statics.getSharedFolders = function(index,callBack){
+
+    var query={
+        index:index
+    };
+    ES.search(query,function(esResultSet){
+        //console.log(esResultSet)
+        if(esResultSet == null || typeof esResultSet.result[0] == "undefined"){
+            callBack({status:400,folders:[]});
+        }else{
+            callBack({status:200, folders:esResultSet.result});
+        }
+    });
 
 };
 

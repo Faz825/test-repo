@@ -27,10 +27,6 @@ var ES = {
      */
     createIndex:function(payLoad,callBack){
 
-        console.log("ES - createIndex");
-        console.log("======================");
-        console.log(payLoad);
-
         var _esData = {
             index:payLoad.index,
             type:payLoad.type,
@@ -47,12 +43,8 @@ var ES = {
         _esData['body'] = payLoad.data;
         this.esClient.index(_esData, function (error, response) {
             if(error){
-                console.log("ES - createIndex - Error")
                 console.log(error);
             }
-            console.log("NOT ERROR");
-            console.log("======================");
-            console.log(response);
             callBack(response);
 
 
@@ -108,17 +100,20 @@ var ES = {
         this.esClient.search(search_param).then(function (resp) {
             callBack(_this.formatSearchResult(resp));
         }, function (err) {
+            //console.log("ES search error")
             console.trace(err.message);
             callBack(null)
         });
 
     },
     formatSearchResult:function(result){
+        //console.log("==============formatSearchResult================")
         var _tmp ={
             result_count:Number(result.hits.total)
         }
         _tmp['result'] = [];
         for(var a=0;a<result.hits.hits.length;a++){
+            //console.log("=============="+a+"================")
             _tmp['result'].push(result.hits.hits[a]._source);
         }
 

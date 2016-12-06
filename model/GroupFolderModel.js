@@ -12,11 +12,11 @@ GLOBAL.GroupFolderConfig={
     CACHE_PREFIX :"group_shared_folders:",
     ES_INDEX_NAME:"group_idx_folders:"
 };
-GLOBAL.FolderSharedMode = {
+GLOBAL.GroupFolderSharedMode = {
     READ_ONLY: 1,
     READ_WRITE: 2
 };
-GLOBAL.FolderSharedRequest = {
+GLOBAL.GroupFolderSharedRequest = {
     REQUEST_PENDING: 1,
     REQUEST_REJECTED: 2,
     REQUEST_ACCEPTED: 3

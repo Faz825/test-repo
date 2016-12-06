@@ -643,7 +643,7 @@ export class Notification extends React.Component{
                                 {/*{notification.notification_type == 'share_notebook' ? notification.post_owner_name +" has invited you to collaborate on " + notification.notebook_name :null}*/}
                                 {/*{notification.notification_type == 'share_notebook_response' ? notification.post_owner_name + " has " + notification.notification_status + " your invitation to collaborate on " + notification.notebook_name :null}*/}
                                 {notification.notification_type == 'share_notebook' ? notification.sender_name +" has invited you to collaborate on " + notification.notebook_name :null}
-                                {notification.notification_type == 'share_notebook_response' ? notification.sender_name + " has " + notification.notification_status + " your invitation to collaborate on " + notification.notebook_name :null}
+                                {notification.notification_type == 'share_notebook_response' ? notification.sender_name + " has " + notification.notification_status + " your invitation to collaborate on the folder" + notification.notebook_name :null}
                                 {notification.notification_type == 'share_folder' ? " has invited you to collaborate on " + notification.folder_name :null}
                                 {notification.notification_type == 'share_folder_response' ? " has " +notification.notification_status+ " your invitation to collaborate on " + notification.folder_name :null}
                                 {notification.notification_type == 'share_calendar' ? notification.sender_name + " has shared you a calendar event - " + notification.calendar_text :null}
