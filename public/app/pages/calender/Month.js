@@ -6,7 +6,6 @@ import YearDayNames from './YearDayNames';
 import YearWeek from './YearWeek';
 import Session from '../../middleware/Session';
 import moment from 'moment';
-import WeekDayEventPopUp from './WeekDayEventPopUp';
 
 export default class Month extends React.Component {
 
@@ -72,10 +71,6 @@ export default class Month extends React.Component {
                 <YearDayNames />
                 {this.renderWeeks()}
             </div>
-            {this.state.showDailyPopUp ?
-                <WeekDayEventPopUp handleClose={this.handleClose.bind(this)} loadData={this.loadData.bind(this)} curr_date={currDt} week_startDt={currDt}/>
-                : null
-            }
         </div>
         );
     }
@@ -86,13 +81,20 @@ export default class Month extends React.Component {
             date = this.state.month.clone().startOf("month").add("w" - 1).day("Sunday"),
             monthIndex = date.month(),
             count = 0;
-
         while (!done) {
             weeks.push(<YearWeek key={date.toString()} date={date.clone()} month={this.state.month}
                              select={this.select.bind(this)} selected={this.props.selected}
                              events={this.state.events}/>);
             date.add(1, "w");
             done = count++ > 2 && monthIndex !== date.month();
+            if(count == 5 && done == true){
+                //console.log(count);
+                //console.log('****');console.log(monthIndex);console.log(date.month());console.log('****');
+                done = false;
+            }
+            if(count == 6){
+                done = true;
+            }
             monthIndex = date.month();
         }
 
