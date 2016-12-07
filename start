@@ -26,3 +26,17 @@ install dependencies:
    #3. Can run all the test case at once using, $ ./node_module/.bin/mocha ./test/*
        But it may fail because of some other old test controller files are there. once if we remove those controllers, we can run all at once.
        (TestConnectionController.js,TestCommentController.js,TestPostController.js,TestSessionController.js,bundle.js,vendors.js)
+
+
+
+   # gulp development task
+   gulp scripts
+
+   # gulp production task
+   gulp deploy
+
+   # webpack dev
+   npm dev run
+
+   # webpack dev server
+   webpack-dev-server
