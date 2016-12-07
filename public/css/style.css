@@ -2978,7 +2978,7 @@ textarea{
 }
 
 .media-options-holder .media-options.hasSearch{
-	width: 67%;
+	width: 68%;
 	margin: 0 0 0 8%;
 }
 
@@ -3285,7 +3285,7 @@ textarea{
 	text-align:center;
 }
 
-.video-call-view{
+.inCallPane-wrapper .video-call-view{
 	position: absolute;
 	top: 0;
 	left: 0;
