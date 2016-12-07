@@ -1,16 +1,21 @@
 import React from 'react';
 import Session  from '../../middleware/Session';
+import Chat from '../../middleware/Chat';
 
 export default class LogoutButton extends React.Component{
 	constructor(props){
 		super(props);
 
 		this.onButtonClick = this.onButtonClick.bind(this);
+		this.b6 = Chat.b6;
 	}
 	
 	onButtonClick(){
 		Session.destroy('prg_lg');
+		console.log("bit6 session closing");
+		this.b6.session.logout();
 		location.reload();
+
 	}
 
 	render() {
