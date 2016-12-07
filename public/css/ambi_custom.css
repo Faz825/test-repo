@@ -9,7 +9,7 @@ body{
 
 /* Common body styles */
 .body-container .sub-container{
-	min-height: calc(100vh - 82px);
+	min-height: calc(100vh - 182px);
     background: #e9ebee;
 }
 

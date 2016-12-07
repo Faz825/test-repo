@@ -218,7 +218,7 @@ export default class FooterHolder extends React.Component{
                                 </a>
                             </div>
                             <div className="call-center nav-item">
-                                <a href="/chat">
+                                <a href="/callcenter">
                                     <div className="icon-holder">
                                         <img src="/images/nav-icons/call-center-icon.png" alt="call-center" />
                                     </div>
