@@ -292,7 +292,8 @@ var FolderController ={
                 _async.waterfall([
                     function getFolders(callBack){
                         console.log("getSharedFolders - getFolders");
-                        var _index = FolderConfig.ES_INDEX_SHARED_FOLDER+user_id.toString();
+                        var _index = FolderConfig.ES_INDEX_SHARED_FOLDER+user_id.toString()
+
                         Folders.getSharedFolders(_index,function(resultSet){
                             console.log(resultSet);
                             callBack(null,resultSet.folders);
@@ -739,15 +740,78 @@ var FolderController ={
      */
     removeSharedFolderUser:function(req,res){
 
+        console.log("removeSharedFolderUser")
+
         var Folder = require('mongoose').model('Folders');
+        var FolderDoc = require('mongoose').model('FolderDocs');
         var folder_id = req.body.folder_id,
-            shared_user_id = [req.body.user_id];
+            shared_user_id = [req.body.user_id],
+            _async = require('async');
+
+        console.log("typeof folder_id == "+typeof folder_id);
+        console.log("typeof shared_user_id == "+typeof shared_user_id);
 
         var _sharedUsers = {
             shared_users:{user_id:{$in:shared_user_id}}
         };
 
-        Folder.removeSharedUser(folder_id,_sharedUsers,function(result){
+        _async.waterfall([
+
+            function removeSharedUserFromDB(callback){
+                console.log("removeSharedUserFromDB")
+                Folder.removeSharedUser(folder_id,_sharedUsers,function(result){
+                    callback(null);
+                });
+            },
+            function removeFolderFromES(callback){
+                console.log("removeFolderFromES")
+                var _payload = {
+                    id:folder_id.toString(),
+                    type:"shared_folder",
+                    cache_key:FolderConfig.ES_INDEX_SHARED_FOLDER+shared_user_id.toString()
+
+                };
+                Folder.deleteFolderFromCache(_payload, function(err){
+                    callback(null);
+                });
+
+            },
+            function removeFilesFromES(callback){
+                console.log("removeFilesFromES")
+
+                var _criteria = {folder_id:Util.toObjectId(folder_id)}
+
+                FolderDoc.getFolderDocument(_criteria, function(result){
+                    if(result.status == 200){
+                        var _docs = result.document;
+
+                        _async.eachSeries(_docs, function(doc, callback){
+
+                            console.log("=====================")
+                            console.log(doc);
+
+                            var _payload = {
+                                id:doc._id.toString(),
+                                type:"shared_document",
+                                cache_key:FolderDocsConfig.ES_INDEX_SHARED_DOC+shared_user_id.toString()
+
+                            };
+                            FolderDoc.deleteDocumentFromCache(_payload, function(err){
+                                callback(null);
+                            });
+
+                        },function(err){
+                            callback(null);
+                        });
+
+                    } else{
+                        callback(null);
+                    }
+                });
+            }
+
+        ], function(err){
+
             if(result.status == 200){
                 var outPut ={
                     status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
@@ -762,6 +826,7 @@ var FolderController ={
 
         });
 
+
     },
 
     /**
@@ -771,27 +836,67 @@ var FolderController ={
      */
     updateFolderSharedPermission:function(req,res){
         var Folder = require('mongoose').model('Folders'),
-            own_user_id = Util.getCurrentSession(req).id;
+            own_user_id = Util.getCurrentSession(req).id,
+            _async = require('async');
 
         var shared_type = req.body.shared_type == 2 ? FolderSharedMode.VIEW_UPLOAD : FolderSharedMode.VIEW_ONLY,
             shared_user_id = req.body.user_id;
 
-        var _udata = {
-            'shared_users.$.shared_type':shared_type
-        };
+        _async.waterfall([
+            function updateDB(callback){
+                var _udata = {
+                    'shared_users.$.shared_type':shared_type
+                };
 
-        var criteria = {
-            _id:Util.toObjectId(req.body.folder_id),
-            user_id:Util.toObjectId(own_user_id),
-            'shared_users.user_id':shared_user_id
-        };
+                var criteria = {
+                    _id:Util.toObjectId(req.body.folder_id),
+                    user_id:Util.toObjectId(own_user_id),
+                    'shared_users.user_id':shared_user_id
+                };
 
-        Folder.updateSharedFolder(criteria, _udata, function(result){
+                Folder.updateSharedFolder(criteria, _udata, function(result){
+                    callback(null);
+                });
+            },
+            function updateES(callback){
+
+                Folder.getFolderById(Util.toObjectId(req.body.folder_id), function(result){
+
+                    var _esFolder = {
+                        cache_key:FolderConfig.ES_INDEX_SHARED_FOLDER+shared_user_id.toString(),
+                        folder_id:result._id,
+                        folder_name:result.name,
+                        folder_color:result.color,
+                        folder_owner:result.user_id,
+                        folder_user:shared_user_id,
+                        folder_updated_at:result.updated_at,
+                        folder_shared_mode:shared_type
+                    };
+
+                    Folder.addFolderToCache(_esFolder, function(res){
+                        callback(null);
+                    });
+                });
+
+            }
+
+        ], function(err){
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
             };
             res.status(200).json(outPut);
         });
+
+    },
+
+    /**
+     * delete a document
+     * @param req
+     * @param res
+     */
+    deleteDocument:function(req,res){
+        console.log("deleteDocument")
+        console.log(req.body.file_id)
 
     }
 

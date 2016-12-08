@@ -1518,13 +1518,15 @@ var NotificationController ={
         var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             Notification = require('mongoose').model('Notification'),
             Folder = require('mongoose').model('Folders'),
+            FolderDocs = require('mongoose').model('FolderDocs'),
             _async = require('async'),
             _data = {read_status:true},
-            user_id = Util.getCurrentSession(req).id;
+            user_id = Util.getCurrentSession(req).id,
+            _esFolder = {};
 
         _async.waterfall([
             function updateNotifications(callBack){
-                console.log("updateNotifications")
+                console.log("updateNotifications");
                 var _criteria = {notification_id:Util.toObjectId(req.body.notification_id), recipient:Util.toObjectId(user_id)};
                 NotificationRecipient.updateRecipientNotification(_criteria, _data, function(res){
                     callBack(null);
@@ -1557,7 +1559,7 @@ var NotificationController ={
 
                         console.log("folder info");
                         console.log(result);
-                        var _esFolder = {
+                        _esFolder = {
                             cache_key:FolderConfig.ES_INDEX_SHARED_FOLDER+user_id.toString(),
                             folder_id:result._id,
                             folder_name:result.name,
@@ -1577,8 +1579,51 @@ var NotificationController ={
                 } else{
                     callBack(null);
                 }
+            },
+            function addDocumentsToES(callBack){
+                console.log("addDocumentsToES");
+                console.log(req.body.status);
 
-                // Need to do the add document to ES
+                if(req.body.status == "REQUEST_ACCEPTED"){
+
+                    var _criteria = {folder_id:Util.toObjectId(req.body.folder_id)}
+
+                    FolderDocs.getFolderDocument(_criteria, function(result){
+                        if(result.status == 200){
+                            var _docs = result.document;
+
+                            _async.eachSeries(_docs, function(doc, callback){
+
+                                console.log("=====================")
+                                console.log(doc);
+
+                                var _esDocument = {
+                                    cache_key:FolderDocsConfig.ES_INDEX_SHARED_DOC+user_id,
+                                    document_id:doc._id,
+                                    document_name:doc.name,
+                                    content_type:doc.content_type,
+                                    document_owner:doc.user_id,
+                                    document_user:user_id,
+                                    file_path:doc.file_path,
+                                    thumb_path:doc.thumb_path,
+                                    folder_id:_esFolder.folder_id,
+                                    folder_name:_esFolder.folder_name
+                                };
+                                FolderDocs.addDocToCache(_esDocument, function(res){callback(null)});
+
+                            },function(err){
+                                callBack(null);
+                            });
+
+                        } else{
+                            callBack(null);
+                        }
+                    });
+
+                } else{
+                    callBack(null);
+                }
+
             },
             function addNotification(callBack){
                 console.log("addNotification")

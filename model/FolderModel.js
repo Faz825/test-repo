@@ -208,7 +208,7 @@ FolderSchema.statics.getSharedFolders = function(index,callBack){
     };
     ES.search(query,function(esResultSet){
         //console.log(esResultSet)
-        if(esResultSet == null || typeof esResultSet.result[0] == "undefined"){
+        if(esResultSet == null || typeof esResultSet.result == "undefined"){
             callBack({status:400,folders:[]});
         }else{
             callBack({status:200, folders:esResultSet.result});
@@ -237,31 +237,6 @@ FolderSchema.statics.getFolderById = function(id,callBack){
             console.log(err)
             callBack({status: 400, error: err})
         }
-    });
-
-};
-
-/**
- * Get Folder | Get shared folder to user
- */
-FolderSchema.statics.ch_getSharedFolders = function(userId,payload,callBack){
-
-    var _this = this;
-    var _cache_key = "idx_user:"+FolderConfig.CACHE_PREFIX+userId;
-
-    var query={
-        q:payload.q,
-        index:_cache_key
-    };
-
-    //Find User from Elastic search
-    ES.search(query,function(csResultSet){
-        if(csResultSet == null){
-            callBack(null);
-        }else{
-            callBack(csResultSet);
-        }
-
     });
 
 };
@@ -355,6 +330,69 @@ FolderSchema.statics.updateSharedFolder = function(criteria, data, callBack){
         }
     });
 };
+
+/**
+ * Update share folder | Cache based on User
+ * {Update folder List}
+ */
+FolderSchema.statics.updateSharedFolderES = function(data,callBack){
+
+    var _esFolder = {
+        folder_id:data.folder_id,
+        folder_name:data.folder_name,
+        folder_color:data.folder_color,
+        folder_owner:data.folder_owner,
+        folder_updated_at:data.folder_updated_at,
+        folder_shared_mode:data.folder_shared_mode
+    };
+    var _type = "";
+
+    if(data.folder_owner == data.folder_user){
+        _type = "own_folder"
+    } else{
+        _type = "shared_folder"
+    }
+
+    var payLoad={
+        index:data.cache_key,
+        id:data.folder_id.toString(),
+        type: _type,
+        data:_esFolder,
+        tag_fields:['folder_name']
+    }
+
+    var payLoad={
+        index:_cache_key,
+        id:data.user_id.toString(),
+        type: 'shared_notebooks',
+        data:data
+    }
+
+    ES.update(payLoad,function(resultSet){
+        callBack(resultSet)
+    });
+
+};
+
+
+/**
+ * Delete Folder From Cache based on Folder Id
+ * @param payload
+ * @param callBack
+ */
+FolderSchema.statics.deleteFolderFromCache= function(payload,callBack){
+
+    var query={
+        id:payload.id,
+        type: payload.type,
+        index:payload.cache_key
+    };
+
+    ES.delete(query,function(csResultSet){
+        callBack(null);
+    });
+
+}
 
 
 /**

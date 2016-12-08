@@ -47,6 +47,8 @@ var UploadController = {
         var binaryData = Util.decodeBase64Image(req.body.content);
         var extension = binaryData.extension;
         var ext = '';
+        var FolderDocs = require('mongoose').model('FolderDocs');
+        var Folders =  require('mongoose').model('Folders');
 
         if(typeof extension != "string"){
             for(var e = 0; e < extension.length; e++){
@@ -161,22 +163,90 @@ var UploadController = {
                 }
             },
             function saveDocumentToDB(callback){
-                console.log("saveDocumentToDB")
-                var FolderDocs = require('mongoose').model('FolderDocs');
-                FolderDocs.addNewDocument(document, function(res){
-                    console.log(res);
-                    saved_document = {
-                        document_id:res.document._id,
-                        document_name:res.document.name,
-                        document_type:res.document.content_type,
-                        document_user:res.document.user_id,
-                        document_path:res.document.file_path,
-                        document_thumb_path:res.document.thumb_path,
-                        document_updated_at:DateTime.noteCreatedDate(res.document.updated_at)
-                    };
+                console.log("saveDocumentToDB");
 
+                if(typeof document.file_path != 'undefined'){
+                    FolderDocs.addNewDocument(document, function(res){
+                        console.log(res);
+                        saved_document = {
+                            document_id:res.document._id,
+                            document_name:res.document.name,
+                            document_type:res.document.content_type,
+                            document_user:res.document.user_id,
+                            document_path:res.document.file_path,
+                            document_thumb_path:res.document.thumb_path,
+                            document_updated_at:DateTime.noteCreatedDate(res.document.updated_at)
+                        };
+                        callback(null);
+                    })
+                } else{
                     callback(null);
-                })
+                }
+            },
+            function saveDocumentToES(callback){
+
+                if(typeof document.file_path != 'undefined'){
+
+                    Folders.getFolderById(Util.toObjectId(document.folder_id), function(result){
+
+                        var _sharedUsers = result.shared_users;
+                        var _folderOwner = result.user_id;
+
+                        var _index = "";
+
+                        console.log("_folderOwner == "+typeof _folderOwner);
+                        console.log("saved_document.document_user == "+typeof saved_document.document_user)
+
+                        if (_folderOwner.toString() == saved_document.document_user.toString()){
+                            _index = FolderDocsConfig.ES_INDEX_OWN_DOC;
+                        } else{
+                            _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
+                        }
+
+                        var _esDocument = {
+                            cache_key:_index+_folderOwner.toString(),
+                            document_id:saved_document.document_id,
+                            document_name:saved_document.document_name,
+                            content_type:saved_document.document_type,
+                            document_owner:saved_document.document_user,
+                            document_user:_folderOwner,
+                            file_path:saved_document.document_path,
+                            thumb_path:saved_document.document_thumb_path,
+                            folder_id:result._id,
+                            folder_name:result.name
+                        };
+
+                        FolderDocs.addDocToCache(_esDocument, function(res){
+
+                            _async.eachSeries(_sharedUsers, function(_sharedUser, callback){
+
+                                if(_sharedUser.status == FolderSharedRequest.REQUEST_ACCEPTED){
+                                    var _documentUser = _sharedUser.user_id;
+
+                                    console.log("_documentUser == "+typeof _documentUser);
+                                    console.log("saved_document.document_user == "+typeof saved_document.document_user)
+
+                                    if (_documentUser == saved_document.document_user.toString()){
+                                        _index = FolderDocsConfig.ES_INDEX_OWN_DOC;
+                                    } else{
+                                        _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
+                                    }
+
+                                    _esDocument.cache_key = _index+_documentUser.toString();
+                                    _esDocument.document_user = _documentUser;
+
+                                    FolderDocs.addDocToCache(_esDocument, function(res){callback(null)});
+                                }
+
+                            }, function(err){
+                                callback(null)
+                            });
+                        });
+                    });
+
+                } else{
+                    callback(null);
+                }
             }
         ], function(err){
             console.log("callback")

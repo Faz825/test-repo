@@ -8,6 +8,11 @@ var  mongoose = require('mongoose'),
     Schema   = mongoose.Schema,
     uuid = require('node-uuid');
 
+GLOBAL.FolderDocsConfig = {
+    ES_INDEX_SHARED_DOC :"shared_docs:",
+    ES_INDEX_OWN_DOC : "own_docs:"
+};
+
 
 var FolderDocsSchema = new Schema({
     name:{
@@ -88,6 +93,53 @@ FolderDocsSchema.statics.addNewDocument = function(DocumentData,callBack){
 
 };
 
+/**
+ * Add folder to CACHE
+ */
+FolderDocsSchema.statics.addDocToCache = function(data, callBack){
+
+    console.log("addDocToCache");
+    console.log(data);
+
+    var _esDocument = {
+        document_id:data.document_id,
+        document_name:data.document_name,
+        content_type:data.content_type,
+        document_owner:data.document_owner,
+        file_path:data.file_path,
+        thumb_path:data.thumb_path,
+        folder_id:data.folder_id,
+        folder_name:data.folder_name
+        //folder_color:data.folder_color,
+        //folder_owner:data.folder_owner,
+        //folder_updated_at:data.folder_updated_at,
+        //folder_shared_mode:data.folder_shared_mode
+    };
+    var _type = "";
+
+    if(data.document_owner == data.document_user){
+        _type = "own_document"
+    } else{
+        _type = "shared_document"
+    }
+
+    var payLoad={
+        index:data.cache_key,
+        id:data.document_id.toString(),
+        type: _type,
+        data:_esDocument,
+        tag_fields:['document_name']
+    }
+
+    ES.createIndex(payLoad,function(resultSet){
+
+        console.log("addDocToCache - ES.createIndex return");
+        console.log(resultSet)
+        callBack(resultSet)
+        return 0;
+    });
+}
+
 
 /**
  * Get Documents
@@ -147,5 +199,25 @@ FolderDocsSchema.statics.getFolderDocument = function(criteria,callBack){
     })
 
 };
+
+
+/**
+ * Delete Document From Cache based on document Id
+ * @param payload
+ * @param callBack
+ */
+FolderDocsSchema.statics.deleteDocumentFromCache= function(payload,callBack){
+
+    var query={
+        id:payload.id,
+        type: payload.type,
+        index:payload.cache_key
+    };
+
+    ES.delete(query,function(csResultSet){
+        callBack(null);
+    });
+
+}
 
 mongoose.model('FolderDocs',FolderDocsSchema);

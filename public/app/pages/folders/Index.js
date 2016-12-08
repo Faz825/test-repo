@@ -673,8 +673,24 @@ export class Folder extends React.Component{
     }
 
     deleteFile(){
-        console.log("delete");
-        this.setState({showConfirm:false});
+        console.log("delete -- "+this.state.deleteFileId);
+
+        //let user = this.state.userToRemove; console.log(user);
+        $.ajax({
+            url: '/document/remove',
+            method: "POST",
+            dataType: "JSON",
+            data:{file_id:this.state.deleteFileId},
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200) {
+                console.log("done removing shared user -----");
+                this.props.onLoadFolders();
+                this.setState({showConfirm:false, deleteFileId:0});
+            }
+        }.bind(this));
+
+
     }
 
     onShowConfirm(file_id){
