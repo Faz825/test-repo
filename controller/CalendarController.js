@@ -328,7 +328,7 @@ var CalendarController = {
 
                                                 for(var inc = 0; inc < _Shared_users.length; inc++){
 
-                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING || _Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
                                                         _Events.push(result.events[0]);
                                                     }
                                                 }
@@ -437,7 +437,7 @@ var CalendarController = {
 
                                                 for(var inc = 0; inc < _Shared_users.length; inc++){
 
-                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING || _Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
                                                         _Events.push(result.events[0]);
                                                     }
                                                 }
@@ -801,7 +801,7 @@ var CalendarController = {
 
                                                         for(var inc = 0; inc < _Shared_users.length; inc++){
 
-                                                            if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == 1 || _Shared_users[inc].shared_status == 2)){
+                                                            if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING || _Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
                                                                 _Events.push(result.events[0]);
                                                             }
                                                         }
@@ -1485,7 +1485,7 @@ var CalendarController = {
                     CalendarSharedStatus.REQUEST_REJECTED : CalendarSharedStatus.REQUEST_ACCEPTED;
 
                 var _udata = {
-                    'shared_users.$.status':shared_status
+                    'shared_users.$.shared_status':shared_status
                 };
                 var criteria = {
                     _id:Util.toObjectId(req.body.event_id),

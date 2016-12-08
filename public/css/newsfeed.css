@@ -428,7 +428,9 @@
 }
 
 /** comment area **/
-
+.pg-comment-row{
+    position: relative;
+}
 .pg-comment-row-inner{
     padding-top: 10px;
     padding-bottom: 10px;
@@ -496,19 +498,20 @@
     padding: 0;
 }
 .pg-newsfeed-new-comment-icon-wrapper a{
-    font: 11px 'montserratsemi_bold', sans-serif;
     color: #fff;
-    width: 52px;
+    font-size: 11px;
     text-align: center;
-    background-color: #61b3de;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+    background-color: #00a5ef;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
     padding: 4px 0px;
     display: block;
-    text-decoration: none;
     text-transform: uppercase;
-    text-decoration: none ;
+    text-decoration: none;
+}
+.pg-newsfeed-new-comment-icon-wrapper a:hover{
+    color: #fff;
 }
 .pg-newsfeed-new-comment-icon-link{
     text-decoration: none;
@@ -735,16 +738,6 @@
 
 /** ========================================= Left column - news feed in news  ====================================================== */
 /**  newsfeed right section */
-
-#pg-newsfeed-page {
-    margin: 0 auto 140px;
-    padding: 70px 0 0;
-    width: calc(100% - 220px);
-}
-
-
-
-
 .pg-newsfeed-right-title-section-txt {
     font: 16px 'montserratlight', sans-serif;
     color: #2d5164;
@@ -938,14 +931,28 @@
 }
 
 .share-popup-holder .pg-status-post-btn{
+    font-family: 'montserratsemi_bold', sans-serif;
+    color: #fff;
+    font-size: 11px;
+    text-align: center;
+    background-color: #00a5ef;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    padding: 6px 12px;
     position: absolute;
     bottom: 0;
     right: 0;
-    font: 11px 'montserratsemi_bold', sans-serif;
-    color: #fff;
-    background-color: #61b3de;
-    text-transform: uppercase;
     border: none;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.share-popup-holder .pg-status-post-btn:hover,
+.share-popup-holder .pg-status-post-btn:focus{
+    color: #fff;
+    border: none;
+    background-color: #00a5ef;
 }
 
 .pro-name{

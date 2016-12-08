@@ -26,7 +26,6 @@ var ES = {
      * @param callBack
      */
     createIndex:function(payLoad,callBack){
-
         var _esData = {
             index:payLoad.index,
             type:payLoad.type,
@@ -42,9 +41,9 @@ var ES = {
 
         _esData['body'] = payLoad.data;
         this.esClient.index(_esData, function (error, response) {
-            if(error){
+            if(error)
                 console.log(error);
-            }
+            
             callBack(response);
 
 

@@ -16,6 +16,7 @@ import ChangedPassword from './pages/signup/ChangedPassword';
 import Connection  from './pages/connection/Index';
 import NewsSettings from './pages/news/NewsSettings';
 import ChatIndex from './pages/chat/Index';
+import CallcenterIndex from './pages/callcenter/Index';
 import NewsIndex from './pages/news/Index';
 import NotesIndex from './pages/notes/Index';
 import FoldersIndex from './pages/folders/Index';
@@ -92,10 +93,16 @@ let rootRoute =(
         <Route name="folders" path="/folders" component={FoldersIndex}/>
 
         /**
-		 * Docs
-		 */
+         * Docs
+         */
 
         <Route name="doc" path="/doc" component={DocIndex}/>
+
+        /**
+		 * Callcenter
+		 */
+
+        <Route name="callcenter" path="/callcenter" component={CallcenterIndex}/>
 
         /**
 		 * Workmode

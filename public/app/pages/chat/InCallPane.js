@@ -37,7 +37,7 @@ export default class InCallPane extends React.Component{
 
         return(
             <div>
-                <div className="col-sm-9 fh top-padding-20 hidden inCallPane-wrapper" id="detailPane">
+                <div className="fh top-padding-20 hidden inCallPane-wrapper" id="detailPane">
                     <div className="row video-call-view col-sm-5" id="inCallPane">
                         <div className="fh">
                             <div className="row top-row" id="inCallPane_inner_div">

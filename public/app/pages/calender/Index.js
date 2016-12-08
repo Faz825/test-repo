@@ -5,6 +5,7 @@ import React from 'react';
 import {Alert} from '../../config/Alert';
 import Session  from '../../middleware/Session';
 
+import YearView from './YearView';
 import MonthView from './MonthView';
 import WeekView from './WeekView';
 import DayView from './DayView';
@@ -22,10 +23,12 @@ export default class Index extends React.Component{
         super(props);
         this.state = {
             current : 'day',
-            dayViewDate:moment().format('YYYY-MM-DD')
+            dayViewDate:moment().format('YYYY-MM-DD'),
+            monthViewDate:moment().startOf("day")
         };
         this.relativeView = this.relativeView.bind(this);
         this.loadDayView = this.loadDayView.bind(this);
+        this.loadMonthView = this.loadMonthView.bind(this);
     }
 
     relativeView() {
@@ -36,10 +39,16 @@ export default class Index extends React.Component{
             case 'day':
                 return  (<DayView dayDate={this.state.dayViewDate}/>);
             case 'month':
-                return  (<MonthView setDayView={this.loadDayView}/>);
+                return  (<MonthView ref="MonthViewComponent" selected={this.state.monthViewDate} setDayView={this.loadDayView}/>);
+            case 'year':
+                return  (<YearView setMonthView={this.loadMonthView.bind(this)}/>);
             default:
                 return (<DayView dayDate={this.state.dayViewDate}/>);
         }
+    }
+
+    loadMonthView(date) {
+        this.setState({current : 'month', monthViewDate:date});
     }
 
     loadDayView(view, date) {
@@ -69,6 +78,9 @@ export default class Index extends React.Component{
                                 </div>
                                 <div className={ this.state.current == 'month' ? 'calender-type active' : 'calender-type'} view="month" onClick={() => this.setView('month')} >
                                     <h4>Month</h4>
+                                </div>
+                               <div className={ this.state.current == 'year' ? 'calender-type active' : 'calender-type'} view="year" onClick={() => this.setView('year')} >
+                                    <h4>Year</h4>
                                 </div>
                             </div>
                             <div className="col-sm-3">

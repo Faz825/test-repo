@@ -40,8 +40,6 @@ export default class Calender extends React.Component {
             headers: { 'prg-auth-header':this.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200){
-                console.log("data loaded ===");
-                console.log(data.events);
                 this.setState({events: data.events});
             }
         }.bind(this));

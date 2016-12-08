@@ -240,7 +240,6 @@ export default class Index extends React.Component{
             _notification.notification_type != "share_notebook" &&
             _notification.notification_type != "share_folder" &&
             _notification.notification_type != 'share_calendar' &&
-            _notification.notification_type != 'share_calendar_response' &&
             _notification.notification_type != 'calendar_schedule_updated' &&
             _notification.notification_type != 'calendar_schedule_time_changed' &&
             _notification.notification_type != 'calendar_schedule_carried_next_day') {
@@ -254,7 +253,9 @@ export default class Index extends React.Component{
                     headers: { 'prg-auth-header':this.state.loggedUser.token }
                 }).done( function (data, text) {
 
-                    if(_notification.notification_type == "share_notebook_response" || _notification.notification_type == "share_folder_response") {
+                    if(_notification.notification_type == "share_notebook_response" ||
+                        _notification.notification_type == "share_folder_response" ||
+                        _notification.notification_type == "share_calendar_response") {
                         this.loadNotifications();
                     } else {
                         window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
@@ -264,7 +265,9 @@ export default class Index extends React.Component{
 
             } else {
 
-                if(_notification.notification_type != "share_notebook_response" && _notification.notification_type != "share_folder_response") {
+                if(_notification.notification_type != "share_notebook_response" &&
+                    _notification.notification_type != "share_folder_response" &&
+                    _notification.notification_type != "share_calendar_response") {
                     window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
                 }
             }
@@ -452,6 +455,47 @@ export default class Index extends React.Component{
         }
     }
 
+    onUpdateSharedCalendar(notification, stt) {
+
+        if(typeof notification.calendar_id != 'undefined' &&
+            (notification.notification_type == "share_calendar" || notification.notification_type == "calendar_schedule_time_changed" ) &&
+            !notification.read_status) {
+
+            var _postData = {
+                event_id:notification.calendar_id,
+                notification_type:notification.notification_type,
+                notification_id:notification.notification_id,
+                status:stt,
+                updating_user:notification.sender_id
+            }
+
+            $.ajax({
+                url: '/calendar/update/event_status',
+                method: "POST",
+                dataType: "JSON",
+                data:_postData,
+                headers: { 'prg-auth-header':this.state.loggedUser.token }
+            }).done( function (data, text) {
+
+                let _notificationData = {
+                    cal_event_id:notification.calendar_id,
+                    notification_type:"share_calendar_response",
+                    notification_sender:this.state.loggedUser,
+                    notification_receiver:[notification.sender_user_name]
+                };
+
+                Socket.sendCalendarShareResponseNotification(_notificationData);
+
+                if(stt == 'REQUEST_REJECTED') {
+                    this.loadNotifications();
+                } else {
+                    window.location.href = '/calendar';
+                }
+
+            }.bind(this));
+        }
+    }
+
     render() {
         let loggedUser = this.state.loggedUser;
         let _secretary_image = loggedUser.secretary_image_url;
@@ -524,11 +568,11 @@ export default class Index extends React.Component{
         );
 
         return (
-            <div className="notificationsHolder container-fluid">
+            <div className="notificationsHolder">
                 <div className="row row-clr pg-news-page-content">
                     <div className="row row-clr">
-                        <div className="col-xs-10 col-xs-offset-1">
-                            <div className="row notification-header">
+                        <div className="container">
+                            <div className="notification-header">
                                 <div className="pg-middle-content-top-middle-secretary">
                                     <SecretaryThumbnail url={_secretary_image}/>
                                 </div>
@@ -541,7 +585,7 @@ export default class Index extends React.Component{
                                     <button className="btn btn-default">Text me to do's</button>
                                 </OverlayTrigger>
                             </div>
-                            <div className="row notification-box-holder">
+                            <div className="notification-box-holder">
                                 <div className="col-sm-4 notification-box">
                                     <div className="notifi-inner-wrapper">
                                         <div className="box-header-wrapper clearfix">
@@ -563,7 +607,8 @@ export default class Index extends React.Component{
                                                         <Notification notifications = {elementsList}
                                                                       clickNotification = {this.redirectToNotification.bind(this)}
                                                                       updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)}
-                                                                      updateFolder = {this.onUpdateSharedFolder.bind(this)}/>
+                                                                      updateFolder = {this.onUpdateSharedFolder.bind(this)}
+                                                                      updateCalendar = {this.onUpdateSharedCalendar.bind(this)}/>
                                                     </div>
                                                 </Scrollbars>
                                                 :
@@ -572,7 +617,8 @@ export default class Index extends React.Component{
                                                         <Notification notifications = {elementsList}
                                                                       clickNotification = {this.redirectToNotification.bind(this)}
                                                                       updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)}
-                                                                      updateFolder = {this.onUpdateSharedFolder.bind(this)}/>
+                                                                      updateFolder = {this.onUpdateSharedFolder.bind(this)}
+                                                                      updateCalendar = {this.onUpdateSharedCalendar.bind(this)}/>
                                                     </div>
                                                     :
                                                     null
@@ -660,11 +706,11 @@ export class Notification extends React.Component{
                             {notification.notification_type == 'share_folder'  && !notification.read_status ? <button className="btn btn-default" onClick={()=>_this.props.updateFolder(notification, 'REQUEST_ACCEPTED')}>Accept</button> : null}
                             {notification.notification_type == 'share_folder'  && !notification.read_status ? <button className="btn btn-default reject" onClick={()=>_this.props.updateFolder(notification, 'REQUEST_REJECTED')}>Decline</button> : null}
 
-                            {notification.notification_type == 'share_calendar'  && !notification.read_status ? <button className="btn btn-default" >Accept</button> : null}
-                            {notification.notification_type == 'share_calendar'  && !notification.read_status ? <button className="btn btn-default reject" >Decline</button> : null}
+                            {notification.notification_type == 'share_calendar'  && !notification.read_status ? <button className="btn btn-default" onClick={()=>_this.props.updateCalendar(notification, 'REQUEST_ACCEPTED')}>Accept</button> : null}
+                            {notification.notification_type == 'share_calendar'  && !notification.read_status ? <button className="btn btn-default reject" onClick={()=>_this.props.updateCalendar(notification, 'REQUEST_REJECTED')}>Decline</button> : null}
 
-                            {notification.notification_type == 'calendar_schedule_time_changed'  && !notification.read_status ? <button className="btn btn-default" >Accept</button> : null}
-                            {notification.notification_type == 'calendar_schedule_time_changed'  && !notification.read_status ? <button className="btn btn-default reject" >Decline</button> : null}
+                            {notification.notification_type == 'calendar_schedule_time_changed'  && !notification.read_status ? <button className="btn btn-default" onClick={()=>_this.props.updateCalendar(notification, 'REQUEST_ACCEPTED')}>Accept</button> : null}
+                            {notification.notification_type == 'calendar_schedule_time_changed'  && !notification.read_status ? <button className="btn btn-default reject" onClick={()=>_this.props.updateCalendar(notification, 'REQUEST_REJECTED')}>Decline</button> : null}
 
                         </div>
                     </a>

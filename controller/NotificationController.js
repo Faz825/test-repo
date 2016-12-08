@@ -1135,7 +1135,10 @@ var NotificationController ={
             user_id = Util.getCurrentSession(req).id;
 
 
-        if(typeof req.body.notification_type != 'undefined' && (req.body.notification_type == Notifications.SHARE_NOTEBOOK_RESPONSE || req.body.notification_type == Notifications.SHARE_FOLDER_RESPONSE)) {
+        if(typeof req.body.notification_type != 'undefined' &&
+            (req.body.notification_type == Notifications.SHARE_NOTEBOOK_RESPONSE ||
+            req.body.notification_type == Notifications.SHARE_FOLDER_RESPONSE ||
+            req.body.notification_type == Notifications.SHARE_CALENDAR_RESPONSE)) {
 
             var _criteria = {notification_id:Util.toObjectId(req.body.notification_id), recipient:Util.toObjectId(user_id)};
             NotificationRecipient.updateRecipientNotification(_criteria, _data, function(result){
