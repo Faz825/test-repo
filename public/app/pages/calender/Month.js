@@ -85,14 +85,14 @@ export default class Month extends React.Component {
             count = 0;
         while (!done) {
             if(count == 5 && empty_done == true){
-                weeks.push(<div className="week">
-                    <span className="day" onClick={() => this.select(day)}><div className="squre"></div></span>
-                    <span className="day" onClick={() => this.select(day)}><div className="squre"></div></span>
-                    <span className="day" onClick={() => this.select(day)}><div className="squre"></div></span>
-                    <span className="day" onClick={() => this.select(day)}><div className="squre"></div></span>
-                    <span className="day" onClick={() => this.select(day)}><div className="squre"></div></span>
-                    <span className="day" onClick={() => this.select(day)}><div className="squre"></div></span>
-                    <span className="day" onClick={() => this.select(day)}><div className="squre"></div></span>
+                weeks.push(<div className="week" key={date.toString()}>
+                    <span className="day" key="1" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="2" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="3" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="4" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="5" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="6" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="7" onClick={() => this.select(day)}><div className="squre"></div></span>
                     </div>);
                 date.add(1, "w");
             }else{
