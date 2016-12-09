@@ -32,6 +32,7 @@ require('../model/FolderDocsModel');
 require('../model/GroupFolderModel');
 require('../model/GroupFolderDocsModel');
 require('../model/CalendarEventModel');
+require('../model/CallCenterModel');
 
 /** Load  Controllers
  */
@@ -51,16 +52,17 @@ var DefaultController   = require('../controller/DefaultController'),
     NotesController     = require('../controller/NotesController'),
     NotificationController     = require('../controller/NotificationController'),
     NotificationSMSController     = require('../controller/NotificationSMSController'),
-    FolderController     = require('../controller/FolderController');
-    GroupFolderController     = require('../controller/GroupFolderController');
-    CalendarController     = require('../controller/CalendarController');
+    FolderController     = require('../controller/FolderController'),
+    GroupFolderController     = require('../controller/GroupFolderController'),
+    CalendarController     = require('../controller/CalendarController'),
+    CallCenterController     = require('../controller/CallCenterController');
 
 
 
 var TestPostController          = require('../test/TestPostController'),
     TestConnectionController    = require('../test/TestConnectionController'),
     TestCommentController    = require('../test/TestCommentController'),
-    TestSessionController   =   require('../test/TestSessionController')       ;
+    TestSessionController   =   require('../test/TestSessionController');
 /**
  * Define Public URLs
  * this public urls will load without authentication component.
