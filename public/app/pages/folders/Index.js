@@ -37,7 +37,7 @@ export default class Index extends React.Component{
             folderSuggestions:[],
             folderSuggestionsList:{},
             selectedFileFolder:[],
-            onSelect: false,
+            onSelect: false
         };
 
         this.users = [];
@@ -245,7 +245,7 @@ export default class Index extends React.Component{
 
     showSelectedFileFolder(suggestion){
         console.log(suggestion);
-        this.setState({onSelect:false});
+        this.setState({onSelect:true});
         if(suggestion.type == "folder"){
             $.ajax({
                 url: '/folder/get-folder/'+suggestion.folder_id,
@@ -254,7 +254,7 @@ export default class Index extends React.Component{
                 success: function (data, text) {
                     if(data.status.code == 200){
                         console.log(data.folder)
-                        this.setState({selectedFileFolder:data.folder})
+                        this.setState({selectedFileFolder:data.folder, onSelect:false})
                     }
                 }.bind(this),
                 error: function (request, status, error) {
@@ -271,7 +271,7 @@ export default class Index extends React.Component{
                 success: function (data, text) {
                     if(data.status.code == 200){
                         console.log(data.folder)
-                        this.setState({selectedFileFolder:data.folder})
+                        this.setState({selectedFileFolder:data.folder, onSelect:false})
                     }
                 }.bind(this),
                 error: function (request, status, error) {
@@ -300,21 +300,9 @@ export default class Index extends React.Component{
     onFolderChange(event, { newValue }) {
 
         this.setState({folderValue:newValue});
-        //this.folders = [
-        //    {name : "nature-animals-wallpaper-4.jpg"},
-        //    {name : "nature-animals-wallpaper-4.jpg"},
-        //    {name : "nature-animals-wallpaper-4.jpg"},
-        //    {name : "nature-animals-wallpaper-4.jpg"},
-        //    {name : "nature-animals-wallpaper-4.jpg"},
-        //];
-        //
-        //this.setState({
-        //    folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
-        //    folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
-        //});
-
         console.log(this.state.onSelect)
-        if(this.state.onSelect && newValue.length == 1){
+        if(!this.state.onSelect && newValue.length == 1){
+            this.setState({selectedFileFolder:[]})
             console.log("call folder search")
             $.ajax({
                 url: '/folder/search/'+newValue,
@@ -335,7 +323,8 @@ export default class Index extends React.Component{
                     console.log(error);
                 }.bind(this)
             });
-        } else if(this.state.onSelect && newValue.length > 1 && this.folders.length < 10){
+        } else if(!this.state.onSelect && newValue.length > 1 && this.folders.length < 10){
+            this.setState({selectedFileFolder:[]})
             $.ajax({
                 url: '/folder/search/'+newValue,
                 method: "GET",
@@ -1022,7 +1011,7 @@ export class Folder extends React.Component{
                                                 {_fileList}
                                             </div>
                                             {
-                                                (this.filesData.length + this.state.files.length > 4)?
+                                                (documents.length + this.state.files.length > 4)?
                                                     (this.state.isCollapsed)?
                                                         <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
                                                             <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
@@ -1065,7 +1054,12 @@ export class File extends React.Component{
         let data = this.props.fileData;
         
         let thumbIMg = {},
-            imgClass = "";
+            imgClass = "",
+            isSelected = "";
+
+        if(data.isSelected){
+            isSelected = "selected-file";
+        }
 
         if (data.document_thumb_path) {
             imgClass = "image";
@@ -1076,7 +1070,7 @@ export class File extends React.Component{
 
         return(
             <div className="folder-col">
-                <div className={"folder-item " + data.document_type + " " + imgClass} style={thumbIMg}>
+                <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
                     <div className="inner-wrapper">
                         <div className="time-wrapper">
                             <p className="date-created">{data.document_updated_at.createdDate}</p>

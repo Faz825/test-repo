@@ -802,3 +802,5 @@ body .modal-backdrop{
 .share-popover-contained.callpopup .arrow{
   top: 28px !important;
 }
+
+.selected-file{border: red}

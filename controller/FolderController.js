@@ -1347,14 +1347,18 @@ var FolderController ={
                     var _docs = [];
 
                     for(var i = 0; i < _tempDocs.length; i++){
+                        var _tempDoc = _tempDocs[i];
                         if(_tempDocs[i].document_id.toString() == document_id.toString()){
-                            _docs.unshift(_tempDocs[i])
+                            _tempDoc.isSelected = true;
+                            _docs.unshift(_tempDoc)
                         } else{
-                            _docs.push(_tempDocs[i])
+                            _tempDoc.isSelected = false;
+                            _docs.push(_tempDoc)
                         }
                     }
 
                     _folder.documents = _docs;
+                    callback(null);
 
                 } else{
                     callback(null);
