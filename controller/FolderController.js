@@ -1059,8 +1059,317 @@ var FolderController ={
             };
             res.status(200).json(outPut);
         });
-    }
+    },
 
+    /**
+     * Search Folder
+     * @param req
+     * @param res
+     */
+    searchFolder:function(req,res){
+        console.log("searchFolder")
+        var Folder = require('mongoose').model('Folders'),
+            FolderDoc = require('mongoose').model('FolderDocs'),
+            CurrentSession = Util.getCurrentSession(req),
+            _async = require('async');
+
+        var _user_id = CurrentSession.id,
+            _search = req.params['q'],
+            _names = [],
+            _data_by_name = {},
+            folders = [];
+
+        _async.parallel([
+
+            function searchMyOwnFolder(callback){
+                var criteria = {
+                    index:FolderConfig.ES_INDEX_OWN_FOLDER+_user_id.toString(),
+                    q:'folder_name:'+_search+'* '
+                };
+                Folder.searchFolders(criteria, function(result){
+                    var _tempFolders = result.folders;
+                    for(var i = 0; i < _tempFolders.length; i++){
+                        if(_names.indexOf(_tempFolders[i].folder_name) == -1){
+                            _names.push(_tempFolders[i].folder_name);
+                        }
+                        if( typeof _data_by_name[_tempFolders[i].folder_name] == 'undefined' ){
+                            _data_by_name[_tempFolders[i].folder_name] = [];
+                        }
+                        var _folder = {
+                            folder_id : _tempFolders[i].folder_id,
+                            name : _tempFolders[i].folder_name,
+                            type : "folder"
+                        };
+                        _data_by_name[_tempFolders[i].folder_name].push(_folder);
+                    }
+                    callback(null);
+                });
+            },
+            function searchSharedFolder(callback){
+                var criteria = {
+                    index :FolderConfig.ES_INDEX_SHARED_FOLDER+_user_id.toString(),
+                    q:'folder_name:'+_search+'* '
+                };
+                Folder.searchFolders(criteria, function(result){
+                    var _tempFolders = result.folders;
+                    for(var i = 0; i < _tempFolders.length; i++){
+                        if(_names.indexOf(_tempFolders[i].folder_name) == -1){
+                            _names.push(_tempFolders[i].folder_name);
+                        }
+                        if( typeof _data_by_name[_tempFolders[i].folder_name] == 'undefined' ){
+                            _data_by_name[_tempFolders[i].folder_name] = [];
+                        }
+                        var _folder = {
+                            folder_id : _tempFolders[i].folder_id,
+                            name : _tempFolders[i].folder_name,
+                            type : "folder"
+                        };
+                        _data_by_name[_tempFolders[i].folder_name].push(_folder);
+                    }
+                    callback(null);
+                });
+            },
+            function searchMyOwnDocuments(callback){
+                var criteria = {
+                    index :FolderDocsConfig.ES_INDEX_OWN_DOC+_user_id.toString(),
+                    q:'document_name:'+_search+'* '
+                };
+                FolderDoc.searchFolderDocument(criteria, function(result){
+                    var _tempDocuments = result.documents;
+                    for(var i = 0; i < _tempDocuments.length; i++){
+                        if(_names.indexOf(_tempDocuments[i].document_name) == -1){
+                            _names.push(_tempDocuments[i].document_name);
+                        }
+                        if( typeof _data_by_name[_tempDocuments[i].document_name] == 'undefined' ){
+                            _data_by_name[_tempDocuments[i].document_name] = [];
+                        }
+                        var _document = {
+                            document_id : _tempDocuments[i].document_id,
+                            folder_id : _tempDocuments[i].folder_id,
+                            folder_name : _tempDocuments[i].folder_name,
+                            name : _tempDocuments[i].document_name,
+                            type : "document"
+                        };
+                        _data_by_name[_tempDocuments[i].document_name].push(_document);
+                    }
+                    callback(null);
+                });
+            },
+            function searchSharedDocuments(callback){
+                var criteria = {
+                    index :FolderDocsConfig.ES_INDEX_SHARED_DOC+_user_id.toString(),
+                    q:'document_name:'+_search+'* '
+                };
+                FolderDoc.searchFolderDocument(criteria, function(result){
+                    var _tempDocuments = result.documents;
+                    for(var i = 0; i < _tempDocuments.length; i++){
+                        if(_names.indexOf(_tempDocuments[i].document_name) == -1){
+                            _names.push(_tempDocuments[i].document_name);
+                        }
+                        if( typeof _data_by_name[_tempDocuments[i].document_name] == 'undefined' ){
+                            _data_by_name[_tempDocuments[i].document_name] = [];
+                        }
+                        var _document = {
+                            document_id : _tempDocuments[i].document_id,
+                            folder_id : _tempDocuments[i].folder_id,
+                            folder_name : _tempDocuments[i].folder_name,
+                            name : _tempDocuments[i].document_name,
+                            type : "document"
+                        };
+                        _data_by_name[_tempDocuments[i].document_name].push(_document);
+                    }
+                    callback(null);
+                });
+            }
+
+        ], function(err){
+
+            console.log("callback")
+            _names.sort(function(a,b){
+                return b - a;
+            });
+
+            for(var i = 0 ; i< _names.length;i++){
+                var _name = _names[i];
+                for(var a = 0 ; a< _data_by_name[_name].length;a++){
+                    folders.push(_data_by_name[_name][a]);
+                }
+            }
+
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                suggested_folders:folders
+            };
+            res.status(200).json(outPut);
+
+        });
+    },
+
+
+    /**
+     * get a Folder
+     * @param req
+     * @param res
+     */
+    getAFolder:function(req,res) {
+        console.log("getAFolder")
+        var Folder = require('mongoose').model('Folders'),
+            FolderDoc = require('mongoose').model('FolderDocs'),
+            CurrentSession = Util.getCurrentSession(req),
+            _async = require('async');
+
+        var _user_id = CurrentSession.id,
+            folder_id = req.params['folder_id'],
+            document_id = req.params['document_id'],
+            _folder = {};
+
+        _async.waterfall([
+
+            function getDetails(callback){
+
+                _async.parallel([
+
+                    function getFolderDetails(callback) {
+                        Folder.getFolderById(Util.toObjectId(folder_id), function(result){
+
+                            console.log("folder info");
+                            console.log(result);
+
+                            _folder = {
+                                folder_id:result.folder_id,
+                                folder_name:result.folder_name,
+                                folder_color:result.folder_color,
+                                folder_user:{
+                                    first_name:"",
+                                    profile_image:""
+                                },
+                                folder_shared_users:[],
+                                folder_updated_at:result.folder_updated_at,
+                                owned_by: 'other',
+                                is_shared:false,
+                                shared_mode:result.folder_shared_mode,
+                                documents:[]
+                            };
+
+                            _async.parallel([
+                                function getFolderOwner(callback){
+                                    //console.log("================getFolderOwner==================")
+                                    //console.log(_folder);
+                                    var query={
+                                        q:folder.folder_owner.toString(),
+                                        index:'idx_usr'
+                                    };
+                                    ES.search(query,function(esResultSet){
+                                        if(typeof esResultSet.result[0] == "undefined"){
+                                            callback();
+                                        }else{
+                                            //console.log(esResultSet.result[0]);
+                                            if(typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].first_name != 'undefined'){
+                                                _folder.folder_user.first_name = esResultSet.result[0].first_name;
+                                            }
+                                            if(typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].images != 'undefined'
+                                                && typeof esResultSet.result[0].images.profile_image != 'undefined' && typeof esResultSet.result[0].images.profile_image.http_url != 'undefined'){
+                                                _folder.folder_user.profile_image = esResultSet.result[0].images.profile_image.http_url;
+                                            }
+                                            callback();
+                                        }
+                                    });
+                                },
+                                function getFolderDetails(callback){
+                                    //console.log("================getFolderDetails==================")
+                                    //console.log(_folder);
+                                    Folders.getFolderById(Util.toObjectId(folder.folder_id), function(result){
+                                        //console.log("folder info");
+                                        //console.log(result);
+
+                                        var _isShared = _folder.is_shared;
+                                        var _sharedUsers = result.shared_users;
+                                        for(var su = 0; su < _sharedUsers.length; su++){
+                                            if(_sharedUsers[su].status == FolderSharedRequest.REQUEST_ACCEPTED){
+                                                _isShared = true;
+                                            }
+                                        }
+
+                                        _folder.folder_shared_users = _sharedUsers;
+                                        _folder.is_shared = _isShared;
+                                        _folder.folder_updated_at = result.updated_at;
+                                        callback(null)
+                                    });
+
+                                },
+
+
+
+                            _folder = {
+                                folder_id:result._id,
+                                folder_name:result.name,
+                                folder_color:result.color,
+                                folder_owner:result.user_id,
+                                folder_user:user_id,
+                                folder_updated_at:result.updated_at,
+                                folder_shared_mode:FolderSharedMode.VIEW_ONLY
+                            };
+
+
+                        });
+
+
+                    },
+                    function getDocuments(callback) {
+
+                        var _criteria = {folder_id:Util.toObjectId(folder_id)}
+
+                        FolderDoc.getFolderDocument(_criteria, function(result){
+                            if(result.status == 200){
+                                var _docs = result.document;
+
+                                _async.eachSeries(_docs, function(doc, callback){
+
+                                    console.log("=====================")
+                                    console.log(doc);
+
+                                    var _esDocument = {
+                                        cache_key:FolderDocsConfig.ES_INDEX_SHARED_DOC+user_id,
+                                        document_id:doc._id,
+                                        document_name:doc.name,
+                                        content_type:doc.content_type,
+                                        document_owner:doc.user_id,
+                                        document_user:user_id,
+                                        file_path:doc.file_path,
+                                        thumb_path:doc.thumb_path,
+                                        folder_id:_esFolder.folder_id,
+                                        folder_name:_esFolder.folder_name
+                                    };
+                                    FolderDocs.addDocToCache(_esDocument, function(res){callback(null)});
+
+                                },function(err){
+                                    callBack(null);
+                                });
+
+                            } else{
+                                callBack(null);
+                            }
+                        });
+
+                    }
+
+                ], function (err) {
+
+
+
+                });
+
+            }
+
+        ], function(err){
+            var outPut = {
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                folder: folder
+            };
+            res.status(200).json(outPut);
+
+        });
+    }
 };
 
 module.exports = FolderController;

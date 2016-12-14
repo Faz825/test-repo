@@ -32,7 +32,11 @@ export default class Index extends React.Component{
             sharedWithNames : [],
             sharedWithUsernames : [],
             folders : [],
-            addFolder : true
+            addFolder : true,
+            folderValue:'',
+            folderSuggestions:[],
+            folderSuggestionsList:{},
+            selectedFileFolder:{}
         };
 
         this.users = [];
@@ -41,16 +45,23 @@ export default class Index extends React.Component{
         this.sharedWithUsernames = [];
         this.loadFolderRequest = true;
         this.defaultFolder = [];
+        this.folders = [];
 
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.colorPicker = this.colorPicker.bind(this);
+        this.removeUser = this.removeUser.bind(this);
+        this.loadFolders = this.loadFolders.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
         this.getSuggestionValue = this.getSuggestionValue.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
-        this.removeUser = this.removeUser.bind(this);
-        this.loadFolders = this.loadFolders.bind(this);
+        this.onFolderChange = this.onFolderChange.bind(this);
+        this.onFolderSuggestionsUpdateRequested = this.onFolderSuggestionsUpdateRequested.bind(this);
+        this.getFolderSuggestionValue = this.getFolderSuggestionValue.bind(this);
+        this.renderFolderSuggestion = this.renderFolderSuggestion.bind(this);
+        this.showSelectedFileFolder = this.showSelectedFileFolder.bind(this);
+
     }
 
     componentDidMount(){
@@ -219,6 +230,120 @@ export default class Index extends React.Component{
         this.setState({
             suggestions: this.getSuggestions(value, this.users),
             suggestionsList : this.getSuggestions(value, this.users)
+        });
+    }
+
+    getFolderSuggestions(value, data) {
+        const escapedValue = Lib.escapeRegexCharacters(value.trim());
+        if (escapedValue === '') {
+            return [];
+        }
+        const regex = new RegExp('^' + escapedValue, 'i');
+        return data.filter(data => regex.test(data.name));
+    }
+
+    showSelectedFileFolder(suggestion){
+        console.log(suggestion);
+        if(suggestion.type == "folder"){
+            $.ajax({
+                url: '/folder/get-folder/'+suggestion.folder_id,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        } else{
+            $.ajax({
+                url: '/folder/get-document/'+suggestion.folder_id+'/'+suggestion.document_id,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        }
+    }
+
+    getFolderSuggestionValue(suggestion) {
+        return suggestion.name;
+    }
+
+    renderFolderSuggestion(suggestion) {
+        return (
+            <a href="javascript:void(0)" onClick={()=>this.showSelectedFileFolder(suggestion)}>
+                <div className="suggestion" >
+                    <span>{suggestion.name}</span>
+                </div>
+            </a>
+        );
+    }
+
+    onFolderChange(event, { newValue }) {
+        this.setState({folderValue:newValue});
+        if(newValue.length == 1){
+            console.log("call folder search")
+            $.ajax({
+                url: '/folder/search/'+newValue,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.folders = data.suggested_folders;
+                        this.setState({
+                            folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
+                            folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        } else if(newValue.length > 1 && this.folders.length < 10){
+            $.ajax({
+                url: '/folder/search/'+newValue,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.folders = data.suggested_folders;
+                        this.setState({
+                            folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
+                            folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        }
+
+    }
+
+    onFolderSuggestionsUpdateRequested({ value }) {
+        this.setState({
+            folderSuggestions: this.getFolderSuggestions(value, this.folders),
+            folderSuggestionsList : this.getFolderSuggestions(value, this.folders)
         });
     }
 
@@ -412,6 +537,9 @@ export default class Index extends React.Component{
 
     render(){
 
+        const value = this.state.folderValue;
+
+        const { folderSuggestions, folderSuggestionsList } = this.state;
         let _this = this;
         let _folders = this.state.folders;
         let folderList = _folders.map(function(folder,key){
@@ -419,6 +547,13 @@ export default class Index extends React.Component{
                 <Folder key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} />
             )
         });
+
+        const inputProps = {
+            placeholder: 'Search',
+            value,
+            onChange: this.onFolderChange,
+            className: 'form-control'
+        };
 
         return(
             <section className="folder-container sub-container">
@@ -443,7 +578,12 @@ export default class Index extends React.Component{
                                 <div className="search-folder">
                                     <div className="inner-addon">
                                         <i className="fa fa-search"></i>
-                                        <input type="text" className="form-control" placeholder="Search"/>
+                                        {<Autosuggest suggestions={folderSuggestions}
+                                                      onSuggestionsUpdateRequested={this.onFolderSuggestionsUpdateRequested}
+                                                      getSuggestionValue={this.getFolderSuggestionValue}
+                                                      renderSuggestion={this.renderFolderSuggestion}
+                                                      inputProps={inputProps} />}
+
                                     </div>
                                 </div>
                                 <div className="crt-folder">

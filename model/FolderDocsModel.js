@@ -98,9 +98,6 @@ FolderDocsSchema.statics.addNewDocument = function(DocumentData,callBack){
  */
 FolderDocsSchema.statics.addDocToCache = function(data, callBack){
 
-    console.log("addDocToCache");
-    console.log(data);
-
     var _esDocument = {
         document_id:data.document_id,
         document_name:data.document_name,
@@ -132,9 +129,6 @@ FolderDocsSchema.statics.addDocToCache = function(data, callBack){
     }
 
     ES.createIndex(payLoad,function(resultSet){
-
-        console.log("addDocToCache - ES.createIndex return");
-        console.log(resultSet)
         callBack(resultSet)
         return 0;
     });
@@ -240,6 +234,26 @@ FolderDocsSchema.statics.deleteDocument = function(criteria,callBack){
         }
 
     })
+};
+
+/**
+ * Search Folder document
+ */
+FolderDocsSchema.statics.searchFolderDocument = function(payload,callBack){
+
+    var query={
+        index:payload.index,
+        q:payload.q
+    };
+    ES.search(query,function(esResultSet){
+        //console.log(esResultSet)
+        if(esResultSet == null || typeof esResultSet.result == "undefined"){
+            callBack({status:400,documents:[]});
+        }else{
+            callBack({status:200, documents:esResultSet.result});
+        }
+    });
+
 };
 
 

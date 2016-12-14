@@ -303,6 +303,9 @@ router.post('/folder/shared-permission/change', FolderController.updateFolderSha
 router.get('/filter-folder-shared-users/:folder/:name', UserController.filterFolderSharedUsers);
 router.post('/notifications/folder-update',NotificationController.updateFolderNotifications);
 router.post('/document/remove',FolderController.deleteDocument);
+router.get('/folder/search/:q', FolderController.searchFolder);
+router.get('/folder/get-folder/:folder_id', FolderController.getAFolder);
+router.get('/folder/get-document/:folder_id/:document_id', FolderController.getAFolder);
 
 router.post('/calendar/event/add', CalendarController.addEvent);
 router.get('/calendar/month/all', CalendarController.getAllForSpecificMonth);
