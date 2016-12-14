@@ -124,6 +124,10 @@ body{
 		padding: 6px 20px 5px 20px;
 }
 
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-txt.btn {
+	line-height: 37px;
+}
+
 /* - ReactAutoSuggest Custom Styles*/
 .search-holder .react-autosuggest__suggestions-container{
 	z-index: 1;
@@ -583,6 +587,7 @@ footer .notification-alert-holder.slideOut{
   */
   max-height: 1em;
   line-height: inherit;
+	font-size: 24px;
 }
 
 .draftJsEmojiPlugin__emojiCharacter__osX-n {
