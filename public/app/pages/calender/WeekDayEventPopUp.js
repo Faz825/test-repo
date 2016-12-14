@@ -268,7 +268,7 @@ export default class WeekDayEventPopUp extends React.Component {
                                     <div className="shared-users-time-panel row">
                                         <div className="col-sm-3">
                                             <p>
-                                                <span className="user-label">Time <span className="selected-time">{this.state.defaultEventTime}</span></span>
+                                                <span onClick={this._onAtClick.bind(this)} className="user-label">Time <span className="selected-time">{this.state.defaultEventTime}</span></span>
                                             </p>
                                             {this.state.showTimePanelWindow ?
                                                 <div className={this.state.showTimePanel + " panel time-panel"}>
@@ -283,7 +283,7 @@ export default class WeekDayEventPopUp extends React.Component {
                                         </div>
                                         <div className="invite-people col-sm-9">
                                             <p>
-                                                <span className="user-label"> People in the event : </span>
+                                                <span className="user-label" onClick={this._onHashClick.bind(this)}> People in the event : </span>
                                                 {shared_with_list}
                                             </p>
                                             {this.state.showUserPanelWindow ?
@@ -306,11 +306,6 @@ export default class WeekDayEventPopUp extends React.Component {
                                         : null }
                                     </div>
                                     <ul className="input-items-wrapper pull-right">
-                                        <li>
-                                            <button className="menu-ico">
-                                                <i className="fa fa-smile-o" aria-hidden="true"></i>
-                                            </button>
-                                        </li>
                                         <li>
                                             <button className="menu-ico">
                                                 <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
