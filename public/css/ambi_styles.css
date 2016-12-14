@@ -12668,31 +12668,35 @@ header .notification-holder .profile-header-thumb {
   letter-spacing: -2px;
   color: #000000;
 }
-.call-center-container .call-center-header .crt-call {
-  float: right;
-  margin-top: 30px;
-  margin-right: 10px;
+.call-center-container .call-center-header .actions-wrapper {
+  overflow: hidden;
+  margin-top: 26px;
+  text-align: right;
 }
-.call-center-container .call-center-header .crt-call .btn-crt-call {
+.call-center-container .call-center-header .actions-wrapper .crt-call {
+  display: inline-block;
+  vertical-align: middle;
+}
+.call-center-container .call-center-header .actions-wrapper .crt-call .btn-crt-call {
   padding: 9px 35px;
   background-color: #00a5ef;
   color: #ffffff;
   font-size: 0.875em;
 }
-.call-center-container .call-center-header .search-call {
+.call-center-container .call-center-header .actions-wrapper .search-call {
   position: relative;
-  float: right;
-  margin-top: 30px;
+  display: inline-block;
+  vertical-align: middle;
   width: 150px;
 }
-.call-center-container .call-center-header .search-call .inner-addon i {
+.call-center-container .call-center-header .actions-wrapper .search-call .inner-addon i {
   position: absolute;
   padding: 10px;
   left: 29px;
   font-weight: 400;
   pointer-events: none;
 }
-.call-center-container .call-center-header .search-call .inner-addon input {
+.call-center-container .call-center-header .actions-wrapper .search-call .inner-addon input {
   border-radius: 7px;
   padding-left: 58px;
   height: 40px;

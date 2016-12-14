@@ -59,10 +59,10 @@ var DefaultController   = require('../controller/DefaultController'),
 
 
 
-var TestPostController          = require('../test/TestPostController'),
-    TestConnectionController    = require('../test/TestConnectionController'),
-    TestCommentController    = require('../test/TestCommentController'),
-    TestSessionController   =   require('../test/TestSessionController');
+var TestPostController          = require('../test/previous_test/TestPostController'),
+    TestConnectionController    = require('../test/previous_test/TestConnectionController'),
+    TestCommentController    = require('../test/previous_test/TestCommentController'),
+    TestSessionController   =   require('../test/previous_test/TestSessionController');
 /**
  * Define Public URLs
  * this public urls will load without authentication component.

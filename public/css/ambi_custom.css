@@ -124,6 +124,10 @@ body{
 		padding: 6px 20px 5px 20px;
 }
 
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-txt.btn {
+	line-height: 37px;
+}
+
 /* - ReactAutoSuggest Custom Styles*/
 .search-holder .react-autosuggest__suggestions-container{
 	z-index: 1;
@@ -762,4 +766,26 @@ footer .notification-alert-holder.slideOut{
 }
 .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day {
   min-height: 37px;
+}
+
+/* Call center */
+.call-center-header .actions-wrapper .crt-call{
+  margin-right: 5px;
+}
+
+.popup-holder .active-call-container .active-user-block{
+  height: 382px;
+}
+
+.popup-holder .active-call-container .participants{
+  height: 113px;
+}
+
+/* Model overlay is overlaping */
+body .modal-backdrop{
+  display: none;
+}
+
+.share-popover-contained.callpopup .arrow{
+  top: 28px !important;
 }
