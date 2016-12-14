@@ -18,7 +18,7 @@ class Main extends React.Component {
     }
 
 
-    componentDidMount() {
+    componentWillMount() {
         if (this.loggedUser) {
             console.log('/verify/me calling');
             $.ajax({

@@ -760,3 +760,6 @@ footer .notification-alert-holder.slideOut{
 .calender-year-view .view-tile-area .month-tiles .month-tile {
   min-height: 309px;
 }
+.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day {
+  min-height: 37px;
+}

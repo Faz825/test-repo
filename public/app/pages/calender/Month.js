@@ -77,19 +77,34 @@ export default class Month extends React.Component {
 
     renderWeeks() {
         var weeks = [],
+            empty_done = false,
+            day = { date: this.state.month.clone().startOf("month")},
             done = false,
             date = this.state.month.clone().startOf("month").add("w" - 1).day("Sunday"),
             monthIndex = date.month(),
             count = 0;
         while (!done) {
-            weeks.push(<YearWeek key={date.toString()} date={date.clone()} month={this.state.month}
-                             select={this.select.bind(this)} selected={this.props.selected}
-                             events={this.state.events}/>);
-            date.add(1, "w");
+            if(count == 5 && empty_done == true){
+                weeks.push(<div className="week" key={date.toString()}>
+                    <span className="day" key="1" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="2" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="3" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="4" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="5" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="6" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    <span className="day" key="7" onClick={() => this.select(day)}><div className="squre"></div></span>
+                    </div>);
+                date.add(1, "w");
+            }else{
+                weeks.push(<YearWeek key={date.toString()} date={date.clone()} month={this.state.month}
+                                     select={this.select.bind(this)} selected={this.props.selected}
+                                     events={this.state.events}/>);
+                date.add(1, "w");
+            }
             done = count++ > 2 && monthIndex !== date.month();
+
             if(count == 5 && done == true){
-                //console.log(count);
-                //console.log('****');console.log(monthIndex);console.log(date.month());console.log('****');
+                empty_done = true;
                 done = false;
             }
             if(count == 6){

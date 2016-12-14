@@ -47,7 +47,8 @@ function bundleApp(isProduction) {
 	var appBundler = browserify({
     	entries: './public/app/app.js',
     	debug: true
-  	})
+  		}).transform("babelify", {presets: ["es2015", "react"]})
+		.transform(browserifycss, {global: true})
 
 	// If it's not for production, a separate vendors.js file will be created
 	// the first time gulp is run so that we don't have to rebundle things like
@@ -80,8 +81,6 @@ function bundleApp(isProduction) {
         console.log("Production Deploy.......");
         appBundler
             // transform ES6 and JSX to ES5 with babelify
-            .transform("babelify", {presets: ["es2015", "react"]})
-            .transform(browserifycss, {global: true})
             .bundle()
             .on('error',gutil.log)
             .pipe(source('bundle.js'))
@@ -91,8 +90,6 @@ function bundleApp(isProduction) {
     }
     appBundler
         // transform ES6 and JSX to ES5 with babelify
-        .transform("babelify", {presets: ["es2015", "react"]})
-        .transform(browserifycss, {global: true})
         .bundle()
         .on('error',gutil.log)
         .pipe(source('bundle.js'))

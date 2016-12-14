@@ -6,6 +6,7 @@ import React from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Session from '../../middleware/Session';
 import User from "./User";
+import CallHandler from './CallHandler';
 
 export default class Index extends React.Component{
 	constructor(props){
@@ -581,6 +582,7 @@ export default class Index extends React.Component{
 		                }
 		            </section>
 		        </div>
+				<CallHandler/>
 		    </section>
 		);
 	}
@@ -638,4 +640,6 @@ export class RecentList extends React.Component{
 		);
 	}
 }
+
+
 
