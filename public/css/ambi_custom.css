@@ -497,6 +497,19 @@ a.rc-time-picker-panel-clear-btn {
   color: #CB0606;
 }
 
+.search-folder #react-autowhatever-1.react-autosuggest__suggestions-container{
+  width: 180%;
+  top: 39px;
+  z-index: 1;
+  left: auto;
+  right: 0;
+}
+
+.search-folder #react-autowhatever-1 li:hover a, 
+.search-folder #react-autowhatever-1 .react-autosuggest__suggestion--focused a{
+  color: #fff;
+}
+
 /* Footer on collapse */
 .body-container.sub-page{
 	padding-bottom: 100px;
