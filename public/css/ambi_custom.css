@@ -587,7 +587,6 @@ footer .notification-alert-holder.slideOut{
   */
   max-height: 1em;
   line-height: inherit;
-	font-size: 24px;
 }
 
 .draftJsEmojiPlugin__emojiCharacter__osX-n {
@@ -767,4 +766,22 @@ footer .notification-alert-holder.slideOut{
 }
 .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day {
   min-height: 37px;
+}
+
+/* Call center */
+.call-center-header .actions-wrapper .crt-call{
+  margin-right: 5px;
+}
+
+.popup-holder .active-call-container .active-user-block{
+  height: 382px;
+}
+
+.popup-holder .active-call-container .participants{
+  height: 113px;
+}
+
+/* Model overlay is overlaping */
+body .modal-backdrop{
+  display: none;
 }

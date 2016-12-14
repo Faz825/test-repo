@@ -126,7 +126,7 @@ export default class QuickChatBubble extends React.Component{
             }=this.state;
 
         return (
-            <div className={(this.state.isMinimized)? "chat-popup popup-minimized col-sm-4" : "chat-popup col-sm-4"} ref={this.props.chatData.title}>
+            <div className={(this.state.isMinimized)? "chat-popup popup-minimized" : "chat-popup"} ref={this.props.chatData.title}>
                 <div className="row inner-wrapper q-chat">
                     <ChatHeader
                         conv={this.props.chatData}

@@ -3630,15 +3630,16 @@ textarea{
 /* Chat bubble */
 .bubble-holder{
 	position: fixed;
-	bottom: 110px;
-	left: 110px;
+	bottom: 100px;
+    left: 255px;
 	z-index: 2;
 }
 
 .chat-popup{
 	width: 250px;
 	margin: 0 0 0 15px;
-	height: 282px;
+	height: 287px;
+	padding: 0 15px;
 	background: #fff;
 	box-shadow: 0 0 50px -20px #000;
 }
