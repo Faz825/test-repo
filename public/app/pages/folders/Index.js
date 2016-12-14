@@ -50,6 +50,7 @@ export default class Index extends React.Component{
         this.getSuggestionValue = this.getSuggestionValue.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
         this.removeUser = this.removeUser.bind(this);
+        this.loadFolders = this.loadFolders.bind(this);
     }
 
     componentDidMount(){
@@ -464,6 +465,7 @@ export default class Index extends React.Component{
 
 export class Folder extends React.Component{
     constructor(props){
+
         super(props);
 
         this.state={
@@ -474,8 +476,7 @@ export class Folder extends React.Component{
             showConfirm:false,
             isShowingModal : false,
             deleteFileId:0,
-            notAccepted: false,
-            filesData:this.props.folderData.documents
+            notAccepted: false
         };
         this.files = [];
         this.active_folder_id = 0;
@@ -487,57 +488,56 @@ export class Folder extends React.Component{
         this.uploadHandler = this.uploadHandler.bind(this);
         this.onShowConfirm = this.onShowConfirm.bind(this);
 
-        this.filesData = this.props.folderData.documents;
-        this.filesData = [
-          {
-              document_id : "582ae658247ffffc240b08b9",
-              document_name : "PEF - Anuthiga Sriskanthan - DOC",
-              document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-              document_thumb_path : null,
-              document_type : "doc",
-              document_updated_at:{
-                  createdDate: "Oct 11, 2016",
-                  createdTime: "9:31 am"
-              },
-              document_user : "574bcb96272a6fd40768cf0f"
-          },
-          {
-              document_id : "582ae658247ffffc240b08b9",
-              document_name : "PEF - Anuthiga Sriskanthan",
-              document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-              document_thumb_path : null,
-              document_type : "xlsx",
-              document_updated_at:{
-                  createdDate: "Oct 11, 2016",
-                  createdTime: "9:31 am"
-              },
-              document_user : "574bcb96272a6fd40768cf0f"
-          },
-          {
-              document_id : "582c2d3a1461f4050b1764c5",
-              document_name : "babymartonline.com-check-list",
-              document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
-              document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
-              document_type : "gif",
-              document_updated_at:{
-                  createdDate: "Oct 11, 2016",
-                  createdTime: "9:31 am"
-              },
-              document_user : "574bcb96272a6fd40768cf0f"
-          },
-          {
-              document_id : "582be27c639078842cbc24f6",
-              document_name : "babymartonline.com-check-list",
-              document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-              document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-              document_type : "jpg",
-              document_updated_at:{
-                  createdDate: "Oct 11, 2016",
-                  createdTime: "9:31 am"
-              },
-              document_user : "574bcb96272a6fd40768cf0f"
-          }
-        ];
+        //this.filesData = [
+        //  {
+        //      document_id : "582ae658247ffffc240b08b9",
+        //      document_name : "PEF - Anuthiga Sriskanthan - DOC",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+        //      document_thumb_path : null,
+        //      document_type : "doc",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582ae658247ffffc240b08b9",
+        //      document_name : "PEF - Anuthiga Sriskanthan",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+        //      document_thumb_path : null,
+        //      document_type : "xlsx",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582c2d3a1461f4050b1764c5",
+        //      document_name : "babymartonline.com-check-list",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
+        //      document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
+        //      document_type : "gif",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582be27c639078842cbc24f6",
+        //      document_name : "babymartonline.com-check-list",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+        //      document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+        //      document_type : "jpg",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  }
+        //];
 
     }
 
@@ -627,8 +627,6 @@ export class Folder extends React.Component{
                 }
                 this.setState({files:this.files});
                 console.log("file upload finished ... hide the spinner");
-                let _data = data.document;
-                this.filesData.unshift(_data); // add the uploaded document to existing document list. this should update the document list of that folder.
                 this.props.onLoadFolders();
             }
         }.bind(this)).error(function (request, status, error) {
@@ -673,9 +671,6 @@ export class Folder extends React.Component{
     }
 
     deleteFile(){
-        console.log("delete -- "+this.state.deleteFileId);
-
-        //let user = this.state.userToRemove; console.log(user);
         $.ajax({
             url: '/document/remove',
             method: "POST",
@@ -694,7 +689,6 @@ export class Folder extends React.Component{
     }
 
     onShowConfirm(file_id){
-        console.log(file_id);
         this.setState({showConfirm:true, deleteFileId:file_id});
     }
 
@@ -723,6 +717,7 @@ export class Folder extends React.Component{
     render(){
         let _this = this;
         let folderData = this.props.folderData;
+        let documents = folderData.documents;
         let ownerImg, ownerName;
         let i = (
             <Popover id="popover-contained" className="share-popover-contained" style={{maxWidth: "635px", width: "635px"}}>
@@ -738,7 +733,7 @@ export class Folder extends React.Component{
             ownerName = folderData.folder_user.first_name;
         }
 
-        let _fileList = this.filesData.map(function(file,key){
+        let _fileList = documents.map(function(file,key){
                             return (
                                 <File fileData={file} key={key} showConfirm={_this.onShowConfirm.bind(this)}/>
                             )
@@ -807,7 +802,7 @@ export class Folder extends React.Component{
                                                 {_fileList}
                                             </div>
                                             {
-                                                (this.filesData.length + this.state.files.length > 4)?
+                                                (documents.length + this.state.files.length > 4)?
                                                     (this.state.isCollapsed)?
                                                         <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
                                                             <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
@@ -899,7 +894,7 @@ export class File extends React.Component{
         super(props);
 
         this.state={
-            loggedUser : Session.getSession('prg_lg'),
+            loggedUser : Session.getSession('prg_lg')
         }
     }
 
@@ -909,12 +904,6 @@ export class File extends React.Component{
 
     render(){
         let data = this.props.fileData;
-
-        //console.log("logged user ===> ");
-        //console.log(this.state.loggedUser);
-        //
-        //console.log("document user ===> ");
-        //console.log(data.document_user);
         
         let thumbIMg = {},
             imgClass = "";
@@ -966,7 +955,6 @@ export class FilePreview extends React.Component{
     }
 
     render(){
-        //console.log(this.state.fileData)
         return(
             <div className="folder-col">
                 <div className="folder-item pdf">
@@ -1024,8 +1012,6 @@ export class SharePopup extends React.Component{
     }
 
     loadSharedUsers() {
-        //console.log("loadSharedUsers");
-        //console.log(this.props.folderData)
         $.ajax({
             url: '/folders/shared-users',
             method: "POST",
@@ -1045,8 +1031,6 @@ export class SharePopup extends React.Component{
     }
 
     getSuggestions(value, data) {
-        //console.log("getSuggestions");
-        //console.log(value);
         const escapedValue = Lib.escapeRegexCharacters(value.trim()); 
         if (escapedValue === '') { 
             return data; 
@@ -1056,9 +1040,7 @@ export class SharePopup extends React.Component{
      }
 
     filterSharedUsers(folder_id, event) {
-        //console.log("filterSharedUsers");
-
-        let value = event.target.value;//console.log(value);
+        let value = event.target.value;
         var data = this.getSuggestions(value, this.sharedUsersWithoutFilter);
         this.setState({sharedUsers: data});
         this.setState({sharedFilterValue:value});
@@ -1066,10 +1048,6 @@ export class SharePopup extends React.Component{
     }
 
     onPermissionChanged(e, user) {
-
-        console.log("onPermissionChanged");
-        console.log(e.target.value);
-        console.log(user);
 
         let _fieldValue = e.target.value;
 
@@ -1145,9 +1123,6 @@ export class SharePopup extends React.Component{
                 <SharePopupNewUsr  folderData={_folderData}/>
             </Popover>
         );
-
-        //console.log("OWNER ==>");
-        //console.log(this.state.owner)
 
         return(
             <div className="popup-holder">
@@ -1254,8 +1229,8 @@ export class SharePopupNewUsr extends React.Component{
     }
 
     loadNewUsers() {
-        let folder = this.props.folderData;//console.log(folder);
-        let value = this.state.addNewUserValue;//console.log(value);
+        let folder = this.props.folderData;
+        let value = this.state.addNewUserValue;
 
         $.ajax({
             url: '/get-folder-users/'+folder.folder_id+'/'+value,
@@ -1280,10 +1255,8 @@ export class SharePopupNewUsr extends React.Component{
 
     shareFolder(user){
 
-        //console.log(user);
-
         let loggedUser = Session.getSession('prg_lg');
-        let folder = this.props.folderData; //console.log(folder)
+        let folder = this.props.folderData;
         let _folder = {
             folderId:folder.folder_id,
             userId:user.user_id
@@ -1313,10 +1286,7 @@ export class SharePopupNewUsr extends React.Component{
                     isShowingModal: true
                 }, function(){
                     this.getPopupAddUser();
-                    //this.loadNewUsers();
                 });
-
-                //this.props.onLoadFolders();
             }
         }.bind(this));
 

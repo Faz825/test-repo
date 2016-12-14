@@ -43,7 +43,7 @@ var ES = {
         this.esClient.index(_esData, function (error, response) {
             if(error)
                 console.log(error);
-            
+
             callBack(response);
 
 

@@ -4,7 +4,7 @@
 
 
 'use strict';
-var  mongoose = require('mongoose'),
+var mongoose = require('mongoose'),
     Schema   = mongoose.Schema,
     uuid = require('node-uuid');
 
@@ -218,6 +218,29 @@ FolderDocsSchema.statics.deleteDocumentFromCache= function(payload,callBack){
         callBack(null);
     });
 
-}
+};
+
+/**
+ * delete document
+ * @param likes
+ * @param callBack
+ */
+FolderDocsSchema.statics.deleteDocument = function(criteria,callBack){
+    this.remove(criteria).exec(function(err,resultSet){
+
+        if(!err){
+            callBack({
+                status:200,
+                result:resultSet
+            });
+        }else{
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status:400,error:err});
+        }
+
+    })
+};
+
 
 mongoose.model('FolderDocs',FolderDocsSchema);
