@@ -785,3 +785,7 @@ footer .notification-alert-holder.slideOut{
 body .modal-backdrop{
   display: none;
 }
+
+.share-popover-contained.callpopup .arrow{
+  top: 28px !important;
+}

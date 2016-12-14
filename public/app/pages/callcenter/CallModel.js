@@ -3,6 +3,7 @@
  */
 
 import React from "react";
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 import Session from '../../middleware/Session';
 
 export default class CallModel extends React.Component{
@@ -13,6 +14,14 @@ export default class CallModel extends React.Component{
 	}
 
 	render(){
+		let i = (
+            <Popover id="popover-contained" className="share-popover-contained callpopup popup-holder" style={{maxWidth: "265px", width: "265px", zIndex: 9999}}>
+                <div className="call-center-new-participant">
+	                <i className="fa fa-search" aria-hidden="true"></i>
+	                <input type="text" className="form-control" placeholder="Type name" />
+	            </div>
+            </Popover>
+        );
 		return(
 			<div className="popup-holder">
 			    <div className="row">
@@ -20,7 +29,9 @@ export default class CallModel extends React.Component{
 			            <div className="active-call-container">
 			                <div className="top-nav">
 			                    <span className="close-ico" onClick={(e) => this.props.closePopup(e)}></span>
-			                    <span className="add-new-ico"></span>
+			                    <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+			                    	<span className="add-new-ico"></span>
+                                </OverlayTrigger>
 			                    <span className="minus-ico"></span>
 			                    <span className="expand-ico"></span>
 			                </div>
