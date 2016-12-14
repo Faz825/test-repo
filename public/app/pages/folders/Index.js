@@ -36,7 +36,8 @@ export default class Index extends React.Component{
             folderValue:'',
             folderSuggestions:[],
             folderSuggestionsList:{},
-            selectedFileFolder:[]
+            selectedFileFolder:[],
+            onSelect: false,
         };
 
         this.users = [];
@@ -244,6 +245,7 @@ export default class Index extends React.Component{
 
     showSelectedFileFolder(suggestion){
         console.log(suggestion);
+        this.setState({onSelect:false});
         if(suggestion.type == "folder"){
             $.ajax({
                 url: '/folder/get-folder/'+suggestion.folder_id,
@@ -251,7 +253,8 @@ export default class Index extends React.Component{
                 dataType: "JSON",
                 success: function (data, text) {
                     if(data.status.code == 200){
-
+                        console.log(data.folder)
+                        this.setState({selectedFileFolder:data.folder})
                     }
                 }.bind(this),
                 error: function (request, status, error) {
@@ -267,7 +270,8 @@ export default class Index extends React.Component{
                 dataType: "JSON",
                 success: function (data, text) {
                     if(data.status.code == 200){
-
+                        console.log(data.folder)
+                        this.setState({selectedFileFolder:data.folder})
                     }
                 }.bind(this),
                 error: function (request, status, error) {
@@ -296,63 +300,62 @@ export default class Index extends React.Component{
     onFolderChange(event, { newValue }) {
 
         this.setState({folderValue:newValue});
-        this.folders = [
-            {name : "nature-animals-wallpaper-4.jpg"},
-            {name : "nature-animals-wallpaper-4.jpg"},
-            {name : "nature-animals-wallpaper-4.jpg"},
-            {name : "nature-animals-wallpaper-4.jpg"},
-            {name : "nature-animals-wallpaper-4.jpg"},
-        ];
+        //this.folders = [
+        //    {name : "nature-animals-wallpaper-4.jpg"},
+        //    {name : "nature-animals-wallpaper-4.jpg"},
+        //    {name : "nature-animals-wallpaper-4.jpg"},
+        //    {name : "nature-animals-wallpaper-4.jpg"},
+        //    {name : "nature-animals-wallpaper-4.jpg"},
+        //];
+        //
+        //this.setState({
+        //    folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
+        //    folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
+        //});
 
-        this.setState({
-            folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
-            folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
-        });
-
-
-
-        //if(newValue.length == 1){
-        //    console.log("call folder search")
-        //    $.ajax({
-        //        url: '/folder/search/'+newValue,
-        //        method: "GET",
-        //        dataType: "JSON",
-        //        success: function (data, text) {
-        //            if(data.status.code == 200){
-        //                this.folders = data.suggested_folders;
-        //                this.setState({
-        //                    folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
-        //                    folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
-        //                });
-        //            }
-        //        }.bind(this),
-        //        error: function (request, status, error) {
-        //            console.log(request.responseText);
-        //            console.log(status);
-        //            console.log(error);
-        //        }.bind(this)
-        //    });
-        //} else if(newValue.length > 1 && this.folders.length < 10){
-        //    $.ajax({
-        //        url: '/folder/search/'+newValue,
-        //        method: "GET",
-        //        dataType: "JSON",
-        //        success: function (data, text) {
-        //            if(data.status.code == 200){
-        //                this.folders = data.suggested_folders;
-        //                this.setState({
-        //                    folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
-        //                    folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
-        //                });
-        //            }
-        //        }.bind(this),
-        //        error: function (request, status, error) {
-        //            console.log(request.responseText);
-        //            console.log(status);
-        //            console.log(error);
-        //        }.bind(this)
-        //    });
-        //}
+        console.log(this.state.onSelect)
+        if(this.state.onSelect && newValue.length == 1){
+            console.log("call folder search")
+            $.ajax({
+                url: '/folder/search/'+newValue,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.folders = data.suggested_folders;
+                        this.setState({
+                            folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
+                            folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        } else if(this.state.onSelect && newValue.length > 1 && this.folders.length < 10){
+            $.ajax({
+                url: '/folder/search/'+newValue,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.folders = data.suggested_folders;
+                        this.setState({
+                            folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
+                            folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        }
 
     }
 

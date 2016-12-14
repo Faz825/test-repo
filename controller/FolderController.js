@@ -1212,141 +1212,167 @@ var FolderController ={
      * @param res
      */
     getAFolder:function(req,res) {
-        //console.log("getAFolder")
-        //var Folder = require('mongoose').model('Folders'),
-        //    FolderDoc = require('mongoose').model('FolderDocs'),
-        //    CurrentSession = Util.getCurrentSession(req),
-        //    _async = require('async');
-        //
-        //var _user_id = CurrentSession.id,
-        //    folder_id = req.params['folder_id'],
-        //    document_id = req.params['document_id'],
-        //    _folder = {};
-        //
-        //_async.waterfall([
-        //
-        //    function getDetails(callback){
-        //
-        //        _async.parallel([
-        //
-        //            function getFolderDetails(callback) {
-        //                Folder.getFolderById(Util.toObjectId(folder_id), function(result){
-        //
-        //                    console.log("folder info");
-        //                    console.log(result);
-        //
-        //                    var ownedBy = "";
-        //                    if(result.user_id.toString() == _user_id.toString()){
-        //                        ownedBy = "me";
-        //                    } else{
-        //                        ownedBy = "other";
-        //                    }
-        //
-        //                    var sharedMode = 0;
-        //
-        //                    var _isShared = false;
-        //                    var _sharedUsers = result.shared_users;
-        //                    for(var su = 0; su < _sharedUsers.length; su++){
-        //                        if(_sharedUsers[su].status == FolderSharedRequest.REQUEST_ACCEPTED){
-        //                            _isShared = true;
-        //                        }
-        //                        if(ownedBy == "other" && _sharedUsers[su].user_id.toString() == _user_id.toString()){
-        //                            sharedMode = _sharedUsers[su].shared_type
-        //                        }
-        //                    }
-        //
-        //                    _folder = {
-        //                        folder_id:result._id,
-        //                        folder_name:result.name,
-        //                        folder_color:result.color,
-        //                        folder_user:result.user_id,
-        //                        folder_shared_users:_sharedUsers,
-        //                        folder_updated_at:result.updated_at,
-        //                        owned_by: ownedBy,
-        //                        is_shared:_isShared,
-        //                        shared_mode:sharedMode,
-        //                        documents:[]
-        //                    };
-        //
-        //
-        //                    if(ownedBy == "other"){
-        //
-        //                        var query={
-        //                            q:result.user_id.toString(),
-        //                            index:'idx_usr'
-        //                        };
-        //                        ES.search(query,function(esResultSet){
-        //                            if(typeof esResultSet.result[0] == "undefined"){
-        //                                callback();
-        //                            }else{
-        //                                //console.log(esResultSet.result[0]);
-        //                                if(typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].first_name != 'undefined'){
-        //                                    _folder.folder_user.first_name = esResultSet.result[0].first_name;
-        //                                }
-        //                                if(typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].images != 'undefined'
-        //                                    && typeof esResultSet.result[0].images.profile_image != 'undefined' && typeof esResultSet.result[0].images.profile_image.http_url != 'undefined'){
-        //                                    _folder.folder_user.profile_image = esResultSet.result[0].images.profile_image.http_url;
-        //                                }
-        //                                callback();
-        //                            }
-        //                        });
-        //
-        //                    }
-        //                });
-        //            },
-        //            function getDocuments(callback) {
-        //
-        //                var _criteria = {folder_id:Util.toObjectId(folder_id)};
-        //                var _documents = [];
-        //
-        //                FolderDoc.getFolderDocument(_criteria, function(result){
-        //                    if(result.status == 200){
-        //                        var _docs = result.document;
-        //
-        //                        _async.eachSeries(_docs, function(doc, callback){
-        //
-        //                            console.log("=====================")
-        //                            console.log(doc);
-        //
-        //                            var _document = {
-        //                                document_id:doc._id,
-        //                                document_name:doc.name,
-        //                                document_type:doc.content_type,
-        //                                document_user:doc.user_id,
-        //                                document_path:doc.file_path,
-        //                                document_thumb_path:doc.thumb_path,
-        //                                document_updated_at:DateTime.noteCreatedDate(doc.updated_at)
-        //                            };
-        //
-        //                            _documents.push(_document);
-        //
-        //                        },function(err){
-        //                            callback(null);
-        //                        });
-        //
-        //                    } else{
-        //                        callback(null);
-        //                    }
-        //                });
-        //
-        //            }
-        //
-        //        ], function (err) {
-        //
-        //
-        //
-        //        });
-        //
-        //    }
-        //
-        //], function(err){
-        //    var outPut = {
-        //        status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-        //        folder: folder
-        //    };
-        //    res.status(200).json(outPut);
-        //
-        //});
+        console.log("getAFolder")
+        var Folder = require('mongoose').model('Folders'),
+            FolderDoc = require('mongoose').model('FolderDocs'),
+            CurrentSession = Util.getCurrentSession(req),
+            _async = require('async');
+
+        var _user_id = CurrentSession.id,
+            folder_id = req.params['folder_id'],
+            document_id = req.params['document_id'],
+            _folder = {};
+
+        console.log("folder_id ===> "+folder_id)
+        console.log("document_id ===>"+document_id)
+
+        _async.waterfall([
+
+            function getFolderDetails(callback) {
+                console.log("getFolderDetails")
+                Folder.getFolderById(Util.toObjectId(folder_id), function(result){
+
+                    console.log("folder info");
+                    console.log(JSON.stringify(result));
+
+                    var ownedBy = "";
+                    if(result.user_id.toString() == _user_id.toString()){
+                        ownedBy = "me";
+                    } else{
+                        ownedBy = "other";
+                    }
+
+                    var sharedMode = 0;
+
+                    var _isShared = false;
+                    var _sharedUsers = result.shared_users;
+                    for(var su = 0; su < _sharedUsers.length; su++){
+                        if(_sharedUsers[su].status == FolderSharedRequest.REQUEST_ACCEPTED){
+                            _isShared = true;
+                        }
+                        if(ownedBy == "other" && _sharedUsers[su].user_id.toString() == _user_id.toString()){
+                            sharedMode = _sharedUsers[su].shared_type
+                        }
+                    }
+
+                    _folder = {
+                        folder_id:result._id,
+                        folder_name:result.name,
+                        folder_color:result.color,
+                        folder_user:result.user_id,
+                        folder_shared_users:_sharedUsers,
+                        folder_updated_at:result.updated_at,
+                        owned_by: ownedBy,
+                        is_shared:_isShared,
+                        shared_mode:sharedMode,
+                        documents:[]
+                    };
+
+
+                    if(ownedBy == "other"){
+
+                        var query={
+                            q:result.user_id.toString(),
+                            index:'idx_usr'
+                        };
+                        ES.search(query,function(esResultSet){
+                            if(typeof esResultSet.result[0] == "undefined"){
+                                callback(null);
+                            }else{
+                                //console.log(esResultSet.result[0]);
+                                if(typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].first_name != 'undefined'){
+                                    _folder.folder_user.first_name = esResultSet.result[0].first_name;
+                                }
+                                if(typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].images != 'undefined'
+                                    && typeof esResultSet.result[0].images.profile_image != 'undefined' && typeof esResultSet.result[0].images.profile_image.http_url != 'undefined'){
+                                    _folder.folder_user.profile_image = esResultSet.result[0].images.profile_image.http_url;
+                                }
+                                callback(null);
+                            }
+                        });
+                    } else{
+                        callback(null);
+                    }
+                });
+            },
+            function getDocuments(callback) {
+
+                console.log("getDocuments");
+                console.log(JSON.stringify(_folder));
+
+                var _criteria = {folder_id:Util.toObjectId(folder_id)};
+                var _documents = [];
+
+                FolderDoc.getFolderDocument(_criteria, function(result){
+                    if(result.status == 200){
+                        var _docs = result.document;
+
+                        _async.eachSeries(_docs, function(doc, callback){
+
+                            console.log("=====================")
+                            console.log(doc);
+
+                            var _document = {
+                                document_id:doc._id,
+                                document_name:doc.name,
+                                document_type:doc.content_type,
+                                document_user:doc.user_id,
+                                document_path:doc.file_path,
+                                document_thumb_path:doc.thumb_path,
+                                document_updated_at:DateTime.noteCreatedDate(doc.updated_at)
+                            };
+
+                            _documents.push(_document);
+                            callback(null)
+
+                        },function(err){
+                            _folder.documents = _documents;
+                            callback(null);
+                        });
+
+                    } else{
+                        callback(null);
+                    }
+                });
+
+            },
+            function rearrangeDocs(callback){
+                console.log("rearrangeDocs");
+                console.log(JSON.stringify(_folder));
+
+
+                if(typeof document_id != 'undefined'){
+
+                    var _tempDocs = _folder.documents;
+                    var _docs = [];
+
+                    for(var i = 0; i < _tempDocs.length; i++){
+                        if(_tempDocs[i].document_id.toString() == document_id.toString()){
+                            _docs.unshift(_tempDocs[i])
+                        } else{
+                            _docs.push(_tempDocs[i])
+                        }
+                    }
+
+                    _folder.documents = _docs;
+
+                } else{
+                    callback(null);
+                }
+            }
+
+        ], function(err){
+            console.log("callback");
+            console.log(JSON.stringify(_folder));
+            var _tempFolder = [_folder];
+
+            var outPut = {
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                folder: _tempFolder
+            };
+            res.status(200).json(outPut);
+
+        });
     }
 };
 
