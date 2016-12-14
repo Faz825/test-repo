@@ -3,9 +3,12 @@
  */
 
 import React from 'react';
-import { Scrollbars } from 'react-custom-scrollbars';
+import ReactDom from 'react-dom';
+import { Modal } from 'react-bootstrap';
 import Session from '../../middleware/Session';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import User from "./User";
+import CallModel from "./CallModel";
 import CallHandler from './CallHandler';
 
 export default class Index extends React.Component{
@@ -14,14 +17,20 @@ export default class Index extends React.Component{
 
 		this.state={
 			loggedUser : Session.getSession('prg_lg'),
+			isShowingModal : false,
 			userList : [],
 			recentCalls : [],
 			userStatus : [],
 			activeMainCat: "",
-			activeSubCat: ""
+			activeSubCat: "",
+			showModal: false
 		}
 
 		this.loadContactData("recent", "all");
+
+		this.answerVideo = this.answerVideo.bind(this);
+		this.answerAudio = this.answerAudio.bind(this);
+		this.reject = this.reject.bind(this);
 	}
 
 	loadContactData(cat, subCat){
@@ -467,6 +476,44 @@ export default class Index extends React.Component{
 
     }
 
+    onPopupClose() {
+        this.setState({isShowingModal: false});
+    }
+
+    callPopup(){
+        return(
+            <div>
+                {this.state.isShowingModal &&
+                <ModalContainer zIndex={9999}>
+                    <ModalDialog className="modalPopup">
+                        <CallModel closePopup={this.onPopupClose.bind(this)} />
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        );
+    }
+
+    onUserCalling(userID){
+		this.setState({showModal: true});
+    }
+
+    userCallPopup(){
+    	return(
+			<Modal show={this.state.showModal} onHide={this.close}>
+				<div className="alert fade in" id="incomingCall">
+                    <img src="/images/default-profile-pic.png" id="incoming_call_alert_other_profile_image" className="img-circle img-custom-medium bottom-margin-20" />
+                    <h4 id="incomingCallFrom">User is calling...</h4>
+                    <div>
+						<button type="button" className="btn btn-success income-call" id="answerVideo" onClick={()=>this.answerVideo()}>Video</button>
+						<button type="button" className="btn btn-success income-call" id="answerAudio" onClick={()=>this.answerAudio()}>Audio</button>
+						<button type="button" className="btn btn-danger income-call" id="reject" onClick={()=>this.reject()}>Reject</button>
+                    </div>
+                </div>
+			</Modal>
+    	)
+    }
+
     headerNavRecent(){
     	let mainCat = this.state.activeMainCat;
 		let subCat = this.state.activeSubCat;
@@ -539,6 +586,25 @@ export default class Index extends React.Component{
     	)
     }
 
+    handleShowModal(){
+    	this.setState({showModal: true});
+    }    
+
+	answerVideo(){
+		console.log("Video");
+		this.setState({isShowingModal: true, showModal: false});
+	}
+
+	answerAudio(){
+		console.log("Audio");
+		this.setState({isShowingModal: true, showModal: false});
+	}
+
+	reject(){
+		console.log("reject");
+		this.setState({showModal: false});
+	}
+
 	render() {
 		let mainCat = this.state.activeMainCat;
 		let subCat = this.state.activeSubCat;
@@ -552,16 +618,13 @@ export default class Index extends React.Component{
 		                        <h2>Call Center</h2>
 		                    </div>
 		                    <div className="col-sm-8">
-		                        <div className="search-call">
-		                        <span className="inner-addon">
-		                            <i className="fa fa-search"></i>
-		                            <input type="text" className="form-control" placeholder="Search"/>
-		                        </span>
-		                        </div>
-		                        <div className="crt-call">
-		                            <button className="btn btn-crt-call">
-		                                <i className="fa fa-plus"></i> New Call
-		                            </button>
+		                        <div className="actions-wrapper">
+		                            <div className="search-call">
+		                                <span className="inner-addon">
+		                                    <i className="fa fa-search"></i>
+		                                    <input type="text" className="form-control" placeholder="Search"/>
+		                                </span>
+		                            </div>
 		                        </div>
 		                    </div>
 		                </div>
@@ -570,19 +633,20 @@ export default class Index extends React.Component{
 		                {this.headerNav()}
 		                {
 		                	(mainCat == "recent")?
-		                	<RecentList userList={this.state.userList}/>
+		                	<RecentList userList={this.state.userList} onUserCall={this.onUserCalling.bind(this)} />
 		                	:
 		                	null		                	
 		                }
 		                {
 		                	(mainCat == "contact")?
-		                	<ContactList userList={this.state.userList}/>
+		                	<ContactList userList={this.state.userList} onUserCall={this.onUserCalling.bind(this)} />
 		                	:
 		                	null		                	
 		                }
 		            </section>
 		        </div>
-				<CallHandler/>
+		    	{this.userCallPopup()}
+		    	{this.callPopup()}
 		    </section>
 		);
 	}
@@ -597,13 +661,18 @@ export class ContactList extends React.Component{
 		}
 	}
 
+	onCalling(userID){
+		this.props.onUserCall(userID);
+	}
+
 	render() {
+		let _this = this;
 		let usersList = this.props.userList.map(function(user,key){
 			return(
-				<div className="contact-group">
+				<div className="contact-group" key={key}>
 	                <p className="group-name">{user.letter}</p>
 	                <div className="contact-wrapper">
-	                	<User users={user.users} type="contact" key={key} />
+	                	<User users={user.users} type="contact" onCalling={_this.onCalling.bind(_this)} />
 	                </div>
 	            </div>			
             )
@@ -623,12 +692,18 @@ export class RecentList extends React.Component{
 		this.state={
 
 		}
+
+	}
+
+	onCalling(userID){
+		this.props.onUserCall(userID);
 	}
 
 	render() {
+		let _this = this;
 		let recentList = this.props.userList.map(function(user,key){
 			return(
-				<User users={user.users} type="recent" key={key} />			
+				<User users={user.users} type="recent" key={key} onCalling={_this.onCalling.bind(_this)} />			
             )
 		})
 		return (
@@ -640,6 +715,4 @@ export class RecentList extends React.Component{
 		);
 	}
 }
-
-
 
