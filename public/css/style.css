@@ -1897,10 +1897,20 @@ textarea{
 .pg-inline-item-btn{
 	margin-left: 5px;
 }
-.pg-inline-item-btn{
+.form-area .pg-inline-item-btn{
 	height: 23px;
-	padding: 0 5px;
 	font-size: 12px;
+    color: #fff;
+    text-align: center;
+    background-color: #00a5ef;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    padding: 0 7px;
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    outline: none;
 }
 .skills-edit-section{
 	list-style: none;
@@ -2831,9 +2841,7 @@ textarea{
 
 /* Chat Window */
 .pg-middle-chat-screen-area{
-	margin-top: 70px;
 	padding: 0;
-	width: calc(100% - 220px);
 	min-height: 80vh;
 }
 
@@ -2970,7 +2978,7 @@ textarea{
 }
 
 .media-options-holder .media-options.hasSearch{
-	width: 67%;
+	width: 68%;
 	margin: 0 0 0 8%;
 }
 
@@ -3044,7 +3052,6 @@ textarea{
 
 .pg-middle-chat-screen-area .chat-body{
 	height: calc(100vh - 318px);
-	overflow: hidden;
 	z-index: 0;
 }
 
@@ -3278,7 +3285,7 @@ textarea{
 	text-align:center;
 }
 
-.video-call-view{
+.inCallPane-wrapper .video-call-view{
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -3575,7 +3582,7 @@ textarea{
 .notifi-inner-wrapper .btn-default:focus,
 .notifi-inner-wrapper .btn-default:hover{
     background: #00a5ef;
-    padding: 10px 15px;
+    padding: 7px 14px;
     text-transform: capitalize;
     color: #fff;
     border: none;
@@ -3623,15 +3630,16 @@ textarea{
 /* Chat bubble */
 .bubble-holder{
 	position: fixed;
-	bottom: 110px;
-	left: 110px;
+	bottom: 100px;
+    left: 255px;
 	z-index: 2;
 }
 
 .chat-popup{
 	width: 250px;
 	margin: 0 0 0 15px;
-	height: 282px;
+	height: 287px;
+	padding: 0 15px;
 	background: #fff;
 	box-shadow: 0 0 50px -20px #000;
 }
@@ -3972,8 +3980,8 @@ textarea{
 .popup-holder.add-new{
 	margin-top: 20px !important;
 	margin-left: 0 !important;
-	max-width: 340px;
-	width: 340px;
+	max-width: 280px;
+	width: 280px;
 }
 
 .popup-holder.right .arrow:after{
@@ -3985,9 +3993,14 @@ textarea{
 	border-right-color: transparent;
 }
 
+.popup-holder.share-popover{
+	max-width: 445px;
+}
+
 .popup-holder .popover-content{
 	background: #e8eef2;
 	padding: 0;
+	max-width: 445px;
 }
 
 .popup-holder .popover-content .share-popup-holder{
@@ -4000,7 +4013,7 @@ textarea{
 
 .popup-holder .header-holder .title{
 	font-size: 1.143em;
-	margin: 7px 0 0 50px;
+	margin: 7px 50px 0 0;
 	float: left;
 	color: #2d5164;
     font-weight: 600;
@@ -5121,7 +5134,6 @@ textarea{
 	font: 10px "montserratregular",sans-serif;
 	border: 1px solid #90a2b1;
 	padding: 6px 0 5px 8px;
-	margin-left: 10px;
 }
 
 .popup-header .note-title{
@@ -5218,13 +5230,16 @@ textarea{
 .pg-status-delete-icon{
 	float: right;
 	color:#ccc;
+	cursor: pointer;
 }
 
 .pg-comment-delete-icon{
-	float: right;
 	color:#ccc;
-	margin-right: 5px;
-	margin-top: 5px;
+	position: absolute;
+    top: 0px;
+    cursor: pointer;
+    right: 5px;
+    z-index: 1;
 }
 
 .post-img-holder{

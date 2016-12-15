@@ -136,7 +136,7 @@ const CommentItem =({comment,unformattedComment,loggedUser,onCommentDelete}) =>{
     let _profile_image = (typeof _profile.images.profile_image != 'undefined')?_profile.images.profile_image.http_url:"";
     let commented_by = _profile.first_name +" "+ _profile.last_name;
     return(
-        <div className="row-clr pg-comment-row">
+        <div className="row-clr pg-comment-row clearfix">
             {_loggedUser.id == _profile.user_id?<i className="fa fa-times pg-comment-delete-icon" onClick={(event)=>{onCommentDelete(unformattedComment)}}/>:null}
             <div className="col-xs-12 pg-comment-row-inner">
                 <div className="pg-comment-user-pro-pic">

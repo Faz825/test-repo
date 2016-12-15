@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.6 (http://getbootstrap.com)
- * Copyright 2011-2015 Twitter, Inc.
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,7 +1418,6 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3119,7 +3118,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3672,7 +3670,6 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10249,17 +10246,17 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/* 
-  Method to use:
-  @include @border {
-    border ($style,  $sides, $emptySides){
-  }
+/*
+	Method to use:
+	@include @border {
+		border ($style,  $sides, $emptySides){
+	}
 */
-/* 
-  Method to use:
-  @include @mixin {
-    content
-  }
+/*
+	Method to use:
+	@include @mixin {
+		content
+	}
 */
 header {
   background: #fff;
@@ -11453,6 +11450,9 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i:nth-child(1) {
   color: #00a6ef;
 }
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li.pending p, .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li.pending i {
+  color: #989ba0;
+}
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i.pull-right {
   margin-top: 2px;
 }
@@ -11467,9 +11467,6 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div p {
   margin-bottom: 0;
-}
-.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div p.pending {
-  color: #989ba0;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .people-list-wrapper {
   display: block;
@@ -11754,7 +11751,10 @@ header .notification-holder .profile-header-thumb {
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li:before {
   color: #00a6ef;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items .pending {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li.pending::before {
+  color: #989ba0;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li.pending p {
   color: #989ba0;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .header-wrapper p {
@@ -11763,7 +11763,10 @@ header .notification-holder .profile-header-thumb {
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li:before {
   color: #a6c649;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items .pending {
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li.pending::before {
+  color: #989ba0;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li.pending p {
   color: #989ba0;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper {
@@ -12665,99 +12668,115 @@ header .notification-holder .profile-header-thumb {
   letter-spacing: -2px;
   color: #000000;
 }
-.call-center-container .call-center-header .crt-call {
-  float: right;
-  margin-top: 30px;
-  margin-right: 10px;
+.call-center-container .call-center-header .actions-wrapper {
+  overflow: hidden;
+  margin-top: 26px;
+  text-align: right;
 }
-.call-center-container .call-center-header .crt-call .btn-crt-call {
-  padding: 9px 28px 9px 28px;
+.call-center-container .call-center-header .actions-wrapper .crt-call {
+  display: inline-block;
+  vertical-align: middle;
+}
+.call-center-container .call-center-header .actions-wrapper .crt-call .btn-crt-call {
+  padding: 9px 35px;
   background-color: #00a5ef;
   color: #ffffff;
   font-size: 0.875em;
 }
-.call-center-container .call-center-header .search-call {
+.call-center-container .call-center-header .actions-wrapper .search-call {
   position: relative;
-  float: right;
-  margin-top: 30px;
+  display: inline-block;
+  vertical-align: middle;
   width: 150px;
 }
-.call-center-container .call-center-header .search-call .inner-addon i {
+.call-center-container .call-center-header .actions-wrapper .search-call .inner-addon i {
   position: absolute;
   padding: 10px;
   left: 29px;
   font-weight: 400;
   pointer-events: none;
 }
-.call-center-container .call-center-header .search-call .inner-addon input {
+.call-center-container .call-center-header .actions-wrapper .search-call .inner-addon input {
   border-radius: 7px;
   padding-left: 58px;
   height: 40px;
   font-size: 0.875em;
 }
-.call-center-container .contacts-holder {
+.call-center-container .call-center-inner-holder {
+  margin-top: 18px;
   overflow: hidden;
   border-radius: 8px;
   box-shadow: 0px 0px 7px 3px #d6d8da;
-  min-height: 75vh;
   background-color: #f6f6f6;
 }
-.call-center-container .contacts-holder .contact-header {
+.call-center-container .call-center-inner-holder .inner-header {
   overflow: hidden;
 }
-.call-center-container .contacts-holder .contact-header .user-status .image-wrapper {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper {
   float: left;
   position: relative;
 }
-.call-center-container .contacts-holder .contact-header .user-status .image-wrapper img {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper img {
   margin-top: 20px;
   margin-left: 70px;
   width: 54px;
   height: 54px;
+  border-radius: 100%;
 }
-.call-center-container .contacts-holder .contact-header .user-status .image-wrapper .status {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status {
   position: absolute;
   bottom: 0px;
   right: 0px;
   width: 13px;
   height: 13px;
-  background-color: #63c66c;
-  border: 3px solid #ffffff;
   border-radius: 100%;
 }
-.call-center-container .contacts-holder .contact-header .user-status .name-wrapper {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.online {
+  background-color: #63c66c;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.work-mode {
+  background-color: #de2424;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.offline {
+  background-color: #ffffff;
+  border: 2px solid #6ac374;
+}
+.call-center-container .call-center-inner-holder .inner-header .user-status .name-wrapper {
   float: left;
   margin-top: 25px;
   margin-left: 18px;
 }
-.call-center-container .contacts-holder .contact-header .user-status .name-wrapper .name {
+.call-center-container .call-center-inner-holder .inner-header .user-status .name-wrapper .name {
   margin-bottom: 0;
   font-size: 1em;
   font-weight: 500;
   color: #000000;
 }
-.call-center-container .contacts-holder .contact-header .user-status .name-wrapper .status {
+.call-center-container .call-center-inner-holder .inner-header .user-status .name-wrapper .status {
   font-size: 0.75em;
   font-weight: 400;
   color: #000000;
 }
-.call-center-container .contacts-holder .contact-header .rw-contact-menu {
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu {
   background-color: #ffffff;
   text-align: center;
   font-size: 0.751875em;
   font-weight: 400;
   color: #000000;
 }
-.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-4 {
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-4, .call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-6 {
   padding: 12px;
   border-bottom: 4px solid #e9ebee;
   cursor: pointer;
 }
-.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-4.active {
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-4.active, .call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-6.active {
   font-weight: 500;
   border-bottom: 4px solid #00a5ef;
 }
-.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-2-4 {
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4 {
+  position: relative;
   position: relative;
   min-height: 1px;
   padding-left: 15px;
@@ -12767,75 +12786,267 @@ header .notification-holder .profile-header-thumb {
   cursor: pointer;
 }
 @media (min-width: 768px) {
-  .call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-2-4 {
+  .call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4 {
     float: left;
     width: 20%;
   }
 }
-.call-center-container .contacts-holder .contact-header .rw-contact-menu .col-sm-2-4.active {
-  font-weight: 500;
-  border-bottom: 4px solid #00a5ef;
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4 .selector {
+  position: absolute;
+  height: 5px;
+  width: 60%;
+  bottom: -5px;
+  left: 20%;
+  background-color: transparent;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .group-name {
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4.active {
+  font-weight: 500;
+}
+.call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4.active .selector {
+  background-color: #00a5ef;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .group-name {
   margin-left: 71px;
   margin-bottom: 3px;
   font-size: 0.875em;
   font-weight: 500;
   color: #00a5ef;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper {
   overflow: hidden;
   padding: 0 6%;
   border-top: 1px solid #dee6eb;
+  background-color: #ffffff;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item {
   overflow: hidden;
   margin-top: 6px;
+  margin-bottom: 10px;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper {
   float: left;
   position: relative;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper img {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper img {
   width: 51px;
   height: 51px;
+  border-radius: 100%;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status {
   position: absolute;
   bottom: 0px;
   right: 0px;
   width: 13px;
   height: 13px;
-  background-color: #63c66c;
-  border: 3px solid #ffffff;
   border-radius: 100%;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.online {
+  background-color: #63c66c;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.work-mode {
+  background-color: #de2424;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.offline {
+  background-color: #ffffff;
+  border: 2px solid #6ac374;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper {
   float: left;
   margin-left: 18px;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .name {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .name {
   margin-top: 5px;
   margin-bottom: 0;
   font-size: 0.875em;
   font-weight: 500;
   color: #000000;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .status {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .status {
   font-size: 0.75em;
   font-weight: 400;
   color: #000000;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type {
   text-align: center;
 }
-.call-center-container .contacts-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type img {
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type.user span {
   margin-top: 14px;
-  font-size: 1.5625em;
+  width: 18px;
+  height: 20px;
+  display: inline-block;
+  background-image: url("../images/call-center/contact-user-ico.png");
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type.group span {
+  margin-top: 14px;
+  width: 36px;
+  height: 20px;
+  display: inline-block;
+  background-image: url("../images/call-center/contact-users-ico.png");
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper {
+  float: right;
+  margin-top: 7px;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  border: 1px solid #06a7ef;
+  border-radius: 100%;
+  background-color: #ffffff;
+  outline: none;
+}
+.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico.video {
+  margin-right: 16px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper {
+  overflow: hidden;
+  padding: 0 6%;
+  border-top: 1px solid #dee6eb;
+  background-color: #ffffff;
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .call-center-container .call-center-inner-holder .recent-list .list-wrapper {
+    padding: 0 7%;
+  }
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item {
+  overflow: hidden;
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper {
+  float: left;
+  position: relative;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper img {
+  width: 51px;
+  height: 51px;
+  border-radius: 100%;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper .status {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 13px;
+  height: 13px;
+  border-radius: 100%;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper .status.online {
+  background-color: #63c66c;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper .status.work-mode {
+  background-color: #de2424;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .image-wrapper .status.offline {
+  background-color: #ffffff;
+  border: 2px solid #6ac374;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .name-wrapper {
+  float: left;
+  margin-left: 18px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .name-wrapper .name {
+  margin-top: 5px;
+  margin-bottom: 0;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: #000000;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .name-wrapper .status {
+  font-size: 0.75em;
+  font-weight: 400;
+  color: #000000;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type {
+  text-align: center;
+  margin-top: 15px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type.missed .call-time {
+  color: #de2424;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type.missed .call-count {
+  background-color: #de2424;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type.missed .video {
+  display: inline-block;
+  vertical-align: middle;
+  width: 20px;
+  height: 13px;
+  background-image: url("../images/call-center/video-ico-missed.png");
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type.missed .phone {
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+  background-image: url("../images/call-center/phone-ico-missed.png");
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .video {
+  display: inline-block;
+  vertical-align: middle;
+  width: 20px;
+  height: 13px;
+  background-image: url("../images/call-center/video-ico.png");
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .phone {
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+  background-image: url("../images/call-center/phone-ico.png");
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-count {
+  margin-right: 43px;
+  display: inline-block;
+  color: #ffffff;
+  background-color: #bcbebe;
+  font-size: 0.875em;
+  font-weight: 500;
+  border-radius: 100%;
+  width: 27px;
+  height: 27px;
+  padding-top: 2px;
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-count {
+    margin-right: 33px;
+  }
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-time {
+  margin-left: 40px;
+  display: inline-block;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: #000000;
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .contact-type .call-time {
+    margin-left: 30px;
+  }
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .call-ico-wrapper {
+  float: right;
+  margin-top: 7px;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .call-ico-wrapper .call-ico {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  border: 1px solid #06a7ef;
+  border-radius: 100%;
+  background-color: #ffffff;
+  outline: none;
+}
+.call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .call-ico-wrapper .call-ico.video {
+  margin-right: 16px;
 }
 
 .popup-holder {
-  overflow: hidden;
   background-color: #ffffff;
   border-radius: 8px;
 }
@@ -13358,6 +13569,204 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .share-folder-popover.add-new-user .arrow {
   display: none;
+}
+.popup-holder .active-call-container {
+  position: relative;
+  padding-left: 12px;
+  padding-right: 12px;
+  display: inline-block;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+}
+.popup-holder .active-call-container .top-nav {
+  position: absolute;
+  width: 100%;
+  top: 14px;
+  left: 0px;
+}
+.popup-holder .active-call-container .top-nav .close-ico {
+  margin-left: 13px;
+  width: 21px;
+  height: 21px;
+  float: left;
+  cursor: pointer;
+  background-image: url("../images/call-center/active-call-close.png");
+}
+.popup-holder .active-call-container .top-nav .add-new-ico {
+  margin-top: 2px;
+  margin-right: 17px;
+  width: 23px;
+  height: 17px;
+  float: right;
+  cursor: pointer;
+  background-image: url("../images/call-center/active-call-add-new-ico.png");
+}
+.popup-holder .active-call-container .top-nav .minus-ico {
+  margin-top: 10px;
+  margin-right: 15px;
+  width: 15px;
+  height: 3px;
+  float: right;
+  cursor: pointer;
+  background-image: url("../images/call-center/active-call-minus.png");
+}
+.popup-holder .active-call-container .top-nav .expand-ico {
+  margin-right: 17px;
+  width: 19px;
+  height: 19px;
+  float: right;
+  cursor: pointer;
+  background-image: url("../images/call-center/active-call-expand.png");
+}
+.popup-holder .active-call-container .active-user-block {
+  position: relative;
+  margin-top: 50px;
+  margin-bottom: 6px;
+  width: 675px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.popup-holder .active-call-container .active-user-block .active-call-nav {
+  position: absolute;
+  width: 100%;
+  bottom: 18px;
+  left: 0px;
+  text-align: center;
+}
+.popup-holder .active-call-container .active-user-block .active-call-nav span {
+  margin-left: 5px;
+  margin-right: 5px;
+  border: 1px solid #bfb0b2;
+  border-radius: 100%;
+  background-color: #363636;
+  opacity: 0.6;
+  width: 65px;
+  height: 65px;
+  display: inline-block;
+  background-position: center;
+  cursor: pointer;
+}
+.popup-holder .active-call-container .active-user-block .active-call-nav span.video {
+  background-repeat: no-repeat;
+  background-image: url("../images/call-center/active-call-video-ico.png");
+}
+.popup-holder .active-call-container .active-user-block .active-call-nav span.mute {
+  background-repeat: no-repeat;
+  background-image: url("../images/call-center/active-call-mute-ico.png");
+}
+.popup-holder .active-call-container .active-user-block .active-call-nav span.speaker {
+  background-repeat: no-repeat;
+  background-image: url("../images/call-center/active-call-speaker-ico.png");
+}
+.popup-holder .active-call-container .active-user-block .active-call-nav span.hang-up {
+  background-color: #ff3b30;
+  opacity: 1;
+  background-repeat: no-repeat;
+  background-image: url("../images/call-center/active-call-hangup-ico.png");
+}
+.popup-holder .active-call-container .participants {
+  text-align: center;
+  overflow: hidden;
+}
+.popup-holder .active-call-container .participants .user-block {
+  position: relative;
+  margin-right: 6px;
+  width: 152px;
+  height: 100px;
+  border-radius: 8px;
+  display: inline-block;
+  border: 3px solid #ffffff;
+  overflow: hidden;
+}
+.popup-holder .active-call-container .participants .user-block:last-child {
+  margin-right: 0px;
+}
+.popup-holder .active-call-container .participants .user-block.active {
+  border-color: #00a5ef;
+}
+.popup-holder .active-call-container .participants .user-block.active .active-user, .popup-holder .active-call-container .participants .user-block.active .actions-wrapper {
+  display: inline-block;
+}
+.popup-holder .active-call-container .participants .user-block img {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+.popup-holder .active-call-container .participants .user-block .active-user {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  opacity: 0.38;
+  display: none;
+}
+.popup-holder .active-call-container .participants .user-block .actions-wrapper {
+  position: absolute;
+  top: 35px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: none;
+}
+.popup-holder .active-call-container .participants .user-block .actions-wrapper span {
+  display: inline-block;
+  background-position: center;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.popup-holder .active-call-container .participants .user-block .actions-wrapper span.video {
+  width: 29px;
+  height: 19px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("../images/call-center/active-call-video-ico.png");
+}
+.popup-holder .active-call-container .participants .user-block .actions-wrapper span.mute {
+  margin-right: 5px;
+  width: 14px;
+  height: 28px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("../images/call-center/active-call-mute-ico.png");
+}
+.popup-holder .active-call-container .call-timer {
+  text-align: center;
+}
+.popup-holder .active-call-container .call-timer p {
+  display: inline-block;
+  color: #2d5164;
+  font-size: 1.020625em;
+  font-weight: 400;
+}
+.popup-holder .call-center-new-participant {
+  position: relative;
+  padding: 0px 5px;
+  display: inline-block;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  width: 265px;
+}
+.popup-holder .call-center-new-participant i {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+}
+.popup-holder .call-center-new-participant input {
+  margin: 6px 0px;
+  padding-left: 38px;
+  background-color: #e9ebee;
+  font-size: 0.75em;
+  color: #838383;
+  font-weight: 400;
+  border: 1px solid #d9dbde;
+  border-radius: 8px;
+  height: 40px;
+  box-shadow: inset 0px 1px 5px -1px rgba(0, 0, 0, 0.4);
 }
 
 .settings-icon {

@@ -110,7 +110,6 @@ export default class WeekView extends React.Component {
     }
 
     processDataCall(postData) {
-        console.log(postData);
         $.ajax({
             url: '/calendar/events/date_range',
             method: "GET",
@@ -221,8 +220,6 @@ export class LoadDayList extends React.Component {
 
 
     render() {
-        //console.log("loading current date");
-        //console.log(this.props.current_date);
         let currDt = moment(this.props.current_date);
         return(
             <div className="day-tile" onDoubleClick={() => this.handleClick()}>
@@ -247,23 +244,35 @@ export class DailyEvents extends React.Component {
     constructor(props) {
         super(props);
         this.state = {}
+
+        this.loggedUser = Session.getSession('prg_lg');
+        this.isPending = this.isPending.bind(this);
+    }
+
+    isPending(event) {
+        if(event.user_id == this.loggedUser.id) {
+            return false;
+        }
+        for(let _suser in event.shared_users) {
+            if(event.shared_users[_suser].user_id == this.loggedUser.id && event.shared_users[_suser].shared_status == 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     render() {
 
-        // console.log(this.props.daily_events);
-
         let groupedEvents = GroupArray(this.props.daily_events, 'type');
 
-        let _events = null,_todos = null;
+        let _events = null,_todos = null, _this = this;
 
         if(typeof groupedEvents['1'] != "undefined"){
             _events = groupedEvents['1'].map(function(event, key){
                 let _text = event.description.blocks[0].text;
                 return(
-                    <li className="events" key={key}>
-                        <p className="item">{_text}</p>
-                        {/*<p className="time">1pm</p>*/}
+                    <li className={_this.isPending(event) == false ? "events" : "events pending"} key={key}>
+                        {_this.isPending(event) == false ? <p className="item">{_text}</p> : <p className="item pending">{_text}</p>}
                     </li>
                 );
             });
@@ -272,9 +281,8 @@ export class DailyEvents extends React.Component {
             _todos = groupedEvents['2'].map(function(event, key){
                 let _text = event.description.blocks[0].text;
                 return(
-                    <li className="events" key={key}>
-                        <p className="item">{_text}</p>
-                        {/*<p className="time">1pm</p>*/}
+                    <li className={_this.isPending(event) == false ? "events" : "events pending"} key={key}>
+                        {_this.isPending(event) == false ? <p className="item">{_text}</p> : <p className="item pending">{_text}</p>}
                     </li>
                 );
             });

@@ -13,8 +13,8 @@ GLOBAL.FolderConfig = {
     ES_INDEX_OWN_FOLDER : "own_folders:"
 };
 GLOBAL.FolderSharedMode = {
-    READ_ONLY: 1,
-    READ_WRITE: 2
+    VIEW_ONLY: 1,
+    VIEW_UPLOAD: 2
 };
 GLOBAL.FolderSharedRequest = {
     REQUEST_PENDING: 1,
@@ -90,9 +90,6 @@ FolderSchema.statics.getCount = function(criteria,callBack){
  */
 FolderSchema.statics.addNewFolder = function(_data,callBack){
 
-    console.log("addNewFolder");
-    //console.log(FolderConfig.ES_INDEX_OWN_FOLDER);
-
     var _this = this;
     var _folder = new this();
     _folder.name 	= _data.name;
@@ -112,12 +109,11 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
                 folder_color:resultSet.color,
                 folder_owner:resultSet.user_id,
                 folder_user:resultSet.user_id,
-                folder_updated_at:resultSet.updated_at
+                folder_updated_at:resultSet.updated_at,
+                folder_shared_mode:FolderSharedMode.VIEW_UPLOAD
             };
 
             _this.addFolderToCache(_esFolder, function(err){
-                console.log("_this.addFolderToCache ==========");
-                console.log(err)
                 callBack({
                     status:200,
                     folder:resultSet
@@ -140,15 +136,13 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
  */
 FolderSchema.statics.addFolderToCache = function(data, callBack){
 
-    console.log("addFolderToCache");
-    console.log(data);
-
     var _esFolder = {
         folder_id:data.folder_id,
         folder_name:data.folder_name,
         folder_color:data.folder_color,
         folder_owner:data.folder_owner,
-        folder_updated_at:data.folder_updated_at
+        folder_updated_at:data.folder_updated_at,
+        folder_shared_mode:data.folder_shared_mode
     };
     var _type = "";
 
@@ -167,9 +161,6 @@ FolderSchema.statics.addFolderToCache = function(data, callBack){
     }
 
     ES.createIndex(payLoad,function(resultSet){
-
-        console.log("addFolderToCache - ES.createIndex return");
-        console.log(resultSet)
         callBack(resultSet)
         return 0;
     });
@@ -196,6 +187,25 @@ FolderSchema.statics.getFolders = function(criteria,callBack){
 
 };
 
+/**
+ * Get Folders
+ */
+FolderSchema.statics.getSharedFolders = function(index,callBack){
+
+    var query={
+        index:index
+    };
+    ES.search(query,function(esResultSet){
+        //console.log(esResultSet)
+        if(esResultSet == null || typeof esResultSet.result == "undefined"){
+            callBack({status:400,folders:[]});
+        }else{
+            callBack({status:200, folders:esResultSet.result});
+        }
+    });
+
+};
+
 
 /**
  * Get Folder By Id
@@ -216,31 +226,6 @@ FolderSchema.statics.getFolderById = function(id,callBack){
             console.log(err)
             callBack({status: 400, error: err})
         }
-    });
-
-};
-
-/**
- * Get Folder | Get shared folder to user
- */
-FolderSchema.statics.ch_getSharedFolders = function(userId,payload,callBack){
-
-    var _this = this;
-    var _cache_key = "idx_user:"+FolderConfig.CACHE_PREFIX+userId;
-
-    var query={
-        q:payload.q,
-        index:_cache_key
-    };
-
-    //Find User from Elastic search
-    ES.search(query,function(csResultSet){
-        if(csResultSet == null){
-            callBack(null);
-        }else{
-            callBack(csResultSet);
-        }
-
     });
 
 };
@@ -337,6 +322,26 @@ FolderSchema.statics.updateSharedFolder = function(criteria, data, callBack){
 
 
 /**
+ * Delete Folder From Cache based on Folder Id
+ * @param payload
+ * @param callBack
+ */
+FolderSchema.statics.deleteFolderFromCache= function(payload,callBack){
+
+    var query={
+        id:payload.id,
+        type: payload.type,
+        index:payload.cache_key
+    };
+
+    ES.delete(query,function(csResultSet){
+        callBack(null);
+    });
+
+}
+
+
+/**
  * This is to get the folder name of given folder_id
  * @param criteria
  * @param data
@@ -349,6 +354,27 @@ FolderSchema.statics.bindNotificationData = function(notificationObj, callBack){
         notificationObj['folder_name'] = folderData.name;
 
         callBack(notificationObj);
+    });
+
+};
+
+
+/**
+ * Search Folders
+ */
+FolderSchema.statics.searchFolders = function(payload,callBack){
+
+    var query={
+        index:payload.index,
+        q:payload.q
+    };
+    ES.search(query,function(esResultSet){
+        //console.log(esResultSet)
+        if(esResultSet == null || typeof esResultSet.result == "undefined"){
+            callBack({status:400,folders:[]});
+        }else{
+            callBack({status:200, folders:esResultSet.result});
+        }
     });
 
 };

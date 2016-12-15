@@ -30,13 +30,16 @@ export default class WeekDayEventPopUp extends React.Component {
             showTimePanel : '',
             showTimePanelWindow : false,
             showUserPanel : '',
-            showUserPanelWindow : false
+            showUserPanelWindow : false,
+            msgOn : false,
+            errorMsg : ''
         }
 
         this.loggedUser = user;
         this.sharedWithIds = [];
         this.sharedWithNames = [];
         this.addEvent = this.addEvent.bind(this);
+        this.toggleMsg = this.toggleMsg.bind(this);
     }
 
     componentDidMount() {
@@ -110,8 +113,11 @@ export default class WeekDayEventPopUp extends React.Component {
         this.setState({ defaultEventTime: moment(time).format('HH:mm')});
     }
 
-    addEvent(event) {
+    toggleMsg() {
+        this.setState({ msgOn: !this.state.msgOn });
+    }
 
+    addEvent(event) {
 
         const strDate = this.props.curr_date.format('YYYY-MM-DD');
         const strTime = this.state.defaultEventTime;
@@ -122,7 +128,19 @@ export default class WeekDayEventPopUp extends React.Component {
         const editorContentRaw = convertToRaw(contentState);
         const plainText = contentState.getPlainText();
 
+        // front-end validations
+        // TODO: remove this msg showing method after implementing a global way to show error message
         if(!plainText) {
+            this.setState({errorMsg : 'Please add the event description'});
+            this.toggleMsg();
+            setTimeout(this.toggleMsg, 3000);
+            return;
+        }
+
+        if(dateWithTime < moment().format('YYYY-MM-DD HH:mm')) {
+            this.setState({errorMsg : 'Please add a future date and time'});
+            this.toggleMsg();
+            setTimeout(this.toggleMsg, 3000);
             return;
         }
 
@@ -246,49 +264,48 @@ export default class WeekDayEventPopUp extends React.Component {
                                             setTime={this.setTime.bind(this)}
                                             setSharedUsers={this.setSharedUsers.bind(this)}
                                             />
-                                        : null }
-                                </div>
-                                <div className="shared-users-time-panel">
-
-                                    <div className="col-sm-3">
-                                        <p>
-                                            <span className="user-label">Time : {this.state.defaultEventTime} </span>
-                                        </p>
-                                        {this.state.showTimePanelWindow ?
-                                            <div className={this.state.showTimePanel + " panel time-panel"}>
-                                                <TimePicker
-                                                    style={{ width: 100 }}
-                                                    showSecond={showSecond}
-                                                    defaultValue={moment()}
-                                                    onChange={this.handleTimeChange.bind(this)}
+                                    : null }
+                                    <div className="shared-users-time-panel row">
+                                        <div className="col-sm-3">
+                                            <p>
+                                                <span onClick={this._onAtClick.bind(this)} className="user-label">Time <span className="selected-time">{this.state.defaultEventTime}</span></span>
+                                            </p>
+                                            {this.state.showTimePanelWindow ?
+                                                <div className={this.state.showTimePanel + " panel time-panel"}>
+                                                    <TimePicker
+                                                        style={{ width: 100 }}
+                                                        showSecond={showSecond}
+                                                        defaultValue={moment()}
+                                                        onChange={this.handleTimeChange.bind(this)}
+                                                    />
+                                                </div>
+                                                : null}
+                                        </div>
+                                        <div className="invite-people col-sm-9">
+                                            <p>
+                                                <span className="user-label" onClick={this._onHashClick.bind(this)}> People in the event : </span>
+                                                {shared_with_list}
+                                            </p>
+                                            {this.state.showUserPanelWindow ?
+                                                <SharedUsers
+                                                    setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
+                                                    showPanel={this.state.showUserPanel}
+                                                    removeUser={this.removeUser}
                                                 />
-                                            </div>
-                                            : null}
-                                    </div>
-                                    <div className="invite-people col-sm-6">
-                                        <p>
-                                            <span className="user-label"> People in the event : </span>
-                                            {shared_with_list}
-                                        </p>
-                                        {this.state.showUserPanelWindow ?
-                                            <SharedUsers
-                                                setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
-                                                showPanel={this.state.showUserPanel}
-                                                removeUser={this.removeUser}
-                                            />
                                             : null }
+                                        </div>
                                     </div>
-                                </div>
 
+                                </div>
                             </div>
                             <div className="model-footer">
                                 <div className="input-items-outer-wrapper">
+                                    <div className="msg-holder pull-left">
+                                        {this.state.msgOn ?
+                                            <p className="text-danger">{this.state.errorMsg}</p>
+                                        : null }
+                                    </div>
                                     <ul className="input-items-wrapper pull-right">
-                                        <li>
-                                            <button className="menu-ico">
-                                                <i className="fa fa-smile-o" aria-hidden="true"></i>
-                                            </button>
-                                        </li>
                                         <li>
                                             <button className="menu-ico">
                                                 <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>

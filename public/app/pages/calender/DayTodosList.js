@@ -6,11 +6,16 @@ import moment from 'moment';
 import {convertFromRaw, convertToRaw} from 'draft-js';
 import {stateToHTML} from 'draft-js-export-html';
 
+import Session from '../../middleware/Session';
+
 export default class DayTodosList extends React.Component {
 
 	constructor(props) {
-        super(props);
-        this.state = {};
+				let user =  Session.getSession('prg_lg');
+				super(props);
+				this.state = {
+						user : user
+				};
     }
 
     render() {
@@ -32,9 +37,14 @@ export default class DayTodosList extends React.Component {
             // 	return <span key={userKey}>{user.name}, </span>
             // });
 						let usersString = [];
+						let acceptedClass = 'event-description';
 						if(event.shared_users.length > 0 ) {
+
 								usersString = event.shared_users.map(function(user,userKey){
-		                return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
+										if(event.user_id ==  _this.state.user.id || (user.shared_status == 3 &&_this.state.user.id == user.id )) {
+												acceptedClass = 'event-description accepted';
+										}
+										return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
 		            });
 						} else {
 								usersString = <span className="people-list" >Only me</span>
@@ -45,7 +55,7 @@ export default class DayTodosList extends React.Component {
 								<div className="checkbox-area">
 										<input id="check1" name="check" value="check1" type="checkbox" />
 										<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id, event.status)} >
-												<div dangerouslySetInnerHTML={{__html: htmlC}} ></div>
+												<div className={acceptedClass} dangerouslySetInnerHTML={{__html: htmlC}} ></div>
 												<p>People in the To-do : {usersString}</p>
 										</label>
 								</div>

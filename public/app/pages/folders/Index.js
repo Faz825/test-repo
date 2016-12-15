@@ -32,7 +32,12 @@ export default class Index extends React.Component{
             sharedWithNames : [],
             sharedWithUsernames : [],
             folders : [],
-            addFolder : true
+            addFolder : true,
+            folderValue:'',
+            folderSuggestions:[],
+            folderSuggestionsList:{},
+            selectedFileFolder:[],
+            onSelect: false
         };
 
         this.users = [];
@@ -41,30 +46,34 @@ export default class Index extends React.Component{
         this.sharedWithUsernames = [];
         this.loadFolderRequest = true;
         this.defaultFolder = [];
+        this.folders = [];
 
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.colorPicker = this.colorPicker.bind(this);
+        this.removeUser = this.removeUser.bind(this);
+        this.loadFolders = this.loadFolders.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
         this.getSuggestionValue = this.getSuggestionValue.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
-        this.removeUser = this.removeUser.bind(this);
-        console.log("folder index constructor");
+        this.onFolderChange = this.onFolderChange.bind(this);
+        this.onFolderSuggestionsUpdateRequested = this.onFolderSuggestionsUpdateRequested.bind(this);
+        this.getFolderSuggestionValue = this.getFolderSuggestionValue.bind(this);
+        this.renderFolderSuggestion = this.renderFolderSuggestion.bind(this);
+        this.showSelectedFileFolder = this.showSelectedFileFolder.bind(this);
+
     }
 
     componentDidMount(){
-        console.log("Index - componentDidMount");
         this.checkDefaultFolder();
     }
 
     componentWillUnmount(){
-        console.log("Index - componentWillUnmount");
         this.loadFolderRequest = false;
     }
 
     checkDefaultFolder(){
-        console.log("checkDefaultFolder");
 
         if(this.defaultFolder.length == 0){
             let _dF = {
@@ -79,14 +88,11 @@ export default class Index extends React.Component{
                 dataType: "JSON",
                 headers: {'prg-auth-header': this.state.loggedUser.token}
             }).done( function (data, text){
-                console.log("checkDefaultFolder - got response")
                 if(data.status.code == 200 && this.loadFolderRequest){
                     if(data.count == 0){
-                        console.log("checkDefaultFolder - no default folder - going to call addDefaultFolder")
                         this.setState({CFName:"My Folder", CFColor:"#1b9ed9"});
                         this.addDefaultFolder();
                     } else{
-                        console.log("checkDefaultFolder - have default folder - going to call loadFolders")
                         this.loadFolders();
                     }
                 }
@@ -96,7 +102,6 @@ export default class Index extends React.Component{
     }
 
     loadFolders(){
-        console.log("loadFolders");
 
         $.ajax({
             url: '/folders/get-all',
@@ -104,10 +109,8 @@ export default class Index extends React.Component{
             dataType: "JSON",
             headers: {'prg-auth-header': this.state.loggedUser.token}
         }).done( function (data, text){
-            console.log("loadFolders - got response")
             if(data.status.code == 200 && this.loadFolderRequest){
                 let folders = data.folders;
-                console.log(folders);
                 this.setState({folders: folders});
             }
         }.bind(this));
@@ -116,7 +119,6 @@ export default class Index extends React.Component{
     addDefaultFolder(){
 
         if(this.loadFolderRequest && this.defaultFolder.length == 1){
-            console.log("addDefaultFolder")
 
             $.ajax({
                 url: '/folders/add-new',
@@ -131,12 +133,9 @@ export default class Index extends React.Component{
                 }
             }).done( function (data, text){
                 if (data.status.code == 200 && this.loadFolderRequest) {
-                    console.log("addDefaultFolder - got response - going to call loadFolders")
                     this.setState({CFName : "", CFColor : ""});
                     let folders = [data.folder];
-                    console.log(folders);
                     this.setState({folders: folders});
-
                 }
             }.bind(this));
         }
@@ -232,6 +231,127 @@ export default class Index extends React.Component{
         this.setState({
             suggestions: this.getSuggestions(value, this.users),
             suggestionsList : this.getSuggestions(value, this.users)
+        });
+    }
+
+    getFolderSuggestions(value, data) {
+        const escapedValue = Lib.escapeRegexCharacters(value.trim());
+        if (escapedValue === '') {
+            return [];
+        }
+        const regex = new RegExp('^' + escapedValue, 'i');
+        return data.filter(data => regex.test(data.name));
+    }
+
+    showSelectedFileFolder(suggestion){
+        console.log(suggestion);
+        this.setState({onSelect:true});
+        if(suggestion.type == "folder"){
+            $.ajax({
+                url: '/folder/get-folder/'+suggestion.folder_id,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        console.log(data.folder)
+                        this.setState({selectedFileFolder:data.folder, onSelect:false})
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        } else{
+            $.ajax({
+                url: '/folder/get-document/'+suggestion.folder_id+'/'+suggestion.document_id,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        console.log(data.folder)
+                        this.setState({selectedFileFolder:data.folder, onSelect:false})
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        }
+    }
+
+    getFolderSuggestionValue(suggestion) {
+        return suggestion.name;
+    }
+
+    renderFolderSuggestion(suggestion) {
+        return (
+            <a href="javascript:void(0)" onClick={()=>this.showSelectedFileFolder(suggestion)}>
+                <div className="suggestion" >
+                    <span>{suggestion.name}</span>
+                </div>
+            </a>
+        );
+    }
+
+    onFolderChange(event, { newValue }) {
+
+        this.setState({folderValue:newValue});
+        console.log(this.state.onSelect)
+        if(!this.state.onSelect && newValue.length == 1){
+            this.setState({selectedFileFolder:[]})
+            console.log("call folder search")
+            $.ajax({
+                url: '/folder/search/'+newValue,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.folders = data.suggested_folders;
+                        this.setState({
+                            folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
+                            folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        } else if(!this.state.onSelect && newValue.length > 1 && this.folders.length < 10){
+            this.setState({selectedFileFolder:[]})
+            $.ajax({
+                url: '/folder/search/'+newValue,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data, text) {
+                    if(data.status.code == 200){
+                        this.folders = data.suggested_folders;
+                        this.setState({
+                            folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
+                            folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
+                        });
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(request.responseText);
+                    console.log(status);
+                    console.log(error);
+                }.bind(this)
+            });
+        }
+
+    }
+
+    onFolderSuggestionsUpdateRequested({ value }) {
+        this.setState({
+            folderSuggestions: this.getFolderSuggestions(value, this.folders),
+            folderSuggestionsList : this.getFolderSuggestions(value, this.folders)
         });
     }
 
@@ -425,13 +545,23 @@ export default class Index extends React.Component{
 
     render(){
 
+        const value = this.state.folderValue;
+
+        const { folderSuggestions, folderSuggestionsList } = this.state;
         let _this = this;
-        let _folders = this.state.folders;
+        let _folders = (this.state.selectedFileFolder.length > 0)?this.state.selectedFileFolder:this.state.folders;
         let folderList = _folders.map(function(folder,key){
             return (
                 <Folder key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} />
             )
         });
+
+        const inputProps = {
+            placeholder: 'Search',
+            value,
+            onChange: this.onFolderChange,
+            className: 'form-control'
+        };
 
         return(
             <section className="folder-container sub-container">
@@ -456,7 +586,12 @@ export default class Index extends React.Component{
                                 <div className="search-folder">
                                     <div className="inner-addon">
                                         <i className="fa fa-search"></i>
-                                        <input type="text" className="form-control" placeholder="Search"/>
+                                        {<Autosuggest suggestions={folderSuggestions}
+                                                      onSuggestionsUpdateRequested={this.onFolderSuggestionsUpdateRequested}
+                                                      getSuggestionValue={this.getFolderSuggestionValue}
+                                                      renderSuggestion={this.renderFolderSuggestion}
+                                                      inputProps={inputProps} />}
+
                                     </div>
                                 </div>
                                 <div className="crt-folder">
@@ -478,6 +613,7 @@ export default class Index extends React.Component{
 
 export class Folder extends React.Component{
     constructor(props){
+
         super(props);
 
         this.state={
@@ -488,8 +624,7 @@ export class Folder extends React.Component{
             showConfirm:false,
             isShowingModal : false,
             deleteFileId:0,
-            notAccepted: false,
-            filesData:this.props.folderData.documents
+            notAccepted: false
         };
         this.files = [];
         this.active_folder_id = 0;
@@ -501,57 +636,56 @@ export class Folder extends React.Component{
         this.uploadHandler = this.uploadHandler.bind(this);
         this.onShowConfirm = this.onShowConfirm.bind(this);
 
-        this.filesData = this.props.folderData.documents;
-        // this.filesData = [
-        //   {
-        //       document_id : "582ae658247ffffc240b08b9",
-        //       document_name : "PEF - Anuthiga Sriskanthan - DOC",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-        //       document_thumb_path : null,
-        //       document_type : "doc",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   },
-        //   {
-        //       document_id : "582ae658247ffffc240b08b9",
-        //       document_name : "PEF - Anuthiga Sriskanthan",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-        //       document_thumb_path : null,
-        //       document_type : "xlsx",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   },
-        //   {
-        //       document_id : "582c2d3a1461f4050b1764c5",
-        //       document_name : "babymartonline.com-check-list",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
-        //       document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
-        //       document_type : "gif",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   },
-        //   {
-        //       document_id : "582be27c639078842cbc24f6",
-        //       document_name : "babymartonline.com-check-list",
-        //       document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-        //       document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-        //       document_type : "jpg",
-        //       document_updated_at:{
-        //           createdDate: "Oct 11, 2016",
-        //           createdTime: "9:31 am"
-        //       },
-        //       document_user : "574bcb96272a6fd40768cf0f"
-        //   }
-        // ];
+        //this.filesData = [
+        //  {
+        //      document_id : "582ae658247ffffc240b08b9",
+        //      document_name : "PEF - Anuthiga Sriskanthan - DOC",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+        //      document_thumb_path : null,
+        //      document_type : "doc",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582ae658247ffffc240b08b9",
+        //      document_name : "PEF - Anuthiga Sriskanthan",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+        //      document_thumb_path : null,
+        //      document_type : "xlsx",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582c2d3a1461f4050b1764c5",
+        //      document_name : "babymartonline.com-check-list",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
+        //      document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
+        //      document_type : "gif",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582be27c639078842cbc24f6",
+        //      document_name : "babymartonline.com-check-list",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+        //      document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+        //      document_type : "jpg",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  }
+        //];
 
     }
 
@@ -641,8 +775,6 @@ export class Folder extends React.Component{
                 }
                 this.setState({files:this.files});
                 console.log("file upload finished ... hide the spinner");
-                let _data = data.document;
-                this.filesData.unshift(_data); // add the uploaded document to existing document list. this should update the document list of that folder.
                 this.props.onLoadFolders();
             }
         }.bind(this)).error(function (request, status, error) {
@@ -687,12 +819,24 @@ export class Folder extends React.Component{
     }
 
     deleteFile(){
-        console.log("delete");
-        this.setState({showConfirm:false});
+        $.ajax({
+            url: '/document/remove',
+            method: "POST",
+            dataType: "JSON",
+            data:{file_id:this.state.deleteFileId},
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200) {
+                console.log("done removing shared user -----");
+                this.props.onLoadFolders();
+                this.setState({showConfirm:false, deleteFileId:0});
+            }
+        }.bind(this));
+
+
     }
 
     onShowConfirm(file_id){
-        console.log(file_id);
         this.setState({showConfirm:true, deleteFileId:file_id});
     }
 
@@ -721,7 +865,8 @@ export class Folder extends React.Component{
     render(){
         let _this = this;
         let folderData = this.props.folderData;
-        let ownerImg;
+        let documents = folderData.documents;
+        let ownerImg, ownerName;
         let i = (
             <Popover id="popover-contained" className="share-popover-contained" style={{maxWidth: "635px", width: "635px"}}>
                 <SharePopup folderData={folderData}/>
@@ -730,11 +875,13 @@ export class Folder extends React.Component{
 
         if(folderData.owned_by == "me"){
             ownerImg = (this.state.loggedUser.profile_image == "")? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image;
+            ownerName = this.state.loggedUser.first_name;
         }else{
-            ownerImg = folderData.folder_user.profile_image;
+            ownerImg = (folderData.folder_user.profile_image == "")? "/images/default-profile-pic.png" : folderData.folder_user.profile_image;
+            ownerName = folderData.folder_user.first_name;
         }
 
-        let _fileList = this.filesData.map(function(file,key){
+        let _fileList = documents.map(function(file,key){
                             return (
                                 <File fileData={file} key={key} showConfirm={_this.onShowConfirm.bind(this)}/>
                             )
@@ -749,80 +896,141 @@ export class Folder extends React.Component{
 
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
-                <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={(event)=>{this.onDrop(folderData.folder_id)}} multiple={true} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*, text/plain" onDropAccepted={this.onDropAccepted} onDropRejected={this.onDropRejected}>
-                    <div className="col-sm-2">
-                        <div className="folder-cover-wrapper">
-                            <span className="folder-overlay"></span>
-                            <span className="folder-overlay"></span>
-                            <div className="folder-cover">
-                                <div className="content-wrapper" style={{backgroundColor: folderData.folder_color}}>
-                                    <div className="logo-wrapper">
-                                        <img src={ownerImg} alt={this.state.loggedUser.first_name} className="img-rounded" />
-                                        <span className="logo-shader"></span>
-                                        <span className="logo-shader"></span>
-                                    </div>
-                                    <h3>{folderData.folder_name}</h3>
-                                </div>
-                                {
-                                    (this.props.folderCount != 0)?
-                                        <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
-                                            <div className="share-folder">
-                                                {
-                                                    (folderData.is_shared) ?
-                                                        <i className="fa fa-users" aria-hidden="true"></i> :
-                                                        <i className="fa fa-share-alt" aria-hidden="true"></i>
-                                                }
+                {
+                    (folderData.shared_mode == 2)?
+                        <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={(event)=>{this.onDrop(folderData.folder_id)}} multiple={true} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*, text/plain" onDropAccepted={this.onDropAccepted} onDropRejected={this.onDropRejected}>
+                            <div className="col-sm-2">
+                                <div className="folder-cover-wrapper">
+                                    <span className="folder-overlay"></span>
+                                    <span className="folder-overlay"></span>
+                                    <div className="folder-cover">
+                                        <div className="content-wrapper" style={{backgroundColor: folderData.folder_color}}>
+                                            <div className="logo-wrapper">
+                                                <img src={ownerImg} alt={ownerName} className="img-rounded" />
+                                                <span className="logo-shader"></span>
+                                                <span className="logo-shader"></span>
                                             </div>
-                                        </OverlayTrigger>
-                                    :
-                                        null
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-sm-10">
-                        <div className="row">
-                            <div className="folder-content-wrapper">
-                            {
-                                (this.state.notAccepted)?
-                                <p className="error-text">File type is not accepted.</p>
-                                :
-                                null
-                            }
-                                <div className="folder-items-wrapper">
-                                    <div className="inner-wrapper">
-                                        <div className="folder-col"  onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
-                                                <div className="folder-item upload-file">
-                                                    <i className="fa fa-plus"></i>
-                                                    <p>Upload new file or image</p>
-                                                </div>
+                                            <h3>{folderData.folder_name}</h3>
                                         </div>
-                                        {_uploadFileList}
-                                        {_fileList}
-                                    </div>
-                                    {
-                                        (this.filesData.length + this.state.files.length > 4)?
-                                            (this.state.isCollapsed)?
-                                                <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
-                                                    <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
-                                                    <p>See All</p>
-                                                </div>
+                                        {
+                                            (this.props.folderCount != 0)?
+                                                <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                                    <div className="share-folder">
+                                                        {
+                                                            (folderData.is_shared) ?
+                                                                <i className="fa fa-users" aria-hidden="true"></i> :
+                                                                <i className="fa fa-share-alt" aria-hidden="true"></i>
+                                                        }
+                                                    </div>
+                                                </OverlayTrigger>
                                                 :
-                                                <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
-                                                    <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
-                                                    <p>See Less</p>
+                                                null
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-sm-10">
+                                <div className="row">
+                                    <div className="folder-content-wrapper">
+                                        {
+                                            (this.state.notAccepted)?
+                                                <p className="error-text">File type is not accepted.</p>
+                                                :
+                                                null
+                                        }
+                                        <div className="folder-items-wrapper">
+                                            <div className="inner-wrapper">
+                                                <div className="folder-col"  onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
+                                                    <div className="folder-item upload-file">
+                                                        <i className="fa fa-plus"></i>
+                                                        <p>Upload new file or image</p>
+                                                    </div>
                                                 </div>
-                                            :
-                                            null
-                                    }
+                                                {_uploadFileList}
+                                                {_fileList}
+                                            </div>
+                                            {
+                                                (documents.length + this.state.files.length > 4)?
+                                                    (this.state.isCollapsed)?
+                                                        <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
+                                                            <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                                            <p>See All</p>
+                                                        </div>
+                                                        :
+                                                        <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
+                                                            <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                                            <p>See Less</p>
+                                                        </div>
+                                                    :
+                                                    null
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="drag-shader">
+                                <p className="drag-title">Drag and Drop Link/Folder here</p>
+                            </div>
+                        </Dropzone> :
+                        <div className="folder-wrapper">
+                            <div className="col-sm-2">
+                                <div className="folder-cover-wrapper">
+                                    <span className="folder-overlay"></span>
+                                    <span className="folder-overlay"></span>
+                                    <div className="folder-cover">
+                                        <div className="content-wrapper" style={{backgroundColor: folderData.folder_color}}>
+                                            <div className="logo-wrapper">
+                                                <img src={ownerImg} alt={ownerName} className="img-rounded" />
+                                                <span className="logo-shader"></span>
+                                                <span className="logo-shader"></span>
+                                            </div>
+                                            <h3>{folderData.folder_name}</h3>
+                                        </div>
+                                        {
+                                            (this.props.folderCount != 0)?
+                                                <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                                    <div className="share-folder">
+                                                        {
+                                                            (folderData.is_shared) ?
+                                                                <i className="fa fa-users" aria-hidden="true"></i> :
+                                                                <i className="fa fa-share-alt" aria-hidden="true"></i>
+                                                        }
+                                                    </div>
+                                                </OverlayTrigger>
+                                                :
+                                                null
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-sm-10">
+                                <div className="row">
+                                    <div className="folder-content-wrapper">
+                                        <div className="folder-items-wrapper">
+                                            <div className="inner-wrapper">
+                                                {_fileList}
+                                            </div>
+                                            {
+                                                (documents.length + this.state.files.length > 4)?
+                                                    (this.state.isCollapsed)?
+                                                        <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
+                                                            <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                                            <p>See All</p>
+                                                        </div>
+                                                        :
+                                                        <div className="see-all" onClick={this.onFldrExpand.bind(this)}>
+                                                            <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                                            <p>See Less</p>
+                                                        </div>
+                                                    :
+                                                    null
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="drag-shader">
-                        <p className="drag-title">Drag and Drop Link/Folder here</p>
-                    </div>
-                </Dropzone>
+                }
                 {this.getConfirmationPopup()}
             </div>
         );
@@ -833,7 +1041,9 @@ export class File extends React.Component{
     constructor(props){
         super(props);
 
-        this.state={}
+        this.state={
+            loggedUser : Session.getSession('prg_lg')
+        }
     }
 
     onShowConfirm(id){
@@ -844,7 +1054,12 @@ export class File extends React.Component{
         let data = this.props.fileData;
         
         let thumbIMg = {},
-            imgClass = "";
+            imgClass = "",
+            isSelected = "";
+
+        if(data.isSelected){
+            isSelected = "selected-file";
+        }
 
         if (data.document_thumb_path) {
             imgClass = "image";
@@ -855,7 +1070,7 @@ export class File extends React.Component{
 
         return(
             <div className="folder-col">
-                <div className={"folder-item " + data.document_type + " " + imgClass} style={thumbIMg}>
+                <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
                     <div className="inner-wrapper">
                         <div className="time-wrapper">
                             <p className="date-created">{data.document_updated_at.createdDate}</p>
@@ -873,7 +1088,11 @@ export class File extends React.Component{
                             null
                     }
                 </div>
-                <i className="fa fa-minus doc-delete-btn" aria-hidden="true" onClick={()=>this.onShowConfirm(data.document_id)}></i>
+                {
+                    (this.state.loggedUser.id == data.document_user) ?
+                        <i className="fa fa-minus doc-delete-btn" aria-hidden="true" onClick={()=>this.onShowConfirm(data.document_id)}></i> : null
+                }
+
             </div>
         );
     }
@@ -889,7 +1108,6 @@ export class FilePreview extends React.Component{
     }
 
     render(){
-        //console.log(this.state.fileData)
         return(
             <div className="folder-col">
                 <div className="folder-item pdf">
@@ -947,8 +1165,6 @@ export class SharePopup extends React.Component{
     }
 
     loadSharedUsers() {
-        //console.log("loadSharedUsers");
-        //console.log(this.props.folderData)
         $.ajax({
             url: '/folders/shared-users',
             method: "POST",
@@ -968,8 +1184,6 @@ export class SharePopup extends React.Component{
     }
 
     getSuggestions(value, data) {
-        //console.log("getSuggestions");
-        //console.log(value);
         const escapedValue = Lib.escapeRegexCharacters(value.trim()); 
         if (escapedValue === '') { 
             return data; 
@@ -979,9 +1193,7 @@ export class SharePopup extends React.Component{
      }
 
     filterSharedUsers(folder_id, event) {
-        //console.log("filterSharedUsers");
-
-        let value = event.target.value;//console.log(value);
+        let value = event.target.value;
         var data = this.getSuggestions(value, this.sharedUsersWithoutFilter);
         this.setState({sharedUsers: data});
         this.setState({sharedFilterValue:value});
@@ -989,10 +1201,6 @@ export class SharePopup extends React.Component{
     }
 
     onPermissionChanged(e, user) {
-
-        console.log("onPermissionChanged");
-        console.log(e.target.value);
-        console.log(user);
 
         let _fieldValue = e.target.value;
 
@@ -1068,9 +1276,6 @@ export class SharePopup extends React.Component{
                 <SharePopupNewUsr  folderData={_folderData}/>
             </Popover>
         );
-
-        //console.log("OWNER ==>");
-        //console.log(this.state.owner)
 
         return(
             <div className="popup-holder">
@@ -1177,8 +1382,8 @@ export class SharePopupNewUsr extends React.Component{
     }
 
     loadNewUsers() {
-        let folder = this.props.folderData;//console.log(folder);
-        let value = this.state.addNewUserValue;//console.log(value);
+        let folder = this.props.folderData;
+        let value = this.state.addNewUserValue;
 
         $.ajax({
             url: '/get-folder-users/'+folder.folder_id+'/'+value,
@@ -1203,10 +1408,8 @@ export class SharePopupNewUsr extends React.Component{
 
     shareFolder(user){
 
-        //console.log(user);
-
         let loggedUser = Session.getSession('prg_lg');
-        let folder = this.props.folderData; //console.log(folder)
+        let folder = this.props.folderData;
         let _folder = {
             folderId:folder.folder_id,
             userId:user.user_id
@@ -1236,10 +1439,7 @@ export class SharePopupNewUsr extends React.Component{
                     isShowingModal: true
                 }, function(){
                     this.getPopupAddUser();
-                    //this.loadNewUsers();
                 });
-
-                //this.props.onLoadFolders();
             }
         }.bind(this));
 
@@ -1341,8 +1541,8 @@ export class  SharedUsers extends React.Component {
                                         <div className="share-opt-holder clearfix">
                                             <div className="shared-privacy">
                                                 <select className="privacy-selector" onChange={(event)=>_this.props.changePermissions(event, user)} value={user.shared_type}>
-                                                    <option value="1">Read Only</option>
-                                                    <option value="2">Read/Write</option>
+                                                    <option value="1">View Only</option>
+                                                    <option value="2">View/Upload</option>
                                                 </select>
                                             </div>
                                             <div className="action" onClick={()=>_this.props.handleClick(user)}>

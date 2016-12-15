@@ -11,12 +11,13 @@ export default class MonthView extends React.Component {
     constructor(props) {
         super(props);
         let user =  Session.getSession('prg_lg');
-    }
+          }
 
     render() {
+        var selected = this.props.selected;
         return (
             <div>
-                <Calender selected={moment().startOf("day")} changeView={this.props.setDayView}/>
+                <Calender selected={selected} changeView={this.props.setDayView}/>
             </div>
         );
     }

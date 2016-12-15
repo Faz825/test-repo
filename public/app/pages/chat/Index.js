@@ -527,7 +527,7 @@ export default class Index extends React.Component{
             }=this.state;
 
         return (
-            <div className="pg-middle-chat-screen-area container-fluid">
+            <div className="pg-middle-chat-screen-area container">
                 <div className="pg-middle-chat-content-header pg-chat-screen-header">
                     <div className="container">
                         <h2>Message and video calls</h2>

@@ -32,6 +32,7 @@ require('../model/FolderDocsModel');
 require('../model/GroupFolderModel');
 require('../model/GroupFolderDocsModel');
 require('../model/CalendarEventModel');
+require('../model/CallCenterModel');
 
 /** Load  Controllers
  */
@@ -51,16 +52,17 @@ var DefaultController   = require('../controller/DefaultController'),
     NotesController     = require('../controller/NotesController'),
     NotificationController     = require('../controller/NotificationController'),
     NotificationSMSController     = require('../controller/NotificationSMSController'),
-    FolderController     = require('../controller/FolderController');
-    GroupFolderController     = require('../controller/GroupFolderController');
-    CalendarController     = require('../controller/CalendarController');
+    FolderController     = require('../controller/FolderController'),
+    GroupFolderController     = require('../controller/GroupFolderController'),
+    CalendarController     = require('../controller/CalendarController'),
+    CallCenterController     = require('../controller/CallCenterController');
 
 
 
-var TestPostController          = require('../test/TestPostController'),
-    TestConnectionController    = require('../test/TestConnectionController'),
-    TestCommentController    = require('../test/TestCommentController'),
-    TestSessionController   =   require('../test/TestSessionController')       ;
+var TestPostController          = require('../test/previous_test/TestPostController'),
+    TestConnectionController    = require('../test/previous_test/TestConnectionController'),
+    TestCommentController    = require('../test/previous_test/TestCommentController'),
+    TestSessionController   =   require('../test/previous_test/TestSessionController');
 /**
  * Define Public URLs
  * this public urls will load without authentication component.
@@ -84,7 +86,7 @@ GLOBAL.AccessAllow = [
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
     '/notes/edit-note/:note_id','/connections', '/connections/mutual/:uname','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode',
     '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name',
-    '/calendar'
+    '/calendar','/callcenter'
 ];
 
 /**
@@ -300,6 +302,10 @@ router.get('/get-folder-users/:folder', UserController.getFolderUsers);
 router.post('/folder/shared-permission/change', FolderController.updateFolderSharedPermission);
 router.get('/filter-folder-shared-users/:folder/:name', UserController.filterFolderSharedUsers);
 router.post('/notifications/folder-update',NotificationController.updateFolderNotifications);
+router.post('/document/remove',FolderController.deleteDocument);
+router.get('/folder/search/:q', FolderController.searchFolder);
+router.get('/folder/get-folder/:folder_id', FolderController.getAFolder);
+router.get('/folder/get-document/:folder_id/:document_id', FolderController.getAFolder);
 
 router.post('/calendar/event/add', CalendarController.addEvent);
 router.get('/calendar/month/all', CalendarController.getAllForSpecificMonth);
