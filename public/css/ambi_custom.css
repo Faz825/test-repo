@@ -803,4 +803,4 @@ body .modal-backdrop{
   top: 28px !important;
 }
 
-.selected-file{border: red}
+.selected-file{border: 1px solid red !important;}
