@@ -38,7 +38,7 @@ export default class CallHandler extends React.Component{
         console.log("CallHandler chat init");
         const _this = this;
 
-        this.bit6Auth(b6, false);
+        //this.bit6Auth(b6, false);
 
         // Incoming call from another user
         b6.on('incomingCall', function(c) {
