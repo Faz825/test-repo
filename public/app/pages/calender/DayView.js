@@ -98,6 +98,15 @@ export default class DayView extends Component {
 
     }
 
+    resetSharedUsers() {
+        this.setState({
+            sharedWithNames: [],
+            sharedWithIds: [],
+        });
+        this.sharedWithIds = [];
+        this.sharedWithNames = [];
+    }
+
     toggleMsg() {
         this.setState({ msgOn: !this.state.msgOn });
     }
@@ -150,14 +159,6 @@ export default class DayView extends Component {
         }).done(function (data, text) {
             if(data.status.code == 200){
 
-                const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
-                this.refs.EditorFieldValues.setState({editorState});
-
-                this.setState({
-                    sharedWithNames: [],
-                    sharedWithIds: [],
-                });
-
                 if(typeof sharedUsers != 'undefined' && sharedUsers.length > 0) {
                     let _notificationData = {
                         cal_event_id:data.events._id,
@@ -168,6 +169,10 @@ export default class DayView extends Component {
 
                     Socket.sendCalendarShareNotification(_notificationData);
                 }
+
+                const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+                this.refs.EditorFieldValues.setState({editorState});
+                this.resetSharedUsers();
                 this.loadEvents();
             }
         }.bind(this));
@@ -178,66 +183,60 @@ export default class DayView extends Component {
     */
     updateEvent() {
 
-      const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
-      const strTime = this.state.defaultEventTime;
-      const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+        const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
+        const strTime = this.state.defaultEventTime;
+        const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
 
-      const Editor = this.refs.EditorFieldValues.state.editorState;
-      const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
-      const editorContentRaw = convertToRaw(contentState);
-      const plainText = contentState.getPlainText();
+        const Editor = this.refs.EditorFieldValues.state.editorState;
+        const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
+        const editorContentRaw = convertToRaw(contentState);
+        const plainText = contentState.getPlainText();
 
         if(!plainText) {
             return;
         }
 
-      // get shared users from SharedUsers field
-      const sharedUsers = this.sharedWithIds;
-      const postData = {
-          description : editorContentRaw,
-          plain_text : plainText,
-          type : this.state.defaultType,
-          apply_date : dateWithTime,
-          event_time : strTime,
-          shared_users : sharedUsers,
-          id : this.state.editEventId
-      };
+        // get shared users from SharedUsers field
+        const sharedUsers = this.sharedWithIds;
+        const postData = {
+            description : editorContentRaw,
+            plain_text : plainText,
+            type : this.state.defaultType,
+            apply_date : dateWithTime,
+            event_time : strTime,
+            shared_users : sharedUsers,
+            id : this.state.editEventId
+        };
 
-      $.ajax({
-          url: '/calendar/update',
-          method: "POST",
-          dataType: "JSON",
-          data: JSON.stringify(postData),
-          headers : { "prg-auth-header" : this.state.user.token },
-          contentType: "application/json; charset=utf-8",
-      }).done(function (data, text) {
-          if(data.status.code == 200){
-              console.log(this.refs.EditorFieldValues);
-              const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
-              this.refs.EditorFieldValues.setState({editorState});
-              // this.refs.SharedUserField.setState({
-              //     sharedWithNames: [],
-              //     sharedWithIds: [],
-              // });
-              this.setState({
-                  sharedWithNames: [],
-                  sharedWithIds: [],
-              });
+        $.ajax({
+            url: '/calendar/update',
+            method: "POST",
+            dataType: "JSON",
+            data: JSON.stringify(postData),
+            headers : { "prg-auth-header" : this.state.user.token },
+            contentType: "application/json; charset=utf-8",
+        }).done(function (data, text) {
+            if(data.status.code == 200){
+                console.log(this.refs.EditorFieldValues);
+                const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
+                this.refs.EditorFieldValues.setState({editorState});
 
-              if(typeof sharedUsers != 'undefined' && sharedUsers.length > 0) {
-                  let _notificationData = {
-                      cal_event_id:postData.id,
-                      notification_type:data.event_time.isTimeChanged == true ? "calendar_schedule_time_changed" : "calendar_schedule_updated",
-                      notification_sender:this.loggedUser,
-                      notification_receiver:sharedUsers
-                  };
+                if(typeof sharedUsers != 'undefined' && sharedUsers.length > 0) {
+                    let _notificationData = {
+                        cal_event_id:postData.id,
+                        notification_type:data.event_time.isTimeChanged == true ? "calendar_schedule_time_changed" : "calendar_schedule_updated",
+                        notification_sender:this.loggedUser,
+                        notification_receiver:sharedUsers
+                    };
 
-                  Socket.sendCalendarShareNotification(_notificationData);
-              }
-              this.loadEvents();
-              this.setState({editOn : false, showUserPanel:'', showTimePanel:''});
-          }
-      }.bind(this));
+                    Socket.sendCalendarShareNotification(_notificationData);
+                }
+
+                this.resetSharedUsers();
+                this.loadEvents();
+                this.setState({editOn : false, showUserPanel:'', showTimePanel:''});
+            }
+        }.bind(this));
     }
 
     markTodo(eventId, status) {
@@ -284,10 +283,8 @@ export default class DayView extends Component {
                     const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, contentState);
 
                     this.refs.EditorFieldValues.setState({ editorState });
-                    // this.refs.SharedUserField.setState({
-                    //     sharedWithNames: data.event.sharedWithNames,
-                    //     sharedWithIds: data.event.sharedWithIds,
-                    // });
+                    this.sharedWithIds = data.event.sharedWithIds;
+                    this.sharedWithNames = data.event.sharedWithNames;
                     this.setState({
                         sharedWithNames: data.event.sharedWithNames,
                         sharedWithIds: data.event.sharedWithIds,
@@ -316,14 +313,7 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        // this.refs.SharedUserField.setState({
-        //     sharedWithNames: [],
-        //     sharedWithIds: [],
-        // });
-        this.setState({
-            sharedWithNames: [],
-            sharedWithIds: [],
-        });
+        this.resetSharedUsers();
     }
 
     previousDay() {
@@ -336,14 +326,7 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        // this.refs.SharedUserField.setState({
-        //     sharedWithNames: [],
-        //     sharedWithIds: [],
-        // });
-        this.setState({
-            sharedWithNames: [],
-            sharedWithIds: [],
-        });
+        this.resetSharedUsers();
     }
 
     changeType(eventType) {
@@ -361,14 +344,7 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        // this.refs.SharedUserField.setState({
-        //     sharedWithNames: [],
-        //     sharedWithIds: [],
-        // });
-        this.setState({
-            sharedWithNames: [],
-            sharedWithIds: [],
-        });
+        this.resetSharedUsers();
     }
 
     handleTimeChange(time) {
