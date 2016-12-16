@@ -789,7 +789,6 @@ export class Folder extends React.Component{
     }
 
     viewFilePopup(){
-        console.log(this.state.selectedFile.document_type)
 
         var url = "";
 
@@ -798,10 +797,11 @@ export class Folder extends React.Component{
             this.state.selectedFile.document_type == "png"){
             url = "";
 
-        } else{
+        } else if(this.state.selectedFile.document_type == "pdf") {
             url = "https://docs.google.com/gview?url="+this.state.selectedFile.document_path+"&embedded=true";
+        } else {
+            url = "https://view.officeapps.live.com/op/view.aspx?src="+this.state.selectedFile.document_path
         }
-        console.log(url)
 
         return(
             <div>
@@ -821,7 +821,7 @@ export class Folder extends React.Component{
                                     <div className="viewer">
                                         {
                                             (url == "")? <img src={this.state.selectedFile.document_path}/> :
-                                                <iframe src={url} style={{width:"600px", height:"500px"}} frameBorder="0"></iframe> 
+                                                <iframe src={url} style={{width:"600px", height:"500px"}} frameBorder="0"></iframe>
                                         }
                                     </div>
                                 </section>
@@ -1242,6 +1242,8 @@ export class SharePopup extends React.Component{
 
     render(){
 
+        console.log(this.state.owner);
+
         let _folderData = this.props.folderData;
 
         let i = (
@@ -1445,6 +1447,7 @@ export class SharePopupNewUsr extends React.Component{
         let _this = this;
 
         let _newUserList = suggestions.map(function(suggestion,key){
+            console.log(suggestion)
             return(
                 <div className="suggestions-wrapper" key={key}>
                     <div className="suggestion">
@@ -1492,6 +1495,7 @@ export class  SharedUsers extends React.Component {
         let _this = this;
         let _folder = this.props.folder;
         let _allUsers = this.props.sharedUserList.map(function(user,key){
+            console.log(user);
 
             return (
                 <div key={key}>
