@@ -812,7 +812,7 @@ var FolderController ={
 
         ], function(err){
 
-            if(result.status == 200){
+            if(!err){
                 var outPut ={
                     status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
                 };
