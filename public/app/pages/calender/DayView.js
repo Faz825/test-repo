@@ -509,7 +509,7 @@ export default class DayView extends Component {
                                             </div>
                                         </div>
                                         <div className="calender-input-type">
-                                            <p>{this.state.defaultType}</p>
+                                            <p>{this.state.defaultType == 'todo' ? 'to-do' : this.state.defaultType }</p>
                                         </div>
                                     </div>
                                 </div>
