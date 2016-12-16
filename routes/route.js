@@ -32,7 +32,7 @@ require('../model/FolderDocsModel');
 require('../model/GroupFolderModel');
 require('../model/GroupFolderDocsModel');
 require('../model/CalendarEventModel');
-require('../model/CallCenterModel');
+require('../model/CallModel');
 
 /** Load  Controllers
  */
@@ -324,6 +324,8 @@ router.post('/calendar/event/completion', CalendarController.updateEventCompleti
 router.post('/calendar/event/get', CalendarController.getEvent);
 
 router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
+
+router.get('/call-records', CallCenterController.getCallRecords);
 
 /**
  * API Routes that need to authenticate separately
