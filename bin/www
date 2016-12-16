@@ -29,7 +29,8 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(server,{origins:'proglobe.local:* http://proglobe.local:* http://www.proglobe.local:*'});
+
 ContentUploader.initSocket(io);
 
 /**

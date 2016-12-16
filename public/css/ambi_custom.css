@@ -413,6 +413,20 @@ a.rc-time-picker-panel-clear-btn {
 }
 
 /* event list */
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li {
+	padding: 20px 0px 20px 30px;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view ul.list-unstyled li .description-holder {
+	width: 80%;
+}
+
+@media (max-width: 1200px) {
+	.calender-container .calender-body .col-sm-9 .calender-view ul.list-unstyled li .description-holder {
+		width: 70%;
+	}
+}
+
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description,
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label div.event-description p {
 		color: #bebfbf;
@@ -421,6 +435,13 @@ a.rc-time-picker-panel-clear-btn {
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description.accepted,
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label div.event-description.accepted p {
 		color: #00a6ef;
+}
+
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li .item {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 150px;
+	overflow: hidden;
 }
 
 
@@ -514,7 +535,7 @@ a.rc-time-picker-panel-clear-btn {
   background: #61b3de;
 }
 
-.search-folder #react-autowhatever-1 li:hover a, 
+.search-folder #react-autowhatever-1 li:hover a,
 .search-folder #react-autowhatever-1 .react-autosuggest__suggestion--focused a{
   color: #fff;
 }
@@ -774,6 +795,10 @@ footer .notification-alert-holder.slideOut{
 			padding-left: 0px;
     	padding-right: 0px;
 		}
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li div.checkbox-area {
+  display: block;
 }
 
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.people-list {

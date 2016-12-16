@@ -593,7 +593,7 @@ export default class Index extends React.Component{
                                     </div>
                                 </div>
                                 <div className="crt-folder">
-                                    <button className="btn btn-crt-folder" onClick={this.handleClick.bind(this)}><i className="fa fa-plus"></i> Create Folder</button>
+                                    <button className="btn btn-crt-folder" onClick={this.handleClick.bind(this)}><i className="fa fa-plus"></i> New Folder</button>
                                 </div>
                             </div>
                         </div>

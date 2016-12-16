@@ -10,12 +10,12 @@ import Session from '../../middleware/Session';
 
 export default class DayEventsList extends React.Component {
 
-		constructor(props) {
-				let user =  Session.getSession('prg_lg');
+    constructor(props) {
+        let user =  Session.getSession('prg_lg');
         super(props);
         this.state = {
-						user : user
-				};
+            user : user
+        };
     }
 
     render() {
@@ -33,25 +33,25 @@ export default class DayEventsList extends React.Component {
 
             let contentState = convertFromRaw(event.description);
             let htmlC = stateToHTML(contentState);
-						let usersString = [];
-						let acceptedClass = 'event-description';
+            let usersString = [];
+            let acceptedClass = 'event-description';
 
-						if(event.shared_users.length > 0 ) {
-								usersString = event.shared_users.map(function(user,userKey){
-										if(event.user_id ==  _this.state.user.id || (user.shared_status == 3 &&_this.state.user.id == user.id )) {
-												acceptedClass = 'event-description accepted';
-										}
+            if(event.shared_users.length > 0 ) {
+                usersString = event.shared_users.map(function(user,userKey){
+                    if(event.user_id ==  _this.state.user.id || (user.shared_status == 3 &&_this.state.user.id == user.id )) {
+                        acceptedClass = 'event-description accepted';
+                    }
 
-		                return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
-		            });
-						} else {
-								usersString = <span className="people-list">Only me</span>
-						}
+                    return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
+                });
+            } else {
+                usersString = <span className="people-list">Only me</span>
+            }
 
             return (
                 <li key={key}>
                     <i className="fa fa-circle" aria-hidden="true"></i>
-                    <div>
+                    <div className="description-holder">
                         <div className={acceptedClass} dangerouslySetInnerHTML={{__html: htmlC}} ></div>
                         <div className="people-list-wrapper">
                             <span className="people-list">People on this event : </span>
@@ -59,10 +59,10 @@ export default class DayEventsList extends React.Component {
                         </div>
                     </div>
                     <span className="event-time pull-right">{event.event_time}</span>
-										{event.user_id == _this.state.user.id ?
-												<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
-												: ''
-										}
+                    {event.user_id == _this.state.user.id ?
+                        <i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
+                        : ''
+                    }
                 </li>
             );
         });
