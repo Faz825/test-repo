@@ -897,15 +897,15 @@ export class Folder extends React.Component{
                         <div className="viewer">
                             {
                                 (url == "")?
-                                <div style={{minHeight : "350px"}}>
-                                    <img src={this.state.selectedFile.document_path} className="img-responsive" />
-                                </div>
-                                :
-                                (url == "officeFile")?
-                                <iframe src={"https://view.officeapps.live.com/op/embed.aspx?src="+this.state.selectedFile.document_path} width='100%' height='500px' frameBorder='0'>
-                                </iframe>
-                                :
-                                <iframe src={url} style={{width:"100%", height:"500px"}} frameBorder="0"></iframe> 
+                                    <div style={{minHeight : "350px"}}>
+                                        <img src={this.state.selectedFile.document_path} className="img-responsive" />
+                                    </div>
+                                    :
+                                    (url == "officeFile")?
+                                        <iframe src={"https://view.officeapps.live.com/op/embed.aspx?src="+this.state.selectedFile.document_path} width='100%' height='500px' frameBorder='0'>
+                                        </iframe>
+                                        :
+                                        <iframe src={url} style={{width:"100%", height:"500px"}} frameBorder="0"></iframe>
                             }
                         </div>
                     </ModalDialog>
@@ -913,6 +913,7 @@ export class Folder extends React.Component{
                 }
             </div>
         );
+
     }
 
     render(){
@@ -1229,7 +1230,7 @@ export class SharePopup extends React.Component{
             url: '/folders/shared-users',
             method: "POST",
             dataType: "JSON",
-            data:{folder_id:this.props.folderData.folder_id, filter_value:this.state.sharedFilterValue},
+            data:{folder_id:this.props.folderData.folder_id},
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200) {
@@ -1239,8 +1240,6 @@ export class SharePopup extends React.Component{
                 this.setState({sharedUsers:data.sharedWith, owner:this.owner});
             }
         }.bind(this));
-
-
     }
 
     getSuggestions(value, data) {
@@ -1257,7 +1256,6 @@ export class SharePopup extends React.Component{
         var data = this.getSuggestions(value, this.sharedUsersWithoutFilter);
         this.setState({sharedUsers: data});
         this.setState({sharedFilterValue:value});
-
     }
 
     onPermissionChanged(e, user) {
@@ -1325,6 +1323,8 @@ export class SharePopup extends React.Component{
     render(){
 
         let _folderData = this.props.folderData;
+        let ownerImg = (this.state.owner.profile_image == "")? "/images/default-profile-pic.png" : this.state.owner.profile_image;
+        let ownerName = this.state.owner.first_name;
 
         let i = (
             <Popover id="popover-contained" className="share-folder-popover add-new-user" style={{maxWidth: "280px", width: "280px", marginTop: "6.2%", marginLeft: "20%"}}>
@@ -1355,7 +1355,7 @@ export class SharePopup extends React.Component{
                     <section className="folder-body">
                         <div className="shared-user-wrapper">
                             <div className="shared-user">
-                                <img className="user-image img-circle" src={this.state.owner.profile_image} alt="User"/>
+                                <img className="user-image img-circle" src={ownerImg} alt={ownerName}/>
                                     <div className="name-wrapper">
                                         <p className="name">{this.state.owner.first_name} {this.state.owner.last_name}</p>
                                         {
@@ -1528,10 +1528,15 @@ export class SharePopupNewUsr extends React.Component{
         let _this = this;
 
         let _newUserList = suggestions.map(function(suggestion,key){
+            console.log(suggestion)
+
+            let profileImg = (suggestion.profile_image == "")? "/images/default-profile-pic.png" : suggestion.profile_image;
+            let name = suggestion.first_name;
+
             return(
                 <div className="suggestions-wrapper" key={key}>
                     <div className="suggestion">
-                        <img className="user-image img-circle" src={suggestion.images.profile_image.http_url} alt="User"/>
+                        <img className="user-image img-circle" src={profileImg} alt={name}/>
 
                         <div className="name-wrapper">
                             <p className="name">{suggestion.first_name} {suggestion.last_name}</p>
@@ -1575,13 +1580,16 @@ export class  SharedUsers extends React.Component {
         let _this = this;
         let _folder = this.props.folder;
         let _allUsers = this.props.sharedUserList.map(function(user,key){
+            console.log(user);
+            let profileImg = (user.profile_image == "")? "/images/default-profile-pic.png" : user.profile_image;
+            let name = user.first_name;
 
             return (
                 <div key={key}>
                     {
                         (user.shared_status == 3) ?
                             <div className="shared-user" key={key}>
-                                <img className="user-image img-circle" src={user.profile_image} alt="User"/>
+                                <img className="user-image img-circle" src={profileImg} alt={name}/>
                                 <div className="name-wrapper">
                                     <p className="name">{user.first_name} {user.last_name}</p>
                                     {
@@ -1609,7 +1617,7 @@ export class  SharedUsers extends React.Component {
                                 }
                             </div> :
                             <div className="shared-user" key={key}>
-                                <img className="user-image img-circle" src={user.profile_image} alt="User"/>
+                                <img className="user-image img-circle" src={profileImg} alt={name}/>
                                 <div className="name-wrapper">
                                     <p className="name">{user.first_name} {user.last_name}</p>
                                     {
