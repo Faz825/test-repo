@@ -33,6 +33,7 @@ export default class DayEventsList extends React.Component {
 
             let contentState = convertFromRaw(event.description);
             let htmlC = stateToHTML(contentState);
+            let startDateTime = moment(event.start_date_time).format('YYYY-MM-DD HH:mm');
             let usersString = [];
             let acceptedClass = 'event-description';
 
@@ -52,14 +53,14 @@ export default class DayEventsList extends React.Component {
                 <li key={key}>
                     <i className="fa fa-circle" aria-hidden="true"></i>
                     <div className="description-holder">
-                        <div className={acceptedClass} dangerouslySetInnerHTML={{__html: htmlC}} ></div>
+                        <div className={acceptedClass} >{event.plain_text}</div>
                         <div className="people-list-wrapper">
                             <span className="people-list">People on this event : </span>
                             {usersString}
                         </div>
                     </div>
                     <span className="event-time pull-right">{event.event_time}</span>
-                    {event.user_id == _this.state.user.id ?
+                    {event.user_id == _this.state.user.id && startDateTime > moment().format('YYYY-MM-DD HH:mm') ?
                         <i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
                         : ''
                     }
