@@ -33,9 +33,8 @@ export default class DayTodosList extends React.Component {
 
 			let contentState = convertFromRaw(event.description);
 			let htmlC = stateToHTML(contentState);
-			// let usersString = event.shared_users.map(function(user,userKey){
-			// 	return <span key={userKey}>{user.name}, </span>
-			// });
+			let startDateTime = moment(event.start_date_time).format('YYYY-MM-DD HH:mm');
+
 			let usersString = [];
 			let acceptedClass = 'event-description';
 			if(event.shared_users.length > 0 ) {
@@ -55,11 +54,11 @@ export default class DayTodosList extends React.Component {
 					<div className="checkbox-area">
 						<input id="check1" name="check" value="check1" type="checkbox" />
 						<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id, event.status)} className="description-holder">
-							<div className={acceptedClass} dangerouslySetInnerHTML={{__html: htmlC}} ></div>
+							<div className={acceptedClass} >{event.plain_text}</div>
 							<p>People in the To-do : {usersString}</p>
 						</label>
 						<div className="time-wrapper pull-right">{event.event_time}</div>
-						{event.user_id == _this.state.user.id ?
+						{event.user_id == _this.state.user.id && startDateTime > moment().format('YYYY-MM-DD HH:mm') ?
 							<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
 							: ''
 						}

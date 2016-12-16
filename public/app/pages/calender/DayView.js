@@ -192,7 +192,18 @@ export default class DayView extends Component {
         const editorContentRaw = convertToRaw(contentState);
         const plainText = contentState.getPlainText();
 
+        // front-end alidations
         if(!plainText) {
+            this.setState({errorMsg : 'Please add the event description'});
+            this.toggleMsg();
+            setTimeout(this.toggleMsg, 3000);
+            return;
+        }
+
+        if(dateWithTime < moment().format('YYYY-MM-DD HH:mm')) {
+            this.setState({errorMsg : 'Please add a future date and time'});
+            this.toggleMsg();
+            setTimeout(this.toggleMsg, 3000);
             return;
         }
 
