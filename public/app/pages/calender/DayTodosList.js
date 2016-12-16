@@ -54,13 +54,13 @@ export default class DayTodosList extends React.Component {
 		        <li className={event.status == 2 ? 'active' : ''} key={key}>
 								<div className="checkbox-area">
 										<input id="check1" name="check" value="check1" type="checkbox" />
-										<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id, event.status)} >
+										<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id, event.status)} className="description-holder">
 												<div className={acceptedClass} dangerouslySetInnerHTML={{__html: htmlC}} ></div>
 												<p>People in the To-do : {usersString}</p>
 										</label>
+										<div className="time-wrapper pull-right">{event.event_time}</div>
+										<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
 								</div>
-								<div className="time-wrapper pull-right">{event.event_time}</div>
-								<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
 						</li>
 		    );
 		});

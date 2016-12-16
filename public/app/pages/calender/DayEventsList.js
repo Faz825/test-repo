@@ -51,7 +51,7 @@ export default class DayEventsList extends React.Component {
             return (
                 <li key={key}>
                     <i className="fa fa-circle" aria-hidden="true"></i>
-                    <div>
+                    <div className="description-holder">
                         <div className={acceptedClass} dangerouslySetInnerHTML={{__html: htmlC}} ></div>
                         <div className="people-list-wrapper">
                             <span className="people-list">People on this event : </span>
