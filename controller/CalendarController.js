@@ -1473,6 +1473,15 @@ var CalendarController = {
             _data = {read_status:true},
             user_id = Util.getCurrentSession(req).id;
 
+
+        //event_id:5853bed82c52b36207c2d4f1
+        //notification_type:share_calendar
+        //notification_id:5853bed82c52b36207c2d4f2
+        //status:REQUEST_REJECTED
+        //updating_user:57b54c97cf9bf97507f49d3a
+
+
+
         _async.waterfall([
             function updateNotifications(callBack){
                 var _criteria = {notification_id:Util.toObjectId(req.body.notification_id), recipient:Util.toObjectId(user_id)};
@@ -1481,7 +1490,7 @@ var CalendarController = {
                 });
             },
             function updateSharedStatus(callBack) {
-                var shared_status = req.body.status == CalendarSharedStatus.REQUEST_REJECTED ?
+                var shared_status = req.body.status == 'REQUEST_REJECTED' ?
                     CalendarSharedStatus.REQUEST_REJECTED : CalendarSharedStatus.REQUEST_ACCEPTED;
 
                 var _udata = {
