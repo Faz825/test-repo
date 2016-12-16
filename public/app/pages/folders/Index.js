@@ -244,7 +244,7 @@ export default class Index extends React.Component{
     }
 
     showSelectedFileFolder(suggestion){
-        console.log(suggestion);
+
         this.setState({onSelect:true});
         if(suggestion.type == "folder"){
             $.ajax({
@@ -253,7 +253,6 @@ export default class Index extends React.Component{
                 dataType: "JSON",
                 success: function (data, text) {
                     if(data.status.code == 200){
-                        console.log(data.folder)
                         this.setState({selectedFileFolder:data.folder, onSelect:false})
                     }
                 }.bind(this),
@@ -270,7 +269,6 @@ export default class Index extends React.Component{
                 dataType: "JSON",
                 success: function (data, text) {
                     if(data.status.code == 200){
-                        console.log(data.folder)
                         this.setState({selectedFileFolder:data.folder, onSelect:false})
                     }
                 }.bind(this),
@@ -300,50 +298,52 @@ export default class Index extends React.Component{
     onFolderChange(event, { newValue }) {
 
         this.setState({folderValue:newValue});
-        console.log(this.state.onSelect)
-        if(!this.state.onSelect && newValue.length == 1){
+        if(!this.state.onSelect){
             this.setState({selectedFileFolder:[]})
-            console.log("call folder search")
-            $.ajax({
-                url: '/folder/search/'+newValue,
-                method: "GET",
-                dataType: "JSON",
-                success: function (data, text) {
-                    if(data.status.code == 200){
-                        this.folders = data.suggested_folders;
-                        this.setState({
-                            folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
-                            folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
-                        });
-                    }
-                }.bind(this),
-                error: function (request, status, error) {
-                    console.log(request.responseText);
-                    console.log(status);
-                    console.log(error);
-                }.bind(this)
-            });
-        } else if(!this.state.onSelect && newValue.length > 1 && this.folders.length < 10){
-            this.setState({selectedFileFolder:[]})
-            $.ajax({
-                url: '/folder/search/'+newValue,
-                method: "GET",
-                dataType: "JSON",
-                success: function (data, text) {
-                    if(data.status.code == 200){
-                        this.folders = data.suggested_folders;
-                        this.setState({
-                            folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
-                            folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
-                        });
-                    }
-                }.bind(this),
-                error: function (request, status, error) {
-                    console.log(request.responseText);
-                    console.log(status);
-                    console.log(error);
-                }.bind(this)
-            });
+
+            if(newValue.length == 1){
+
+                $.ajax({
+                    url: '/folder/search/'+newValue,
+                    method: "GET",
+                    dataType: "JSON",
+                    success: function (data, text) {
+                        if(data.status.code == 200){
+                            this.folders = data.suggested_folders;
+                            this.setState({
+                                folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
+                                folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
+                            });
+                        }
+                    }.bind(this),
+                    error: function (request, status, error) {
+                        console.log(request.responseText);
+                        console.log(status);
+                        console.log(error);
+                    }.bind(this)
+                });
+            } else if(newValue.length > 1 && this.folders.length < 10){
+
+                $.ajax({
+                    url: '/folder/search/'+newValue,
+                    method: "GET",
+                    dataType: "JSON",
+                    success: function (data, text) {
+                        if(data.status.code == 200){
+                            this.folders = data.suggested_folders;
+                            this.setState({
+                                folderSuggestions: this.getFolderSuggestions(newValue, this.folders),
+                                folderSuggestionsList : this.getFolderSuggestions(newValue, this.folders)
+                            });
+                        }
+                    }.bind(this),
+                    error: function (request, status, error) {
+                        console.log(request.responseText);
+                        console.log(status);
+                        console.log(error);
+                    }.bind(this)
+                });
+            }
         }
 
     }
@@ -522,8 +522,6 @@ export default class Index extends React.Component{
                                                 (this.state.sharedWithNames.length > 0)?
                                                     <div className="user-holder">{shared_with_list}</div> : null
                                             }
-
-
                                         </div>
                                     </div>
                                 </section>
@@ -624,7 +622,9 @@ export class Folder extends React.Component{
             showConfirm:false,
             isShowingModal : false,
             deleteFileId:0,
-            notAccepted: false
+            notAccepted: false,
+            showViewFile:false,
+            selectedFile:[]
         };
         this.files = [];
         this.active_folder_id = 0;
@@ -635,58 +635,7 @@ export class Folder extends React.Component{
         this.onDropRejected = this.onDropRejected.bind(this);
         this.uploadHandler = this.uploadHandler.bind(this);
         this.onShowConfirm = this.onShowConfirm.bind(this);
-
-        //this.filesData = [
-        //  {
-        //      document_id : "582ae658247ffffc240b08b9",
-        //      document_name : "PEF - Anuthiga Sriskanthan - DOC",
-        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-        //      document_thumb_path : null,
-        //      document_type : "doc",
-        //      document_updated_at:{
-        //          createdDate: "Oct 11, 2016",
-        //          createdTime: "9:31 am"
-        //      },
-        //      document_user : "574bcb96272a6fd40768cf0f"
-        //  },
-        //  {
-        //      document_id : "582ae658247ffffc240b08b9",
-        //      document_name : "PEF - Anuthiga Sriskanthan",
-        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-        //      document_thumb_path : null,
-        //      document_type : "xlsx",
-        //      document_updated_at:{
-        //          createdDate: "Oct 11, 2016",
-        //          createdTime: "9:31 am"
-        //      },
-        //      document_user : "574bcb96272a6fd40768cf0f"
-        //  },
-        //  {
-        //      document_id : "582c2d3a1461f4050b1764c5",
-        //      document_name : "babymartonline.com-check-list",
-        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
-        //      document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
-        //      document_type : "gif",
-        //      document_updated_at:{
-        //          createdDate: "Oct 11, 2016",
-        //          createdTime: "9:31 am"
-        //      },
-        //      document_user : "574bcb96272a6fd40768cf0f"
-        //  },
-        //  {
-        //      document_id : "582be27c639078842cbc24f6",
-        //      document_name : "babymartonline.com-check-list",
-        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-        //      document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-        //      document_type : "jpg",
-        //      document_updated_at:{
-        //          createdDate: "Oct 11, 2016",
-        //          createdTime: "9:31 am"
-        //      },
-        //      document_user : "574bcb96272a6fd40768cf0f"
-        //  }
-        //];
-
+        this.viewFile = this.viewFile.bind(this);
     }
 
     handleClick() {
@@ -698,28 +647,18 @@ export class Folder extends React.Component{
     }
 
     onDropAccepted(accepted_files){
-        //console.log("onDropAccepted")
         let _this = this;
-        //console.log("onDropAccepted");
-        //console.log(this.active_folder_id);
-        //console.log("onDropAccepted");
-        //console.log(accepted_files);
 
         for(let i = 0; i < accepted_files.length; i++) {
             _readFile(accepted_files[i]);
         }
 
         function _readFile(file){
-            //console.log("_readFile")
 
             var reader = new FileReader();
             reader.onload = (function(context) {
-                //console.log(dataArr);
-                //console.log(file)
-                //console.log("onload")
 
                 return function(e) {
-                    //console.log("return function")
                     var src = e.target.result;
                     var upload_index = _this.files.length;
 
@@ -758,14 +697,13 @@ export class Folder extends React.Component{
     }
 
     uploadHandler(uploadContent){
-        //console.log(uploadContent)
+
         $.ajax({
             url: '/ajax/upload/folderDoc',
             method: "POST",
             dataType: "JSON",
             headers: { 'prg-auth-header':this.state.loggedUser.token },
             data:uploadContent
-
         }).done(function (data, text) {
             if (data.status.code == 200) {
                 for(var a=0;a<this.files.length;a++) {
@@ -778,27 +716,7 @@ export class Folder extends React.Component{
                 this.props.onLoadFolders();
             }
         }.bind(this)).error(function (request, status, error) {
-
-            /**
-             * have this inside error for testing purpose.
-             * */
-
-            // let _dummyData = {
-            //    document_id : "582be27c639078842cbc24f6",
-            //    document_name : "DUMMY DATA",
-            //    document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-            //    document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-            //    document_type : "jpg",
-            //    document_updated_at:{
-            //        createdDate: "Oct 11, 2016",
-            //        createdTime: "9:31 am"
-            //    },
-            //    document_user : "574bcb96272a6fd40768cf0f"
-            // };
-            // this.filesData.unshift(_dummyData) // add the uploaded document to existing document list. this should update the document list of that folder.
-            // console.log(this.filesData)
-            //this.props.onLoadFolders();
-            console.log(request.status)
+            console.log(request.status);
             console.log(status);
             console.log(error);
         }.bind(this));
@@ -827,21 +745,29 @@ export class Folder extends React.Component{
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200) {
-                console.log("done removing shared user -----");
                 this.props.onLoadFolders();
                 this.setState({showConfirm:false, deleteFileId:0});
             }
         }.bind(this));
-
-
     }
 
     onShowConfirm(file_id){
         this.setState({showConfirm:true, deleteFileId:file_id});
     }
 
+    viewFile(file){
+        console.log("viewFile");
+        console.log(file)
+        this.setState({showViewFile:true, selectedFile:file});
+    }
+
     closeConfirmPopup(){
         this.setState({showConfirm:false, deleteFileId:0});
+    }
+
+    handleClose(){
+        console.log("handleClose");
+        this.setState({showViewFile:false, selectedFile:[]});
     }
 
     getConfirmationPopup(){
@@ -855,6 +781,52 @@ export class Folder extends React.Component{
                         </div>
                         <p className="add-note-cat btn" onClick={this.deleteFile.bind(this)}>Yes</p>
                         <p className="add-note-cat confirm-no btn" onClick={this.closeConfirmPopup.bind(this)}>No</p>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        );
+    }
+
+    viewFilePopup(){
+        console.log(this.state.selectedFile.document_type)
+
+        var url = "";
+
+        if(this.state.selectedFile.document_type == "bmp" || this.state.selectedFile.document_type == "gif" ||
+            this.state.selectedFile.document_type == "jpg" || this.state.selectedFile.document_type == "jpeg" ||
+            this.state.selectedFile.document_type == "png"){
+            url = "";
+
+        } else{
+            url = "https://docs.google.com/gview?url="+this.state.selectedFile.document_path+"&embedded=true";
+        }
+        console.log(url)
+
+        return(
+            <div>
+                {this.state.showViewFile &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} className="modalPopup" width="80%">
+                        <div className="popup-holder">
+                            <section className="create-folder-popup">
+                                <section className="folder-header">
+                                    <div className="row">
+                                        <div className="col-sm-12">
+                                            <h2></h2>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section className="folder-body">
+                                    <div className="viewer">
+                                        {
+                                            (url == "")? <img src={this.state.selectedFile.document_path}/> :
+                                                <iframe src={url} style={{width:"600px", height:"500px"}} frameBorder="0"></iframe> 
+                                        }
+                                    </div>
+                                </section>
+                            </section>
+                        </div>
                     </ModalDialog>
                 </ModalContainer>
                 }
@@ -883,7 +855,7 @@ export class Folder extends React.Component{
 
         let _fileList = documents.map(function(file,key){
                             return (
-                                <File fileData={file} key={key} showConfirm={_this.onShowConfirm.bind(this)}/>
+                                <File fileData={file} key={key} showConfirm={_this.onShowConfirm.bind(this)} viewFile={_this.viewFile.bind(this)}/>
                             )
                         });
 
@@ -1032,6 +1004,7 @@ export class Folder extends React.Component{
                         </div>
                 }
                 {this.getConfirmationPopup()}
+                {this.viewFilePopup()}
             </div>
         );
     }
@@ -1042,12 +1015,18 @@ export class File extends React.Component{
         super(props);
 
         this.state={
-            loggedUser : Session.getSession('prg_lg')
+            loggedUser : Session.getSession('prg_lg'),
+            isShowingFile : false
         }
     }
 
     onShowConfirm(id){
        this.props.showConfirm(id);
+    }
+
+    viewFile(data){
+        console.log("viewFile == 1012")
+        this.props.viewFile(data);
     }
 
     render(){
@@ -1069,7 +1048,7 @@ export class File extends React.Component{
         }
 
         return(
-            <div className="folder-col">
+            <div className="folder-col" onClick={()=>this.viewFile(data)}>
                 <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
                     <div className="inner-wrapper">
                         <div className="time-wrapper">
@@ -1197,7 +1176,6 @@ export class SharePopup extends React.Component{
         var data = this.getSuggestions(value, this.sharedUsersWithoutFilter);
         this.setState({sharedUsers: data});
         this.setState({sharedFilterValue:value});
-
     }
 
     onPermissionChanged(e, user) {
@@ -1213,7 +1191,6 @@ export class SharePopup extends React.Component{
                 headers: { 'prg-auth-header':this.state.loggedUser.token }
             }).done(function (data, text) {
                 if(data.status.code == 200) {
-                    console.log("done updating permissions -----");
                     this.loadSharedUsers();
                 }
             }.bind(this));
@@ -1221,7 +1198,7 @@ export class SharePopup extends React.Component{
     }
 
     onRemoveSharedUser() {
-        let user = this.state.userToRemove; console.log(user);
+        let user = this.state.userToRemove;
         $.ajax({
             url: '/folder/shared-user/remove',
             method: "POST",
@@ -1229,11 +1206,7 @@ export class SharePopup extends React.Component{
             data:{folder_id:user.folder_id, user_id:user.user_id},
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
-            if(data.status.code == 200) {
-                console.log("done removing shared user -----");
-                //this.props.onLoadFolders();
-                //this.loadSharedUsers();
-            }
+            if(data.status.code == 200) {}
         }.bind(this));
     }
 
@@ -1391,7 +1364,6 @@ export class SharePopupNewUsr extends React.Component{
             dataType: "JSON",
             success: function (data, text) {
                 if(data.status.code == 200){
-                    //console.log(data.users)
                     this.setState({
                         suggestions: data.users
                     });
