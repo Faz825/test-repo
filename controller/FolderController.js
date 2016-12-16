@@ -435,7 +435,7 @@ var FolderController ={
 
     getSharedUsers: function(req,res){
 
-        console.log("Folder - getSharedUsers");
+        //console.log("Folder - getSharedUsers");
 
         var _async = require('async'),
             Folder = require('mongoose').model('Folders'),
@@ -456,20 +456,22 @@ var FolderController ={
 
         _async.waterfall([
             function getFolder(callBack){
-                console.log("Folder - getFolder");
+                //console.log("Folder - getFolder");
                 Folder.getFolderById(folderId,function(resultSet){
                     callBack(null,resultSet);
                 });
             },
             function getOwnerAndSharedUsers(resultSet, callBack){
-                console.log("====== getOwnerAndSharedUsers =====");
+                //console.log("====== getOwnerAndSharedUsers =====");
                 var folderData = resultSet;
+                //console.log("====== FOLDER DATA =====");
+                //console.log(JSON.stringify(folderData));
 
                 _async.parallel([
 
                     function getEsOwner(callBack){
 
-                        console.log("====== getEsOwner =====")
+                        //console.log("====== getEsOwner =====");
 
                         var query={
                             q:"user_id:"+folderData.user_id.toString(),
@@ -479,6 +481,9 @@ var FolderController ={
                         ES.search(query,function(csResultSet){
 
                             if(typeof csResultSet.result[0] != "undefined"){
+
+                                //console.log("====== OWNER DATA =====");
+                                //console.log(JSON.stringify(csResultSet.result[0]));
 
                                 if(typeof csResultSet.result[0].first_name != 'undefined'){
                                     owner.first_name = csResultSet.result[0].first_name;
@@ -491,15 +496,18 @@ var FolderController ={
                                     owner.profile_image = csResultSet.result[0].images.profile_image.http_url;
                                 }
 
-                            }
+                                callBack(null);
 
-                            callBack(null);
+                            } else{
+                                callBack(null);
+                            }
                         });
 
                     },
+
                     function getOwnerMoreDetails(callBack) {
 
-                        console.log("====== getOwnerMoreDetails =====")
+                        //console.log("====== getOwnerMoreDetails =====")
 
                         var criteria = {_id:folderData.user_id.toString()},
                             showOptions ={
@@ -509,22 +517,27 @@ var FolderController ={
 
                         User.getUser(criteria,showOptions,function(resultSet){
 
+                            //console.log("====== OWNER MORE DATA =====");
+                            //console.log(JSON.stringify(resultSet.user));
+
                             owner.country = resultSet.user.country;
                             owner.school = resultSet.user.education_details[0].school;
                             owner.degree = resultSet.user.education_details[0].degree;
                             owner.company_name = resultSet.user.working_experiences[0].company_name;
                             owner.company_location = resultSet.user.working_experiences[0].location;
                             callBack(null);
-                        })
+                        });
+
                     },
+
                     function getSharedUsers(callBack){
 
-                        console.log("====== getSharedUsers =====")
+                        //console.log("====== getSharedUsers =====");
                         var sharedUsers = resultSet.shared_users;
 
-                        _async.each(sharedUsers, function(sharedUser, callBack) {
-                            console.log("###***###***###***###***###***###***###***###***###***###***###***###***###***###***###***###***###***")
-                             console.log(sharedUser);
+                        _async.eachSeries(sharedUsers, function(sharedUser, callBack) {
+                            //console.log("###########################");
+                            //console.log(sharedUser);
 
                             if (sharedUser.status == FolderSharedRequest.REQUEST_ACCEPTED || sharedUser.status == FolderSharedRequest.REQUEST_PENDING) {
                                 var usrObj = {
@@ -542,7 +555,7 @@ var FolderController ={
 
                                     function getEsSharedUsers(callBack){
 
-                                        console.log("====== getEsSharedUsers =====")
+                                        //console.log("====== getEsSharedUsers =====");
 
                                         var query={
                                             q:"user_id:"+sharedUser.user_id.toString(),
@@ -551,30 +564,35 @@ var FolderController ={
                                         //Find User from Elastic search
                                         ES.search(query,function(csResultSet){
 
-                                            console.log(JSON.stringify(csResultSet.result[0]));
+                                            //console.log("********************************************************");
+                                            //console.log(JSON.stringify(csResultSet.result[0]));
+                                            //console.log("********************************************************");
 
                                             if(typeof csResultSet.result[0] != "undefined"){
 
                                                 if(typeof csResultSet.result[0].first_name != 'undefined'){
-                                                    owner.first_name = csResultSet.result[0].first_name;
+                                                    usrObj.first_name = csResultSet.result[0].first_name;
                                                 }
                                                 if(typeof csResultSet.result[0].last_name != 'undefined'){
-                                                    owner.last_name = csResultSet.result[0].last_name;
+                                                    usrObj.last_name = csResultSet.result[0].last_name;
                                                 }
                                                 if(typeof csResultSet.result[0].images != 'undefined' && typeof csResultSet.result[0].images.profile_image != 'undefined' &&
                                                     typeof csResultSet.result[0].images.profile_image.http_url != 'undefined'){
-                                                    owner.profile_image = csResultSet.result[0].images.profile_image.http_url;
+                                                    usrObj.profile_image = csResultSet.result[0].images.profile_image.http_url;
                                                 }
+                                                callBack(null);
 
+                                            } else{
+                                                callBack(null);
                                             }
 
-                                            callBack(null);
                                         });
 
                                     },
+
                                     function getSharedUserMoreDetails(callBack) {
 
-                                        console.log("====== getSharedUserMoreDetails =====")
+                                        //console.log("====== getSharedUserMoreDetails =====")
 
                                         var criteria = {_id:sharedUser.user_id.toString()},
                                             showOptions ={
@@ -583,8 +601,9 @@ var FolderController ={
                                             };
 
                                         User.getUser(criteria,showOptions,function(resultSet){
-
-                                            console.log(JSON.stringify(resultSet));
+                                            //console.log("********************************************************");
+                                            //console.log(JSON.stringify(resultSet));
+                                            //console.log("********************************************************");
 
                                             usrObj.country = resultSet.user.country;
                                             usrObj.school = resultSet.user.education_details[0].school;
@@ -596,7 +615,7 @@ var FolderController ={
                                     }
 
                                 ], function(err){
-                                    console.log("CALLBACK ==> 541")
+                                    //console.log("CALLBACK ==> 541")
                                     usrObj.user_id = sharedUser.user_id;
                                     usrObj.folder_id = folderId;
                                     usrObj.shared_type = sharedUser.shared_type;
@@ -605,16 +624,18 @@ var FolderController ={
                                     dataArray.push(usrObj);
                                     callBack(null);
                                 });
+                            } else{
+                                callBack(null);
                             }
                         },function(err){
-                            console.log("CALLBACK ==> 525")
+                            //console.log("CALLBACK ==> 525")
                             callBack(null);
                         });
 
                     }
 
                 ], function(err){
-                    console.log("CALLBACK ==> 468")
+                    //console.log("CALLBACK ==> 468")
                     owner.user_id = folderData.user_id;
                     owner.folder_id = folderId;
                     callBack(null);
@@ -622,11 +643,11 @@ var FolderController ={
 
             }
         ],function(err){
-            console.log("CALLBACK ==> 457")
-            console.log("=========++++++++++++++++++++++++++++++++++++=============");
-            console.log(JSON.stringify(owner));
-            console.log("=========++++++++++++++++++++++++++++++++++++=============");
-            console.log(JSON.stringify(dataArray));
+            //console.log("CALLBACK ==> 457")
+            //console.log("=========++++++++++++++++OWNER++++++++++++++++++++=============");
+            //console.log(JSON.stringify(owner));
+            //console.log("=========++++++++++++++++SHARED USER++++++++++++++++++++=============");
+            //console.log(JSON.stringify(dataArray));
             var outPut ={
                 status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 owner:owner,

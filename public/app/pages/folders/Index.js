@@ -636,6 +636,94 @@ export class Folder extends React.Component{
         this.uploadHandler = this.uploadHandler.bind(this);
         this.onShowConfirm = this.onShowConfirm.bind(this);
         this.viewFile = this.viewFile.bind(this);
+
+        // this.filesData = [
+        //  {
+        //      document_id : "582ae658247ffffc240b08b9",
+        //      document_name : "PEF - Anuthiga Sriskanthan - DOC",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
+        //      document_thumb_path : null,
+        //      document_type : "doc",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582ae658247ffffc240b08b9",
+        //      document_name : "PEF - Anuthiga Sriskanthan - DOC",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/58412c16738e2cbb0ba865ac/e99f8950-c2d8-11e6-9655-9bf08d880b0a_folder_document.pptx",
+        //      document_thumb_path : null,
+        //      document_type : "doc",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582ae658247ffffc240b08b9",
+        //      document_name : "PEF - Anuthiga Sriskanthan - DOC",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/582316a5eb41cf803e8f6619/c7977ab0-b22b-11e6-b79d-0d45aa6780ca_folder_document.docx",
+        //      document_thumb_path : null,
+        //      document_type : "doc",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582ae658247ffffc240b08b9",
+        //      document_name : "PEF - Anuthiga Sriskanthan",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581aebf4ade802501641fbd6/6f5115c0-c34a-11e6-a3cd-f1524763cacd_folder_document.pdf",
+        //      document_thumb_path : null,
+        //      document_type : "pdf",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582ae658247ffffc240b08b9",
+        //      document_name : "PEF - Anuthiga Sriskanthan",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581aebf4ade802501641fbd6/2dd7a6d0-c34b-11e6-a3cd-f1524763cacd_folder_document.txt",
+        //      document_thumb_path : null,
+        //      document_type : "txt",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582c2d3a1461f4050b1764c5",
+        //      document_name : "babymartonline.com-check-list",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
+        //      document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
+        //      document_type : "gif",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  },
+        //  {
+        //      document_id : "582be27c639078842cbc24f6",
+        //      document_name : "babymartonline.com-check-list",
+        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
+        //      document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
+        //      document_type : "jpg",
+        //      document_updated_at:{
+        //          createdDate: "Oct 11, 2016",
+        //          createdTime: "9:31 am"
+        //      },
+        //      document_user : "574bcb96272a6fd40768cf0f"
+        //  }
+        // ];
+
     }
 
     handleClick() {
@@ -756,8 +844,6 @@ export class Folder extends React.Component{
     }
 
     viewFile(file){
-        console.log("viewFile");
-        console.log(file)
         this.setState({showViewFile:true, selectedFile:file});
     }
 
@@ -789,49 +875,45 @@ export class Folder extends React.Component{
     }
 
     viewFilePopup(){
-
-        var url = "";
+        let url = "";
+        let docType = this.state.selectedFile.document_type;
 
         if(this.state.selectedFile.document_type == "bmp" || this.state.selectedFile.document_type == "gif" ||
             this.state.selectedFile.document_type == "jpg" || this.state.selectedFile.document_type == "jpeg" ||
             this.state.selectedFile.document_type == "png"){
             url = "";
 
-        } else if(this.state.selectedFile.document_type == "pdf") {
+        }else if(docType == "ppt" || docType == "pptx" || docType == "doc" || docType == "docx" || docType == "xls" || docType == "xlsx"){
+            url = "officeFile";
+        }else{
             url = "https://docs.google.com/gview?url="+this.state.selectedFile.document_path+"&embedded=true";
-        } else {
-            url = "https://view.officeapps.live.com/op/view.aspx?src="+this.state.selectedFile.document_path
         }
 
         return(
             <div>
                 {this.state.showViewFile &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} className="modalPopup" width="80%">
-                        <div className="popup-holder">
-                            <section className="create-folder-popup">
-                                <section className="folder-header">
-                                    <div className="row">
-                                        <div className="col-sm-12">
-                                            <h2></h2>
-                                        </div>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="60%" style={{padding : "5px"}}>
+                        <div className="viewer">
+                            {
+                                (url == "")?
+                                    <div style={{minHeight : "350px"}}>
+                                        <img src={this.state.selectedFile.document_path} className="img-responsive" />
                                     </div>
-                                </section>
-                                <section className="folder-body">
-                                    <div className="viewer">
-                                        {
-                                            (url == "")? <img src={this.state.selectedFile.document_path}/> :
-                                                <iframe src={url} style={{width:"600px", height:"500px"}} frameBorder="0"></iframe>
-                                        }
-                                    </div>
-                                </section>
-                            </section>
+                                    :
+                                    (url == "officeFile")?
+                                        <iframe src={"https://view.officeapps.live.com/op/embed.aspx?src="+this.state.selectedFile.document_path} width='100%' height='500px' frameBorder='0'>
+                                        </iframe>
+                                        :
+                                        <iframe src={url} style={{width:"100%", height:"500px"}} frameBorder="0"></iframe>
+                            }
                         </div>
                     </ModalDialog>
                 </ModalContainer>
                 }
             </div>
         );
+
     }
 
     render(){
@@ -1148,7 +1230,7 @@ export class SharePopup extends React.Component{
             url: '/folders/shared-users',
             method: "POST",
             dataType: "JSON",
-            data:{folder_id:this.props.folderData.folder_id, filter_value:this.state.sharedFilterValue},
+            data:{folder_id:this.props.folderData.folder_id},
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200) {
@@ -1158,8 +1240,6 @@ export class SharePopup extends React.Component{
                 this.setState({sharedUsers:data.sharedWith, owner:this.owner});
             }
         }.bind(this));
-
-
     }
 
     getSuggestions(value, data) {
@@ -1242,9 +1322,9 @@ export class SharePopup extends React.Component{
 
     render(){
 
-        console.log(this.state.owner);
-
         let _folderData = this.props.folderData;
+        let ownerImg = (this.state.owner.profile_image == "")? "/images/default-profile-pic.png" : this.state.owner.profile_image;
+        let ownerName = this.state.owner.first_name;
 
         let i = (
             <Popover id="popover-contained" className="share-folder-popover add-new-user" style={{maxWidth: "280px", width: "280px", marginTop: "6.2%", marginLeft: "20%"}}>
@@ -1275,7 +1355,7 @@ export class SharePopup extends React.Component{
                     <section className="folder-body">
                         <div className="shared-user-wrapper">
                             <div className="shared-user">
-                                <img className="user-image img-circle" src={this.state.owner.profile_image} alt="User"/>
+                                <img className="user-image img-circle" src={ownerImg} alt={ownerName}/>
                                     <div className="name-wrapper">
                                         <p className="name">{this.state.owner.first_name} {this.state.owner.last_name}</p>
                                         {
@@ -1366,6 +1446,7 @@ export class SharePopupNewUsr extends React.Component{
             dataType: "JSON",
             success: function (data, text) {
                 if(data.status.code == 200){
+                    //console.log(data.users)
                     this.setState({
                         suggestions: data.users
                     });
@@ -1448,10 +1529,14 @@ export class SharePopupNewUsr extends React.Component{
 
         let _newUserList = suggestions.map(function(suggestion,key){
             console.log(suggestion)
+
+            let profileImg = (suggestion.profile_image == "")? "/images/default-profile-pic.png" : suggestion.profile_image;
+            let name = suggestion.first_name;
+
             return(
                 <div className="suggestions-wrapper" key={key}>
                     <div className="suggestion">
-                        <img className="user-image img-circle" src={suggestion.images.profile_image.http_url} alt="User"/>
+                        <img className="user-image img-circle" src={profileImg} alt={name}/>
 
                         <div className="name-wrapper">
                             <p className="name">{suggestion.first_name} {suggestion.last_name}</p>
@@ -1496,13 +1581,15 @@ export class  SharedUsers extends React.Component {
         let _folder = this.props.folder;
         let _allUsers = this.props.sharedUserList.map(function(user,key){
             console.log(user);
+            let profileImg = (user.profile_image == "")? "/images/default-profile-pic.png" : user.profile_image;
+            let name = user.first_name;
 
             return (
                 <div key={key}>
                     {
                         (user.shared_status == 3) ?
                             <div className="shared-user" key={key}>
-                                <img className="user-image img-circle" src={user.profile_image} alt="User"/>
+                                <img className="user-image img-circle" src={profileImg} alt={name}/>
                                 <div className="name-wrapper">
                                     <p className="name">{user.first_name} {user.last_name}</p>
                                     {
@@ -1530,7 +1617,7 @@ export class  SharedUsers extends React.Component {
                                 }
                             </div> :
                             <div className="shared-user" key={key}>
-                                <img className="user-image img-circle" src={user.profile_image} alt="User"/>
+                                <img className="user-image img-circle" src={profileImg} alt={name}/>
                                 <div className="name-wrapper">
                                     <p className="name">{user.first_name} {user.last_name}</p>
                                     {
