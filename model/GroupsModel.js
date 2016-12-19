@@ -80,5 +80,26 @@ GroupsSchema.statics.createGroup = function(groupData,callBack){
     });
 };
 
+/**
+ * Create group
+ * @param groupData
+ * @param callBack
+ */
+GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
+    var _this = this;
+
+    _this.find({_id: Util.toObjectId(groupId)}, {shared_users : 1}).exec(function(err,resultSet){
+        if(!err){
+            callBack({
+                members : resultSet,
+                members_count : resultSet.length
+            });
+        }else{
+            console.log("Server Error --------");
+            callBack({status:400,error:err});
+        }
+    })
+};
+
 
 mongoose.model('Groups',GroupsSchema);
