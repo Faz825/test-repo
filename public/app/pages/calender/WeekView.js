@@ -24,7 +24,7 @@ export default class WeekView extends React.Component {
     }
 
     componentDidMount() {
-        let to_day = new Date();
+        //let to_day = new Date();
         //var weekday = moment(to_day, "MM-DD-YYYY").week();
         //console.log(weekday);
 
@@ -44,19 +44,7 @@ export default class WeekView extends React.Component {
         //}
         //console.log(weeks);
 
-
-        //var sundaysOfCurrentMonth = [];
-        let weeksCount = 0;
-        let sunday = moment().startOf('month').day("Sunday");
-        //var month = sunday.month();
-        //sundaysOfCurrentMonth.push(sunday.toString());
-        while(moment() >= sunday){
-            sunday = sunday.weekday(7);
-            //sundaysOfCurrentMonth.push(sunday.toString());
-            //console.log(sunday.toString());
-            weeksCount++;
-        }
-        //console.log(weeksCount);
+        let weeksCount = this.getChangedWeekCount(moment());
 
         this.currentWeek = weeksCount;
 
@@ -73,18 +61,35 @@ export default class WeekView extends React.Component {
         this.processDataCall(postData);
     }
 
+    getChangedWeekCount(_Date) {
+        let weeks = 0;
+        let sunday = moment(_Date).startOf('month').day("Sunday");
+        let m_date = moment(_Date);
+
+        while(m_date >= sunday) {
+            sunday = sunday.weekday(7);
+            weeks++;
+        }
+
+        if(m_date == sunday) {
+            return weeks;
+        }
+        return weeks - 1;
+    }
+
     nextWeek() {
 
         let week_start = moment(this.state.weekEndDate).format('YYYY-MM-DD');
         let week_end = moment(this.state.weekEndDate).weekday(7).format('YYYY-MM-DD');
 
+        let curWeekOfMonth = this.getChangedWeekCount(week_start);
+
         let postData = {
             start_date:week_start,
             end_date:week_end
         };
-        //console.log(postData);
 
-        this.currentWeek++;
+        this.currentWeek = curWeekOfMonth;
         this.setState({currentWeek:this.currentWeek, weekStartDate:postData.start_date, weekEndDate:postData.end_date});
 
         this.processDataCall(postData);
@@ -96,13 +101,14 @@ export default class WeekView extends React.Component {
         let week_start = moment(this.state.weekStartDate).weekday(-7).format('YYYY-MM-DD');
         let week_end = moment(this.state.weekStartDate).format('YYYY-MM-DD');
 
+        let curWeekOfMonth = this.getChangedWeekCount(week_start);
+
         let postData = {
             start_date:week_start,
             end_date:week_end
         };
-        //console.log(postData);
 
-        this.currentWeek--;
+        this.currentWeek = curWeekOfMonth;
         this.setState({currentWeek:this.currentWeek, weekStartDate:postData.start_date, weekEndDate:postData.end_date});
 
         this.processDataCall(postData);
@@ -144,7 +150,7 @@ export default class WeekView extends React.Component {
                                 </div>
                             </div>
                             <div className="col-sm-6 calender-date  remove-padding">
-                                <p>{moment().format('dddd D, YYYY')}</p>
+                                <p>{moment().format('dddd, MMM D, YYYY')}</p>
                             </div>
                         </div>
 

@@ -414,7 +414,7 @@ a.rc-time-picker-panel-clear-btn {
 
 /* event list */
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li {
-	padding: 20px 0px 20px 30px;
+	padding: 20px 10px 20px 30px;
 }
 
 .calender-container .calender-body .col-sm-9 .calender-view ul.list-unstyled li .description-holder {

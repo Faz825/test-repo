@@ -62,7 +62,14 @@ app.use(session({
 
 require('./core/model');
 var routes = require('./routes/route');
+var testRoutes = require('./routes/test');
+var reactRoutes = require('./routes/index');
+var apiRoutes = require('./routes/api');
+
+app.use('/', reactRoutes);
 app.use('/', routes);
+app.use('/test', testRoutes);
+app.use('/api', apiRoutes);
 
 
 

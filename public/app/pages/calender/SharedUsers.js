@@ -19,8 +19,8 @@ export default class SharedUsers extends Component {
         };
 
         this.users = [];
-        this.sharedWithIds = [];
-        this.sharedWithNames = [];
+        this.sharedWithIds = (this.state.sharedWithIds ? this.state.sharedWithIds : [] );
+        this.sharedWithNames = (this.state.sharedWithNames ? this.state.sharedWithNames : []);
 
         this.onChange = this.onChange.bind(this);
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
@@ -111,7 +111,7 @@ export default class SharedUsers extends Component {
             this.props.setSharedUsersFromDropDown(suggestion);
         } else{
             this.setState({isAlreadySelected:true});
-            console.log("already selected" + this.state.isAlreadySelected)
+            console.log("already selected: " + this.state.isAlreadySelected)
         }
 
         return "";

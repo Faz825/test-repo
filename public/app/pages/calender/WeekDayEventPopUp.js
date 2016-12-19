@@ -247,7 +247,7 @@ export default class WeekDayEventPopUp extends React.Component {
                             <div className="model-header">
                                 <div className="model-title-wrapper">
                                     <div className="model-title-inner-wrapper week-popup">
-                                        <h4 className="modal-title">{this.state.eventType}</h4>
+                                        <h4 className="modal-title">{this.state.eventType == 'todo' ? 'to-do' : this.state.eventType }</h4>
                                         <span className="calender-popup-closeBtn" onClick={this.props.handleClose}></span>
                                     </div>
                                 </div>
