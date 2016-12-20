@@ -8,6 +8,7 @@ import Session  from '../../middleware/Session';
 import Socket  from '../../middleware/Socket';
 import SecretaryThumbnail from '../../components/elements/SecretaryThumbnail';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
+import { browserHistory } from 'react-router';
 
 export default class Index extends React.Component{
     constructor(props){
@@ -489,7 +490,8 @@ export default class Index extends React.Component{
                 if(stt == 'REQUEST_REJECTED') {
                     this.loadNotifications();
                 } else {
-                    window.location.href = '/calendar';
+                    var strUrl = '/calendar/'+notification.calendar_id;
+                    browserHistory.push(strUrl);
                 }
 
             }.bind(this));
@@ -661,11 +663,12 @@ export class Notification extends React.Component{
             if(notification.read_status){ // read notification
                 _classNames += "read";
             }
+            var pro_img = (notification.sender_profile_picture == "") ? "/images/default-profile-pic.png" : notification.sender_profile_picture
             return (
                 <div className={_classNames} key={key}>
                     <a href="javascript:void(0)" onClick={()=>_this.props.clickNotification(notification)}>
                         <div className="chat-pro-img">
-                            <img src={notification.sender_profile_picture}/>
+                            <img src={pro_img}/>
                         </div>
                         <div className="notification-body">
                             <p className="connection-name">{notification.sender_name}</p>

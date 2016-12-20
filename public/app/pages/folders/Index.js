@@ -593,7 +593,7 @@ export default class Index extends React.Component{
                                     </div>
                                 </div>
                                 <div className="crt-folder">
-                                    <button className="btn btn-crt-folder" onClick={this.handleClick.bind(this)}><i className="fa fa-plus"></i> Create Folder</button>
+                                    <button className="btn btn-crt-folder" onClick={this.handleClick.bind(this)}><i className="fa fa-plus"></i> New Folder</button>
                                 </div>
                             </div>
                         </div>
@@ -636,93 +636,6 @@ export class Folder extends React.Component{
         this.uploadHandler = this.uploadHandler.bind(this);
         this.onShowConfirm = this.onShowConfirm.bind(this);
         this.viewFile = this.viewFile.bind(this);
-
-        // this.filesData = [
-        //  {
-        //      document_id : "582ae658247ffffc240b08b9",
-        //      document_name : "PEF - Anuthiga Sriskanthan - DOC",
-        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/0d843490-ab20-11e6-895a-eba5cf55b64b_folder_document.xlsx",
-        //      document_thumb_path : null,
-        //      document_type : "doc",
-        //      document_updated_at:{
-        //          createdDate: "Oct 11, 2016",
-        //          createdTime: "9:31 am"
-        //      },
-        //      document_user : "574bcb96272a6fd40768cf0f"
-        //  },
-        //  {
-        //      document_id : "582ae658247ffffc240b08b9",
-        //      document_name : "PEF - Anuthiga Sriskanthan - DOC",
-        //      document_path : "https://s3.amazonaws.com/proglobe/dev/58412c16738e2cbb0ba865ac/e99f8950-c2d8-11e6-9655-9bf08d880b0a_folder_document.pptx",
-        //      document_thumb_path : null,
-        //      document_type : "doc",
-        //      document_updated_at:{
-        //          createdDate: "Oct 11, 2016",
-        //          createdTime: "9:31 am"
-        //      },
-        //      document_user : "574bcb96272a6fd40768cf0f"
-        //  },
-        //  {
-        //      document_id : "582ae658247ffffc240b08b9",
-        //      document_name : "PEF - Anuthiga Sriskanthan - DOC",
-        //      document_path : "https://s3.amazonaws.com/proglobe/dev/582316a5eb41cf803e8f6619/c7977ab0-b22b-11e6-b79d-0d45aa6780ca_folder_document.docx",
-        //      document_thumb_path : null,
-        //      document_type : "doc",
-        //      document_updated_at:{
-        //          createdDate: "Oct 11, 2016",
-        //          createdTime: "9:31 am"
-        //      },
-        //      document_user : "574bcb96272a6fd40768cf0f"
-        //  },
-        //  {
-        //      document_id : "582ae658247ffffc240b08b9",
-        //      document_name : "PEF - Anuthiga Sriskanthan",
-        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581aebf4ade802501641fbd6/6f5115c0-c34a-11e6-a3cd-f1524763cacd_folder_document.pdf",
-        //      document_thumb_path : null,
-        //      document_type : "pdf",
-        //      document_updated_at:{
-        //          createdDate: "Oct 11, 2016",
-        //          createdTime: "9:31 am"
-        //      },
-        //      document_user : "574bcb96272a6fd40768cf0f"
-        //  },
-        //  {
-        //      document_id : "582ae658247ffffc240b08b9",
-        //      document_name : "PEF - Anuthiga Sriskanthan",
-        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581aebf4ade802501641fbd6/2dd7a6d0-c34b-11e6-a3cd-f1524763cacd_folder_document.txt",
-        //      document_thumb_path : null,
-        //      document_type : "txt",
-        //      document_updated_at:{
-        //          createdDate: "Oct 11, 2016",
-        //          createdTime: "9:31 am"
-        //      },
-        //      document_user : "574bcb96272a6fd40768cf0f"
-        //  },
-        //  {
-        //      document_id : "582c2d3a1461f4050b1764c5",
-        //      document_name : "babymartonline.com-check-list",
-        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document.gif",
-        //      document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/dc9723b0-abe2-11e6-a1ae-0543d9df05d4_folder_document_thumb.gif",
-        //      document_type : "gif",
-        //      document_updated_at:{
-        //          createdDate: "Oct 11, 2016",
-        //          createdTime: "9:31 am"
-        //      },
-        //      document_user : "574bcb96272a6fd40768cf0f"
-        //  },
-        //  {
-        //      document_id : "582be27c639078842cbc24f6",
-        //      document_name : "babymartonline.com-check-list",
-        //      document_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document.gif",
-        //      document_thumb_path : "https://s3.amazonaws.com/proglobe/dev/581976edb9c941e31dbdf106/5251d0f0-abb6-11e6-a779-b59f1d09ef48_folder_document_thumb.gif",
-        //      document_type : "jpg",
-        //      document_updated_at:{
-        //          createdDate: "Oct 11, 2016",
-        //          createdTime: "9:31 am"
-        //      },
-        //      document_user : "574bcb96272a6fd40768cf0f"
-        //  }
-        // ];
 
     }
 
@@ -897,15 +810,15 @@ export class Folder extends React.Component{
                         <div className="viewer">
                             {
                                 (url == "")?
-                                <div style={{minHeight : "350px"}}>
-                                    <img src={this.state.selectedFile.document_path} className="img-responsive" />
-                                </div>
-                                :
-                                (url == "officeFile")?
-                                <iframe src={"https://view.officeapps.live.com/op/embed.aspx?src="+this.state.selectedFile.document_path} width='100%' height='500px' frameBorder='0'>
-                                </iframe>
-                                :
-                                <iframe src={url} style={{width:"100%", height:"500px"}} frameBorder="0"></iframe> 
+                                    <div style={{minHeight : "350px"}}>
+                                        <img src={this.state.selectedFile.document_path} className="img-responsive" />
+                                    </div>
+                                    :
+                                    (url == "officeFile")?
+                                        <iframe src={"https://view.officeapps.live.com/op/embed.aspx?src="+this.state.selectedFile.document_path} width='100%' height='500px' frameBorder='0'>
+                                        </iframe>
+                                        :
+                                        <iframe src={url} style={{width:"100%", height:"500px"}} frameBorder="0"></iframe>
                             }
                         </div>
                     </ModalDialog>
@@ -913,6 +826,7 @@ export class Folder extends React.Component{
                 }
             </div>
         );
+
     }
 
     render(){
@@ -1229,7 +1143,7 @@ export class SharePopup extends React.Component{
             url: '/folders/shared-users',
             method: "POST",
             dataType: "JSON",
-            data:{folder_id:this.props.folderData.folder_id, filter_value:this.state.sharedFilterValue},
+            data:{folder_id:this.props.folderData.folder_id},
             headers: { 'prg-auth-header':this.state.loggedUser.token }
         }).done( function (data, text) {
             if(data.status.code == 200) {
@@ -1239,11 +1153,10 @@ export class SharePopup extends React.Component{
                 this.setState({sharedUsers:data.sharedWith, owner:this.owner});
             }
         }.bind(this));
-
-
     }
 
     getSuggestions(value, data) {
+        console.log(data);
         const escapedValue = Lib.escapeRegexCharacters(value.trim()); 
         if (escapedValue === '') { 
             return data; 
@@ -1253,16 +1166,19 @@ export class SharePopup extends React.Component{
      }
 
     filterSharedUsers(folder_id, event) {
-        let value = event.target.value;
-        var data = this.getSuggestions(value, this.sharedUsersWithoutFilter);
+        //console.log("filterSharedUsers")
+        let value = event.target.value;//console.log(value)
+        var data = this.getSuggestions(value, this.sharedUsersWithoutFilter);//console.log(data)
         this.setState({sharedUsers: data});
         this.setState({sharedFilterValue:value});
-
     }
 
     onPermissionChanged(e, user) {
 
-        let _fieldValue = e.target.value;
+        console.log("onPermissionChanged")
+        console.log(user)
+
+        let _fieldValue = e.target.value;console.log(_fieldValue)
 
         if(user.shared_type != _fieldValue) {
             $.ajax({
@@ -1293,6 +1209,8 @@ export class SharePopup extends React.Component{
     }
 
     handleClick(user) {
+        console.log("handleClick")
+        console.log(user)
         this.setState({
             isShowingModal: true,
             userToRemove: user
@@ -1325,12 +1243,82 @@ export class SharePopup extends React.Component{
     render(){
 
         let _folderData = this.props.folderData;
+        let ownerImg = (this.state.owner.profile_image == "")? "/images/default-profile-pic.png" : this.state.owner.profile_image;
+        let ownerName = this.state.owner.first_name;
 
         let i = (
             <Popover id="popover-contained" className="share-folder-popover add-new-user" style={{maxWidth: "280px", width: "280px", marginTop: "6.2%", marginLeft: "20%"}}>
                 <SharePopupNewUsr  folderData={_folderData}/>
             </Popover>
         );
+
+        let _allUsers = this.state.sharedUsers.map(function(user,key) {
+            let profileImg = (user.profile_image == "") ? "/images/default-profile-pic.png" : user.profile_image;
+            let name = user.first_name;
+
+            return (
+                <div key={key}>
+                    {
+                        (user.shared_status == 3) ?
+                            <div className="shared-user" key={key}>
+                                <img className="user-image img-circle" src={profileImg} alt={name}/>
+
+                                <div className="name-wrapper">
+                                    <p className="name">{user.first_name} {user.last_name}</p>
+                                    {
+                                        (typeof user.school != 'undefined') ?
+                                            <p className="name-title">{user.school}</p>
+                                            :
+                                            <p className="name-title">{user.company_name}</p>
+                                    }
+                                </div>
+                                {
+                                    (_folderData.owned_by == 'me') ?
+                                        <div className="share-opt-holder clearfix">
+                                            <div className="shared-privacy">
+                                                <select className="privacy-selector"
+                                                        onChange={(event)=>this.onPermissionChanged(event,user)}
+                                                        value={user.shared_type}>
+                                                    <option value="1">View Only</option>
+                                                    <option value="2">View/Upload</option>
+                                                </select>
+                                            </div>
+                                            <div className="action" onClick={(event)=>this.handleClick(user)}>
+                                                <i className="fa fa-minus" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                        : null
+                                }
+                            </div> :
+                            <div className="shared-user" key={key}>
+                                <img className="user-image img-circle" src={profileImg} alt={name}/>
+
+                                <div className="name-wrapper">
+                                    <p className="name">{user.first_name} {user.last_name}</p>
+                                    {
+                                        (typeof user.school != 'undefined') ?
+                                            <p className="name-title">{user.school}</p>
+                                            :
+                                            <p className="name-title">{user.company_name}</p>
+                                    }
+                                </div>
+                                {
+                                    (_folderData.owned_by == 'me') ?
+                                        <div className="share-opt-holder clearfix">
+                                            <div className="shared-privacy">
+                                                <p className="pending">Request Pending</p>
+                                            </div>
+                                            <div className="action" onClick={()=>this.handleClick(user)}>
+                                                <i className="fa fa-minus" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                        : null
+                                }
+                            </div>
+                    }
+                </div>
+            )
+        }.bind(this));
 
         return(
             <div className="popup-holder">
@@ -1355,7 +1343,7 @@ export class SharePopup extends React.Component{
                     <section className="folder-body">
                         <div className="shared-user-wrapper">
                             <div className="shared-user">
-                                <img className="user-image img-circle" src={this.state.owner.profile_image} alt="User"/>
+                                <img className="user-image img-circle" src={ownerImg} alt={ownerName}/>
                                     <div className="name-wrapper">
                                         <p className="name">{this.state.owner.first_name} {this.state.owner.last_name}</p>
                                         {
@@ -1369,12 +1357,9 @@ export class SharePopup extends React.Component{
                                         <p className="owner">(Owner)</p>
                                     </div>
                             </div>
-                            <SharedUsers folder={_folderData}
-                                         sharedUserList={this.state.sharedUsers}
-                                         changePermissions={this.onPermissionChanged.bind(this)}
-                                         removeSharedUser={this.getPopupRemoveUser.bind(this)}
-                                         handleClick={this.handleClick.bind(this)}
-                                         scrollProp={this.state.scrollProp}/>
+                            <div className="shared-users-container" style={{overflowY: this.state.scrollProp, overflowX: 'hidden', maxHeight: '155px'}}>
+                                {_allUsers}
+                            </div>
                         </div>
                     </section>
                     <section className="folder-footer">
@@ -1398,6 +1383,7 @@ export class SharePopup extends React.Component{
                                     </OverlayTrigger> : null
                             }
                         </div>
+                        {this.getPopupRemoveUser()}
                     </section>
                 </section>
             </div>
@@ -1528,10 +1514,15 @@ export class SharePopupNewUsr extends React.Component{
         let _this = this;
 
         let _newUserList = suggestions.map(function(suggestion,key){
+            //console.log(suggestion)
+
+            let profileImg = (suggestion.profile_image == "")? "/images/default-profile-pic.png" : suggestion.profile_image;
+            let name = suggestion.first_name;
+
             return(
                 <div className="suggestions-wrapper" key={key}>
                     <div className="suggestion">
-                        <img className="user-image img-circle" src={suggestion.images.profile_image.http_url} alt="User"/>
+                        <img className="user-image img-circle" src={profileImg} alt={name}/>
 
                         <div className="name-wrapper">
                             <p className="name">{suggestion.first_name} {suggestion.last_name}</p>
@@ -1560,88 +1551,4 @@ export class SharePopupNewUsr extends React.Component{
 
     }
 
-}
-
-export class  SharedUsers extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state={
-            sharedUsers: this.props.sharedUserList
-        }
-    }
-
-    render() {
-
-        let _this = this;
-        let _folder = this.props.folder;
-        let _allUsers = this.props.sharedUserList.map(function(user,key){
-
-            return (
-                <div key={key}>
-                    {
-                        (user.shared_status == 3) ?
-                            <div className="shared-user" key={key}>
-                                <img className="user-image img-circle" src={user.profile_image} alt="User"/>
-                                <div className="name-wrapper">
-                                    <p className="name">{user.first_name} {user.last_name}</p>
-                                    {
-                                        (typeof user.school != 'undefined') ?
-                                            <p className="name-title">{user.school}</p>
-                                            :
-                                            <p className="name-title">{user.company_name}</p>
-                                    }
-                                </div>
-                                {
-                                    (_folder.owned_by == 'me')?
-                                        <div className="share-opt-holder clearfix">
-                                            <div className="shared-privacy">
-                                                <select className="privacy-selector" onChange={(event)=>_this.props.changePermissions(event, user)} value={user.shared_type}>
-                                                    <option value="1">View Only</option>
-                                                    <option value="2">View/Upload</option>
-                                                </select>
-                                            </div>
-                                            <div className="action" onClick={()=>_this.props.handleClick(user)}>
-                                                    <i className="fa fa-minus" aria-hidden="true"></i>
-                                            </div>
-                                            {_this.props.removeSharedUser()}
-                                        </div>
-                                        : null
-                                }
-                            </div> :
-                            <div className="shared-user" key={key}>
-                                <img className="user-image img-circle" src={user.profile_image} alt="User"/>
-                                <div className="name-wrapper">
-                                    <p className="name">{user.first_name} {user.last_name}</p>
-                                    {
-                                        (typeof user.school != 'undefined') ?
-                                            <p className="name-title">{user.school}</p>
-                                            :
-                                            <p className="name-title">{user.company_name}</p>
-                                    }
-                                </div>
-                                {
-                                    (_folder.owned_by == 'me')?
-                                        <div className="share-opt-holder clearfix">
-                                            <div className="shared-privacy">
-                                                <p className="pending">Request Pending</p>
-                                            </div>
-                                            <div className="action" onClick={()=>_this.props.handleClick(user)}>
-                                                    <i className="fa fa-minus" aria-hidden="true"></i>
-                                            </div>
-                                            {_this.props.removeSharedUser()}
-                                        </div>
-                                        : null
-                                }
-                            </div>
-                    }
-                    </div>
-            )
-        });
-
-        return (
-            <div className="shared-users-container" style={{overflowY: this.props.scrollProp, overflowX: 'hidden', maxHeight: '155px'}}>
-                {_allUsers}
-            </div>
-        )
-    }
 }

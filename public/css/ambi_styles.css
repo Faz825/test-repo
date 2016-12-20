@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,6 +1418,7 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3118,6 +3119,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3670,6 +3672,7 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10246,17 +10249,17 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/*
-	Method to use:
-	@include @border {
-		border ($style,  $sides, $emptySides){
-	}
+/* 
+  Method to use:
+  @include @border {
+    border ($style,  $sides, $emptySides){
+  }
 */
-/*
-	Method to use:
-	@include @mixin {
-		content
-	}
+/* 
+  Method to use:
+  @include @mixin {
+    content
+  }
 */
 header {
   background: #fff;
@@ -11400,7 +11403,7 @@ header .notification-holder .profile-header-thumb {
   color: #a6c649;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-group.active {
-  background-color: #3e3e3e;
+  background-color: #989ba0;
   color: #ffffff;
   box-shadow: none;
 }
@@ -11442,13 +11445,19 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li {
   padding: 20px 0px 20px 30px;
   border-bottom: 1px solid #f6f6f6;
+  position: relative;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i {
-  vertical-align: top;
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i.fa-circle {
+  position: absolute;
+  top: 22px;
+  left: 30px;
   font-size: 1.125em;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i:nth-child(1) {
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i.fa-circle:nth-child(1) {
   color: #00a6ef;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i.fa-circle + div {
+  margin-left: 25px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li.pending p, .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li.pending i {
   color: #989ba0;
@@ -11748,6 +11757,9 @@ header .notification-holder .profile-header-thumb {
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .header-wrapper p {
   color: #00a6ef;
 }
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li {
+  position: relative;
+}
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li:before {
   color: #00a6ef;
 }
@@ -11801,6 +11813,7 @@ header .notification-holder .profile-header-thumb {
   margin-top: -15px;
   margin-bottom: 5px;
   overflow: hidden;
+  position: relative;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li:first-child {
   margin-top: 0px;
@@ -11810,7 +11823,9 @@ header .notification-holder .profile-header-thumb {
   font-family: FontAwesome;
   line-height: 1;
   font-size: 8px;
-  float: left;
+  position: absolute;
+  top: 0;
+  left: 0;
   margin-top: 6px;
   margin-right: 4px;
 }
@@ -11819,7 +11834,7 @@ header .notification-holder .profile-header-thumb {
   font-weight: 400;
   color: #000000;
   font-size: 0.743125em;
-  margin-left: 4px;
+  margin-left: 12px;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li .time {
   float: right;
@@ -12794,9 +12809,9 @@ header .notification-holder .profile-header-thumb {
 .call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4 .selector {
   position: absolute;
   height: 5px;
-  width: 60%;
+  width: 100%;
   bottom: -5px;
-  left: 20%;
+  left: 0;
   background-color: transparent;
 }
 .call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4.active {
@@ -13624,6 +13639,7 @@ header .notification-holder .profile-header-thumb {
   margin-top: 50px;
   margin-bottom: 6px;
   width: 675px;
+  height: 382px;
   overflow: hidden;
   border-radius: 8px;
 }
@@ -13668,6 +13684,7 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .active-call-container .participants {
   text-align: center;
   overflow: hidden;
+  height: 113px;
 }
 .popup-holder .active-call-container .participants .user-block {
   position: relative;
