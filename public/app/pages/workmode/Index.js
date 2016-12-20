@@ -9,6 +9,10 @@ export default class Index extends React.Component{
     constructor(props){
         super(props);
 
+        if(Session.getSession('prg_lg') == null){
+            window.location.href = "/";
+        }
+
         this.tPeriod = Moment().format("A");
         this.cH = Moment().format("hh");
         this.cM = Moment().format("mm");
