@@ -11403,7 +11403,7 @@ header .notification-holder .profile-header-thumb {
   color: #a6c649;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-group.active {
-  background-color: #3e3e3e;
+  background-color: #989ba0;
   color: #ffffff;
   box-shadow: none;
 }
@@ -12809,9 +12809,9 @@ header .notification-holder .profile-header-thumb {
 .call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4 .selector {
   position: absolute;
   height: 5px;
-  width: 60%;
+  width: 100%;
   bottom: -5px;
-  left: 20%;
+  left: 0;
   background-color: transparent;
 }
 .call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4.active {
