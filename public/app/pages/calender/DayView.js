@@ -14,6 +14,8 @@ import SharedUsers from './SharedUsers';
 import EditorField from './EditorField';
 import Socket  from '../../middleware/Socket';
 
+import { Modal, Button } from 'react-bootstrap';
+
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
@@ -46,7 +48,9 @@ export default class DayView extends Component {
             sharedWithIds:[],
             sharedWithNames: [],
             msgOn : false,
-            errorMsg : ''
+            errorMsg : '',
+            showModal : false,
+            deleteEventId : ''
         };
 
         this.sharedWithIds = [];
@@ -60,6 +64,9 @@ export default class DayView extends Component {
         this.changeType = this.changeType.bind(this);
         this.handleTimeChange = this.handleTimeChange.bind(this);
         this.toggleMsg = this.toggleMsg.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -266,6 +273,28 @@ export default class DayView extends Component {
         }.bind(this));
     }
 
+    /*
+     * delete a given event or a todo.
+    */
+    delete() {
+        console.log("DELETED EVENT IS : " + this.state.deleteEventId);
+        $.ajax({
+            url : '/calendar/delete',
+            method : "POST",
+            data : { event_id : this.state.deleteEventId },
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token},
+            success : function (data, text) {
+                if (data.status.code == 200) {
+                    this.setState({events: data.events, deleteEventId: ''});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
     markTodo(eventId, status) {
 
         let user =  Session.getSession('prg_lg');
@@ -328,6 +357,10 @@ export default class DayView extends Component {
                 console.log(error);
             }
         });
+    }
+
+    delete(eventId) {
+        console.log("DELETE is Called.");
     }
 
     nextDay() {
@@ -431,6 +464,14 @@ export default class DayView extends Component {
         let date = moment(this.state.currentDay).day();
         let timeWithDay = year+'/'+month+'/'+date+' '+time;
         this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
+    }
+
+    closeModal() {
+        this.setState({showModal: false });
+    }
+
+    openModal(eventId) {
+        this.setState({showModal: true , deleteEventId: eventId});
     }
 
     render() {
@@ -584,6 +625,11 @@ export default class DayView extends Component {
                                     </div>
                                 </div>
                             </div>
+                            <button
+                                bsStyle="primary"
+                                bsSize="large"
+                                onClick={this.openModal}
+                            > modal test </button>
                             <div className="row events-list-area">
                                 <div className="col-sm-12">
                                     <div className="events-list-area-content">
@@ -596,6 +642,7 @@ export default class DayView extends Component {
                                             events={this.state.events}
                                             clickEdit={this.clickEdit.bind(this)}
                                             selectedEvent={this.selectedEvent}
+                                            delete={this.openModal.bind(this)}
                                         />
                                     </div>
                                 </div>
@@ -612,6 +659,7 @@ export default class DayView extends Component {
                                             onClickItem={this.markTodo.bind(this)}
                                             clickEdit={this.clickEdit.bind(this)}
                                             selectedEvent={this.selectedEvent}
+                                            delete={this.openModal.bind(this)}
                                         />
                                     </div>
                                 </div>
@@ -622,6 +670,18 @@ export default class DayView extends Component {
                         <MiniCalender selected={moment(this.currentDay)} changeDay={this.calenderClick.bind(this)} />
                     </div>
                 </div>
+                <Modal show={this.state.showModal} onHide={this.closeModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Are you sure. You want to delete this event</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>This will delete all the associated data, like notifications, shared users.</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.closeModal}>Close</Button>
+                        <Button bsStyle="primary" onClick={this.delete}>Delete</Button>
+                    </Modal.Footer>
+                </Modal>
             </section>
         );
     }

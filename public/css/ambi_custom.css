@@ -294,7 +294,7 @@ body{
     background: none;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .list-unstyled li .edit-icon {
+.calender-container .calender-body .col-sm-9 .calender-view .list-unstyled li .action-icons {
 	color: #ddd;
 	font-size: 15px;
 	margin-right: 10px;
@@ -302,7 +302,7 @@ body{
 	cursor: pointer;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .list-unstyled li:hover .edit-icon {
+.calender-container .calender-body .col-sm-9 .calender-view .list-unstyled li:hover .action-icons {
 	opacity: 1;
 }
 

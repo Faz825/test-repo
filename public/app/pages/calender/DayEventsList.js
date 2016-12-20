@@ -61,7 +61,10 @@ export default class DayEventsList extends React.Component {
                     </div>
                     <span className="event-time pull-right">{event.event_time}</span>
                     {event.user_id == _this.state.user.id && startDateTime > moment().format('YYYY-MM-DD HH:mm') ?
-                        <i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
+                        <span>
+                            <i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right action-icons edit-icon" aria-hidden="true"></i>
+                            <i onClick={_this.props.delete.bind(_this, event._id)} className="fa fa-trash pull-right action-icons delete-icon" aria-hidden="true"></i>
+                        </span>
                         : ''
                     }
                 </li>
