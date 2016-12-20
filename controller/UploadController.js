@@ -259,15 +259,24 @@ var UploadController = {
                         var _folderOwner = result.user_id;
 
                         var _index = "";
+                        var _type = "";
 
+                        console.log("typeof _folderOwner ==> "+typeof _folderOwner);
+                        console.log("typeof saved_document.document_user ==> "+typeof saved_document.document_user);
+
+                        //check folder owner and document user same
                         if (_folderOwner.toString() == saved_document.document_user.toString()){
                             _index = FolderDocsConfig.ES_INDEX_OWN_DOC;
+                            _type = "own_document";
                         } else{
                             _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
+                            _type = "shared_document";
                         }
+                        console.log(_index);console.log(_type);
 
                         var _esDocument = {
                             cache_key:_index+_folderOwner.toString(),
+                            type:_type,
                             document_id:saved_document.document_id,
                             document_name:saved_document.document_name,
                             content_type:saved_document.document_type,
@@ -286,13 +295,20 @@ var UploadController = {
                                 if(_sharedUser.status == FolderSharedRequest.REQUEST_ACCEPTED){
                                     var _documentUser = _sharedUser.user_id;
 
-                                    if (_documentUser == saved_document.document_user.toString()){
+                                    console.log("typeof _documentUser ==> "+typeof _documentUser);
+                                    console.log("typeof saved_document.document_user ==> "+typeof saved_document.document_user);
+
+                                    if (_documentUser.toString() == saved_document.document_user.toString()){
                                         _index = FolderDocsConfig.ES_INDEX_OWN_DOC;
+                                        _type = "own_document";
                                     } else{
                                         _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
+                                        _type = "shared_document";
                                     }
+                                    console.log(_index);console.log(_type);
 
                                     _esDocument.cache_key = _index+_documentUser.toString();
+                                    _esDocument.type = _type;
                                     _esDocument.document_user = _documentUser;
 
                                     FolderDocs.addDocToCache(_esDocument, function(res){callback(null)});
