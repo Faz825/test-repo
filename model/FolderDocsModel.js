@@ -112,18 +112,18 @@ FolderDocsSchema.statics.addDocToCache = function(data, callBack){
         //folder_updated_at:data.folder_updated_at,
         //folder_shared_mode:data.folder_shared_mode
     };
-    var _type = "";
+    //var _type = "";
 
-    if(data.document_owner == data.document_user){
-        _type = "own_document"
-    } else{
-        _type = "shared_document"
-    }
+    //if(data.document_owner == data.document_user){
+    //    _type = "own_document"
+    //} else{
+    //    _type = "shared_document"
+    //}
 
     var payLoad={
         index:data.cache_key,
         id:data.document_id.toString(),
-        type: _type,
+        type: data.type,
         data:_esDocument,
         tag_fields:['document_name']
     }
@@ -132,7 +132,7 @@ FolderDocsSchema.statics.addDocToCache = function(data, callBack){
         callBack(resultSet)
         return 0;
     });
-}
+};
 
 
 /**

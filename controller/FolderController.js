@@ -90,7 +90,7 @@ var FolderController ={
 
             function addFolderToDB(callBack){
 
-                console.log("addFolderToDB")
+                //console.log("addFolderToDB")
 
                 for(var i = 0; i < _shared_with.length; i++){
                     //console.log("_shared_with = "+i)
@@ -203,7 +203,7 @@ var FolderController ={
 
     getFolders: function (req, res) {
 
-        console.log("getFolders");
+        //console.log("getFolders");
 
         var Folders = require('mongoose').model('Folders'),
             User = require('mongoose').model('User'),
@@ -288,22 +288,22 @@ var FolderController ={
             },
 
             function getSharedFolders(callback){
-                console.log("getSharedFolders");
+                //console.log("getSharedFolders");
                 _async.waterfall([
                     function getFolders(callBack){
-                        console.log("getSharedFolders - getFolders");
+                        //console.log("getSharedFolders - getFolders");
                         var _index = FolderConfig.ES_INDEX_SHARED_FOLDER+user_id.toString()
 
                         Folders.getSharedFolders(_index,function(resultSet){
-                            console.log(resultSet);
+                            //console.log(resultSet);
                             callBack(null,resultSet.folders);
                         });
                     },
                     function getFolderAndDocuments(folders,callBack){
-                        console.log("getSharedFolders - getFolderAndDocuments");
+                        //console.log("getSharedFolders - getFolderAndDocuments");
                         _async.eachSeries(folders, function(folder, callBackFolder){
-                            console.log("==================================")
-                            console.log(folder);
+                            //console.log("==================================")
+                            //console.log(folder);
                             var _folder = {
                                     folder_id:folder.folder_id,
                                     folder_name:folder.folder_name,
@@ -398,7 +398,7 @@ var FolderController ={
                                 callBackFolder(null);
                             })
                         },function(err){
-                            console.log("async eachseries callback")
+                            //console.log("async eachseries callback")
                             callBack(null);
                         });
                     }
@@ -407,7 +407,7 @@ var FolderController ={
                 });
             }
         ], function(err){
-            console.log("loadFolders ..sending response")
+            //console.log("loadFolders ..sending response")
             if(err){
                 var outPut ={
                     status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR),
@@ -788,7 +788,7 @@ var FolderController ={
      */
     removeSharedFolderUser:function(req,res){
 
-        console.log("removeSharedFolderUser")
+        //console.log("removeSharedFolderUser")
 
         var Folder = require('mongoose').model('Folders');
         var FolderDoc = require('mongoose').model('FolderDocs');
@@ -796,8 +796,8 @@ var FolderController ={
             shared_user_id = [req.body.user_id],
             _async = require('async');
 
-        console.log("typeof folder_id == "+typeof folder_id);
-        console.log("typeof shared_user_id == "+typeof shared_user_id);
+        //console.log("typeof folder_id == "+typeof folder_id);
+        //console.log("typeof shared_user_id == "+typeof shared_user_id);
 
         var _sharedUsers = {
             shared_users:{user_id:{$in:shared_user_id}}
@@ -806,13 +806,13 @@ var FolderController ={
         _async.waterfall([
 
             function removeSharedUserFromDB(callback){
-                console.log("removeSharedUserFromDB")
+                //console.log("removeSharedUserFromDB")
                 Folder.removeSharedUser(folder_id,_sharedUsers,function(result){
                     callback(null);
                 });
             },
             function removeFolderFromES(callback){
-                console.log("removeFolderFromES")
+                //console.log("removeFolderFromES")
                 var _payload = {
                     id:folder_id.toString(),
                     type:"shared_folder",
@@ -825,7 +825,7 @@ var FolderController ={
 
             },
             function removeFilesFromES(callback){
-                console.log("removeFilesFromES")
+                //console.log("removeFilesFromES")
 
                 var _criteria = {folder_id:Util.toObjectId(folder_id)}
 
@@ -835,8 +835,8 @@ var FolderController ={
 
                         _async.eachSeries(_docs, function(doc, callback){
 
-                            console.log("=====================")
-                            console.log(doc);
+                            //console.log("=====================")
+                            //console.log(doc);
 
                             var _payload = {
                                 id:doc._id.toString(),
@@ -966,6 +966,7 @@ var FolderController ={
                     });
                 });
             },
+
             function deleteFilesFromCDN(callback){
                 console.log("deleteFilesFromCDN");
                 console.log("The Document ==>");
@@ -1014,6 +1015,7 @@ var FolderController ={
                     callback(null);
                 });
             },
+
             function deleteFromDB(callback){
                 console.log("deleteFromDB");
                 var docCriteria = {_id:Util.toObjectId(file_id)};
@@ -1021,6 +1023,7 @@ var FolderController ={
                     callback(null);
                 });
             },
+
             function deleteFromES(callback){
                 console.log("deleteFromES");
 
@@ -1042,6 +1045,7 @@ var FolderController ={
                             _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
                             _type = "shared_document";
                         }
+                        console.log(_index);
 
                         var _payload = {
                             id:theDocument._id.toString(),
@@ -1076,7 +1080,7 @@ var FolderController ={
                                     _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
                                     _type = "shared_document";
                                 }
-
+                                console.log(_index);
                                 var _payload = {
                                     id:theDocument._id.toString(),
                                     type:_type,
@@ -1115,7 +1119,7 @@ var FolderController ={
      * @param res
      */
     searchFolder:function(req,res){
-        console.log("searchFolder")
+        //console.log("searchFolder")
         var Folder = require('mongoose').model('Folders'),
             FolderDoc = require('mongoose').model('FolderDocs'),
             CurrentSession = Util.getCurrentSession(req),
@@ -1232,7 +1236,7 @@ var FolderController ={
 
         ], function(err){
 
-            console.log("callback")
+            //console.log("callback")
             _names.sort(function(a,b){
                 return b - a;
             });
@@ -1327,7 +1331,7 @@ var FolderController ={
                             index:'idx_usr'
                         };
                         ES.search(query,function(esResultSet){
-                            console.log(JSON.stringify(esResultSet));
+                            //console.log(JSON.stringify(esResultSet));
                             if(typeof esResultSet.result[0] == "undefined"){
                                 callback(null);
                             }else{
@@ -1418,8 +1422,8 @@ var FolderController ={
             }
 
         ], function(err){
-            console.log("callback");
-            console.log(JSON.stringify(_folder));
+            //console.log("callback");
+            //console.log(JSON.stringify(_folder));
             var _tempFolder = [_folder];
 
             var outPut = {

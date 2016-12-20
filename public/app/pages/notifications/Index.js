@@ -661,11 +661,12 @@ export class Notification extends React.Component{
             if(notification.read_status){ // read notification
                 _classNames += "read";
             }
+            var pro_img = (notification.sender_profile_picture == "") ? "/images/default-profile-pic.png" : notification.sender_profile_picture
             return (
                 <div className={_classNames} key={key}>
                     <a href="javascript:void(0)" onClick={()=>_this.props.clickNotification(notification)}>
                         <div className="chat-pro-img">
-                            <img src={notification.sender_profile_picture}/>
+                            <img src={pro_img}/>
                         </div>
                         <div className="notification-body">
                             <p className="connection-name">{notification.sender_name}</p>

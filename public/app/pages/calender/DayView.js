@@ -98,13 +98,21 @@ export default class DayView extends Component {
 
     }
 
-    resetSharedUsers() {
+    resetEventForm() {
         this.setState({
             sharedWithNames: [],
             sharedWithIds: [],
+            showUserPanel:'',
+            showTimePanel:'',
+            showUserPanelWindow: false,
+            showTimePanelWindow: false,
+            defaultEventTime: moment().format('HH:mm'),
+            editOn : false
         });
         this.sharedWithIds = [];
         this.sharedWithNames = [];
+        this.refs.SharedUserField.sharedWithNames = [];
+        this.refs.SharedUserField.sharedWithIds = [];
     }
 
     toggleMsg() {
@@ -172,7 +180,7 @@ export default class DayView extends Component {
 
                 const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
                 this.refs.EditorFieldValues.setState({editorState});
-                this.resetSharedUsers();
+                this.resetEventForm();
                 this.loadEvents();
             }
         }.bind(this));
@@ -243,9 +251,8 @@ export default class DayView extends Component {
                     Socket.sendCalendarShareNotification(_notificationData);
                 }
 
-                this.resetSharedUsers();
+                this.resetEventForm();
                 this.loadEvents();
-                this.setState({editOn : false, showUserPanel:'', showTimePanel:''});
             }
         }.bind(this));
     }
@@ -324,7 +331,7 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        this.resetSharedUsers();
+        this.resetEventForm();
     }
 
     previousDay() {
@@ -337,7 +344,7 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        this.resetSharedUsers();
+        this.resetEventForm();
     }
 
     changeType(eventType) {
@@ -355,7 +362,7 @@ export default class DayView extends Component {
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
         this.refs.EditorFieldValues.setState({editorState});
         this.setState({editOn : false});
-        this.resetSharedUsers();
+        this.resetEventForm();
     }
 
     handleTimeChange(time) {
