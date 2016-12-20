@@ -412,6 +412,10 @@ a.rc-time-picker-panel-clear-btn {
 		padding: 7px 10px;
 }
 
+.shared-users-time-panel .panel{
+  box-shadow: none;
+}
+
 /* event list */
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li {
 	padding: 20px 10px 20px 30px;

@@ -461,17 +461,11 @@ ConnectionSchema.statics.getMyConnection = function(criteria,callBack){
                     });
                 },
                 function(err){
-
                     callBack({result_count:formatted_users.length,results:formatted_users})
-
                 });
-
-
-
         }else{
             callBack({result_count:0,results:[]})
         }
-
     });
 
 }

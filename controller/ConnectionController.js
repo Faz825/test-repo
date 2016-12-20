@@ -566,7 +566,6 @@ var ConnectionController ={
             }
             return 0;
         });
-
     },
 }
 

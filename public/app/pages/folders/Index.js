@@ -16,6 +16,10 @@ export default class Index extends React.Component{
     constructor(props){
         super(props);
 
+        if(Session.getSession('prg_lg') == null){
+            window.location.href = "/";
+        }
+
         this.state={
             loggedUser : Session.getSession('prg_lg'),
             isShowingModal : false,

@@ -9,7 +9,10 @@ class Socket{
     constructor() {
         this.loggedUser = Session.getSession('prg_lg');
         this.socket = io.connect(Config.PROGLOBE_NOTIFICATION_APP);
-      //  this.socket = io.connect("https://proglobe.local");//dev
+
+
+        this.socket = io.connect("https://proglobe.local");//dev
+
         //this.socket = io.connect("https://notification.proglobe.us/");//prod
     }
 

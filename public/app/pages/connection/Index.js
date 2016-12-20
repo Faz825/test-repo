@@ -9,6 +9,11 @@ import Lib from '../../middleware/Lib';
 export default class Index extends React.Component{
     constructor(props){
         super(props);
+
+        if(Session.getSession('prg_lg') == null){
+            window.location.href = "/";
+        }
+
         if(Session.getSession('prg_lg') == null){
             window.location.href = "/";
         }

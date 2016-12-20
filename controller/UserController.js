@@ -1,61 +1,61 @@
 'use strict'
 
-var UserControler ={
+var UserControler = {
     /**
      * Register new User
      * @param req
      * @param res
      */
 
-    doSignup:function(req,res){
+    doSignup: function (req, res) {
         var User = require('mongoose').model('User');
 
 
-        var user ={
-            id:req.body._id,
-            first_name:req.body.fName,
-            last_name:req.body.lName,
-            email:req.body.email,
-            password:req.body.password,
-            status:req.body.status,
-            secretary:req.body.secretary,
+        var user = {
+            id: req.body._id,
+            first_name: req.body.fName,
+            last_name: req.body.lName,
+            email: req.body.email,
+            password: req.body.password,
+            status: req.body.status,
+            secretary: req.body.secretary,
         }
 
 
-        User.findByEmail(user.email,function(ResultSet){
+        User.findByEmail(user.email, function (ResultSet) {
 
-            if(ResultSet.status == 200 && ResultSet.user == null ){
+            if (ResultSet.status == 200 && ResultSet.user == null) {
 
-                user['user_name'] =  Util.getUniqueUserName(user);
-                User.create(user,function(_ResultSet){
-                    if(typeof _ResultSet.status != 'undefined' && _ResultSet.status == 400){
+                user['user_name'] = Util.getUniqueUserName(user);
+                User.create(user, function (_ResultSet) {
+                    if (typeof _ResultSet.status != 'undefined' && _ResultSet.status == 400) {
                         res.status(400).json({
-                            status:"error",
-                            message:Alert.USER_CREATION_ERROR
+                            status: "error",
+                            message: Alert.USER_CREATION_ERROR
                         });
                         return;
                     }
-                    Util.addToSession(req,_ResultSet.user);
-                    var _out_put= {
-                        status:'success',
-                        message:Alert.ACCOUNT_CREATION_SUCCESS
+                    Util.addToSession(req, _ResultSet.user);
+                    var _out_put = {
+                        status: 'success',
+                        message: Alert.ACCOUNT_CREATION_SUCCESS
                     }
 
-                    _out_put['user']=_ResultSet.user;
+                    _out_put['user'] = _ResultSet.user;
 
                     res.render('email-templates/signup', {
                         name: _ResultSet.user.first_name,
-                    }, function(err, emailHTML) {
+                    }, function (err, emailHTML) {
 
                         var sendOptions = {
                             to: _ResultSet.user.email,
                             subject: 'Proglobe Signup',
                             html: emailHTML
                         };
-                        EmailEngine.sendMail(sendOptions, function(err){
-                            if(!err){
+                        EmailEngine.sendMail(sendOptions, function (err) {
+                            if (!err) {
                                 console.log("Email Send")
-                            } else{
+                            } else {
                                 console.log("EMAIL Sending Error");
                                 console.log(err);
                             }
@@ -64,46 +64,46 @@ var UserControler ={
                         return 0
                     });
                     /*
-                    var _cache_key = CacheEngine.prepareCacheKey("sess:"+_ResultSet.user.token);
-                    /*CacheEngine.addToCache(_cache_key,_ResultSet.user,function(cacheData){
+                     var _cache_key = CacheEngine.prepareCacheKey("sess:"+_ResultSet.user.token);
+                     /*CacheEngine.addToCache(_cache_key,_ResultSet.user,function(cacheData){
 
-                        var _out_put= {
-                            status:'success',
-                            message:Alert.ACCOUNT_CREATION_SUCCESS
-                        }
-                        if(!cacheData){
-                            _out_put['extra']=Alert.CACHE_CREATION_ERROR
-                        }
+                     var _out_put= {
+                     status:'success',
+                     message:Alert.ACCOUNT_CREATION_SUCCESS
+                     }
+                     if(!cacheData){
+                     _out_put['extra']=Alert.CACHE_CREATION_ERROR
+                     }
 
-                        _out_put['user']=_ResultSet.user;
+                     _out_put['user']=_ResultSet.user;
 
-                        res.render('email-templates/signup', {
-                            name: _ResultSet.user.first_name,
-                        }, function(err, emailHTML) {
+                     res.render('email-templates/signup', {
+                     name: _ResultSet.user.first_name,
+                     }, function(err, emailHTML) {
 
-                            var sendOptions = {
-                                to: _ResultSet.user.email,
-                                subject: 'Proglobe Signup',
-                                html: emailHTML
-                            };
-                            EmailEngine.sendMail(sendOptions, function(err){
-                                if(!err){
-                                    console.log("Email Send")
-                                } else{
-                                    console.log("EMAIL Sending Error");
-                                    console.log(err);
-                                }
-                            });
-                            res.status(200).json(_out_put);
-                            return 0
-                        });
-                    });*/
+                     var sendOptions = {
+                     to: _ResultSet.user.email,
+                     subject: 'Proglobe Signup',
+                     html: emailHTML
+                     };
+                     EmailEngine.sendMail(sendOptions, function(err){
+                     if(!err){
+                     console.log("Email Send")
+                     } else{
+                     console.log("EMAIL Sending Error");
+                     console.log(err);
+                     }
+                     });
+                     res.status(200).json(_out_put);
+                     return 0
+                     });
+                     });*/
 
                 });
-            }else{
+            } else {
                 res.status(400).json({
-                    status:"error",
-                    message:Alert.ACCOUNT_EXIST
+                    status: "error",
+                    message: Alert.ACCOUNT_EXIST
                 });
             }
         });
@@ -118,112 +118,112 @@ var UserControler ={
      * @returns {number}
      */
 
-    doMobileApiSignin:function(req,res){
+    doMobileApiSignin: function (req, res) {
 
-        var outPut ={};
+        var outPut = {};
 
         console.log(req.body);
 
-        if(typeof req.body.uname != 'undefined' && typeof req.body.password != 'undefined'){
+        if (typeof req.body.uname != 'undefined' && typeof req.body.password != 'undefined') {
 
             var User = require('mongoose').model('User'),
-                bCrypt	  = require('bcrypt-nodejs');
+                bCrypt = require('bcrypt-nodejs');
 
             var data = {
-                user_name:req.body.uname,
-                password:req.body.password
+                user_name: req.body.uname,
+                password: req.body.password
             };
 
-            User.authenticate(data,function(resultSet){
+            User.authenticate(data, function (resultSet) {
 
-                if(resultSet.status != 200){
+                if (resultSet.status != 200) {
                     outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
                     res.status(400).json(outPut);
                     return 0;
-                } else if(resultSet.status == 200 && resultSet.error != null){
+                } else if (resultSet.status == 200 && resultSet.error != null) {
                     outPut['status'] = ApiHelper.getMessage(400, resultSet.error, Alert.ERROR);
                     res.status(400).json(outPut);
                     return 0;
                 }
 
-                if(typeof req.body.push_token != 'undefined' && req.body.push_token != null && req.body.push_token != ""
-                    && (typeof resultSet.user.push_token != 'undefined' && resultSet.user.push_token != req.body.push_token)){
+                if (typeof req.body.push_token != 'undefined' && req.body.push_token != null && req.body.push_token != ""
+                    && (typeof resultSet.user.push_token != 'undefined' && resultSet.user.push_token != req.body.push_token)) {
 
                     var _async = require('async');
 
                     _async.waterfall([
-                        function(callback){
+                        function (callback) {
                             var _data = {
-                                push_token:req.body.push_token,
-                                device_type:req.body.device_type
+                                push_token: req.body.push_token,
+                                device_type: req.body.device_type
                             };
-                            User.saveUpdates(resultSet.user.id, _data, function(result){
-                                if(result.status == 200){
+                            User.saveUpdates(resultSet.user.id, _data, function (result) {
+                                if (result.status == 200) {
                                     resultSet.user.push_token = req.body.push_token;
                                     resultSet.user.device_type = req.body.device_type;
                                 }
                                 callback(null);
                             });
                         },
-                        function(callback){
+                        function (callback) {
 
-                            if(typeof resultSet.user.push_token != 'undefined' && resultSet.user.push_token != null && resultSet.user.push_token != ""){
+                            if (typeof resultSet.user.push_token != 'undefined' && resultSet.user.push_token != null && resultSet.user.push_token != "") {
 
-                                var query={
-                                    q:"user_id:"+resultSet.user.id,
-                                    index:'idx_usr'
+                                var query = {
+                                    q: "user_id:" + resultSet.user.id,
+                                    index: 'idx_usr'
                                 };
 
-                                ES.search(query,function(esResultSet){
+                                ES.search(query, function (esResultSet) {
 
                                     var profileData = esResultSet.result[0];
                                     profileData.push_token = resultSet.user.push_token;
                                     profileData.device_type = resultSet.user.device_type;
 
-                                    var payLoad={
-                                        index:"idx_usr",
-                                        id:profileData.user_id,
+                                    var payLoad = {
+                                        index: "idx_usr",
+                                        id: profileData.user_id,
                                         type: 'user',
-                                        data:profileData,
-                                        tag_fields:['first_name','last_name','email','user_name','country']
+                                        data: profileData,
+                                        tag_fields: ['first_name', 'last_name', 'email', 'user_name', 'country']
                                     }
 
-                                    ES.createIndex(payLoad,function(resultSet){
+                                    ES.createIndex(payLoad, function (resultSet) {
                                         callback(resultSet)
                                         return 0;
                                     });
 
                                 });
 
-                            } else{
+                            } else {
                                 callback(null);
                             }
 
                         }
-                    ],function(err){
+                    ], function (err) {
 
                         var _async = require('async'),
-                            jwt    = require('jsonwebtoken'),
+                            jwt = require('jsonwebtoken'),
                             date_t = new Date().getTime();
 
                         _async.waterfall([
-                            function getApiVerificationCode(callBack){
+                            function getApiVerificationCode(callBack) {
                                 var data = {
-                                    user_name:req.body.uname,
+                                    user_name: req.body.uname,
                                     dt: date_t
                                 };
-                                User.getApiVerification(data, function(result){
-                                    if(result.status == 200){
+                                User.getApiVerification(data, function (result) {
+                                    if (result.status == 200) {
 
-                                        console.log("verification >>"+result.verificationCode);
+                                        console.log("verification >>" + result.verificationCode);
 
                                         var _payload = {
-                                            user_id:resultSet.user.id,
+                                            user_id: resultSet.user.id,
                                             push_token: resultSet.user.push_token,
                                             device_type: resultSet.user.device_type,
-                                            pat:date_t,
-                                            v_token:result.verificationCode,
-                                            v_tag:result.verificationName
+                                            pat: date_t,
+                                            v_token: result.verificationCode,
+                                            v_tag: result.verificationName
                                         };
 
                                         var token = jwt.sign(_payload, Config.SECRET);
@@ -240,15 +240,15 @@ var UserControler ={
                                 callBack(null);
                             }
 
-                        ],function(err){
-                            var outPut ={};
-                            if(err){
+                        ], function (err) {
+                            var outPut = {};
+                            if (err) {
                                 outPut['status'] = ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR);
                                 res.status(400).json(outPut);
                                 return;
                             } else {
                                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                                outPut['user']=resultSet.user;
+                                outPut['user'] = resultSet.user;
                                 res.status(200).send(outPut);
                                 return;
                             }
@@ -259,27 +259,27 @@ var UserControler ={
                 } else {
 
                     var _async = require('async'),
-                        jwt    = require('jsonwebtoken'),
+                        jwt = require('jsonwebtoken'),
                         date_t = new Date().getTime();
 
                     _async.waterfall([
-                        function getApiVerificationCode(callBack){
+                        function getApiVerificationCode(callBack) {
                             var data = {
-                                user_name:req.body.uname,
+                                user_name: req.body.uname,
                                 dt: date_t
                             };
-                            User.getApiVerification(data, function(result){
-                                if(result.status == 200){
+                            User.getApiVerification(data, function (result) {
+                                if (result.status == 200) {
 
-                                    console.log("verification >>"+result.verificationCode);
+                                    console.log("verification >>" + result.verificationCode);
 
                                     var _payload = {
-                                        user_id:resultSet.user.id,
+                                        user_id: resultSet.user.id,
                                         push_token: resultSet.user.push_token,
                                         device_type: resultSet.user.device_type,
-                                        pat:date_t,
-                                        v_token:result.verificationCode,
-                                        v_tag:result.verificationName
+                                        pat: date_t,
+                                        v_token: result.verificationCode,
+                                        v_tag: result.verificationName
                                     };
 
                                     var token = jwt.sign(_payload, Config.SECRET);
@@ -295,15 +295,15 @@ var UserControler ={
                             callBack(null);
                         }
 
-                    ],function(err){
-                        var outPut ={};
-                        if(err){
+                    ], function (err) {
+                        var outPut = {};
+                        if (err) {
                             outPut['status'] = ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR);
                             res.status(400).json(outPut);
                             return;
                         } else {
                             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                            outPut['user']=resultSet.user;
+                            outPut['user'] = resultSet.user;
                             res.status(200).send(outPut);
                             return;
                         }
@@ -318,7 +318,7 @@ var UserControler ={
 
             });
 
-        } else{
+        } else {
             outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
             res.status(400).json(outPut);
             return 0;
@@ -333,48 +333,48 @@ var UserControler ={
      * @param req
      * @param res
      */
-    saveSecretary:function(req,res){
+    saveSecretary: function (req, res) {
         var User = require('mongoose').model('User'),
             Secretary = require('mongoose').model('Secretary');
 
 
-        var secretaryData ={
-            secretary:req.body.secretary,
-            status:2
+        var secretaryData = {
+            secretary: req.body.secretary,
+            status: 2
         }
 
         var CurrentSession = Util.getCurrentSession(req);
 
-        User.saveUpdates(CurrentSession.id,secretaryData,function(resultSet){
-            Secretary.getSecretaryById(secretaryData.secretary,function(resultSet){
+        User.saveUpdates(CurrentSession.id, secretaryData, function (resultSet) {
+            Secretary.getSecretaryById(secretaryData.secretary, function (resultSet) {
 
 
-                CurrentSession['secretary_name']        = resultSet.full_name;
-                CurrentSession['secretary_id']          = resultSet.id;
-                CurrentSession['secretary_image_url']   = resultSet.image_name;
-                CurrentSession['status']                = 2;
+                CurrentSession['secretary_name'] = resultSet.full_name;
+                CurrentSession['secretary_id'] = resultSet.id;
+                CurrentSession['secretary_image_url'] = resultSet.image_name;
+                CurrentSession['status'] = 2;
 
-                Util.addToSession(req,CurrentSession);
-                var _out_put= {
-                    status:'success',
-                    message:Alert.ADDED_SECRETARY,
-                    user:CurrentSession
+                Util.addToSession(req, CurrentSession);
+                var _out_put = {
+                    status: 'success',
+                    message: Alert.ADDED_SECRETARY,
+                    user: CurrentSession
                 };
 
                 res.status(200).json(_out_put);
                 /*CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
-                    var _out_put= {
-                        status:'success',
-                        message:Alert.ADDED_SECRETARY
-                    }
-                    if(!cacheData){
-                        _out_put['extra']=Alert.CACHE_CREATION_ERROR
-                    }
-                    _out_put['user']=CurrentSession;
-                    console.log("saveSecretary");
-                    console.log(CurrentSession);
-                    res.status(200).json(_out_put);
-                });*/
+                 var _out_put= {
+                 status:'success',
+                 message:Alert.ADDED_SECRETARY
+                 }
+                 if(!cacheData){
+                 _out_put['extra']=Alert.CACHE_CREATION_ERROR
+                 }
+                 _out_put['user']=CurrentSession;
+                 console.log("saveSecretary");
+                 console.log(CurrentSession);
+                 res.status(200).json(_out_put);
+                 });*/
             });
 
         });
@@ -386,50 +386,50 @@ var UserControler ={
      * @param req
      * @param res
      */
-    saveGeneralInfo:function(req,res){
+    saveGeneralInfo: function (req, res) {
         var User = require('mongoose').model('User');
-        var generalInfo ={
-            dob:req.body.dob,
-            country:req.body.country,
-            zip_code:req.body.zip,
-            status:3
+        var generalInfo = {
+            dob: req.body.dob,
+            country: req.body.country,
+            zip_code: req.body.zip,
+            status: 3
         }
         var CurrentSession = Util.getCurrentSession(req);
-        User.saveUpdates(CurrentSession.id,generalInfo,function(resultSet){
+        User.saveUpdates(CurrentSession.id, generalInfo, function (resultSet) {
 
 
-            if(resultSet.status != 200){
+            if (resultSet.status != 200) {
 
                 res.status(400).json({
-                    status:"error",
-                    message:Alert.ERROR_ON_GENERAL_INFO_ADDING
+                    status: "error",
+                    message: Alert.ERROR_ON_GENERAL_INFO_ADDING
                 });
 
             }
 
-            CurrentSession['status']        = 3;
-            CurrentSession['country']       = req.body.country;
-            CurrentSession['dob']           = req.body.dob;
-            CurrentSession['zip_code']           = req.body.zip;
-            Util.addToSession(req,CurrentSession)
+            CurrentSession['status'] = 3;
+            CurrentSession['country'] = req.body.country;
+            CurrentSession['dob'] = req.body.dob;
+            CurrentSession['zip_code'] = req.body.zip;
+            Util.addToSession(req, CurrentSession)
             var _out_put = {
-                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.INFO),
-                user:CurrentSession
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.INFO),
+                user: CurrentSession
             }
             res.status(200).json(_out_put);
             /*CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
-                var  _out_put = {}
-                _out_put = {
-                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.INFO),
-                    user:CurrentSession
-                }
-                if(!cacheData){
-                    _out_put['extra']=Alert.CACHE_CREATION_ERROR
-                }
-                console.log("saveGeneralInfo");
-                console.log(CurrentSession);
-                res.status(200).json(_out_put);
-            });*/
+             var  _out_put = {}
+             _out_put = {
+             status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.INFO),
+             user:CurrentSession
+             }
+             if(!cacheData){
+             _out_put['extra']=Alert.CACHE_CREATION_ERROR
+             }
+             console.log("saveGeneralInfo");
+             console.log(CurrentSession);
+             res.status(200).json(_out_put);
+             });*/
 
 
             return 0;
@@ -442,78 +442,76 @@ var UserControler ={
      * @param req
      * @param res
      */
-    addCollageAndJob:function(req,res){
+    addCollageAndJob: function (req, res) {
 
         var CurrentSession = Util.getCurrentSession(req);
-        CurrentSession['status']        = 4;
-        CurrentSession['school']        = (req.body.school)?req.body.school:null;
-        CurrentSession['grad_date']     = (req.body.grad_date)?req.body.grad_date:null;
-        CurrentSession['job_title']     = (req.body.job_title)?req.body.job_title:null;
-        CurrentSession['company_name']  = (req.body.company_name)?req.body.company_name:null;
+        CurrentSession['status'] = 4;
+        CurrentSession['school'] = (req.body.school) ? req.body.school : null;
+        CurrentSession['grad_date'] = (req.body.grad_date) ? req.body.grad_date : null;
+        CurrentSession['job_title'] = (req.body.job_title) ? req.body.job_title : null;
+        CurrentSession['company_name'] = (req.body.company_name) ? req.body.company_name : null;
 
-        Util.addToSession(req,CurrentSession);
+        Util.addToSession(req, CurrentSession);
         var User = require('mongoose').model('User'),
-            _collageAndJob={
-                school:req.body.school,
-                grad_date:req.body.grad_date,
-                job_title:req.body.job_title,
-                company_name:req.body.company_name,
-                status:4
+            _collageAndJob = {
+                school: req.body.school,
+                grad_date: req.body.grad_date,
+                job_title: req.body.job_title,
+                company_name: req.body.company_name,
+                status: 4
             };
 
-        User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
-            var outPut ={};
+        User.addCollageAndJob(CurrentSession.id, _collageAndJob, function (resultSet) {
+            var outPut = {};
 
-            if(resultSet.status != 200){
+            if (resultSet.status != 200) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
                 res.status(200).json(outPut);
                 return 0;
             }
 
-            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['user']      = CurrentSession;
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['user'] = CurrentSession;
 
             res.status(200).json(outPut);
-
-
 
 
         });
         /*CacheEngine.updateCache(_cache_key,CurrentSession,function(cacheData){
 
-            var User = require('mongoose').model('User'),
-                _collageAndJob={
-                    school:req.body.school,
-                    grad_date:req.body.grad_date,
-                    job_title:req.body.job_title,
-                    company_name:req.body.company_name,
-                    status:4
-                };
+         var User = require('mongoose').model('User'),
+         _collageAndJob={
+         school:req.body.school,
+         grad_date:req.body.grad_date,
+         job_title:req.body.job_title,
+         company_name:req.body.company_name,
+         status:4
+         };
 
-            User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
-                var outPut ={};
+         User.addCollageAndJob(CurrentSession.id,_collageAndJob,function(resultSet){
+         var outPut ={};
 
-                if(resultSet.status != 200){
-                    outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
-                    res.status(200).json(outPut);
-                    return 0;
-                }
-                if(!cacheData){
-                    outPut['extra']=Alert.CACHE_CREATION_ERROR
-                }
-                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['user']      = CurrentSession;
+         if(resultSet.status != 200){
+         outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_ADD_JOB_AND_COLLAGE, Alert.ERROR);
+         res.status(200).json(outPut);
+         return 0;
+         }
+         if(!cacheData){
+         outPut['extra']=Alert.CACHE_CREATION_ERROR
+         }
+         outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+         outPut['user']      = CurrentSession;
 
-                console.log("addCollageAndJob");
-                console.log(CurrentSession);
-                res.status(200).json(outPut);
-
-
+         console.log("addCollageAndJob");
+         console.log(CurrentSession);
+         res.status(200).json(outPut);
 
 
-            });
 
-        });*/
+
+         });
+
+         });*/
     },
 
     /**
@@ -521,36 +519,36 @@ var UserControler ={
      * @param req
      * @param res
      */
-    getConnections:function(req,res){
+    getConnections: function (req, res) {
         var User = require('mongoose').model('User');
         var CurrentSession = Util.getCurrentSession(req);
-        var criteria ={
-            pg:0,
-            country:CurrentSession.country,
-            user_id:CurrentSession.id,
+        var criteria = {
+            pg: 0,
+            country: CurrentSession.country,
+            user_id: CurrentSession.id,
             status: [ConnectionStatus.REQUEST_ACCEPTED, ConnectionStatus.REQUEST_SENT]
         };
 
 
-        User.getConnectionUsers(criteria,function(resultSet){
+        User.getConnectionUsers(criteria, function (resultSet) {
 
-            var outPut	={};
+            var outPut = {};
 
-            if(resultSet.status !== 400){
+            if (resultSet.status !== 400) {
 
-                outPut['status'] = ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS);
-                outPut['header'] ={
-                    total_result:resultSet.total_result,
-                    result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
-                    total_pages:Math.ceil(resultSet.total_result/Config.CONNECTION_RESULT_PER_PAGE)
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['header'] = {
+                    total_result: resultSet.total_result,
+                    result_per_page: Config.CONNECTION_RESULT_PER_PAGE,
+                    total_pages: Math.ceil(resultSet.total_result / Config.CONNECTION_RESULT_PER_PAGE)
                 };
 
                 outPut['connections'] = resultSet.friends
 
                 res.status(200).send(outPut);
                 return 0
-            }else{
-                outPut['status'] = ApiHelper.getMessage(400,Alert.CONNECTION_USERS_EMPTY,Alert.ERROR);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECTION_USERS_EMPTY, Alert.ERROR);
 
                 res.status(400).send(outPut);
                 return 0;
@@ -566,22 +564,22 @@ var UserControler ={
      * @param req
      * @param res
      */
-    connect:function(req,res){
+    connect: function (req, res) {
         var CurrentSession = Util.getCurrentSession(req);
-        CurrentSession['status']    = 5;
-        Util.addToSession(req,CurrentSession);
-        var outPut ={};
-        outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-        outPut['user']= CurrentSession;
+        CurrentSession['status'] = 5;
+        Util.addToSession(req, CurrentSession);
+        var outPut = {};
+        outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+        outPut['user'] = CurrentSession;
 
         var req_connected_users = JSON.parse(req.body.connected_users);
         var req_unconnected_users = JSON.parse(req.body.unconnected_users);
 
         var Connection = require('mongoose').model('Connection'),
-            User       = require('mongoose').model('User');
+            User = require('mongoose').model('User');
 
-        User.saveUpdates(CurrentSession.id,{status:5},function(updateDataSet){
-            Connection.sendConnectionRequest(CurrentSession.id,req_connected_users,req_unconnected_users, function (resultSet) {
+        User.saveUpdates(CurrentSession.id, {status: 5}, function (updateDataSet) {
+            Connection.sendConnectionRequest(CurrentSession.id, req_connected_users, req_unconnected_users, function (resultSet) {
                 if (resultSet.status !== 200) {
                     outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
                     res.status(400).send(outPut);
@@ -598,25 +596,25 @@ var UserControler ={
      * @param req
      * @param res
      */
-    addNewsCategory:function(req,res){
+    addNewsCategory: function (req, res) {
         var CurrentSession = Util.getCurrentSession(req);
-        CurrentSession['status']    = 6;
-        Util.addToSession(req,CurrentSession);
+        CurrentSession['status'] = 6;
+        Util.addToSession(req, CurrentSession);
 
-        var outPut ={};
-        outPut['status'] =  ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-        outPut['user']=CurrentSession;
+        var outPut = {};
+        outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+        outPut['user'] = CurrentSession;
 
         var req_news_categories = JSON.parse(req.body.news_categories);
         var un_selected_categories = JSON.parse(req.body.un_selected);
 
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory'),
-            User                  = require('mongoose').model('User');
+            User = require('mongoose').model('User');
 
 
-        User.saveUpdates(CurrentSession.id,{status:6},function(updateDataSet){
+        User.saveUpdates(CurrentSession.id, {status: 6}, function (updateDataSet) {
 
-            FavouriteNewsCategory.addUserNewsCategory(CurrentSession.id,req_news_categories,un_selected_categories,function(resultSet){
+            FavouriteNewsCategory.addUserNewsCategory(CurrentSession.id, req_news_categories, un_selected_categories, function (resultSet) {
 
                 if (resultSet.status !== 200) {
                     outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
@@ -637,89 +635,91 @@ var UserControler ={
      * @param res
      * @returns {number}
      */
-    uploadProfileImage:function(req,res){
+    uploadProfileImage: function (req, res) {
 
         var CurrentSession = Util.getCurrentSession(req);
 
         var User = require('mongoose').model('User');
-        var data ={
-            content_title:"Profile Image",
-            file_name:req.body.profileImg,
-            is_default:1,
-            entity_id:CurrentSession.id,
-            entity_tag:UploadMeta.PROFILE_IMAGE,
-            status:7
+        var data = {
+            content_title: "Profile Image",
+            file_name: req.body.profileImg,
+            is_default: 1,
+            entity_id: CurrentSession.id,
+            entity_tag: UploadMeta.PROFILE_IMAGE,
+            status: 7
         }
 
-        User.saveUpdates(CurrentSession.id,{status:7},function(updateDataSet){
-                //IF PROFILE IMAGE NOT FOUND
-                if(typeof req.body.profileImg == 'undefined' || req.body.profileImg == "") {
-                    var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-                    CurrentSession['status'] = 7;
-                    CurrentSession['profile_image'] = Config.DEFAULT_PROFILE_IMAGE;
-                    Util.addToSession(req,CurrentSession);
-                    var outPut = {
-                        status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
-                    }
+        User.saveUpdates(CurrentSession.id, {status: 7}, function (updateDataSet) {
+            //IF PROFILE IMAGE NOT FOUND
+            if (typeof req.body.profileImg == 'undefined' || req.body.profileImg == "") {
+                var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+                CurrentSession['status'] = 7;
+                CurrentSession['profile_image'] = Config.DEFAULT_PROFILE_IMAGE;
+                Util.addToSession(req, CurrentSession);
+                var outPut = {
+                    status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                }
 
-                    outPut['user'] = CurrentSession;
-                    //ADD TO CACHE
-                    User.addUserToCache(CurrentSession.id,function(csResult){});
-                    res.status(200).json(outPut);
+                outPut['user'] = CurrentSession;
+                //ADD TO CACHE
+                User.addUserToCache(CurrentSession.id, function (csResult) {
+                });
+                res.status(200).json(outPut);
 
 
-                    /*CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                /*CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                 var outPut = {
+                 status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                 }
+                 if (!cacheData) {
+                 outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                 }
+                 outPut['user'] = CurrentSession;
+                 //ADD TO CACHE
+                 User.addUserToCache(CurrentSession.id,function(csResult){});
+                 res.status(200).json(outPut);
+                 });*/
+
+            } else {
+                ContentUploader.uploadFile(data, function (payLoad) {
+
+                    if (payLoad.status != 400) {
+                        var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
+                        CurrentSession['status'] = 7;
+                        CurrentSession['profile_image'] = payLoad.http_url;
+                        Util.addToSession(req, CurrentSession);
                         var outPut = {
                             status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
                         }
-                        if (!cacheData) {
-                            outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                        }
+
                         outPut['user'] = CurrentSession;
+                        outPut['profile_image'] = payLoad;
                         //ADD TO CACHE
-                        User.addUserToCache(CurrentSession.id,function(csResult){});
+                        User.addUserToCache(CurrentSession.id, function (csResult) {
+                        });
                         res.status(200).json(outPut);
-                    });*/
 
-                }else{
-                    ContentUploader.uploadFile(data,function (payLoad) {
+                        /*CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                         var outPut = {
+                         status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                         }
+                         if (!cacheData) {
+                         outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                         }
+                         outPut['user'] = CurrentSession;
+                         //ADD TO CACHE
+                         User.addUserToCache(CurrentSession.id,function(csResult){});
+                         res.status(200).json(outPut);
+                         });*/
 
-                        if (payLoad.status != 400) {
-                            var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
-                            CurrentSession['status'] = 7;
-                            CurrentSession['profile_image'] = payLoad.http_url;
-                            Util.addToSession(req,CurrentSession);
-                            var outPut = {
-                                status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
-                            }
-
-                            outPut['user'] = CurrentSession;
-                            outPut['profile_image'] = payLoad;
-                            //ADD TO CACHE
-                            User.addUserToCache(CurrentSession.id,function(csResult){});
-                            res.status(200).json(outPut);
-
-                            /*CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
-                                var outPut = {
-                                    status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
-                                }
-                                if (!cacheData) {
-                                    outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                                }
-                                outPut['user'] = CurrentSession;
-                                //ADD TO CACHE
-                                User.addUserToCache(CurrentSession.id,function(csResult){});
-                                res.status(200).json(outPut);
-                            });*/
-
-                        } else {
-                            var outPut={
-                                status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
-                            };
-                            res.status(400).send(outPut);
-                        }
-                    });
-                }
+                    } else {
+                        var outPut = {
+                            status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
+                        };
+                        res.status(400).send(outPut);
+                    }
+                });
+            }
 
         });
 
@@ -731,10 +731,10 @@ var UserControler ={
      * @param req
      * @param res
      */
-    uploadCoverImage:function(req,res){
+    uploadCoverImage: function (req, res) {
         var CurrentSession = Util.getCurrentSession(req);
-        if(typeof req.body.cover_img == 'undefined' || typeof req.body.cover_img == "") {
-            var outPut={
+        if (typeof req.body.cover_img == 'undefined' || typeof req.body.cover_img == "") {
+            var outPut = {
                 status: ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
             };
             res.status(400).send(outPut);
@@ -742,56 +742,54 @@ var UserControler ={
         }
 
         var User = require('mongoose').model('User');
-        var data ={
-            content_title:"Cover Image",
-            file_name:req.body.cover_img,
-            is_default:1,
-            entity_id:CurrentSession.id,
-            entity_tag:UploadMeta.COVER_IMAGE
+        var data = {
+            content_title: "Cover Image",
+            file_name: req.body.cover_img,
+            is_default: 1,
+            entity_id: CurrentSession.id,
+            entity_tag: UploadMeta.COVER_IMAGE
         }
-        ContentUploader.uploadFile(data,function (payLoad) {
+        ContentUploader.uploadFile(data, function (payLoad) {
 
             if (payLoad.status != 400) {
                 var _cache_key = CacheEngine.prepareCacheKey(CurrentSession.token);
                 CurrentSession['cover_image'] = payLoad.http_url;
 
-                Util.addToSession(req,CurrentSession);
+                Util.addToSession(req, CurrentSession);
                 var outPut = {
                     status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
                 }
                 outPut['user'] = CurrentSession;
 
                 //ADD TO CACHE
-                User.addUserToCache(CurrentSession.id,function(csResult){});
+                User.addUserToCache(CurrentSession.id, function (csResult) {
+                });
 
                 res.status(200).json(outPut);
                 return 0;
-               /* CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
-                    var outPut = {
-                        status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
-                    }
-                    if (!cacheData) {
-                        outPut['extra'] = Alert.CACHE_CREATION_ERROR
-                    }
-                    outPut['user'] = CurrentSession;
+                /* CacheEngine.updateCache(_cache_key, CurrentSession, function (cacheData) {
+                 var outPut = {
+                 status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
+                 }
+                 if (!cacheData) {
+                 outPut['extra'] = Alert.CACHE_CREATION_ERROR
+                 }
+                 outPut['user'] = CurrentSession;
 
-                    //ADD TO CACHE
-                    User.addUserToCache(CurrentSession.id,function(csResult){});
+                 //ADD TO CACHE
+                 User.addUserToCache(CurrentSession.id,function(csResult){});
 
-                    res.status(200).json(outPut);
-                });*/
-
-
+                 res.status(200).json(outPut);
+                 });*/
 
 
             } else {
-                var outPut={
+                var outPut = {
                     status: ApiHelper.getMessage(400, Alert.ERROR_UPLOADING_IMAGE, Alert.ERROR)
                 };
                 res.status(400).send(outPut);
             }
         });
-
 
 
     },
@@ -801,7 +799,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    addEducationDetail:function(req, res){
+    addEducationDetail: function (req, res) {
 
         var User = require('mongoose').model('User');
 
@@ -818,20 +816,20 @@ var UserControler ={
         //};
 
         var _educationDetails = {
-            school:"Middlesex",
-            date_attended_from:"2007",
-            date_attended_to:"2010",
-            degree:"BSc in IT",
-            grade:"Merit",
-            activities_societies:"Debate Team",
-            description:"It was wonderful"
+            school: "Middlesex",
+            date_attended_from: "2007",
+            date_attended_to: "2010",
+            degree: "BSc in IT",
+            grade: "Merit",
+            activities_societies: "Debate Team",
+            description: "It was wonderful"
         };
 
         //var _userId = CurrentSession.id;
 
         var _userId = "56c2d6038c920a41750ac4db";
 
-        User.addEducationDetail(_userId,_educationDetails,function(resultSet){
+        User.addEducationDetail(_userId, _educationDetails, function (resultSet) {
             res.status(200).json(resultSet);
         });
 
@@ -842,36 +840,34 @@ var UserControler ={
      * @param req
      * @param res
      */
-    retrieveEducationDetail:function(req, res){
+    retrieveEducationDetail: function (req, res) {
 
         var User = require('mongoose').model('User');
 
-        if(typeof req.params['uname'] == 'undefined'){
-            var outPut ={};
-            outPut['status']    = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
+        if (typeof req.params['uname'] == 'undefined') {
+            var outPut = {};
+            outPut['status'] = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
             res.status(400).send(outPut);
         }
 
 
-
-        var criteria = {user_name:req.params['uname']},
-            showOptions ={
-                w_exp:true,
-                edu:true,
-                skill:false
+        var criteria = {user_name: req.params['uname']},
+            showOptions = {
+                w_exp: true,
+                edu: true,
+                skill: false
             };
-        User.getUser(criteria,showOptions,function(resultSet){
-            var outPut ={};
-            if(resultSet.status != 200){
+        User.getUser(criteria, showOptions, function (resultSet) {
+            var outPut = {};
+            if (resultSet.status != 200) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
                 res.status(400).json(outPut);
                 return 0;
             }
 
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['user'] =resultSet.user;
+            outPut['user'] = resultSet.user;
             res.status(200).send(outPut);
-
 
 
         });
@@ -883,7 +879,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    updateEducationDetail:function(req, res){
+    updateEducationDetail: function (req, res) {
 
         var User = require('mongoose').model('User');
         var CurrentSession = Util.getCurrentSession(req);
@@ -892,43 +888,43 @@ var UserControler ={
         var _userId = CurrentSession.id;
 
         var _educationDetails = {
-            school:req.body.school,
-            date_attended_from:req.body.date_attended_from,
-            date_attended_to:req.body.date_attended_to,
-            degree:req.body.degree,
-            grade:req.body.grade,
-            activities_societies:req.body.activities_societies,
-            description:req.body.description
+            school: req.body.school,
+            date_attended_from: req.body.date_attended_from,
+            date_attended_to: req.body.date_attended_to,
+            degree: req.body.degree,
+            grade: req.body.grade,
+            activities_societies: req.body.activities_societies,
+            description: req.body.description
         };
-        if(req.body.edu_id){
+        if (req.body.edu_id) {
             _educationDetails['_id'] = req.body.edu_id;
-            User.updateEducationDetail(_userId,_educationDetails,function(resultSet){
+            User.updateEducationDetail(_userId, _educationDetails, function (resultSet) {
 
-                var outPut ={};
-                if(resultSet.status != 200){
+                var outPut = {};
+                if (resultSet.status != 200) {
                     outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_UPDATE_ERROR, Alert.ERROR);
                     res.status(400).json(outPut);
                     return 0;
                 }
 
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['user'] =resultSet.user;
+                outPut['user'] = resultSet.user;
                 res.status(200).send(outPut);
 
 
             });
-        }else{
-            User.addEducationDetail(_userId,_educationDetails,function(resultSet){
+        } else {
+            User.addEducationDetail(_userId, _educationDetails, function (resultSet) {
 
-                var outPut ={};
-                if(resultSet.status != 200){
+                var outPut = {};
+                if (resultSet.status != 200) {
                     outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_INSERT_ERROR, Alert.ERROR);
                     res.status(400).json(outPut);
                     return 0;
                 }
 
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['user'] =resultSet.user;
+                outPut['user'] = resultSet.user;
                 res.status(200).send(outPut);
 
 
@@ -941,7 +937,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    deleteEducationDetail:function(req, res){
+    deleteEducationDetail: function (req, res) {
 
         var User = require('mongoose').model('User');
 
@@ -951,7 +947,7 @@ var UserControler ={
 
         var _education_id = "56c321a42ab09c7b09034e85";
 
-        User.deleteEducationDetail(_userId,_education_id,function(resultSet){
+        User.deleteEducationDetail(_userId, _education_id, function (resultSet) {
             res.status(200).json(resultSet);
         });
 
@@ -964,7 +960,7 @@ var UserControler ={
      * @param res
      * @param next
      */
-    saveSkillInfo:function(req,res){
+    saveSkillInfo: function (req, res) {
 
         var async = require('async'),
             User = require('mongoose').model('User');
@@ -974,26 +970,26 @@ var UserControler ={
         var skill_sets = JSON.parse(req.body.skill_set);
 
         //GET EXPERIENCED SKILLS
-        var existing_skills =[],deleted_skills=[];
+        var existing_skills = [], deleted_skills = [];
 
-        for(var a =0;a<skill_sets.experienced.add.length;a++){
+        for (var a = 0; a < skill_sets.experienced.add.length; a++) {
             existing_skills.push({
-                skill_id:skill_sets.experienced.add[a],
-                is_day_to_day_comfort:0
+                skill_id: skill_sets.experienced.add[a],
+                is_day_to_day_comfort: 0
 
             })
         }
 
-        for(var a =0;a<skill_sets.day_to_day_comforts.add.length;a++){
+        for (var a = 0; a < skill_sets.day_to_day_comforts.add.length; a++) {
             existing_skills.push({
-                skill_id:skill_sets.day_to_day_comforts.add[a],
-                is_day_to_day_comfort:1
+                skill_id: skill_sets.day_to_day_comforts.add[a],
+                is_day_to_day_comfort: 1
             })
         }
-        for(var a =0;a<skill_sets.experienced.remove.length;a++){
+        for (var a = 0; a < skill_sets.experienced.remove.length; a++) {
             deleted_skills.push(skill_sets.experienced.remove[a])
         }
-        for(var a =0;a<skill_sets.day_to_day_comforts.remove.length;a++){
+        for (var a = 0; a < skill_sets.day_to_day_comforts.remove.length; a++) {
             deleted_skills.push(skill_sets.day_to_day_comforts.remove[a])
         }
 
@@ -1003,34 +999,35 @@ var UserControler ={
 
         async.parallel([
 
-            function(callback){
+            function (callback) {
 
-                if(existing_skills.length > 0){
-                    User.addSkills(userId, existing_skills, function(resultSet){
+                if (existing_skills.length > 0) {
+                    User.addSkills(userId, existing_skills, function (resultSet) {
                         callback(null);
                     })
-                } else{
+                } else {
                     callback(null);
                 }
 
             },
-            function(callback){
+            function (callback) {
 
-                if(deleted_skills.length > 0){
-                    User.deleteSkills(userId, deleted_skills, function(resultSet){
+                if (deleted_skills.length > 0) {
+                    User.deleteSkills(userId, deleted_skills, function (resultSet) {
                         callback(null);
                     })
-                } else{
+                } else {
                     callback(null);
                 }
             }
 
-        ], function(err){
-            if (!err){
+        ], function (err) {
+            if (!err) {
                 res.status(200).send(ApiHelper.getMessage(200, Alert.SKILL_SAVED, Alert.SUCCESS));
-            }else{
+            } else {
                 res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
-            };
+            }
+            ;
         })
 
     },
@@ -1040,14 +1037,14 @@ var UserControler ={
      * @param req
      * @param ress
      */
-    getSkills:function(req,res){
+    getSkills: function (req, res) {
         var User = require('mongoose').model('User');
-        var criteria = {user_name:req.params['uname']},
-            showOptions ={
-                skill:true
+        var criteria = {user_name: req.params['uname']},
+            showOptions = {
+                skill: true
             };
 
-        User.getUser(criteria,showOptions,function(resultSet) {
+        User.getUser(criteria, showOptions, function (resultSet) {
             var outPut = {};
             if (resultSet.status != 200) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
@@ -1056,7 +1053,7 @@ var UserControler ={
             }
 
 
-            User.formatSkills(resultSet.user,function(skillsData){
+            User.formatSkills(resultSet.user, function (skillsData) {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
                 outPut['user'] = resultSet.user;
                 outPut['user']['skills'] = skillsData;
@@ -1069,42 +1066,42 @@ var UserControler ={
     },
 
 
-    forgotPassword:function(req,res){
+    forgotPassword: function (req, res) {
 
         var async = require('async'),
             crypto = require('crypto'),
             User = require('mongoose').model('User');
 
-        var outPut ={};
+        var outPut = {};
 
         async.waterfall([
             // Generate random token
-            function(done) {
-                crypto.randomBytes(20, function(err, buffer) {
+            function (done) {
+                crypto.randomBytes(20, function (err, buffer) {
                     var token = buffer.toString('hex');
                     done(null, token);
                 });
             },
             // Lookup user by username
-            function(token, done) {
+            function (token, done) {
                 if (req.body.email) {
                     var email = req.body.email;
 
-                    User.findByEmail(email,function(ResultSet) {
+                    User.findByEmail(email, function (ResultSet) {
 
                         if (ResultSet.status == 200 && ResultSet.user != null) {
 
-                            var generalInfo ={
-                                resetPasswordToken:token,
-                                resetPasswordExpires:Date.now() + 3600000  // 1 hour from requested time
+                            var generalInfo = {
+                                resetPasswordToken: token,
+                                resetPasswordExpires: Date.now() + 3600000  // 1 hour from requested time
                             }
-                            User.saveUpdates(ResultSet.user._id,generalInfo,function(resultSet){
+                            User.saveUpdates(ResultSet.user._id, generalInfo, function (resultSet) {
                                 done(null, token, ResultSet.user);
                             });
 
-                        } else{
+                        } else {
                             outPut['status'] = ApiHelper.getMessage(400, Alert.NO_ACCOUNT_FOUND, Alert.ERROR);
-                             res.status(400).json(outPut);
+                            res.status(400).json(outPut);
                         }
                     });
 
@@ -1113,36 +1110,36 @@ var UserControler ={
                     res.status(400).json(outPut);
                 }
             },
-            function(token, user, done) {
+            function (token, user, done) {
 
                 res.render('email-templates/resetPassword', {
                     name: user.first_name,
-                    url: 'http://'+req.headers.host + '/forgot-password/reset/' + token
-                }, function(err, emailHTML) {
+                    url: 'http://' + req.headers.host + '/forgot-password/reset/' + token
+                }, function (err, emailHTML) {
                     done(null, emailHTML, user);
                 });
 
             },
             // If valid email, send reset email using service
-            function(emailHTML, user) {
+            function (emailHTML, user) {
 
                 var sendOptions = {
                     to: user.email,
                     subject: 'Password Reset',
                     html: emailHTML
                 };
-                EmailEngine.sendMail(sendOptions, function(err){
-                    if(!err){
+                EmailEngine.sendMail(sendOptions, function (err) {
+                    if (!err) {
                         outPut['status'] = ApiHelper.getMessage(200, Alert.FORGOT_PASSWORD_EMAIL_SENT, Alert.SUCCESS);
                         res.status(200).json(outPut);
-                    } else{
+                    } else {
                         outPut['status'] = ApiHelper.getMessage(400, Alert.FAILED_TO_SEND_EMAIL, Alert.ERROR);
                         res.status(400).json(outPut);
                     }
                 });
 
             }
-        ], function(err) {
+        ], function (err) {
             if (err) return next(err);
         });
 
@@ -1153,7 +1150,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    validateToken:function(req,res){
+    validateToken: function (req, res) {
 
         var User = require('mongoose').model('User');
 
@@ -1162,19 +1159,19 @@ var UserControler ={
             resetPasswordExpires: {
                 $gt: Date.now()
             }
-        }, function(ResultSet) {
+        }, function (ResultSet) {
 
-                if (ResultSet.status == 200 && ResultSet.user != null) {
-                    res.redirect('/change-password/' + req.params.token);
-                } else{
-                    res.redirect('/change-password-invalid' );
-                }
+            if (ResultSet.status == 200 && ResultSet.user != null) {
+                res.redirect('/change-password/' + req.params.token);
+            } else {
+                res.redirect('/change-password-invalid');
+            }
 
         });
 
     },
 
-    resetPassword:function(req,res){
+    resetPassword: function (req, res) {
 
         var User = require('mongoose').model('User');
 
@@ -1184,25 +1181,25 @@ var UserControler ={
             resetPasswordExpires: {
                 $gt: Date.now()
             }
-        }, function(ResultSet) {
+        }, function (ResultSet) {
 
-            var outPut ={};
+            var outPut = {};
 
             if (ResultSet.status == 200 && ResultSet.user != null) {
 
-                User.updatePassword(ResultSet.user._id,password,function(resultSet){
+                User.updatePassword(ResultSet.user._id, password, function (resultSet) {
 
-                    if(resultSet.status ==200){
+                    if (resultSet.status == 200) {
                         outPut['status'] = ApiHelper.getMessage(200, Alert.RESET_PASSWORD_SUCCESS, Alert.SUCCESS);
                         res.status(200).json(outPut);
-                    } else{
+                    } else {
                         outPut['status'] = ApiHelper.getMessage(400, Alert.RESET_PASSWORD_FAIL, Alert.ERROR);
                         res.status(400).json(outPut);
                     }
 
                 });
 
-            } else{
+            } else {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.INVALID_TOKEN, Alert.ERROR);
                 res.status(400).json(outPut);
             }
@@ -1215,11 +1212,11 @@ var UserControler ={
      * @param req
      * @param res
      */
-    connectionCount:function(req,res){
+    connectionCount: function (req, res) {
         var Connection = require('mongoose').model('Connection');
         var CurrentSession = Util.getCurrentSession(req);
 
-        Connection.getConnectionCount(CurrentSession.id,function(connectionCount){
+        Connection.getConnectionCount(CurrentSession.id, function (connectionCount) {
             console.log(connectionCount);
             var outPut = {};
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
@@ -1234,58 +1231,57 @@ var UserControler ={
      * @param req
      * @param res
      */
-    getProfile:function(req,res){
+    getProfile: function (req, res) {
         var _async = require('async'),
             Connection = require('mongoose').model('Connection'),
             User = require('mongoose').model('User'),
             Upload = require('mongoose').model('Upload'),
             CurrentSession = Util.getCurrentSession(req);
 
-        if(typeof req.params['uname'] == 'undefined'){
-            var outPut ={};
-            outPut['status']    = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
+        if (typeof req.params['uname'] == 'undefined') {
+            var outPut = {};
+            outPut['status'] = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
             res.status(400).send(outPut);
         }
 
 
-        var _uname =req.params['uname'];
+        var _uname = req.params['uname'];
         _async.waterfall([
-            function getUserById(callBack){
+            function getUserById(callBack) {
                 var _search_param = {
-                    user_name:_uname
-                },
-                    showOptions ={
-                        w_exp:false,
-                        edu:false
+                        user_name: _uname
+                    },
+                    showOptions = {
+                        w_exp: false,
+                        edu: false
                     };
-                User.getUser(_search_param,showOptions,function(resultSet){
-                    if(resultSet.status ==200 ){
-                        callBack(null,resultSet.user)
+                User.getUser(_search_param, showOptions, function (resultSet) {
+                    if (resultSet.status == 200) {
+                        callBack(null, resultSet.user)
                     }
                 })
             },
-            function getConnectionCount(profileData,callBack){
+            function getConnectionCount(profileData, callBack) {
 
-                if( profileData!= null){
-                    Connection.getFriendsCount(profileData.user_id,function(connectionCount){
+                if (profileData != null) {
+                    Connection.getFriendsCount(profileData.user_id, function (connectionCount) {
                         profileData['connection_count'] = connectionCount;
-                        callBack(null,profileData);
+                        callBack(null, profileData);
                         return 0
                     });
-                }else{
-                    callBack(null,null)
+                } else {
+                    callBack(null, null)
                 }
 
 
-
             },
-            function getProfileImage(profileData,callBack){
+            function getProfileImage(profileData, callBack) {
 
-                if( profileData!= null){
-                    Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
+                if (profileData != null) {
+                    Upload.getProfileImage(profileData.user_id.toString(), function (profileImageData) {
 
 
-                        if(profileImageData.status != 200){
+                        if (profileImageData.status != 200) {
                             profileData['images'] = {
                                 'profile_image': {
                                     id: "DEFAULT",
@@ -1294,63 +1290,61 @@ var UserControler ={
                                     http_url: Config.DEFAULT_PROFILE_IMAGE
                                 }
                             };
-                        }else{
+                        } else {
                             profileData['images'] = profileImageData.image;
 
                         }
 
 
-                        callBack(null,profileData);
+                        callBack(null, profileData);
                         return 0;
                     });
 
-                } else{
-                    callBack(null,null)
+                } else {
+                    callBack(null, null)
                 }
 
 
-
-
             },
-            function getMutualConnectionCount(profileData, callBack){
-                if( profileData!= null){
-                console.log("getMutualConnectionCount");
+            function getMutualConnectionCount(profileData, callBack) {
+                if (profileData != null) {
+                    console.log("getMutualConnectionCount");
 
-                    if(CurrentSession.id != profileData.user_id){
+                    if (CurrentSession.id != profileData.user_id) {
 
                         var _grep = require('grep-from-array'),
                             _mutual_cons = [];
 
                         _async.waterfall([
-                                function getMyConnections(callback){
+                                function getMyConnections(callback) {
                                     var criteria = {
-                                        user_id :CurrentSession.id,
+                                        user_id: CurrentSession.id,
                                         //q:req.query['q']
                                     };
 
-                                    Connection.getMyConnection(criteria,function(resultSet){
+                                    Connection.getMyConnection(criteria, function (resultSet) {
                                         var my_cons = resultSet.results;
                                         callback(null, my_cons);
                                     })
                                 },
-                                function getFriendsConnection(resultSet, callback){
+                                function getFriendsConnection(resultSet, callback) {
                                     var myConnection = resultSet,
                                         criteria = {
-                                            user_id :profileData.user_id,
+                                            user_id: profileData.user_id,
                                             //q:req.query['q']
                                         };
 
-                                    Connection.getMyConnection(criteria,function(resultSet){
+                                    Connection.getMyConnection(criteria, function (resultSet) {
                                         var friend_cons = resultSet.results;
 
-                                        for(var inc = 0; inc < myConnection.length; inc++){
+                                        for (var inc = 0; inc < myConnection.length; inc++) {
                                             var user_id = myConnection[inc].user_id;
-                                            if(user_id != profileData.user_id) {
+                                            if (user_id != profileData.user_id) {
 
                                                 var mutual_con = _grep(friend_cons, function (e) {
                                                     return e.user_id == user_id;
                                                 });
-                                                if(mutual_con[0] != null){
+                                                if (mutual_con[0] != null) {
                                                     _mutual_cons.push(mutual_con[0]);
                                                 }
                                             }
@@ -1358,31 +1352,30 @@ var UserControler ={
                                         callback(null);
                                     });
                                 }
-                            ],function(err){
+                            ], function (err) {
                                 profileData['mutual_connection_count'] = _mutual_cons.length;
-                                callBack(null,profileData);
+                                callBack(null, profileData);
                             }
                         );
 
-                    } else{
-                        callBack(null,profileData);
+                    } else {
+                        callBack(null, profileData);
                     }
-                } else{
-                    callBack(null,null)
+                } else {
+                    callBack(null, null)
                 }
             }
 
 
+        ], function (err, profileData) {
+            var outPut = {};
+            if (!err) {
 
-        ],function(err,profileData){
-            var outPut ={};
-            if(!err){
-
-                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['profile_data']      = profileData;
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['profile_data'] = profileData;
                 res.status(200).send(outPut);
-            }else{
-                outPut['status']    = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
                 res.status(200).send(outPut);
             }
         })
@@ -1395,7 +1388,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    getNewsCategories:function(req,res){
+    getNewsCategories: function (req, res) {
 
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
@@ -1403,12 +1396,12 @@ var UserControler ={
         //var user_id = CurrentSession.id;
 
         var criteria = {
-            search:{user_id:user_id.toObjectId()},
-            populate:'category',
-            populate_field:'category'
+            search: {user_id: user_id.toObjectId()},
+            populate: 'category',
+            populate_field: 'category'
         };
 
-        FavouriteNewsCategory.findFavouriteNewsCategory(criteria,function(resultSet){
+        FavouriteNewsCategory.findFavouriteNewsCategory(criteria, function (resultSet) {
             res.status(resultSet.status).json(resultSet);
         });
 
@@ -1419,7 +1412,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    deleteNewsCategory:function(req,res){
+    deleteNewsCategory: function (req, res) {
 
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
@@ -1430,14 +1423,14 @@ var UserControler ={
         //var categoryId = req.body.categoryId;
 
         var criteria = {
-            user_id:user_id.toObjectId(),
-            category:categoryId.toObjectId()
+            user_id: user_id.toObjectId(),
+            category: categoryId.toObjectId()
         };
 
-        FavouriteNewsCategory.deleteNewsCategory(criteria,function(resultSet){
-            if(resultSet.status == 200){
+        FavouriteNewsCategory.deleteNewsCategory(criteria, function (resultSet) {
+            if (resultSet.status == 200) {
                 res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
-            }else{
+            } else {
                 res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
             }
         });
@@ -1449,7 +1442,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    addNewsChannel:function(req,res){
+    addNewsChannel: function (req, res) {
 
         var user_id = "56c6aeaa6e1ac13e18b2400d";
         //var user_id = CurrentSession.id;
@@ -1463,18 +1456,18 @@ var UserControler ={
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
         var criteria = {
-            user_id:user_id.toObjectId(),
-            category:categoryId.toObjectId()
+            user_id: user_id.toObjectId(),
+            category: categoryId.toObjectId()
         };
 
         var data = {
-            channels:{$each:channels}
+            channels: {$each: channels}
         };
 
-        FavouriteNewsCategory.addUserNewsChannel(criteria, data, function(resultSet){
-            if(resultSet.status == 200){
+        FavouriteNewsCategory.addUserNewsChannel(criteria, data, function (resultSet) {
+            if (resultSet.status == 200) {
                 res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
-            }else{
+            } else {
                 res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
             }
         });
@@ -1486,7 +1479,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    getNewsChannels:function(req,res){
+    getNewsChannels: function (req, res) {
 
         var user_id = "56c6aeaa6e1ac13e18b2400d";
         //var user_id = CurrentSession.id;
@@ -1494,13 +1487,13 @@ var UserControler ={
         var categoryId = req.params.category;
 
         var criteria = {
-            search:{user_id:user_id.toObjectId(), category:categoryId.toObjectId()},
+            search: {user_id: user_id.toObjectId(), category: categoryId.toObjectId()},
         };
 
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
-        FavouriteNewsCategory.findFavouriteNewsChannel(criteria,function(resultSet){
-                res.status(resultSet.status).json(resultSet);
+        FavouriteNewsCategory.findFavouriteNewsChannel(criteria, function (resultSet) {
+            res.status(resultSet.status).json(resultSet);
         });
 
     },
@@ -1511,7 +1504,7 @@ var UserControler ={
      * @param res
      */
 
-    deleteNewsChannel:function(req,res){
+    deleteNewsChannel: function (req, res) {
 
         var user_id = "56c6aeaa6e1ac13e18b2400d";
         //var user_id = CurrentSession.id;
@@ -1526,18 +1519,18 @@ var UserControler ={
         var FavouriteNewsCategory = require('mongoose').model('FavouriteNewsCategory');
 
         var criteria = {
-            user_id:user_id.toObjectId(),
-            category:categoryId.toObjectId()
+            user_id: user_id.toObjectId(),
+            category: categoryId.toObjectId()
         };
 
         var pullData = {
-            channels: {$in:channels}
+            channels: {$in: channels}
         };
 
-        FavouriteNewsCategory.deleteNewsChannel(criteria, pullData,function(resultSet){
-            if(resultSet.status == 200){
+        FavouriteNewsCategory.deleteNewsChannel(criteria, pullData, function (resultSet) {
+            if (resultSet.status == 200) {
                 res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
-            }else{
+            } else {
                 res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
             }
         });
@@ -1549,15 +1542,15 @@ var UserControler ={
      * @param req
      * @param res
      */
-    saveArticle:function(req,res){
+    saveArticle: function (req, res) {
 
         var req_saved_articles = JSON.parse(req.body.saved_articles);
         var SavedArticle = require('mongoose').model('SavedArticle');
 
-        SavedArticle.saveArticle(req_saved_articles, function(resultSet){
-            if(resultSet.status == 200){
+        SavedArticle.saveArticle(req_saved_articles, function (resultSet) {
+            if (resultSet.status == 200) {
                 res.status(200).send(ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS));
-            }else{
+            } else {
                 res.status(400).send(ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR));
             }
         });
@@ -1569,18 +1562,18 @@ var UserControler ={
      * @param req
      * @param res
      */
-    getSavedArticles:function(req,res){
+    getSavedArticles: function (req, res) {
 
         var user_id = "56c6aeaa6e1ac13e18b2400d";
         //var user_id = CurrentSession.id;
 
         var criteria = {
-            search:{user_id:user_id.toObjectId()},
+            search: {user_id: user_id.toObjectId()},
         };
 
         var SavedArticle = require('mongoose').model('SavedArticle');
 
-        SavedArticle.findSavedArticle(criteria,function(resultSet){
+        SavedArticle.findSavedArticle(criteria, function (resultSet) {
             res.status(resultSet.status).json(resultSet);
         });
 
@@ -1591,7 +1584,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    deleteSavedArticle:function(req,res) {
+    deleteSavedArticle: function (req, res) {
 
         var SavedArticle = require('mongoose').model('SavedArticle');
 
@@ -1617,30 +1610,30 @@ var UserControler ={
      * @param req
      * @param res
      */
-    retrieveWorkExperience:function(req,res){
+    retrieveWorkExperience: function (req, res) {
         var User = require('mongoose').model('User');
 
-        if(typeof req.params['uname'] == 'undefined'){
-            var outPut ={};
-            outPut['status']    = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
+        if (typeof req.params['uname'] == 'undefined') {
+            var outPut = {};
+            outPut['status'] = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
             res.status(400).send(outPut);
         }
 
-        var criteria = {user_name:req.params['uname']},
-            showOptions ={
-                w_exp:true,
-                edu:false
+        var criteria = {user_name: req.params['uname']},
+            showOptions = {
+                w_exp: true,
+                edu: false
             };
-        User.getUser(criteria,showOptions,function(resultSet){
-            var outPut ={};
-            if(resultSet.status != 200){
+        User.getUser(criteria, showOptions, function (resultSet) {
+            var outPut = {};
+            if (resultSet.status != 200) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
                 res.status(400).json(outPut);
                 return 0;
             }
 
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['user'] =resultSet.user;
+            outPut['user'] = resultSet.user;
             res.status(200).send(outPut);
         })
     },
@@ -1650,79 +1643,79 @@ var UserControler ={
      * @param req
      * @param res
      */
-    updateWorkExperience:function(req,res){
+    updateWorkExperience: function (req, res) {
         var User = require('mongoose').model('User');
         var CurrentSession = Util.getCurrentSession(req);
         var _userId = CurrentSession.id;
 
-        if(req.body.exp_id){
-            if(req.body.isProfile){
+        if (req.body.exp_id) {
+            if (req.body.isProfile) {
                 var _weDetails = {
-                    "working_experiences.$.company_name":req.body.company_name,
-                    "working_experiences.$.title":req.body.title
+                    "working_experiences.$.company_name": req.body.company_name,
+                    "working_experiences.$.title": req.body.title
                 };
 
-            }else{
+            } else {
                 var _weDetails = {
-                    "working_experiences.$.company_name":req.body.company,
-                    "working_experiences.$.title":req.body.title,
-                    "working_experiences.$.location":req.body.location,
-                    "working_experiences.$.start_date":{
-                        year:(req.body.fromYear != null)?req.body.fromYear:0,
-                        month:(req.body.fromMonth != null)?req.body.fromMonth:0,
+                    "working_experiences.$.company_name": req.body.company,
+                    "working_experiences.$.title": req.body.title,
+                    "working_experiences.$.location": req.body.location,
+                    "working_experiences.$.start_date": {
+                        year: (req.body.fromYear != null) ? req.body.fromYear : 0,
+                        month: (req.body.fromMonth != null) ? req.body.fromMonth : 0,
                     },
-                    "working_experiences.$.left_date":{
-                        year:(req.body.toYear != null && !req.body.currentPlc)?req.body.toYear:0,
-                        month:(req.body.toMonth != null && !req.body.currentPlc)?req.body.toMonth:0,
+                    "working_experiences.$.left_date": {
+                        year: (req.body.toYear != null && !req.body.currentPlc) ? req.body.toYear : 0,
+                        month: (req.body.toMonth != null && !req.body.currentPlc) ? req.body.toMonth : 0,
                     },
-                    "working_experiences.$.is_current_work_place":req.body.currentPlc,
-                    "working_experiences.$.description":req.body.description
+                    "working_experiences.$.is_current_work_place": req.body.currentPlc,
+                    "working_experiences.$.description": req.body.description
                 };
             }
 
-            User.updateWorkingExperience(_userId, req.body.exp_id, _weDetails,function(resultSet){
+            User.updateWorkingExperience(_userId, req.body.exp_id, _weDetails, function (resultSet) {
 
-                var outPut ={};
-                if(resultSet.status != 200){
+                var outPut = {};
+                if (resultSet.status != 200) {
                     outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_UPDATE_ERROR, Alert.ERROR);
                     res.status(400).json(outPut);
                     return 0;
                 }
 
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['user'] =resultSet.user;
+                outPut['user'] = resultSet.user;
                 res.status(200).send(outPut);
 
 
             });
 
-        }else{
+        } else {
             var _weDetails = {
-                company_name:req.body.company,
-                title:req.body.title,
-                left_date:{
-                    year:(req.body.toYear != null && !req.body.currentPlc)?req.body.toYear:0,
-                    month:(req.body.toMonth != null && !req.body.currentPlc)?req.body.toMonth:0,
+                company_name: req.body.company,
+                title: req.body.title,
+                left_date: {
+                    year: (req.body.toYear != null && !req.body.currentPlc) ? req.body.toYear : 0,
+                    month: (req.body.toMonth != null && !req.body.currentPlc) ? req.body.toMonth : 0,
                 },
-                start_date:{
-                    year:(req.body.fromYear != null)?req.body.fromYear:0,
-                    month:(req.body.fromMonth != null)?req.body.fromMonth:0,
+                start_date: {
+                    year: (req.body.fromYear != null) ? req.body.fromYear : 0,
+                    month: (req.body.fromMonth != null) ? req.body.fromMonth : 0,
                 },
-                description:req.body.description,
-                location:req.body.location,
-                is_current_work_place:req.body.currentPlc
+                description: req.body.description,
+                location: req.body.location,
+                is_current_work_place: req.body.currentPlc
             };
-            User.addWorkingExperience(_userId,_weDetails,function(resultSet){
+            User.addWorkingExperience(_userId, _weDetails, function (resultSet) {
 
-                var outPut ={};
-                if(resultSet.status != 200){
+                var outPut = {};
+                if (resultSet.status != 200) {
                     outPut['status'] = ApiHelper.getMessage(400, Alert.DATA_INSERT_ERROR, Alert.ERROR);
                     res.status(400).json(outPut);
                     return 0;
                 }
 
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['user'] =resultSet.user;
+                outPut['user'] = resultSet.user;
                 res.status(200).send(outPut);
 
 
@@ -1731,54 +1724,54 @@ var UserControler ={
 
     },
 
-    doSignin:function(req,res){
+    doSignin: function (req, res) {
 
-        var outPut ={};
+        var outPut = {};
 
-        if(typeof req.body.uname != 'undefined' && typeof req.body.password != 'undefined'){
+        if (typeof req.body.uname != 'undefined' && typeof req.body.password != 'undefined') {
 
             var User = require('mongoose').model('User');
 
             var data = {
-                user_name:req.body.uname,
-                password:req.body.password
+                user_name: req.body.uname,
+                password: req.body.password
             };
 
-            User.authenticate(data,function(resultSet){
+            User.authenticate(data, function (resultSet) {
 
-                if(resultSet.status != 200){
+                if (resultSet.status != 200) {
                     outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
                     res.status(400).json(outPut);
                     return 0;
-                } else if(resultSet.status == 200 && resultSet.error != null){
+                } else if (resultSet.status == 200 && resultSet.error != null) {
                     outPut['status'] = ApiHelper.getMessage(400, resultSet.error, Alert.ERROR);
                     res.status(400).json(outPut);
                     return 0;
                 }
 
 
-                Util.addToSession(req,resultSet.user);
+                Util.addToSession(req, resultSet.user);
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
                 var _cache_key = CacheEngine.prepareCacheKey(resultSet.user.token);
-                outPut['user']=resultSet.user;
+                outPut['user'] = resultSet.user;
                 res.status(200).send(outPut);
                 return 0;
                 /*CacheEngine.addToCache(_cache_key,resultSet.user,function(cacheData){
 
-                    outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
 
-                    if(!cacheData){
-                        outPut['extra']=Alert.CACHE_CREATION_ERROR
-                    }
+                 if(!cacheData){
+                 outPut['extra']=Alert.CACHE_CREATION_ERROR
+                 }
 
-                    outPut['user']=resultSet.user;
-                    res.status(200).send(outPut);
+                 outPut['user']=resultSet.user;
+                 res.status(200).send(outPut);
 
-                });*/
+                 });*/
 
             });
 
-        } else{
+        } else {
             outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
             res.status(400).json(outPut);
             return 0;
@@ -1793,20 +1786,20 @@ var UserControler ={
      * @param req
      * @param res
      */
-    updateIntroduction:function(req, res){
+    updateIntroduction: function (req, res) {
 
         var User = require('mongoose').model('User');
         var CurrentSession = Util.getCurrentSession(req);
         var _userId = CurrentSession.id;
 
-        var outPut ={};
-        var _introInfo = {introduction:req.body.introText};
+        var outPut = {};
+        var _introInfo = {introduction: req.body.introText};
 
-        User.saveUpdates(_userId,_introInfo,function(resultSet){
-            if(resultSet.status == 200){
+        User.saveUpdates(_userId, _introInfo, function (resultSet) {
+            if (resultSet.status == 200) {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
                 res.status(200).send(outPut);
-            }else{
+            } else {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
                 res.status(400).send(outPut);
             }
@@ -1822,36 +1815,34 @@ var UserControler ={
      * @param req
      * @param res
      */
-    retrieveIntroduction:function(req, res){
+    retrieveIntroduction: function (req, res) {
 
         var User = require('mongoose').model('User');
 
-        if(typeof req.params['uname'] == 'undefined'){
-            var outPut ={};
-            outPut['status']    = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
+        if (typeof req.params['uname'] == 'undefined') {
+            var outPut = {};
+            outPut['status'] = ApiHelper.getMessage(400, Alert.CANNOT_FIND_PROFILE, Alert.ERROR);
             res.status(400).send(outPut);
         }
 
 
-
-        var criteria = {user_name:req.params['uname']},
-            showOptions ={
-                w_exp:false,
-                edu:false,
-                skill:false
+        var criteria = {user_name: req.params['uname']},
+            showOptions = {
+                w_exp: false,
+                edu: false,
+                skill: false
             };
-        User.getUser(criteria,showOptions,function(resultSet){
-            var outPut ={};
-            if(resultSet.status != 200){
+        User.getUser(criteria, showOptions, function (resultSet) {
+            var outPut = {};
+            if (resultSet.status != 200) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
                 res.status(400).json(outPut);
                 return 0;
             }
 
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['user'] =resultSet.user;
+            outPut['user'] = resultSet.user;
             res.status(200).send(outPut);
-
 
 
         });
@@ -1859,13 +1850,12 @@ var UserControler ={
     },
 
 
-
     /**
      * Load Connections
      * @param req
      * @param res
      */
-    getUserSuggestions:function(req,res){
+    getUserSuggestions: function (req, res) {
 
         var User = require('mongoose').model('User'),
             Connection = require('mongoose').model('Connection'),
@@ -1875,18 +1865,18 @@ var UserControler ={
             my_connections = [], all_users = [], suggested_users = [], unique_ids = [];
 
         _async.waterfall([
-                function getData(callback){
+                function getData(callback) {
 
                     _async.parallel([
-                        function getMyConnection(callback){
+                        function getMyConnection(callback) {
 
                             var criteria = {
-                                user_id :CurrentSession.id,
-                                q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*'
+                                user_id: CurrentSession.id,
+                                q: 'first_name:' + req.params['name'] + '* OR last_name:' + req.params['name'] + '*'
                                 //q:req.params['name']+'*'
                             }
 
-                            Connection.getMyConnectionData(criteria,function(resultSet){
+                            Connection.getMyConnectionData(criteria, function (resultSet) {
                                 //console.log("=======================Connections==============")
                                 //console.log(resultSet)
                                 my_connections = resultSet.results;
@@ -1894,12 +1884,12 @@ var UserControler ={
                             })
 
                         },
-                        function getAllUsers(callback){
+                        function getAllUsers(callback) {
                             var user_id = CurrentSession.id;
                             //var q = '+first_name:'+req.params['name']+'*';
-                            var q = 'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*';
+                            var q = 'first_name:' + req.params['name'] + '* OR last_name:' + req.params['name'] + '*';
 
-                            User.getAllUsers(q, user_id, function(resultSet){
+                            User.getAllUsers(q, user_id, function (resultSet) {
                                 //console.log("=======================All Users=======================")
                                 //console.log(resultSet)
                                 all_users = resultSet.users;
@@ -1908,20 +1898,20 @@ var UserControler ={
 
                         },
 
-                    ], function(err){
+                    ], function (err) {
                         callback(null)
                     })
 
                 },
-                function finalizeData(callback){
-                    for(var i = 0; i < my_connections.length; i++){
-                        if(unique_ids.indexOf(my_connections[i].user_id) == -1){
+                function finalizeData(callback) {
+                    for (var i = 0; i < my_connections.length; i++) {
+                        if (unique_ids.indexOf(my_connections[i].user_id) == -1) {
                             unique_ids.push(my_connections[i].user_id);
                             suggested_users.push(my_connections[i]);
                         }
                     }
-                    for(var j = 0; j < all_users.length; j++){
-                        if(unique_ids.indexOf(all_users[j].user_id) == -1){
+                    for (var j = 0; j < all_users.length; j++) {
+                        if (unique_ids.indexOf(all_users[j].user_id) == -1) {
                             unique_ids.push(all_users[j].user_id);
                             suggested_users.push(all_users[j]);
                         }
@@ -1931,11 +1921,10 @@ var UserControler ={
                 }
 
 
-
-            ],function(err){
+            ], function (err) {
                 var outPut = {
-                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
-                    suggested_users:suggested_users
+                    status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                    suggested_users: suggested_users
                 };
                 res.status(200).send(outPut);
                 return 0;
@@ -1950,7 +1939,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    getNotesSharedUsers:function(req,res){
+    getNotesSharedUsers: function (req, res) {
         var User = require('mongoose').model('User'),
             NoteBook = require('mongoose').model('NoteBook'),
             Connection = require('mongoose').model('Connection'),
@@ -1965,26 +1954,28 @@ var UserControler ={
 
             function getConnectedUsers(callback) {
                 var criteria = {
-                    user_id :CurrentSession.id,
-                    q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*'
+                    user_id: CurrentSession.id,
+                    q: 'first_name:' + req.params['name'] + '* OR last_name:' + req.params['name'] + '*'
                     //q:req.params['name']+'*'
                 }
                 var notebookId = req.params['notebook'];
-                Connection.getMyConnectionData(criteria,function(resultSet){
+                Connection.getMyConnectionData(criteria, function (resultSet) {
                     //console.log("=======================Connections==============")
                     //console.log(resultSet)
                     my_connections = resultSet.results;
 
                     _async.waterfall([
-                        function getSharedUsers(callback){
+                        function getSharedUsers(callback) {
 
-                            NoteBook.getNotebookById(notebookId,function(resultSet){
+                            NoteBook.getNotebookById(notebookId, function (resultSet) {
 
                                 var _notebookSharedUsers = resultSet.shared_users;
-                                if(_notebookSharedUsers != null){
-                                    for( var inc = 0; inc < _notebookSharedUsers.length; inc++){
-                                        var  _user = grep(my_connections, function(e){ return e.user_id == _notebookSharedUsers[inc].user_id; });
-                                        if(_user.length == 1){
+                                if (_notebookSharedUsers != null) {
+                                    for (var inc = 0; inc < _notebookSharedUsers.length; inc++) {
+                                        var _user = grep(my_connections, function (e) {
+                                            return e.user_id == _notebookSharedUsers[inc].user_id;
+                                        });
+                                        if (_user.length == 1) {
                                             var index = my_connections.indexOfProperty('user_id', _user[0].user_id);
                                             my_connections.splice(index, 1);
                                         }
@@ -2018,13 +2009,12 @@ var UserControler ={
     },
 
 
-
     /**
      * Load User Connections for Shared Folder
      * @param req
      * @param res
      */
-    getFolderUsers:function(req,res){
+    getFolderUsers: function (req, res) {
         console.log("getFolderUsers")
         var User = require('mongoose').model('User'),
             Folder = require('mongoose').model('Folders'),
@@ -2039,71 +2029,60 @@ var UserControler ={
 
         _async.waterfall([
 
-            function getConnectionsAndSharedUsers(callback){
+            function getConnectionsAndSharedUsers(callback) {
                 console.log("getConnectionsAndSharedUsers")
                 _async.parallel([
 
-                    function getMyConnections(callback){
-                        console.log("getMyConnections"); console.log(req.params['name'])
-                        if(typeof req.params['name'] != 'undefined' && req.params['name'] != null){
+                    function getMyConnections(callback) {
+                        console.log("getMyConnections");
+                        console.log(req.params['name'])
+                        if (typeof req.params['name'] != 'undefined' && req.params['name'] != null) {
                             criteria = {
-                                user_id :CurrentSession.id,
-                                q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*'
+                                user_id: CurrentSession.id,
+                                q: 'first_name:' + req.params['name'] + '* OR last_name:' + req.params['name'] + '*'
                             };
-                        } else{
+                        } else {
                             criteria = {
-                                user_id :CurrentSession.id
+                                user_id: CurrentSession.id
                             };
                         }
                         console.log(criteria)
-                        Connection.getMyConnectionData(criteria,function(resultSet) {
-                            //console.log("=======================Connections==============")
-                            //console.log(resultSet)
+                        Connection.getMyConnectionData(criteria, function (resultSet) {
+                            console.log("=======================Connections==============")
+                            console.log(resultSet)
                             my_connections = resultSet.results;
                             callback(null);
                         });
                     },
-                    function getSharedUsers(callback){
+                    function getSharedUsers(callback) {
                         console.log("getSharedUsers")
                         var folderId = req.params['folder'];
 
-                        Folder.getFolderById(folderId,function(resultSet){
-                            for(var i = 0; i < resultSet.shared_users.length; i++){
+                        Folder.getFolderById(folderId, function (resultSet) {
+                            for (var i = 0; i < resultSet.shared_users.length; i++) {
                                 alreadySharedUsers.push(resultSet.shared_users[i].user_id);
                             }
                             callback(null);
                         });
                     }
 
-                ], function(err){
+                ], function (err) {
                     callback(null);
 
                 })
 
             },
-            function getNotSharedUsers(callback){
+            function getNotSharedUsers(callback) {
                 console.log("getFolderUsers")
-                if(alreadySharedUsers != null && my_connections != null){
+                if (alreadySharedUsers != null && my_connections != null) {
 
-                    for(var i = 0; i < my_connections.length; i++){
-                        if(alreadySharedUsers.indexOf(my_connections[i].user_id) == -1){
-                            var _us = {
-                                user_id : my_connections[i].user_id,
-                                first_name : my_connections[i].first_name,
-                                last_name : my_connections[i].last_name,
-                                user_name : my_connections[i].user_name,
-                                profile_image : ""
-                            };
-                            if(typeof my_connections[i].images != 'undefined' && typeof my_connections[i].images.profile_image != 'undefined' &&
-                                typeof my_connections[i].images.profile_image.http_url != 'undefined'){
-                                _us.profile_image = my_connections[i].images.profile_image.http_url;
-                            }
-
-                            filteredConnections.push(_us);
+                    for (var i = 0; i < my_connections.length; i++) {
+                        if (alreadySharedUsers.indexOf(my_connections[i].user_id) == -1) {
+                            filteredConnections.push(my_connections[i]);
                         }
                     }
                     callback(null)
-                } else{
+                } else {
                     callback(null)
                 }
             }
@@ -2112,8 +2091,6 @@ var UserControler ={
                 console.log(err);
                 return;
             }
-            console.log("=================CALLBACK====================");
-            console.log(JSON.stringify(filteredConnections));
             var outPut = {
                 status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 users: filteredConnections
@@ -2129,7 +2106,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    filterNoteBookSharedUsers:function(req,res){
+    filterNoteBookSharedUsers: function (req, res) {
         var User = require('mongoose').model('User'),
             NoteBook = require('mongoose').model('NoteBook'),
             Connection = require('mongoose').model('Connection'),
@@ -2145,28 +2122,30 @@ var UserControler ={
 
             function getConnectedUsers(callback) {
                 var criteria = {
-                    q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*',
-                    index:'idx_usr',
+                    q: 'first_name:' + req.params['name'] + '* OR last_name:' + req.params['name'] + '*',
+                    index: 'idx_usr',
                     //q:req.params['name']+'*'
                 }
                 var notebookId = req.params['notebook'];
-                ES.search(criteria,function(esResultSet){
+                ES.search(criteria, function (esResultSet) {
                     //console.log("=======================Connections==============")
                     //console.log(resultSet)
                     my_connections = esResultSet.result;
-                   // console.log(my_connections);
+                    // console.log(my_connections);
                     _async.waterfall([
-                        function getSharedUsers(callback){
+                        function getSharedUsers(callback) {
 
-                            NoteBook.getNotebookById(notebookId,function(resultSet){
+                            NoteBook.getNotebookById(notebookId, function (resultSet) {
 
                                 var _notebookSharedUsers = resultSet.shared_users;
-                                if(_notebookSharedUsers != null){
-                                    for( var inc = 0; inc < _notebookSharedUsers.length; inc++){
-                                        var  _user = grep(my_connections, function(e){ return e.user_id == _notebookSharedUsers[inc].user_id; });
-                                        if(_user.length == 1){
+                                if (_notebookSharedUsers != null) {
+                                    for (var inc = 0; inc < _notebookSharedUsers.length; inc++) {
+                                        var _user = grep(my_connections, function (e) {
+                                            return e.user_id == _notebookSharedUsers[inc].user_id;
+                                        });
+                                        if (_user.length == 1) {
                                             var index = my_connections.indexOfProperty('user_id', _user[0].user_id);
-                                            if(_notebookSharedUsers[inc].status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
+                                            if (_notebookSharedUsers[inc].status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
                                                 var usrObj = {
                                                     user_id: my_connections[index].user_id,
                                                     notebook_id: notebookId,
@@ -2213,7 +2192,7 @@ var UserControler ={
      * @param req
      * @param res
      */
-    filterFolderSharedUsers:function(req,res){
+    filterFolderSharedUsers: function (req, res) {
         var User = require('mongoose').model('User'),
             NoteBook = require('mongoose').model('Folders'),
             Connection = require('mongoose').model('Connection'),
@@ -2229,28 +2208,30 @@ var UserControler ={
 
             function getConnectedUsers(callback) {
                 var criteria = {
-                    q:'first_name:'+req.params['name']+'* OR last_name:'+req.params['name']+'*',
-                    index:'idx_usr',
+                    q: 'first_name:' + req.params['name'] + '* OR last_name:' + req.params['name'] + '*',
+                    index: 'idx_usr',
                     //q:req.params['name']+'*'
                 }
                 var notebookId = req.params['notebook'];
-                ES.search(criteria,function(esResultSet){
+                ES.search(criteria, function (esResultSet) {
                     //console.log("=======================Connections==============")
                     //console.log(resultSet)
                     my_connections = esResultSet.result;
                     // console.log(my_connections);
                     _async.waterfall([
-                        function getSharedUsers(callback){
+                        function getSharedUsers(callback) {
 
-                            NoteBook.getNotebookById(notebookId,function(resultSet){
+                            NoteBook.getNotebookById(notebookId, function (resultSet) {
 
                                 var _notebookSharedUsers = resultSet.shared_users;
-                                if(_notebookSharedUsers != null){
-                                    for( var inc = 0; inc < _notebookSharedUsers.length; inc++){
-                                        var  _user = grep(my_connections, function(e){ return e.user_id == _notebookSharedUsers[inc].user_id; });
-                                        if(_user.length == 1){
+                                if (_notebookSharedUsers != null) {
+                                    for (var inc = 0; inc < _notebookSharedUsers.length; inc++) {
+                                        var _user = grep(my_connections, function (e) {
+                                            return e.user_id == _notebookSharedUsers[inc].user_id;
+                                        });
+                                        if (_user.length == 1) {
                                             var index = my_connections.indexOfProperty('user_id', _user[0].user_id);
-                                            if(_notebookSharedUsers[inc].status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
+                                            if (_notebookSharedUsers[inc].status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
                                                 var usrObj = {
                                                     user_id: my_connections[index].user_id,
                                                     notebook_id: notebookId,
