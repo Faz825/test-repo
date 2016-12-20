@@ -1,48 +1,112 @@
 'use strict';
 
+var async = require('async');
+
+var Connection = require('mongoose').model('Connection');
+
 var CallCenterController = {
-    /**
-     * add call center record
-     * @param req
-     * @param res
-     */
-    addCallRecord: function (req, res) {
+    contact: {
+        /**
+         * Get all contacts - Connections
+         * @param req
+         * @param res
+         * @param next
+         * */
+        getAll: function (req, res, next) {
+            var CurrentSession = Util.getCurrentSession(req);
+            var criteria = {
+                user_id: CurrentSession.id,
+                q: req.query['q']
+            };
 
+            async.waterfall([
+                function (callback) {
+                    Connection.getMyConnection(criteria, function (resultSet) {
+                        callback(null, resultSet.results);
+                    });
+                },
+                function (aConns, callback) {
+                    var aNames = [];
+
+                    for (var i = 0; i < aConns.length; i++) {
+                        aNames.push(aConns[i].first_name.toLowerCase());
+                    }
+
+                    aNames.sort();
+
+                    var aAlphabet = {};
+
+                    for (var i = 0; i < aNames.length; i++) {
+                        if (!aAlphabet.hasOwnProperty(aNames[i][0])) {
+                            aAlphabet[aNames[i][0]] = [];
+                        }
+                    }
+
+                    for (var i = 0; i < aConns.length; i++) {
+                        var first_letter = aConns[i].first_name.toLowerCase()[0];
+
+                        for (var key in aAlphabet) {
+                            if (first_letter == key) {
+                                aAlphabet[key].push(aConns[i]);
+                            }
+                        }
+                    }
+
+                    var outPut = {
+                        status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                        contacts: aAlphabet
+                    };
+
+                    return res.status(200).json(outPut);
+                }
+            ], function (error) {
+                return error ? console.log(error) : next(error);
+            });
+        }
     },
+    call: {
+        /**
+         * add call center record
+         * @param req
+         * @param res
+         */
+        addCallRecord: function (req, res) {
 
-    /**
-     * get call center records
-     * @param req
-     * @param res
-     */
-    getCallRecords: function (req, res) {
-        var Call = require('mongoose').model('Call');
-        var User = require('mongoose').model('User');
-        var Upload = require('mongoose').model('Upload');
-        var CurrentSession = Util.getCurrentSession(req);
-        var _async = require('async');
-        var UserId = Util.getCurrentSession(req).id;
+        },
 
-        var RecordLists = [],resultData = [];
-        var call_status = (typeof req.query.call_status != 'undefined' && req.query.call_status != null)? req.query.call_status : null;
+        /**
+         * get call center records
+         * @param req
+         * @param res
+         */
+        getCallRecords: function (req, res) {
+            var Call = require('mongoose').model('Call');
+            var User = require('mongoose').model('User');
+            var Upload = require('mongoose').model('Upload');
+            var CurrentSession = Util.getCurrentSession(req);
+            var _async = require('async');
+            var UserId = Util.getCurrentSession(req).id;
 
-        _async.waterfall([
-            function getRecords(callBack) {
-                Call.get({}, {}, function (err, result) {
-                    callBack(null, result.records);
-                });
-            },
-            function getIndividualProfile(RecordObjects, callBack) {
+            var RecordLists = [], resultData = [];
+            var call_status = (typeof req.query.call_status != 'undefined' && req.query.call_status != null) ? req.query.call_status : null;
 
-                if (typeof RecordObjects != undefined && RecordObjects.length > 0) {
+            _async.waterfall([
+                function getRecords(callBack) {
+                    Call.get({}, {}, function (err, result) {
+                        callBack(null, result.records);
+                    });
+                },
+                function getIndividualProfile(RecordObjects, callBack) {
 
-                    _async.each(RecordObjects, function (RecordObject, callBack) {
-                        var RecordList = RecordObject;
-                        var receiversLists = RecordList['receivers_list'];
-                        var profileDatas = [];
+                    if (typeof RecordObjects != undefined && RecordObjects.length > 0) {
 
-                        if (typeof receiversLists != undefined && receiversLists != null) {
-                            _async.each(receiversLists, function (receiversList, callBack) {
+                        _async.each(RecordObjects, function (RecordObject, callBack) {
+                            var RecordList = RecordObject;
+                            var receiversLists = RecordList['receivers_list'];
+                            var profileDatas = [];
+
+                            if (typeof receiversLists != undefined && receiversLists != null) {
+                                _async.each(receiversLists, function (receiversList, callBack) {
 
                                     _async.waterfall([
                                         function getUserById(callBack) {
@@ -86,73 +150,74 @@ var CallCenterController = {
                                         callBack(null);
                                     });
 
-                            }, function (err) {
-                                callBack(null);
-                            });
-                        }
-                        RecordList['receiver_data'] = profileDatas;
-                        RecordLists.push(RecordList);
-                    }, function (err) {
+                                }, function (err) {
+                                    callBack(null);
+                                });
+                            }
+                            RecordList['receiver_data'] = profileDatas;
+                            RecordLists.push(RecordList);
+                        }, function (err) {
+                            callBack(null);
+                        });
+
+                    } else {
                         callBack(null);
-                    });
+                    }
+                },
+                function filterRecord(callBack) {
+                    console.log(RecordLists);
+                    console.log(call_status);
 
-                } else {
-                    callBack(null);
-                }
-            },
-            function filterRecord(callBack){
-                console.log(RecordLists);console.log(call_status);
+                    if (call_status != null) {
 
-                if(call_status != null){
+                        for (var i = 0; i < RecordLists.length; i++) {
+                            var isCallStatus = false;
+                            if (RecordLists[i] != null) {
+                                var receive_List = RecordLists[i]['receivers_list'];
 
-                    for(var i = 0; i < RecordLists.length; i++){
-                        var isCallStatus = false;
-                        if(RecordLists[i] != null){
-                            var receive_List = RecordLists[i]['receivers_list'];
-
-                            for(var x = 0; x < receive_List.length; x++){
-                                if(receive_List[x] != null){
-                                    if(receive_List[x]['call_status'] == call_status){
-                                        isCallStatus = true;
+                                for (var x = 0; x < receive_List.length; x++) {
+                                    if (receive_List[x] != null) {
+                                        if (receive_List[x]['call_status'] == call_status) {
+                                            isCallStatus = true;
+                                        }
                                     }
                                 }
-                            }
 
-                            if(isCallStatus == true){
-                                resultData.push(RecordLists[i]);
+                                if (isCallStatus == true) {
+                                    resultData.push(RecordLists[i]);
+                                }
                             }
                         }
+                        // resultData = RecordLists;
+                        callBack(null);
+
+                    } else {
+                        resultData = RecordLists;
+                        callBack(null);
                     }
-                   // resultData = RecordLists;
-                    callBack(null);
-
-                } else {
-                    resultData = RecordLists;
-                    callBack(null);
                 }
-            }
-        ], function (err) {
-            var outPut = {};
-            if (err) {
-                outPut['status'] = ApiHelper.getMessage(400);
-                res.status(400).send(outPut);
-            } else {
-                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['records'] = resultData;
-                res.status(200).send(outPut);
-            }
-        });
-    },
+            ], function (err) {
+                var outPut = {};
+                if (err) {
+                    outPut['status'] = ApiHelper.getMessage(400);
+                    res.status(400).send(outPut);
+                } else {
+                    outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                    outPut['records'] = resultData;
+                    res.status(200).send(outPut);
+                }
+            });
+        },
 
-    /**
-     * update call center records
-     * @param req
-     * @param res
-     */
-    updateCallRecord: function (req, res) {
+        /**
+         * update call center records
+         * @param req
+         * @param res
+         */
+        updateCallRecord: function (req, res) {
 
+        }
     }
-
 }
 
 module.exports = CallCenterController;

@@ -3,77 +3,77 @@
  */
 
 'use strict'
-var  mongoose = require('mongoose'),
-     Schema   = mongoose.Schema,
-     bCrypt	  = require('bcrypt-nodejs'),
-     uuid = require('node-uuid'),
-     cities = require('cities');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema,
+    bCrypt = require('bcrypt-nodejs'),
+    uuid = require('node-uuid'),
+    cities = require('cities');
 
 /**
  * Global Configuration for the user schema
  * @type {{ES_INDEX: string}}
  */
-GLOBAL.UserConfig ={
-    ES_INDEX:"idx_usr"
+GLOBAL.UserConfig = {
+    ES_INDEX: "idx_usr"
 }
 /**
  * Date Schema
  */
-var DateObject ={
-    year:{
-        type:Number,
-        trim:true,
-        default:0
+var DateObject = {
+    year: {
+        type: Number,
+        trim: true,
+        default: 0
     },
-    month:{
-        type:Number,
-        trim:true,
-        default:0
+    month: {
+        type: Number,
+        trim: true,
+        default: 0
     },
-    date:{
-        type:Number,
-        trim:true,
-        default:0
+    date: {
+        type: Number,
+        trim: true,
+        default: 0
     }
 }
 /**
  * Education information
  */
 var EducationSchema = new Schema({
-    school:{
-        type:String,
-        trim:true,
-        default:null
+    school: {
+        type: String,
+        trim: true,
+        default: null
     },
-    date_attended_from:{
-        type:String,
-        trim:true,
-        default:null
+    date_attended_from: {
+        type: String,
+        trim: true,
+        default: null
     },
-    date_attended_to:{
-        type:String,
-        trim:true,
-        default:null
+    date_attended_to: {
+        type: String,
+        trim: true,
+        default: null
     },
-    degree:{
-        type:String,
-        trim:true,
-        default:null
+    degree: {
+        type: String,
+        trim: true,
+        default: null
     },
-    grade:{
-        type:String,
-        trim:true,
-        default:null
+    grade: {
+        type: String,
+        trim: true,
+        default: null
     },
-    activities_societies:{
-        type:String,
-        trim:true,
-        default:null
+    activities_societies: {
+        type: String,
+        trim: true,
+        default: null
     },
-    description:{
-        type:String,
-        trim:true,
-        default:null
+    description: {
+        type: String,
+        trim: true,
+        default: null
     }
 });
 
@@ -81,32 +81,32 @@ var EducationSchema = new Schema({
  * WorkingExperience Schema
  */
 var WorkingExperienceSchema = new Schema({
-    company_name:{
-        type:String,
-        trim:true,
-        default:null
+    company_name: {
+        type: String,
+        trim: true,
+        default: null
     },
-    title:{
-        type:String,
-        trim:true,
-        default:null
+    title: {
+        type: String,
+        trim: true,
+        default: null
     },
-    location:{
-        type:String,
-        trim:true,
-        default:null
+    location: {
+        type: String,
+        trim: true,
+        default: null
     },
-    start_date:DateObject,
-    left_date:DateObject,
-    description:{
-        type:String,
-        trim:true,
-        default:null
+    start_date: DateObject,
+    left_date: DateObject,
+    description: {
+        type: String,
+        trim: true,
+        default: null
     },
-    is_current_work_place:{
-        type:Boolean,
-        trim:true,
-        default:true,
+    is_current_work_place: {
+        type: Boolean,
+        trim: true,
+        default: true,
     }
 });
 
@@ -114,177 +114,178 @@ var WorkingExperienceSchema = new Schema({
  * User Basic information
  */
 var UserSchema = new Schema({
-	first_name:{
-		type:String,
-		trim:true,
+    first_name: {
+        type: String,
+        trim: true,
 
-	},
-	last_name:{
-		type:String,
-		trim:true
-	},
-	email:{
-		type:String,
-		unique:"Email should be unique",
-		trim:true
-	},
-    user_name:{
-        type:String,
-        unique:"Username should be unique",
-        trim:true
     },
-	password:{
-		type:String,
-		trim:true
-	},
-    salt:{
-        type:String
+    last_name: {
+        type: String,
+        trim: true
     },
-	status:{
-		type:Number,
-		default:1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETED CHOOSE YOUR SECRETARY | 3 - COMPLETED GENERAL INFORMATION
-	},
-	secretary:{
-		 type: Schema.ObjectId,
-		 ref: 'Secretary',
-		 default:null
-	},
-	country:{
-		type:String,
-		trim:true,
-		default:null
-	},
-	dob:{
-		type:String,
-		trim:true,
-		default:null
-	},
-	zip_code:{
-		type:String,
-		trim:true,
-		default:null
-	},
-
-    introduction:{
-        type:String,
-        trim:true,
-        default:null
+    email: {
+        type: String,
+        unique: "Email should be unique",
+        trim: true
+    },
+    user_name: {
+        type: String,
+        unique: "Username should be unique",
+        trim: true
+    },
+    password: {
+        type: String,
+        trim: true
+    },
+    salt: {
+        type: String
+    },
+    status: {
+        type: Number,
+        default: 1 // 1 - COMPLETED CREATE YOUR ACCOUNT | 2 - COMPLETED CHOOSE YOUR SECRETARY | 3 - COMPLETED GENERAL INFORMATION
+    },
+    secretary: {
+        type: Schema.ObjectId,
+        ref: 'Secretary',
+        default: null
+    },
+    country: {
+        type: String,
+        trim: true,
+        default: null
+    },
+    dob: {
+        type: String,
+        trim: true,
+        default: null
+    },
+    zip_code: {
+        type: String,
+        trim: true,
+        default: null
     },
 
-    education_details:[EducationSchema],
+    introduction: {
+        type: String,
+        trim: true,
+        default: null
+    },
 
-    skills:[{
-        skill_id:{
+    education_details: [EducationSchema],
+
+    skills: [{
+        skill_id: {
             type: Schema.ObjectId,
             ref: 'Skill',
-            default:null,
+            default: null,
         },
-        is_day_to_day_comfort:0
+        is_day_to_day_comfort: 0
     }],
 
-    working_experiences:[WorkingExperienceSchema],
+    working_experiences: [WorkingExperienceSchema],
 
     /* For reset password */
     resetPasswordToken: {
-        type:String,
-        trim:true,
-        default:null
+        type: String,
+        trim: true,
+        default: null
     },
     resetPasswordExpires: {
         type: Date,
-        default:null
+        default: null
     },
 
-	created_at:{
-		type:Date
-	},
-	updated_at:{
-		type:Date
-	}
+    mode: {type: String, required: true, default: 1},
 
-},{collection:"users"});
+    created_at: {
+        type: Date
+    },
+
+    updated_at: {
+        type: Date
+    }
+
+}, {collection: "users"});
 
 
-
-
-var createSalt = function(){
+var createSalt = function () {
     return bCrypt.genSaltSync(10);
 };
 
-var createHash = function(salt, password){
- return bCrypt.hashSync(password, salt, null);
+var createHash = function (salt, password) {
+    return bCrypt.hashSync(password, salt, null);
 };
 
-UserSchema.pre('save', function(next){
-  var now = new Date();
-  this.updated_at = now;
-  if ( !this.created_at ) {
-    this.created_at = now;
-  }
-  next();
+UserSchema.pre('save', function (next) {
+    var now = new Date();
+    this.updated_at = now;
+    if (!this.created_at) {
+        this.created_at = now;
+    }
+    next();
 });
 
 /**
  * Create User
  */
-UserSchema.statics.create = function(UserData,callBack){
+UserSchema.statics.create = function (UserData, callBack) {
 
 
-	var newUser = new this();
-	newUser.first_name 	= UserData.first_name;
-	newUser.last_name  	= UserData.last_name;
-	newUser.email		= UserData.email;
+    var newUser = new this();
+    newUser.first_name = UserData.first_name;
+    newUser.last_name = UserData.last_name;
+    newUser.email = UserData.email;
     newUser.salt = createSalt();
-	newUser.password	= createHash(newUser.salt, UserData.password);
-	newUser.status		= UserData.status;
-	newUser.secretary	= UserData.secretary;
-    newUser.user_name	= UserData.user_name;
-	newUser.save(function(err,resultSet){
+    newUser.password = createHash(newUser.salt, UserData.password);
+    newUser.status = UserData.status;
+    newUser.secretary = UserData.secretary;
+    newUser.user_name = UserData.user_name;
+    newUser.save(function (err, resultSet) {
 
-		if(!err){
-			callBack({
-				status:200,
-				user:{
-                    id:resultSet._id,
-                    token:uuid.v1()+resultSet._id,
-                    first_name:resultSet.first_name,
-                    last_name:resultSet.last_name,
-                    email:resultSet.email,
-                    status:resultSet.status,
-                    user_name:resultSet.user_name
+        if (!err) {
+            callBack({
+                status: 200,
+                user: {
+                    id: resultSet._id,
+                    token: uuid.v1() + resultSet._id,
+                    first_name: resultSet.first_name,
+                    last_name: resultSet.last_name,
+                    email: resultSet.email,
+                    status: resultSet.status,
+                    user_name: resultSet.user_name
                 }
 
-			});
-		}else{
-			console.log("Server Error --------")
-			console.log(err)
-			callBack({status:400,error:err});
-		}
+            });
+        } else {
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status: 400, error: err});
+        }
 
-	});
+    });
 
 };
 
 /**
  * Get User By Email ID
  */
-UserSchema.statics.findByEmail = function(email,callBack){
-	var _this = this;
+UserSchema.statics.findByEmail = function (email, callBack) {
+    var _this = this;
 
-	_this.findOne({
-		email:email
-	},function(err,resultSet){
-		if(!err){
-			callBack({
-				status:200,
-				user:resultSet
+    _this.findOne({
+        email: email
+    }, function (err, resultSet) {
+        if (!err) {
+            callBack({
+                status: 200,
+                user: resultSet
 
-			});
-		}else{
-			console.log("Server Error --------")
-			callBack({status:400,error:err});
-		}
-	});
+            });
+        } else {
+            console.log("Server Error --------")
+            callBack({status: 400, error: err});
+        }
+    });
 
 
 };
@@ -294,19 +295,19 @@ UserSchema.statics.findByEmail = function(email,callBack){
  * @param criteria
  * @param callBack
  */
-UserSchema.statics.findUser = function(criteria,callBack){
+UserSchema.statics.findUser = function (criteria, callBack) {
     var _this = this;
 
-    _this.findOne(criteria,function(err,resultSet){
-        if(!err){
+    _this.findOne(criteria, function (err, resultSet) {
+        if (!err) {
             callBack({
-                status:200,
-                user:resultSet
+                status: 200,
+                user: resultSet
 
             });
-        }else{
+        } else {
             console.log("Server Error --------")
-            callBack({status:400,error:err});
+            callBack({status: 400, error: err});
         }
     });
 
@@ -315,22 +316,24 @@ UserSchema.statics.findUser = function(criteria,callBack){
 /**
  * Add Secretary for the user
  */
-UserSchema.statics.addSecretary =function(userId,secretaryId,callBack){
+UserSchema.statics.addSecretary = function (userId, secretaryId, callBack) {
 
     var _this = this;
-    _this.update({_id:userId},
-        {$set:{
-            secretary:secretaryId,
-            status:2
-        }},function(err,resultSet){
+    _this.update({_id: userId},
+        {
+            $set: {
+                secretary: secretaryId,
+                status: 2
+            }
+        }, function (err, resultSet) {
 
-            if(!err){
+            if (!err) {
                 callBack({
-                    status:200
+                    status: 200
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 
@@ -342,19 +345,19 @@ UserSchema.statics.addSecretary =function(userId,secretaryId,callBack){
  * @param data
  * @param callBack
  */
-UserSchema.statics.saveUpdates=function(userId,data,callBack){
+UserSchema.statics.saveUpdates = function (userId, data, callBack) {
     var _this = this;
 
-    _this.update({_id:userId},
-        {$set:data},function(err,resultSet){
+    _this.update({_id: userId},
+        {$set: data}, function (err, resultSet) {
 
-            if(!err){
+            if (!err) {
                 callBack({
-                    status:200
+                    status: 200
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 };
@@ -365,60 +368,60 @@ UserSchema.statics.saveUpdates=function(userId,data,callBack){
  * @param criteria
  * @param callBack
  */
-UserSchema.statics.getConnectionUsers=function(criteria,callBack){
+UserSchema.statics.getConnectionUsers = function (criteria, callBack) {
 
     var _async = require('async'),
         Connection = require('mongoose').model('Connection'),
         _this = this;
 
     _async.waterfall([
-        function getUsersConnections(callBack){
+        function getUsersConnections(callBack) {
 
-            Connection.getFriends(criteria.user_id,criteria.status,function(myFriends){
+            Connection.getFriends(criteria.user_id, criteria.status, function (myFriends) {
 
-                callBack(null,myFriends.friends)
+                callBack(null, myFriends.friends)
 
             });
         },
-        function getAllUsers(myFriends,callBack){
+        function getAllUsers(myFriends, callBack) {
 
-            _this.getAllUsers(criteria.country,criteria.user_id,function(resultSet){
-                callBack(null,{
-                    total_result:resultSet.total_result,
-                    users:resultSet.users,
-                    my_friends:myFriends
+            _this.getAllUsers(criteria.country, criteria.user_id, function (resultSet) {
+                callBack(null, {
+                    total_result: resultSet.total_result,
+                    users: resultSet.users,
+                    my_friends: myFriends
                 })
             })
         },
-        function mergeConnection(connections,callBack){
-            var _my_friends =connections.my_friends,
-                _formattedFriendList =[],
+        function mergeConnection(connections, callBack) {
+            var _my_friends = connections.my_friends,
+                _formattedFriendList = [],
                 _allUsers = connections.users;
 
 
-            for(var i =0;i<_allUsers.length;i++){
-                var _c_users ={},
-                _my_friend = _my_friends[_allUsers[i].user_id.toString()];
+            for (var i = 0; i < _allUsers.length; i++) {
+                var _c_users = {},
+                    _my_friend = _my_friends[_allUsers[i].user_id.toString()];
                 _allUsers[i].connection_status = 0;
 
 
-                if(typeof _my_friend != 'undefined'){
+                if (typeof _my_friend != 'undefined') {
                     _allUsers[i].connection_status = _my_friend.status;
                 }
                 _formattedFriendList.push(_allUsers[i]);
             }
-            callBack(null,{
+            callBack(null, {
                 total_result: connections.total_result,
-                friends:_formattedFriendList
+                friends: _formattedFriendList
             })
         }
 
 
-    ],function(err,resultSet){
+    ], function (err, resultSet) {
 
-        if(!err){
+        if (!err) {
             callBack(resultSet)
-        }else{
+        } else {
             console.log("LOOP ERROR")
             console.log(err)
         }
@@ -428,51 +431,50 @@ UserSchema.statics.getConnectionUsers=function(criteria,callBack){
 };
 
 
-
 /**
  * Add Education Details to a user
  * @param userId
  * @param educationDetails
  * @param callBack
  */
-UserSchema.statics.addEducationDetail = function(userId, educationDetails, callBack){
+UserSchema.statics.addEducationDetail = function (userId, educationDetails, callBack) {
 
     var _this = this;
 
     var _educationDetails = {
-        school:educationDetails.school,
-        date_attended_from:educationDetails.date_attended_from,
-        date_attended_to:educationDetails.date_attended_to,
-        degree:educationDetails.degree,
-        grade:educationDetails.grade,
-        activities_societies:educationDetails.activities_societies,
-        description:educationDetails.description
+        school: educationDetails.school,
+        date_attended_from: educationDetails.date_attended_from,
+        date_attended_to: educationDetails.date_attended_to,
+        degree: educationDetails.degree,
+        grade: educationDetails.grade,
+        activities_societies: educationDetails.activities_societies,
+        description: educationDetails.description
     };
 
     var now = new Date();
     this.updated_at = now;
-    if ( !this.created_at ) {
+    if (!this.created_at) {
         this.created_at = now;
     }
 
     _this.update(
-        {_id:userId},
+        {_id: userId},
         {
-            $set:{
-                created_at:this.created_at,
-                updated_at:this.updated_at
+            $set: {
+                created_at: this.created_at,
+                updated_at: this.updated_at
             },
-            $push:{
-                education_details:_educationDetails
+            $push: {
+                education_details: _educationDetails
             }
-        },function(err,resultSet){
-            if(!err){
+        }, function (err, resultSet) {
+            if (!err) {
                 callBack({
-                    status:200
+                    status: 200
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 
@@ -485,21 +487,21 @@ UserSchema.statics.addEducationDetail = function(userId, educationDetails, callB
  * @param _education_id
  * @param callBack
  */
-UserSchema.statics.retrieveEducationDetail = function(criteria, callBack){
+UserSchema.statics.retrieveEducationDetail = function (criteria, callBack) {
 
     var _this = this;
     _this.findOne(criteria)
-        .exec(function(err,resultSet){
+        .exec(function (err, resultSet) {
             var ue = _this.formatEducation(resultSet);
-            if(!err){
+            if (!err) {
                 callBack({
-                    status:200,
-                    user:ue
+                    status: 200,
+                    user: ue
 
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 
@@ -513,27 +515,29 @@ UserSchema.statics.retrieveEducationDetail = function(criteria, callBack){
  * @param educationDetails
  * @param callBack
  */
-UserSchema.statics.updateEducationDetail = function(userId, educationDetails, callBack){
+UserSchema.statics.updateEducationDetail = function (userId, educationDetails, callBack) {
 
     var _this = this;
-    _this.update({_id:userId,"education_details._id":educationDetails._id},
-        {$set:{
-            "education_details.$.school":educationDetails.school,
-            "education_details.$.date_attended_from":educationDetails.date_attended_from,
-            "education_details.$.date_attended_to":educationDetails.date_attended_to,
-            "education_details.$.degree":educationDetails.degree,
-            "education_details.$.grade":educationDetails.grade,
-            "education_details.$.activities_societies":educationDetails.activities_societies,
-            "education_details.$.description":educationDetails.description,
-        }},function(err,resultSet){
-            if(!err){
+    _this.update({_id: userId, "education_details._id": educationDetails._id},
+        {
+            $set: {
+                "education_details.$.school": educationDetails.school,
+                "education_details.$.date_attended_from": educationDetails.date_attended_from,
+                "education_details.$.date_attended_to": educationDetails.date_attended_to,
+                "education_details.$.degree": educationDetails.degree,
+                "education_details.$.grade": educationDetails.grade,
+                "education_details.$.activities_societies": educationDetails.activities_societies,
+                "education_details.$.description": educationDetails.description,
+            }
+        }, function (err, resultSet) {
+            if (!err) {
                 callBack({
-                    status:200
+                    status: 200
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
                 console.log(err)
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 
@@ -546,19 +550,19 @@ UserSchema.statics.updateEducationDetail = function(userId, educationDetails, ca
  * @param educationId
  * @param callBack
  */
-UserSchema.statics.deleteEducationDetail = function(userId, educationId, callBack){
+UserSchema.statics.deleteEducationDetail = function (userId, educationId, callBack) {
 
     var _this = this;
 
-    _this.update({_id:userId},
-        { $pull: { education_details: { _id: educationId } } },function(err,resultSet){
-            if(!err){
+    _this.update({_id: userId},
+        {$pull: {education_details: {_id: educationId}}}, function (err, resultSet) {
+            if (!err) {
                 callBack({
-                    status:200
+                    status: 200
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 
@@ -576,45 +580,45 @@ UserSchema.statics.deleteEducationDetail = function(userId, educationId, callBac
  * @param workingExperienceDetails
  * @param callBack
  */
-UserSchema.statics.addWorkingExperience =function(userId,workingExperienceDetails,callBack){
+UserSchema.statics.addWorkingExperience = function (userId, workingExperienceDetails, callBack) {
 
     var _this = this;
 
     var _workingExperienceDetails = {
-        company_name:workingExperienceDetails.company_name,
-        title:workingExperienceDetails.title,
-        location:workingExperienceDetails.location,
-        start_date:workingExperienceDetails.start_date,
-        end_date:workingExperienceDetails.end_date,
-        is_current_work_place:workingExperienceDetails.is_current_work_place,
-        description:workingExperienceDetails.description
+        company_name: workingExperienceDetails.company_name,
+        title: workingExperienceDetails.title,
+        location: workingExperienceDetails.location,
+        start_date: workingExperienceDetails.start_date,
+        end_date: workingExperienceDetails.end_date,
+        is_current_work_place: workingExperienceDetails.is_current_work_place,
+        description: workingExperienceDetails.description
     }
 
     var now = new Date();
     this.updated_at = now;
-    if ( !this.created_at ) {
+    if (!this.created_at) {
         this.created_at = now;
     }
 
     _this.update(
-        {_id:userId},
+        {_id: userId},
         {
-            $set:{
-                created_at:this.created_at,
-                updated_at:this.updated_at
+            $set: {
+                created_at: this.created_at,
+                updated_at: this.updated_at
             },
-            $push:{
-                working_experiences:_workingExperienceDetails
+            $push: {
+                working_experiences: _workingExperienceDetails
             }
-        },function(err,resultSet){
-            if(!err){
+        }, function (err, resultSet) {
+            if (!err) {
                 callBack({
-                    status:200
+                    status: 200
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
                 console.log(err)
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 
@@ -626,20 +630,20 @@ UserSchema.statics.addWorkingExperience =function(userId,workingExperienceDetail
  * @param workingExperienceDetails
  * @param callBack
  */
-UserSchema.statics.updateWorkingExperience =function(userId, expId, workingExperienceDetails, callBack){
+UserSchema.statics.updateWorkingExperience = function (userId, expId, workingExperienceDetails, callBack) {
     var _this = this;
-    _this.update({_id:userId,"working_experiences._id":expId},
-        {$set:workingExperienceDetails},function(err,resultSet){
-            if(!err){
+    _this.update({_id: userId, "working_experiences._id": expId},
+        {$set: workingExperienceDetails}, function (err, resultSet) {
+            if (!err) {
                 callBack({
-                    status:200
+                    status: 200
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         },
-        {upsert: true, multi:true});
+        {upsert: true, multi: true});
 
 }
 
@@ -649,19 +653,19 @@ UserSchema.statics.updateWorkingExperience =function(userId, expId, workingExper
  * @param workingExperienceId
  * @param callBack
  */
-UserSchema.statics.deleteWorkingExperience = function(userId, workingExperienceId, callBack){
+UserSchema.statics.deleteWorkingExperience = function (userId, workingExperienceId, callBack) {
 
     var _this = this;
 
-    _this.update({_id:userId},
-        { $pull: { working_experiences: { _id: workingExperienceId } } },function(err,resultSet){
-            if(!err){
+    _this.update({_id: userId},
+        {$pull: {working_experiences: {_id: workingExperienceId}}}, function (err, resultSet) {
+            if (!err) {
                 callBack({
-                    status:200
+                    status: 200
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 };
@@ -674,31 +678,34 @@ UserSchema.statics.deleteWorkingExperience = function(userId, workingExperienceI
  * @param data
  * @param callBack
  */
-UserSchema.statics.addCollageAndJob = function(userId,data,callBack) {
+UserSchema.statics.addCollageAndJob = function (userId, data, callBack) {
     var _this = this;
 
     var now = new Date();
     this.updated_at = now;
-    if ( !this.created_at ) {
+    if (!this.created_at) {
         this.created_at = now;
     }
 
 
     var _educationDetails = {
-        school:data.school,
-        date_attended_to:data.grad_date,
+        school: data.school,
+        date_attended_to: data.grad_date,
     }
 
     var _workingExperienceDetails = {
-        company_name:data.company_name,
-        title:data.job_title,
+        company_name: data.company_name,
+        title: data.job_title,
 
     }
-    _this.update({_id:userId},
-        {$unset:{
-            "education_details":[],
-            "working_experiences":[]}},{multi:true},
-        function(err,resultSet) {
+    _this.update({_id: userId},
+        {
+            $unset: {
+                "education_details": [],
+                "working_experiences": []
+            }
+        }, {multi: true},
+        function (err, resultSet) {
 
 
             if (!err) {
@@ -708,7 +715,7 @@ UserSchema.statics.addCollageAndJob = function(userId,data,callBack) {
                         $set: {
                             created_at: _this.created_at,
                             updated_at: _this.updated_at,
-                            status:data.status
+                            status: data.status
 
                         },
                         $push: {
@@ -743,34 +750,34 @@ UserSchema.statics.addCollageAndJob = function(userId,data,callBack) {
  * @param skills
  * @param callBack
  */
-UserSchema.statics.addSkills = function(userId, skills, callBack){
+UserSchema.statics.addSkills = function (userId, skills, callBack) {
 
     var _this = this;
 
     var now = new Date();
     this.updated_at = now;
-    if ( !this.created_at ) {
+    if (!this.created_at) {
         this.created_at = now;
     }
 
     _this.update(
-        {_id:userId},
+        {_id: userId},
         {
-            $set:{
-                created_at:this.created_at,
-                updated_at:this.updated_at
+            $set: {
+                created_at: this.created_at,
+                updated_at: this.updated_at
             },
-            $push:{
-                skills:{$each:skills}
+            $push: {
+                skills: {$each: skills}
             }
-        },function(err,resultSet){
-            if(!err){
+        }, function (err, resultSet) {
+            if (!err) {
                 callBack({
-                    status:200
+                    status: 200
                 });
-            }else{
+            } else {
                 console.log("Server Error --------", err);
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 
@@ -783,19 +790,19 @@ UserSchema.statics.addSkills = function(userId, skills, callBack){
  * @param skills
  * @param callBack
  */
-UserSchema.statics.deleteSkills = function(userId, skills, callBack){
+UserSchema.statics.deleteSkills = function (userId, skills, callBack) {
 
     var _this = this;
 
-    _this.update({_id:userId},
-        { $pull: { skills: {$in:skills} } },function(err,resultSet){
-            if(!err){
+    _this.update({_id: userId},
+        {$pull: {skills: {$in: skills}}}, function (err, resultSet) {
+            if (!err) {
                 callBack({
-                    status:200
+                    status: 200
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 
@@ -806,25 +813,24 @@ UserSchema.statics.deleteSkills = function(userId, skills, callBack){
 /**
  * Get User By Search Criteria
  */
-UserSchema.statics.findByCriteria = function(criteria,callBack){
+UserSchema.statics.findByCriteria = function (criteria, callBack) {
     var _this = this;
 
-    _this.findOne(criteria,function(err,resultSet){
+    _this.findOne(criteria, function (err, resultSet) {
 
-        if(!err){
+        if (!err) {
             callBack({
-                status:200,
-                user:resultSet
+                status: 200,
+                user: resultSet
 
             });
-        }else{
+        } else {
             console.log("Server Error --------")
-            callBack({status:400,error:err});
+            callBack({status: 400, error: err});
         }
     });
 
 };
-
 
 
 /**
@@ -833,27 +839,27 @@ UserSchema.statics.findByCriteria = function(criteria,callBack){
  * @param data
  * @param callBack
  */
-UserSchema.statics.updatePassword=function(userId,password,callBack){
+UserSchema.statics.updatePassword = function (userId, password, callBack) {
     var _this = this;
 
     var _salt = createSalt();
 
     var info = {
-        salt:_salt,
-        password:createHash(_salt,password),
-        resetPasswordToken:null,
-        resetPasswordExpires:null
+        salt: _salt,
+        password: createHash(_salt, password),
+        resetPasswordToken: null,
+        resetPasswordExpires: null
     }
 
-    _this.update({_id:userId},
-        {$set:info},function(err,resultSet){
-            if(!err){
+    _this.update({_id: userId},
+        {$set: info}, function (err, resultSet) {
+            if (!err) {
                 callBack({
-                    status:200
+                    status: 200
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 };
@@ -863,21 +869,21 @@ UserSchema.statics.updatePassword=function(userId,password,callBack){
  * @param userId
  * @param callBack
  */
-UserSchema.statics.getUser=function(criteria,showOptions,callBack){
+UserSchema.statics.getUser = function (criteria, showOptions, callBack) {
     var _this = this;
     _this.findOne(criteria)
-        .exec(function(err,resultSet){
-            if(!err){
+        .exec(function (err, resultSet) {
+            if (!err) {
                 callBack({
-                    status:200,
-                    user:_this.formatUser(resultSet,showOptions)
+                    status: 200,
+                    user: _this.formatUser(resultSet, showOptions)
 
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
-    });
+        });
 }
 
 
@@ -886,19 +892,19 @@ UserSchema.statics.getUser=function(criteria,showOptions,callBack){
  * @param userId
  * @param callBack
  */
-UserSchema.statics.getUserAllDetails=function(criteria,callBack){
+UserSchema.statics.getUserAllDetails = function (criteria, callBack) {
     var _this = this;
     _this.findOne(criteria)
-        .exec(function(err,resultSet){
-            if(!err){
+        .exec(function (err, resultSet) {
+            if (!err) {
                 callBack({
-                    status:200,
-                    user:resultSet
+                    status: 200,
+                    user: resultSet
 
                 });
-            }else{
+            } else {
                 console.log("Server Error --------")
-                callBack({status:400,error:err});
+                callBack({status: 400, error: err});
             }
         });
 }
@@ -908,19 +914,19 @@ UserSchema.statics.getUserAllDetails=function(criteria,callBack){
  * Users are taking from elastic search
  * @param callBack
  */
-UserSchema.statics.getAllUsers=function(q,userId,callBack){
-    var query={
-        q:q,
-        index:'idx_usr'
+UserSchema.statics.getAllUsers = function (q, userId, callBack) {
+    var query = {
+        q: q,
+        index: 'idx_usr'
     };
-    ES.search(query,function(esResultSet){
+    ES.search(query, function (esResultSet) {
         var tmp_arr = [];
-        for(var a=0;a <esResultSet.result.length;a++){
-            if(typeof userId != 'undefined' && esResultSet.result[a] != userId){
+        for (var a = 0; a < esResultSet.result.length; a++) {
+            if (typeof userId != 'undefined' && esResultSet.result[a] != userId) {
                 tmp_arr.push(esResultSet.result[a])
             }
         }
-        callBack({total_result:esResultSet.result_count,users:tmp_arr});
+        callBack({total_result: esResultSet.result_count, users: tmp_arr});
         return 0
     });
 }
@@ -936,9 +942,9 @@ UserSchema.statics.getAllUsers=function(q,userId,callBack){
  * @param userObject
  * @returns {*}
  */
-UserSchema.statics.formatUser=function(userObject,showOptions){
+UserSchema.statics.formatUser = function (userObject, showOptions) {
 
-    if(userObject){
+    if (userObject) {
         var _temp_user = {
             user_id: userObject._id.toString(),
             email: userObject.email,
@@ -946,35 +952,35 @@ UserSchema.statics.formatUser=function(userObject,showOptions){
             last_name: userObject.last_name,
             zip_code: userObject.zip_code,
             dob: userObject.dob,
-            country:userObject.country,
-            user_name:userObject.user_name,
-            introduction:userObject.introduction
+            country: userObject.country,
+            user_name: userObject.user_name,
+            introduction: userObject.introduction
         };
-        for(var i=0;i<userObject.working_experiences.length;i++){
-            if(userObject.working_experiences[i].is_current_work_place){
-                _temp_user['cur_exp_id']=userObject.working_experiences[i]._id;
-                _temp_user['cur_working_at']=userObject.working_experiences[i].company_name;
-                _temp_user['cur_designation']=userObject.working_experiences[i].title;
+        for (var i = 0; i < userObject.working_experiences.length; i++) {
+            if (userObject.working_experiences[i].is_current_work_place) {
+                _temp_user['cur_exp_id'] = userObject.working_experiences[i]._id;
+                _temp_user['cur_working_at'] = userObject.working_experiences[i].company_name;
+                _temp_user['cur_designation'] = userObject.working_experiences[i].title;
             }
         }
-        if(typeof showOptions.w_exp != 'undefined' && showOptions.w_exp){
+        if (typeof showOptions.w_exp != 'undefined' && showOptions.w_exp) {
             _temp_user['working_experiences'] = [];
             _temp_user['working_experiences'] = this.formatWorkingExperiences(userObject);
         }
-        if(typeof showOptions.edu != 'undefined' && showOptions.edu){
-            _temp_user['education_details'] =[];
+        if (typeof showOptions.edu != 'undefined' && showOptions.edu) {
+            _temp_user['education_details'] = [];
             _temp_user['education_details'] = this.formatEducation(userObject);
         }
 
-        if(typeof showOptions.skill != 'undefined' && showOptions.skill){
-            _temp_user['skills'] =[];
+        if (typeof showOptions.skill != 'undefined' && showOptions.skill) {
+            _temp_user['skills'] = [];
             _temp_user['skills'] = userObject.skills
 
         }
 
-        if(typeof userObject.zip_code != 'undefined' && userObject.zip_code) {
-            _temp_user['city_details'] =[];
-            if(userObject.country == 'United States') {
+        if (typeof userObject.zip_code != 'undefined' && userObject.zip_code) {
+            _temp_user['city_details'] = [];
+            if (userObject.country == 'United States') {
                 var cityByZip = this.getCityByZip(userObject.zip_code);
                 _temp_user['city_details'] = cityByZip ? cityByZip : userObject.country;
             } else {
@@ -995,13 +1001,13 @@ UserSchema.statics.formatUser=function(userObject,showOptions){
  * Get US City By Zip Code
  * @param zipCode
  */
-UserSchema.statics.getCityByZip = function(zipCode){
+UserSchema.statics.getCityByZip = function (zipCode) {
     var cityObject = cities.zip_lookup(zipCode);
-    if(typeof cityObject == 'undefined' || cityObject == '' || cityObject == null) {
+    if (typeof cityObject == 'undefined' || cityObject == '' || cityObject == null) {
         return null;
     }
     var city = cityObject.city
-    if(typeof city == 'undefined' || city == '' || city == null) {
+    if (typeof city == 'undefined' || city == '' || city == null) {
         return null;
     }
     return city;
@@ -1011,70 +1017,70 @@ UserSchema.statics.getCityByZip = function(zipCode){
  * Format Education Detail
  * @param userObject
  */
-UserSchema.statics.formatEducation = function(userObject){
-        var _temp_user = []
-        for(var i=0;i<userObject.education_details.length;i++){
-            _temp_user.push({
-                "edu_id" :userObject.education_details[i]._id,
-                "description" : userObject.education_details[i].description,
-                "activities_societies" : userObject.education_details[i].activities_societies,
-                "grade" : userObject.education_details[i].grade,
-                "degree" : userObject.education_details[i].degree,
-                "date_attended_to" : userObject.education_details[i].date_attended_to,
-                "date_attended_from" : userObject.education_details[i].date_attended_from,
-                "school" :userObject.education_details[i].school
-            });
-        }
-        return _temp_user;
+UserSchema.statics.formatEducation = function (userObject) {
+    var _temp_user = []
+    for (var i = 0; i < userObject.education_details.length; i++) {
+        _temp_user.push({
+            "edu_id": userObject.education_details[i]._id,
+            "description": userObject.education_details[i].description,
+            "activities_societies": userObject.education_details[i].activities_societies,
+            "grade": userObject.education_details[i].grade,
+            "degree": userObject.education_details[i].degree,
+            "date_attended_to": userObject.education_details[i].date_attended_to,
+            "date_attended_from": userObject.education_details[i].date_attended_from,
+            "school": userObject.education_details[i].school
+        });
+    }
+    return _temp_user;
 
 }
 
 
-UserSchema.statics.formatWorkingExperiences = function(userObject){
+UserSchema.statics.formatWorkingExperiences = function (userObject) {
     var _temp_we = [],
-        _tmp_start_years=[],
+        _tmp_start_years = [],
 
-        _tmp_we_by_year ={};
-    for(var i=0;i<userObject.working_experiences.length;i++){
+        _tmp_we_by_year = {};
+    for (var i = 0; i < userObject.working_experiences.length; i++) {
 
 
-        if(userObject.working_experiences[i].is_current_work_place){
+        if (userObject.working_experiences[i].is_current_work_place) {
             _temp_we.push({
-                "exp_id" :userObject.working_experiences[i]._id,
-                "company_name" : userObject.working_experiences[i].company_name,
-                "title" : userObject.working_experiences[i].title,
-                "location" : userObject.working_experiences[i].location,
-                "start_date" : userObject.working_experiences[i].start_date,
-                "left_date" : userObject.working_experiences[i].left_date,
-                "description" : userObject.working_experiences[i].description,
-                "is_current_work_place" :userObject.working_experiences[i].is_current_work_place
+                "exp_id": userObject.working_experiences[i]._id,
+                "company_name": userObject.working_experiences[i].company_name,
+                "title": userObject.working_experiences[i].title,
+                "location": userObject.working_experiences[i].location,
+                "start_date": userObject.working_experiences[i].start_date,
+                "left_date": userObject.working_experiences[i].left_date,
+                "description": userObject.working_experiences[i].description,
+                "is_current_work_place": userObject.working_experiences[i].is_current_work_place
             });
-        }else{
+        } else {
             var _strt_year = userObject.working_experiences[i].start_date.year;
-            if(_tmp_start_years.indexOf(Number(_strt_year)) == -1)
+            if (_tmp_start_years.indexOf(Number(_strt_year)) == -1)
                 _tmp_start_years.push(Number(_strt_year));
 
-            if( typeof _tmp_we_by_year[_strt_year] == 'undefined' )
-                _tmp_we_by_year[_strt_year] =[];
+            if (typeof _tmp_we_by_year[_strt_year] == 'undefined')
+                _tmp_we_by_year[_strt_year] = [];
             _tmp_we_by_year[_strt_year].push({
-                "exp_id" :userObject.working_experiences[i]._id,
-                "company_name" : userObject.working_experiences[i].company_name,
-                "title" : userObject.working_experiences[i].title,
-                "location" : userObject.working_experiences[i].location,
-                "start_date" : userObject.working_experiences[i].start_date,
-                "left_date" : userObject.working_experiences[i].left_date,
-                "description" : userObject.working_experiences[i].description,
-                "is_current_work_place" :userObject.working_experiences[i].is_current_work_place
+                "exp_id": userObject.working_experiences[i]._id,
+                "company_name": userObject.working_experiences[i].company_name,
+                "title": userObject.working_experiences[i].title,
+                "location": userObject.working_experiences[i].location,
+                "start_date": userObject.working_experiences[i].start_date,
+                "left_date": userObject.working_experiences[i].left_date,
+                "description": userObject.working_experiences[i].description,
+                "is_current_work_place": userObject.working_experiences[i].is_current_work_place
             });
         }
 
     }
-    _tmp_start_years.sort(function(a,b){
+    _tmp_start_years.sort(function (a, b) {
         return b - a;
     });
-    for(var i = 0 ; i< _tmp_start_years.length;i++){
+    for (var i = 0; i < _tmp_start_years.length; i++) {
         var _year = _tmp_start_years[i];
-        for(var a = 0 ; a< _tmp_we_by_year[_year].length;a++){
+        for (var a = 0; a < _tmp_we_by_year[_year].length; a++) {
             _temp_we.push(_tmp_we_by_year[_year][a]);
         }
     }
@@ -1082,44 +1088,43 @@ UserSchema.statics.formatWorkingExperiences = function(userObject){
 }
 
 
-UserSchema.statics.formatSkills=function(userObject,callBack){
-    var Skill =  require('mongoose').model('Skill'),
+UserSchema.statics.formatSkills = function (userObject, callBack) {
+    var Skill = require('mongoose').model('Skill'),
         _async = require('async'),
         _tmp_out = {
-            'day_to_day_comforts':[],
-            'experienced':[]
+            'day_to_day_comforts': [],
+            'experienced': []
         };
     _async.each(userObject.skills,
-    function(skill,callBack){
+        function (skill, callBack) {
 
 
-        Skill.getSkillById(Util.toObjectId(skill.skill_id),function(resultSet){
+            Skill.getSkillById(Util.toObjectId(skill.skill_id), function (resultSet) {
 
 
-            if(skill.is_day_to_day_comfort === 1){
-                _tmp_out['day_to_day_comforts'].push({
-                    id:resultSet.skill.id,
-                    name:resultSet.skill.name
-                });
-                callBack();
+                if (skill.is_day_to_day_comfort === 1) {
+                    _tmp_out['day_to_day_comforts'].push({
+                        id: resultSet.skill.id,
+                        name: resultSet.skill.name
+                    });
+                    callBack();
 
-            }else{
-            //if(skill.is_day_to_day_comfort === 0){
-                _tmp_out['experienced'].push({
-                    id:resultSet.skill.id,
-                    name:resultSet.skill.name
-                });
-                callBack();
-            }
+                } else {
+                    //if(skill.is_day_to_day_comfort === 0){
+                    _tmp_out['experienced'].push({
+                        id: resultSet.skill.id,
+                        name: resultSet.skill.name
+                    });
+                    callBack();
+                }
 
+            });
+
+        },
+        function (err) {
+
+            callBack(_tmp_out);
         });
-
-    },
-    function(err){
-
-        callBack(_tmp_out);
-    });
-
 
 
 }
@@ -1128,9 +1133,9 @@ UserSchema.statics.formatSkills=function(userObject,callBack){
  * @param resultSet
  * @returns {*}
  */
-UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
-    var _tmp_object =[];
-    for(var i=0;i<resultSet.length;i++){
+UserSchema.statics.formatConnectionUserDataSet = function (resultSet) {
+    var _tmp_object = [];
+    for (var i = 0; i < resultSet.length; i++) {
 
         _tmp_object.push(this.formatUser(resultSet[i]));
     }
@@ -1141,45 +1146,45 @@ UserSchema.statics.formatConnectionUserDataSet=function(resultSet){
 /**
  * CACHE IMPLEMENTATION
  */
-UserSchema.statics.addUserToCache = function(userId, callBack){
+UserSchema.statics.addUserToCache = function (userId, callBack) {
     var _async = require('async'),
         Connection = require('mongoose').model('Connection'),
         Upload = require('mongoose').model('Upload'),
         _this = this;
     _async.waterfall([
-        function getUserById(callBack){
+        function getUserById(callBack) {
             var _search_param = {
-                    _id:Util.toObjectId(userId),
+                    _id: Util.toObjectId(userId),
                 },
-                showOptions ={
-                    w_exp:false,
-                    edu:false
+                showOptions = {
+                    w_exp: false,
+                    edu: false
                 };
 
-            _this.getUser(_search_param,showOptions,function(resultSet){
-                if(resultSet.status ==200 ){
-                    callBack(null,resultSet.user)
+            _this.getUser(_search_param, showOptions, function (resultSet) {
+                if (resultSet.status == 200) {
+                    callBack(null, resultSet.user)
                 }
             })
         },
-        function getConnectionCount(profileData,callBack){
+        function getConnectionCount(profileData, callBack) {
 
-            if( profileData!= null){
-                Connection.getFriendsCount(profileData.user_id,function(connectionCount){
+            if (profileData != null) {
+                Connection.getFriendsCount(profileData.user_id, function (connectionCount) {
                     profileData['connection_count'] = connectionCount;
-                    callBack(null,profileData);
+                    callBack(null, profileData);
                     return 0
                 });
-            }else{
-                callBack(null,null)
+            } else {
+                callBack(null, null)
             }
         },
-        function getProfileImage(profileData,callBack){
+        function getProfileImage(profileData, callBack) {
 
 
-            Upload.getProfileImage(profileData.user_id.toString(),function(profileImageData){
+            Upload.getProfileImage(profileData.user_id.toString(), function (profileImageData) {
 
-                if(profileImageData.status != 200){
+                if (profileImageData.status != 200) {
                     profileData['images'] = {
                         'profile_image': {
                             id: "DEFAULT",
@@ -1188,39 +1193,39 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
                             http_url: Config.DEFAULT_PROFILE_IMAGE
                         }
                     };
-                }else{
+                } else {
                     profileData['images'] = profileImageData.image;
 
                 }
 
 
-                callBack(null,profileData)
+                callBack(null, profileData)
                 return 0;
             });
 
         }
 
-    ],function(err,profileData){
-        var outPut ={};
-        if(!err){
+    ], function (err, profileData) {
+        var outPut = {};
+        if (!err) {
 
-            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['profile_data']      = profileData;
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['profile_data'] = profileData;
 
-            var payLoad={
-                index:"idx_usr",
-                id:profileData.user_id,
+            var payLoad = {
+                index: "idx_usr",
+                id: profileData.user_id,
                 type: 'user',
-                data:profileData,
-                tag_fields:['first_name','last_name','email','user_name','country']
+                data: profileData,
+                tag_fields: ['first_name', 'last_name', 'email', 'user_name', 'country']
             }
 
-            ES.createIndex(payLoad,function(resultSet){
+            ES.createIndex(payLoad, function (resultSet) {
                 callBack(resultSet)
                 return 0;
             });
 
-        }else{
+        } else {
             callBack(err)
             return 0;
         }
@@ -1230,83 +1235,83 @@ UserSchema.statics.addUserToCache = function(userId, callBack){
 /**
  * authenticating user
  */
-UserSchema.statics.authenticate = function(data, callback) {
+UserSchema.statics.authenticate = function (data, callback) {
     var _this = this;
-    var criteria = {email:data.user_name}
-    _this.findOne(criteria,function(err,resultSet){
+    var criteria = {email: data.user_name}
+    _this.findOne(criteria, function (err, resultSet) {
 
-        if(!err){
-            if(resultSet == null){
-                callback({status:200,error:Alert.USER_NOT_FOUND});
-            } else if(resultSet.password != createHash(resultSet.salt, data.password)){
-                callback({status:200,error:Alert.INVALID_PASSWORD});
-            } else{
+        if (!err) {
+            if (resultSet == null) {
+                callback({status: 200, error: Alert.USER_NOT_FOUND});
+            } else if (resultSet.password != createHash(resultSet.salt, data.password)) {
+                callback({status: 200, error: Alert.INVALID_PASSWORD});
+            } else {
                 var _async = require('async'),
                     Secretary = require('mongoose').model('Secretary'),
                     Upload = require('mongoose').model('Upload');
 
                 _async.waterfall([
-                    function formatUserData(callBack){
+                    function formatUserData(callBack) {
 
                         var _profileData = {
-                            id:resultSet._id,
-                            token:uuid.v1()+resultSet._id,
-                            first_name:resultSet.first_name,
-                            last_name:resultSet.last_name,
-                            email:resultSet.email,
-                            status:resultSet.status,
-                            user_name:resultSet.user_name,
-                            country:resultSet.country,
-                            dob:resultSet.dob,
-                            secretary_id:resultSet.secretary
+                            id: resultSet._id,
+                            token: uuid.v1() + resultSet._id,
+                            first_name: resultSet.first_name,
+                            last_name: resultSet.last_name,
+                            email: resultSet.email,
+                            status: resultSet.status,
+                            user_name: resultSet.user_name,
+                            country: resultSet.country,
+                            dob: resultSet.dob,
+                            secretary_id: resultSet.secretary
                         };
 
-                        for(var i=0;i<resultSet.working_experiences.length;i++){
-                            if(resultSet.working_experiences[i].is_current_work_place){
-                                _profileData['company_name']=resultSet.working_experiences[i].company_name;
-                                _profileData['job_title']=resultSet.working_experiences[i].title;
+                        for (var i = 0; i < resultSet.working_experiences.length; i++) {
+                            if (resultSet.working_experiences[i].is_current_work_place) {
+                                _profileData['company_name'] = resultSet.working_experiences[i].company_name;
+                                _profileData['job_title'] = resultSet.working_experiences[i].title;
                             }
                         }
 
-                        if(resultSet.education_details.length > 0){
-                            _profileData['school']=resultSet.education_details[0].school;
-                            _profileData['grad_date']=resultSet.education_details[0].date_attended_to;
+                        if (resultSet.education_details.length > 0) {
+                            _profileData['school'] = resultSet.education_details[0].school;
+                            _profileData['grad_date'] = resultSet.education_details[0].date_attended_to;
                         }
 
                         callBack(null, _profileData);
 
                     },
-                    function getSecretary(profileData,callBack){
+                    function getSecretary(profileData, callBack) {
 
-                        if( profileData.secretary_id != null){
-                            Secretary.getSecretaryById(profileData.secretary_id,function(secretary){
+                        if (profileData.secretary_id != null) {
+                            Secretary.getSecretaryById(profileData.secretary_id, function (secretary) {
                                 profileData['secretary_image_url'] = secretary.image_name;
                                 profileData['secretary_name'] = secretary.full_name;
-                                callBack(null,profileData);
+                                callBack(null, profileData);
                                 return 0
                             });
-                        }else{
-                            callBack(null,profileData)
+                        } else {
+                            callBack(null, profileData)
                         }
                     },
-                    function getProfileImage(profileData,callBack){
+                    function getProfileImage(profileData, callBack) {
 
-                        if(profileData != null){
-                            Upload.getProfileImage(profileData.id.toString(),function(profileImageData){
-                                profileData['profile_image'] = (profileImageData.status != 400)?profileImageData.image.profile_image.http_url:"";
-                                callBack(null,profileData)
+                        if (profileData != null) {
+                            Upload.getProfileImage(profileData.id.toString(), function (profileImageData) {
+                                profileData['profile_image'] = (profileImageData.status != 400) ? profileImageData.image.profile_image.http_url : "";
+                                callBack(null, profileData)
                                 return 0;
                             });
-                        }else{
-                            callBack(null,null)
+                        } else {
+                            callBack(null, null)
                         }
                     }
 
-                ],function(err,profileData) {
+                ], function (err, profileData) {
                     var outPut = {};
                     if (!err) {
 
-                        callback({status:200,user:profileData});
+                        callback({status: 200, user: profileData});
 
 
                     } else {
@@ -1315,9 +1320,9 @@ UserSchema.statics.authenticate = function(data, callback) {
                     }
                 })
             }
-        }else{
+        } else {
             console.log("Server Error --------")
-            callback({status:400,error:err});
+            callback({status: 400, error: err});
         }
     });
 
@@ -1327,63 +1332,69 @@ UserSchema.statics.authenticate = function(data, callback) {
 /**
  * authenticating user
  */
-UserSchema.statics.getApiVerification = function(data, callback) {
+UserSchema.statics.getApiVerification = function (data, callback) {
     var _this = this;
-    var criteria = {email:data.user_name}
-    _this.findOne(criteria,function(err,resultSet){
+    var criteria = {email: data.user_name}
+    _this.findOne(criteria, function (err, resultSet) {
 
-        if(!err){
-            if(resultSet == null){
-                callback({status:200,error:Alert.USER_NOT_FOUND});
-            } else{
+        if (!err) {
+            if (resultSet == null) {
+                callback({status: 200, error: Alert.USER_NOT_FOUND});
+            } else {
                 var code = Config.API_KEY + data.dt;
                 var vCode = createHash(resultSet.salt, code);
                 var vName = createHash(resultSet.salt, resultSet.user_name);
-                callback({status:200,verificationCode:vCode, verificationName:vName});
+                callback({status: 200, verificationCode: vCode, verificationName: vName});
             }
-        }else{
+        } else {
             console.log("Error while getting api verification code --------")
-            callback({status:400,error:err});
+            callback({status: 400, error: err});
         }
     });
 
 };
 
 
-UserSchema.statics.getSenderDetails = function(related_senders, callBack) {
+UserSchema.statics.getSenderDetails = function (related_senders, callBack) {
     var _this = this;
     var _async = require('async');
 
     var users = [];
     _async.waterfall([
-        function getUserDetails(){
-            _async.eachSeries(related_senders, function(user, callBack){
-                var query={
-                    q:"user_id:"+user.toString(),
-                    index:'idx_usr'
+        function getUserDetails() {
+            _async.eachSeries(related_senders, function (user, callBack) {
+                var query = {
+                    q: "user_id:" + user.toString(),
+                    index: 'idx_usr'
                 };
                 //Find User from Elastic search
-                ES.search(query,function(csResultSet){
+                ES.search(query, function (csResultSet) {
                     users.push(
                         {
-                            sender_id : user,
-                            sender_name : csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
-                            sender_user_name : csResultSet.result[0]['user_name'],
-                            profile_image : csResultSet.result[0]['images']['profile_image']['http_url']
+                            sender_id: user,
+                            sender_name: csResultSet.result[0]['first_name'] + " " + csResultSet.result[0]['last_name'],
+                            sender_user_name: csResultSet.result[0]['user_name'],
+                            profile_image: csResultSet.result[0]['images']['profile_image']['http_url']
                         }
                     );
                     callBack(null);
                 });
 
-            },function(err){
+            }, function (err) {
                 callBack(users);
             });
         }
-    ],function(err){
+    ], function (err) {
 
     });
 
 };
 
+UserSchema.statics.modes = {
+    online: 1,
+    busy: 2,
+    offline: 3
+};
 
-mongoose.model('User',UserSchema);
+
+mongoose.model('User', UserSchema);

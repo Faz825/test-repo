@@ -325,7 +325,10 @@ router.post('/calendar/event/get', CalendarController.getEvent);
 
 router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
 
-router.get('/call-records', CallCenterController.getCallRecords);
+// Call Center
+router.get('/contacts/all', CallCenterController.contact.getAll);
+
+router.get('/call-records', CallCenterController.call.getCallRecords);
 
 /**
  * API Routes that need to authenticate separately
