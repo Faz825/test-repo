@@ -49,9 +49,18 @@ export default class DayTodosList extends React.Component {
 				usersString = <span className="people-list" >Only me</span>
 			}
 
+			let ecentClassName = "";
+			if(event.status == 2) {
+				ecentClassName = ecentClassName.concat('active ');
+			}
+
+			if(event._id == _this.props.selectedEvent) {
+				ecentClassName = ecentClassName.concat(' bg-success ');
+			}
+
 			return (
-				<li className={event.status == 2 ? 'active' : ''} key={key}>
-					<div className="checkbox-area">
+				<li className={ecentClassName} key={key}>
+					<div className={event._id == _this.props.selectedEvent ? 'bg-success checkbox-area ' : 'checkbox-area'}>
 						<input id="check1" name="check" value="check1" type="checkbox" />
 						<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id, event.status)} className="description-holder">
 							<div className={acceptedClass} >{event.plain_text}</div>

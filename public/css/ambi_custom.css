@@ -417,6 +417,10 @@ a.rc-time-picker-panel-clear-btn {
 	padding: 20px 10px 20px 30px;
 }
 
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li.bg-success {
+  padding: 20px 10px 20px 30px;
+}
+
 .calender-container .calender-body .col-sm-9 .calender-view ul.list-unstyled li .description-holder {
 	width: 80%;
 }
@@ -799,6 +803,10 @@ footer .notification-alert-holder.slideOut{
 
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li div.checkbox-area {
   display: block;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li div.checkbox-area.bg-success {
+  padding: 10px;
 }
 
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.people-list {

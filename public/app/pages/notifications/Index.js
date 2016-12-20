@@ -8,6 +8,7 @@ import Session  from '../../middleware/Session';
 import Socket  from '../../middleware/Socket';
 import SecretaryThumbnail from '../../components/elements/SecretaryThumbnail';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
+import { browserHistory } from 'react-router';
 
 export default class Index extends React.Component{
     constructor(props){
@@ -489,7 +490,8 @@ export default class Index extends React.Component{
                 if(stt == 'REQUEST_REJECTED') {
                     this.loadNotifications();
                 } else {
-                    window.location.href = '/calendar';
+                    var strUrl = '/calendar/'+notification.calendar_id;
+                    browserHistory.push(strUrl);
                 }
 
             }.bind(this));

@@ -50,7 +50,7 @@ export default class DayEventsList extends React.Component {
             }
 
             return (
-                <li key={key}>
+                <li key={key} className={event._id == _this.props.selectedEvent ? 'bg-success' : ''}>
                     <i className="fa fa-circle" aria-hidden="true"></i>
                     <div className="description-holder">
                         <div className={acceptedClass} >{event.plain_text}</div>

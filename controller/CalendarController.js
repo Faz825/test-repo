@@ -5,6 +5,17 @@
  */
 var CalendarController = {
 
+
+    index: function(req, res) {
+        console.log("uuuuuuuuu uuu uuu uuu uuu uuu uuu");
+        console.log(req.params.name);
+        var outPut = {};
+        outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+        outPut['event'] = req.params.name;
+        res.status(200).render('index').send(outPut);
+        // res.render('index');
+    },
+
     /**
      * Return a specific event by a given ID
      * @param req

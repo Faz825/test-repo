@@ -30,6 +30,7 @@ export default class DayView extends Component {
     constructor(props) {
         super(props);
         let user =  Session.getSession('prg_lg');
+
         this.state = {
             currentDay : this.props.dayDate,
             defaultType : 'event',
@@ -50,6 +51,7 @@ export default class DayView extends Component {
 
         this.sharedWithIds = [];
         this.sharedWithNames = [];
+        this.selectedEvent = this.props.selectedEvent;
         this.currentDay = this.state.currentDay;
         this.loggedUser = user;
         this.addEvent = this.addEvent.bind(this);
@@ -58,7 +60,12 @@ export default class DayView extends Component {
         this.changeType = this.changeType.bind(this);
         this.handleTimeChange = this.handleTimeChange.bind(this);
         this.toggleMsg = this.toggleMsg.bind(this);
+    }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({currentDay : nextProps.dayDate});
+        this.currentDay = nextProps.dayDate;
+        this.loadEvents();
     }
 
     _onHashClick() {
@@ -87,7 +94,6 @@ export default class DayView extends Component {
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
                 if (data.status.code == 200) {
-                    console.log(data.events);
                     this.setState({events: data.events});
                 }
             }.bind(this),
@@ -95,10 +101,14 @@ export default class DayView extends Component {
                 console.log(error);
             }
         });
-
     }
 
     resetEventForm() {
+        if(this.state.showUserPanelWindow) {
+            this.refs.SharedUserField.sharedWithNames = [];
+            this.refs.SharedUserField.sharedWithIds = [];
+        }
+        
         this.setState({
             sharedWithNames: [],
             sharedWithIds: [],
@@ -111,8 +121,7 @@ export default class DayView extends Component {
         });
         this.sharedWithIds = [];
         this.sharedWithNames = [];
-        this.refs.SharedUserField.sharedWithNames = [];
-        this.refs.SharedUserField.sharedWithIds = [];
+
     }
 
     toggleMsg() {
@@ -236,7 +245,7 @@ export default class DayView extends Component {
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
-                console.log(this.refs.EditorFieldValues);
+
                 const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
                 this.refs.EditorFieldValues.setState({editorState});
 
@@ -258,7 +267,7 @@ export default class DayView extends Component {
     }
 
     markTodo(eventId, status) {
-        console.log(eventId);
+
         let user =  Session.getSession('prg_lg');
         var postData = {
             id : eventId,
@@ -425,6 +434,7 @@ export default class DayView extends Component {
     }
 
     render() {
+
         let shared_with_list = [];
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
@@ -585,6 +595,7 @@ export default class DayView extends Component {
                                         <DayEventsList
                                             events={this.state.events}
                                             clickEdit={this.clickEdit.bind(this)}
+                                            selectedEvent={this.selectedEvent}
                                         />
                                     </div>
                                 </div>
@@ -600,6 +611,7 @@ export default class DayView extends Component {
                                             events={this.state.events}
                                             onClickItem={this.markTodo.bind(this)}
                                             clickEdit={this.clickEdit.bind(this)}
+                                            selectedEvent={this.selectedEvent}
                                         />
                                     </div>
                                 </div>
