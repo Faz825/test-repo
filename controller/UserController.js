@@ -2047,15 +2047,9 @@ var UserControler = {
                             };
                         }
                         console.log(criteria)
-<<<<<<< HEAD
                         Connection.getMyConnectionData(criteria, function (resultSet) {
                             console.log("=======================Connections==============")
                             console.log(resultSet)
-=======
-                        Connection.getMyConnectionData(criteria,function(resultSet) {
-                            //console.log("=======================Connections==============")
-                            //console.log(resultSet)
->>>>>>> 900478043ac0ba84d20403967d9850be1fdb4565
                             my_connections = resultSet.results;
                             callback(null);
                         });
@@ -2082,27 +2076,9 @@ var UserControler = {
                 console.log("getFolderUsers")
                 if (alreadySharedUsers != null && my_connections != null) {
 
-<<<<<<< HEAD
                     for (var i = 0; i < my_connections.length; i++) {
                         if (alreadySharedUsers.indexOf(my_connections[i].user_id) == -1) {
                             filteredConnections.push(my_connections[i]);
-=======
-                    for(var i = 0; i < my_connections.length; i++){
-                        if(alreadySharedUsers.indexOf(my_connections[i].user_id) == -1){
-                            var _us = {
-                                user_id : my_connections[i].user_id,
-                                first_name : my_connections[i].first_name,
-                                last_name : my_connections[i].last_name,
-                                user_name : my_connections[i].user_name,
-                                profile_image : ""
-                            };
-                            if(typeof my_connections[i].images != 'undefined' && typeof my_connections[i].images.profile_image != 'undefined' &&
-                                typeof my_connections[i].images.profile_image.http_url != 'undefined'){
-                                _us.profile_image = my_connections[i].images.profile_image.http_url;
-                            }
-
-                            filteredConnections.push(_us);
->>>>>>> 900478043ac0ba84d20403967d9850be1fdb4565
                         }
                     }
                     callback(null)
@@ -2115,8 +2091,6 @@ var UserControler = {
                 console.log(err);
                 return;
             }
-            console.log("=================CALLBACK====================");
-            console.log(JSON.stringify(filteredConnections));
             var outPut = {
                 status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                 users: filteredConnections
