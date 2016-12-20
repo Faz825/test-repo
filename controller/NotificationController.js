@@ -561,8 +561,13 @@ var NotificationController ={
 
                                         _users[_res[i].commented_by.user_id] = {
                                             name : _res[i].commented_by.first_name+" "+_res[i].commented_by.last_name,
-                                            profile_image : _res[i].commented_by.images.profile_image.http_url,
+                                            profile_image : "",
                                             user_name: _res[i].commented_by.user_name
+                                        };
+
+                                        if(typeof _res[i].commented_by.images != 'undefined' && typeof _res[i].commented_by.images.profile_image != 'undefined' &&
+                                            typeof _res[i].commented_by.images.profile_image.http_url != 'undefined'){
+                                            _users[_res[i].commented_by.user_id].profile_image = _res[i].commented_by.images.profile_image.http_url;
                                         }
 
                                     }
@@ -606,9 +611,14 @@ var NotificationController ={
 
                             _users[_userId] = {
                                 name : csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
-                                profile_image : csResultSet.result[0]['images']['profile_image']['http_url'],
+                                profile_image : "",
                                 user_name: csResultSet.result[0]['user_name']
+                            };
+                            if(typeof csResultSet.result[0].images != 'undefined' && typeof csResultSet.result[0].images.profile_image != 'undefined' &&
+                                typeof csResultSet.result[0].images.profile_image.http_url != 'undefined'){
+                                _users[_userId].profile_image = csResultSet.result[0].images.profile_image.http_url;
                             }
+
                             callBack(null);
                         });
                     }else{
