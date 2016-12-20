@@ -1,0 +1,8 @@
+.gitignore
+.idea/
+config/app.config.js
+elasticsearch-1.4.2.deb
+node_modules/
+npm-debug.log
+public/lib/
+public/web/
