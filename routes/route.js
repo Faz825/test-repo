@@ -33,6 +33,7 @@ require('../model/GroupFolderModel');
 require('../model/GroupFolderDocsModel');
 require('../model/CalendarEventModel');
 require('../model/CallModel');
+require('../model/GroupsModel');
 
 /** Load  Controllers
  */
@@ -52,6 +53,7 @@ var DefaultController   = require('../controller/DefaultController'),
     GroupFolderController     = require('../controller/GroupFolderController'),
     CalendarController     = require('../controller/CalendarController'),
     CallCenterController     = require('../controller/CallCenterController');
+    GroupsController    = require('../controller/GroupsController');
 
 
 /**

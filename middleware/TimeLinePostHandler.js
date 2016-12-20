@@ -47,6 +47,11 @@ var TimeLinePostHandler ={
                     _post.visible_users= _post.visible_users;
                     callBack(null)
                 }
+
+                else if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST){
+                    _post.visible_users= _post.visible_users;
+                    callBack(null)
+                }
             },
             function savePostInDb(callBack){
 

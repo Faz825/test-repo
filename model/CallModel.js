@@ -49,11 +49,6 @@ var CallSchema = new Schema({
         default : null
     },
 
-    call_status : {
-        type : Number,
-        default : null /* 1 - missed | 2 - answered | 3 - rejected, 4 - cancelled */
-    },
-
     contact_type : {
         type : Number, /* 1 - individual | 2 - group | 3 - multi*/
         default : null

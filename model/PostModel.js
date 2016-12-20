@@ -10,7 +10,8 @@ GLOBAL.PostVisibleMode ={
     PUBLIC:1,
     FRIEND_ONLY:2,
     ONLY_MY:3,
-    SELECTED_USERS:4
+    SELECTED_USERS:4,
+    GROUP_POST:5
 };
 
 GLOBAL.PostConfig={
