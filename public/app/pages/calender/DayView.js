@@ -625,11 +625,6 @@ export default class DayView extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <button
-                                bsStyle="primary"
-                                bsSize="large"
-                                onClick={this.openModal}
-                            > modal test </button>
                             <div className="row events-list-area">
                                 <div className="col-sm-12">
                                     <div className="events-list-area-content">
