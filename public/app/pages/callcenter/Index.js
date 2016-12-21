@@ -457,6 +457,7 @@ export default class Index extends React.Component {
             headers: {'prg-auth-header': this.state.loggedUser.token}
         }).done(function (data) {
             if (data.status.code == 200) {
+            	console.log(data);
                 if (cat == "contact" && subCat == "all") {
                     this.setState({userList: userList});
                 } else if (cat == "contact" && subCat == "individual") {
@@ -477,6 +478,7 @@ export default class Index extends React.Component {
                 this.setState({activeMainCat: cat, activeSubCat: subCat});
             }
         }.bind(this));
+
     }
 
     onPopupClose() {
@@ -498,7 +500,7 @@ export default class Index extends React.Component {
     }
 
     onUserCalling(userID) {
-        this.setState({showModal: true});
+        this.setState({isShowingModal: true});
     }
 
     userCallPopup() {
