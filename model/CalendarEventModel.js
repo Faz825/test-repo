@@ -476,4 +476,29 @@ CalendarEventSchema.statics.ch_shareEventUpdateIndex = function(userId,data,call
 
 };
 
+/**
+ * delete event based on criteria
+ * @param criteria
+ * @param callBack
+ */
+CalendarEventSchema.statics.deleteEvent = function (criteria, callBack) {
+    console.log("deleting a calendar event--")
+
+    this.remove(criteria).exec(function (err, resultSet) {
+
+        if (!err) {
+            callBack({
+                status: 200,
+                result: resultSet
+            });
+        } else {
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status: 400, error: err});
+        }
+
+    })
+
+};
+
 mongoose.model('CalendarEvent', CalendarEventSchema);
