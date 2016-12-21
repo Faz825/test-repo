@@ -172,7 +172,7 @@ export default class DayView extends Component {
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
         };
-
+        this.resetEventForm();
         $.ajax({
             url: '/calendar/event/add',
             method: "POST",
