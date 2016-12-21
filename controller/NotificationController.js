@@ -464,13 +464,16 @@ var NotificationController ={
                     _async.each(_calendarIds, function (_calId, callBack) {
 
                         CalendarEvent.getEventById(_calId,function(resultSet){
-                            if(resultSet) {
-                                var _data = {
-                                    calendar_id : _calId,
-                                    calendar_text : resultSet.plain_text
-                                };
-                                _calendarData.push(_data);
+                            if(resultSet.error) {
+                                callBack(resultSet.error, null);
                             }
+                            
+                            var _data = {
+                                calendar_id : _calId,
+                                calendar_text : resultSet.event.plain_text
+                            };
+                            _calendarData.push(_data);
+                            
                             callBack(null);
                         });
                     }, function (err) {

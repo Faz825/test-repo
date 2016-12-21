@@ -23,7 +23,7 @@ var CalendarController = {
                     if(result.error) {
                         callBack(result.error, null);
                     }
-                    callBack(null, result);
+                    callBack(null, result.event);
                 });
             },
 
@@ -286,8 +286,11 @@ var CalendarController = {
             function getEventById(callBack) {
                 console.log("came to getEventById");
                 CalendarEvent.getEventById(eventId, function (result) {
-                    myEvent = result;
-                    callBack(null, result);
+                    if(result.error) {
+                        callBack(result.error, null);
+                    }
+                    myEvent = result.event;
+                    callBack(null, result.event);
                 });
             },
             function getNotificationByEventId(_event, callBack) {
@@ -1128,7 +1131,10 @@ var CalendarController = {
         _async.waterfall([
             function getEvents(callBack) {
                 CalendarEvent.getEventById(event_id, function (resultSet) {
-                    callBack(null, resultSet);
+                    if(result.error) {
+                        callBack(result.error, null);
+                    }
+                    callBack(null, resultSet.event);
                 });
             },
             function compareSharedUsers(resultSet, callBack) {
@@ -1408,7 +1414,10 @@ var CalendarController = {
         _async.waterfall([
             function getEvent(callBack) {
                 var event = CalendarEvent.getEventById(event_Id, function (resultSet) {
-                    callBack(null, resultSet);
+                    if(result.error) {
+                        callBack(result.error, null);
+                    }
+                    callBack(null, resultSet.event);
                 });
             },
             function shareEvent(resultSet, callBack) {
@@ -1506,7 +1515,10 @@ var CalendarController = {
         _async.waterfall([
             function getEevent(callBack) {
                 CalendarEvent.getEventById(event_Id, function (resultSet) {
-                    callBack(null, resultSet);
+                    if(result.error) {
+                        callBack(result.error, null);
+                    }
+                    callBack(null, resultSet.event);
                 });
             },
             function getSharedUsers(resultSet, callBack) {
@@ -1613,7 +1625,10 @@ var CalendarController = {
         _async.waterfall([
             function getEvent(callBack) {
                 var event = CalendarEvent.getEventById(event_id, function (resultSet) {
-                    callBack(null, resultSet);
+                    if(result.error) {
+                        callBack(result.error, null);
+                    }
+                    callBack(null, resultSet.event);
                 });
             },
             function updateInDB(resultSet, callBack) {
@@ -1834,7 +1849,10 @@ var CalendarController = {
         _async.waterfall([
             function getEvents(callBack) {
                 CalendarEvent.getEventById(event_id, function (resultSet) {
-                    callBack(null, resultSet);
+                    if(result.error) {
+                        callBack(result.error, null);
+                    }
+                    callBack(null, resultSet.event);
                 });
             },
             function updateEvent(resultSet, callBack) {

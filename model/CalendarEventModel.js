@@ -176,11 +176,10 @@ CalendarEventSchema.statics.getEventById = function(id,callBack){
     _this.findOne({_id: id}).lean().exec(function (err, resultSet) {
         if (!err) {
             if (resultSet == null) {
-                callBack(null);
+                callBack({status: 200, event: {}});
                 return;
             }
-
-            callBack(resultSet);
+            callBack({status: 200, event: resultSet})
         } else {
             console.log(err)
             callBack({status: 400, error: err})
