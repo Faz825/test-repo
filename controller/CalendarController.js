@@ -281,7 +281,6 @@ var CalendarController = {
         var moment = require('moment');
         var eventId = req.body.event_id;
         var myEvent = '';
-        console.log("eventId >" +eventId);
 
         _async.waterfall([
             function getEventById(callBack) {
@@ -293,133 +292,124 @@ var CalendarController = {
             },
             function getNotificationByEventId(_event, callBack) {
                 console.log("came to getNotificationByEventId");
-                if (_event) {
-                    console.log(_event._id);
-                    var criteria = {notified_calendar: _event._id};
-                    Notification.getFirstNotification(criteria, function (results) {
-                        if (results.status ==200) {
-                            callBack(null, results.result, _event);
-                        } else {
-                            callBack(null, null, null);
-                        }
-
-                    });
-                } else {
-                    callBack(null, null, null);
-                }
-
-            },
-            function removeRecipients(_notification, _event, callBack) {
-                console.log("came to removeRecipients");
-                if (_notification && _event) {
-                    console.log(_event);
-                    console.log(_notification);
-                    var criteria = {notification_id: _notification._id}
-                    NotificationRecipient.deleteNotificationRecipients(criteria, function (results) {
-                        if (results.status ==200) {
-                            callBack(null, results.status, _notification);
-                        } else {
-                            callBack(null, null, null);
-                        }
-                    });
-                } else {
-                    callBack(null, null, null);
-                }
-            },
-            function removeNotification(delRecipients, _notification, callBack) {
-                console.log("came to removeNotification");
-                if (delRecipients == 200 && _notification) {
-                    console.log(delRecipients);
-                    console.log(_notification);
-                    var criteria = {_id: _notification._id}
-
-                    Notification.deleteNotification(criteria, function (results) {
-                        if (results.status ==200) {
-                            callBack(null, results.status);
-                        } else {
-                            callBack(null, null);
-                        }
-
-                    });
-                } else {
-                    callBack(null, null);
-                }
-            },
-            function removeEventFinally(delNotification, callBack) {
-                console.log("came to removeEventFinally");
-                if (delNotification == 200) {
-                    console.log(delNotification);
-                    var criteria = {_id: eventId}
-
-                    CalendarEvent.deleteEvent(criteria, function (results) {
-                        if (results.status ==200) {
-                            callBack(null, esults.status);
-                        } else {
-                            callBack(null, null);
-                        }
-                    });
-                } else {
-                    callBack(null, null);
-                }
-            },
-            function removeEventFromESSharedEvents(delEvent, callBack) {
-                console.log("came to removeEventFromESSharedEvents");
-                if (delEvent == 200 && myEvent) {
-                    console.log(delEvent);
+                if (_event && _event.shared_users.length > 0) {
                     _async.waterfall([
-                        function isESIndexExists(callBack) {
-                            console.log("came to isESIndexExists");
-                            var _cache_key = "idx_user:" + CalendarEventsConfig.CACHE_PREFIX + myEvent.user_id.toString();
-                            var query = {
-                                index: _cache_key,
-                                id: myEvent.user_id.toString(),
-                                type: 'shared_events',
-                            };
-                            ES.isIndexExists(query, function (esResultSet) {
-                                callBack(null, esResultSet);
-                            });
+                        function getNotificationByEventId(callBack) {
+                            console.log("came to getNotificationByEventId");
+                            if (myEvent) {
+                                console.log(_event._id);
+                                var criteria = {notified_calendar: _event._id};
+                                Notification.getFirstNotification(criteria, function (results) {
+                                    if (results.status == 200) {
+                                        callBack(null, results.result, _event);
+                                    } else {
+                                        callBack(null, null, null);
+                                    }
+
+                                });
+                            } else {
+                                callBack(null, null, null);
+                            }
+
                         },
-                        function getSharedEvents(resultSet, callBack) {
-                            console.log("came to getSharedEvents");
-                            if (resultSet) {
-                                console.log("index exists---");
-                                var query = {
-                                    q: "_id:" + myEvent.user_id.toString()
-                                };
-                                CalendarEvent.ch_getSharedEvents(myEvent.user_id, query, function (esResultSet) {
-                                    callBack(null, esResultSet);
+                        function removeRecipients(_notification, _event, callBack) {
+                            console.log("came to removeRecipients");
+                            if (_notification && _event) {
+                                var criteria = {notification_id: _notification._id}
+                                NotificationRecipient.deleteNotificationRecipients(criteria, function (results) {
+                                    if (results.status == 200) {
+                                        callBack(null, results.status, _notification);
+                                    } else {
+                                        callBack(null, null, null);
+                                    }
+                                });
+                            } else {
+                                callBack(null, null, null);
+                            }
+                        },
+                        function removeNotification(delRecipients, _notification, callBack) {
+                            console.log("came to removeNotification");
+                            if (delRecipients == 200 && _notification) {
+                                var criteria = {_id: _notification._id}
+
+                                Notification.deleteNotification(criteria, function (results) {
+                                    if (results.status == 200) {
+                                        callBack(null, results.status);
+                                    } else {
+                                        callBack(null, null);
+                                    }
+
                                 });
                             } else {
                                 callBack(null, null);
                             }
                         },
-                        function ch_updateEvent(resultSet, callBack) {
-                            console.log("came to ch_updateEvent");
-                            if (resultSet != null) {
-                                console.log(resultSet);
-                                var event_list = resultSet.result[0].events;
-                                console.log("event-list");
-                                console.log(event_list);
-                                var index_a = event_list.indexOf(myEvent._id);
-                                console.log("index_a > "+ index_a);
-                                if (index_a == -1) { //event id should exists
-                                    event_list.splice(index_a, 1);//removing event id from array
-                                    console.log("event-list 2");
-                                    console.log(event_list);
-                                    var query = {
-                                            q: "user_id:" + myEvent.user_id.toString()
-                                        },
-                                        data = {
-                                            user_id: myEvent.user_id,
-                                            events: event_list
-                                        };
+                        function removeEventFromESSharedEvents(delNotification, callBack) {
+                            console.log("came to removeEventFromESSharedEvents");
+                            if (delNotification == 200 && myEvent) {
 
-                                    CalendarEvent.ch_shareEventUpdateIndex(myEvent.user_id, data, function (esResultSet) {
+                                var sharedUsers = myEvent.shared_users;
+                                if (typeof sharedUsers != 'undefined' && sharedUsers.length > 0) {
+                                    _async.each(sharedUsers, function (sharedUser, callBack) {
+                                        _async.waterfall([
+                                            function isESIndexExists(callBack) {
+                                                console.log("came to isESIndexExists");
+                                                var _cache_key = "idx_user:" + CalendarEventsConfig.CACHE_PREFIX + sharedUser.user_id.toString();
+                                                var query = {
+                                                    index: _cache_key,
+                                                    id: sharedUser.user_id.toString(),
+                                                    type: 'shared_events',
+                                                };
+                                                ES.isIndexExists(query, function (esResultSet) {
+                                                    callBack(null, esResultSet);
+                                                });
+                                            },
+                                            function getSharedEvents(resultSet, callBack) {
+                                                if (resultSet) {
+                                                    console.log("index exists---");
+                                                    var query = {
+                                                        q: "_id:" + sharedUser.user_id.toString()
+                                                    };
+                                                    CalendarEvent.ch_getSharedEvents(sharedUser.user_id, query, function (esResultSet) {
+                                                        callBack(null, esResultSet);
+                                                    });
+                                                } else {
+                                                    callBack(null, null);
+                                                }
+                                            },
+                                            function ch_updateEvent(resultSet, callBack) {
+                                                if (resultSet != null) {
+                                                    var event_list = resultSet.result[0].events;
+                                                    var index_a = event_list.indexOf(myEvent._id);
+                                                    if (index_a == -1) { //event id should exists
+                                                        event_list.splice(index_a, 1);//removing event id from array
+                                                        var query = {
+                                                                q: "user_id:" + sharedUser.user_id.toString()
+                                                            },
+                                                            data = {
+                                                                user_id: sharedUser.user_id,
+                                                                events: event_list
+                                                            };
+
+                                                        CalendarEvent.ch_shareEventUpdateIndex(sharedUser.user_id, data, function (esResultSet) {
+                                                            callBack(null);
+                                                        });
+                                                    } else {
+                                                        callBack(null);
+                                                    }
+                                                } else {
+                                                    callBack(null);
+                                                }
+                                            }
+
+                                        ], function (err) {
+                                            callBack(null);
+                                        })
+                                    }, function (err) {
                                         callBack(null);
                                     });
-                                } else {
-                                    callBack(null);
                                 }
+
                             } else {
                                 callBack(null);
                             }
@@ -432,12 +422,24 @@ var CalendarController = {
                     callBack(null);
                 }
             },
+            function removeEventFinally(callBack) {
+                console.log("came to removeEventFinally");
+                var criteria = {_id: eventId}
+
+                CalendarEvent.deleteEvent(criteria, function (results) {
+                    if (results.status == 200) {
+                        callBack(null, results.status);
+                    } else {
+                        callBack(null, null);
+                    }
+                });
+            }
 
 
-        ], function (err) {
+        ], function (err, _status) {
 
             var outPut = {};
-            if (err) {
+            if (err || _status != 200) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDAR_MONTH_EMPTY, Alert.ERROR);
                 res.status(400).send(outPut);
             } else {
