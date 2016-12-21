@@ -462,12 +462,15 @@ var NotificationController ={
                 var CalendarEvent = require('mongoose').model('CalendarEvent');
                 if(_calendarIds.length > 0) {
                     _async.each(_calendarIds, function (_calId, callBack) {
+
                         CalendarEvent.getEventById(_calId,function(resultSet){
-                            var _data = {
-                                calendar_id : _calId,
-                                calendar_text : resultSet.plain_text
-                            };
-                            _calendarData.push(_data);
+                            if(resultSet) {
+                                var _data = {
+                                    calendar_id : _calId,
+                                    calendar_text : resultSet.plain_text
+                                };
+                                _calendarData.push(_data);
+                            }
                             callBack(null);
                         });
                     }, function (err) {
