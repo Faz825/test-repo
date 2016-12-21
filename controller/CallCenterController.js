@@ -26,35 +26,38 @@ var CallCenterController = {
                     });
                 },
                 function (aConns, callback) {
-                    var aNames = [];
+                    var aAlphabet = [];
 
                     for (var i = 0; i < aConns.length; i++) {
-                        aNames.push(aConns[i].first_name.toLowerCase());
-                    }
-
-                    aNames.sort();
-
-                    var aAlphabet = {};
-
-                    for (var i = 0; i < aNames.length; i++) {
-                        if (!aAlphabet.hasOwnProperty(aNames[i][0])) {
-                            aAlphabet[aNames[i][0]] = [];
+                        if (aAlphabet.indexOf(aConns[i].first_name[0]) == -1) {
+                            aAlphabet.push(aConns[i].first_name[0].toUpperCase());
                         }
                     }
 
-                    for (var i = 0; i < aConns.length; i++) {
-                        var first_letter = aConns[i].first_name.toLowerCase()[0];
+                    aAlphabet.sort();
 
-                        for (var key in aAlphabet) {
-                            if (first_letter == key) {
-                                aAlphabet[key].push(aConns[i]);
+                    var aContacts = [];
+
+                    for (var i = 0; i < aAlphabet.length; i++) {
+                        aContacts.push({
+                            letter: aAlphabet[i],
+                            users: []
+                        });
+                    }
+
+                    for (var i = 0; i < aConns.length; i++) {
+                        var first_letter = aConns[i].first_name[0].toUpperCase();
+
+                        for (var x = 0; x < aContacts.length; x++) {
+                            if (aContacts[x].letter == first_letter) {
+                                aContacts[x].users.push(aConns[i]);
                             }
                         }
                     }
 
                     var outPut = {
                         status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                        contacts: aAlphabet
+                        contacts: aContacts
                     };
 
                     return res.status(200).json(outPut);
