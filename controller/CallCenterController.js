@@ -29,8 +29,10 @@ var CallCenterController = {
                     var aAlphabet = [];
 
                     for (var i = 0; i < aConns.length; i++) {
-                        if (aAlphabet.indexOf(aConns[i].first_name[0]) == -1) {
-                            aAlphabet.push(aConns[i].first_name[0].toUpperCase());
+                        var first_letter = aConns[i].first_name[0].toUpperCase();
+
+                        if (aAlphabet.indexOf(first_letter) == -1) {
+                            aAlphabet.push(first_letter);
                         }
                     }
 
