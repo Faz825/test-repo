@@ -740,9 +740,13 @@ footer .notification-alert-holder.slideOut{
   background-color: #e6f3ff;
 }
 
+.draftJsMentionPlugin__mentionSuggestionsEntry__3mSwm{
+  position: relative;
+}
+
 .draftJsMentionPlugin__mentionSuggestionsEntryText__3Jobq {
   display: inline-block;
-  margin-left: 8px;
+  margin-left: 32px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -753,7 +757,10 @@ footer .notification-alert-holder.slideOut{
 }
 
 .draftJsMentionPlugin__mentionSuggestionsEntryAvatar__1xgA9 {
-  display: inline-block;
+  position: absolute;
+  top: 25px;
+  left: 10px;
+  margin-right: 10px;
   width: 24px;
   height: 24px;
   border-radius: 12px;

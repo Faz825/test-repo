@@ -115,6 +115,7 @@ export default class Index extends React.Component{
         }).done( function (data, text){
             if(data.status.code == 200 && this.loadFolderRequest){
                 let folders = data.folders;
+                console.log(folders);
                 this.setState({folders: folders});
             }
         }.bind(this));
@@ -1047,28 +1048,31 @@ export class File extends React.Component{
         }
 
         return(
-            <div className="folder-col" onClick={()=>this.viewFile(data)}>
-                <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
-                    <div className="inner-wrapper">
-                        <div className="time-wrapper">
-                            <p className="date-created">{data.document_updated_at.createdDate}</p>
-                            <p className="time-created">{data.document_updated_at.createdTime}</p>
+            <div className="folder-col">
+                <div className="clearfix" onClick={()=>this.viewFile(data)}>
+                    <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
+                        <div className="inner-wrapper">
+                            <div className="time-wrapper">
+                                <p className="date-created">{data.document_updated_at.createdDate}</p>
+                                <p className="time-created">{data.document_updated_at.createdTime}</p>
+                            </div>
+                            <div className="folder-title-holder">
+                                <p className="folder-title">{data.document_name}</p>
+                            </div>
+                            <span className="item-type"></span>                        
                         </div>
-                        <div className="folder-title-holder">
-                            <p className="folder-title">{data.document_name}</p>
-                        </div>
-                        <span className="item-type"></span>                        
+                        {
+                            (data.document_thumb_path)?
+                                <span className="img-overlay"></span>
+                            :
+                                null
+                        }
                     </div>
-                    {
-                        (data.document_thumb_path)?
-                            <span className="img-overlay"></span>
-                        :
-                            null
-                    }
                 </div>
                 {
                     (this.state.loggedUser.id == data.document_user) ?
-                        <i className="fa fa-minus doc-delete-btn" aria-hidden="true" onClick={()=>this.onShowConfirm(data.document_id)}></i> : null
+                    <i className="fa fa-minus doc-delete-btn" aria-hidden="true" onClick={()=>this.onShowConfirm(data.document_id)}></i>
+                    : null
                 }
 
             </div>
