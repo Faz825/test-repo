@@ -277,7 +277,7 @@ export default class DayView extends Component {
      * delete a given event or a todo.
     */
     delete() {
-        console.log("DELETED EVENT IS : " + this.state.deleteEventId);
+
         $.ajax({
             url : '/calendar/delete',
             method : "POST",
@@ -286,7 +286,9 @@ export default class DayView extends Component {
             headers : { "prg-auth-header" : this.state.user.token},
             success : function (data, text) {
                 if (data.status.code == 200) {
-                    this.setState({events: data.events, deleteEventId: ''});
+                    this.setState({deleteEventId: ''});
+                    this.closeModal();
+                    this.loadEvents();
                 }
             }.bind(this),
             error: function (request, status, error) {
@@ -357,10 +359,6 @@ export default class DayView extends Component {
                 console.log(error);
             }
         });
-    }
-
-    delete(eventId) {
-        console.log("DELETE is Called.");
     }
 
     nextDay() {
