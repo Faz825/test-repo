@@ -978,38 +978,34 @@ var CalendarController = {
                                 if(typeof esResultSet != 'undefined' && esResultSet) {
 
                                     var sharedEvents = esResultSet.result[0].events;
+                                    var condition = {
+                                        start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay},
+                                        _id : {$in : sharedEvents},
+                                    };
 
-                                    _async.each(sharedEvents, function (sharedEvent, callBack) {
+                                    CalendarEvent.getSortedCalenderItems(condition, function (err, resultSet) {
 
-                                        var condition = {
-                                            start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay},
-                                            _id: sharedEvent,
-                                        };
+                                        if(typeof resultSet != 'undefined' && resultSet) {
+                                            _async.each(resultSet.events, function (result, callBack) {
 
-                                        CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
-
-                                            if(typeof result != 'undefined' && result) {
-
-                                                if (result.events[0] != null && typeof result.events[0] != 'undefined') {
-                                                    var _Shared_users = result.events[0].shared_users;
-
-                                                    if(_Shared_users != null && typeof _Shared_users != 'undefined'){
-
-                                                        for(var inc = 0; inc < _Shared_users.length; inc++){
-
-                                                            if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING || _Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
-                                                                _Events.push(result.events[0]);
-                                                            }
+                                                var _Shared_users = result.shared_users;
+                                                if(_Shared_users != null && typeof _Shared_users != 'undefined'){
+                                                    
+                                                    for(var inc = 0; inc < _Shared_users.length; inc++){
+                                                        
+                                                        if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING || _Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
+                                                            _Events.push(result);
                                                         }
                                                     }
-
                                                 }
-                                            }
-                                            callBack(null);
+                                                callBack(null, _Events);
+                                            }, function (err) {
+                                                callBack(null, _Events);
+                                            });
+                                        } else {
+                                            callBack(null, _Events);
+                                        }
 
-                                        });
-                                    }, function (err) {
-                                        callBack(null, _Events);
                                     });
                                 } else {
                                     callBack(null, _Events);
@@ -1131,8 +1127,8 @@ var CalendarController = {
         _async.waterfall([
             function getEvents(callBack) {
                 CalendarEvent.getEventById(event_id, function (resultSet) {
-                    if(result.error) {
-                        callBack(result.error, null);
+                    if(resultSet.error) {
+                        callBack(resultSet.error, null);
                     }
                     callBack(null, resultSet.event);
                 });
@@ -1414,8 +1410,8 @@ var CalendarController = {
         _async.waterfall([
             function getEvent(callBack) {
                 var event = CalendarEvent.getEventById(event_Id, function (resultSet) {
-                    if(result.error) {
-                        callBack(result.error, null);
+                    if(resultSet.error) {
+                        callBack(resultSet.error, null);
                     }
                     callBack(null, resultSet.event);
                 });
@@ -1515,8 +1511,8 @@ var CalendarController = {
         _async.waterfall([
             function getEevent(callBack) {
                 CalendarEvent.getEventById(event_Id, function (resultSet) {
-                    if(result.error) {
-                        callBack(result.error, null);
+                    if(resultSet.error) {
+                        callBack(resultSet.error, null);
                     }
                     callBack(null, resultSet.event);
                 });
@@ -1625,8 +1621,8 @@ var CalendarController = {
         _async.waterfall([
             function getEvent(callBack) {
                 var event = CalendarEvent.getEventById(event_id, function (resultSet) {
-                    if(result.error) {
-                        callBack(result.error, null);
+                    if(resultSet.error) {
+                        callBack(resultSet.error, null);
                     }
                     callBack(null, resultSet.event);
                 });
@@ -1849,8 +1845,8 @@ var CalendarController = {
         _async.waterfall([
             function getEvents(callBack) {
                 CalendarEvent.getEventById(event_id, function (resultSet) {
-                    if(result.error) {
-                        callBack(result.error, null);
+                    if(resultSet.error) {
+                        callBack(resultSet.error, null);
                     }
                     callBack(null, resultSet.event);
                 });
