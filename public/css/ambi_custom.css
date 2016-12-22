@@ -552,8 +552,13 @@ a.rc-time-picker-panel-clear-btn {
   width: 23px;
   height: 18px;
   display: block;
-  opacity: 0.8em;
+  opacity: 0.8;
   background: url(../images/friends-icon.png) no-repeat 0 0;
+}
+
+.popup-holder .share-folder-popup .folder-header .search-people-wrapper .search-people,
+.popup-holder .share-folder-add-people-popup .input-wrapper input{
+  border-radius: 5px;
 }
 
 /* Footer on collapse */
