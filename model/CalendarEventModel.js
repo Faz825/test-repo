@@ -57,7 +57,7 @@ var CalendarEventSchema = new Schema({
     },
 
     type : {
-        type : Number,
+        type : Number, /*1- Event | 2 - To-Do | 3 - Task*/
         default : null
     },
 
