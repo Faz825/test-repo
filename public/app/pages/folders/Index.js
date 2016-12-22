@@ -890,8 +890,9 @@ export class Folder extends React.Component{
                                                     <div className="share-folder">
                                                         {
                                                             (folderData.is_shared) ?
-                                                                <i className="fa fa-users" aria-hidden="true"></i> :
-                                                                <i className="fa fa-share-alt" aria-hidden="true"></i>
+                                                            <span className="sharedIcon"></span>
+                                                            :
+                                                            <i className="fa fa-share-alt" aria-hidden="true"></i>
                                                         }
                                                     </div>
                                                 </OverlayTrigger>

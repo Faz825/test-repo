@@ -15,6 +15,71 @@ export default class CallModel extends React.Component{
 			isVideoBtnEnabled: true,
 			isValoumeBtnEnabled: true
 		}
+
+		this.userList = [
+            {
+				"user_id": "57fcded7a083f22a099afffe",
+				"email": "prasad2@gmail.com",
+				"mood" : 1,
+				"contact_type": 1,
+				"call_type": 2,
+				"calls": 1,
+				"first_name": "prasad3",
+				"last_name": "sampath",
+				"zip_code": null,
+				"dob": "2-02-2013",
+				"country": "United States",
+				"user_name": "prasad2.sampath.86688",
+				"introduction": null,
+				"cur_exp_id": "57fcdeeba083f22a099affff",
+				"cur_working_at": "asd",
+				"cur_designation": "asd",
+				"call_time": "2:03 AM",
+				"city_details": "United States",
+				"connection_count": 0,
+				"calls": "2",
+				"images": {
+					"profile_image": {
+						"id": "DEFAULT",
+						"file_name": "default_profile_image.png",
+						"file_type": ".png",
+						"http_url": "/images/default-profile-pic.png"
+					}
+				},
+				"connected_at": "2016-10-11T12:47:03.594Z"
+			},
+            {
+				"user_id": "57fcded7a083f22a099afffe",
+				"email": "prasad2@gmail.com",
+				"mood" : 1,
+				"contact_type": 1,
+				"call_type": 2,
+				"calls": 1,
+				"first_name": "prasad2",
+				"last_name": "sampath",
+				"zip_code": null,
+				"dob": "2-02-2013",
+				"country": "United States",
+				"user_name": "prasad2.sampath.86688",
+				"introduction": null,
+				"cur_exp_id": "57fcdeeba083f22a099affff",
+				"cur_working_at": "asd",
+				"cur_designation": "asd",
+				"call_time": "2:03 AM",
+				"city_details": "United States",
+				"connection_count": 0,
+				"calls": "2",
+				"images": {
+					"profile_image": {
+						"id": "DEFAULT",
+						"file_name": "default_profile_image.png",
+						"file_type": ".png",
+						"http_url": "/images/default-profile-pic.png"
+					}
+				},
+				"connected_at": "2016-10-11T12:47:03.594Z"
+			}
+        ];
 	}
 
 	onCallBtnClick(){
@@ -33,7 +98,6 @@ export default class CallModel extends React.Component{
 	}
 
 	render(){
-		let userImg = this.props.loggedUser.profile_image;
 		let i = (
             <Popover id="popover-contained" className="share-popover-contained callpopup popup-holder" style={{maxWidth: "265px", width: "265px", zIndex: 9999}}>
                 <div className="call-center-new-participant">
@@ -65,40 +129,7 @@ export default class CallModel extends React.Component{
 			                        <span className="hang-up" onClick={(e) => this.props.closePopup(e)}></span>
 			                    </div>
 			                </div>
-			                <div className="participants">
-			                    <div className="user-block active">
-			                        <img src={(userImg)? userImg : "/images/default-profile-pic.png"} />
-			                        <div className="actions-wrapper">
-			                            <span className="mute"></span>
-			                            <span className="video"></span>
-			                        </div>
-			                        <span className="active-user"></span>
-			                    </div>
-			                    <div className="user-block">
-			                        <img src="images/call-center/participants-2.png" />
-			                        <div className="actions-wrapper">
-			                            <span className="mute"></span>
-			                            <span className="video"></span>
-			                        </div>
-			                        <span className="active-user"></span>
-			                    </div>
-			                    <div className="user-block">
-			                        <img src="images/call-center/participants-3.png" />
-			                        <div className="actions-wrapper">
-			                            <span className="mute"></span>
-			                            <span className="video"></span>
-			                        </div>
-			                        <span className="active-user"></span>
-			                    </div>
-			                    <div className="user-block">
-			                        <img src="images/call-center/participants-4.png" />
-			                        <div className="actions-wrapper">
-			                            <span className="mute"></span>
-			                            <span className="video"></span>
-			                        </div>
-			                        <span className="active-user"></span>
-			                    </div>
-			                </div>
+			                <UserBlock users={this.userList} loggedUser={this.props.loggedUser}/>
 			                <div className="call-timer">
 			                    <p className="call-status">On Call -</p>
 			                    <p className="call-time">00 : 00 : 10</p>
@@ -107,6 +138,41 @@ export default class CallModel extends React.Component{
 			        </div>
 			    </div>
 			</div>
+		)
+	}
+}
+
+export class UserBlock extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state={
+
+		}
+	}
+
+	render(){
+		let userImg = this.props.loggedUser.profile_image;
+		let _usersHtml = this.props.users.map(function(user,key){
+			return(
+				<div className="user-block" key={key}>
+	                <img src={user.images.profile_image.http_url} />
+	                <span className="active-user"></span>
+	            </div>
+			)
+		});
+		return(
+			<div className="participants">
+                <div className="user-block active">
+                    <img src={(userImg)? userImg : "/images/default-profile-pic.png"} />
+                    <div className="actions-wrapper">
+                        <span className="mute"></span>
+                        <span className="video"></span>
+                    </div>
+                    <span className="active-user"></span>
+                </div>
+                {_usersHtml}
+            </div>
 		)
 	}
 }
