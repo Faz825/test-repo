@@ -37,8 +37,11 @@ export default class DayTodosList extends React.Component {
 
 			let usersString = [];
 			let acceptedClass = 'event-description';
+			if(event.user_id ==  _this.state.user.id) {
+                acceptedClass = 'event-description accepted';
+            }
 			if(event.shared_users.length > 0 ) {
-
+				
 				usersString = event.shared_users.map(function(user,userKey){
 					if(event.user_id ==  _this.state.user.id || (user.shared_status == 3 &&_this.state.user.id == user.id )) {
 						acceptedClass = 'event-description accepted';
@@ -46,7 +49,9 @@ export default class DayTodosList extends React.Component {
                     if(user.shared_status == 2) {
                         return null;
                     }
+
 					return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
+					
 				});
 			} else {
 				usersString = <span className="people-list" >Only me</span>

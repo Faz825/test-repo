@@ -36,10 +36,14 @@ export default class DayEventsList extends React.Component {
             let startDateTime = moment(event.start_date_time).format('YYYY-MM-DD HH:mm');
             let usersString = [];
             let acceptedClass = 'event-description';
+            if(event.user_id ==  _this.state.user.id) {
+                acceptedClass = 'event-description accepted';
+            }
 
             if(event.shared_users.length > 0 ) {
                 usersString = event.shared_users.map(function(user,userKey){
-                    if(event.user_id ==  _this.state.user.id || (user.shared_status == 3 &&_this.state.user.id == user.id )) {
+                    
+                    if(user.shared_status == 3 && _this.state.user.id == user.id ) {
                         acceptedClass = 'event-description accepted';
                     }
                     if(user.shared_status == 2) {
