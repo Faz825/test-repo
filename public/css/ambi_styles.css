@@ -13260,7 +13260,7 @@ header .notification-holder .profile-header-thumb {
   padding: 10px 15%;
 }
 .popup-holder .create-folder-popup .folder-body .input-group {
-  margin-top: 36px;
+  margin-top: 26px;
 }
 .popup-holder .create-folder-popup .folder-body .input-group.name-holder {
   margin-top: 21px;
@@ -13299,7 +13299,7 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div {
   float: left;
-  margin-right: 16px;
+  margin: 0 16px 10px 0;
   width: 35px;
   height: 35px;
   border-radius: 100%;

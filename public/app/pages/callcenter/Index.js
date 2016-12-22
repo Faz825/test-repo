@@ -27,7 +27,8 @@ export default class Index extends React.Component {
             userStatus: [],
             activeMainCat: "",
             activeSubCat: "",
-            showModal: false
+            showModal: false,
+            minimizeBar: false
         }
 
         this.loadContactData("recent", "all");
@@ -245,11 +246,11 @@ export default class Index extends React.Component {
     }
 
     onMinimizePopup(){
-    	this.setState({isShowingModal : false});
+    	this.setState({isShowingModal : false, minimizeBar : true});
     }
 
     onPopupClose() {
-        this.setState({isShowingModal: false});
+        this.setState({isShowingModal: false, minimizeBar : false});
     }
 
     callPopup() {
@@ -418,6 +419,10 @@ export default class Index extends React.Component {
         this.setState({showModal: false});
     }
 
+    onPopupMaximize(){
+    	this.setState({isShowingModal: true, minimizeBar : false});
+    }
+
     render() {
         let mainCat = this.state.activeMainCat;
         let subCat = this.state.activeSubCat;
@@ -457,6 +462,18 @@ export default class Index extends React.Component {
                                 null
                         }
                     </section>
+                    {
+                    	(this.state.minimizeBar)?
+	                	<div className="callModelMinimized clearfix">
+	                		<span className="user-name">Prasad</span>
+	                		<div className="opt-wrapper">
+		                		<i className="fa fa-caret-square-o-up" onClick={(e) => this.onPopupMaximize(e)}></i>
+		                		<i className="fa fa-times" onClick={(e) => this.onPopupClose(e)}></i>                			
+	                		</div>
+	                	</div>
+	                	:
+	                	null                    	
+                    }
                 </div>
                 {this.userCallPopup()}
                 {this.callPopup()}
