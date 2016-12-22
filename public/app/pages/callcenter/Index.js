@@ -38,182 +38,6 @@ export default class Index extends React.Component {
     }
 
     loadContactData(cat, subCat) {
-        let userList = [
-            {
-                letter: "A",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "group"
-                    },
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "type": "user"
-                    }
-                ]
-            },
-            {
-                letter: "B",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "type": "group"
-                    }
-                ]
-            },
-            {
-                letter: "C",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "group"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "group"
-                    }
-                ]
-            },
-            {
-                letter: "D",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "group"
-                    },
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "type": "user"
-                    }
-                ]
-            },
-            {
-                letter: "E",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "type": "group"
-                    }
-                ]
-            },
-            {
-                letter: "F",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "group"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "group"
-                    }
-                ]
-            }
-        ];
-
-        let userIndividualList = [
-            {
-                letter: "A",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "type": "user"
-                    }
-                ]
-            },
-            {
-                letter: "B",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "user"
-                    }
-                ]
-            },
-            {
-                letter: "D",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "type": "user"
-                    }
-                ]
-            },
-            {
-                letter: "E",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "user"
-                    }
-                ]
-            }
-        ];
-
         let userGroupList = [
             {
                 letter: "A",
@@ -289,166 +113,99 @@ export default class Index extends React.Component {
 
         let recentList = [
             {
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "calls": "1",
-                        "callType": "phone",
-                        "time": "6:45 PM",
-                        "callStatue": "",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "calls": "2",
-                        "callType": "video",
-                        "time": "8:02 PM",
-                        "callStatue": "missed",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "calls": "5",
-                        "callType": "phone",
-                        "time": "2:50 PM",
-                        "callStatue": "missed",
-                        "type": "group"
-                    },
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "calls": "1",
-                        "callType": "phone",
-                        "time": "6:45 PM",
-                        "callStatue": "",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "calls": "2",
-                        "callType": "video",
-                        "time": "8:02 PM",
-                        "callStatue": "missed",
-                        "type": "group"
-                    },
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "calls": "5",
-                        "callType": "phone",
-                        "time": "2:50 PM",
-                        "callStatue": "",
-                        "type": "group"
-                    }
-                ]
-            }
-        ]
-
-        let recentMissedList = [
+				"user_id": "57fcded7a083f22a099afffe",
+				"email": "prasad2@gmail.com",
+				"mood" : 1,
+				"contact_type": 1,
+				"call_type": 2,
+				"calls": 1,
+				"first_name": "prasad3",
+				"last_name": "sampath",
+				"zip_code": null,
+				"dob": "2-02-2013",
+				"country": "United States",
+				"user_name": "prasad2.sampath.86688",
+				"introduction": null,
+				"cur_exp_id": "57fcdeeba083f22a099affff",
+				"cur_working_at": "asd",
+				"cur_designation": "asd",
+				"call_time": "2:03 AM",
+				"city_details": "United States",
+				"connection_count": 0,
+				"calls": "2",
+				"images": {
+					"profile_image": {
+						"id": "DEFAULT",
+						"file_name": "default_profile_image.png",
+						"file_type": ".png",
+						"http_url": "/images/default-profile-pic.png"
+					}
+				},
+				"receivers_list": [
+					{
+						"name": "Steve Young",
+						"user_id": 1,
+						"call_status": 1
+					},
+					{
+						"name": "Christina Chapman",
+						"user_id": 2,
+						"call_status": 4
+					}
+				],
+				"connected_at": "2016-10-11T12:47:03.594Z"
+			},
             {
-                users: [
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "calls": "2",
-                        "callType": "video",
-                        "time": "8:02 PM",
-                        "callStatue": "missed",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "calls": "5",
-                        "callType": "phone",
-                        "time": "2:50 PM",
-                        "callStatue": "missed",
-                        "type": "group"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "calls": "2",
-                        "callType": "video",
-                        "time": "8:02 PM",
-                        "callStatue": "missed",
-                        "type": "group"
-                    }
-                ]
-            }
-        ]
+				"user_id": "57fcded7a083f22a099afffe",
+				"email": "prasad2@gmail.com",
+				"mood" : 1,
+				"contact_type": 1,
+				"call_type": 2,
+				"calls": 1,
+				"first_name": "prasad2",
+				"last_name": "sampath",
+				"zip_code": null,
+				"dob": "2-02-2013",
+				"country": "United States",
+				"user_name": "prasad2.sampath.86688",
+				"introduction": null,
+				"cur_exp_id": "57fcdeeba083f22a099affff",
+				"cur_working_at": "asd",
+				"cur_designation": "asd",
+				"call_time": "2:03 AM",
+				"city_details": "United States",
+				"connection_count": 0,
+				"calls": "2",
+				"images": {
+					"profile_image": {
+						"id": "DEFAULT",
+						"file_name": "default_profile_image.png",
+						"file_type": ".png",
+						"http_url": "/images/default-profile-pic.png"
+					}
+				},
+				"receivers_list": [
+					{
+						"name": "Steve Young",
+						"user_id": 1,
+						"call_status": 1
+					},
+					{
+						"name": "Christina Chapman",
+						"user_id": 2,
+						"call_status": 4
+					}
+				],
+				"connected_at": "2016-10-11T12:47:03.594Z"
+			}
+        ];
 
-        let recentIndividualList = [
-            {
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "calls": "1",
-                        "callType": "phone",
-                        "time": "6:45 PM",
-                        "callStatue": "",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "calls": "2",
-                        "callType": "video",
-                        "time": "8:02 PM",
-                        "callStatue": "missed",
-                        "type": "user"
-                    },
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "calls": "1",
-                        "callType": "phone",
-                        "time": "6:45 PM",
-                        "callStatue": "",
-                        "type": "user"
-                    }
-                ]
-            }
-        ]
-
-        let recentgroupsList = [
-            {
-                users: [
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "calls": "5",
-                        "callType": "phone",
-                        "time": "2:50 PM",
-                        "callStatue": "missed",
-                        "type": "group"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "calls": "2",
-                        "callType": "video",
-                        "time": "8:02 PM",
-                        "callStatue": "missed",
-                        "type": "group"
-                    },
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "calls": "5",
-                        "callType": "phone",
-                        "time": "2:50 PM",
-                        "callStatue": "",
-                        "type": "group"
-                    }
-                ]
-            }
-        ]
+        function filterByType(contact) {
+			console.log(contact);
+			if (contact.contact_type == 1) {
+				return true;
+			}
+		}
 
         $.ajax({
             url: '/contacts/all',
@@ -457,28 +214,38 @@ export default class Index extends React.Component {
             headers: {'prg-auth-header': this.state.loggedUser.token}
         }).done(function (data) {
             if (data.status.code == 200) {
-            	console.log(data);
                 if (cat == "contact" && subCat == "all") {
-                    this.setState({userList: userList});
+                    this.setState({userList: data.contacts});
                 } else if (cat == "contact" && subCat == "individual") {
-                    this.setState({userList: userIndividualList});
-                } else if (cat == "contact" && subCat == "groups") {
-                    this.setState({userList: userGroupList});
-                } else if (cat == "recent" && subCat == "all") {
-                    this.setState({userList: recentList});
-                } else if (cat == "recent" && subCat == "missed") {
-                    this.setState({userList: recentMissedList});
-                } else if (cat == "recent" && subCat == "individual") {
-                    this.setState({userList: recentIndividualList});
-                } else if (cat == "recent" && subCat == "groups") {
-                    this.setState({userList: recentgroupsList});
-                } else {
+                	this.setState({userList: data.contacts});
+                	for (var key in data.contacts) {
+			            for (var key1 in data.contacts[key].users) {
+			            	//console.log(data.contacts[key].users[key1].dob);
+				        }
+			        }
+            	}
+                // } else if (cat == "contact" && subCat == "groups") {
+                //     this.setState({userList: userGroupList});
+                // } else if (cat == "recent" && subCat == "all") {
+                //     this.setState({userList: recentList});
+                // } else if (cat == "recent" && subCat == "missed") {
+                //     this.setState({userList: recentMissedList});
+                // } else if (cat == "recent" && subCat == "individual") {
+                //     this.setState({userList: recentIndividualList});
+                // } else if (cat == "recent" && subCat == "groups") {
+                //     this.setState({userList: recentgroupsList});
+                // } 
+                	else {
                     this.setState({userList: []});
+                	}
                 }
                 this.setState({activeMainCat: cat, activeSubCat: subCat});
-            }
         }.bind(this));
 
+    }
+
+    onMinimizePopup(){
+    	this.setState({isShowingModal : false});
     }
 
     onPopupClose() {
@@ -491,7 +258,7 @@ export default class Index extends React.Component {
                 {this.state.isShowingModal &&
                 <ModalContainer zIndex={9999}>
                     <ModalDialog className="modalPopup">
-                        <CallModel closePopup={this.onPopupClose.bind(this)}/>
+                        <CallModel closePopup={this.onPopupClose.bind(this)} loggedUser={this.state.loggedUser} minimizePopup={this.onMinimizePopup.bind(this)} />
                     </ModalDialog>
                 </ModalContainer>
                 }
@@ -499,7 +266,8 @@ export default class Index extends React.Component {
         );
     }
 
-    onUserCalling(userID) {
+    onUserCalling(user,callType) {
+    	console.log(user, callType);
         this.setState({isShowingModal: true});
     }
 
@@ -704,8 +472,8 @@ export class ContactList extends React.Component {
         this.state = {}
     }
 
-    onCalling(userID) {
-        this.props.onUserCall(userID);
+    onCalling(user,callType) {
+        this.props.onUserCall(user,callType);
     }
 
     render() {
@@ -736,8 +504,8 @@ export class RecentList extends React.Component {
 
     }
 
-    onCalling(userID) {
-        this.props.onUserCall(userID);
+    onCalling(user,callType) {
+        this.props.onUserCall(user,callType);
     }
 
     render() {
