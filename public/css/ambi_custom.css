@@ -854,6 +854,30 @@ footer .notification-alert-holder.slideOut{
   height: 113px;
 }
 
+.callModelMinimized{
+  position: fixed;
+  bottom: 99px;
+  width: 250px;
+  background: #fff;
+  box-shadow: 4px 1px 40px -12px #000;
+  height: 35px;
+  padding: 6px 10px 10px;
+  border-radius: 5px 5px 0 0;
+}
+
+.callModelMinimized .opt-wrapper{
+  float: right;
+}
+
+.callModelMinimized .opt-wrapper .fa{
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.callModelMinimized .opt-wrapper .fa:last-child{
+  margin: 0;
+}
+
 /* Model overlay is overlaping */
 body .modal-backdrop{
   display: none;
@@ -864,3 +888,13 @@ body .modal-backdrop{
 }
 
 .selected-file{border: 1px solid red !important;}
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}

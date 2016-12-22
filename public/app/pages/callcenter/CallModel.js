@@ -33,6 +33,7 @@ export default class CallModel extends React.Component{
 	}
 
 	render(){
+		let userImg = this.props.loggedUser.profile_image;
 		let i = (
             <Popover id="popover-contained" className="share-popover-contained callpopup popup-holder" style={{maxWidth: "265px", width: "265px", zIndex: 9999}}>
                 <div className="call-center-new-participant">
@@ -42,7 +43,6 @@ export default class CallModel extends React.Component{
             </Popover>
         );
 
-        console.log(this.props.loggedUser);
 		return(
 			<div className="popup-holder">
 			    <div className="row">
@@ -67,7 +67,7 @@ export default class CallModel extends React.Component{
 			                </div>
 			                <div className="participants">
 			                    <div className="user-block active">
-			                        <img src="images/call-center/participants-1.png" />
+			                        <img src={(userImg)? userImg : "/images/default-profile-pic.png"} />
 			                        <div className="actions-wrapper">
 			                            <span className="mute"></span>
 			                            <span className="video"></span>
