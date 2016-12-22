@@ -1170,8 +1170,12 @@ var NotificationController ={
                 function getNotifications(callBack){
                     var _criteria = {notified_post:req.body.post_id, notification_type:req.body.notification_type};
                     Notification.getNotifications(_criteria, function(res){
-                        for(var i = 0; i < res.result.length; i++){
-                            _notification_ids.push(res.result[i]._id)
+                        if(res.error) {
+                            callBack(res.error);
+                        } else {
+                            for(var i = 0; i < res.result.length; i++){
+                                _notification_ids.push(res.result[i]._id)
+                            }
                         }
                         callBack(null);
                     });

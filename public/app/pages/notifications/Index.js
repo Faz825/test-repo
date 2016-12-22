@@ -236,15 +236,13 @@ export default class Index extends React.Component{
     }
 
     redirectToNotification(_notification){
-
+        console.log(_notification);
+        
         if(_notification.notification_type != 'Birthday' &&
             _notification.notification_type != "share_notebook" &&
             _notification.notification_type != "share_folder" &&
             _notification.notification_type != 'share_calendar' &&
-            _notification.notification_type != 'calendar_schedule_updated' &&
-            _notification.notification_type != 'calendar_schedule_time_changed' &&
-            _notification.notification_type != 'calendar_schedule_carried_next_day') {
-
+            _notification.notification_type != 'calendar_schedule_time_changed') {
             if(!_notification.read_status) {
                 $.ajax({
                     url: '/notifications/update-notifications',
@@ -253,12 +251,15 @@ export default class Index extends React.Component{
                     data:{post_id:_notification.post_id, notification_type:_notification.notification_type, notification_id:_notification.notification_id},
                     headers: { 'prg-auth-header':this.state.loggedUser.token }
                 }).done( function (data, text) {
-
                     if(_notification.notification_type == "share_notebook_response" ||
-                        _notification.notification_type == "share_folder_response" ||
-                        _notification.notification_type == "share_calendar_response") {
+                        _notification.notification_type == "share_folder_response") {
                         this.loadNotifications();
-                    } else {
+                    } else if (_notification.notification_type == 'share_calendar_response' ||
+                        _notification.notification_type == 'calendar_schedule_carried_next_day' ||
+                        _notification.notification_type == 'calendar_schedule_updated') {
+                        var strUrl = '/calendar/'+_notification.calendar_id;
+                        browserHistory.push(strUrl);
+                    }  else {
                         window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
                     }
 
@@ -266,9 +267,13 @@ export default class Index extends React.Component{
 
             } else {
 
-                if(_notification.notification_type != "share_notebook_response" &&
-                    _notification.notification_type != "share_folder_response" &&
-                    _notification.notification_type != "share_calendar_response") {
+                if (_notification.notification_type == 'share_calendar_response' ||
+                    _notification.notification_type == 'calendar_schedule_carried_next_day' ||
+                    _notification.notification_type == 'calendar_schedule_updated') {
+                    var strUrl = '/calendar/'+_notification.calendar_id;
+                    browserHistory.push(strUrl);
+                } else if(_notification.notification_type != "share_notebook_response" &&
+                    _notification.notification_type != "share_folder_response") {
                     window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
                 }
             }
