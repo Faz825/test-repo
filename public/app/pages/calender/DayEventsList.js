@@ -42,7 +42,9 @@ export default class DayEventsList extends React.Component {
                     if(event.user_id ==  _this.state.user.id || (user.shared_status == 3 &&_this.state.user.id == user.id )) {
                         acceptedClass = 'event-description accepted';
                     }
-
+                    if(user.shared_status == 2) {
+                        return null;
+                    }
                     return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
                 });
             } else {
