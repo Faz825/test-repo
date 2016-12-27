@@ -28,6 +28,12 @@ var CallCenterController = {
                 function (aConns, callback) {
                     var aAlphabet = [];
 
+                    aConns.sort(function (a, b) {
+                        var textA = a.first_name.toUpperCase();
+                        var textB = b.first_name.toUpperCase();
+                        return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                    });
+
                     for (var i = 0; i < aConns.length; i++) {
                         var first_letter = aConns[i].first_name[0].toUpperCase();
 
@@ -59,7 +65,8 @@ var CallCenterController = {
 
                     var outPut = {
                         status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                        contacts: aContacts
+                        contacts: aContacts,
+                        raw: aConns
                     };
 
                     return res.status(200).json(outPut);

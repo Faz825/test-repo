@@ -219,6 +219,7 @@ export default class Index extends React.Component {
                     this.setState({userList: data.contacts});
                 } else if (cat == "contact" && subCat == "individual") {
                 	this.setState({userList: data.contacts});
+
                 	for (var key in data.contacts) {
 			            for (var key1 in data.contacts[key].users) {
 			            	//console.log(data.contacts[key].users[key1].dob);
