@@ -22,7 +22,7 @@ export default class ContactList extends React.Component {
                         <User users={user.users} type="contact" onCalling={_this.onCalling.bind(_this)}/>
                     </div>
                 </div>
-            )
+            ) 
         })
         return (
             <div className="contacts-list">
