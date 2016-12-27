@@ -12724,9 +12724,6 @@ header .notification-holder .profile-header-thumb {
   box-shadow: 0px 0px 7px 3px #d6d8da;
   background-color: #f6f6f6;
 }
-.call-center-container .call-center-inner-holder .inner-header {
-  overflow: hidden;
-}
 .call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper {
   float: left;
   position: relative;

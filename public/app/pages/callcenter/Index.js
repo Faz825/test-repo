@@ -4,7 +4,7 @@
 
 import React from 'react';
 import ReactDom from 'react-dom';
-import {Modal} from 'react-bootstrap';
+import {Modal, ButtonToolbar, DropdownButton, MenuItem} from 'react-bootstrap';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import User from "./User";
@@ -24,7 +24,7 @@ export default class Index extends React.Component {
             isShowingModal: false,
             userList: [],
             recentCalls: [],
-            userStatus: [],
+            userStatus: "online",
             activeMainCat: "",
             activeSubCat: "",
             showModal: false,
@@ -356,6 +356,11 @@ export default class Index extends React.Component {
         )
     }
 
+    onUserStateUpdate(eventKey){
+		console.log(eventKey);
+		this.setState({userStatus : eventKey});
+    }
+
     headerNav() {
         let mainCat = this.state.activeMainCat;
         let subCat = this.state.activeSubCat;
@@ -367,11 +372,19 @@ export default class Index extends React.Component {
                         <div className="image-wrapper">
                             <img
                                 src={(this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image}/>
-                            <span className="status online"></span>
+                            <span className={"status " + this.state.userStatus}></span>
                         </div>
                         <div className="name-wrapper">
                             <p className="name">{this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name}</p>
-                            <p className="status">Online</p>
+                            <div className="status-update">     
+								<ButtonToolbar>
+									<DropdownButton bsSize="small" title={this.state.userStatus} id="dropdown-size-small">
+										<MenuItem eventKey="online" onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
+										<MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
+										<MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Busy</MenuItem>
+									</DropdownButton>
+								</ButtonToolbar>                      	
+                            </div>
                         </div>
                     </div>
                     <div className="col-sm-6">

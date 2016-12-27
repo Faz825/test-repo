@@ -35,11 +35,11 @@ export default class User extends React.Component{
 			}
 
 			switch (user.contact_type) {
-			    case 1:
-			        call_type = "user";
+			    case 2:
+			        call_type = "group";
 			        break;
 			    default: 
-        			call_type = "group";
+        			call_type = "user";
 			}
 			return(
 				<div className="row contact-item recent-item" key={key}>
