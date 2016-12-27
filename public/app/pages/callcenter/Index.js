@@ -7,6 +7,7 @@ import ReactDom from 'react-dom';
 import {Modal, ButtonToolbar, DropdownButton, MenuItem} from 'react-bootstrap';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import ContactList from "./ContactList";
 import User from "./User";
 import CallModel from "./CallModel";
 import CallHandler from './CallHandler';
@@ -381,7 +382,7 @@ export default class Index extends React.Component {
 									<DropdownButton bsSize="small" title={this.state.userStatus} id="dropdown-size-small">
 										<MenuItem eventKey="online" onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
 										<MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
-										<MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Busy</MenuItem>
+										<MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work mode</MenuItem>
 									</DropdownButton>
 								</ButtonToolbar>                      	
                             </div>
@@ -492,37 +493,6 @@ export default class Index extends React.Component {
                 {this.userCallPopup()}
                 {this.callPopup()}
             </section>
-        );
-    }
-}
-
-export class ContactList extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {}
-    }
-
-    onCalling(user,callType) {
-        this.props.onUserCall(user,callType);
-    }
-
-    render() {
-        let _this = this;
-        let usersList = this.props.userList.map(function (user, key) {
-            return (
-                <div className="contact-group" key={key}>
-                    <p className="group-name">{user.letter}</p>
-                    <div className="contact-wrapper">
-                        <User users={user.users} type="contact" onCalling={_this.onCalling.bind(_this)}/>
-                    </div>
-                </div>
-            )
-        })
-        return (
-            <div className="contacts-list">
-                {usersList}
-            </div>
         );
     }
 }
