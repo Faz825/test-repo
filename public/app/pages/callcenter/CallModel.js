@@ -60,7 +60,7 @@ export default class CallModel extends React.Component{
 				"zip_code": null,
 				"dob": "2-02-2013",
 				"country": "United States",
-				"user_name": "prasad2.sampath.86688",
+				"user_name": "prasad2.sampath.86689",
 				"introduction": null,
 				"cur_exp_id": "57fcdeeba083f22a099affff",
 				"cur_working_at": "asd",
@@ -123,9 +123,9 @@ export default class CallModel extends React.Component{
 			                <div className="active-user-block">
 			                    <img src="images/call-center/cc-active-user.png" />
 			                    <div className="active-call-nav">
-			                        <span className={(this.state.isCallBtnEnabled)? "mute" : "mute disabled"} onClick={this.onCallBtnClick.bind(this)}></span>
-			                        <span className={(this.state.isVideoBtnEnabled)? "video" : "video disabled"} onClick={this.onVideoBtnClick.bind(this)}></span>
-			                        <span className={(this.state.isValoumeBtnEnabled)? "speaker" : "speaker disabled"} onClick={this.onVolumeBtnClick.bind(this)}></span>
+			                        <span className={(this.state.isVideoBtnEnabled)? "video active" : "video"} onClick={this.onVideoBtnClick.bind(this)}></span>
+			                        <span className={(this.state.isCallBtnEnabled)? "mute" : "mute active"} onClick={this.onCallBtnClick.bind(this)}></span>
+			                        <span className={(this.state.isValoumeBtnEnabled)? "speaker" : "speaker active"} onClick={this.onVolumeBtnClick.bind(this)}></span>
 			                        <span className="hang-up" onClick={(e) => this.props.closePopup(e)}></span>
 			                    </div>
 			                </div>
@@ -147,15 +147,25 @@ export class UserBlock extends React.Component{
 		super(props);
 
 		this.state={
-
+			userName: this.props.loggedUser.user_name
 		}
+
+	}
+
+	onUserClick(user){
+		this.setState({userName : user.user_name});
+	}
+
+	isUserActive(user){
+		return "user-block " + ((this.state.userName == user)? "active" : null);
 	}
 
 	render(){
-		let userImg = this.props.loggedUser.profile_image;
-		let _usersHtml = this.props.users.map(function(user,key){
+		let _this = this,
+			_loggedUser = this.props.loggedUser,
+			_usersHtml = this.props.users.map(function(user,key){
 			return(
-				<div className="user-block" key={key}>
+				<div className={_this.isUserActive(user.user_name)} onClick={_this.onUserClick.bind(_this, user)} key={key}>
 	                <img src={user.images.profile_image.http_url} />
 	                <span className="active-user"></span>
 	            </div>
@@ -163,11 +173,11 @@ export class UserBlock extends React.Component{
 		});
 		return(
 			<div className="participants">
-                <div className="user-block active">
-                    <img src={(userImg)? userImg : "/images/default-profile-pic.png"} />
+                <div className={this.isUserActive(_loggedUser.user_name)} onClick={this.onUserClick.bind(this, _loggedUser)}>
+                    <img src={(_loggedUser.profile_image)? _loggedUser.profile_image : "/images/default-profile-pic.png"} />
                     <div className="actions-wrapper">
-                        <span className="mute"></span>
                         <span className="video"></span>
+                        <span className="mute"></span>
                     </div>
                     <span className="active-user"></span>
                 </div>

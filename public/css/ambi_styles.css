@@ -12724,9 +12724,6 @@ header .notification-holder .profile-header-thumb {
   box-shadow: 0px 0px 7px 3px #d6d8da;
   background-color: #f6f6f6;
 }
-.call-center-container .call-center-inner-holder .inner-header {
-  overflow: hidden;
-}
 .call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper {
   float: left;
   position: relative;
@@ -13655,13 +13652,15 @@ header .notification-holder .profile-header-thumb {
   margin-right: 5px;
   border: 1px solid #bfb0b2;
   border-radius: 100%;
-  background-color: #363636;
-  opacity: 0.6;
-  width: 65px;
-  height: 65px;
+  background-color: rgba(54, 54, 54, 0.6);
+  width: 50px;
+  height: 50px;
   display: inline-block;
   background-position: center;
   cursor: pointer;
+}
+.popup-holder .active-call-container .active-user-block .active-call-nav span.active {
+  background-color: rgba(0, 166, 239, 0.6);
 }
 .popup-holder .active-call-container .active-user-block .active-call-nav span.video {
   background-repeat: no-repeat;
@@ -13695,6 +13694,7 @@ header .notification-holder .profile-header-thumb {
   display: inline-block;
   border: 3px solid #ffffff;
   overflow: hidden;
+  cursor: pointer;
 }
 .popup-holder .active-call-container .participants .user-block:last-child {
   margin-right: 0px;
@@ -13734,21 +13734,37 @@ header .notification-holder .profile-header-thumb {
   background-position: center;
   cursor: pointer;
   vertical-align: middle;
-}
-.popup-holder .active-call-container .participants .user-block .actions-wrapper span.video {
+  border: 1px solid #bfb0b2;
+  border-radius: 100%;
+  background-color: rgba(54, 54, 54, 0.6);
   width: 29px;
-  height: 19px;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-image: url("../images/call-center/active-call-video-ico.png");
+  height: 29px;
+  position: relative;
 }
-.popup-holder .active-call-container .participants .user-block .actions-wrapper span.mute {
-  margin-right: 5px;
-  width: 14px;
-  height: 28px;
+.popup-holder .active-call-container .participants .user-block .actions-wrapper span.active {
+  background-color: rgba(0, 166, 239, 0.6);
+}
+.popup-holder .active-call-container .participants .user-block .actions-wrapper span:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
+.popup-holder .active-call-container .participants .user-block .actions-wrapper span.video:after {
+  width: 13px;
+  height: 9px;
   background-repeat: no-repeat;
-  background-size: contain;
-  background-image: url("../images/call-center/active-call-mute-ico.png");
+  background-image: url("../images/call-center/active-call-thumb-video-ico.png");
+}
+.popup-holder .active-call-container .participants .user-block .actions-wrapper span.mute:after {
+  width: 9px;
+  height: 13px;
+  background-repeat: no-repeat;
+  background-image: url("../images/call-center/active-call-thumb-mute-ico.png");
 }
 .popup-holder .active-call-container .call-timer {
   text-align: center;

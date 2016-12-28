@@ -4,9 +4,12 @@
 
 import React from 'react';
 import ReactDom from 'react-dom';
-import {Modal} from 'react-bootstrap';
+import {Modal, ButtonToolbar, DropdownButton, MenuItem} from 'react-bootstrap';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import ContactList from "./ContactList";
+import RecentList from "./RecentList";
+import StatusList from "./StatusList";
 import User from "./User";
 import CallModel from "./CallModel";
 import CallHandler from './CallHandler';
@@ -24,7 +27,7 @@ export default class Index extends React.Component {
             isShowingModal: false,
             userList: [],
             recentCalls: [],
-            userStatus: [],
+            userStatus: "online",
             activeMainCat: "",
             activeSubCat: "",
             showModal: false,
@@ -219,6 +222,7 @@ export default class Index extends React.Component {
                     this.setState({userList: data.contacts});
                 } else if (cat == "contact" && subCat == "individual") {
                 	this.setState({userList: data.contacts});
+
                 	for (var key in data.contacts) {
 			            for (var key1 in data.contacts[key].users) {
 			            	//console.log(data.contacts[key].users[key1].dob);
@@ -355,6 +359,11 @@ export default class Index extends React.Component {
         )
     }
 
+    onUserStateUpdate(eventKey){
+		console.log(eventKey);
+		this.setState({userStatus : eventKey});
+    }
+
     headerNav() {
         let mainCat = this.state.activeMainCat;
         let subCat = this.state.activeSubCat;
@@ -366,11 +375,19 @@ export default class Index extends React.Component {
                         <div className="image-wrapper">
                             <img
                                 src={(this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image}/>
-                            <span className="status online"></span>
+                            <span className={"status " + this.state.userStatus}></span>
                         </div>
                         <div className="name-wrapper">
                             <p className="name">{this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name}</p>
-                            <p className="status">Online</p>
+                            <div className="status-update">
+                                <ButtonToolbar>
+                                    <DropdownButton bsSize="small" title={this.state.userStatus} id="dropdown-size-small">
+                                        <MenuItem eventKey="online" onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
+                                        <MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
+                                        <MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work mode</MenuItem>
+                                    </DropdownButton>
+                                </ButtonToolbar>
+                            </div>
                         </div>
                     </div>
                     <div className="col-sm-6">
@@ -461,6 +478,12 @@ export default class Index extends React.Component {
                                 :
                                 null
                         }
+                        {
+                            (mainCat == "status") ?
+                                <StatusList userList={this.state.userList} onUserCall={this.onUserCalling.bind(this)}/>
+                                :
+                                null
+                        }
                     </section>
                     {
                     	(this.state.minimizeBar)?
@@ -478,66 +501,6 @@ export default class Index extends React.Component {
                 {this.userCallPopup()}
                 {this.callPopup()}
             </section>
-        );
-    }
-}
-
-export class ContactList extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {}
-    }
-
-    onCalling(user,callType) {
-        this.props.onUserCall(user,callType);
-    }
-
-    render() {
-        let _this = this;
-        let usersList = this.props.userList.map(function (user, key) {
-            return (
-                <div className="contact-group" key={key}>
-                    <p className="group-name">{user.letter}</p>
-                    <div className="contact-wrapper">
-                        <User users={user.users} type="contact" onCalling={_this.onCalling.bind(_this)}/>
-                    </div>
-                </div>
-            )
-        })
-        return (
-            <div className="contacts-list">
-                {usersList}
-            </div>
-        );
-    }
-}
-
-export class RecentList extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {}
-
-    }
-
-    onCalling(user,callType) {
-        this.props.onUserCall(user,callType);
-    }
-
-    render() {
-        let _this = this;
-        let recentList = this.props.userList.map(function (user, key) {
-            return (
-                <User users={user.users} type="recent" key={key} onCalling={_this.onCalling.bind(_this)}/>
-            )
-        })
-        return (
-            <div className="recent-list">
-                <div className="list-wrapper">
-                    {recentList}
-                </div>
-            </div>
         );
     }
 }
