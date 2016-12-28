@@ -58,14 +58,23 @@ var PostSchema = new Schema({
     visible_users:[],
     post_mode:{
         type:String,
-        default:PostConfig.NORMAL_POST,
-
+        default:PostConfig.NORMAL_POST
     },
     shared_post_id:{
         type: Schema.ObjectId,
         default:null
     },
     location:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    lat:{
+        type:String,
+        trim:true,
+        default:null
+    },
+    lng:{
         type:String,
         trim:true,
         default:null
@@ -114,6 +123,8 @@ PostSchema.statics.addNew = function(post,callBack){
     _post.visible_users = post.visible_users;
     _post.post_mode = post.post_mode;
     _post.location = post.location;
+    _post.lat = post.lat;
+    _post.lng = post.lng;
     _post.life_event = post.life_event;
     _post.shared_post_id = (typeof post.shared_post_id != "undefined")?post.shared_post_id:null;
     _post.save(function(err,postData){
@@ -221,6 +232,8 @@ PostSchema.statics.db_getPost = function(criteria,callBack){
                         page_link : postData.page_link,
                         post_visible_mode : postData.post_visible_mode,
                         location:postData.location,
+                        lat:postData.lat,
+                        lng:postData.lng,
                         post_mode:postData.post_mode,
                         life_event:postData.life_event,
                         created_by : csResultSet.result[0],
@@ -539,6 +552,8 @@ PostSchema.statics.formatPost=function(postData){
         post_visible_mode:postData.post_visible_mode,
         date:DateTime.explainDate(postData.created_at),
         location:(postData.location)?postData.location:"",
+        lat:(postData.lat)?postData.lat:"",
+        lng:(postData.lng)?postData.lng:"",
         life_event:(postData.life_event)?postData.life_event:"",
         upload:(postData.has_attachment)?postData.upload:[],
         shared_post:(postData.shared_post)?postData.shared_post:""

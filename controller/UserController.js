@@ -760,6 +760,7 @@ var UserControler ={
                     status: ApiHelper.getMessage(200, Alert.ADDED_PROFILE_IMAGE, Alert.SUCCESS)
                 }
                 outPut['user'] = CurrentSession;
+                outPut['cover_image'] = payLoad;
 
                 //ADD TO CACHE
                 User.addUserToCache(CurrentSession.id,function(csResult){});

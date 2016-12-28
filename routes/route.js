@@ -75,7 +75,7 @@ GLOBAL.notAuthURLs = ['/sign-up','/forgot-password','/change-password-invalid','
 /**
  * This urls are related to api and will be authenticated separately
  */
-GLOBAL.mobileApiUrls = ['/api/connections/get'];
+GLOBAL.mobileApiUrls = ['/api/connections/get', '/api/upload/cover-image'];
 
 
 /**

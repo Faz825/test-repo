@@ -891,9 +891,33 @@ UserSchema.statics.getUserAllDetails=function(criteria,callBack){
     _this.findOne(criteria)
         .exec(function(err,resultSet){
             if(!err){
+                var _profileData = {
+                    id:resultSet._id,
+                    token:uuid.v1()+resultSet._id,
+                    first_name:resultSet.first_name,
+                    last_name:resultSet.last_name,
+                    email:resultSet.email,
+                    status:resultSet.status,
+                    user_name:resultSet.user_name,
+                    country:resultSet.country,
+                    dob:resultSet.dob,
+                    secretary_id:resultSet.secretary
+                };
+
+                for(var i=0;i<resultSet.working_experiences.length;i++){
+                    if(resultSet.working_experiences[i].is_current_work_place){
+                        _profileData['company_name']=resultSet.working_experiences[i].company_name;
+                        _profileData['job_title']=resultSet.working_experiences[i].title;
+                    }
+                }
+
+                if(resultSet.education_details.length > 0){
+                    _profileData['school']=resultSet.education_details[0].school;
+                    _profileData['grad_date']=resultSet.education_details[0].date_attended_to;
+                }
                 callBack({
                     status:200,
-                    user:resultSet
+                    user:_profileData
 
                 });
             }else{

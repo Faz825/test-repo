@@ -25,6 +25,8 @@ var PostController ={
             file_content:(typeof req.body.__file_content != 'undefined')?req.body.__file_content:"",
             upload_id:(typeof req.body.__uuid  != 'undefined')? req.body.__uuid:"",
             location:(typeof req.body.__lct  != 'undefined')?req.body.__lct:"",
+            lat:(typeof req.body.__lat  != 'undefined')?req.body.__lat:"",
+            lng:(typeof req.body.__lng  != 'undefined')?req.body.__lng:"",
             life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:"",
             shared_post:""
         };
@@ -131,6 +133,8 @@ var PostController ={
             file_content:(typeof req.body.__file_content != 'undefined')?req.body.__file_content:"",
             upload_id:(typeof req.body.__uuid  != 'undefined')? req.body.__uuid:"",
             location:(typeof req.body.__lct  != 'undefined')?req.body.__lct:"",
+            lat:(typeof req.body.__lat  != 'undefined')?req.body.__lat:"",
+            lng:(typeof req.body.__lng  != 'undefined')?req.body.__lng:"",
             life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:"",
             shared_post:"",
             profile_picture_data:req.body.__profile_picture
