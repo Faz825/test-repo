@@ -57,7 +57,7 @@ var CalendarEventSchema = new Schema({
     },
 
     type : {
-        type : Number,
+        type : Number, /*1- Event | 2 - To-Do | 3 - Task*/
         default : null
     },
 
@@ -176,11 +176,10 @@ CalendarEventSchema.statics.getEventById = function(id,callBack){
     _this.findOne({_id: id}).lean().exec(function (err, resultSet) {
         if (!err) {
             if (resultSet == null) {
-                callBack(null);
+                callBack({status: 200, event: {}});
                 return;
             }
-
-            callBack(resultSet);
+            callBack({status: 200, event: resultSet})
         } else {
             console.log(err)
             callBack({status: 400, error: err})
@@ -289,7 +288,7 @@ CalendarEventSchema.statics.getSortedCalenderItems = function(criteria,callBack)
 
     var _this = this;
 
-    _this.find(criteria).or([{status: 1}, {status: 2}]).sort({created_at:-1}).exec(function(err,resultSet){
+    _this.find(criteria).or([{status: 1}, {status: 2}]).sort({event_time: 1}).exec(function(err,resultSet){
 
         if(!err){
             callBack(null, {
@@ -404,7 +403,7 @@ CalendarEventSchema.statics.bindNotificationData = function(notificationObj, cal
 
     this.getEventById(notificationObj.calendar_id,function(calendarData){
 
-        notificationObj['calendar_description'] = calendarData.plain_text;
+        notificationObj['calendar_text'] = calendarData.event.plain_text;
 
         callBack(notificationObj);
     });
@@ -473,6 +472,31 @@ CalendarEventSchema.statics.ch_shareEventUpdateIndex = function(userId,data,call
     ES.update(payLoad,function(resultSet){
         callBack(resultSet)
     });
+
+};
+
+/**
+ * delete event based on criteria
+ * @param criteria
+ * @param callBack
+ */
+CalendarEventSchema.statics.deleteEvent = function (criteria, callBack) {
+    console.log("deleting a calendar event--")
+
+    this.remove(criteria).exec(function (err, resultSet) {
+
+        if (!err) {
+            callBack({
+                status: 200,
+                result: resultSet
+            });
+        } else {
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status: 400, error: err});
+        }
+
+    })
 
 };
 

@@ -6,6 +6,7 @@ var CalendarEventHandler = {
     init: function () {
 
         var schedule = require('node-schedule');
+        var moment = require('moment');
 
         var rule = new schedule.RecurrenceRule();
         rule.hour = 23;
@@ -14,8 +15,6 @@ var CalendarEventHandler = {
         // 0 0 0/8 * * ? - run on every 8 hours
 
         var j = schedule.scheduleJob(rule, function () {
-
-            var moment = require('moment');
 
             console.log("***************************************************");
             console.log("------------ START SCHEDULE ---- @ " + moment().format('YYYY-MM-DD HH:mm:ss'));
@@ -30,7 +29,7 @@ var CalendarEventHandler = {
 
         var _async = require('async'),
             CalendarEvent = require('mongoose').model('CalendarEvent'),
-            moment = require('moment'),
+            moment = require('moment-timezone'),
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient');
 
@@ -39,7 +38,7 @@ var CalendarEventHandler = {
 
         _async.waterfall([
             function getAllForTheDay(callBack) {
-
+                console.log("start method getAllForTheDay");
                 var day = new Date();
                 var startTimeOfDay = moment(day).format('YYYY-MM-DD'); //format the given date as mongo date object
                 var endTimeOfDay = moment(day).add(1, "day").format('YYYY-MM-DD'); //get the next day of given date
@@ -50,7 +49,7 @@ var CalendarEventHandler = {
                 });
             },
             function getMovableEventsList(eventsList, callBack) {
-
+                console.log("start method getMovableEventsList");
                 if (typeof eventsList != "undefined" && eventsList.length > 0) {
                     console.log("eventsList.length--" + eventsList.length);
 
@@ -66,12 +65,14 @@ var CalendarEventHandler = {
 
                         var now = moment().utc();
 
-                        //var combined_date = moment(_date + ' ' + _time, "YYYY-MM-DD HH:mm");
                         var eventTimeFromUserZone = moment(_date).format('YYYY-MM-DD HH:mm:ss');
-                        var nowTimeFromUserZone = moment(now).utcOffset(eventsList[i].event_timezone).format('YYYY-MM-DD HH:mm:ss');
+                        //var nowTimeFromUserZone = moment(now).utcOffset(eventsList[i].event_timezone).format('YYYY-MM-DD HH:mm:ss');
+                        // construct a moment object
+                        var nowTimeFromUserZone = moment.tz(eventsList[i].event_timezone).format('YYYY-MM-DD HH:mm:ss');
 
                         console.log("eventTimeFromUserZone--" + eventTimeFromUserZone);
                         console.log("nowTimeFromUserZone--" + nowTimeFromUserZone);
+                        console.log("==============================================");
 
                         if (nowTimeFromUserZone > eventTimeFromUserZone) {
                             movableList.push(eventsList[i]);
@@ -84,7 +85,7 @@ var CalendarEventHandler = {
                 }
             },
             function moveToNextDay(movableList, callBack) {
-
+                console.log("start method moveToNextDay");
                 if (typeof movableList != "undefined" && movableList) {
                     console.log("movableList.length--" + movableList.length);
 
@@ -95,6 +96,7 @@ var CalendarEventHandler = {
                             _async.waterfall([
 
                                 function doUpdateEvent(callBack) {
+                                    console.log("start method doUpdateEvent");
                                     var criteria = {
                                         _id: movingEvent._id
                                     };
@@ -111,7 +113,7 @@ var CalendarEventHandler = {
 
                                 function addNotification(stt, movedEvent, callBack) {
 
-                                    console.log("inside  addNotification func >>");
+                                    console.log("start method addNotification");
                                     console.log(stt);
 
                                     if (stt.status == 200) {
@@ -134,7 +136,7 @@ var CalendarEventHandler = {
 
                                 function notifyingUsers(notification_id, movedEvent, callBack) {
 
-                                    console.log("inside  notifyingUsers func >>");
+                                    console.log("start method notifyingUsers");
                                     console.log("notification_id >>" + notification_id);
                                     console.log(notification_id);
 
@@ -177,6 +179,9 @@ var CalendarEventHandler = {
                             callBack(null);
                         }
                     }, function(err){
+                        if(err) {
+                            console.log("event each error ---");
+                        }
                         callBack(null);
                     });
 
@@ -191,6 +196,7 @@ var CalendarEventHandler = {
             if(err) {
                 console.log("event updating error ---");
             }
+            console.log("***************************************************");
             console.log("----- END calendarEventMovingProcess SCHEDULE -----");
             console.log("***************************************************");
         });

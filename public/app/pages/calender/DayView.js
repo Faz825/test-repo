@@ -14,6 +14,8 @@ import SharedUsers from './SharedUsers';
 import EditorField from './EditorField';
 import Socket  from '../../middleware/Socket';
 
+import { Modal, Button } from 'react-bootstrap';
+
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
@@ -30,6 +32,7 @@ export default class DayView extends Component {
     constructor(props) {
         super(props);
         let user =  Session.getSession('prg_lg');
+
         this.state = {
             currentDay : this.props.dayDate,
             defaultType : 'event',
@@ -45,11 +48,14 @@ export default class DayView extends Component {
             sharedWithIds:[],
             sharedWithNames: [],
             msgOn : false,
-            errorMsg : ''
+            errorMsg : '',
+            showModal : false,
+            deleteEventId : ''
         };
 
         this.sharedWithIds = [];
         this.sharedWithNames = [];
+        this.selectedEvent = this.props.selectedEvent;
         this.currentDay = this.state.currentDay;
         this.loggedUser = user;
         this.addEvent = this.addEvent.bind(this);
@@ -58,7 +64,15 @@ export default class DayView extends Component {
         this.changeType = this.changeType.bind(this);
         this.handleTimeChange = this.handleTimeChange.bind(this);
         this.toggleMsg = this.toggleMsg.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.delete = this.delete.bind(this);
+    }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({currentDay : nextProps.dayDate});
+        this.currentDay = nextProps.dayDate;
+        this.loadEvents();
     }
 
     _onHashClick() {
@@ -87,7 +101,6 @@ export default class DayView extends Component {
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
                 if (data.status.code == 200) {
-                    console.log(data.events);
                     this.setState({events: data.events});
                 }
             }.bind(this),
@@ -95,10 +108,14 @@ export default class DayView extends Component {
                 console.log(error);
             }
         });
-
     }
 
     resetEventForm() {
+        if(this.state.showUserPanelWindow) {
+            this.refs.SharedUserField.sharedWithNames = [];
+            this.refs.SharedUserField.sharedWithIds = [];
+        }
+        
         this.setState({
             sharedWithNames: [],
             sharedWithIds: [],
@@ -111,8 +128,7 @@ export default class DayView extends Component {
         });
         this.sharedWithIds = [];
         this.sharedWithNames = [];
-        this.refs.SharedUserField.sharedWithNames = [];
-        this.refs.SharedUserField.sharedWithIds = [];
+
     }
 
     toggleMsg() {
@@ -156,7 +172,7 @@ export default class DayView extends Component {
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
         };
-
+        this.resetEventForm();
         $.ajax({
             url: '/calendar/event/add',
             method: "POST",
@@ -172,7 +188,7 @@ export default class DayView extends Component {
                         cal_event_id:data.events._id,
                         notification_type:"calendar_share_notification",
                         notification_sender:this.loggedUser,
-                        notification_receiver:sharedUsers
+                        notification_receivers:data.shared_users
                     };
 
                     Socket.sendCalendarShareNotification(_notificationData);
@@ -236,7 +252,7 @@ export default class DayView extends Component {
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
-                console.log(this.refs.EditorFieldValues);
+
                 const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, ContentState.createFromText(''));
                 this.refs.EditorFieldValues.setState({editorState});
 
@@ -245,7 +261,7 @@ export default class DayView extends Component {
                         cal_event_id:postData.id,
                         notification_type:data.event_time.isTimeChanged == true ? "calendar_schedule_time_changed" : "calendar_schedule_updated",
                         notification_sender:this.loggedUser,
-                        notification_receiver:sharedUsers
+                        notification_receivers:data.shared_users
                     };
 
                     Socket.sendCalendarShareNotification(_notificationData);
@@ -257,8 +273,32 @@ export default class DayView extends Component {
         }.bind(this));
     }
 
+    /*
+     * delete a given event or a todo.
+    */
+    delete() {
+
+        $.ajax({
+            url : '/calendar/delete',
+            method : "POST",
+            data : { event_id : this.state.deleteEventId },
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token},
+            success : function (data, text) {
+                if (data.status.code == 200) {
+                    this.setState({deleteEventId: ''});
+                    this.closeModal();
+                    this.loadEvents();
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
     markTodo(eventId, status) {
-        console.log(eventId);
+
         let user =  Session.getSession('prg_lg');
         var postData = {
             id : eventId,
@@ -408,9 +448,28 @@ export default class DayView extends Component {
     }
 
     removeUser(key){
+        
         this.sharedWithIds.splice(key,1);
         this.sharedWithNames.splice(key,1);
         this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
+    }
+
+    removeUsersByName(arrUsers) {
+
+        var arrKeysToBeRemoved = [];
+        for (var i = 0; i < arrUsers.length; i++) {
+            arrKeysToBeRemoved.push(this.sharedWithNames.indexOf(arrUsers[i]));
+
+            // indexOf returnes the key of the matching value
+            // splice removes the given key form the array.
+            this.sharedWithIds.splice(this.sharedWithIds.indexOf(arrUsers[i]),1); 
+            this.sharedWithNames.splice(this.sharedWithNames.indexOf(arrUsers[i]),1);
+
+            if(i == (arrUsers.length - 1)) {
+                this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});        
+            }
+        }
+
     }
 
     setTime(selected) {
@@ -424,7 +483,16 @@ export default class DayView extends Component {
         this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
     }
 
+    closeModal() {
+        this.setState({showModal: false });
+    }
+
+    openModal(eventId) {
+        this.setState({showModal: true , deleteEventId: eventId});
+    }
+
     render() {
+
         let shared_with_list = [];
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
@@ -480,7 +548,12 @@ export default class DayView extends Component {
                                 <div className="row calender-input">
                                     <div className="col-sm-12">
                                         <div className="input" id="editor-holder" >
-                                            <EditorField ref="EditorFieldValues" setTime={this.setTime.bind(this)} setSharedUsers={this.setSharedUsers.bind(this)} />
+                                            <EditorField 
+                                                ref="EditorFieldValues" 
+                                                setTime={this.setTime.bind(this)} 
+                                                setSharedUsers={this.setSharedUsers.bind(this)} 
+                                                removeUsersByName={this.removeUsersByName.bind(this)}
+                                            />
 
                                             <div className="shared-users-time-panel row">
                                                 <div className="col-sm-3">
@@ -585,6 +658,8 @@ export default class DayView extends Component {
                                         <DayEventsList
                                             events={this.state.events}
                                             clickEdit={this.clickEdit.bind(this)}
+                                            selectedEvent={this.selectedEvent}
+                                            delete={this.openModal.bind(this)}
                                         />
                                     </div>
                                 </div>
@@ -600,6 +675,8 @@ export default class DayView extends Component {
                                             events={this.state.events}
                                             onClickItem={this.markTodo.bind(this)}
                                             clickEdit={this.clickEdit.bind(this)}
+                                            selectedEvent={this.selectedEvent}
+                                            delete={this.openModal.bind(this)}
                                         />
                                     </div>
                                 </div>
@@ -610,6 +687,18 @@ export default class DayView extends Component {
                         <MiniCalender selected={moment(this.currentDay)} changeDay={this.calenderClick.bind(this)} />
                     </div>
                 </div>
+                <Modal show={this.state.showModal} onHide={this.closeModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Are you sure. You want to delete this event</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>This will delete all the associated data, like notifications, shared users.</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.closeModal}>Close</Button>
+                        <Button bsStyle="primary" onClick={this.delete}>Delete</Button>
+                    </Modal.Footer>
+                </Modal>
             </section>
         );
     }

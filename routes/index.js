@@ -8,7 +8,8 @@ var DefaultController   = require('../controller/DefaultController'),
     SkillController     = require('../controller/SkillController'),
     NewsController      = require('../controller/NewsController'),
     ConnectionController = require('../controller/ConnectionController'),
-    LifeEventController = require('../controller/LifeEventController');
+    LifeEventController = require('../controller/LifeEventController'),
+    CalendarController = require('../controller/CalendarController');
 
 
 //router.get('/choose-secretary', function(req, res, next) {
@@ -78,6 +79,8 @@ router.get('/connections', DefaultController.index);
 router.get('/connections/mutual/:uname', DefaultController.index);
 router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
+router.get('/calendar', DefaultController.index);
+router.get('/calendar/:name', DefaultController.index);
 
 router.get('/get-connected-users/:notebook/:name', UserController.getNotesSharedUsers);
 router.get('/filter-shared-users/:notebook/:name', UserController.filterNoteBookSharedUsers);

@@ -87,7 +87,7 @@ GLOBAL.AccessAllow = [
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
     '/notes/edit-note/:note_id','/connections', '/connections/mutual/:uname','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode',
     '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name',
-    '/calendar','/callcenter'
+    '/calendar/:name', '/calendar','/callcenter'
 ];
 
 /**
@@ -184,8 +184,8 @@ router.post('/notes/update-note', NotesController.updateNote);
 router.post('/notes/delete-note', NotesController.deleteNote);
 router.post('/introduction/update', UserController.updateIntroduction);
 router.get('/introduction/:uname',UserController.retrieveIntroduction);
-router.get('/notifications/get-notifications',NotificationController.getNotifications);
-router.get('/notifications/get-notifications-list',NotificationController.getNotificationsList);
+// router.get('/notifications/get-notifications',NotificationController.getNotifications);
+router.get('/notifications/get-notifications',NotificationController.getNotificationsList);
 router.post('/notifications/update-notifications',NotificationController.updateNotifications);
 router.post('/notifications/notebook-update',NotificationController.updateNotebookNotifications);
 router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);
@@ -224,10 +224,14 @@ router.get('/calendar/shared_users', CalendarController.getEventSharedUsers);
 router.get('/calendar/events/date_range', CalendarController.getAllForDateRange);
 router.post('/calendar/event/completion', CalendarController.updateEventCompletion);
 router.post('/calendar/event/get', CalendarController.getEvent);
+router.post('/calendar/delete', CalendarController.deleteCalendarEvent);
 
 router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
 
-router.get('/call-records', CallCenterController.getCallRecords);
+// Call Center
+router.get('/contacts/all', CallCenterController.contact.getAll);
+
+router.get('/call-records', CallCenterController.call.getCallRecords);
 
 
 module.exports = router;

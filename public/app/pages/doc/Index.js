@@ -2,10 +2,15 @@
  * This is folders index class that handle all
  */
 import React from 'react';
+import Session  from '../../middleware/Session';
 
 export default class Index extends React.Component{
     constructor(props){
         super(props);
+
+        if(Session.getSession('prg_lg') == null){
+            window.location.href = "/";
+        }
 
         this.state={}
     }

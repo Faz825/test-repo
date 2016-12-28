@@ -8,6 +8,7 @@ import Session  from '../../middleware/Session';
 import Socket  from '../../middleware/Socket';
 import SecretaryThumbnail from '../../components/elements/SecretaryThumbnail';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
+import { browserHistory } from 'react-router';
 
 export default class Index extends React.Component{
     constructor(props){
@@ -55,7 +56,8 @@ export default class Index extends React.Component{
             let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
 
 
-            if(_notificationType == "share_notebook" || _notificationType == "share_notebook_response" || _notificationType == "share_folder" || _notificationType == "share_folder_response") {
+            if(_notificationType == "share_notebook" || _notificationType == "share_notebook_response" || _notificationType == "share_folder" || _notificationType == "share_folder_response"
+                || _notificationType == "calendar_share_notification" || _notificationType == "share_calendar_response"|| _notificationType == "calendar_schedule_updated" || _notificationType == "calendar_schedule_time_changed" || _notificationType == "calendar_schedule_carried_next_day") {
 
                 console.log("came to load >>" + _notificationType);
                 _this.loadNotifications();
@@ -235,15 +237,13 @@ export default class Index extends React.Component{
     }
 
     redirectToNotification(_notification){
-
+        console.log(_notification);
+        
         if(_notification.notification_type != 'Birthday' &&
             _notification.notification_type != "share_notebook" &&
             _notification.notification_type != "share_folder" &&
             _notification.notification_type != 'share_calendar' &&
-            _notification.notification_type != 'calendar_schedule_updated' &&
-            _notification.notification_type != 'calendar_schedule_time_changed' &&
-            _notification.notification_type != 'calendar_schedule_carried_next_day') {
-
+            _notification.notification_type != 'calendar_schedule_time_changed') {
             if(!_notification.read_status) {
                 $.ajax({
                     url: '/notifications/update-notifications',
@@ -252,12 +252,15 @@ export default class Index extends React.Component{
                     data:{post_id:_notification.post_id, notification_type:_notification.notification_type, notification_id:_notification.notification_id},
                     headers: { 'prg-auth-header':this.state.loggedUser.token }
                 }).done( function (data, text) {
-
                     if(_notification.notification_type == "share_notebook_response" ||
-                        _notification.notification_type == "share_folder_response" ||
-                        _notification.notification_type == "share_calendar_response") {
+                        _notification.notification_type == "share_folder_response") {
                         this.loadNotifications();
-                    } else {
+                    } else if (_notification.notification_type == 'share_calendar_response' ||
+                        _notification.notification_type == 'calendar_schedule_carried_next_day' ||
+                        _notification.notification_type == 'calendar_schedule_updated') {
+                        var strUrl = '/calendar/'+_notification.calendar_id;
+                        browserHistory.push(strUrl);
+                    }  else {
                         window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
                     }
 
@@ -265,9 +268,13 @@ export default class Index extends React.Component{
 
             } else {
 
-                if(_notification.notification_type != "share_notebook_response" &&
-                    _notification.notification_type != "share_folder_response" &&
-                    _notification.notification_type != "share_calendar_response") {
+                if (_notification.notification_type == 'share_calendar_response' ||
+                    _notification.notification_type == 'calendar_schedule_carried_next_day' ||
+                    _notification.notification_type == 'calendar_schedule_updated') {
+                    var strUrl = '/calendar/'+_notification.calendar_id;
+                    browserHistory.push(strUrl);
+                } else if(_notification.notification_type != "share_notebook_response" &&
+                    _notification.notification_type != "share_folder_response") {
                     window.location.href = '/profile/'+_notification.post_owner_username+'/'+_notification.post_id;
                 }
             }
@@ -438,7 +445,7 @@ export default class Index extends React.Component{
                     folder_id:notification.folder_id,
                     notification_type:"share_folder_response",
                     notification_sender:this.state.loggedUser,
-                    notification_receiver:notification.sender_user_name
+                    notification_receivers:notification.sender_user_name
                 };
 
                 console.log(_notificationData);console.log(status);
@@ -481,7 +488,7 @@ export default class Index extends React.Component{
                     cal_event_id:notification.calendar_id,
                     notification_type:"share_calendar_response",
                     notification_sender:this.state.loggedUser,
-                    notification_receiver:[notification.sender_user_name]
+                    notification_receivers:[notification.sender_user_name]
                 };
 
                 Socket.sendCalendarShareResponseNotification(_notificationData);
@@ -489,7 +496,8 @@ export default class Index extends React.Component{
                 if(stt == 'REQUEST_REJECTED') {
                     this.loadNotifications();
                 } else {
-                    window.location.href = '/calendar';
+                    var strUrl = '/calendar/'+notification.calendar_id;
+                    browserHistory.push(strUrl);
                 }
 
             }.bind(this));

@@ -92,7 +92,46 @@ export default class EditorField extends Component {
     }
 
     onChange(editorState) {
+
+        var contentState = this.state.editorState.getCurrentContent();
+        var currentContent = editorState.getCurrentContent();
+        var currentPlainText = currentContent.getPlainText();
+        var plainText = contentState.getPlainText();
+        var diff = this.getDifference(currentPlainText, plainText);
+
+        if(currentContent != plainText && plainText.length > currentPlainText.length && diff.includes("#")) {
+            
+            var splited = diff.split("#");
+            splited = splited.filter(function(v){return v!==''});
+            var arrNames = [];
+            for (var i = 0; i <= splited.length - 1; i++) {
+
+                var splitedBySpace = splited[i].split(" ");
+                var aName = "";
+
+                for (var j = 0; j <= splitedBySpace.length - 1; j++) {
+                    aName = splitedBySpace[0]+" "+splitedBySpace[1];
+                }
+                arrNames.push(aName);
+            }
+
+            this.props.removeUsersByName(arrNames);        
+        }
         this.setState({editorState});
+    }
+
+    getDifference(str1, str2) {
+        var i = 0;
+        var j = 0;
+        var result = "";
+        while (j < str2.length) {
+            if (str1[i] != str2[j] || i == str1.length)
+                result += str2[j];
+            else
+                i++;
+            j++;
+        }
+        return result;
     }
 
     onEventAdd() {

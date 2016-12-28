@@ -23,7 +23,7 @@ var CalendarController = {
                     if(result.error) {
                         callBack(result.error, null);
                     }
-                    callBack(null, result);
+                    callBack(null, result.event);
                 });
             },
 
@@ -108,6 +108,7 @@ var CalendarController = {
             UserId = Util.getCurrentSession(req).id,
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            User = require('mongoose').model('User'),
             notifyUsers = (typeof req.body.shared_users != 'undefined' ? req.body.shared_users : []); //this should be an array
 
         _async.waterfall([
@@ -243,7 +244,21 @@ var CalendarController = {
                 } else {
                     callBack(null, calEvent);
                 }
-            }
+            },
+            function getNotifyUsers(calEvent, callBack){
+                var _usernames = [];
+                if (typeof notifyUsers != 'undefined' && notifyUsers.length > 0) {
+                    User.getSenderDetails(notifyUsers, function (_shared_users) {
+                        for(var i = 0; i < _shared_users.length; i++){
+                            _usernames.push(_shared_users[i].sender_user_name);
+                        }
+
+                        callBack(null, {users: _usernames, e: calEvent});
+                    });
+                }else {
+                    callBack(null, {users: [], e: calEvent});
+                }
+            },
 
         ], function (err, resultSet) {
 
@@ -253,12 +268,209 @@ var CalendarController = {
                 res.status(400).send(outPut);
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['events'] = resultSet.event;
+                outPut['events'] = resultSet.e.event;
+                outPut['shared_users'] = resultSet.users;
                 res.status(200).send(outPut);
             }
         });
 
     },
+
+
+    /**
+     * removing calendar event from db and es
+     * renoving notification recepiens
+     * removing notification
+     * @param req
+     * @param res
+     */
+    deleteCalendarEvent: function (req, res) {
+
+        console.log("came to deleteCalendarEvent");
+        var CurrentSession = Util.getCurrentSession(req),
+            CalendarEvent = require('mongoose').model('CalendarEvent'),
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            _async = require('async');
+
+        var UserId = CurrentSession.id;
+        var moment = require('moment');
+        var eventId = req.body.event_id;
+        var myEvent = '';
+
+        _async.waterfall([
+            function getEventById(callBack) {
+                console.log("came to getEventById");
+                CalendarEvent.getEventById(eventId, function (result) {
+                    if(result.error) {
+                        callBack(result.error, null);
+                    }
+                    myEvent = result.event;
+                    callBack(null, result.event);
+                });
+            },
+            function getNotificationByEventId(_event, callBack) {
+                console.log("came to getNotificationByEventId");
+                if (_event && _event.shared_users.length > 0) {
+                    _async.waterfall([
+                        function getNotificationByEventId(callBack) {
+                            console.log("came to getNotificationByEventId");
+                            if (myEvent) {
+                                console.log(_event._id);
+                                var criteria = {notified_calendar: _event._id};
+                                Notification.getFirstNotification(criteria, function (results) {
+                                    if (results.status == 200) {
+                                        callBack(null, results.result, _event);
+                                    } else {
+                                        callBack(null, null, null);
+                                    }
+
+                                });
+                            } else {
+                                callBack(null, null, null);
+                            }
+
+                        },
+                        function removeRecipients(_notification, _event, callBack) {
+                            console.log("came to removeRecipients");
+                            if (_notification && _event) {
+                                var criteria = {notification_id: _notification._id}
+                                NotificationRecipient.deleteNotificationRecipients(criteria, function (results) {
+                                    if (results.status == 200) {
+                                        callBack(null, results.status, _notification);
+                                    } else {
+                                        callBack(null, null, null);
+                                    }
+                                });
+                            } else {
+                                callBack(null, null, null);
+                            }
+                        },
+                        function removeNotification(delRecipients, _notification, callBack) {
+                            console.log("came to removeNotification");
+                            if (delRecipients == 200 && _notification) {
+                                var criteria = {_id: _notification._id}
+
+                                Notification.deleteNotification(criteria, function (results) {
+                                    if (results.status == 200) {
+                                        callBack(null, results.status);
+                                    } else {
+                                        callBack(null, null);
+                                    }
+
+                                });
+                            } else {
+                                callBack(null, null);
+                            }
+                        },
+                        function removeEventFromESSharedEvents(delNotification, callBack) {
+                            console.log("came to removeEventFromESSharedEvents");
+                            if (delNotification == 200 && myEvent) {
+
+                                var sharedUsers = myEvent.shared_users;
+                                if (typeof sharedUsers != 'undefined' && sharedUsers.length > 0) {
+                                    _async.each(sharedUsers, function (sharedUser, callBack) {
+                                        _async.waterfall([
+                                            function isESIndexExists(callBack) {
+                                                console.log("came to isESIndexExists");
+                                                var _cache_key = "idx_user:" + CalendarEventsConfig.CACHE_PREFIX + sharedUser.user_id.toString();
+                                                var query = {
+                                                    index: _cache_key,
+                                                    id: sharedUser.user_id.toString(),
+                                                    type: 'shared_events',
+                                                };
+                                                ES.isIndexExists(query, function (esResultSet) {
+                                                    callBack(null, esResultSet);
+                                                });
+                                            },
+                                            function getSharedEvents(resultSet, callBack) {
+                                                if (resultSet) {
+                                                    console.log("index exists---");
+                                                    var query = {
+                                                        q: "_id:" + sharedUser.user_id.toString()
+                                                    };
+                                                    CalendarEvent.ch_getSharedEvents(sharedUser.user_id, query, function (esResultSet) {
+                                                        callBack(null, esResultSet);
+                                                    });
+                                                } else {
+                                                    callBack(null, null);
+                                                }
+                                            },
+                                            function ch_updateEvent(resultSet, callBack) {
+                                                if (resultSet != null) {
+                                                    var event_list = resultSet.result[0].events;
+                                                    var index_a = event_list.indexOf(myEvent._id);
+                                                    if (index_a == -1) { //event id should exists
+                                                        event_list.splice(index_a, 1);//removing event id from array
+                                                        var query = {
+                                                                q: "user_id:" + sharedUser.user_id.toString()
+                                                            },
+                                                            data = {
+                                                                user_id: sharedUser.user_id,
+                                                                events: event_list
+                                                            };
+
+                                                        CalendarEvent.ch_shareEventUpdateIndex(sharedUser.user_id, data, function (esResultSet) {
+                                                            callBack(null);
+                                                        });
+                                                    } else {
+                                                        callBack(null);
+                                                    }
+                                                } else {
+                                                    callBack(null);
+                                                }
+                                            }
+
+                                        ], function (err) {
+                                            callBack(null);
+                                        })
+                                    }, function (err) {
+                                        callBack(null);
+                                    });
+                                }
+
+                            } else {
+                                callBack(null);
+                            }
+                        }
+
+                    ], function (err) {
+                        callBack(null);
+                    })
+                } else {
+                    callBack(null);
+                }
+            },
+            function removeEventFinally(callBack) {
+                console.log("came to removeEventFinally");
+                var criteria = {_id: eventId}
+
+                CalendarEvent.deleteEvent(criteria, function (results) {
+                    if (results.status == 200) {
+                        callBack(null, results.status);
+                    } else {
+                        callBack(null, null);
+                    }
+                });
+            }
+
+
+        ], function (err, _status) {
+
+            var outPut = {};
+            if (err || _status != 200) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDAR_MONTH_EMPTY, Alert.ERROR);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                res.status(200).send(outPut);
+            }
+
+        });
+
+
+    },
+
 
     /**
      * Return all events todos tasks for given month
@@ -782,38 +994,60 @@ var CalendarController = {
                                 if(typeof esResultSet != 'undefined' && esResultSet) {
 
                                     var sharedEvents = esResultSet.result[0].events;
+                                    var condition = {
+                                        start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay},
+                                        _id : {$in : sharedEvents},
+                                    };
 
-                                    _async.each(sharedEvents, function (sharedEvent, callBack) {
+                                    CalendarEvent.getSortedCalenderItems(condition, function (err, resultSet) {
 
-                                        var condition = {
-                                            start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay},
-                                            _id: sharedEvent,
-                                        };
+                                        if(typeof resultSet != 'undefined' && resultSet) {
+                                            _async.each(resultSet.events, function (result, callBack) {
+                                                var _Shared_users = result.shared_users;
+                                                if(_Shared_users != null && typeof _Shared_users != 'undefined'){
+                                                    
+                                                    for(var inc = 0; inc < _Shared_users.length; inc++){
+                                                        
+                                                        if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING || _Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
 
-                                        CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+                                                            _async.waterfall([
+                                                                function getSharedOwner(callBack) {
+                                                                    console.log("came to get shared event owner----");
+                                                                    var query = {
+                                                                        q: result.user_id.toString(),
+                                                                        index: 'idx_usr'
+                                                                    };
+                                                                    ES.search(query, function (esResultSet) {
 
-                                            if(typeof result != 'undefined' && result) {
+                                                                        if (typeof esResultSet.result[0] == "undefined") {
+                                                                            callBack(null, null);
+                                                                        } else {
+                                                                            var _name = esResultSet.result[0].first_name + " " + esResultSet.result[0].last_name;
+                                                                            callBack(null, _name);
+                                                                        }
+                                                                    });
+                                                                },
+                                                                function setSharedOwner(_name, callBack) {
+                                                                    var _event_op = result.toObject();
+                                                                    _event_op['owner_name'] = _name;
+                                                                    _Events.push(_event_op);
+                                                                    callBack(null);
+                                                                }
 
-                                                if (result.events[0] != null && typeof result.events[0] != 'undefined') {
-                                                    var _Shared_users = result.events[0].shared_users;
-
-                                                    if(_Shared_users != null && typeof _Shared_users != 'undefined'){
-
-                                                        for(var inc = 0; inc < _Shared_users.length; inc++){
-
-                                                            if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING || _Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
-                                                                _Events.push(result.events[0]);
-                                                            }
+                                                            ], function (err) {
+                                                                //callBack(null);
+                                                            });
                                                         }
                                                     }
-
                                                 }
-                                            }
-                                            callBack(null);
+                                                callBack(null, _Events);
+                                            }, function (err) {
+                                                callBack(null, _Events);
+                                            });
+                                        } else {
+                                            callBack(null, _Events);
+                                        }
 
-                                        });
-                                    }, function (err) {
-                                        callBack(null, _Events);
                                     });
                                 } else {
                                     callBack(null, _Events);
@@ -862,6 +1096,12 @@ var CalendarController = {
                         }
                     }
 
+                    var ownerId = event.user_id;
+
+                    var ownerObj = users.filter(function (e) {
+                        return e.user_id == ownerId;
+                    });
+
                     var arrUsers = [];
                     for (var u = 0; u < sharedUsers.length; u++) {
                         var userId = sharedUsers[u].user_id;
@@ -874,11 +1114,15 @@ var CalendarController = {
                         var user = {
                             'shared_status': sharedUsers[u].shared_status,
                             'id': userId,
-                            'name': 'Unknown'
+                            'name': 'Unknown',
+                            'owner_name': 'Unknown'
                         };
 
                         if (filterObj) {
                             user.name = filterObj[0].first_name + " " + filterObj[0].last_name;
+                        }
+                        if (ownerObj) {
+                            user.owner_name = ownerObj[0].first_name + " " + ownerObj[0].last_name;
                         }
 
                         arrUsers.push(user);
@@ -914,6 +1158,7 @@ var CalendarController = {
 
         var CalendarEvent = require('mongoose').model('CalendarEvent'),
             Notification = require('mongoose').model('Notification'),
+            User = require('mongoose').model('User'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient');
         var moment = require('moment');
         var _async = require('async');
@@ -935,7 +1180,10 @@ var CalendarController = {
         _async.waterfall([
             function getEvents(callBack) {
                 CalendarEvent.getEventById(event_id, function (resultSet) {
-                    callBack(null, resultSet);
+                    if(resultSet.error) {
+                        callBack(resultSet.error, null);
+                    }
+                    callBack(null, resultSet.event);
                 });
             },
             function compareSharedUsers(resultSet, callBack) {
@@ -1181,8 +1429,22 @@ var CalendarController = {
                 } else {
                     callBack(null);
                 }
+            },
+            function getNotifyUsers(callBack){
+                var _usernames = [];
+                if (typeof notifyUsers != 'undefined' && notifyUsers.length > 0) {
+                    User.getSenderDetails(notifyUsers, function (_shared_users) {
+                        for(var i = 0; i < _shared_users.length; i++){
+                            _usernames.push(_shared_users[i].sender_user_name);
+                        }
+
+                        callBack(null, _usernames);
+                    });
+                }else {
+                    callBack(null, []);
+                }
             }
-        ], function (err) {
+        ], function (err, shared_users) {
             var outPut = {};
             if (err) {
                 outPut['status'] = ApiHelper.getMessage(400, err);
@@ -1190,6 +1452,7 @@ var CalendarController = {
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
                 outPut['event_time'] = {'isTimeChanged':isTimeChanged,'event_time':_event_time,'passed_event_time':_passed_event_time};
+                outPut['shared_users'] = shared_users;
                 res.status(200).send(outPut);
             }
         });
@@ -1215,7 +1478,10 @@ var CalendarController = {
         _async.waterfall([
             function getEvent(callBack) {
                 var event = CalendarEvent.getEventById(event_Id, function (resultSet) {
-                    callBack(null, resultSet);
+                    if(resultSet.error) {
+                        callBack(resultSet.error, null);
+                    }
+                    callBack(null, resultSet.event);
                 });
             },
             function shareEvent(resultSet, callBack) {
@@ -1313,7 +1579,10 @@ var CalendarController = {
         _async.waterfall([
             function getEevent(callBack) {
                 CalendarEvent.getEventById(event_Id, function (resultSet) {
-                    callBack(null, resultSet);
+                    if(resultSet.error) {
+                        callBack(resultSet.error, null);
+                    }
+                    callBack(null, resultSet.event);
                 });
             },
             function getSharedUsers(resultSet, callBack) {
@@ -1420,7 +1689,10 @@ var CalendarController = {
         _async.waterfall([
             function getEvent(callBack) {
                 var event = CalendarEvent.getEventById(event_id, function (resultSet) {
-                    callBack(null, resultSet);
+                    if(resultSet.error) {
+                        callBack(resultSet.error, null);
+                    }
+                    callBack(null, resultSet.event);
                 });
             },
             function updateInDB(resultSet, callBack) {
@@ -1641,7 +1913,10 @@ var CalendarController = {
         _async.waterfall([
             function getEvents(callBack) {
                 CalendarEvent.getEventById(event_id, function (resultSet) {
-                    callBack(null, resultSet);
+                    if(resultSet.error) {
+                        callBack(resultSet.error, null);
+                    }
+                    callBack(null, resultSet.event);
                 });
             },
             function updateEvent(resultSet, callBack) {

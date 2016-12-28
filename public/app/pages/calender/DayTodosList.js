@@ -37,29 +37,58 @@ export default class DayTodosList extends React.Component {
 
 			let usersString = [];
 			let acceptedClass = 'event-description';
+			if(event.user_id ==  _this.state.user.id) {
+                acceptedClass = 'event-description accepted';
+            }
 			if(event.shared_users.length > 0 ) {
-
+				
 				usersString = event.shared_users.map(function(user,userKey){
 					if(event.user_id ==  _this.state.user.id || (user.shared_status == 3 &&_this.state.user.id == user.id )) {
 						acceptedClass = 'event-description accepted';
 					}
-					return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
+                    if(user.shared_status == 2) {
+                        return null;
+                    }
+
+					return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>
+								{user.name}{userKey+1 == event.shared_users.length ? '' : ', '}
+							</span>;
 				});
 			} else {
 				usersString = <span className="people-list" >Only me</span>
 			}
 
+			let ecentClassName = "";
+			if(event.status == 2) {
+				ecentClassName = ecentClassName.concat('active ');
+			}
+
+			if(event._id == _this.props.selectedEvent) {
+				ecentClassName = ecentClassName.concat(' bg-success ');
+			}
+
 			return (
-				<li className={event.status == 2 ? 'active' : ''} key={key}>
-					<div className="checkbox-area">
-						<input id="check1" name="check" value="check1" type="checkbox" />
-						<label for="check1" onClick={_this.props.onClickItem.bind(_this, event._id, event.status)} className="description-holder">
+				<li className={ecentClassName} key={key}>
+					<div className={event._id == _this.props.selectedEvent ? 'bg-success checkbox-area ' : 'checkbox-area'}>
+						{event.user_id == _this.state.user.id ?
+							<input id="check1" name="check" value="check1" type="checkbox" />
+						: ''}
+						<label for="check1" 
+							onClick={event.user_id == _this.state.user.id ? 
+								_this.props.onClickItem.bind(_this, event._id, event.status)
+								: ''
+							} 
+							className={event.user_id == _this.state.user.id ? "description-holder" : "description-holder disabled" }
+						>
 							<div className={acceptedClass} >{event.plain_text}</div>
 							<p>People in the To-do : {usersString}</p>
 						</label>
 						<div className="time-wrapper pull-right">{event.event_time}</div>
 						{event.user_id == _this.state.user.id && startDateTime > moment().format('YYYY-MM-DD HH:mm') ?
-							<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right edit-icon" aria-hidden="true"></i>
+							<span>
+								<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right action-icons edit-icon" aria-hidden="true"></i>
+								<i onClick={_this.props.delete.bind(_this, event._id)} className="fa fa-trash pull-right action-icons delete-icon" aria-hidden="true"></i>
+							</span>
 							: ''
 						}
 					</div>

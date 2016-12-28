@@ -16,19 +16,48 @@ export default class Index extends React.Component{
 
     constructor(props) {
 
-        if(Session.getSession('prg_lg') == null){
+        let user =  Session.getSession('prg_lg');
+        if(user == null){
             window.location.href = "/";
         }
 
         super(props);
+        this.dayViewDate = moment().format('YYYY-MM-DD');
         this.state = {
             current : 'day',
-            dayViewDate:moment().format('YYYY-MM-DD'),
-            monthViewDate:moment().startOf("day")
+            dayViewDate: moment().format('YYYY-MM-DD'),
+            monthViewDate: moment().startOf("day"),
+            user: user
         };
         this.relativeView = this.relativeView.bind(this);
         this.loadDayView = this.loadDayView.bind(this);
         this.loadMonthView = this.loadMonthView.bind(this);
+    }
+
+    componentDidMount() {
+        if(this.props.params.name) {
+
+            $.ajax({
+                url : '/calendar/event/get',
+                method : "POST",
+                data : { eventId : this.props.params.name },
+                dataType : "JSON",
+                headers : { "prg-auth-header" : this.state.user.token },
+                success : function (data, text) {
+                    if (data.status.code == 200) {
+                        var event = data.event;
+                        console.log(event.start_date_time);
+                        console.log(moment(event.start_date_time).format('YYYY-MM-DD'));
+                        this.dayViewDate = moment(event.start_date_time).format('YYYY-MM-DD');
+                        this.setState({dayViewDate: moment(event.start_date_time).format('YYYY-MM-DD'), current: 'day'});
+                    }
+                }.bind(this),
+                error: function (request, status, error) {
+                    console.log(error);
+                }
+            });
+
+        } 
     }
 
     relativeView() {
@@ -37,7 +66,7 @@ export default class Index extends React.Component{
             case 'week':
                 return (<WeekView/>);
             case 'day':
-                return  (<DayView dayDate={this.state.dayViewDate}/>);
+                return  (<DayView dayDate={this.state.dayViewDate} selectedEvent={this.props.params.name} />);
             case 'month':
                 return  (<MonthView ref="MonthViewComponent" selected={this.state.monthViewDate} setDayView={this.loadDayView}/>);
             case 'year':

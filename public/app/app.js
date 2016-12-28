@@ -54,8 +54,8 @@ let rootRoute =(
         /**
          * Calender
          */
-
         <Route name="calendar" path="/calendar" component={CalenderIndex}/>
+        <Route name="calendar" path="/calendar/:name" component={CalenderIndex}/>
 
 
         /**

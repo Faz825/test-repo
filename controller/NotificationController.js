@@ -462,12 +462,18 @@ var NotificationController ={
                 var CalendarEvent = require('mongoose').model('CalendarEvent');
                 if(_calendarIds.length > 0) {
                     _async.each(_calendarIds, function (_calId, callBack) {
+
                         CalendarEvent.getEventById(_calId,function(resultSet){
+                            if(resultSet.error) {
+                                callBack(resultSet.error, null);
+                            }
+                            
                             var _data = {
                                 calendar_id : _calId,
-                                calendar_text : resultSet.plain_text
+                                calendar_text : resultSet.event.plain_text
                             };
                             _calendarData.push(_data);
+                            
                             callBack(null);
                         });
                     }, function (err) {
@@ -1084,7 +1090,7 @@ var NotificationController ={
                             calendar_id: (notification['calendar_id'] != null ? notification['calendar_id'] : ""),
 
                             //- Notification status for (Notebook, Folder, ...)
-                            notification_status: notification['notification_status']
+                            notification_status: ((notification['notification_status'] == "REQUEST_ACCEPTED") ? "accepted" : "declined")
                         };
 
                         if(notification['post_id'] != null){
@@ -1110,7 +1116,6 @@ var NotificationController ={
 
                         if(notification['calendar_id'] != null){
                             Calendar.bindNotificationData(notificationObj, function (r) {
-                                console.log('***---**');console.log(r);console.log('**--***');
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
@@ -1164,8 +1169,12 @@ var NotificationController ={
                 function getNotifications(callBack){
                     var _criteria = {notified_post:req.body.post_id, notification_type:req.body.notification_type};
                     Notification.getNotifications(_criteria, function(res){
-                        for(var i = 0; i < res.result.length; i++){
-                            _notification_ids.push(res.result[i]._id)
+                        if(res.error) {
+                            callBack(res.error);
+                        } else {
+                            for(var i = 0; i < res.result.length; i++){
+                                _notification_ids.push(res.result[i]._id)
+                            }
                         }
                         callBack(null);
                     });
@@ -1354,7 +1363,7 @@ var NotificationController ={
 
                         if(_notificationData.senders.length == 3){
                             _data['sender_name'] += ', '+ _notificationSenders[_notificationData.senders[1]]['name'];
-                            if(obj.sender_count == 0){
+                            if(_notificationData.sender_count == 0){
                                 _data['sender_name'] += ' and ';
                             }else{
                                 _data['sender_name'] += ', ';
