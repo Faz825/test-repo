@@ -58,6 +58,7 @@ var CallCenterController = {
 
                         for (var x = 0; x < aContacts.length; x++) {
                             if (aContacts[x].letter == first_letter) {
+                                aConns[i].onlineStatus = 0;
                                 aContacts[x].users.push(aConns[i]);
                             }
                         }
@@ -65,8 +66,7 @@ var CallCenterController = {
 
                     var outPut = {
                         status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                        contacts: aContacts,
-                        raw: aConns
+                        contacts: aContacts
                     };
 
                     return res.status(200).json(outPut);

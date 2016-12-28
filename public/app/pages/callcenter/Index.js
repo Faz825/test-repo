@@ -379,14 +379,14 @@ export default class Index extends React.Component {
                         </div>
                         <div className="name-wrapper">
                             <p className="name">{this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name}</p>
-                            <div className="status-update">     
-								<ButtonToolbar>
-									<DropdownButton bsSize="small" title={this.state.userStatus} id="dropdown-size-small">
-										<MenuItem eventKey="online" onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
-										<MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
-										<MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work mode</MenuItem>
-									</DropdownButton>
-								</ButtonToolbar>                      	
+                            <div className="status-update">
+                                <ButtonToolbar>
+                                    <DropdownButton bsSize="small" title={this.state.userStatus} id="dropdown-size-small">
+                                        <MenuItem eventKey="online" onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
+                                        <MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
+                                        <MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work mode</MenuItem>
+                                    </DropdownButton>
+                                </ButtonToolbar>
                             </div>
                         </div>
                     </div>
