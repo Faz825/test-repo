@@ -987,14 +987,40 @@ var CalendarController = {
 
                                         if(typeof resultSet != 'undefined' && resultSet) {
                                             _async.each(resultSet.events, function (result, callBack) {
-
                                                 var _Shared_users = result.shared_users;
                                                 if(_Shared_users != null && typeof _Shared_users != 'undefined'){
                                                     
                                                     for(var inc = 0; inc < _Shared_users.length; inc++){
                                                         
                                                         if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING || _Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
-                                                            _Events.push(result);
+
+                                                            _async.waterfall([
+                                                                function getSharedOwner(callBack) {
+                                                                    console.log("came to get shared event owner----");
+                                                                    var query = {
+                                                                        q: result.user_id.toString(),
+                                                                        index: 'idx_usr'
+                                                                    };
+                                                                    ES.search(query, function (esResultSet) {
+
+                                                                        if (typeof esResultSet.result[0] == "undefined") {
+                                                                            callBack(null, null);
+                                                                        } else {
+                                                                            var _name = esResultSet.result[0].first_name + " " + esResultSet.result[0].last_name;
+                                                                            callBack(null, _name);
+                                                                        }
+                                                                    });
+                                                                },
+                                                                function setSharedOwner(_name, callBack) {
+                                                                    var _event_op = result.toObject();
+                                                                    _event_op['owner_name'] = _name;
+                                                                    _Events.push(_event_op);
+                                                                    callBack(null);
+                                                                }
+
+                                                            ], function (err) {
+                                                                //callBack(null);
+                                                            });
                                                         }
                                                     }
                                                 }
@@ -1054,6 +1080,12 @@ var CalendarController = {
                         }
                     }
 
+                    var ownerId = event.user_id;
+
+                    var ownerObj = users.filter(function (e) {
+                        return e.user_id == ownerId;
+                    });
+
                     var arrUsers = [];
                     for (var u = 0; u < sharedUsers.length; u++) {
                         var userId = sharedUsers[u].user_id;
@@ -1066,11 +1098,15 @@ var CalendarController = {
                         var user = {
                             'shared_status': sharedUsers[u].shared_status,
                             'id': userId,
-                            'name': 'Unknown'
+                            'name': 'Unknown',
+                            'owner_name': 'Unknown'
                         };
 
                         if (filterObj) {
                             user.name = filterObj[0].first_name + " " + filterObj[0].last_name;
+                        }
+                        if (ownerObj) {
+                            user.owner_name = ownerObj[0].first_name + " " + ownerObj[0].last_name;
                         }
 
                         arrUsers.push(user);
