@@ -188,7 +188,7 @@ export default class DayView extends Component {
                         cal_event_id:data.events._id,
                         notification_type:"calendar_share_notification",
                         notification_sender:this.loggedUser,
-                        notification_receiver:sharedUsers
+                        notification_receivers:data.shared_users
                     };
 
                     Socket.sendCalendarShareNotification(_notificationData);
@@ -261,7 +261,7 @@ export default class DayView extends Component {
                         cal_event_id:postData.id,
                         notification_type:data.event_time.isTimeChanged == true ? "calendar_schedule_time_changed" : "calendar_schedule_updated",
                         notification_sender:this.loggedUser,
-                        notification_receiver:sharedUsers
+                        notification_receivers:data.shared_users
                     };
 
                     Socket.sendCalendarShareNotification(_notificationData);
