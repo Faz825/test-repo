@@ -49,7 +49,9 @@ export default class DayEventsList extends React.Component {
                     if(user.shared_status == 2) {
                         return null;
                     }
-                    return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
+                    return  <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>
+                                {user.name}{userKey+1 == event.shared_users.length ? '' : ', '}
+                            </span>;
                 });
             } else {
                 usersString = <span className="people-list">Only me</span>

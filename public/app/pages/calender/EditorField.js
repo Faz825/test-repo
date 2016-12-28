@@ -117,6 +117,7 @@ export default class EditorField extends Component {
 
             this.props.removeUsersByName(arrNames);        
         }
+        this.setState({editorState});
     }
 
     getDifference(str1, str2) {
