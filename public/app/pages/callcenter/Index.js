@@ -8,8 +8,11 @@ import {Modal, ButtonToolbar, DropdownButton, MenuItem} from 'react-bootstrap';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import ContactList from "./ContactList";
+import RecentList from "./RecentList";
+import StatusList from "./StatusList";
 import User from "./User";
 import CallModel from "./CallModel";
+import CallHandler from './CallHandler';
 
 export default class Index extends React.Component {
     constructor(props) {
@@ -114,99 +117,99 @@ export default class Index extends React.Component {
 
         let recentList = [
             {
-                "user_id": "57fcded7a083f22a099afffe",
-                "email": "prasad2@gmail.com",
-                "mood" : 1,
-                "contact_type": 1,
-                "call_type": 2,
-                "calls": 1,
-                "first_name": "prasad3",
-                "last_name": "sampath",
-                "zip_code": null,
-                "dob": "2-02-2013",
-                "country": "United States",
-                "user_name": "prasad2.sampath.86688",
-                "introduction": null,
-                "cur_exp_id": "57fcdeeba083f22a099affff",
-                "cur_working_at": "asd",
-                "cur_designation": "asd",
-                "call_time": "2:03 AM",
-                "city_details": "United States",
-                "connection_count": 0,
-                "calls": "2",
-                "images": {
-                    "profile_image": {
-                        "id": "DEFAULT",
-                        "file_name": "default_profile_image.png",
-                        "file_type": ".png",
-                        "http_url": "/images/default-profile-pic.png"
-                    }
-                },
-                "receivers_list": [
-                    {
-                        "name": "Steve Young",
-                        "user_id": 1,
-                        "call_status": 1
-                    },
-                    {
-                        "name": "Christina Chapman",
-                        "user_id": 2,
-                        "call_status": 4
-                    }
-                ],
-                "connected_at": "2016-10-11T12:47:03.594Z"
-            },
+				"user_id": "57fcded7a083f22a099afffe",
+				"email": "prasad2@gmail.com",
+				"mood" : 1,
+				"contact_type": 1,
+				"call_type": 2,
+				"calls": 1,
+				"first_name": "prasad3",
+				"last_name": "sampath",
+				"zip_code": null,
+				"dob": "2-02-2013",
+				"country": "United States",
+				"user_name": "prasad2.sampath.86688",
+				"introduction": null,
+				"cur_exp_id": "57fcdeeba083f22a099affff",
+				"cur_working_at": "asd",
+				"cur_designation": "asd",
+				"call_time": "2:03 AM",
+				"city_details": "United States",
+				"connection_count": 0,
+				"calls": "2",
+				"images": {
+					"profile_image": {
+						"id": "DEFAULT",
+						"file_name": "default_profile_image.png",
+						"file_type": ".png",
+						"http_url": "/images/default-profile-pic.png"
+					}
+				},
+				"receivers_list": [
+					{
+						"name": "Steve Young",
+						"user_id": 1,
+						"call_status": 1
+					},
+					{
+						"name": "Christina Chapman",
+						"user_id": 2,
+						"call_status": 4
+					}
+				],
+				"connected_at": "2016-10-11T12:47:03.594Z"
+			},
             {
-                "user_id": "57fcded7a083f22a099afffe",
-                "email": "prasad2@gmail.com",
-                "mood" : 1,
-                "contact_type": 1,
-                "call_type": 2,
-                "calls": 1,
-                "first_name": "prasad2",
-                "last_name": "sampath",
-                "zip_code": null,
-                "dob": "2-02-2013",
-                "country": "United States",
-                "user_name": "prasad2.sampath.86688",
-                "introduction": null,
-                "cur_exp_id": "57fcdeeba083f22a099affff",
-                "cur_working_at": "asd",
-                "cur_designation": "asd",
-                "call_time": "2:03 AM",
-                "city_details": "United States",
-                "connection_count": 0,
-                "calls": "2",
-                "images": {
-                    "profile_image": {
-                        "id": "DEFAULT",
-                        "file_name": "default_profile_image.png",
-                        "file_type": ".png",
-                        "http_url": "/images/default-profile-pic.png"
-                    }
-                },
-                "receivers_list": [
-                    {
-                        "name": "Steve Young",
-                        "user_id": 1,
-                        "call_status": 1
-                    },
-                    {
-                        "name": "Christina Chapman",
-                        "user_id": 2,
-                        "call_status": 4
-                    }
-                ],
-                "connected_at": "2016-10-11T12:47:03.594Z"
-            }
+				"user_id": "57fcded7a083f22a099afffe",
+				"email": "prasad2@gmail.com",
+				"mood" : 1,
+				"contact_type": 1,
+				"call_type": 2,
+				"calls": 1,
+				"first_name": "prasad2",
+				"last_name": "sampath",
+				"zip_code": null,
+				"dob": "2-02-2013",
+				"country": "United States",
+				"user_name": "prasad2.sampath.86688",
+				"introduction": null,
+				"cur_exp_id": "57fcdeeba083f22a099affff",
+				"cur_working_at": "asd",
+				"cur_designation": "asd",
+				"call_time": "2:03 AM",
+				"city_details": "United States",
+				"connection_count": 0,
+				"calls": "2",
+				"images": {
+					"profile_image": {
+						"id": "DEFAULT",
+						"file_name": "default_profile_image.png",
+						"file_type": ".png",
+						"http_url": "/images/default-profile-pic.png"
+					}
+				},
+				"receivers_list": [
+					{
+						"name": "Steve Young",
+						"user_id": 1,
+						"call_status": 1
+					},
+					{
+						"name": "Christina Chapman",
+						"user_id": 2,
+						"call_status": 4
+					}
+				],
+				"connected_at": "2016-10-11T12:47:03.594Z"
+			}
         ];
 
         function filterByType(contact) {
-            console.log(contact);
-            if (contact.contact_type == 1) {
-                return true;
-            }
-        }
+			console.log(contact);
+			if (contact.contact_type == 1) {
+				return true;
+			}
+		}
 
         $.ajax({
             url: '/contacts/all',
@@ -218,14 +221,14 @@ export default class Index extends React.Component {
                 if (cat == "contact" && subCat == "all") {
                     this.setState({userList: data.contacts});
                 } else if (cat == "contact" && subCat == "individual") {
-                    this.setState({userList: data.contacts});
+                	this.setState({userList: data.contacts});
 
-                    for (var key in data.contacts) {
-                        for (var key1 in data.contacts[key].users) {
-                            //console.log(data.contacts[key].users[key1].dob);
-                        }
-                    }
-                }
+                	for (var key in data.contacts) {
+			            for (var key1 in data.contacts[key].users) {
+			            	//console.log(data.contacts[key].users[key1].dob);
+				        }
+			        }
+            	}
                 // } else if (cat == "contact" && subCat == "groups") {
                 //     this.setState({userList: userGroupList});
                 // } else if (cat == "recent" && subCat == "all") {
@@ -236,18 +239,18 @@ export default class Index extends React.Component {
                 //     this.setState({userList: recentIndividualList});
                 // } else if (cat == "recent" && subCat == "groups") {
                 //     this.setState({userList: recentgroupsList});
-                // }
-                else {
+                // } 
+                	else {
                     this.setState({userList: []});
+                	}
                 }
-            }
-            this.setState({activeMainCat: cat, activeSubCat: subCat});
+                this.setState({activeMainCat: cat, activeSubCat: subCat});
         }.bind(this));
 
     }
 
     onMinimizePopup(){
-        this.setState({isShowingModal : false, minimizeBar : true});
+    	this.setState({isShowingModal : false, minimizeBar : true});
     }
 
     onPopupClose() {
@@ -269,7 +272,7 @@ export default class Index extends React.Component {
     }
 
     onUserCalling(user,callType) {
-        console.log(user, callType);
+    	console.log(user, callType);
         this.setState({isShowingModal: true});
     }
 
@@ -357,8 +360,8 @@ export default class Index extends React.Component {
     }
 
     onUserStateUpdate(eventKey){
-        console.log(eventKey);
-        this.setState({userStatus : eventKey});
+		console.log(eventKey);
+		this.setState({userStatus : eventKey});
     }
 
     headerNav() {
@@ -434,7 +437,7 @@ export default class Index extends React.Component {
     }
 
     onPopupMaximize(){
-        this.setState({isShowingModal: true, minimizeBar : false});
+    	this.setState({isShowingModal: true, minimizeBar : false});
     }
 
     render() {
@@ -475,18 +478,24 @@ export default class Index extends React.Component {
                                 :
                                 null
                         }
+                        {
+                            (mainCat == "status") ?
+                                <StatusList userList={this.state.userList} onUserCall={this.onUserCalling.bind(this)}/>
+                                :
+                                null
+                        }
                     </section>
                     {
-                        (this.state.minimizeBar)?
-                            <div className="callModelMinimized clearfix">
-                                <span className="user-name">Prasad</span>
-                                <div className="opt-wrapper">
-                                    <i className="fa fa-caret-square-o-up" onClick={(e) => this.onPopupMaximize(e)}></i>
-                                    <i className="fa fa-times" onClick={(e) => this.onPopupClose(e)}></i>
-                                </div>
-                            </div>
-                            :
-                            null
+                    	(this.state.minimizeBar)?
+	                	<div className="callModelMinimized clearfix">
+	                		<span className="user-name">Prasad</span>
+	                		<div className="opt-wrapper">
+		                		<i className="fa fa-caret-square-o-up" onClick={(e) => this.onPopupMaximize(e)}></i>
+		                		<i className="fa fa-times" onClick={(e) => this.onPopupClose(e)}></i>                			
+	                		</div>
+	                	</div>
+	                	:
+	                	null                    	
                     }
                 </div>
                 {this.userCallPopup()}
@@ -496,31 +505,3 @@ export default class Index extends React.Component {
     }
 }
 
-export class RecentList extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {}
-
-    }
-
-    onCalling(user,callType) {
-        this.props.onUserCall(user,callType);
-    }
-
-    render() {
-        let _this = this;
-        let recentList = this.props.userList.map(function (user, key) {
-            return (
-                <User users={user.users} type="recent" key={key} onCalling={_this.onCalling.bind(_this)}/>
-            )
-        })
-        return (
-            <div className="recent-list">
-                <div className="list-wrapper">
-                    {recentList}
-                </div>
-            </div>
-        );
-    }
-}

@@ -123,9 +123,9 @@ export default class CallModel extends React.Component{
 			                <div className="active-user-block">
 			                    <img src="images/call-center/cc-active-user.png" />
 			                    <div className="active-call-nav">
-			                        <span className={(this.state.isCallBtnEnabled)? "mute" : "mute disabled"} onClick={this.onCallBtnClick.bind(this)}></span>
-			                        <span className={(this.state.isVideoBtnEnabled)? "video" : "video disabled"} onClick={this.onVideoBtnClick.bind(this)}></span>
-			                        <span className={(this.state.isValoumeBtnEnabled)? "speaker" : "speaker disabled"} onClick={this.onVolumeBtnClick.bind(this)}></span>
+			                        <span className={(this.state.isVideoBtnEnabled)? "video active" : "video"} onClick={this.onVideoBtnClick.bind(this)}></span>
+			                        <span className={(this.state.isCallBtnEnabled)? "mute" : "mute active"} onClick={this.onCallBtnClick.bind(this)}></span>
+			                        <span className={(this.state.isValoumeBtnEnabled)? "speaker" : "speaker active"} onClick={this.onVolumeBtnClick.bind(this)}></span>
 			                        <span className="hang-up" onClick={(e) => this.props.closePopup(e)}></span>
 			                    </div>
 			                </div>
@@ -176,8 +176,8 @@ export class UserBlock extends React.Component{
                 <div className={this.isUserActive(_loggedUser.user_name)} onClick={this.onUserClick.bind(this, _loggedUser)}>
                     <img src={(_loggedUser.profile_image)? _loggedUser.profile_image : "/images/default-profile-pic.png"} />
                     <div className="actions-wrapper">
-                        <span className="mute"></span>
                         <span className="video"></span>
+                        <span className="mute"></span>
                     </div>
                     <span className="active-user"></span>
                 </div>
