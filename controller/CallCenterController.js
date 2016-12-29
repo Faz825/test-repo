@@ -45,6 +45,7 @@ var CallCenterController = {
                     aAlphabet.sort();
 
                     var aContacts = [];
+                    var aContactIds = [];
 
                     for (var i = 0; i < aAlphabet.length; i++) {
                         aContacts.push({
@@ -56,9 +57,14 @@ var CallCenterController = {
                     for (var i = 0; i < aConns.length; i++) {
                         var first_letter = aConns[i].first_name[0].toUpperCase();
 
+                        aContactIds.push(aConns[i].user_id);
+
                         for (var x = 0; x < aContacts.length; x++) {
                             if (aContacts[x].letter == first_letter) {
-                                aConns[i].onlineStatus = 0;
+                                // online status must be coming from Elastic Search.
+                                aConns[i].onlineStatus = 1;
+                                // contactType must be coming from Elastic Search.
+                                aConns[i].contactType = 1;
                                 aContacts[x].users.push(aConns[i]);
                             }
                         }
