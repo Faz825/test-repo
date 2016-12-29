@@ -179,6 +179,7 @@ class Chat{
             if(Session.getSession('prg_lg') != null){
 
                 if (b6.session.authenticated) {
+                    b6.session.displayName = Session.getSession('prg_lg').first_name+" "+Session.getSession('prg_lg').last_name;
                     console.log('User is logged in');
                     return true;
                 }
@@ -193,6 +194,7 @@ class Chat{
                         bit6Auth(true);
                     }
                     else {
+                        b6.session.displayName = Session.getSession('prg_lg').first_name+" "+Session.getSession('prg_lg').last_name;
                         return true;
                     }
                 });
