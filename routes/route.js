@@ -75,7 +75,7 @@ GLOBAL.notAuthURLs = ['/sign-up','/forgot-password','/change-password-invalid','
 /**
  * This urls are related to api and will be authenticated separately
  */
-GLOBAL.mobileApiUrls = ['/api/connections/get'];
+GLOBAL.mobileApiUrls = ['/api/connections/get', '/api/upload/cover-image'];
 
 
 /**
@@ -184,8 +184,8 @@ router.post('/notes/update-note', NotesController.updateNote);
 router.post('/notes/delete-note', NotesController.deleteNote);
 router.post('/introduction/update', UserController.updateIntroduction);
 router.get('/introduction/:uname',UserController.retrieveIntroduction);
-router.get('/notifications/get-notifications',NotificationController.getNotifications);
-router.get('/notifications/get-notifications-list',NotificationController.getNotificationsList);
+// router.get('/notifications/get-notifications',NotificationController.getNotifications);
+router.get('/notifications/get-notifications',NotificationController.getNotificationsList);
 router.post('/notifications/update-notifications',NotificationController.updateNotifications);
 router.post('/notifications/notebook-update',NotificationController.updateNotebookNotifications);
 router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);

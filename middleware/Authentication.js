@@ -74,6 +74,7 @@ exports.Authentication= function(req,res,next){
                             }
                         User.getUserAllDetails(_search_param,function(resultSet){
                             if(resultSet.status ==200 ){
+                                Util.addToSession(req,resultSet.user);
                                 callBack(null,resultSet.user);
                             }
                         })

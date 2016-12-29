@@ -108,6 +108,7 @@ var CalendarController = {
             UserId = Util.getCurrentSession(req).id,
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            User = require('mongoose').model('User'),
             notifyUsers = (typeof req.body.shared_users != 'undefined' ? req.body.shared_users : []); //this should be an array
 
         _async.waterfall([
@@ -243,7 +244,21 @@ var CalendarController = {
                 } else {
                     callBack(null, calEvent);
                 }
-            }
+            },
+            function getNotifyUsers(calEvent, callBack){
+                var _usernames = [];
+                if (typeof notifyUsers != 'undefined' && notifyUsers.length > 0) {
+                    User.getSenderDetails(notifyUsers, function (_shared_users) {
+                        for(var i = 0; i < _shared_users.length; i++){
+                            _usernames.push(_shared_users[i].sender_user_name);
+                        }
+
+                        callBack(null, {users: _usernames, e: calEvent});
+                    });
+                }else {
+                    callBack(null, {users: [], e: calEvent});
+                }
+            },
 
         ], function (err, resultSet) {
 
@@ -253,7 +268,8 @@ var CalendarController = {
                 res.status(400).send(outPut);
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['events'] = resultSet.event;
+                outPut['events'] = resultSet.e.event;
+                outPut['shared_users'] = resultSet.users;
                 res.status(200).send(outPut);
             }
         });
@@ -1142,6 +1158,7 @@ var CalendarController = {
 
         var CalendarEvent = require('mongoose').model('CalendarEvent'),
             Notification = require('mongoose').model('Notification'),
+            User = require('mongoose').model('User'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient');
         var moment = require('moment');
         var _async = require('async');
@@ -1412,8 +1429,22 @@ var CalendarController = {
                 } else {
                     callBack(null);
                 }
+            },
+            function getNotifyUsers(callBack){
+                var _usernames = [];
+                if (typeof notifyUsers != 'undefined' && notifyUsers.length > 0) {
+                    User.getSenderDetails(notifyUsers, function (_shared_users) {
+                        for(var i = 0; i < _shared_users.length; i++){
+                            _usernames.push(_shared_users[i].sender_user_name);
+                        }
+
+                        callBack(null, _usernames);
+                    });
+                }else {
+                    callBack(null, []);
+                }
             }
-        ], function (err) {
+        ], function (err, shared_users) {
             var outPut = {};
             if (err) {
                 outPut['status'] = ApiHelper.getMessage(400, err);
@@ -1421,6 +1452,7 @@ var CalendarController = {
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
                 outPut['event_time'] = {'isTimeChanged':isTimeChanged,'event_time':_event_time,'passed_event_time':_passed_event_time};
+                outPut['shared_users'] = shared_users;
                 res.status(200).send(outPut);
             }
         });
