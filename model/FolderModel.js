@@ -36,6 +36,26 @@ var FolderSchema = new Schema({
         type:Number,
         default:0
     },
+    isGrouped:{
+        type:Number,
+        default:0
+    },
+    group_data: [{
+        name: {
+            type: String,
+            default:null
+        },
+        group_id: {
+            type: Schema.ObjectId,
+            ref: 'Groups',
+            default:null
+        },
+        group_image:{
+            type:String,
+            trim:true,
+            default:null
+        }
+    }],
     user_id:{
         type: Schema.ObjectId,
         ref: 'User',
@@ -97,6 +117,8 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
     _folder.isDefault  	= _data.isDefault;
     _folder.user_id		= _data.user_id;
     _folder.shared_users = _data.shared_users;
+    _folder.isGrouped = _data.isGrouped;
+    _folder.group_data = _data.group_data;
 
     _folder.save(function(err,resultSet){
 

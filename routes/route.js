@@ -50,10 +50,10 @@ var DefaultController   = require('../controller/DefaultController'),
     NotificationController     = require('../controller/NotificationController'),
     NotificationSMSController     = require('../controller/NotificationSMSController'),
     FolderController     = require('../controller/FolderController'),
-    GroupFolderController     = require('../controller/GroupFolderController'),
+    GroupFolderController     = require('../controller/group/GroupFolderController'),
     CalendarController     = require('../controller/CalendarController'),
     CallCenterController     = require('../controller/CallCenterController');
-    GroupsController    = require('../controller/GroupsController');
+    GroupsController    = require('../controller/group/GroupsController');
 
 
 /**
@@ -231,5 +231,9 @@ router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions
 // Call Center
 router.get('/contacts/all', CallCenterController.contact.getAll);
 router.get('/call-records', CallCenterController.call.getCallRecords);
+
+
+//Group
+router.post('/group/add', GroupsController.createGroup);
 
 module.exports = router;

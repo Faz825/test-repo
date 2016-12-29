@@ -40,6 +40,26 @@ var NoteBookSchema = new Schema({
         ref: 'User',
         default:null
     },
+    isGrouped:{
+        type:Number,
+        default:0
+    },
+    group_data: [{
+        name: {
+            type: String,
+            default:null
+        },
+        group_id: {
+            type: Schema.ObjectId,
+            ref: 'Groups',
+            default:null
+        },
+        group_image:{
+            type:String,
+            trim:true,
+            default:null
+        }
+    }],
     shared_users:[],
     created_at:{
         type:Date
@@ -70,6 +90,8 @@ NoteBookSchema.statics.addNewNoteBook = function(NotebookData,callBack){
     newNotebook.color  	= NotebookData.color;
     newNotebook.isDefault  	= NotebookData.isDefault;
     newNotebook.user_id		= NotebookData.user_id;
+    newNotebook.isGrouped  	= NotebookData.isGrouped;
+    newNotebook.group_data	= NotebookData.groupData;
 
     newNotebook.save(function(err,resultSet){
 

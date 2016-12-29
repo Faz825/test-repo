@@ -13,7 +13,8 @@ GLOBAL.UploadMeta ={
     COMMENT_IMAGE:"comment_image",
     TIME_LINE_VIDEO_IMAGE:"post_video_image",
     FOLDER_DOCUMENT:"folder_document",
-    FOLDER_DOCUMENT_THUMB:"folder_document_thumb"
+    FOLDER_DOCUMENT_THUMB:"folder_document_thumb",
+    GROUP_IMAGE:"group_image",
 
 
 
