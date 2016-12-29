@@ -1,12 +1,11 @@
 import React from 'react';
 import User from "./User";
+import CallCenter from '../../middleware/CallCenter';
 
 export default class RecentList extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {}
-
     }
 
     onCalling(user,callType) {

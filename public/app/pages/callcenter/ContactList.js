@@ -4,8 +4,8 @@ import User from "./User";
 export default class ContactList extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {}
+        this.contacts = [];
     }
 
     onCalling(user,callType) {

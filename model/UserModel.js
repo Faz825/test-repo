@@ -195,7 +195,7 @@ var UserSchema = new Schema({
         default: null
     },
 
-    mode: {type: String, required: true, default: 1},
+    onlineMode: {type: String, required: true, default: 1},
 
     created_at: {
         type: Date
@@ -1391,9 +1391,9 @@ UserSchema.statics.getSenderDetails = function (related_senders, callBack) {
 };
 
 UserSchema.statics.modes = {
-    online: 1,
-    busy: 2,
-    offline: 3
+    ONLINE    : 1,
+    OFFLINE   : 2,
+    WORK_MODE : 3
 };
 
 
