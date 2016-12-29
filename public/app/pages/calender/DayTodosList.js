@@ -36,10 +36,18 @@ export default class DayTodosList extends React.Component {
 			let startDateTime = moment(event.start_date_time).format('YYYY-MM-DD HH:mm');
 
 			let usersString = [];
+			let ownerString = '';
 			let acceptedClass = 'event-description';
 			if(event.user_id ==  _this.state.user.id) {
                 acceptedClass = 'event-description accepted';
             }
+
+            if(event.user_id != _this.state.user.id) {
+                ownerString = <span className='selected-people'>{event.owner_name}{event.shared_users.length > 0 ? ', ' : ''}</span>
+            } else {
+                ownerString = <span className='selected-people'>me{event.shared_users.length > 0 ? ', ' : ''}</span>
+            }
+
 			if(event.shared_users.length > 0 ) {
 				
 				usersString = event.shared_users.map(function(user,userKey){
@@ -50,8 +58,9 @@ export default class DayTodosList extends React.Component {
                         return null;
                     }
 
-					return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
-					
+					return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>
+								{user.name}{userKey+1 == event.shared_users.length ? '' : ', '}
+							</span>;
 				});
 			} else {
 				usersString = <span className="people-list" >Only me</span>
@@ -80,7 +89,7 @@ export default class DayTodosList extends React.Component {
 							className={event.user_id == _this.state.user.id ? "description-holder" : "description-holder disabled" }
 						>
 							<div className={acceptedClass} >{event.plain_text}</div>
-							<p>People in the To-do : {usersString}</p>
+							<p>People in the To-do : {ownerString}{usersString}</p>
 						</label>
 						<div className="time-wrapper pull-right">{event.event_time}</div>
 						{event.user_id == _this.state.user.id && startDateTime > moment().format('YYYY-MM-DD HH:mm') ?

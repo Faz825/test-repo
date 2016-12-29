@@ -188,7 +188,7 @@ export default class DayView extends Component {
                         cal_event_id:data.events._id,
                         notification_type:"calendar_share_notification",
                         notification_sender:this.loggedUser,
-                        notification_receiver:sharedUsers
+                        notification_receivers:data.shared_users
                     };
 
                     Socket.sendCalendarShareNotification(_notificationData);
@@ -261,7 +261,7 @@ export default class DayView extends Component {
                         cal_event_id:postData.id,
                         notification_type:data.event_time.isTimeChanged == true ? "calendar_schedule_time_changed" : "calendar_schedule_updated",
                         notification_sender:this.loggedUser,
-                        notification_receiver:sharedUsers
+                        notification_receivers:data.shared_users
                     };
 
                     Socket.sendCalendarShareNotification(_notificationData);
@@ -448,9 +448,28 @@ export default class DayView extends Component {
     }
 
     removeUser(key){
+        
         this.sharedWithIds.splice(key,1);
         this.sharedWithNames.splice(key,1);
         this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
+    }
+
+    removeUsersByName(arrUsers) {
+
+        var arrKeysToBeRemoved = [];
+        for (var i = 0; i < arrUsers.length; i++) {
+            arrKeysToBeRemoved.push(this.sharedWithNames.indexOf(arrUsers[i]));
+
+            // indexOf returnes the key of the matching value
+            // splice removes the given key form the array.
+            this.sharedWithIds.splice(this.sharedWithIds.indexOf(arrUsers[i]),1); 
+            this.sharedWithNames.splice(this.sharedWithNames.indexOf(arrUsers[i]),1);
+
+            if(i == (arrUsers.length - 1)) {
+                this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});        
+            }
+        }
+
     }
 
     setTime(selected) {
@@ -529,7 +548,12 @@ export default class DayView extends Component {
                                 <div className="row calender-input">
                                     <div className="col-sm-12">
                                         <div className="input" id="editor-holder" >
-                                            <EditorField ref="EditorFieldValues" setTime={this.setTime.bind(this)} setSharedUsers={this.setSharedUsers.bind(this)} />
+                                            <EditorField 
+                                                ref="EditorFieldValues" 
+                                                setTime={this.setTime.bind(this)} 
+                                                setSharedUsers={this.setSharedUsers.bind(this)} 
+                                                removeUsersByName={this.removeUsersByName.bind(this)}
+                                            />
 
                                             <div className="shared-users-time-panel row">
                                                 <div className="col-sm-3">

@@ -86,6 +86,24 @@ export default class WeekDayEventPopUp extends React.Component {
         this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
     }
 
+    removeUsersByName(arrUsers) {
+
+        var arrKeysToBeRemoved = [];
+        for (var i = 0; i < arrUsers.length; i++) {
+            arrKeysToBeRemoved.push(this.sharedWithNames.indexOf(arrUsers[i]));
+
+            // indexOf returnes the key of the matching value
+            // splice removes the given key form the array.
+            this.sharedWithIds.splice(this.sharedWithIds.indexOf(arrUsers[i]),1); 
+            this.sharedWithNames.splice(this.sharedWithNames.indexOf(arrUsers[i]),1);
+
+            if(i == (arrUsers.length - 1)) {
+                this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});        
+            }
+        }
+
+    }
+
     setTime(selected) {
         var arrEntries = selected._root.entries;
         var time = arrEntries[1][1];
@@ -263,6 +281,7 @@ export default class WeekDayEventPopUp extends React.Component {
                                             ref={(element) => { this.editor = element; }}
                                             setTime={this.setTime.bind(this)}
                                             setSharedUsers={this.setSharedUsers.bind(this)}
+                                            removeUsersByName={this.removeUsersByName.bind(this)}
                                             />
                                     : null }
                                     <div className="shared-users-time-panel row">

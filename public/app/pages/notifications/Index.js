@@ -56,7 +56,8 @@ export default class Index extends React.Component{
             let _notificationType = typeof data.notification_type != "undefined" ? data.notification_type : data.data.notification_type;
 
 
-            if(_notificationType == "share_notebook" || _notificationType == "share_notebook_response" || _notificationType == "share_folder" || _notificationType == "share_folder_response") {
+            if(_notificationType == "share_notebook" || _notificationType == "share_notebook_response" || _notificationType == "share_folder" || _notificationType == "share_folder_response"
+                || _notificationType == "calendar_share_notification" || _notificationType == "share_calendar_response"|| _notificationType == "calendar_schedule_updated" || _notificationType == "calendar_schedule_time_changed" || _notificationType == "calendar_schedule_carried_next_day") {
 
                 console.log("came to load >>" + _notificationType);
                 _this.loadNotifications();
@@ -444,7 +445,7 @@ export default class Index extends React.Component{
                     folder_id:notification.folder_id,
                     notification_type:"share_folder_response",
                     notification_sender:this.state.loggedUser,
-                    notification_receiver:notification.sender_user_name
+                    notification_receivers:notification.sender_user_name
                 };
 
                 console.log(_notificationData);console.log(status);
@@ -487,7 +488,7 @@ export default class Index extends React.Component{
                     cal_event_id:notification.calendar_id,
                     notification_type:"share_calendar_response",
                     notification_sender:this.state.loggedUser,
-                    notification_receiver:[notification.sender_user_name]
+                    notification_receivers:[notification.sender_user_name]
                 };
 
                 Socket.sendCalendarShareResponseNotification(_notificationData);

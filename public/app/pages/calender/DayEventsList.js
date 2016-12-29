@@ -35,9 +35,17 @@ export default class DayEventsList extends React.Component {
             let htmlC = stateToHTML(contentState);
             let startDateTime = moment(event.start_date_time).format('YYYY-MM-DD HH:mm');
             let usersString = [];
+            let ownerString = '';
             let acceptedClass = 'event-description';
+
             if(event.user_id ==  _this.state.user.id) {
                 acceptedClass = 'event-description accepted';
+            }
+
+            if(event.user_id != _this.state.user.id) {
+                ownerString = <span className='selected-people'>{event.owner_name}{event.shared_users.length > 0 ? ', ' : ''}</span>
+            } else {
+                ownerString = <span className='selected-people'>me{event.shared_users.length > 0 ? ', ' : ''}</span>
             }
 
             if(event.shared_users.length > 0 ) {
@@ -49,8 +57,13 @@ export default class DayEventsList extends React.Component {
                     if(user.shared_status == 2) {
                         return null;
                     }
-                    return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>{user.name}, </span>
+                    return  <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>
+                                {user.name}
+                                {userKey+1 == event.shared_users.length ? '' : ', '}
+                            </span>;
                 });
+
+
             } else {
                 usersString = <span className="people-list">Only me</span>
             }
@@ -62,7 +75,7 @@ export default class DayEventsList extends React.Component {
                         <div className={acceptedClass} >{event.plain_text}</div>
                         <div className="people-list-wrapper">
                             <span className="people-list">People on this event : </span>
-                            {usersString}
+                            {ownerString}{usersString}
                         </div>
                     </div>
                     <span className="event-time pull-right">{event.event_time}</span>

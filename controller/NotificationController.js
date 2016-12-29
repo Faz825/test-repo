@@ -1090,7 +1090,7 @@ var NotificationController ={
                             calendar_id: (notification['calendar_id'] != null ? notification['calendar_id'] : ""),
 
                             //- Notification status for (Notebook, Folder, ...)
-                            notification_status: notification['notification_status']
+                            notification_status: ((notification['notification_status'] == "REQUEST_ACCEPTED") ? "accepted" : "declined")
                         };
 
                         if(notification['post_id'] != null){
@@ -1116,7 +1116,6 @@ var NotificationController ={
 
                         if(notification['calendar_id'] != null){
                             Calendar.bindNotificationData(notificationObj, function (r) {
-                                console.log('***---**');console.log(r);console.log('**--***');
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
@@ -1364,7 +1363,7 @@ var NotificationController ={
 
                         if(_notificationData.senders.length == 3){
                             _data['sender_name'] += ', '+ _notificationSenders[_notificationData.senders[1]]['name'];
-                            if(obj.sender_count == 0){
+                            if(_notificationData.sender_count == 0){
                                 _data['sender_name'] += ' and ';
                             }else{
                                 _data['sender_name'] += ', ';

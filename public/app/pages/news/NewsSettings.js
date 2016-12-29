@@ -13,6 +13,11 @@ export default class NewsSettings extends React.Component{
     constructor(props){
         super(props);
 
+        let user =  Session.getSession('prg_lg');
+        if(user == null){
+            window.location.href = "/";
+        }
+
         this.state={
             loggedUser:Session.getSession('prg_lg'),
             data: {},
