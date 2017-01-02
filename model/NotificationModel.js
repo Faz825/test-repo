@@ -40,6 +40,11 @@ var NotificationSchema = new Schema({
         ref: 'Folders',
         default:null
     },
+    notified_group:{
+        type: Schema.ObjectId,
+        ref: 'Groups',
+        default:null
+    },
     notification_status:{ // Accept / Reject the invitation ...
         type:String,
         trim:true,
@@ -86,6 +91,10 @@ NotificationSchema.statics.saveNotification = function (new_notification, callBa
 
     } else if(new_notification.notification_type == Notifications.SHARE_FOLDER  || new_notification.notification_type == Notifications.SHARE_FOLDER_RESPONSE) {
         notification.notified_folder = Util.toObjectId(new_notification.notified_folder);
+        notification.notification_status = new_notification.notification_status;
+
+    } else if(new_notification.notification_type == Notifications.SHARE_GROUP  || new_notification.notification_type == Notifications.SHARE_GROUP_RESPONSE) {
+        notification.notified_group = Util.toObjectId(new_notification.notified_group);
         notification.notification_status = new_notification.notification_status;
 
     } else {

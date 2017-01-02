@@ -896,6 +896,7 @@ var NotificationController ={
             NoteBook = require('mongoose').model('NoteBook'),
             Folder = require('mongoose').model('Folders'),
             Calendar = require('mongoose').model('CalendarEvent'),
+            Groups = require('mongoose').model('Groups'),
             _async = require('async'),
             grep = require('grep-from-array'),
             _arrIndex = require('array-index-of-property'),
@@ -1004,6 +1005,28 @@ var NotificationController ={
                             }
 
                             callBack(null, related_senders);
+
+                        }else if(_notificationType == 'share_group' || _notificationType == 'share_group_response'){
+
+                            var currentGroupId = notification.group_id.toString();
+
+                            //- Group gruop objects with same _id and notification_type
+                            var groupedNotificationObj = grep(notifications, function(e){
+                                return (((e.group_id != null ? e.group_id.toString() : null) == currentGroupId) && (e.notification_type.toString() == _notificationType));
+                            });
+
+                            var related_senders = [notification['sender_id']];
+
+                            //- Push sender ids of grouped objects and splice
+                            for(var inc = 1; inc < groupedNotificationObj.length; inc++){
+
+                                related_senders.push(groupedNotificationObj[inc].sender_id);
+
+                                var index = notifications.indexOfProperty('_id', groupedNotificationObj[inc]._id);
+                                notifications.splice(index, 1);
+                            }
+
+                            callBack(null, related_senders);
                         }else {
                             callBack(null, null);
                         }
@@ -1086,8 +1109,11 @@ var NotificationController ={
                             //- Notebook details
                             folder_id: (notification['folder_id'] != null ? notification['folder_id'] : ""),
 
-                            //- Notebook details
+                            //- calendar details
                             calendar_id: (notification['calendar_id'] != null ? notification['calendar_id'] : ""),
+
+                            //- group details
+                            group_id: (notification['group_id'] != null ? notification['group_id'] : ""),
 
                             //- Notification status for (Notebook, Folder, ...)
                             notification_status: ((notification['notification_status'] == "REQUEST_ACCEPTED") ? "accepted" : "declined")
@@ -1116,6 +1142,13 @@ var NotificationController ={
 
                         if(notification['calendar_id'] != null){
                             Calendar.bindNotificationData(notificationObj, function (r) {
+                                resultNotifications.push(r);
+                                callBack(null);
+                            });
+                        }
+
+                        if(notification['group_id'] != null){
+                            Groups.bindNotificationData(notificationObj, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });

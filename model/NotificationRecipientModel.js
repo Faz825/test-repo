@@ -172,6 +172,7 @@ NotificationRecipientSchema.statics.getRecipientNotificationsLimit = function(cr
                 notebook_id:"$notificationData.notified_notebook",
                 calendar_id:"$notificationData.notified_calendar",
                 folder_id:"$notificationData.notified_folder",
+                group_id:"$notificationData.notified_group",
                 notification_status:"$notificationData.notification_status",
                 notified_folder:"$notificationData.notified_folder"
             }
