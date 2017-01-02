@@ -17,7 +17,7 @@ import Socket  from '../../middleware/Socket';
 import { Modal, Button } from 'react-bootstrap';
 
 import { Popover, OverlayTrigger } from 'react-bootstrap';
-import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
+import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw, Modifier } from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
 
 import { fromJS } from 'immutable';
@@ -447,8 +447,25 @@ export default class DayView extends Component {
         return "";
     }
 
-    removeUser(key){
+    removeUser(key, name){
+
+        // removing the mention text
+        const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
+        const rawContent = convertToRaw(contentState);
+        const plainText = contentState.getPlainText();
+
+        const startingAt = plainText.indexOf(name);
+        const endingAt = startingAt+name.length;
+        const newSelection = this.refs.EditorFieldValues.state.editorState.getSelection().merge({
+            anchorOffset: startingAt,
+            focusOffset: endingAt
+        });
+        const newContent = Modifier.removeRange(contentState, newSelection, 'backward');
+
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, newContent);
+        this.refs.EditorFieldValues.setState({editorState});
         
+        // removing name and the id from the list.
         this.sharedWithIds.splice(key,1);
         this.sharedWithNames.splice(key,1);
         this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
@@ -496,7 +513,7 @@ export default class DayView extends Component {
         let shared_with_list = [];
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
-                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
+                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
             });
         } else {
             shared_with_list = <span className="user-label">Only me</span>

@@ -7,7 +7,7 @@ import Session from '../../middleware/Session';
 import moment from 'moment-timezone';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
+import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw, Modifier} from 'draft-js';
 import Socket  from '../../middleware/Socket';
 
 import EditorField from './EditorField';
@@ -81,6 +81,24 @@ export default class WeekDayEventPopUp extends React.Component {
     }
 
     removeUser(key){
+
+        // removing the mention text
+        const contentState = this.editor.state.editorState.getCurrentContent();
+        const rawContent = convertToRaw(contentState);
+        const plainText = contentState.getPlainText();
+
+        const startingAt = plainText.indexOf(name);
+        const endingAt = startingAt+name.length;
+        const newSelection = this.editor.state.editorState.getSelection().merge({
+            anchorOffset: startingAt,
+            focusOffset: endingAt
+        });
+        const newContent = Modifier.removeRange(contentState, newSelection, 'backward');
+
+        const editorState = EditorState.push(this.editor.state.editorState, newContent);
+        this.editor.setState({editorState});
+
+
         this.sharedWithIds.splice(key,1);
         this.sharedWithNames.splice(key,1);
         this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
