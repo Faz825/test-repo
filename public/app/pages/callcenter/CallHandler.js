@@ -5,6 +5,7 @@
 import React from 'react';
 import Session from '../../middleware/Session';
 import Chat from '../../middleware/Chat';
+import {Config} from '../../config/Config';
 
 export default class CallHandler extends React.Component {
     constructor(props) {
@@ -17,7 +18,9 @@ export default class CallHandler extends React.Component {
 
         this.loggedUser = Session.getSession('prg_lg');
 
-        this.b6 = Chat.bit6;
+        var opts = {'apikey': Config.BIT6_API_KEY};
+        this.b6 = new bit6.Client(opts);
+
         this.unreadCount = 0;
         this.conv_ids = [];
         this.convUsers = [];
