@@ -31,7 +31,8 @@ export default class Index extends React.Component {
             activeMainCat: "",
             activeSubCat: "",
             showModal: false,
-            minimizeBar: false
+            minimizeBar: false,
+            searchValue: ""
         }
 
         this.loadContactData("recent", "all");
@@ -39,6 +40,7 @@ export default class Index extends React.Component {
         this.answerVideo = this.answerVideo.bind(this);
         this.answerAudio = this.answerAudio.bind(this);
         this.reject = this.reject.bind(this);
+		this.currUserList;
     }
 
     loadContactData(cat, subCat) {
@@ -46,71 +48,140 @@ export default class Index extends React.Component {
             {
                 letter: "A",
                 users: [
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "group"
-                    }
+	                    {
+							"user_id": "57fcded7a083f22a099afff1",
+							"email": "prasad2@gmail.com",
+							"mood" : 1,
+							"contactType": 2,
+							"call_type": 2,
+							"calls": 1,
+							"first_name": "prasad1",
+							"last_name": "sampath",
+							"zip_code": null,
+							"dob": "2-02-2013",
+							"country": "United States",
+							"user_name": "prasad2.sampath.86688",
+							"introduction": null,
+							"cur_exp_id": "57fcdeeba083f22a099affff",
+							"cur_working_at": "asd",
+							"cur_designation": "asd",
+							"call_time": "2:03 AM",
+							"city_details": "United States",
+							"connection_count": 0,
+							"calls": "2",
+							"images": {
+								"profile_image": {
+									"id": "DEFAULT",
+									"file_name": "default_profile_image.png",
+									"file_type": ".png",
+									"http_url": "/images/default-profile-pic.png"
+								}
+							},
+							"receivers_list": [
+								{
+									"name": "Steve Young",
+									"user_id": 1,
+									"call_status": 1
+								},
+								{
+									"name": "Christina Chapman",
+									"user_id": 2,
+									"call_status": 4
+								}
+							],
+							"connected_at": "2016-10-11T12:47:03.594Z"
+						},
+						{
+							"user_id": "57fcded7a083f22a099afff2",
+							"email": "prasad2@gmail.com",
+							"mood" : 1,
+							"contactType": 2,
+							"call_type": 2,
+							"calls": 1,
+							"first_name": "prasad2",
+							"last_name": "sampath",
+							"zip_code": null,
+							"dob": "2-02-2013",
+							"country": "United States",
+							"user_name": "prasad2.sampath.86688",
+							"introduction": null,
+							"cur_exp_id": "57fcdeeba083f22a099affff",
+							"cur_working_at": "asd",
+							"cur_designation": "asd",
+							"call_time": "2:03 AM",
+							"city_details": "United States",
+							"connection_count": 0,
+							"calls": "2",
+							"images": {
+								"profile_image": {
+									"id": "DEFAULT",
+									"file_name": "default_profile_image.png",
+									"file_type": ".png",
+									"http_url": "/images/default-profile-pic.png"
+								}
+							},
+							"receivers_list": [
+								{
+									"name": "Steve Young",
+									"user_id": 1,
+									"call_status": 1
+								},
+								{
+									"name": "Christina Chapman",
+									"user_id": 2,
+									"call_status": 4
+								}
+							],
+							"connected_at": "2016-10-11T12:47:03.594Z"
+						}
                 ]
             },
             {
                 letter: "B",
                 users: [
                     {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "type": "group"
-                    }
-                ]
-            },
-            {
-                letter: "C",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "group"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "group"
-                    }
-                ]
-            },
-            {
-                letter: "D",
-                users: [
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "group"
-                    }
-                ]
-            },
-            {
-                letter: "E",
-                users: [
-                    {
-                        "name": "Prasad",
-                        "status": "work-mode",
-                        "type": "group"
-                    }
-                ]
-            },
-            {
-                letter: "F",
-                users: [
-                    {
-                        "name": "Soham",
-                        "status": "online",
-                        "type": "group"
-                    },
-                    {
-                        "name": "Khaitan",
-                        "status": "offline",
-                        "type": "group"
-                    }
+						"user_id": "57fcded7a083f22a099afff3",
+						"email": "prasad2@gmail.com",
+						"mood" : 1,
+						"contactType": 2,
+						"call_type": 2,
+						"calls": 1,
+						"first_name": "prasad3",
+						"last_name": "sampath",
+						"zip_code": null,
+						"dob": "2-02-2013",
+						"country": "United States",
+						"user_name": "prasad2.sampath.86688",
+						"introduction": null,
+						"cur_exp_id": "57fcdeeba083f22a099affff",
+						"cur_working_at": "asd",
+						"cur_designation": "asd",
+						"call_time": "2:03 AM",
+						"city_details": "United States",
+						"connection_count": 0,
+						"calls": "2",
+						"images": {
+							"profile_image": {
+								"id": "DEFAULT",
+								"file_name": "default_profile_image.png",
+								"file_type": ".png",
+								"http_url": "/images/default-profile-pic.png"
+							}
+						},
+						"receivers_list": [
+							{
+								"name": "Steve Young",
+								"user_id": 1,
+								"call_status": 1
+							},
+							{
+								"name": "Christina Chapman",
+								"user_id": 2,
+								"call_status": 4
+							}
+						],
+						"connected_at": "2016-10-11T12:47:03.594Z"
+					}
                 ]
             }
         ];
@@ -217,23 +288,56 @@ export default class Index extends React.Component {
             dataType: "JSON",
             headers: {'prg-auth-header': this.state.loggedUser.token}
         }).done(function (data) {
+        	data.contacts.push.apply(data.contacts, userGroupList);
             if (data.status.code == 200) {
                 if (cat == "contact" && subCat == "all") {
                     this.setState({userList: data.contacts});
-                } else if (cat == "contact" && subCat == "individual") {
-                	this.setState({userList: data.contacts});
+                }else if (cat == "contact" && subCat == "groups") {
+                	let dataSet = [],
+						usersSet = [],
+						letter = "";
 
                 	for (var key in data.contacts) {
-			            for (var key1 in data.contacts[key].users) {
-			            	//console.log(data.contacts[key].users[key1].dob);
+						letter = data.contacts[key].letter;
+			            for (var subKey in data.contacts[key].users) {
+			            	let type = data.contacts[key].users[subKey].contactType;
+	        				if (type == 2) {
+								usersSet.push(data.contacts[key].users[subKey]);
+	        				}
+				        }
+				        if (usersSet.length >= 1) {
+							dataSet.push({"letter" : letter , "users" : usersSet});
+							usersSet = [];
 				        }
 			        }
-            	}
-                // } else if (cat == "contact" && subCat == "groups") {
-                //     this.setState({userList: userGroupList});
-                // } else if (cat == "recent" && subCat == "all") {
-                //     this.setState({userList: recentList});
-                // } else if (cat == "recent" && subCat == "missed") {
+
+			        this.setState({userList: dataSet});	
+
+                } else if (cat == "contact" && subCat == "individual") {
+                	let dataSet = [],
+						usersSet = [],
+						letter = "";
+
+                    for (var key in data.contacts) {
+						letter = data.contacts[key].letter;
+			            for (var subKey in data.contacts[key].users) {
+			            	let type = data.contacts[key].users[subKey].contactType;
+	        				if (type == 1) {
+								usersSet.push(data.contacts[key].users[subKey]);
+	        				}
+				        }
+				        if (usersSet.length >= 1) {
+							dataSet.push({"letter" : letter , "users" : usersSet});
+							usersSet = [];
+				        }
+			        }
+
+			        this.setState({userList: dataSet});	
+                } 
+                else if (cat == "recent" && subCat == "all") {
+                    this.setState({userList: userGroupList});
+                } 
+                // else if (cat == "recent" && subCat == "missed") {
                 //     this.setState({userList: recentMissedList});
                 // } else if (cat == "recent" && subCat == "individual") {
                 //     this.setState({userList: recentIndividualList});
@@ -244,7 +348,8 @@ export default class Index extends React.Component {
                     this.setState({userList: []});
                 	}
                 }
-                this.setState({activeMainCat: cat, activeSubCat: subCat});
+                this.currUserList = this.state.userList;
+                this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
         }.bind(this));
 
     }
@@ -440,9 +545,46 @@ export default class Index extends React.Component {
     	this.setState({isShowingModal: true, minimizeBar : false});
     }
 
+    onSearch(e){
+    	let val = e.target.value,
+    		userList = this.currUserList,
+    		dataSet = [],
+			usersSet = [],
+			letter = "";
+    	this.setState({searchValue : val});
+
+    	for (var key in userList) {
+			letter = userList[key].letter;
+
+            for (var subKey in userList[key].users) {
+            	let name = userList[key].users[subKey].first_name+ " " + userList[key].users[subKey].last_name;
+				if (name.includes(val)){
+					usersSet.push(userList[key].users[subKey]);
+				}
+	        }
+
+	        if (usersSet.length >= 1) {
+	        	if (this.state.activeMainCat == "contact"){
+					dataSet.push({"letter" : letter , "users" : usersSet});	        		
+	        	}else{
+					dataSet.push({"users" : usersSet});	        		
+	        	}
+				usersSet = [];
+	        }
+
+        }
+
+        if (val == "") {
+        	this.setState({userList: this.currUserList});
+        }else{
+        	this.setState({userList: dataSet});
+        }
+
+    }
+
     render() {
-        let mainCat = this.state.activeMainCat;
-        let subCat = this.state.activeSubCat;
+        let mainCat = this.state.activeMainCat,
+        	subCat = this.state.activeSubCat;
 
         return (
             <section className="call-center-container sub-container">
@@ -457,7 +599,7 @@ export default class Index extends React.Component {
                                     <div className="search-call">
 		                                <span className="inner-addon">
 		                                    <i className="fa fa-search"></i>
-		                                    <input type="text" className="form-control" placeholder="Search"/>
+		                                    <input type="text" className="form-control" placeholder="Search" value={this.state.searchValue} onChange={this.onSearch.bind(this)}/>
 		                                </span>
                                     </div>
                                 </div>

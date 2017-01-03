@@ -3,6 +3,7 @@
 */
 
 import React from 'react';
+import {UserMode, ContactType} from '../../config/CallcenterStats';
 
 export default class User extends React.Component{
 	constructor(props){
@@ -23,24 +24,23 @@ export default class User extends React.Component{
 		let _this = this;
 		let users = this.props.users.map(function(user,key){
 			let mood,call_type;
-			switch (user.mood) {
-			    case 1:
-			        mood = "online";
-			        break;
-			    case 2:
-			        mood = "busy";
-			        break;
-			    default: 
-        			mood = "offline";
+
+			if (user.mood == UserMode.ONLINE) {
+				mood = "online";
+			}else if(user.mood == UserMode.WORK_MODE){
+				mood = "busy";
+			}else{
+				mood = "offline";
 			}
 
-			switch (user.contact_type) {
-			    case 2:
-			        call_type = "group";
-			        break;
-			    default: 
-        			call_type = "user";
+			if(user.contactType == ContactType.MULTI){
+				call_type = "multi";
+			}else if(user.contactType == ContactType.GROUP){
+				call_type = "group";
+			}else{
+				call_type = "user";
 			}
+						
 			return(
 				<div className="row contact-item recent-item" key={key}>
 	                <div className="col-sm-3">
