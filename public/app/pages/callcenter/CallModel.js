@@ -4,7 +4,6 @@
 
 import React from "react";
 import { Popover, OverlayTrigger } from 'react-bootstrap';
-import Session from '../../middleware/Session';
 
 export default class CallModel extends React.Component{
 	constructor(props){

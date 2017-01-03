@@ -7,6 +7,7 @@ import FooterHolder from '../../components/footer/FooterHolder';
 import Session  from '../../middleware/Session';
 import AmbiDashboard  from '../dashboard/AmbiDashboard';
 import InCallPane  from '../chat/InCallPane';
+import CallHandler  from '../callcenter/CallHandler';
 import QuickChatHandler from '../chat/QuickChatHandler';
 import WorkMode from '../workmode/Index';
 import NotificationPop from '../notifications/NotificationPop';
@@ -217,7 +218,7 @@ export default class AmbiLayout extends React.Component{
 				<section className={(!this.state.isNavHidden)? "body-container " + dashbrdClass : "body-container nav-hidden"}>
 		      		{this.props.children || <AmbiDashboard />}
 				</section>
-				<InCallPane/>
+                <CallHandler/>
 				{
                     this.state.isShowingModal &&
                     <ModalContainer zIndex={9999}>
