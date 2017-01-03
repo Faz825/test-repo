@@ -4,20 +4,16 @@
 
 import Session  from './Session.js';
 import Lib from './Lib.js';
+import {Config} from '../config/Config';
 
-class Chat{
+class Chat {
 
     constructor() {
-
-        var opts = {
-            'apikey': '18j5x-sRBAbzhTW1ZD'
-        };
-
+        var opts = {'apikey': Config.BIT6_API_KEY};
         this.b6 = new bit6.Client(opts);
-
     }
 
-    initChat(b6){
+    initChat(b6) {
 
         bit6Auth(false);
 
@@ -39,25 +35,24 @@ class Chat{
          * below change has been moved to SignupHeader Component
          */
         // A conversation has changed
-        b6.on('conversation', function(c, op) {
-        //    onConversationChange(c, op);
+        b6.on('conversation', function (c, op) {
+            //    onConversationChange(c, op);
         });
 
 
-
-        function checkWorkMode(){
+        function checkWorkMode() {
 
             console.log("checkWorkMode");
 
             let _calls = false;
 
-            if(Session.getSession('prg_wm') != null){
+            if (Session.getSession('prg_wm') != null) {
                 let _currentTime = new Date().getTime();
                 let _finishTime = Session.getSession('prg_wm').endTime;
 
-                if (_currentTime > _finishTime){
+                if (_currentTime > _finishTime) {
                     Session.destroy("prg_wm");
-                } else{
+                } else {
                     _calls = Session.getSession('prg_wm').calls;
                 }
             }
@@ -69,15 +64,15 @@ class Chat{
         var _this = this;
 
         // Incoming call from another user
-        b6.on('incomingCall', function(c) {
+        b6.on('incomingCall', function (c) {
 
             console.log("======incomingCall======");
             console.log(c);
 
             var _blockCall = checkWorkMode();
-            console.log("_blockCall ==> "+_blockCall);
+            console.log("_blockCall ==> " + _blockCall);
 
-            if(!_blockCall){
+            if (!_blockCall) {
 
                 console.log("No need to block call")
 
@@ -88,7 +83,7 @@ class Chat{
                 var title = title_array[1];
 
                 $.ajax({
-                    url: '/get-profile/'+title,
+                    url: '/get-profile/' + title,
                     method: "GET",
                     dataType: "JSON",
                     success: function (data, text) {
@@ -97,7 +92,7 @@ class Chat{
 
                             incomingCallUser[title] = data.profile_data;
 
-                            var incomingCallUserName = data.profile_data['first_name']+" "+data.profile_data['last_name'] + ' is ' + (c.options.video ? 'video ' : '') + 'calling...';
+                            var incomingCallUserName = data.profile_data['first_name'] + " " + data.profile_data['last_name'] + ' is ' + (c.options.video ? 'video ' : '') + 'calling...';
                             $('#incomingCallFrom').text(incomingCallUserName);
 
                             var incomingCallProfilePicture = "/images/default-profile-pic.png";
@@ -117,15 +112,16 @@ class Chat{
                     }
                 });
 
-            } else{
+            } else {
 
                 console.log("Need to block call. Need to send message to receiver. Need to send notification to caller");
                 _this.hangupCall();
 
-                let _uri = c.other; console.log(_uri);
+                let _uri = c.other;
+                console.log(_uri);
                 let _msg = "On work mode";
 
-                _this.b6.compose(_uri).text(_msg).send(function(err) {
+                _this.b6.compose(_uri).text(_msg).send(function (err) {
                     if (err) {
                         console.log('error', err);
                     }
@@ -141,7 +137,7 @@ class Chat{
         // v - video element to add or remove
         // c - Dialog - call controller. null for a local video feed
         // op - operation. 1 - add, 0 - update, -1 - remove
-        b6.on('video', function(v, c, op) {
+        b6.on('video', function (v, c, op) {
             console.log("Video");
             var vc = $('#videoContainer');
             if (op < 0) {
@@ -162,21 +158,21 @@ class Chat{
 
         });
 
-        function loadMyConnections(token){
+        function loadMyConnections(token) {
             $.ajax({
                 url: '/connection/me',
                 method: "GET",
                 dataType: "JSON",
-                headers: { 'prg-auth-header':token }
-            }).done(function(data){
-                if(data.status.code == 200){
+                headers: {'prg-auth-header': token}
+            }).done(function (data) {
+                if (data.status.code == 200) {
                     my_connections = data.my_con;
                 }
             }.bind(this));
         }
 
         function bit6Auth(isNewUser) {
-            if(Session.getSession('prg_lg') != null){
+            if (Session.getSession('prg_lg') != null) {
 
                 if (b6.session.authenticated) {
                     b6.session.displayName = Session.getSession('prg_lg').first_name+" "+Session.getSession('prg_lg').last_name;
@@ -186,7 +182,7 @@ class Chat{
 
                 // Convert username to an identity URI
                 var ident = 'usr:proglobe_' + Session.getSession('prg_lg').user_name;
-                var pass = 'proglobe_'+Session.getSession('prg_lg').id;
+                var pass = 'proglobe_' + Session.getSession('prg_lg').id;
                 // Call either login or signup function
                 var fn = isNewUser ? 'signup' : 'login';
                 b6.session[fn]({'identity': ident, 'password': pass}, function (err) {
@@ -226,11 +222,11 @@ class Chat{
                     return;
                 }
 
-                if(title != 'undefined' && typeof convUsers[title] == 'undefined'){
+                if (title != 'undefined' && typeof convUsers[title] == 'undefined') {
 
-                    for(let my_con in my_connections){
+                    for (let my_con in my_connections) {
 
-                        if(title === my_connections[my_con].user_name){
+                        if (title === my_connections[my_con].user_name) {
 
                             convUsers[title] = my_connections[my_con];
 
@@ -239,7 +235,7 @@ class Chat{
                                 .attr('id', notificationId.substring(1))
                                 .append(notificationListADiv);
 
-                            if(conv_ids.indexOf(c.id) == -1){
+                            if (conv_ids.indexOf(c.id) == -1) {
 
                                 notificationWrapperDiv.append(notificationDiv)
                                 conv_ids.push(c.id);
@@ -259,14 +255,14 @@ class Chat{
                                 }
                             }
 
-                            var connection_name = convUsers[title]['first_name']+" "+convUsers[title]['last_name'];
+                            var connection_name = convUsers[title]['first_name'] + " " + convUsers[title]['last_name'];
                             var connection_prof_img = '/images/default-profile-pic.png';
 
                             if (convUsers[title]['images'] != null && convUsers[title]['images']['profile_image'] != null) {
                                 connection_prof_img = convUsers[title]['images']['profile_image']['http_url']
                             }
 
-                            notificationDiv.find('a').attr('href', '/chat/'+title);
+                            notificationDiv.find('a').attr('href', '/chat/' + title);
                             notificationDiv.find('.chat-pro-img').find('img').attr('src', connection_prof_img);
                             notificationDiv.find('.chat-body').find('.connection-name').html(connection_name);
                             notificationDiv.find('.chat-body').find('.msg').html(latestText);
@@ -290,9 +286,9 @@ class Chat{
                                 unreadConversationCount.push(c.id);
                             }
 
-                            if(unreadCount > 0){
-                                $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
-                            } else{
+                            if (unreadCount > 0) {
+                                $("#unread_chat_count_header").html('<span class="total">' + unreadCount + '</span>');
+                            } else {
                                 $("#unread_chat_count_header").html('');
                             }
 
@@ -301,7 +297,7 @@ class Chat{
 
                 }
             }
-            if(op >= 0 && title != 'undefined'){
+            if (op >= 0 && title != 'undefined') {
 
                 //Update Conversation data
                 var stamp = Lib.getRelativeTime(c.updated);
@@ -338,16 +334,16 @@ class Chat{
                     unreadConversationCount.push(c.id);
                 }
 
-                if(unreadCount > 0){
-                    $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
-                } else{
+                if (unreadCount > 0) {
+                    $("#unread_chat_count_header").html('<span class="total">' + unreadCount + '</span>');
+                } else {
                     $("#unread_chat_count_header").html('');
                 }
             }
 
         }
 
-        function notificationDomIdForConversation(c){
+        function notificationDomIdForConversation(c) {
             return '#notification__' + c.domId();
         }
 
@@ -358,7 +354,7 @@ class Chat{
             return bit6.Conversation.fromDomId(id);
         }
 
-        this.startOutgoingCall = function(to, video){
+        this.startOutgoingCall = function (to, video) {
 
             console.log("startOutgoingCall")
 
@@ -370,6 +366,10 @@ class Chat{
             };
             // Start the outgoing call
             var c = b6.startCall(to, opts);
+
+            console.log(to);
+            console.log(c);
+
             attachCallEvents(c);
             updateInCallUI(c);
 
@@ -380,7 +380,7 @@ class Chat{
 
             console.log("startOutgoingCall")
             // Call progress
-            c.on('progress', function() {
+            c.on('progress', function () {
                 console.log("progress")
                 showInCallName();
             });
@@ -393,24 +393,24 @@ class Chat{
                 container.attr('class', elems.length > 2 ? 'grid' : 'simple');
             });
             // Call answered
-            c.on('answer', function() {
+            c.on('answer', function () {
                 console.log("answer")
                 $('#incomingCallAlert').modal('hide');
                 $('#onCall').text("on call")
                 $('#clock').show();
-                callTimer = window.setInterval(function(){
+                callTimer = window.setInterval(function () {
                     updateTime();
-                },1000);
+                }, 1000);
 
             });
             // Error during the call
-            c.on('error', function() {
+            c.on('error', function () {
                 console.log("error")
                 $('#incomingCallAlert').modal('hide');
                 $('#detailPane').addClass('hidden');
             });
             // Call ended
-            c.on('end', function() {
+            c.on('end', function () {
                 console.log("end")
                 showInCallName();
                 // No more dialogs?
@@ -449,7 +449,7 @@ class Chat{
         function showInCallName() {
             console.log("showInCallName")
             var s = '';
-            for(var i in b6.dialogs) {
+            for (var i in b6.dialogs) {
                 var d = b6.dialogs[i];
                 if (i > 0) {
                     s += ', ';
@@ -459,7 +459,7 @@ class Chat{
                 var title = title_array[1];
 
                 $.ajax({
-                    url: '/get-profile/'+title,
+                    url: '/get-profile/' + title,
                     method: "GET",
                     dataType: "JSON",
                     success: function (data, text) {
@@ -468,7 +468,7 @@ class Chat{
 
                             outGoingCallUser[title] = data.profile_data;
 
-                            var outGoingCallUserName = data.profile_data['first_name']+" "+data.profile_data['last_name'];
+                            var outGoingCallUserName = data.profile_data['first_name'] + " " + data.profile_data['last_name'];
                             s += b6.getNameFromIdentity(outGoingCallUserName);
                             $('#inCallOther').text(s);
                             $('#onCall').text("ringing")
@@ -480,7 +480,7 @@ class Chat{
         }
 
         // 'Answer Incoming Call' click
-        this.answerCall = function(opts){
+        this.answerCall = function (opts) {
             console.log("answerCall")
             $('#incomingCallAlert').modal('hide');
             var d = $('#incomingCall').data();
@@ -493,7 +493,7 @@ class Chat{
         };
 
         // 'Reject Incoming Call' click
-        this.rejectCall = function(){
+        this.rejectCall = function () {
             console.log("rejectCall")
             var d = $('#incomingCall').data();
             // Call controller
@@ -504,7 +504,7 @@ class Chat{
         };
 
         // 'Call Hangup' click
-        this.hangupCall = function(){
+        this.hangupCall = function () {
             console.log("hangupCall")
             // Hangup all active calls
             var x = b6.dialogs.slice();
@@ -519,7 +519,7 @@ class Chat{
             var minutes = parseInt($('#min').html());
             var seconds = parseInt($('#sec').html());
 
-            var currentTotalTime = (hours*60*60) + (minutes*60) + seconds;
+            var currentTotalTime = (hours * 60 * 60) + (minutes * 60) + seconds;
 
             currentTotalTime = currentTotalTime + 1;
 
@@ -543,22 +543,22 @@ class Chat{
                 var newSeconds = currentTotalTime;
             }
 
-            $('#hour').html(String(newHours).length==1?'0'+String(newHours):newHours);
-            $('#min').html(String(newMinutes).length==1?'0'+String(newMinutes):newMinutes);
-            $('#sec').html(String(newSeconds).length==1?'0'+String(newSeconds):newSeconds);
+            $('#hour').html(String(newHours).length == 1 ? '0' + String(newHours) : newHours);
+            $('#min').html(String(newMinutes).length == 1 ? '0' + String(newMinutes) : newMinutes);
+            $('#sec').html(String(newSeconds).length == 1 ? '0' + String(newSeconds) : newSeconds);
 
         }
 
-        this.updateHeaderUnreadCount = function(conv_id){
+        this.updateHeaderUnreadCount = function (conv_id) {
 
-            if(unreadConversationCount.indexOf(conv_id) != -1){
+            if (unreadConversationCount.indexOf(conv_id) != -1) {
                 unreadCount -= 1;
-                unreadConversationCount.splice(unreadConversationCount.indexOf(conv_id),1);
+                unreadConversationCount.splice(unreadConversationCount.indexOf(conv_id), 1);
             }
-            if(unreadCount > 0){
+            if (unreadCount > 0) {
                 console.log("updating unread count from middleware chat")
-                $("#unread_chat_count_header").html('<span class="total">'+unreadCount+'</span>');
-            } else{
+                $("#unread_chat_count_header").html('<span class="total">' + unreadCount + '</span>');
+            } else {
                 $("#unread_chat_count_header").html('');
             }
 
