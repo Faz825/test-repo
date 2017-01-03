@@ -54,6 +54,7 @@ var DefaultController   = require('../controller/DefaultController'),
     CalendarController     = require('../controller/CalendarController'),
     CallCenterController     = require('../controller/CallCenterController');
     GroupsController    = require('../controller/group/GroupsController');
+    GroupNotebookController   = require('../controller/group/GroupNotebookController');
 
 
 /**
@@ -235,5 +236,6 @@ router.get('/call-records', CallCenterController.call.getCallRecords);
 
 //Group
 router.post('/group/add', GroupsController.createGroup);
+router.post('/group/add-notebook', GroupNotebookController.addNewNotebook);
 
 module.exports = router;

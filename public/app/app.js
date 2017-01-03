@@ -80,6 +80,7 @@ let rootRoute =(
 		 */
 
         <Route name="notes" path="/notes" component={NotesIndex}/>
+        <Route name="notes" path="/notes/:name" component={NotesIndex}/>
 
         /**
 		 * Notifications

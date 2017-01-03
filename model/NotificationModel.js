@@ -97,6 +97,11 @@ NotificationSchema.statics.saveNotification = function (new_notification, callBa
         notification.notified_group = Util.toObjectId(new_notification.notified_group);
         notification.notification_status = new_notification.notification_status;
 
+    } else if(new_notification.notification_type == Notifications.SHARE_GROUP_NOTEBOOK) {
+        notification.notified_notebook = Util.toObjectId(new_notification.notified_notebook);
+        notification.notified_group = Util.toObjectId(new_notification.notified_group);
+        notification.notification_status = new_notification.notification_status;
+
     } else {
         notification.notified_post = Util.toObjectId(new_notification.notified_post);
         notification.notification_status = "";
