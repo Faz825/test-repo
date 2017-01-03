@@ -33,6 +33,10 @@ var ConnectionSchema = new Schema({
         ref: 'User',
         default:null
     },
+    connected_with_type:{
+        type:Number,
+        required:true
+    },
     status:{
         type:Number,
         default:0
@@ -765,10 +769,6 @@ ConnectionSchema.statics.unfriendUser = function(criteria,callBack){
         callBack({status:200})
     });
 }
-
-
-
-
 
 String.prototype.toObjectId = function() {
     var ObjectId = (require('mongoose').Types.ObjectId);

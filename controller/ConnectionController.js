@@ -336,10 +336,7 @@ var ConnectionController ={
 
         Connection.getFriendSuggestion(criteria,function(resultSet){
 
-            var outPut	={};
-
-
-
+            var outPut = {};
 
             if(resultSet.status !== 400){
                 var rand = Util.getRandomInt(0,resultSet.total_result);

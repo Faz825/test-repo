@@ -3,6 +3,8 @@
  */
 
 import Socket from './Socket';
+import Session from '../middleware/Session';
+import {Config} from '../config/Config'
 
 class CallCenter {
 
@@ -17,7 +19,6 @@ class CallCenter {
     contactsStatus(aContacts, status) {
         this.socket.emit('contacts status', {contacts: aContacts, status: status});
     }
-
-
-
 }
+
+export default new CallCenter;

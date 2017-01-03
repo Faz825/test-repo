@@ -12,7 +12,6 @@ import RecentList from "./RecentList";
 import StatusList from "./StatusList";
 import User from "./User";
 import CallModel from "./CallModel";
-import CallHandler from './CallHandler';
 
 export default class Index extends React.Component {
     constructor(props) {
