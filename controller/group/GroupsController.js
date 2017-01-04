@@ -66,11 +66,7 @@ var GroupsController = {
                         color: groupData.color,
                         isGrouped: 1,
                         user_id: UserId,
-                        group_data: [{
-                            name: groupData.name,
-                            group_id: groupData._id,
-                            group_image: groupData.group_pic_link
-                        }]
+                        group_id: groupData._id
                     };
                     Folders.addNewFolder(_folderData, function (resultSet) {
 
@@ -89,11 +85,7 @@ var GroupsController = {
                         color: groupData.color,
                         isGrouped: 1,
                         user_id: UserId,
-                        groupData: [{
-                            name: groupData.name,
-                            group_id: groupData._id,
-                            group_image: groupData.group_pic_link
-                        }]
+                        group_id: groupData._id
                     };
                     NoteBook.addNewNoteBook(_notebook, function (resultSet) {
                         callBack(null, groupData);
