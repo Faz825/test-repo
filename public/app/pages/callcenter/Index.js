@@ -11,7 +11,7 @@ import ContactList from "./ContactList";
 import RecentList from "./RecentList";
 import StatusList from "./StatusList";
 import CallModel from "./CallModel";
-import CallCenter from "../../middleware/CallCenter";
+import {CallCenter} from "../../middleware/CallCenter";
 
 export default class Index extends React.Component {
     constructor(props) {
@@ -22,6 +22,8 @@ export default class Index extends React.Component {
         } else {
             this.b6 = CallCenter.b6;
             this.initCall(this.b6);
+
+            console.log(CallCenter.b6);
         }
 
         this.state = {

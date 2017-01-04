@@ -4,7 +4,7 @@
 
 import React from 'react';
 import Session from '../../middleware/Session';
-import CallCenter from '../../middleware/CallCenter';
+import {CallCenter} from '../../middleware/CallCenter';
 import CallModel from './CallModel';
 
 export default class CallHandler extends React.Component {

@@ -123,7 +123,7 @@ export default class CallModel extends React.Component {
                                 <span className="expand-ico"></span>
                             </div>
                             <div className="active-user-block">
-                                <img src={(_target_user.profile_image) ? _target_user.profile_image : "/images/call-center/cc-active-user.png"} />
+                                <img src="/images/call-center/cc-active-user.png" />
                                 <div className="active-call-nav">
                                     <span className={(this.state.isVideoBtnEnabled) ? "video active" : "video"}
                                           onClick={this.onVideoBtnClick.bind(this)}></span>
