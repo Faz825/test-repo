@@ -17,14 +17,17 @@ export default class StatusList extends React.Component {
         let _this = this;
         let statusList = this.props.userList.map(function (user, key) {
             return (
-                <User users={user.users} type="recent" key={key} onCalling={_this.onCalling.bind(_this)}/>
+                <div className="contact-group" key={key}>
+                    <p className="group-name">{user.letter}</p>
+                    <div className="contact-wrapper">
+                        <User users={user.users} type="status" onCalling={_this.onCalling.bind(_this)}/>
+                    </div>
+                </div>
             )
         })
         return (
-            <div className="status-list">
-                <div className="list-wrapper">
-                    {statusList}
-                </div>
+            <div className="contacts-list">
+                {statusList}
             </div>
         );
     }
