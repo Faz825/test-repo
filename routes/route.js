@@ -54,6 +54,7 @@ var DefaultController   = require('../controller/DefaultController'),
     CalendarController     = require('../controller/CalendarController'),
     CallCenterController     = require('../controller/CallCenterController');
     GroupsController    = require('../controller/group/GroupsController');
+    GroupNotebookController   = require('../controller/group/GroupNotebookController');
 
 
 /**
@@ -87,7 +88,7 @@ GLOBAL.AccessAllow = [
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
     '/notes/edit-note/:note_id','/connections', '/connections/mutual/:uname','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode',
     '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name',
-    '/calendar/:name', '/calendar','/callcenter'
+    '/calendar/:name', '/calendar','/callcenter', '/groups'
 ];
 
 /**
@@ -235,5 +236,6 @@ router.get('/call-records', CallCenterController.call.getCallRecords);
 
 //Group
 router.post('/group/add', GroupsController.createGroup);
+router.post('/group/add-notebook', GroupNotebookController.addNewNotebook);
 
 module.exports = router;

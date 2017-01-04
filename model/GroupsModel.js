@@ -133,15 +133,59 @@ GroupsSchema.statics.createGroup = function(groupData,callBack){
 GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
     var _this = this;
 
-    _this.find({_id: Util.toObjectId(groupId)}, {shared_users : 1}).exec(function(err,resultSet){
+
+    /* TODO: We can use this aggrigation approch, 
+    when we are using new version (3.2) of MongoDB */
+    /*_this.aggregate([
+        { 
+            "$match": { 
+                "_id": groupId       
+            } 
+        },
+        {
+            "$filter": {
+                "input": "$members",
+                "as": "member",
+                "cond": { "$eq": ["$$member.status", 3] }
+            }
+        },
+        { "$unwind": "$members" },
+        {
+            "$lookup": {
+                "from" : "SharedMember",
+                "localField" : "members.user_id",
+                "foreignField" : "user_id",
+                "as" : "member"
+            }
+        }
+    ]).exec(function(err, results) { 
+        if (err) throw err;
+    });*/
+
+
+    _this.find({_id: Util.toObjectId(groupId)}).select('members -_id').exec(function(err,resultSet){
         if(!err){
-            callBack({
-                members : resultSet,
-                members_count : resultSet.length
-            });
+
+            console.log(resultSet);
+            var members = resultSet[0].members;
+            var tmpArray = [];
+            for (var i = 0; i < members.length; i++) {
+
+                var member = members[i];
+                if(member.status == 3) {
+                    tmpArray.push(member.user_id);  
+                }
+
+                if(members.length == i + 1) {
+                    callBack({
+                        members : tmpArray,
+                        members_count : tmpArray.length
+                    });
+                }
+            }
         }else{
             console.log("Server Error --------");
-            callBack({status:400,error:err});
+            callBack({status:400, error:err});
         }
     })
 };

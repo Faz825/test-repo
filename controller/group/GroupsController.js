@@ -66,11 +66,7 @@ var GroupsController = {
                         color: groupData.color,
                         isGrouped: 1,
                         user_id: UserId,
-                        group_data: [{
-                            name: groupData.name,
-                            group_id: groupData._id,
-                            group_image: groupData.group_pic_link
-                        }]
+                        group_id: groupData._id
                     };
                     Folders.addNewFolder(_folderData, function (resultSet) {
 
@@ -89,11 +85,7 @@ var GroupsController = {
                         color: groupData.color,
                         isGrouped: 1,
                         user_id: UserId,
-                        groupData: [{
-                            name: groupData.name,
-                            group_id: groupData._id,
-                            group_image: groupData.group_pic_link
-                        }]
+                        group_id: groupData._id
                     };
                     NoteBook.addNewNoteBook(_notebook, function (resultSet) {
                         callBack(null, groupData);
@@ -157,19 +149,21 @@ var GroupsController = {
     },
 
     addGroupPost: function (req, res) {
-
         var outPut = {}, CurrentSession = Util.getCurrentSession(req);
         var TimeLinePostHandler = require('../../middleware/TimeLinePostHandler');
         var _async = require('async'),
             User = require('mongoose').model('User'),
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             Groups = require('mongoose').model('Groups');
 
-        var groupId = req.body.__groupId;
-
+        console.log(req.body);
+        var groupId = req.body._groupId;
         _async.waterfall([
             function getGroupMembers(callBack) {
-                Groups.getGroupMembers(groupId, function (r) {
-                    callBack(null, r.members);
+                Groups.getGroupMembers(groupId, function (membersResult) {
+
+                    callBack(null, membersResult.members);
                 });
             },
             function addPost(members, callBack) {
@@ -188,10 +182,45 @@ var GroupsController = {
                     life_event: (typeof req.body.__lf_evt != 'undefined') ? req.body.__lf_evt : "",
                     shared_post: ""
                 };
-                console.log("GroupsController - addPost - data - ");
-                TimeLinePostHandler.addNewPost(data, function (r) {
-                    callBack(null);
+                TimeLinePostHandler.addNewPost(data, function (addResult) {
+                    callBack(null, addResult);
                 });
+            },
+
+
+            function addNotification(postData, callBack) {
+                console.log("^^^^^ 1 ^^^^^^");
+                if (postData.visible_users.length > 0 && Object.keys(postData).length > 0) {
+
+                    var _data = {
+                        sender: postData.post_owned_by.user_id,
+                        notification_type: Notifications.SHARE_GROUP,
+                        notified_group: groupId
+                    }
+                    Notification.saveNotification(_data, function (notificationRes) {
+                        if (notificationRes.status == 200) {
+                            console.log(notificationRes);
+                            callBack(null, postData, notificationRes.result._id);
+                        }
+                    });
+                } else {
+                    callBack(null, postData, null);
+                }
+            },
+            function notifyingUsers(postData, notification_id, callBack) {
+
+                if (typeof notification_id != 'undefined' && postData.visible_users.length > 0) {
+                    var _data = {
+                        notification_id: notification_id,
+                        recipients: postData.visible_users
+                    };
+                    NotificationRecipient.saveRecipients(_data, function (res) {
+                        callBack(null, postData);
+                    });
+
+                } else {
+                    callBack(null, postData);
+                }
             }
         ], function (err) {
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
