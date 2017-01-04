@@ -76,7 +76,7 @@ export default class User extends React.Component{
 	                        <button className="call-ico video" onClick={(event)=>{_this.handleClick(user, "video")}}>
 	                            <img src="images/call-center/video-ico.png"/>
 	                        </button>
-	                        <button className="call-ico phone" onClick={(event)=>{_this.handleClick(user, "phone")}}>
+	                        <button className="call-ico phone" onClick={(event)=>{_this.handleClick(user, "audio")}}>
 	                            <img src="images/call-center/phone-ico.png"/>
 	                        </button>
 	                    </div>

@@ -13980,3 +13980,7 @@ footer .work-mode-holder .section-title {
     width: 102px;
   }
 }
+
+#incomingCallAlert{
+  display: block;
+}

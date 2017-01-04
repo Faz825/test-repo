@@ -4,22 +4,19 @@
 
 import React from 'react';
 import Session from '../../middleware/Session';
-import Chat from '../../middleware/Chat';
-import {Config} from '../../config/Config';
+import CallCenter from '../../middleware/CallCenter';
+import CallModel from './CallModel';
 
 export default class CallHandler extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            conversations: [],
-            my_connections: [],
-            incoming_call: false
+            contacts: [],
+            incoming_call: false,
+            ongoing_call: false
         };
 
         this.loggedUser = Session.getSession('prg_lg');
-
-        var opts = {'apikey': Config.BIT6_API_KEY};
-        this.b6 = new bit6.Client(opts);
 
         this.unreadCount = 0;
         this.conv_ids = [];
@@ -29,59 +26,36 @@ export default class CallHandler extends React.Component {
 
         this.loadMyConnections();
 
-        this.initChat(this.b6);
+        if (Session.isSessionSet('prg_lg')) {
+            this.b6 = CallCenter.b6;
+            CallCenter.initBit6(this.b6);
+            this.initCall(this.b6);
+        }
     }
 
     componentDidMount() {
         console.log("CallHandler Rendering done");
     }
 
-    initChat(b6) {
+    initCall(b6) {
         let _this = this;
-
-        this.bit6Auth(b6, false);
 
         // Incoming call from another user
         b6.on('incomingCall', function (c) {
             _this.onIncomingCall(c, b6);
         });
 
-        // Let's say you want to display the video elements in DOM element '#container'
-        // Get notified about video elements to be added or removed
-        // v - video element to add or remove
-        // d - Dialog - call controller. null for a local video feed
-        // op - operation. 1 - add, 0 - update, -1 - remove
         b6.on('video', function (v, c, op) {
             _this.onVideoCall(v, c, op);
         });
     }
 
-    bit6Auth(b6, isNewUser) {
-        if (Session.getSession('prg_lg') != null) {
-
-            if (b6.session.authenticated) {
-                console.log('bit6 user already logged in');
-                return true;
-            }
-
-            // Convert username to an identity URI
-            var ident = 'usr:proglobe_' + Session.getSession('prg_lg').user_name;
-            var pass = 'proglobe_' + Session.getSession('prg_lg').id;
-
-            // Call either login or signup function
-            var fn = isNewUser ? 'signup' : 'login';
-            b6.session[fn]({'identity': ident, 'password': pass}, function (err) {
-                if (err) {
-                    this.bit6Auth(true);
-                }
-            });
-
-            return true;
-        }
+    onMinimizePopup() {
+        this.setState({inCall: false, minimizeBar: true});
     }
 
-    getBit6Identity(oUser) {
-        return 'usr:proglobe' + oUser.user_name;
+    onPopupClose() {
+        this.setState({inCall: false, minimizeBar: false});
     }
 
     // Let's say you want to display the video elements in DOM element '#container'
@@ -110,7 +84,9 @@ export default class CallHandler extends React.Component {
     onIncomingCall(c, b6) {
         console.log("======incomingCall======");
 
-        this.state.incoming_call = true;
+        this.setState({incoming_call: true});
+
+        console.log(this.state.incoming_call);
 
         /*  var _blockCall = checkWorkMode();
          console.log("_blockCall ==> " + _blockCall);
@@ -133,6 +109,21 @@ export default class CallHandler extends React.Component {
          this.sendCallBlockedMessage(c, b6);
 
          }*/
+    }
+
+    callPopup(oTargetUser) {
+        return (
+            <div>
+                {this.state.ongoing_call &&
+                <ModalContainer zIndex={9999}>
+                    <ModalDialog className="modalPopup">
+                        <CallModel closePopup={this.onPopupClose.bind(this)}  loggedUser={this.state.loggedUser} tagetUser={oTargetUser}
+                                   minimizePopup={this.onMinimizePopup.bind(this)}/>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        );
     }
 
     sendCallBlockedMessage(c, b6) {
@@ -290,7 +281,7 @@ export default class CallHandler extends React.Component {
     render() {
         if (!this.state.incoming_call) {
             return null;
-        } else {
+        } else if (this.state.incoming_call) {
             return (
                 <div className="modal" id="incomingCallAlert" tabIndex="1" role="dialog"
                      aria-labelledby="myModalLabel"
@@ -308,7 +299,7 @@ export default class CallHandler extends React.Component {
                                                 onClick={()=>this.answerVideo()}>Video
                                         </button>
                                         <button type="button" className="btn btn-success income-call" id="answerAudio"
-                                                onClick={()=>this.fakeCall()}>Audio
+                                                onClick={()=>this.answerCall()}>Audio
                                         </button>
                                         <button type="button" className="btn btn-danger income-call" id="reject"
                                                 onClick={()=>this.reject()}>Reject
@@ -320,6 +311,9 @@ export default class CallHandler extends React.Component {
                     </div>
                 </div>
             )
+        } else if (this.state.ongoing_call) {
+            return (<CallModel></CallModel>);
+
         }
     }
 }
