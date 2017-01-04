@@ -8,7 +8,8 @@ import {Config} from '../config/Config';
 
 class Chat {
     constructor() {
-        var opts = {'apikey': Config.BIT6_API_KEY};
+        console.log(Config.BIT6_API_KEY);
+        var opts = {'apikey':'22n7t-0zXi33P9Yap6'};
         this.b6 = new bit6.Client(opts);
     }
 
