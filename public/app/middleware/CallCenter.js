@@ -9,7 +9,7 @@ import {Config} from '../config/Config';
 var CallCenter = {
     socket: Socket.socket,
     b6: new bit6.Client({'apikey': Config.BIT6_API_KEY}),
-    initBit6: function (b6) {
+    initBit6: function () {
         var _this = this;
         _this.bit6Auth(false);
     },
@@ -31,7 +31,7 @@ var CallCenter = {
             var fn = isNewUser ? 'signup' : 'login';
             _this.b6.session[fn]({'identity': ident, 'password': pass}, function (err) {
                 if (err) {
-                    this.bit6Auth(true);
+                    _this.bit6Auth(true);
                 }
                 else {
                     _this.b6.session.displayName = oUser.first_name + " " + oUser.last_name;
