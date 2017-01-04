@@ -567,6 +567,36 @@ export default class Index extends React.Component {
         });
     }
 
+    onIncomingCall(c, b6) {
+        console.log("======incomingCall======");
+
+        this.setState({incoming_call: true});
+
+        console.log(this.state.incoming_call);
+
+        /*  var _blockCall = checkWorkMode();
+         console.log("_blockCall ==> " + _blockCall);
+
+         if (!_blockCall) {
+
+         var cf = b6.getNameFromIdentity(c.other);
+
+         var title_array = cf.split('proglobe');
+         var title = title_array[1];
+
+         this.loadCallerProfile(title);
+
+         this.loadAnswerCallPopUp(c);
+
+         } else {
+
+         console.log("Call blocked in work mode. Informing caller via messaging");
+         this.hangupCall();
+         this.sendCallBlockedMessage(c, b6);
+
+         }*/
+    }
+
     startOutgoingCall(to, video) {
         const audioCall = true;
         const screenCall = false;
