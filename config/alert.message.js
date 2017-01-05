@@ -67,8 +67,8 @@ GLOBAL.Alert={
 
     CATEGORY_ID_EMPTY:"Category id empty",
 
-    POST_ID_EMPTY:"Post Id empty"
+    POST_ID_EMPTY:"Post Id empty",
 
-
-
+    GROUP_ID_EMPTY:"Group id is empty",
+    GROUP_DESCRIPTION_EMPTY:"Group description field is empty"
 };

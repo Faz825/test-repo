@@ -230,4 +230,28 @@ GroupsSchema.statics.bindNotificationData = function(notificationObj, callBack){
 
 };
 
+/**
+ * Update a Group
+ * @param filter
+ * @param value
+ * @param callBack
+ */
+GroupsSchema.statics.updateGroups = function(filter, value, callBack){
+
+    var _this = this;
+    var options = {multi: true};
+
+    this.update(filter, value, options, function(err, update) {
+        if(err){
+            console.log(err);
+            console.log("Error - An Error occured in group updating.");
+            callBack({status:400,error:err});
+        } else {
+            console.log(update);
+            console.log("Success - The group updating is success.");
+            callBack({status:200, group:update});
+        }
+    });
+};
+
 mongoose.model('Groups',GroupsSchema);

@@ -157,7 +157,6 @@ var GroupsController = {
             NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             Groups = require('mongoose').model('Groups');
 
-        console.log(req.body);
         var groupId = req.body._groupId;
         _async.waterfall([
             function getGroupMembers(callBack) {
@@ -189,7 +188,7 @@ var GroupsController = {
 
 
             function addNotification(postData, callBack) {
-                console.log("^^^^^ 1 ^^^^^^");
+
                 if (postData.visible_users.length > 0 && Object.keys(postData).length > 0) {
 
                     var _data = {
@@ -227,8 +226,49 @@ var GroupsController = {
             res.status(200).send(outPut);
         });
 
-    }
+    },
 
+    /*
+     * Updating the group description
+     */
+    updateDescription: function (req, res) {
+
+        var outPut = {};
+        var currentSession = Util.getCurrentSession(req);
+        var async = require('async');
+        var groups = require('mongoose').model('Groups');
+        var groupId = (typeof req.body.__groupId != 'undefined') ? req.body.__groupId : null;
+        var description = (typeof req.body.__description != 'undefined') ? req.body.__description : null;
+
+        if(groupId == null) {
+            outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_ID_EMPTY, Alert.GROUP_ID_EMPTY);
+            res.status(602).send(outPut);
+            return;
+        }
+
+        if(description == null) {
+            outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_DESCRIPTION_EMPTY, Alert.GROUP_DESCRIPTION_EMPTY);
+            res.status(602).send(outPut);
+            return;
+        }
+
+        async.waterfall([
+            function updateDb(callBack) {
+                var filter = {
+                    "_id" : groupId
+                };
+                var value = {
+                    "description" : description
+                };
+                groups.updateGroups(filter, value, function (updateResult) {
+                    callBack(null, updateResult.group);
+                });
+            }
+        ], function (err) {
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            res.status(200).send(outPut);
+        });
+    }
 };
 
 module.exports = GroupsController;

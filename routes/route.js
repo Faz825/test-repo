@@ -29,32 +29,32 @@ require('../model/SubscribedPosts');
 require('../model/NewsChannelsModel');
 require('../model/FolderModel');
 require('../model/FolderDocsModel');
-require('../model/GroupFolderModel');
-require('../model/GroupFolderDocsModel');
 require('../model/CalendarEventModel');
 require('../model/CallModel');
 require('../model/GroupsModel');
+require('../model/GroupFolderModel');
+require('../model/GroupFolderDocsModel');
 
 /** Load  Controllers
  */
-var DefaultController   = require('../controller/DefaultController'),
-    UserController      = require('../controller/UserController'),
-    NewsChannelController      = require('../controller/NewsChannelController'),
-    NewsController      = require('../controller/NewsController'),
-    PostController      = require('../controller/PostController'),
-    CommentController   = require('../controller/CommentController'),
-    UploadController    = require('../controller/UploadController'),
-    ConnectionController = require('../controller/ConnectionController'),
-    LikeController      =  require('../controller/LikeController'),
-    NotesController     = require('../controller/NotesController'),
-    NotificationController     = require('../controller/NotificationController'),
-    NotificationSMSController     = require('../controller/NotificationSMSController'),
-    FolderController     = require('../controller/FolderController'),
-    GroupFolderController     = require('../controller/group/GroupFolderController'),
-    CalendarController     = require('../controller/CalendarController'),
-    CallCenterController     = require('../controller/CallCenterController');
-    GroupsController    = require('../controller/group/GroupsController');
-    GroupNotebookController   = require('../controller/group/GroupNotebookController');
+var DefaultController     = require('../controller/DefaultController'),
+    UserController        = require('../controller/UserController'),
+    NewsChannelController = require('../controller/NewsChannelController'),
+    NewsController        = require('../controller/NewsController'),
+    PostController        = require('../controller/PostController'),
+    CommentController     = require('../controller/CommentController'),
+    UploadController      = require('../controller/UploadController'),
+    ConnectionController  = require('../controller/ConnectionController'),
+    LikeController        =  require('../controller/LikeController'),
+    NotesController       = require('../controller/NotesController'),
+    NotificationController = require('../controller/NotificationController'),
+    NotificationSMSController = require('../controller/NotificationSMSController'),
+    FolderController      = require('../controller/FolderController'),
+    CalendarController    = require('../controller/CalendarController'),
+    CallCenterController  = require('../controller/CallCenterController'),
+    GroupsController      = require('../controller/group/GroupsController'),
+    GroupNotebookController = require('../controller/group/GroupNotebookController'),
+    GroupFolderController = require('../controller/group/GroupFolderController');
 
 
 /**
@@ -101,40 +101,38 @@ router.all('/*',oAuth.Authentication);
  * Implement Actual Routes that need to Authenticate
  */
 
-
-
+// User related
+router.get('/introduction/:uname',UserController.retrieveIntroduction);
+router.get('/get-folder-users/:folder/:name', UserController.getFolderUsers);
+router.get('/get-folder-users/:folder', UserController.getFolderUsers);
+router.get('/filter-folder-shared-users/:folder/:name', UserController.filterFolderSharedUsers);
+router.get('/connections/get',UserController.getConnections);
+router.get('/connection/count',UserController.connectionCount);
+router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
+router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
 router.post('/secretary/save',UserController.saveSecretary);
 router.post('/general-info/save',UserController.saveGeneralInfo);
-
 router.post('/connect-people',UserController.connect);
 router.post('/addNewsCategory',UserController.addNewsCategory);
 router.post('/upload/profile-image',UserController.uploadProfileImage);
-router.get('/connections/get',UserController.getConnections);
-router.get('/connection/count',UserController.connectionCount);
 router.post('/upload/cover-image',UserController.uploadCoverImage);
-
-
-
-
-
 router.post('/education/update', UserController.updateEducationDetail);
-
-
 router.post('/work-experience/update', UserController.updateWorkExperience);
+router.post('/skill-info/save', UserController.saveSkillInfo);
+router.post('/introduction/update', UserController.updateIntroduction);
 
+// Post
 router.post('/post/composer', PostController.addPost);
 router.post('/post/share', PostController.sharePost);
 router.post('/post/profile-image-post', PostController.profileImagePost);
 router.post('/post/delete', PostController.deletePost);
 
-
+// Comment
 router.post('/comment/composer', CommentController.addComment);
 router.get('/pull/comments', CommentController.getComment);
 router.post('/comment/delete', CommentController.deleteComment);
 
-
-router.post('/skill-info/save', UserController.saveSkillInfo);
-
+// Upload
 router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
 router.post('/ajax/upload/folderDoc', UploadController.uploadFolderDocument);
 
@@ -158,20 +156,18 @@ router.post('/connection/skip-request', ConnectionController.getUniqueFriendRequ
 router.get('/news/get-channels/:category', NewsController.getNewsChannels);
 router.get('/news/get-categories', NewsController.getNewsCategories);
 router.post('/user/news/add-category', NewsController.addToFavourite);
-
-router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
 router.get('/news/get/my/news-articles', NewsController.getMyNews);
 router.post('/news/articles/save', NewsController.saveMyNews);
-
 router.get('/news/saved/articles', NewsController.getSavedArticles);
-
 router.post('/news/user-channel/composer', NewsController.addChannelByUser);
 router.post('/news/user-channel/remove', NewsController.removeChannelByUser);
 router.get('/news/channels/:category_id', NewsChannelController.getChannelByCategory);
 router.get('/news/channels/:category_id/:channel_name', NewsChannelController.searchChannelForCategory);
 
+// Like
 router.post('/like/composer', LikeController.doLike);
 
+// Notes
 router.post('/notes/add-notebook', NotesController.addNoteBook);
 router.post('/notes/share-notebook', NotesController.shareNoteBook);
 router.post('/notes/add-note', NotesController.addNote);
@@ -183,8 +179,8 @@ router.post('/notebook/shared-user/remove', NotesController.removeSharedNoteBook
 router.post('/notebook/update/shared-users/color', NotesController.updateSharedUsersListColor);
 router.post('/notes/update-note', NotesController.updateNote);
 router.post('/notes/delete-note', NotesController.deleteNote);
-router.post('/introduction/update', UserController.updateIntroduction);
-router.get('/introduction/:uname',UserController.retrieveIntroduction);
+
+// Notification
 // router.get('/notifications/get-notifications',NotificationController.getNotifications);
 router.get('/notifications/get-notifications',NotificationController.getNotificationsList);
 router.post('/notifications/update-notifications',NotificationController.updateNotifications);
@@ -192,50 +188,48 @@ router.post('/notifications/notebook-update',NotificationController.updateNotebo
 router.post('/notifications/set-notification-sms',NotificationSMSController.setNotificationSMS);
 router.get('/notifications/get-details',NotificationController.getDetails);
 router.get('/notifications/get-notification-count',NotificationController.getNotificationCount);
+router.post('/notifications/folder-update',NotificationController.updateFolderNotifications);
+
+// Folder
 router.get('/folders/get-count', FolderController.getCount);
 router.post('/folders/add-new', FolderController.addNewFolder);
 router.get('/folders/get-all', FolderController.getFolders);
-router.post('/group-folders/add-new', GroupFolderController.addNewFolder);
-router.get('/group-folders/get-all', GroupFolderController.getFolders);
 router.post('/folders/shared-users', FolderController.getSharedUsers);
 router.post('/folders/share-folder', FolderController.shareFolder);
 router.post('/folder/shared-user/remove', FolderController.removeSharedFolderUser);
-router.get('/get-folder-users/:folder/:name', UserController.getFolderUsers);
-router.get('/get-folder-users/:folder', UserController.getFolderUsers);
 router.post('/folder/shared-permission/change', FolderController.updateFolderSharedPermission);
-router.get('/filter-folder-shared-users/:folder/:name', UserController.filterFolderSharedUsers);
-router.post('/notifications/folder-update',NotificationController.updateFolderNotifications);
 router.post('/document/remove',FolderController.deleteDocument);
 router.get('/folder/search/:q', FolderController.searchFolder);
 router.get('/folder/get-folder/:folder_id', FolderController.getAFolder);
 router.get('/folder/get-document/:folder_id/:document_id', FolderController.getAFolder);
 
-router.post('/calendar/event/add', CalendarController.addEvent);
+
+// Calender
 router.get('/calendar/month/all', CalendarController.getAllForSpecificMonth);
-//router.get('/calendar/week/all', CalendarController.getAllForSpecificWeek);
-//router.get('/calendar/week/current', CalendarController.getAllEventForCurrentWeek);
-//router.get('/calendar/week/next_prev', CalendarController.getAllEventForNextOrPrevWeek);
+router.get('/calendar/shared_users', CalendarController.getEventSharedUsers);
+router.get('/calendar/events/date_range', CalendarController.getAllForDateRange);
+router.post('/calendar/event/add', CalendarController.addEvent);
 router.post('/calendar/day/all', CalendarController.getEventsForSpecificDay);
 router.post('/calendar/update', CalendarController.updateEvent);
-//router.post('/calendar/event/share', CalendarController.shareEvent);
 router.post('/calendar/remove/share_user', CalendarController.removeSharedEventUser);
 router.post('/calendar/update/event_status', CalendarController.updateEventSharedStatus);
-router.get('/calendar/shared_users', CalendarController.getEventSharedUsers);
-
-router.get('/calendar/events/date_range', CalendarController.getAllForDateRange);
 router.post('/calendar/event/completion', CalendarController.updateEventCompletion);
 router.post('/calendar/event/get', CalendarController.getEvent);
 router.post('/calendar/delete', CalendarController.deleteCalendarEvent);
-
-router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
 
 // Call Center
 router.get('/contacts/all', CallCenterController.contact.getAll);
 router.get('/call-records', CallCenterController.call.getCallRecords);
 
-
 //Group
 router.post('/group/add', GroupsController.createGroup);
+router.post('/group/update-description', GroupsController.updateDescription);
+
+// Group Notebook
 router.post('/group/add-notebook', GroupNotebookController.addNewNotebook);
+
+// Group Folder
+router.post('/group-folders/add-new', GroupFolderController.addNewFolder);
+router.get('/group-folders/get-all', GroupFolderController.getFolders);
 
 module.exports = router;
