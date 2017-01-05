@@ -10,7 +10,6 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import ContactList from "./ContactList";
 import RecentList from "./RecentList";
 import StatusList from "./StatusList";
-import User from "./User";
 import CallModel from "./CallModel";
 import {CallCenter} from "../../middleware/CallCenter";
 
