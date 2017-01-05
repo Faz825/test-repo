@@ -10,6 +10,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import ContactList from "./ContactList";
 import RecentList from "./RecentList";
 import StatusList from "./StatusList";
+import User from "./User";
 import CallModel from "./CallModel";
 import {CallCenter} from "../../middleware/CallCenter";
 
@@ -50,239 +51,232 @@ export default class Index extends React.Component {
             {
                 letter: "A",
                 users: [
-                    {
-                        "user_id": "57fcded7a083f22a099afff1",
-                        "email": "prasad2@gmail.com",
-                        "mood": 1,
-                        "contactType": 2,
-                        "call_type": 2,
-                        "calls": 1,
-                        "first_name": "prasad1",
-                        "last_name": "sampath",
-                        "zip_code": null,
-                        "dob": "2-02-2013",
-                        "country": "United States",
-                        "user_name": "prasad2.sampath.86688",
-                        "introduction": null,
-                        "cur_exp_id": "57fcdeeba083f22a099affff",
-                        "cur_working_at": "asd",
-                        "cur_designation": "asd",
-                        "call_time": "2:03 AM",
-                        "city_details": "United States",
-                        "connection_count": 0,
-                        "calls": "2",
-                        "images": {
-                            "profile_image": {
-                                "id": "DEFAULT",
-                                "file_name": "default_profile_image.png",
-                                "file_type": ".png",
-                                "http_url": "/images/default-profile-pic.png"
-                            }
-                        },
-                        "receivers_list": [
-                            {
-                                "name": "Steve Young",
-                                "user_id": 1,
-                                "call_status": 1
-                            },
-                            {
-                                "name": "Christina Chapman",
-                                "user_id": 2,
-                                "call_status": 4
-                            }
-                        ],
-                        "connected_at": "2016-10-11T12:47:03.594Z"
-                    },
-                    {
-                        "user_id": "57fcded7a083f22a099afff2",
-                        "email": "prasad2@gmail.com",
-                        "mood": 1,
-                        "contactType": 2,
-                        "call_type": 2,
-                        "calls": 1,
-                        "first_name": "prasad2",
-                        "last_name": "sampath",
-                        "zip_code": null,
-                        "dob": "2-02-2013",
-                        "country": "United States",
-                        "user_name": "prasad2.sampath.86688",
-                        "introduction": null,
-                        "cur_exp_id": "57fcdeeba083f22a099affff",
-                        "cur_working_at": "asd",
-                        "cur_designation": "asd",
-                        "call_time": "2:03 AM",
-                        "city_details": "United States",
-                        "connection_count": 0,
-                        "calls": "2",
-                        "images": {
-                            "profile_image": {
-                                "id": "DEFAULT",
-                                "file_name": "default_profile_image.png",
-                                "file_type": ".png",
-                                "http_url": "/images/default-profile-pic.png"
-                            }
-                        },
-                        "receivers_list": [
-                            {
-                                "name": "Steve Young",
-                                "user_id": 1,
-                                "call_status": 1
-                            },
-                            {
-                                "name": "Christina Chapman",
-                                "user_id": 2,
-                                "call_status": 4
-                            }
-                        ],
-                        "connected_at": "2016-10-11T12:47:03.594Z"
-                    }
+	                    {
+							"user_id": "57fcded7a083f22a099afff1",
+							"email": "prasad2@gmail.com",
+							"onlineStatus" : 2,
+							"contactType": 2,
+							"call_type": 2,
+							"calls": 1,
+							"first_name": "prasad1",
+							"last_name": "sampath",
+							"zip_code": null,
+							"dob": "2-02-2013",
+							"country": "United States",
+							"user_name": "prasad2.sampath.86688",
+							"introduction": null,
+							"cur_exp_id": "57fcdeeba083f22a099affff",
+							"cur_working_at": "asd",
+							"cur_designation": "asd",
+							"call_time": "2:03 AM",
+							"city_details": "United States",
+							"connection_count": 0,
+							"calls": "2",
+							"images": {
+								"profile_image": {
+									"id": "DEFAULT",
+									"file_name": "default_profile_image.png",
+									"file_type": ".png",
+									"http_url": "/images/default-profile-pic.png"
+								}
+							},
+							"receivers_list": [
+								{
+									"name": "Steve Young",
+									"user_id": 1,
+									"call_status": 1
+								},
+								{
+									"name": "Christina Chapman",
+									"user_id": 2,
+									"call_status": 4
+								}
+							],
+							"connected_at": "2016-10-11T12:47:03.594Z"
+						},
+						{
+							"user_id": "57fcded7a083f22a099afff2",
+							"email": "prasad2@gmail.com",
+							"onlineStatus" : 2,
+							"contactType": 2,
+							"call_type": 2,
+							"calls": 1,
+							"first_name": "prasad2",
+							"last_name": "sampath",
+							"zip_code": null,
+							"dob": "2-02-2013",
+							"country": "United States",
+							"user_name": "prasad2.sampath.86688",
+							"introduction": null,
+							"cur_exp_id": "57fcdeeba083f22a099affff",
+							"cur_working_at": "asd",
+							"cur_designation": "asd",
+							"call_time": "2:03 AM",
+							"city_details": "United States",
+							"connection_count": 0,
+							"calls": "2",
+							"images": {
+								"profile_image": {
+									"id": "DEFAULT",
+									"file_name": "default_profile_image.png",
+									"file_type": ".png",
+									"http_url": "/images/default-profile-pic.png"
+								}
+							},
+							"receivers_list": [
+								{
+									"name": "Steve Young",
+									"user_id": 1,
+									"call_status": 1
+								},
+								{
+									"name": "Christina Chapman",
+									"user_id": 2,
+									"call_status": 4
+								}
+							],
+							"connected_at": "2016-10-11T12:47:03.594Z"
+						}
                 ]
             },
             {
                 letter: "B",
                 users: [
                     {
-                        "user_id": "57fcded7a083f22a099afff3",
-                        "email": "prasad2@gmail.com",
-                        "mood": 1,
-                        "contactType": 2,
-                        "call_type": 2,
-                        "calls": 1,
-                        "first_name": "prasad3",
-                        "last_name": "sampath",
-                        "zip_code": null,
-                        "dob": "2-02-2013",
-                        "country": "United States",
-                        "user_name": "prasad2.sampath.86688",
-                        "introduction": null,
-                        "cur_exp_id": "57fcdeeba083f22a099affff",
-                        "cur_working_at": "asd",
-                        "cur_designation": "asd",
-                        "call_time": "2:03 AM",
-                        "city_details": "United States",
-                        "connection_count": 0,
-                        "calls": "2",
-                        "images": {
-                            "profile_image": {
-                                "id": "DEFAULT",
-                                "file_name": "default_profile_image.png",
-                                "file_type": ".png",
-                                "http_url": "/images/default-profile-pic.png"
-                            }
-                        },
-                        "receivers_list": [
-                            {
-                                "name": "Steve Young",
-                                "user_id": 1,
-                                "call_status": 1
-                            },
-                            {
-                                "name": "Christina Chapman",
-                                "user_id": 2,
-                                "call_status": 4
-                            }
-                        ],
-                        "connected_at": "2016-10-11T12:47:03.594Z"
-                    }
+						"user_id": "57fcded7a083f22a099afff3",
+						"email": "prasad2@gmail.com",
+						"onlineStatus" : 1,
+						"contactType": 2,
+						"call_type": 2,
+						"calls": 1,
+						"first_name": "prasad3",
+						"last_name": "sampath",
+						"zip_code": null,
+						"dob": "2-02-2013",
+						"country": "United States",
+						"user_name": "prasad2.sampath.86688",
+						"introduction": null,
+						"cur_exp_id": "57fcdeeba083f22a099affff",
+						"cur_working_at": "asd",
+						"cur_designation": "asd",
+						"call_time": "2:03 AM",
+						"city_details": "United States",
+						"connection_count": 0,
+						"calls": "2",
+						"images": {
+							"profile_image": {
+								"id": "DEFAULT",
+								"file_name": "default_profile_image.png",
+								"file_type": ".png",
+								"http_url": "/images/default-profile-pic.png"
+							}
+						},
+						"receivers_list": [
+							{
+								"name": "Steve Young",
+								"user_id": 1,
+								"call_status": 1
+							},
+							{
+								"name": "Christina Chapman",
+								"user_id": 2,
+								"call_status": 4
+							}
+						],
+						"connected_at": "2016-10-11T12:47:03.594Z"
+					}
                 ]
             }
         ];
 
         let recentList = [
             {
-                "user_id": "57fcded7a083f22a099afffe",
-                "email": "prasad2@gmail.com",
-                "mood": 1,
-                "contact_type": 1,
-                "call_type": 2,
-                "calls": 1,
-                "first_name": "prasad3",
-                "last_name": "sampath",
-                "zip_code": null,
-                "dob": "2-02-2013",
-                "country": "United States",
-                "user_name": "prasad2.sampath.86688",
-                "introduction": null,
-                "cur_exp_id": "57fcdeeba083f22a099affff",
-                "cur_working_at": "asd",
-                "cur_designation": "asd",
-                "call_time": "2:03 AM",
-                "city_details": "United States",
-                "connection_count": 0,
-                "calls": "2",
-                "images": {
-                    "profile_image": {
-                        "id": "DEFAULT",
-                        "file_name": "default_profile_image.png",
-                        "file_type": ".png",
-                        "http_url": "/images/default-profile-pic.png"
-                    }
-                },
-                "receivers_list": [
-                    {
-                        "name": "Steve Young",
-                        "user_id": 1,
-                        "call_status": 1
-                    },
-                    {
-                        "name": "Christina Chapman",
-                        "user_id": 2,
-                        "call_status": 4
-                    }
-                ],
-                "connected_at": "2016-10-11T12:47:03.594Z"
-            },
+				"user_id": "57fcded7a083f22a099afffe",
+				"email": "prasad2@gmail.com",
+				"onlineStatus" : 1,
+				"contact_type": 1,
+				"call_type": 2,
+				"calls": 1,
+				"first_name": "prasad3",
+				"last_name": "sampath",
+				"zip_code": null,
+				"dob": "2-02-2013",
+				"country": "United States",
+				"user_name": "prasad2.sampath.86688",
+				"introduction": null,
+				"cur_exp_id": "57fcdeeba083f22a099affff",
+				"cur_working_at": "asd",
+				"cur_designation": "asd",
+				"call_time": "2:03 AM",
+				"city_details": "United States",
+				"connection_count": 0,
+				"calls": "2",
+				"images": {
+					"profile_image": {
+						"id": "DEFAULT",
+						"file_name": "default_profile_image.png",
+						"file_type": ".png",
+						"http_url": "/images/default-profile-pic.png"
+					}
+				},
+				"receivers_list": [
+					{
+						"name": "Steve Young",
+						"user_id": 1,
+						"call_status": 1
+					},
+					{
+						"name": "Christina Chapman",
+						"user_id": 2,
+						"call_status": 4
+					}
+				],
+				"connected_at": "2016-10-11T12:47:03.594Z"
+			},
             {
-                "user_id": "57fcded7a083f22a099afffe",
-                "email": "prasad2@gmail.com",
-                "mood": 1,
-                "contact_type": 1,
-                "call_type": 2,
-                "calls": 1,
-                "first_name": "prasad2",
-                "last_name": "sampath",
-                "zip_code": null,
-                "dob": "2-02-2013",
-                "country": "United States",
-                "user_name": "prasad2.sampath.86688",
-                "introduction": null,
-                "cur_exp_id": "57fcdeeba083f22a099affff",
-                "cur_working_at": "asd",
-                "cur_designation": "asd",
-                "call_time": "2:03 AM",
-                "city_details": "United States",
-                "connection_count": 0,
-                "calls": "2",
-                "images": {
-                    "profile_image": {
-                        "id": "DEFAULT",
-                        "file_name": "default_profile_image.png",
-                        "file_type": ".png",
-                        "http_url": "/images/default-profile-pic.png"
-                    }
-                },
-                "receivers_list": [
-                    {
-                        "name": "Steve Young",
-                        "user_id": 1,
-                        "call_status": 1
-                    },
-                    {
-                        "name": "Christina Chapman",
-                        "user_id": 2,
-                        "call_status": 4
-                    }
-                ],
-                "connected_at": "2016-10-11T12:47:03.594Z"
-            }
+				"user_id": "57fcded7a083f22a099afffe",
+				"email": "prasad2@gmail.com",
+				"onlineStatus" : 1,
+				"contact_type": 1,
+				"call_type": 2,
+				"calls": 1,
+				"first_name": "prasad2",
+				"last_name": "sampath",
+				"zip_code": null,
+				"dob": "2-02-2013",
+				"country": "United States",
+				"user_name": "prasad2.sampath.86688",
+				"introduction": null,
+				"cur_exp_id": "57fcdeeba083f22a099affff",
+				"cur_working_at": "asd",
+				"cur_designation": "asd",
+				"call_time": "2:03 AM",
+				"city_details": "United States",
+				"connection_count": 0,
+				"calls": "2",
+				"images": {
+					"profile_image": {
+						"id": "DEFAULT",
+						"file_name": "default_profile_image.png",
+						"file_type": ".png",
+						"http_url": "/images/default-profile-pic.png"
+					}
+				},
+				"receivers_list": [
+					{
+						"name": "Steve Young",
+						"user_id": 1,
+						"call_status": 1
+					},
+					{
+						"name": "Christina Chapman",
+						"user_id": 2,
+						"call_status": 4
+					}
+				],
+				"connected_at": "2016-10-11T12:47:03.594Z"
+			}
         ];
-
-        function filterByType(contact) {
-            console.log(contact);
-            if (contact.contact_type == 1) {
-                return true;
-            }
-        }
 
         $.ajax({
             url: '/contacts/all',
@@ -290,7 +284,20 @@ export default class Index extends React.Component {
             dataType: "JSON",
             headers: {'prg-auth-header': this.state.loggedUser.token}
         }).done(function (data) {
-            data.contacts.push.apply(data.contacts, userGroupList);
+        	data.contacts.push.apply(data.contacts, userGroupList);
+			data.contacts.sort(function(a, b) {
+				var nameA = a.letter.toUpperCase(); // ignore upper and lowercase
+				var nameB = b.letter.toUpperCase(); // ignore upper and lowercase
+				if (nameA < nameB) {
+					return -1;
+				}
+				if (nameA > nameB) {
+					return 1;
+				}
+
+				// names must be equal
+				return 0;
+			});
             if (data.status.code == 200) {
                 if (cat == "contact" && subCat == "all") {
                     this.setState({userList: data.contacts});
@@ -334,11 +341,50 @@ export default class Index extends React.Component {
                         }
                     }
 
-                    this.setState({userList: dataSet});
-                }
-                else if (cat == "recent" && subCat == "all") {
+			        this.setState({userList: dataSet});	
+                }else if (cat == "recent" && subCat == "all") {
                     this.setState({userList: userGroupList});
-                }
+                }else if (cat == "status" && subCat == "online") {
+                    let dataSet = [],
+						usersSet = [],
+						letter = "";
+
+                	for (var key in data.contacts) {
+						letter = data.contacts[key].letter;
+			            for (var subKey in data.contacts[key].users) {
+			            	let stat = data.contacts[key].users[subKey].onlineStatus;
+	        				if (stat == 1) {
+								usersSet.push(data.contacts[key].users[subKey]);
+	        				}
+				        }
+				        if (usersSet.length >= 1) {
+							dataSet.push({"letter" : letter , "users" : usersSet});
+							usersSet = [];
+				        }
+			        }
+
+			        this.setState({userList: dataSet});	
+                }else if (cat == "status" && subCat == "busy") {
+                    let dataSet = [],
+						usersSet = [],
+						letter = "";
+
+                	for (var key in data.contacts) {
+						letter = data.contacts[key].letter;
+			            for (var subKey in data.contacts[key].users) {
+			            	let stat = data.contacts[key].users[subKey].onlineStatus;
+	        				if (stat == 2) {
+								usersSet.push(data.contacts[key].users[subKey]);
+	        				}
+				        }
+				        if (usersSet.length >= 1) {
+							dataSet.push({"letter" : letter , "users" : usersSet});
+							usersSet = [];
+				        }
+			        }
+
+			        this.setState({userList: dataSet});	
+                } 
                 // else if (cat == "recent" && subCat == "missed") {
                 //     this.setState({userList: recentMissedList});
                 // } else if (cat == "recent" && subCat == "individual") {
@@ -493,7 +539,7 @@ export default class Index extends React.Component {
                             </div>
                             <div className={(mainCat == "status") ? "col-sm-4 active" : "col-sm-4" }
                                  onClick={(event)=> {
-                                     this.loadContactData("status", "all")
+                                     this.loadContactData("status", "online")
                                  }}>Status
                             </div>
                         </div>
@@ -635,14 +681,14 @@ export default class Index extends React.Component {
                 }
             }
 
-            if (usersSet.length >= 1) {
-                if (this.state.activeMainCat == "contact") {
-                    dataSet.push({"letter": letter, "users": usersSet});
-                } else {
-                    dataSet.push({"users": usersSet});
-                }
-                usersSet = [];
-            }
+	        if (usersSet.length >= 1) {
+	        	if (this.state.activeMainCat == "recent"){
+					dataSet.push({"users" : usersSet});	        		
+	        	}else{
+					dataSet.push({"letter" : letter , "users" : usersSet});	        		
+	        	}
+				usersSet = [];
+	        }
 
         }
 

@@ -40,7 +40,7 @@ var NotificationSchema = new Schema({
         ref: 'Folders',
         default:null
     },
-    notified_group:{
+    notified_group:{ // if a group request then group id
         type: Schema.ObjectId,
         ref: 'Groups',
         default:null
@@ -101,7 +101,9 @@ NotificationSchema.statics.saveNotification = function (new_notification, callBa
         notification.notified_notebook = Util.toObjectId(new_notification.notified_notebook);
         notification.notified_group = Util.toObjectId(new_notification.notified_group);
         notification.notification_status = new_notification.notification_status;
-
+    } else if(new_notification.notification_type == Notifications.ADD_GROUP_POST) {
+        notification.notified_post = Util.toObjectId(new_notification.notified_post);
+        notification.notified_group = Util.toObjectId(new_notification.notified_group);
     } else {
         notification.notified_post = Util.toObjectId(new_notification.notified_post);
         notification.notification_status = "";

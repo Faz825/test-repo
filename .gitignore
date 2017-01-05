@@ -1,8 +1,9 @@
-.gitignore
 .idea/
-config/app.config.js
-elasticsearch-1.4.2.deb
 node_modules/
-npm-debug.log
 public/lib/
 public/web/
+npm-debug.log
+yarn.lock
+yarn-error.log
+config/app.config.js
+.gitignore

@@ -14,5 +14,7 @@ GLOBAL.Notifications = {
     SHARE_FOLDER_RESPONSE:"share_folder_response",
     SHARE_GROUP:"share_group",
     SHARE_GROUP_RESPONSE:"share_group_response",
-    SHARE_GROUP_NOTEBOOK:"share_group_notebook"
+    SHARE_GROUP_NOTEBOOK:"share_group_notebook",
+    ADD_GROUP_POST:"add_group_post"
+
 };
