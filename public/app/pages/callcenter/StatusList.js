@@ -1,5 +1,5 @@
 import React from 'react';
-import User from "./User";
+import Contact from "./Contact";
 
 export default class StatusList extends React.Component {
     constructor(props) {
@@ -15,9 +15,19 @@ export default class StatusList extends React.Component {
 
     render() {
         let _this = this;
-        let statusList = this.props.userList.map(function (user, key) {
+        let statusList = this.props.userList.map(function (oGroupedContacts, key) {
             return (
-                <User users={user.users} type="recent" key={key} onCalling={_this.onCalling.bind(_this)}/>
+                <div className="contact-group" key={key}>
+                    <p className="group-name">{oGroupedContacts.letter}</p>
+
+                    <div className="contact-wrapper">
+                        {oGroupedContacts.users.map(function (oContact) {
+                            return (
+                                <Contact key={oContact.user_id} contact={oContact} type="contact" onCalling={_this.onCalling.bind(_this)}/>
+                            )
+                        })}
+                    </div>
+                </div>
             )
         })
         return (

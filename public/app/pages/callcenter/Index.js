@@ -22,8 +22,6 @@ export default class Index extends React.Component {
         } else {
             this.b6 = CallCenter.b6;
             this.initCall(this.b6);
-
-            console.log(CallCenter.b6);
         }
 
         this.state = {
@@ -525,8 +523,6 @@ export default class Index extends React.Component {
         console.log("======incomingCall======");
 
         this.setState({incoming_call: true});
-
-        console.log(this.state.incoming_call);
 
         /*  var _blockCall = checkWorkMode();
          console.log("_blockCall ==> " + _blockCall);
