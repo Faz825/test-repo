@@ -29,16 +29,35 @@ var CallCenter = {
 
             // Call either login or signup function
             var fn = isNewUser ? 'signup' : 'login';
-            _this.b6.session[fn]({'identity': ident, 'password': pass}, function (err) {
+            _this.b6.session['login']({'identity': ident, 'password': pass}, function (err) {
                 if (err) {
-                    _this.bit6Auth(true);
+                    console.log('sign-in failed');
+                    console.log(err);
+                    _this.b6SignUp(ident, pass, oUser);
                 }
                 else {
+                    console.log('logged in');
                     _this.b6.session.displayName = oUser.first_name + " " + oUser.last_name;
                     return true;
                 }
             });
         }
+    },
+    b6SignUp: function (ident, pass, oUser) {
+        var _this = this;
+
+        _this.b6.session['signup']({'identity': ident, 'password': pass}, function (err) {
+            if (err) {
+                console.log('sign-up failed');
+                console.log(err);
+                return false;
+            }
+            else {
+                console.log('logged in');
+                _this.b6.session.displayName = oUser.first_name + " " + oUser.last_name;
+                return true;
+            }
+        });
     },
     getBit6Identity: function (oUser) {
         return Config.BIT6_IDENTITY_USER_SLUG + oUser.user_name;
