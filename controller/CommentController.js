@@ -26,12 +26,15 @@ var CommentController ={
             return 0;
         }
 
+        var _post_visible_mode = (typeof req.body.__post_visible_mode != 'undefined') ? req.body.__post_visible_mode : '';
+
         var Comment = require('mongoose').model('Comment'),
             CurrentSession = Util.getCurrentSession(req),
             _async = require('async'),
             SubscribedPost = require('mongoose').model('SubscribedPost'),
             Notification = require('mongoose').model('Notification'),
-            NotificationRecipient = require('mongoose').model('NotificationRecipient');
+            NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            Post = require('mongoose').model('Post');
 
         var _comment ={
             post_id:req.body.__post_id,
@@ -108,14 +111,20 @@ var CommentController ={
             },
             function subscribeToPost(callBack){
 
-                var _data = {
-                    user_id:CurrentSession.id,
-                    post_id:req.body.__post_id
-                }
-                SubscribedPost.saveSubscribe(_data, function(res){
+                // All the group members already have a subscription for group posts.
+                // Assume that only group members allowed to comment on group posts.
+                if( _post_visible_mode && parseInt(_post_visible_mode) == PostVisibleMode.GROUP_POST) {
                     callBack(null);
-                })
-
+                } else {
+                    
+                    var _data = {
+                        user_id:CurrentSession.id,
+                        post_id:req.body.__post_id
+                    }
+                    SubscribedPost.saveSubscribe(_data, function(res){
+                        callBack(null);
+                    })
+                }                 
             },
             function getOtherSubscribedUsers(callBack){
 

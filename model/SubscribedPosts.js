@@ -37,25 +37,31 @@ SubscribedPostSchema.statics.saveSubscribe = function(new_subscription,callBack)
         user_id:Util.toObjectId(new_subscription.user_id),
         post_id:Util.toObjectId(new_subscription.post_id)
     }
-
     this.find(criteria).exec(function(err,resultSet){
-        if(!err && resultSet.length == 0){
+        
+        if(err) {
+            callBack({status:400,error:err}); 
+        }
+
+        if(resultSet.length == 0){
             subscription.save(function(err, result){
-                if(!err){
-                    callBack({
-                        status:200,
-                        result:result
-                    });
-                }else{
-                    console.log("Server Error --------")
-                    console.log(err)
+                if(err){
+                    console.log("Error occured while creating the subscription.");
+                    console.log(err);
                     callBack({status:400,error:err});
                 }
+                console.log("Success - creating the subscription for user - " + new_subscription.user_id + "; post - " + new_subscription.post_id);
+                callBack({
+                    status:200,
+                    result:result
+                });
             });
-
         }else{
-            console.log("Server Error --------")
-            callBack({status:400,error:err});
+            console.log("Already have a subscription.");
+            callBack({
+                status:200, 
+                result: resultSet[0]
+            });
         }
     })
 
