@@ -11,6 +11,7 @@ export default class InCallPane extends React.Component{
         super(pros);
         if (Session.isSessionSet('prg_lg')) {
             this.b6 = Chat.b6;
+            console.log(this.b6);
             Chat.initChat(this.b6);
         }
     }

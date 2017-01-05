@@ -25,9 +25,9 @@ export default class User extends React.Component{
 		let users = this.props.users.map(function(user,key){
 			let mood,call_type;
 
-			if (user.mood == UserMode.ONLINE) {
+			if (user.onlineStatus == UserMode.ONLINE) {
 				mood = "online";
-			}else if(user.mood == UserMode.WORK_MODE){
+			}else if(user.onlineStatus == UserMode.WORK_MODE){
 				mood = "busy";
 			}else{
 				mood = "offline";
@@ -71,12 +71,12 @@ export default class User extends React.Component{
 	                    :
 	                    null	                	
 	                }
-	                <div className="col-sm-6">
+					<div className={(_this.props.type == "status")? "col-sm-9" : "col-sm-6"}>
 	                    <div className="call-ico-wrapper">
 	                        <button className="call-ico video" onClick={(event)=>{_this.handleClick(user, "video")}}>
 	                            <img src="images/call-center/video-ico.png"/>
 	                        </button>
-	                        <button className="call-ico phone" onClick={(event)=>{_this.handleClick(user, "phone")}}>
+	                        <button className="call-ico phone" onClick={(event)=>{_this.handleClick(user, "audio")}}>
 	                            <img src="images/call-center/phone-ico.png"/>
 	                        </button>
 	                    </div>
