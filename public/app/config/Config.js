@@ -23,7 +23,7 @@ const data = {
 /* Developed it this way to avoid code changes occurrences, sources already using  'const Configs',
  Otherwise we can export a func that will eval  'const env' */
 
-const env = data.envs.dev;
+const env = data.envs.local;
 
 var Config = {};
 
