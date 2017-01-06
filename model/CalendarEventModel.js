@@ -30,6 +30,12 @@ GLOBAL.CalendarSharedStatus = {
     REQUEST_ACCEPTED: 3
 };
 
+GLOBAL.CalenderPriority = {
+    LOW: 1,
+    MED: 2,
+    HIGH: 3,
+};
+
 /**
  * CalenderEvent Basic information
  */
@@ -56,8 +62,13 @@ var CalendarEventSchema = new Schema({
         default : 1 /* 1 - pending | 2 - completed | 3 - expired, 4 - cancelled */
     },
 
+    priority : {
+        type : Number,
+        default : 1 /* 1 - low | 2 - medium | 3 - high */
+    },
+
     type : {
-        type : Number, /*1- Event | 2 - To-Do | 3 - Task*/
+        type : Number, /*1- Event | 2 - To-Do | 3 - Task */
         default : null
     },
 
@@ -128,6 +139,7 @@ CalendarEventSchema.statics.addNew = function (eventData,callBack) {
     calenderEvent.event_time = eventData.event_time;
     calenderEvent.event_timezone = eventData.event_timezone;
     calenderEvent.shared_users = eventData.shared_users;
+    calenderEvent.priority = eventData.priority;
 
     calenderEvent.save(function(err,resultSet){
 
