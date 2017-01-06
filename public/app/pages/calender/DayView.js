@@ -50,7 +50,8 @@ export default class DayView extends Component {
             msgOn : false,
             errorMsg : '',
             showModal : false,
-            deleteEventId : ''
+            deleteEventId : '',
+            isButtonDisabled : false
         };
 
         this.sharedWithIds = [];
@@ -115,7 +116,7 @@ export default class DayView extends Component {
             this.refs.SharedUserField.sharedWithNames = [];
             this.refs.SharedUserField.sharedWithIds = [];
         }
-        
+
         this.setState({
             sharedWithNames: [],
             sharedWithIds: [],
@@ -124,7 +125,8 @@ export default class DayView extends Component {
             showUserPanelWindow: false,
             showTimePanelWindow: false,
             defaultEventTime: moment().format('HH:mm'),
-            editOn : false
+            editOn : false,
+            isButtonDisabled: false
         });
         this.sharedWithIds = [];
         this.sharedWithNames = [];
@@ -172,7 +174,10 @@ export default class DayView extends Component {
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
         };
-        this.resetEventForm();
+
+        // the button dissabled untill the response comes
+        this.setState({ isButtonDisabled: true});
+        
         $.ajax({
             url: '/calendar/event/add',
             method: "POST",
@@ -650,7 +655,7 @@ export default class DayView extends Component {
                                                 </li>
                                                 <li>
                                                     { this.state.editOn == false ?
-                                                        <button className="menu-ico-txt btn" onClick={this.addEvent}>
+                                                        <button className="menu-ico-txt btn" disabled={this.state.isButtonDisabled} onClick={this.addEvent}>
                                                             <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
                                                         </button>
                                                         :
