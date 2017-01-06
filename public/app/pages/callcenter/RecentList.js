@@ -1,6 +1,5 @@
 import React from 'react';
 import Contact from "./Contact";
-import CallCenter from '../../middleware/CallCenter';
 
 export default class RecentList extends React.Component {
     constructor(props) {
