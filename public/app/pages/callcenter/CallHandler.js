@@ -4,7 +4,7 @@
 
 import React from 'react';
 import Session from '../../middleware/Session';
-import {CallCenter} from '../../middleware/CallCenter';
+import CallCenter from '../../middleware/CallCenter';
 import CallModel from './CallModel';
 
 export default class CallHandler extends React.Component {
@@ -28,7 +28,7 @@ export default class CallHandler extends React.Component {
 
         if (Session.isSessionSet('prg_lg')) {
             this.b6 = CallCenter.b6;
-            CallCenter.initBit6();
+            console.log(this.b6 );
             this.initCall(this.b6);
         }
     }

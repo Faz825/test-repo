@@ -1,17 +1,13 @@
 import React from 'react';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import SignupIndex from '../signup/Index';
 import SigninHeader from '../../components/header/SigninHeader';
-import SidebarNav from '../../components/sidebarNav/SidebarNav';
 import FooterHolder from '../../components/footer/FooterHolder';
 import Session  from '../../middleware/Session';
 import AmbiDashboard  from '../dashboard/AmbiDashboard';
-import InCallPane  from '../chat/InCallPane';
 import CallHandler  from '../callcenter/CallHandler';
 import QuickChatHandler from '../chat/QuickChatHandler';
 import WorkMode from '../workmode/Index';
 import NotificationPop from '../notifications/NotificationPop';
-import Moment from 'moment';
 import PubSub from 'pubsub-js';
 import Chat from '../../middleware/Chat';
 
