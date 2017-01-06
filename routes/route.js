@@ -228,6 +228,7 @@ router.post('/group/add-users', GroupsController.addUsers);
 
 // Group Notebook
 router.post('/group/add-notebook', GroupNotebookController.addNewNotebook);
+router.post('/group/remove-member', GroupsController.removeMember);
 
 // Group Folder
 router.post('/group-folders/add-new', GroupFolderController.addNewFolder);

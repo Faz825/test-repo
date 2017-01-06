@@ -27,7 +27,6 @@ var GroupsController = {
             function createGroup(callBack) {
 
                 var _group = {
-                    type: req.body._type,
                     name: req.body._name,
                     description: req.body._description,
                     color: req.body._color,
@@ -84,7 +83,7 @@ var GroupsController = {
                     var _notebook = {
                         name: groupData.name,
                         color: groupData.color,
-                        isGrouped: 1,
+                        type: NoteBookType.GROUP_NOTEBOOK,
                         user_id: UserId,
                         group_id: groupData._id
                     };
@@ -281,7 +280,7 @@ var GroupsController = {
      *              "status" : 3,
      *               "user_id" : "583d3d0ddaf9fd094117eb72",
      *               "name" : "Supun Sulan"
-     *          }] 
+     *          }]
      */
     addUsers: function (req, res) {
 
@@ -321,6 +320,51 @@ var GroupsController = {
         ], function (err) {
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             res.status(200).send(outPut);
+        });
+    },
+
+    removeMember: function (req, res) {
+        var Groups = require('mongoose').model('Groups'),
+            _async = require('async'),
+            _arrIndex = require('array-index-of-property');
+
+        var group_id = req.body._group_id,
+            member_id = req.body._member_id;
+
+        _async.waterfall([
+
+            function removeUserFromGroup(callBack) {
+                var criteria = {
+                  '_id': Util.toObjectId(group_id),
+                  'members.user_id': Util.toObjectId(member_id)
+                };
+
+                var _status = {
+                    'members.$.status': GroupSharedRequest.MEMBER_REMOVED
+                };
+
+                Groups.updateGroupData(criteria, _status, function (r) {
+                    callBack(null);
+                });
+            },
+            function removePostSubscriptions(callBack) {
+                //ToDo: remove member post subs
+                callBack(null);
+            },
+            function removeSharedCalendar(callBack) {
+                //ToDo: remove member calendar events tasks todos
+                callBack(null);
+            }
+
+        ], function (err) {
+            var outPut = {};
+            if (err) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS);
+                res.status(200).send(outPut);
+            }
         });
     }
 };
