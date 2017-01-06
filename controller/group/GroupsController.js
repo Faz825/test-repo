@@ -27,7 +27,6 @@ var GroupsController = {
             function createGroup(callBack) {
 
                 var _group = {
-                    type: req.body._type,
                     name: req.body._name,
                     description: req.body._description,
                     color: req.body._color,
