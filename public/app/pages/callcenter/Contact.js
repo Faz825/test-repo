@@ -44,7 +44,7 @@ export default class Contact extends React.Component {
         return (
             <div>
                 <div className="row contact-item recent-item">
-                    <div className="col-sm-3">
+                    <div className="col-sm-4">
                         <div className="image-wrapper">
                             <img src={contact.images.profile_image.http_url}/>
                             <span className={"status " + mood}></span>
@@ -56,7 +56,7 @@ export default class Contact extends React.Component {
                     </div>
                     {
                         (_this.props.type == "contact") ?
-                            <div className={"col-sm-3 contact-type " + call_type}>
+                            <div className={"col-sm-2 contact-type " + call_type}>
                                 <span></span>
                             </div>
                             :
@@ -64,7 +64,7 @@ export default class Contact extends React.Component {
                     }
                     {
                         (_this.props.type == "recent") ?
-                            <div className={"col-sm-3 contact-type " + contact.callStatue}>
+                            <div className={"col-sm-2 contact-type " + contact.callStatue}>
                                 <p className="call-count">{user.calls}</p>
                                 <span className={contact.callType}></span>
                                 <p className="call-time">{contact.time}</p>
