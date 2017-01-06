@@ -31,7 +31,7 @@ export default class StatusList extends React.Component {
             )
         })
         return (
-            <div className="status-list">
+            <div className="status-list contacts-list">
                 <div className="list-wrapper">
                     {statusList}
                 </div>
