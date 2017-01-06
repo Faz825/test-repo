@@ -343,7 +343,7 @@ var GroupsController = {
                     'members.$.status': GroupSharedRequest.MEMBER_REMOVED
                 };
 
-                Groups.updateGroupData(criteria, _status, function (r) {
+                Groups.updateGroups(criteria, _status, function (r) {
                     callBack(null);
                 });
             },

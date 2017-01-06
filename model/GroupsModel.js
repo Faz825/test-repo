@@ -263,29 +263,6 @@ GroupsSchema.statics.getGroupDataFiltered = function(criteria,filter,callBack){
 };
 
 /**
- * Update Shared Group
- * @param criteria
- * @param data
- * @param callBack
- */
-GroupsSchema.statics.updateGroupData = function(criteria, data, callBack){
-
-    var _this = this;
-
-    _this.update(criteria, data, {multi:true}, function(err,resultSet){
-        if(!err){
-            callBack({
-                status:200
-            });
-        }else{
-            console.log("Server Error --------")
-            console.log(err)
-            callBack({status:400,error:err});
-        }
-    });
-};
-
-/**
  * This is to get the group name of given group_id
  * @param criteria
  * @param data
