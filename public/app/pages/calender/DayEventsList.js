@@ -42,12 +42,6 @@ export default class DayEventsList extends React.Component {
                 acceptedClass = 'event-description accepted';
             }
 
-            if(event.user_id != _this.state.user.id) {
-                ownerString = <span className='selected-people'>{event.owner_name}{event.shared_users.length > 0 ? ', ' : ''}</span>
-            } else {
-                ownerString = <span className='selected-people'>me{event.shared_users.length > 0 ? ', ' : ''}</span>
-            }
-
             if(event.shared_users.length > 0 ) {
                 usersString = event.shared_users.map(function(user,userKey){
                     
@@ -62,8 +56,12 @@ export default class DayEventsList extends React.Component {
                                 {userKey+1 == event.shared_users.length ? '' : ', '}
                             </span>;
                 });
-
-
+                
+                if(event.user_id != _this.state.user.id) {
+                    ownerString = <span className='selected-people'>{event.owner_name}{event.shared_users.length > 0 ? ', ' : ''}</span>
+                } else {
+                    ownerString = <span className='selected-people'>me{event.shared_users.length > 0 ? ', ' : ''}</span>
+                }
             } else {
                 usersString = <span className="people-list">Only me</span>
             }
