@@ -18,7 +18,13 @@ GLOBAL.NoteBookSharedMode = {
 GLOBAL.NoteBookSharedRequest = {
     REQUEST_PENDING: 1,
     REQUEST_REJECTED: 2,
-    REQUEST_ACCEPTED: 3
+    REQUEST_ACCEPTED: 3,
+    REMOVED_FROM_GROUP: 4
+};
+
+GLOBAL.NoteBookType = {
+    PERSONAL_NOTEBOOK: 0,
+    GROUP_NOTEBOOK: 1
 };
 
 
@@ -45,9 +51,9 @@ var NoteBookSchema = new Schema({
         ref: 'Groups',
         default:null
     },
-    isGrouped:{
+    type:{
         type:Number,
-        default:0
+        default: NoteBookType.PERSONAL_NOTEBOOK
     },
     shared_users:[],
     created_at:{
@@ -79,7 +85,7 @@ NoteBookSchema.statics.addNewNoteBook = function(NotebookData,callBack){
     newNotebook.color  	= NotebookData.color;
     newNotebook.isDefault  	= NotebookData.isDefault;
     newNotebook.user_id		= NotebookData.user_id;
-    newNotebook.isGrouped  	= NotebookData.isGrouped;
+    newNotebook.type  	= NotebookData.type;
     newNotebook.group_id	= NotebookData.group_id;
 
     newNotebook.save(function(err,resultSet){
@@ -384,8 +390,28 @@ NoteBookSchema.statics.bindNotificationData = function(notificationObj, callBack
 
 };
 
+/**
+ * Get Notebook By Id
+ */
+NoteBookSchema.statics.getGroupNotebooks = function(criteria,callBack){
 
+    var _this = this;
 
+    _this.find(criteria).exec(function (err, resultSet) {
+        if (!err) {
+            if (resultSet == null) {
+                callBack(null);
+                return;
+            }
+
+            callBack(resultSet);
+        } else {
+            console.log(err);
+            callBack({status: 400, error: err})
+        }
+    });
+
+};
 
 
 mongoose.model('NoteBook',NoteBookSchema);

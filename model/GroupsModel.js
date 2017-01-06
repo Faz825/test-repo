@@ -11,7 +11,8 @@ var mongoose = require('mongoose'),
 GLOBAL.GroupSharedRequest = {
     REQUEST_PENDING: 1,
     REQUEST_REJECTED: 2,
-    REQUEST_ACCEPTED: 3
+    REQUEST_ACCEPTED: 3,
+    MEMBER_REMOVED: 4
 };
 
 GLOBAL.GroupPermissions = {
@@ -164,7 +165,7 @@ GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
     });*/
 
 
-    _this.find({_id: Util.toObjectId(groupId)}).select('members -_id').exec(function(err,resultSet){
+    _this.find({_id: Util.toObjectId(groupId)}).select('created_by members -_id').exec(function(err,resultSet){
         if(!err){
 
             console.log(resultSet);
@@ -179,6 +180,7 @@ GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
 
                 if(members.length == i + 1) {
                     callBack({
+                        owner : resultSet[0].created_by,
                         members : tmpArray,
                         members_count : tmpArray.length
                     });
@@ -199,6 +201,52 @@ GroupsSchema.statics.getGroupById = function(id,callBack){
     var _this = this;
 
     _this.findOne({_id: id}).exec(function (err, resultSet) {
+        if (!err) {
+            if (resultSet == null) {
+                callBack(null);
+                return;
+            }
+
+            callBack(resultSet);
+        } else {
+            console.log(err)
+            callBack({status: 400, error: err})
+        }
+    });
+
+};
+
+/**
+ * Get Group Data
+ */
+GroupsSchema.statics.getGroupData = function(criteria,callBack){
+
+    var _this = this;
+
+    _this.find(criteria , {'members.$': 1}).exec(function (err, resultSet) {
+        if (!err) {
+            if (resultSet == null) {
+                callBack(null);
+                return;
+            }
+
+            callBack(resultSet);
+        } else {
+            console.log(err)
+            callBack({status: 400, error: err})
+        }
+    });
+
+};
+
+/**
+ * Get Group Filtered Data
+ */
+GroupsSchema.statics.getGroupDataFiltered = function(criteria,filter,callBack){
+
+    var _this = this;
+
+    _this.find(criteria , filter).exec(function (err, resultSet) {
         if (!err) {
             if (resultSet == null) {
                 callBack(null);

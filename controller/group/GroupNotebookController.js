@@ -25,7 +25,7 @@ var GroupNotebookController = {
             name: req.body.notebook_name,
             color: req.body.notebook_color,
             isDefault: req.body.isDefault,
-            isGrouped: req.body.isGrouped,
+            type: NoteBookType.GROUP_NOTEBOOK,
             group_id: req.body.group_id,
             user_id : CurrentSession.id
         };
@@ -44,10 +44,15 @@ var GroupNotebookController = {
             function getGroupMembers(notebook, callBack) {
                 Groups.getGroupMembers(notebook.group_id, function (r) {
 
-                    var uid_index = r.members.indexOf(_notebook.user_id);
-                    r.members.splice(uid_index, 1);
+                    for(var i = 0; i< r.members.length; i++){
+                        if(r.members[i].toString() == _notebook.user_id.toString()){
+                            r.members.splice(i, 1);
 
+                            r.members.push(r.owner.toString());
+                        }
+                    }
                     notifyUsers = r.members;
+
                     callBack( null,{notebook : notebook,members : r.members});
                 });
             },
@@ -188,6 +193,10 @@ var GroupNotebookController = {
             };
             res.status(200).json(outPut);
         });
+
+    },
+
+    removeMember: function (req, res) {
 
     }
 
