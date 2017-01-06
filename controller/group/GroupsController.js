@@ -34,6 +34,7 @@ var GroupsController = {
                     group_pic_link: req.body._group_pic_link,
                     members: req.body._members,
                     created_by: Util.getCurrentSession(req).id,
+                    type:(typeof req.body._type != 'undefined' ? req.body._type : 1)
                 };
                 Groups.createGroup(_group, function (resultSet) {
                     if (resultSet.status == 200) {
@@ -145,7 +146,6 @@ var GroupsController = {
                 res.status(200).send(outPut);
             }
         });
-
     },
 
     addGroupPost: function (req, res) {
@@ -259,6 +259,60 @@ var GroupsController = {
                 };
                 var value = {
                     "description" : description
+                };
+                groups.updateGroups(filter, value, function (updateResult) {
+                    callBack(null, updateResult.group);
+                });
+            }
+        ], function (err) {
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            res.status(200).send(outPut);
+        });
+    },
+
+
+    /**
+     * @description Add new users as an array
+     * @param String groupId
+     * @param Array newusers
+     *      ex:-
+     *          [{
+     *              "permissions" : null,
+     *              "status" : 3,
+     *               "user_id" : "583d3d0ddaf9fd094117eb72",
+     *               "name" : "Supun Sulan"
+     *          }] 
+     */
+    addUsers: function (req, res) {
+
+        var outPut = {};
+        var currentSession = Util.getCurrentSession(req);
+        var async = require('async');
+        var groups = require('mongoose').model('Groups');
+        var groupId = (typeof req.body.__groupId != 'undefined') ? req.body.__groupId : null;
+        var newusers = (typeof req.body.__users != 'undefined') ? req.body.__users : [];
+
+        if(groupId == null) {
+            outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_ID_EMPTY, Alert.GROUP_ID_EMPTY);
+            res.status(602).send(outPut);
+            return;
+        }
+
+        if(newusers == null) {
+            outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_MEMBERS_EMPTY, Alert.GROUP_MEMBERS_EMPTY);
+            res.status(602).send(outPut);
+            return;
+        }
+
+        async.waterfall([
+            function updateDb(callBack) {
+                var filter = {
+                    "_id" : groupId
+                };
+                var value = {
+                    $push : {
+                        "members" : {$each : newusers }
+                    }
                 };
                 groups.updateGroups(filter, value, function (updateResult) {
                     callBack(null, updateResult.group);

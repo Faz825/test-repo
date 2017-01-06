@@ -104,7 +104,9 @@ var PostController ={
             post_visible_mode:PostVisibleMode.PUBLIC,
             post_mode:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostConfig.SHARED_POST,
             post_owner:req.body.__own,
-            friends_post_sharing: CurrentSession.id != req.body.__own ? true  :false
+            friends_post_sharing: CurrentSession.id != req.body.__own ? true  :false,
+            group_id:(typeof req.body.__group_id != 'undefined') ? req.body.__group_id : null,
+            visible_users:(typeof req.body.__visible_users != 'undefined')?req.body.__visible_users: []
         }
         var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
         TimeLinePostHandler.sharePost(data,function(resultSet){

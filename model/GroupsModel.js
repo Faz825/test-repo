@@ -110,6 +110,7 @@ GroupsSchema.statics.createGroup = function(groupData,callBack){
     _group.group_pic_link = groupData.group_pic_link;
     _group.created_by = groupData.created_by;
     _group.members = groupData.members;
+    _group.type = groupData.type;
 
     _group.save({lean:true},function(err,result){
 

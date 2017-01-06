@@ -278,6 +278,11 @@ var TimeLinePostHandler ={
                     _post.visible_users= _post.visible_users;
                     callBack(null)
                 }
+
+                else if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST){
+                    _post.visible_users= _post.visible_users;
+                    callBack(null)
+                }
             },
             function savePostInDb(callBack){
                 console.log("savePostInDb")
@@ -296,15 +301,45 @@ var TimeLinePostHandler ={
                 });
             },
             function subscribeToPost(callBack){
-                console.log("subscribeToPost")
+                // console.log("subscribeToPost")
+                // var _data = {
+                //     user_id:_post.created_by,
+                //     post_id:_post.post_id
+                // }
+                // SubscribedPost.saveSubscribe(_data, function(res){
+                //     callBack(null);
+                // })
                 var _data = {
                     user_id:_post.created_by,
                     post_id:_post.post_id
-                }
-                SubscribedPost.saveSubscribe(_data, function(res){
-                    callBack(null);
-                })
+                };
+                
+                // if the post is a group post, all the group members needed to be subscribed.
+                if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST && _post.visible_users.length > 0){
 
+                    var _visible_users = _post.visible_users;
+                    if(_visible_users.indexOf(_post.created_by) == -1) {
+                        _visible_users.push(_post.created_by);
+                    }
+
+                    for (var i = 0; i < _visible_users.length; i++) {
+                        var _user = _visible_users[i];
+                        _data = {
+                            user_id:_user,
+                            post_id:_post.post_id
+                        };
+
+                        SubscribedPost.saveSubscribe(_data, function(res){
+                            if(i == _visible_users.length) {
+                                callBack(null);
+                            }
+                        });
+                    }
+                } else {
+                    SubscribedPost.saveSubscribe(_data, function(res){
+                        callBack(null);
+                    });
+                }
             },
             function getOtherSubscribedUsers(callBack){
                 console.log("getOtherSubscribedUsers")
