@@ -21,7 +21,6 @@ export default class Index extends React.Component {
             window.location.href = "/";
         } else {
             this.b6 = CallCenter.b6;
-			console.log(this.b6 );
 		}
 
         this.state = {

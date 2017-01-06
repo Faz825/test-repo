@@ -28,7 +28,6 @@ export default class CallHandler extends React.Component {
 
         if (Session.isSessionSet('prg_lg')) {
             this.b6 = CallCenter.b6;
-            console.log(this.b6 );
             this.initCall(this.b6);
         }
     }
