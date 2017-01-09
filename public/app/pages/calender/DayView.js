@@ -498,11 +498,11 @@ export default class DayView extends Component {
 
         var arrEntries = selected._root.entries;
         var time = arrEntries[1][1];
-        let year = moment(this.state.currentDay).year();
-        let month = moment(this.state.currentDay).month();
-        let date = moment(this.state.currentDay).day();
-        let timeWithDay = year+'/'+month+'/'+date+' '+time;
-        this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
+        // let year = moment(this.state.currentDay).year();
+        // let month = moment(this.state.currentDay).month();
+        // let date = moment(this.state.currentDay).day();
+        // let timeWithDay = year+'/'+month+'/'+date+' '+time;
+        this.setState({ defaultEventTime: time });
     }
 
     closeModal() {
