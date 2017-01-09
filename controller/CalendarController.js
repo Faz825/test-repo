@@ -135,7 +135,7 @@ var CalendarController = {
                         eventType = CalendarTypes.TASK;
                         break;
                     default:
-                        default eventType = CalendarTypes.EVENT;
+                        eventType = CalendarTypes.EVENT;
                 }
 
                 var eventData = {
@@ -146,8 +146,8 @@ var CalendarController = {
                     start_date: req.body.apply_date,
                     event_time: req.body.event_time,
                     event_timezone: req.body.event_timezone,
-                    shared_users: sharedUserList
-                    priority:  (typeof req.body.priority != 'undefined' ? req.body.priority : CalenderPriority.LOW);
+                    shared_users: sharedUserList,
+                    priority:  (typeof req.body.priority != 'undefined' ? req.body.priority : CalenderPriority.LOW)
                 };
 
                 CalendarEvent.addNew(eventData, function (event) {
