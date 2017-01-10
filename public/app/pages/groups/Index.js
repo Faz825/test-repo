@@ -4,6 +4,7 @@
 import React from 'react';
 import {Alert} from '../../config/Alert';
 import Session  from '../../middleware/Session';
+import GroupChat  from './GroupChat';
 
 export default class Index extends React.Component{
 
@@ -27,6 +28,7 @@ export default class Index extends React.Component{
                             <div className="col-sm-3">
                                 <h2>Groups</h2>
                             </div>
+                            <GroupChat />
                         </div>
                     </section>
                 </div>
