@@ -913,9 +913,6 @@ body .modal-backdrop{
 
 .selected-file{border: 1px solid red !important;}
 
-<<<<<<< HEAD
-.calender-container .calender-body .col-sm-9 .calender-view .calender-input .calender-input-type p
-=======
 ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 7px;
@@ -925,4 +922,3 @@ body .modal-backdrop{
     background-color: rgba(0,0,0,.5);
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
->>>>>>> 0e4e1e230d6c7b34d52454cccc10d915acdbe75e

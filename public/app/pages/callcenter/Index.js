@@ -11,6 +11,7 @@ import ContactList from "./ContactList";
 import RecentList from "./RecentList";
 import StatusList from "./StatusList";
 import CallModel from "./CallModel";
+import MakingCall from "./MakingCall";
 import CallCenter from '../../middleware/CallCenter';
 
 
@@ -759,6 +760,7 @@ export default class Index extends React.Component {
                     }
                 </div>
                 {this.callPopup()}
+                <MakingCall/>
             </section>
         );
     }

@@ -3283,6 +3283,7 @@ textarea{
 /** CSS for chat audio /video */
 #incomingCall{
 	text-align:center;
+	margin-bottom: 0;
 }
 
 .inCallPane-wrapper .video-call-view{
