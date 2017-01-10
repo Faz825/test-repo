@@ -65,7 +65,7 @@ export default class Contact extends React.Component {
                     {
                         (_this.props.type == "recent") ?
                             <div className={"col-sm-2 contact-type " + contact.callStatue}>
-                                <p className="call-count">{user.calls}</p>
+                                <p className="call-count">{contact.calls}</p>
                                 <span className={contact.callType}></span>
                                 <p className="call-time">{contact.time}</p>
                             </div>

@@ -21,7 +21,7 @@ export default class RecentList extends React.Component {
                     <div className="contact-wrapper">
                         {oGroupedContacts.users.map(function (oContact) {
                             return (
-                                <Contact key={oContact.user_id} contact={oContact} type="contact" onCalling={_this.onCalling.bind(_this)}/>
+                                <Contact key={oContact.user_id} contact={oContact} type="recent" onCalling={_this.onCalling.bind(_this)}/>
                             )
                         })}
                     </div>

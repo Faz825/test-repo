@@ -5,11 +5,28 @@
 import Session  from './Session.js';
 import Lib from './Lib.js';
 import {Config} from '../config/Config';
+import _async from 'async';
+import CallCenter from './CallCenter'
 
 class Chat {
-    constructor() {
-        var opts = {'apikey': Config.BIT6_API_KEY};
-        this.b6 = new bit6.Client(opts);
+
+    initBit6Auth() {
+        this.b6;
+        function createBit6Instance() {
+            console.log("CAME TO CREATE BIT6 AUTH ------");
+            var opts = {'apikey': Config.BIT6_API_KEY};
+            var b6 = new bit6.Client(opts);
+            return b6;
+        }
+
+        return {
+            getInstance: function () {
+                if (!this.b6) {
+                    this.b6 = createBit6Instance();
+                }
+                return this.b6;
+            }
+        };
     }
 
     initChat(b6) {
@@ -563,6 +580,199 @@ class Chat {
 
         }
 
+    }
+
+    initGroupChat1(b6, groupData, callBack) {
+        console.log("came to initGroupChat1");
+
+        let _group = {}
+
+        _async.waterfall([
+            function verifyAuth(callBack) {
+                console.log("came to verifyAuth");
+
+                if (!b6.session.authenticated) {
+
+                    b6 = CallCenter.b6;
+                    callBack(null);
+
+                } else {
+                    callBack(null);
+                }
+
+            },
+            function createChatGoup(callBack) {
+                console.log("came to createChatGoup");
+                var opts = {
+                    meta: {
+                        title: groupData.name,
+                        owner_name: groupData.owner_name,
+                        owner_id: groupData.owner_id,
+                        group_id: groupData.id
+                    }
+                };
+                // Create the group
+                b6.createGroup(opts, function(err, g) {
+                    if (err) {
+                        console.log('error', err);
+                        callBack(null, null);
+                    } else {
+                        console.log('created group >>', g);
+                        _group = g;
+                        callBack(null, g);
+                    }
+                });
+
+            },
+            function addAdminMember(_grp, callBack) {
+                console.log("came to addAdminMember");
+                //256 - ROLE_ADMIN
+                //16 - ROLE_USER
+                if(typeof _grp != 'undefined' && _grp) {
+                    let usr_title = "usr:proglobe" + Session.getSession('prg_lg').user_name;
+                    // Join group 'g1' with role 'user'
+                    b6.inviteGroupMember(_grp.id, usr_title, 256, function (err, g) {
+                        if (err) {
+                            console.log('error', err);
+                            callBack(null, null);
+                        } else {
+                            callBack(null, _grp);
+                        }
+                    });
+                } else {
+                    callBack(null, null);
+                }
+            },
+            function addOtherMembers(_grp, callBack) {
+                console.log("came to addOtherMembers");
+                if(typeof _grp != 'undefined' && _grp) {
+                    _async.each(groupData.members, function (membr, callBack) {
+
+                        let usr_title = "usr:proglobe" + membr.name;
+                        // Join group 'g1' with role 'user'
+                        b6.inviteGroupMember(_grp.id, usr_title, 16, function (err, g) {
+                            if (err) {
+                                console.log('error', err);
+                            }
+                            callBack(null);
+                        });
+
+                    }, function (err) {
+                        callBack(null, _grp);
+                    });
+                } else {
+                    callBack(null, _grp);
+                }
+            }
+        ], function(err, results) {
+            console.log("came to initGroupChat1 2");
+            callBack(null, results);
+        });
+
+    }
+
+
+    addAnotherMemberToGroupChat(b6, member, groupId, _role) {
+        console.log("came to addMemberToGroupChat");
+        if (!b6.session.authenticated) {
+            console.log('BIT6 User is not logged in');
+            bit6Auth(false);
+        } else {
+            addGroupMember(member, groupId, _role);
+        }
+
+        function bit6Auth(isNewUser) {
+            if(Session.getSession('prg_lg') != null){
+                // Convert username to an identity URI
+                var ident = 'usr:proglobe_' + Session.getSession('prg_lg').user_name;
+                var pass = 'proglobe_'+Session.getSession('prg_lg').id;
+                // Call either login or signup function
+                var fn = isNewUser ? 'signup' : 'login';
+                b6.session[fn]({'identity': ident, 'password': pass}, function (err) {
+                    if (err) {
+                        bit6Auth(true);
+                    } else {
+                        b6.session.displayName = Session.getSession('prg_lg').first_name+" "+Session.getSession('prg_lg').last_name;
+                        addGroupMember(member, groupId, _role);
+                        return true;
+                    }
+                });
+            }
+        }
+
+        function addGroupMember(membr, _id, _role) {
+            console.log("came to addGroupMember");
+            console.log(membr);
+            let usr_title = "usr:proglobe" + membr.name;
+            // Join group 'g1' with role 'user'
+            b6.inviteGroupMember(_id, usr_title, _role, function (err, g) {
+                if (err) {
+                    console.log('error', err);
+                }
+            });
+
+        }
+
+    }
+
+    getGroupById(b6, _id) {
+        console.log("came to getGroupById");
+        if (!b6.session.authenticated) {
+            console.log('BIT6 User is not logged in');
+            return;
+        }
+        return b6.getGroup(_id);
+    }
+
+    removeMemberFromGroupChat(b6, member, groupId) {
+        console.log("came to removeMemberFromGroupChat");
+        //let usr_title = "usr:proglobe" + "test2.me.42436";
+        let usr_title = "usr:proglobe" + member.name;
+        //let usr_title = "usr:proglobe" + Session.getSession('prg_lg').user_name;
+        // Join group 'g1' with role 'user'
+        b6.kickGroupMember(groupId, usr_title, function (err, g) {
+            if (err) {
+                console.log('error', err);
+            } else {
+                console.log('removed from  group', g);
+            }
+        });
+
+    }
+
+    leaveFromGroupChat(b6, groupId) {
+        console.log("came to leaveFromGroupChat");
+        // Leave group 'g1'
+        b6.leaveGroup(groupId, function(err) {
+            if (err) {
+                console.log('error', err);
+            } else {
+                console.log('left group');
+            }
+        });
+    }
+
+    joinGroupChat(b6, groupId) {
+        console.log("came to joinGroupChat");
+        let usr_title = "usr:proglobe" + Session.getSession('prg_lg').user_name;
+        // Join group 'groupId' with role 'user'
+        b6.joinGroup(groupId, usr_title, function(err, g) {
+            if (err) {
+                console.log('error', err);
+            }
+        });
+    }
+
+    removeEntireGroup(b6, groupId) {
+        console.log("came to removeEntireGroup");
+        // Leave(remove) group by id from bit6
+        b6.remove(groupId, function(err) {
+            if (err) {
+                console.log('error', err);
+            } else {
+                console.log('left group');
+            }
+        });
     }
 
 }
