@@ -5,10 +5,10 @@
 var PostController ={
 
     /**
-     * Add New post to the system. 
-     * set the post_mode and the relative visible_users params in the post request 
-     * ex: - 
-     *      public post - no users. 
+     * Add New post to the system.
+     * set the post_mode and the relative visible_users params in the post request
+     * ex: -
+     *      public post - no users.
      *      group post - group memebers
      * @param req
      * @param res
@@ -24,7 +24,7 @@ var PostController ={
             created_by:(req.body.__on_friends_wall === 'true')?req.body.__profile_user_id :CurrentSession.id,
             post_owned_by:CurrentSession.id,
             page_link:(typeof req.body.page_link != 'undefined')?req.body.page_link :"",
-            post_visible_mode:PostVisibleMode.GROUP_POST,
+            post_visible_mode:PostVisibleMode.PUBLIC,
             post_mode:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostConfig.NORMAL_POST,
             file_content:(typeof req.body.__file_content != 'undefined')?req.body.__file_content:"",
             upload_id:(typeof req.body.__uuid  != 'undefined')? req.body.__uuid:"",
