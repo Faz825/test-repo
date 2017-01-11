@@ -1,30 +1,27 @@
 import React from 'react';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import SignupIndex from '../signup/Index';
 import SigninHeader from '../../components/header/SigninHeader';
-import SidebarNav from '../../components/sidebarNav/SidebarNav';
 import FooterHolder from '../../components/footer/FooterHolder';
 import Session  from '../../middleware/Session';
 import AmbiDashboard  from '../dashboard/AmbiDashboard';
-import InCallPane  from '../chat/InCallPane';
+import CallHandler  from '../callcenter/CallHandler';
 import QuickChatHandler from '../chat/QuickChatHandler';
 import WorkMode from '../workmode/Index';
 import NotificationPop from '../notifications/NotificationPop';
-import Moment from 'moment';
 import PubSub from 'pubsub-js';
 import Chat from '../../middleware/Chat';
 
-export default class AmbiLayout extends React.Component{
-	constructor(props){
+export default class AmbiLayout extends React.Component {
+    constructor(props) {
         super(props);
 
         //bit6 will work on https
-        if(Session.getSession('prg_lg') == null){
+        if (Session.getSession('prg_lg') == null) {
             window.location.href = "/";
         }
-        if (window.location.protocol == 'http:' ) {
+        if (window.location.protocol == 'http:') {
             var url_arr = window.location.href.split('http');
-            window.location.href = 'https'+url_arr[1];
+            window.location.href = 'https' + url_arr[1];
         }
 
         let _rightBottom = false;
@@ -32,26 +29,28 @@ export default class AmbiLayout extends React.Component{
 
         this.checkWorkModeInterval = null;
 
-        if(Session.getSession('prg_wm') != null){
+        if (Session.getSession('prg_wm') != null) {
             let _currentTime = new Date().getTime();
             let _finishTime = Session.getSession('prg_wm').endTime;
 
-            if (_currentTime > _finishTime){
+            if (_currentTime > _finishTime) {
                 Session.destroy("prg_wm");
-            } else{
+            } else {
                 let _this = this;
                 _rightBottom = Session.getSession('prg_wm').rightBottom;
                 _socialNotifications = Session.getSession('prg_wm').socialNotifications;
-                if(_rightBottom == true || _socialNotifications == true){
-                    this.checkWorkModeInterval = setInterval(function(){_this.checkWorkMode()}, 1000);
+                if (_rightBottom == true || _socialNotifications == true) {
+                    this.checkWorkModeInterval = setInterval(function () {
+                        _this.checkWorkMode()
+                    }, 1000);
                 }
             }
         }
 
-        this.state={
-            chatBubble:[],
-            rightBottom:_rightBottom,
-            socialNotifications:_socialNotifications,
+        this.state = {
+            chatBubble: [],
+            rightBottom: _rightBottom,
+            socialNotifications: _socialNotifications,
             isShowingModal: false,
             notifiType: "",
             notificationCount: "",
@@ -71,26 +70,26 @@ export default class AmbiLayout extends React.Component{
         let FPVC = "FRIEND_PROFILE_VIDEO_CALL";
         let VIDEO_CALL = "VIDEO";
 
-        PubSub.subscribe(FVM, function( msg, data ){
+        PubSub.subscribe(FVM, function (msg, data) {
 
             let chatExists = false;
-            if(_this.quickChatUsers.length > 0) {
-                for(let con in _this.quickChatUsers){
-                    if(_this.quickChatUsers[con].title == data.title){
+            if (_this.quickChatUsers.length > 0) {
+                for (let con in _this.quickChatUsers) {
+                    if (_this.quickChatUsers[con].title == data.title) {
                         chatExists = true;
                     }
                 }
             }
 
-            if(!chatExists) {
+            if (!chatExists) {
                 _this.quickChatUsers.push(data);
-                _this.setState({chatBubble:_this.quickChatUsers});
+                _this.setState({chatBubble: _this.quickChatUsers});
             }
         });
 
-        PubSub.subscribe(FPVC, function( msg, data ){
+        PubSub.subscribe(FPVC, function (msg, data) {
 
-            if(data.type == VIDEO_CALL) {
+            if (data.type == VIDEO_CALL) {
                 _this.doVideoCall(data);
             } else {
                 _this.doAudioCall(data);
@@ -99,57 +98,56 @@ export default class AmbiLayout extends React.Component{
         });
 
 
-
     }
 
-    doVideoCall(callObj){
+    doVideoCall(callObj) {
         Chat.startOutgoingCall(callObj.uri, true);
     };
 
-    doAudioCall(callObj){
+    doAudioCall(callObj) {
         Chat.startOutgoingCall(callObj.uri, false);
     };
 
 
-    checkWorkMode(){
-        if(Session.getSession('prg_wm') != null){
+    checkWorkMode() {
+        if (Session.getSession('prg_wm') != null) {
             let _currentTime = new Date().getTime();
             let _finishTime = Session.getSession('prg_wm').endTime;
 
-            if (_currentTime > _finishTime){
+            if (_currentTime > _finishTime) {
                 console.log("TIME UP from Default Layout")
-                this.setState({rightBottom:false, socialNotifications:false})
+                this.setState({rightBottom: false, socialNotifications: false})
                 Session.destroy("prg_wm");
                 clearInterval(this.checkWorkModeInterval);
                 this.checkWorkModeInterval = null;
             }
-        } else{
-            this.setState({rightBottom:false, socialNotifications:false});
+        } else {
+            this.setState({rightBottom: false, socialNotifications: false});
             clearInterval(this.checkWorkModeInterval);
             this.checkWorkModeInterval = null;
         }
 
     }
 
-    loadQuickChat(conv){
+    loadQuickChat(conv) {
 
-        if(typeof this.quickChatUsers.length != 'undefined' && this.quickChatUsers.length >= 3) {
+        if (typeof this.quickChatUsers.length != 'undefined' && this.quickChatUsers.length >= 3) {
             alert("Maximum quick chat window limit is reached.");
             return;
         }
 
         var chatExists = false;
-        if(this.quickChatUsers.length > 0) {
-            for(let con in this.quickChatUsers){
-                if(this.quickChatUsers[con].title == conv.title){
+        if (this.quickChatUsers.length > 0) {
+            for (let con in this.quickChatUsers) {
+                if (this.quickChatUsers[con].title == conv.title) {
                     chatExists = true;
                 }
             }
         }
 
-        if(!chatExists) {
+        if (!chatExists) {
             this.quickChatUsers.push(conv);
-            this.setState({chatBubble:this.quickChatUsers});
+            this.setState({chatBubble: this.quickChatUsers});
         }
     }
 
@@ -158,12 +156,12 @@ export default class AmbiLayout extends React.Component{
         let bbList = this.state.chatBubble;
         if (typeof bbList != 'undefined' && bbList.length > 0) {
             let index = this.getBubbleIndex(title);
-            if(index > -1) {
+            if (index > -1) {
                 bbList.splice(index, 1);
             }
             this.quickChatUsers = [];
             this.quickChatUsers = bbList;
-            this.setState({chatBubble:this.quickChatUsers});
+            this.setState({chatBubble: this.quickChatUsers});
         }
     }
 
@@ -185,61 +183,69 @@ export default class AmbiLayout extends React.Component{
         this.setState({isShowingModal: false});
     }
 
-    onWorkmodeClick(){
+    onWorkmodeClick() {
         this.handleClick();
     }
 
-    onNotifiTypeClick(type, count){
-        this.setState({notifiType : type, notificationCount : count});
+    onNotifiTypeClick(type, count) {
+        this.setState({notifiType: type, notificationCount: count});
     }
 
-    onNotifiClose(){
-        this.setState({notifiType : ""});
+    onNotifiClose() {
+        this.setState({notifiType: ""});
     }
 
-    updateNotificationPopCount(c){
+    updateNotificationPopCount(c) {
         console.log("going to update count - 02");
         console.log(c);
-        this.setState({notificationCount : c});
+        this.setState({notificationCount: c});
     }
 
-    onNavCollapse(){
-    	console.log("called");
-    	let isVissible = this.state.isNavHidden;
-		this.setState({isNavHidden: !isVissible});
+    onNavCollapse() {
+        console.log("called");
+        let isVissible = this.state.isNavHidden;
+        this.setState({isNavHidden: !isVissible});
     }
 
-	render(){
-		let dashbrdClass = (this.props.children)? "sub-page" : "";
-		return(
-			<div className="app-holder">
-				<SigninHeader quickChat={this.loadQuickChat.bind(this)} />
-				<section className={(!this.state.isNavHidden)? "body-container " + dashbrdClass : "body-container nav-hidden"}>
-		      		{this.props.children || <AmbiDashboard />}
-				</section>
-				<InCallPane/>
-				{
+    render() {
+        let dashbrdClass = (this.props.children) ? "sub-page" : "";
+        return (
+            <div className="app-holder">
+                <SigninHeader quickChat={this.loadQuickChat.bind(this)}/>
+                <section
+                    className={(!this.state.isNavHidden) ? "body-container " + dashbrdClass : "body-container nav-hidden"}>
+                    {this.props.children || <AmbiDashboard />}
+                </section>
+                <CallHandler/>
+                {
                     this.state.isShowingModal &&
                     <ModalContainer zIndex={9999}>
                         <ModalDialog width="65%" className="workmode-popup-holder">
                             <div className="workmode-popup-wrapper">
                                 <WorkMode />
-                                <i className="fa fa-times close-icon" aria-hidden="true" onClick={this.handleClose.bind(this)}></i>
+                                <i className="fa fa-times close-icon" aria-hidden="true"
+                                   onClick={this.handleClose.bind(this)}></i>
                             </div>
                         </ModalDialog>
                     </ModalContainer>
                 }
                 {
-                    (this.state.notifiType)?
-                        <NotificationPop notifiType={this.state.notifiType} notifyCount={this.state.notificationCount} onNotifiClose={this.onNotifiClose.bind(this)}/>
-                    :
+                    (this.state.notifiType) ?
+                        <NotificationPop notifiType={this.state.notifiType} notifyCount={this.state.notificationCount}
+                                         onNotifiClose={this.onNotifiClose.bind(this)}/>
+                        :
                         null
                 }
                 <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)}/>
-                <FooterHolder blockBottom={this.state.rightBottom} blockSocialNotification={this.state.socialNotifications} onWorkmodeClick={this.onWorkmodeClick.bind(this)} onNotifiTypeClick={this.onNotifiTypeClick.bind(this)} onUpdateNotifiPopupCount={this.updateNotificationPopCount.bind(this)}
-                	currPage={(this.props.children)? null : "dashboard"} onNavCollapse={this.onNavCollapse.bind(this)}/>
-                <span className={(!this.state.isNavHidden)? "settings-icon" : "settings-icon slideUp"}></span>
-			</div>
-		);
-	}
+                <FooterHolder blockBottom={this.state.rightBottom}
+                              blockSocialNotification={this.state.socialNotifications}
+                              onWorkmodeClick={this.onWorkmodeClick.bind(this)}
+                              onNotifiTypeClick={this.onNotifiTypeClick.bind(this)}
+                              onUpdateNotifiPopupCount={this.updateNotificationPopCount.bind(this)}
+                              currPage={(this.props.children) ? null : "dashboard"}
+                              onNavCollapse={this.onNavCollapse.bind(this)}/>
+                <span className={(!this.state.isNavHidden) ? "settings-icon" : "settings-icon slideUp"}></span>
+            </div>
+        );
+    }
 }

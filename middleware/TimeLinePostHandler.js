@@ -16,9 +16,12 @@ var TimeLinePostHandler ={
      * @param callBack
      */
     addNewPost:function(postData,callBack){
+        console.log("TIMEL HAN 1111 ");
         var _async = require('async'),
             Post = require('mongoose').model('Post'),
             SubscribedPost = require('mongoose').model('SubscribedPost'),
+            Notification = require('mongoose').model('Notification'),
+            NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             _post = postData;
 
         _async.waterfall([
@@ -54,6 +57,7 @@ var TimeLinePostHandler ={
                 }
             },
             function savePostInDb(callBack){
+                console.log("TIMEL HAN 333 ");
 
                 Post.addNew(_post,function(postData){
 
@@ -68,15 +72,41 @@ var TimeLinePostHandler ={
 
             },
             function subscribeToPost(callBack){
+
                 var _data = {
                     user_id:_post.created_by,
                     post_id:_post.post_id
+                };
+
+                // if the post is a group post, all the group members needed to be subscribed.
+                if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST && _post.visible_users.length > 0){
+
+                    var _visible_users = _post.visible_users;
+                    if(_visible_users.indexOf(_post.created_by) == -1) {
+                        _visible_users.push(_post.created_by);
+                    }
+
+                    for (var i = 0; i < _visible_users.length; i++) {
+                        var _user = _visible_users[i];
+                        _data = {
+                            user_id:_user,
+                            post_id:_post.post_id
+                        };
+
+                        SubscribedPost.saveSubscribe(_data, function(res){
+                            if(i == _visible_users.length) {
+                                callBack(null);
+                            }
+                        });
+                    }
+                } else {
+                    SubscribedPost.saveSubscribe(_data, function(res){
+                        callBack(null);
+                    });
                 }
-                SubscribedPost.saveSubscribe(_data, function(res){
-                    callBack(null);
-                })
 
             },
+
             //COPY CONTENT TO CDN
             function copyToCDN(callBack){
 
@@ -99,10 +129,49 @@ var TimeLinePostHandler ={
                 }
 
             },
+
             function saveInCache(callBack){
 
                 Post.addToCache(_post.visible_users,_post,function(chData){ });
+
                 callBack(null)
+            },
+
+            function addNotification(callBack) {
+                if (_post.visible_users.length > 0 && parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST ) {
+
+                    var _data = {
+                        sender : _post.created_by,
+                        notification_type : Notifications.ADD_GROUP_POST,
+                        notified_group : _post.group_id,
+                        notified_post : _post.post_id
+                    }
+                    console.log(_data);
+
+                    Notification.saveNotification(_data, function (res) {
+                        if (res.status == 200) {
+                            callBack(null, res.result._id);
+                        }
+                    });
+                } else {
+                    callBack(null, null);
+                }
+            },
+            function notifyingUsers(notification_id, callBack) {
+
+                if (typeof notification_id != 'undefined' && _post.visible_users.length > 0 && parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST) {
+
+                    var _data = {
+                        notification_id: notification_id,
+                        recipients: _post.visible_users
+                    };
+                    NotificationRecipient.saveRecipients(_data, function (res) {
+                        callBack(null);
+                    });
+
+                } else {
+                    callBack(null);
+                }
             },
             function finalizedPost(callBack){
 
@@ -209,6 +278,11 @@ var TimeLinePostHandler ={
                     _post.visible_users= _post.visible_users;
                     callBack(null)
                 }
+
+                else if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST){
+                    _post.visible_users= _post.visible_users;
+                    callBack(null)
+                }
             },
             function savePostInDb(callBack){
                 console.log("savePostInDb")
@@ -227,15 +301,45 @@ var TimeLinePostHandler ={
                 });
             },
             function subscribeToPost(callBack){
-                console.log("subscribeToPost")
+                // console.log("subscribeToPost")
+                // var _data = {
+                //     user_id:_post.created_by,
+                //     post_id:_post.post_id
+                // }
+                // SubscribedPost.saveSubscribe(_data, function(res){
+                //     callBack(null);
+                // })
                 var _data = {
                     user_id:_post.created_by,
                     post_id:_post.post_id
-                }
-                SubscribedPost.saveSubscribe(_data, function(res){
-                    callBack(null);
-                })
+                };
 
+                // if the post is a group post, all the group members needed to be subscribed.
+                if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST && _post.visible_users.length > 0){
+
+                    var _visible_users = _post.visible_users;
+                    if(_visible_users.indexOf(_post.created_by) == -1) {
+                        _visible_users.push(_post.created_by);
+                    }
+
+                    for (var i = 0; i < _visible_users.length; i++) {
+                        var _user = _visible_users[i];
+                        _data = {
+                            user_id:_user,
+                            post_id:_post.post_id
+                        };
+
+                        SubscribedPost.saveSubscribe(_data, function(res){
+                            if(i == _visible_users.length) {
+                                callBack(null);
+                            }
+                        });
+                    }
+                } else {
+                    SubscribedPost.saveSubscribe(_data, function(res){
+                        callBack(null);
+                    });
+                }
             },
             function getOtherSubscribedUsers(callBack){
                 console.log("getOtherSubscribedUsers")

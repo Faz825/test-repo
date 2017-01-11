@@ -6,6 +6,7 @@ import React from 'react'
 import Session  from '../../middleware/Session';
 import QuickChatBubble from '../chat/QuickChatBubble'
 import Chat from '../../middleware/Chat';
+import CallCenter from '../../middleware/CallCenter';
 
 export default class QuickChatHandler extends React.Component{
     constructor(props) {
@@ -23,7 +24,8 @@ export default class QuickChatHandler extends React.Component{
             bubbleList : this.props.chatList
         };
 
-        this.b6 = Chat.b6;
+        this.b6 = CallCenter.b6;
+        //CallCenter.initBit6();
         this.convUsers = [];
         this.conversations = [];
         this.unreadConversations = [];
@@ -39,6 +41,14 @@ export default class QuickChatHandler extends React.Component{
 
     componentWillReceiveProps(nextProps) {
         this.setState({bubbleList: nextProps.chatList});
+    }
+
+    componentDidMount() {
+        //Chat.bit6AuthVerification(this.b6);
+
+        //Chat.initGroupChat(this.b6, null, null);
+        //Chat.getGroupById(this.b6, "ZU0pxrYOGiPTwWz3R8rpUx");
+        //Chat.addMemberToGroupChat(this.b6, null, "ZU0pxrYOGiPTwWz3R8rpUx");
     }
 
     initChat(b6){

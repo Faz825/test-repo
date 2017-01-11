@@ -17,7 +17,7 @@ import Socket  from '../../middleware/Socket';
 import { Modal, Button } from 'react-bootstrap';
 
 import { Popover, OverlayTrigger } from 'react-bootstrap';
-import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
+import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw, Modifier } from 'draft-js';
 import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
 
 import { fromJS } from 'immutable';
@@ -50,7 +50,8 @@ export default class DayView extends Component {
             msgOn : false,
             errorMsg : '',
             showModal : false,
-            deleteEventId : ''
+            deleteEventId : '',
+            isButtonDisabled : false
         };
 
         this.sharedWithIds = [];
@@ -115,7 +116,7 @@ export default class DayView extends Component {
             this.refs.SharedUserField.sharedWithNames = [];
             this.refs.SharedUserField.sharedWithIds = [];
         }
-        
+
         this.setState({
             sharedWithNames: [],
             sharedWithIds: [],
@@ -124,7 +125,8 @@ export default class DayView extends Component {
             showUserPanelWindow: false,
             showTimePanelWindow: false,
             defaultEventTime: moment().format('HH:mm'),
-            editOn : false
+            editOn : false,
+            isButtonDisabled: false
         });
         this.sharedWithIds = [];
         this.sharedWithNames = [];
@@ -172,7 +174,10 @@ export default class DayView extends Component {
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
         };
-        this.resetEventForm();
+
+        // the button dissabled untill the response comes
+        this.setState({ isButtonDisabled: true});
+        
         $.ajax({
             url: '/calendar/event/add',
             method: "POST",
@@ -447,8 +452,25 @@ export default class DayView extends Component {
         return "";
     }
 
-    removeUser(key){
+    removeUser(key, name){
+
+        // removing the mention text
+        const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
+        const rawContent = convertToRaw(contentState);
+        const plainText = contentState.getPlainText();
+
+        const startingAt = plainText.indexOf(name);
+        const endingAt = startingAt+name.length;
+        const newSelection = this.refs.EditorFieldValues.state.editorState.getSelection().merge({
+            anchorOffset: startingAt,
+            focusOffset: endingAt
+        });
+        const newContent = Modifier.removeRange(contentState, newSelection, 'backward');
+
+        const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, newContent);
+        this.refs.EditorFieldValues.setState({editorState});
         
+        // removing name and the id from the list.
         this.sharedWithIds.splice(key,1);
         this.sharedWithNames.splice(key,1);
         this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
@@ -476,11 +498,11 @@ export default class DayView extends Component {
 
         var arrEntries = selected._root.entries;
         var time = arrEntries[1][1];
-        let year = moment(this.state.currentDay).year();
-        let month = moment(this.state.currentDay).month();
-        let date = moment(this.state.currentDay).day();
-        let timeWithDay = year+'/'+month+'/'+date+' '+time;
-        this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
+        // let year = moment(this.state.currentDay).year();
+        // let month = moment(this.state.currentDay).month();
+        // let date = moment(this.state.currentDay).day();
+        // let timeWithDay = year+'/'+month+'/'+date+' '+time;
+        this.setState({ defaultEventTime: time });
     }
 
     closeModal() {
@@ -496,7 +518,7 @@ export default class DayView extends Component {
         let shared_with_list = [];
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
-                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
+                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
             });
         } else {
             shared_with_list = <span className="user-label">Only me</span>
@@ -633,7 +655,7 @@ export default class DayView extends Component {
                                                 </li>
                                                 <li>
                                                     { this.state.editOn == false ?
-                                                        <button className="menu-ico-txt btn" onClick={this.addEvent}>
+                                                        <button className="menu-ico-txt btn" disabled={this.state.isButtonDisabled} onClick={this.addEvent}>
                                                             <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
                                                         </button>
                                                         :

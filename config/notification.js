@@ -11,5 +11,10 @@ GLOBAL.Notifications = {
     CALENDAR_SCHEDULE_TIME_CHANGED:"calendar_schedule_time_changed",
     CALENDAR_SCHEDULE_CARRIED_NEXT_DAY:"calendar_schedule_carried_next_day",
     SHARE_FOLDER:"share_folder",
-    SHARE_FOLDER_RESPONSE:"share_folder_response"
+    SHARE_FOLDER_RESPONSE:"share_folder_response",
+    SHARE_GROUP:"share_group",
+    SHARE_GROUP_RESPONSE:"share_group_response",
+    SHARE_GROUP_NOTEBOOK:"share_group_notebook",
+    ADD_GROUP_POST:"add_group_post"
+
 };

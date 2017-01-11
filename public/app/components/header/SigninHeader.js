@@ -11,6 +11,7 @@ import LogoutButton from '../../components/elements/LogoutButton';
 import Session from '../../middleware/Session';
 import Chat from '../../middleware/Chat';
 import Lib from '../../middleware/Lib';
+import CallCenter from '../../middleware/CallCenter';
 
 export default class Header extends React.Component {
 
@@ -107,7 +108,8 @@ export class ConversationList extends React.Component{
         this.state ={
             conversations : []
         };
-        this.b6 = Chat.b6;
+        this.b6 = CallCenter.b6;
+        //CallCenter.initBit6();
         this.initChat(this.b6);
         this.unreadConversationCount = [];
         this.unreadConversationTitles = [];

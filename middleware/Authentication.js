@@ -4,8 +4,6 @@
 
 
 exports.Authentication= function(req,res,next){
-
-
 	/**
 	 * Pass public URLs from the route
 	 */

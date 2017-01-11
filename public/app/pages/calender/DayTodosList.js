@@ -18,7 +18,7 @@ export default class DayTodosList extends React.Component {
 		};
 	}
 
-    render() {
+	render() {
 
 		let _this = this;
 		let items = this.props.events.map(function(event,key){
@@ -39,14 +39,8 @@ export default class DayTodosList extends React.Component {
 			let ownerString = '';
 			let acceptedClass = 'event-description';
 			if(event.user_id ==  _this.state.user.id) {
-                acceptedClass = 'event-description accepted';
-            }
-
-            if(event.user_id != _this.state.user.id) {
-                ownerString = <span className='selected-people'>{event.owner_name}{event.shared_users.length > 0 ? ', ' : ''}</span>
-            } else {
-                ownerString = <span className='selected-people'>me{event.shared_users.length > 0 ? ', ' : ''}</span>
-            }
+				acceptedClass = 'event-description accepted';
+			}
 
 			if(event.shared_users.length > 0 ) {
 				
@@ -54,14 +48,18 @@ export default class DayTodosList extends React.Component {
 					if(event.user_id ==  _this.state.user.id || (user.shared_status == 3 &&_this.state.user.id == user.id )) {
 						acceptedClass = 'event-description accepted';
 					}
-                    if(user.shared_status == 2) {
-                        return null;
-                    }
-
+					if(user.shared_status == 2) {
+						return null;
+					}
 					return <span className={user.shared_status == 3 ? 'selected-people' : 'people-list'} key={userKey}>
 								{user.name}{userKey+1 == event.shared_users.length ? '' : ', '}
 							</span>;
 				});
+				if(event.user_id != _this.state.user.id) {
+					ownerString = <span className='selected-people'>{event.owner_name}{event.shared_users.length > 0 ? ', ' : ''}</span>
+				} else {
+					ownerString = <span className='selected-people'>me{event.shared_users.length > 0 ? ', ' : ''}</span>
+				}
 			} else {
 				usersString = <span className="people-list" >Only me</span>
 			}

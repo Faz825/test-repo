@@ -7,7 +7,7 @@ import Session from '../../middleware/Session';
 import moment from 'moment-timezone';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw} from 'draft-js';
+import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw, Modifier} from 'draft-js';
 import Socket  from '../../middleware/Socket';
 
 import EditorField from './EditorField';
@@ -32,7 +32,8 @@ export default class WeekDayEventPopUp extends React.Component {
             showUserPanel : '',
             showUserPanelWindow : false,
             msgOn : false,
-            errorMsg : ''
+            errorMsg : '',
+            isButtonDisabled : false
         }
 
         this.loggedUser = user;
@@ -80,7 +81,25 @@ export default class WeekDayEventPopUp extends React.Component {
       return "";
     }
 
-    removeUser(key){
+    removeUser(key, name){
+
+        // removing the mention text
+        const contentState = this.editor.state.editorState.getCurrentContent();
+        const rawContent = convertToRaw(contentState);
+        const plainText = contentState.getPlainText();
+
+        const startingAt = plainText.indexOf(name);
+        const endingAt = startingAt+name.length;
+        const newSelection = this.editor.state.editorState.getSelection().merge({
+            anchorOffset: startingAt,
+            focusOffset: endingAt
+        });
+        const newContent = Modifier.removeRange(contentState, newSelection, 'backward');
+
+        const editorState = EditorState.push(this.editor.state.editorState, newContent);
+        this.editor.setState({editorState});
+
+
         this.sharedWithIds.splice(key,1);
         this.sharedWithNames.splice(key,1);
         this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
@@ -175,6 +194,9 @@ export default class WeekDayEventPopUp extends React.Component {
             shared_users : sharedUsers,
         };
 
+        // the button dissabled untill the response comes
+        this.setState({ isButtonDisabled: true});
+
         $.ajax({
             url: '/calendar/event/add',
             method: "POST",
@@ -184,6 +206,10 @@ export default class WeekDayEventPopUp extends React.Component {
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
+
+                // the button dissabled untill the response comes
+                this.setState({ isButtonDisabled: false});
+
                 const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
                 this.editor.setState({editorState});
                 this.props.handleClose();
@@ -252,7 +278,7 @@ export default class WeekDayEventPopUp extends React.Component {
         let _this = this;
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
-                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{_this.removeUser(key)}}></i></span>
+                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{_this.removeUser(key, name)}}></i></span>
             });
         } else {
             shared_with_list = <span className="user-label">Only me</span>
@@ -355,7 +381,7 @@ export default class WeekDayEventPopUp extends React.Component {
 
                                         </li>
                                         <li>
-                                            <button className="menu-ico-txt btn" onClick={this.addEvent}>
+                                            <button className="menu-ico-txt btn"  disabled={this.state.isButtonDisabled} onClick={this.addEvent}>
                                                 <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
                                             </button>
                                         </li>

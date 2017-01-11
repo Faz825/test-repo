@@ -24,6 +24,7 @@ import DocIndex from './pages/doc/Index';
 import NotificationsIndex from './pages/notifications/Index';
 import WorkmodeIndex from './pages/workmode/Index';
 import MutualConnections  from './pages/connection/MutualConnections';
+import GroupsIndex from './pages/groups/Index';
 
 
 let rootRoute =(
@@ -79,6 +80,7 @@ let rootRoute =(
 		 */
 
         <Route name="notes" path="/notes" component={NotesIndex}/>
+        <Route name="notes" path="/notes/:name" component={NotesIndex}/>
 
         /**
 		 * Notifications
@@ -103,6 +105,12 @@ let rootRoute =(
 		 */
 
         <Route name="callcenter" path="/callcenter" component={CallcenterIndex}/>
+
+        /**
+         * Groups
+         */
+
+        <Route name="groups" path="/groups" component={GroupsIndex}/>
 
         /**
 		 * Workmode

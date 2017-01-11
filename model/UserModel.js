@@ -15,7 +15,7 @@ var mongoose = require('mongoose'),
  */
 GLOBAL.UserConfig = {
     ES_INDEX: "idx_usr"
-}
+};
 /**
  * Date Schema
  */
@@ -35,7 +35,7 @@ var DateObject = {
         trim: true,
         default: 0
     }
-}
+};
 /**
  * Education information
  */
@@ -195,7 +195,7 @@ var UserSchema = new Schema({
         default: null
     },
 
-    onlineMode: {type: String, required: true, default: 1},
+    onlineMode: {type: Number, required: true},
 
     created_at: {
         type: Date
@@ -229,7 +229,7 @@ UserSchema.pre('save', function (next) {
  * Create User
  */
 UserSchema.statics.create = function (UserData, callBack) {
-
+    var _this = this;
 
     var newUser = new this();
     newUser.first_name = UserData.first_name;
@@ -240,6 +240,8 @@ UserSchema.statics.create = function (UserData, callBack) {
     newUser.status = UserData.status;
     newUser.secretary = UserData.secretary;
     newUser.user_name = UserData.user_name;
+    newUser.onlineMode = _this.modes.ONLINE;
+
     newUser.save(function (err, resultSet) {
 
         if (!err) {
@@ -261,9 +263,7 @@ UserSchema.statics.create = function (UserData, callBack) {
             console.log(err)
             callBack({status: 400, error: err});
         }
-
     });
-
 };
 
 /**
@@ -310,8 +310,6 @@ UserSchema.statics.findUser = function (criteria, callBack) {
             callBack({status: 400, error: err});
         }
     });
-
-
 };
 /**
  * Add Secretary for the user
@@ -977,7 +975,8 @@ UserSchema.statics.formatUser = function (userObject, showOptions) {
             dob: userObject.dob,
             country: userObject.country,
             user_name: userObject.user_name,
-            introduction: userObject.introduction
+            introduction: userObject.introduction,
+            onlineMode:userObject.onlineMode
         };
         for (var i = 0; i < userObject.working_experiences.length; i++) {
             if (userObject.working_experiences[i].is_current_work_place) {
@@ -1377,7 +1376,6 @@ UserSchema.statics.getApiVerification = function (data, callback) {
 
 };
 
-
 UserSchema.statics.getSenderDetails = function (related_senders, callBack) {
     var _this = this;
     var _async = require('async');
@@ -1418,6 +1416,5 @@ UserSchema.statics.modes = {
     OFFLINE   : 2,
     WORK_MODE : 3
 };
-
 
 mongoose.model('User', UserSchema);
