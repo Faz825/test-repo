@@ -315,41 +315,50 @@ describe('UserController', function () {
                 });
         });*/
 
-        it('retrieveWorkExperience', function (done) {
-            agent.get('/work-experiences/' + user.user_name)
-                .end(function (err, res) {
-                    console.log(res.body)
-                    work = res.body.user.working_experiences[0];
-                    expect(res.body.status.code).to.equal(200);
-                    expect(res.body).to.have.property('user');
-                    expect(res.body.user).not.to.be.empty;
-                    expect(res.body.user).to.have.property('working_experiences');
-                    done();
-                });
-        });
+        //it('retrieveWorkExperience', function (done) {
+        //    agent.get('/work-experiences/' + user.user_name)
+        //        .end(function (err, res) {
+        //            work = res.body.user.working_experiences[0];
+        //            expect(res.body.status.code).to.equal(200);
+        //            expect(res.body).to.have.property('user');
+        //            expect(res.body.user).not.to.be.empty;
+        //            expect(res.body.user).to.have.property('working_experiences');
+        //            done();
+        //        });
+        //});
 
         //it('updateWorkExperience', function (done) {
         //    agent.post('/work-experience/update')
         //        .send({
-        //            school: work.exp_id,
+        //            exp_id: work.exp_id,
+        //            company_name: "E25M",
+        //            title: "SE",
+        //            location: "Colombo",
         //            fromYear: "2007",
         //            fromMonth: "10",
         //            toYear: '2010',
         //            toMonth: '12',
         //            is_current_work_place: true,
-        //            currentPlc: 'E25M',
-        //            description: 'testing',
-        //            company_name: "E25M",
-        //            title: "SE",
-        //            location: "Colombo",
-        //            edu_id: education._id
+        //            description: 'testing'
         //        })
         //        .end(function (err, res) {
         //            expect(res.body.status.code).to.equal(200);
         //            done();
         //        });
         //});
+
+        //it('doMobileApiSignin', function(done){
+        //    agent.post('/doSignin/mob/')
+        //        .send({uname: 'ruzan+114@eight25media.com', password: '1234567'})
+        //        .end(function (err, res) {
+        //            expect(res.body.status.code).to.equal(200);
+        //            expect(res.body).to.have.property('user');
+        //            expect(res.body.user).not.to.be.empty;
+        //            done();
+        //        });
         //
+        //});
+
         //it('updateIntroduction', function (done) {
         //    agent.post('/introduction/update')
         //        .send({introText: 'sample intro text'})
@@ -358,7 +367,7 @@ describe('UserController', function () {
         //            done();
         //        });
         //});
-        //
+
         //it('retrieveIntroduction', function (done) {
         //    agent.get('/introduction/' + user.user_name)
         //        .set({'uname': user.user_name})
@@ -370,18 +379,36 @@ describe('UserController', function () {
         //            done();
         //        });
         //});
-        //
+
         //it('getUserSuggestions', function (done) {
-        //    agent.get('/user/get-user-suggestions/' + user.user_name)
-        //        .set({'name': user.user_name})
+        //    agent.get('/user/get-user-suggestions/an')
         //        .end(function (err, res) {
         //            expect(res.body.status.code).to.equal(200);
         //            expect(res.body).to.have.property('suggested_users');
         //            expect(res.body.suggested_users).to.be.an('array');
-        //            //expect(res.body.suggested_users).not.to.be.empty;
         //            done();
         //        });
         //});
+
+        it('getNotesSharedUsers', function (done) {
+            agent.get('/get-connected-users/5791c78d936774c249b86d09/an')
+                .end(function (err, res) {
+                    expect(res.body.status.code).to.equal(200);
+                    expect(res.body).to.have.property('users');
+                    expect(res.body.users).to.be.an('array');
+                    done();
+                });
+        });
+
+        it('getFolderUsers', function (done) {
+            agent.get('/get-folder-users/5846289a63fd10f70ce7c3e8/anu')
+                .end(function (err, res) {
+                    expect(res.body.status.code).to.equal(200);
+                    expect(res.body).to.have.property('users');
+                    expect(res.body.users).to.be.an('array');
+                    done();
+                });
+        });
 
     });
 
