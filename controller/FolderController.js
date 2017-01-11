@@ -70,6 +70,8 @@ var FolderController ={
                                 folder_user:resultSet.folders[0].user_id,
                                 folder_shared_users:resultSet.folders[0].shared_users,
                                 folder_updated_at:resultSet.folders[0].updated_at,
+                                folder_type:resultSet.folders[0].folder_type,
+                                folder_group_id:resultSet.folders[0].folder_group_id,
                                 owned_by: 'me',
                                 documents:[]
                             };
@@ -116,7 +118,9 @@ var FolderController ={
                         color:req.body.folder_color,
                         isDefault:req.body.isDefault,
                         user_id:Util.getCurrentSession(req).id,
-                        shared_users:sharedUsers
+                        shared_users:sharedUsers,
+                        folder_type:req.body.folder_type,
+                        group_id:req.body.group_id
                     };
 
                     Folders.addNewFolder(_folderrr,function(resultSet){
@@ -129,6 +133,8 @@ var FolderController ={
                                 folder_user:resultSet.folder.user_id,
                                 folder_shared_users:resultSet.folder.shared_users,
                                 folder_updated_at:resultSet.folder.updated_at,
+                                folder_type:resultSet.folder_type,
+                                folder_group_id:resultSet.folder_group_id,
                                 owned_by: 'me',
                                 documents:[]
                             };
