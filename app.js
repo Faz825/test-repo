@@ -29,7 +29,6 @@ Clusters.init();
 GLOBAL.CalendarEventHandler = require('./middleware/CalendarEventHandler');
 CalendarEventHandler.init();
 
-
 var app = express();
 
 // view engine setup
@@ -44,8 +43,6 @@ app.use(bodyParser.urlencoded({ extended: true,limit: '100mb' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
 app.use(session({
   store: new RedisStore({
     host: Config.CACHE_HOST,
@@ -57,7 +54,6 @@ app.use(session({
     resave: true
 }));
 
-
 require('./core/model');
 var routes = require('./routes/route');
 var testRoutes = require('./routes/test');
@@ -68,9 +64,6 @@ app.use('/', reactRoutes);
 app.use('/', routes);
 app.use('/test', testRoutes);
 app.use('/api', apiRoutes);
-
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -106,6 +99,5 @@ app.use(function(err, req, res, next) {
 //ES Connection Update - init
 GLOBAL.ESUpdateHandler = require('./middleware/ESUpdateHandler');
 ESUpdateHandler.init();
-
 
 module.exports = app;
