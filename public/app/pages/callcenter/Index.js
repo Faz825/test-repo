@@ -288,7 +288,7 @@ export default class Index extends React.Component {
         ];
 
         $.ajax({
-            url: '/call/get-records',
+            url: '/contacts/all',
             method: "GET",
             dataType: "JSON",
             headers: {'prg-auth-header': this.state.loggedUser.token}
@@ -605,22 +605,32 @@ export default class Index extends React.Component {
     attachCallEvents(c) {
         // Call progress
         c.on('progress', function () {
+            console.log('progress');
+            console.log(c);
             // TODO show call progress details in popup
         });
         // Number of video feeds/elements changed
         c.on('videos', function () {
+            console.log('video');
+            console.log(c);
             // TODO show video call details in popup
         });
         // Call answered
         c.on('answer', function () {
+            console.log('answered');
+            console.log(c);
             // TODO show timer , call buttons
         });
         // Error during the call
         c.on('error', function () {
+            console.log('error');
+            console.log(c);
             // TODO show call error in popup
         });
         // Call ended
         c.on('end', function () {
+            console.log('end');
+            console.log(c);
             // TODO show call end details in popup
         });
     }
