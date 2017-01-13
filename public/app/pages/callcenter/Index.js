@@ -288,7 +288,7 @@ export default class Index extends React.Component {
         ];
 
         $.ajax({
-            url: '/contacts/all',
+            url: '/call/get-records',
             method: "GET",
             dataType: "JSON",
             headers: {'prg-auth-header': this.state.loggedUser.token}
