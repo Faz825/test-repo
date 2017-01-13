@@ -1,28 +1,24 @@
-/**
- * Created by gihan on 12/8/16.
- */
-
 import React from 'react';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Session from '../../middleware/Session';
 import CallCenter from '../../middleware/CallCenter';
+import IncomingCall from './IncomingCall';
 import CallModel from './CallModel';
+import {CallType} from '../../config/CallcenterStats';
 
 export default class CallHandler extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            contacts: [],
-            incoming_call: false,
-            ongoing_call: false
+            loggedUser: Session.getSession('prg_lg'),
+            targetUser: null,
+            inComingCall: false,
+            inProgressCall: false,
+            callMode: CallType.AUDIO,
+            minimizeBar: false,
+            bit6Call: null
         };
-
-        this.loggedUser = Session.getSession('prg_lg');
-
-        this.unreadCount = 0;
-        this.conv_ids = [];
-        this.convUsers = [];
-        this.quickChatUsers = [];
-        this.callerProfile = [];
 
         this.loadMyConnections();
 
@@ -32,29 +28,16 @@ export default class CallHandler extends React.Component {
         }
     }
 
-    componentDidMount() {
-        console.log("CallHandler Rendering done");
-    }
-
     initCall(b6) {
         let _this = this;
 
-        // Incoming call from another user
         b6.on('incomingCall', function (c) {
             _this.onIncomingCall(c, b6);
         });
 
-        b6.on('video', function (v, c, op) {
-            _this.onVideoCall(v, c, op);
+        b6.on('video', function (v, d, op) {
+            _this.onVideoCall(v, d, op);
         });
-    }
-
-    onMinimizePopup() {
-        this.setState({inCall: false, minimizeBar: true});
-    }
-
-    onPopupClose() {
-        this.setState({inCall: false, minimizeBar: false});
     }
 
     // Let's say you want to display the video elements in DOM element '#container'
@@ -63,8 +46,10 @@ export default class CallHandler extends React.Component {
     // d - Dialog - call controller. null for a local video feed
     // op - operation. 1 - add, 0 - update, -1 - remove
     onVideoCall(v, d, op) {
+        console.log("====== video call ======");
+
         // TODO Please change the container name for popup container
-        var vc = $('#container');
+        var vc = $('#webcamStage');
         if (op < 0) {
             vc[0].removeChild(v);
         }
@@ -73,56 +58,36 @@ export default class CallHandler extends React.Component {
             vc.append(v);
         }
         // Total number of video elements (local and remote)
-        // var n = vc[0].children.length;
+        var n = vc[0].children.length;
         // Display the container if we have any video elements
-        /*  if (op != 0) {
-         vc.toggle(n > 0);
-         }*/
+        if (op != 0) {
+            vc.toggle(n > 0);
+        }
     }
 
     onIncomingCall(c, b6) {
-        console.log("======incomingCall======");
+        let _blockCall = this.checkWorkMode();
 
-        this.setState({incoming_call: true});
+        if (!_blockCall) {
+            console.log("Incoming call");
+            console.log(c);
 
-        console.log(this.state.incoming_call);
+            let _callType = CallCenter.getCallType(c);
 
-        /*  var _blockCall = checkWorkMode();
-         console.log("_blockCall ==> " + _blockCall);
+            console.log(_callType);
 
-         if (!_blockCall) {
+            // Get caller details
+            // let cf = b6.getNameFromIdentity(c.other);
+            // let title_array = cf.split('proglobe');
+            // let title = title_array[1];
 
-         var cf = b6.getNameFromIdentity(c.other);
+            this.setState({inComingCall: true, callMode: _callType, bit6Call: c});
 
-         var title_array = cf.split('proglobe');
-         var title = title_array[1];
-
-         this.loadCallerProfile(title);
-
-         this.loadAnswerCallPopUp(c);
-
-         } else {
-
-         console.log("Call blocked in work mode. Informing caller via messaging");
-         this.hangupCall();
-         this.sendCallBlockedMessage(c, b6);
-
-         }*/
-    }
-
-    callPopup(oTargetUser) {
-        return (
-            <div>
-                {this.state.ongoing_call &&
-                <ModalContainer zIndex={9999}>
-                    <ModalDialog className="modalPopup">
-                        <CallModel closePopup={this.onPopupClose.bind(this)}  loggedUser={this.state.loggedUser} tagetUser={oTargetUser}
-                                   minimizePopup={this.onMinimizePopup.bind(this)}/>
-                    </ModalDialog>
-                </ModalContainer>
-                }
-            </div>
-        );
+        } else {
+            console.log("Call blocked in work mode. Informing caller via messaging");
+            this.hangupCall();
+            this.sendCallBlockedMessage(c, b6);
+        }
     }
 
     sendCallBlockedMessage(c, b6) {
@@ -159,7 +124,7 @@ export default class CallHandler extends React.Component {
             url: '/get-profile/' + title,
             method: "GET",
             dataType: "JSON",
-            headers: {'prg-auth-header': this.loggedUser.token}
+            headers: {'prg-auth-header': this.state.loggedUser.token}
         }).done(function (data) {
             if (data.status.code == 200 && data.profile_data != null) {
                 this.callerProfile = data.profile_data;
@@ -184,26 +149,6 @@ export default class CallHandler extends React.Component {
         return _messages;
     }
 
-    startOutgoingCall(to, video) {
-        const audioCall = true;
-        const screenCall = false;
-
-        // Outgoing call params
-        const opts = {
-            audio: audioCall,
-            video: video,
-            screen: screenCall
-        };
-
-        // Start the outgoing call
-        var c = this.b6.startCall(to, opts);
-        this.attachCallEvents(c);
-
-        c.connect(opts);
-
-        console.log("startOutgoingCall")
-    };
-
     // Attach call state events to a RtcDialog
     attachCallEvents(c) {
         // Call progress
@@ -216,6 +161,7 @@ export default class CallHandler extends React.Component {
         });
         // Call answered
         c.on('answer', function () {
+            console.log('answered');
             // TODO show timer , call buttons
         });
         // Error during the call
@@ -233,7 +179,7 @@ export default class CallHandler extends React.Component {
             url: '/connection/me',
             method: "GET",
             dataType: "JSON",
-            headers: {'prg-auth-header': this.loggedUser.token}
+            headers: {'prg-auth-header': this.state.loggedUser.token}
         }).done(function (data) {
             if (data.status.code == 200) {
                 this.my_connections = data.my_con;
@@ -245,11 +191,6 @@ export default class CallHandler extends React.Component {
     notificationDomIdForConversation(c) {
         return '#notification__' + c.domId();
     }
-
-    // Call when Answer button click
-    answerCall(c, opts) {
-        c.connect(opts);
-    };
 
     // Call when Reject button click
     rejectCall(c) {
@@ -270,49 +211,59 @@ export default class CallHandler extends React.Component {
         }
     };
 
-    fakeCall() {
-        if (this.loggedUser.user_name == 'darshana.peiris.79159') {
-            console.log('this is : darshana.peiris.79159');
-            this.startOutgoingCall('usr:proglobehasantha.nimesh.91199', false);
-        }
+    answerAudioMode() {
+        this.setState({inComingCall: false, inProgressCall: true, audioMode: false, videoMode: true});
+
+        let c = this.state.bit6Call;
+        c.connect({audio: true, video: false});
+    }
+
+    answerVideoMode() {
+        this.setState({inComingCall: false, inProgressCall: true, audioMode: true, videoMode: false});
+
+        let c = this.state.bit6Call;
+        c.connect({audio: true, video: true});
+    }
+
+    onMinimizePopup() {
+        this.setState({inProgressCall: false, minimizeBar: true});
+    }
+
+    onPopupClose() {
+        this.setState({inProgressCall: false, minimizeBar: false});
+    }
+
+    componentDidMount() {
+        console.log("CallHandler Rendering done");
     }
 
     render() {
-        if (!this.state.incoming_call) {
-            return null;
-        } else if (this.state.incoming_call) {
+        if (this.state.inComingCall) {
             return (
-                <div className="modal" id="incomingCallAlert" tabIndex="1" role="dialog"
-                     aria-labelledby="myModalLabel"
-                     data-keyboard="false">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-body">
-                                <div className="alert fade in" id="incomingCall">
-                                    <img src="/images/default-profile-pic.png"
-                                         id="incoming_call_alert_other_profile_image"
-                                         className="img-circle img-custom-medium bottom-margin-20"/>
-                                    <h4 id="incomingCallFrom">User is calling...</h4>
-                                    <p>
-                                        <button type="button" className="btn btn-success income-call" id="answerVideo"
-                                                onClick={()=>this.answerVideo()}>Video
-                                        </button>
-                                        <button type="button" className="btn btn-success income-call" id="answerAudio"
-                                                onClick={()=>this.answerCall()}>Audio
-                                        </button>
-                                        <button type="button" className="btn btn-danger income-call" id="reject"
-                                                onClick={()=>this.reject()}>Reject
-                                        </button>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <IncomingCall
+                    callMode={this.state.callMode}
+                    answerAudio={this.answerAudioMode.bind(this)}
+                    answerVideo={this.answerVideoMode.bind(this)}
+                />
             )
-        } else if (this.state.ongoing_call) {
-            return (<CallModel></CallModel>);
-
+        } else if (this.state.inProgressCall) {
+            return (
+                <div>
+                    <ModalContainer zIndex={9999}>
+                        <ModalDialog className="modalPopup">
+                            <CallModel
+                                callMode={this.state.callMode}
+                                loggedUser={this.state.loggedUser}
+                                targetUser={this.state.loggedUser}
+                                closePopup={this.onPopupClose.bind(this)}
+                                minimizePopup={this.onMinimizePopup.bind(this)}
+                            />
+                        </ModalDialog>
+                    </ModalContainer>
+                </div>
+            );
+        } else {
+            return null;
         }
     }
 }
