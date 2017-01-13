@@ -22,6 +22,11 @@ GLOBAL.FolderSharedRequest = {
     REQUEST_ACCEPTED: 3
 };
 
+GLOBAL.FolderType = {
+    PERSONAL_FOLDER: 0,
+    GROUP_FOLDER: 1
+};
+
 
 var FolderSchema = new Schema({
     name:{
@@ -36,26 +41,15 @@ var FolderSchema = new Schema({
         type:Number,
         default:0
     },
-    isGrouped:{
+    type:{
         type:Number,
-        default:0
+        default: 0 /* 0 - PERSONAL_FOLDER, 1 - GROUP_FOLDER */
     },
-    group_data: [{
-        name: {
-            type: String,
-            default:null
-        },
-        group_id: {
-            type: Schema.ObjectId,
-            ref: 'Groups',
-            default:null
-        },
-        group_image:{
-            type:String,
-            trim:true,
-            default:null
-        }
-    }],
+    group_id:{
+        type: Schema.ObjectId,
+        ref: 'Groups',
+        default:null
+    },
     user_id:{
         type: Schema.ObjectId,
         ref: 'User',
@@ -117,8 +111,8 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
     _folder.isDefault  	= _data.isDefault;
     _folder.user_id		= _data.user_id;
     _folder.shared_users = _data.shared_users;
-    _folder.isGrouped = _data.isGrouped;
-    _folder.group_data = _data.group_data;
+    _folder.type = (_data.folder_type ? _data.folder_type : 0);
+    _folder.group_id = (_data.group_id ? _data.group_id : null);
 
     _folder.save(function(err,resultSet){
 
@@ -132,7 +126,8 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
                 folder_owner:resultSet.user_id,
                 folder_user:resultSet.user_id,
                 folder_updated_at:resultSet.updated_at,
-                folder_shared_mode:FolderSharedMode.VIEW_UPLOAD
+                folder_type:resultSet.type,
+                folder_group_id:resultSet.group_id
             };
 
             _this.addFolderToCache(_esFolder, function(err){
@@ -164,7 +159,9 @@ FolderSchema.statics.addFolderToCache = function(data, callBack){
         folder_color:data.folder_color,
         folder_owner:data.folder_owner,
         folder_updated_at:data.folder_updated_at,
-        folder_shared_mode:data.folder_shared_mode
+        folder_shared_mode:data.folder_shared_mode,
+        folder_type:data.type,
+        folder_group_id:data.group_id
     };
     var _type = "";
 

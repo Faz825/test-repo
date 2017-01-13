@@ -72,12 +72,12 @@ var TimeLinePostHandler ={
 
             },
             function subscribeToPost(callBack){
-                
+
                 var _data = {
                     user_id:_post.created_by,
                     post_id:_post.post_id
                 };
-                
+
                 // if the post is a group post, all the group members needed to be subscribed.
                 if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST && _post.visible_users.length > 0){
 
@@ -159,7 +159,7 @@ var TimeLinePostHandler ={
             },
             function notifyingUsers(notification_id, callBack) {
 
-                if (typeof notification_id != 'undefined' && _post.visible_users..length > 0 && parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST) {
+                if (typeof notification_id != 'undefined' && _post.visible_users.length > 0 && parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST) {
 
                     var _data = {
                         notification_id: notification_id,
@@ -313,7 +313,7 @@ var TimeLinePostHandler ={
                     user_id:_post.created_by,
                     post_id:_post.post_id
                 };
-                
+
                 // if the post is a group post, all the group members needed to be subscribed.
                 if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST && _post.visible_users.length > 0){
 

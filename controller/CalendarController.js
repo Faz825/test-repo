@@ -126,16 +126,28 @@ var CalendarController = {
                         sharedUserList.push(obj);
                     }
                 }
+                var eventType = CalendarTypes.EVENT;
+                switch(req.body.type) {
+                    case 'todo':
+                        eventType = CalendarTypes.TODO;
+                        break;
+                    case 'task':
+                        eventType = CalendarTypes.TASK;
+                        break;
+                    default:
+                        eventType = CalendarTypes.EVENT;
+                }
 
                 var eventData = {
                     user_id: UserId,
                     description: req.body.description,
                     plain_text: req.body.plain_text,
-                    type: (req.body.type == "todo" ? CalendarTypes.TODO : CalendarTypes.EVENT),
+                    type: eventType,
                     start_date: req.body.apply_date,
                     event_time: req.body.event_time,
                     event_timezone: req.body.event_timezone,
-                    shared_users: sharedUserList
+                    shared_users: sharedUserList,
+                    priority:  (typeof req.body.priority != 'undefined' ? req.body.priority : CalenderPriority.LOW)
                 };
 
                 CalendarEvent.addNew(eventData, function (event) {

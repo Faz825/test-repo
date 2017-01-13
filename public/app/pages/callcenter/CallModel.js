@@ -107,7 +107,6 @@ export class UserBlock extends React.Component {
         this.state = {
             userName: this.props.loggedUser.user_name
         }
-
     }
 
     onUserClick(user) {

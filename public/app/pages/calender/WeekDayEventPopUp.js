@@ -32,7 +32,8 @@ export default class WeekDayEventPopUp extends React.Component {
             showUserPanel : '',
             showUserPanelWindow : false,
             msgOn : false,
-            errorMsg : ''
+            errorMsg : '',
+            isButtonDisabled : false
         }
 
         this.loggedUser = user;
@@ -193,6 +194,9 @@ export default class WeekDayEventPopUp extends React.Component {
             shared_users : sharedUsers,
         };
 
+        // the button dissabled untill the response comes
+        this.setState({ isButtonDisabled: true});
+
         $.ajax({
             url: '/calendar/event/add',
             method: "POST",
@@ -202,6 +206,10 @@ export default class WeekDayEventPopUp extends React.Component {
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
+
+                // the button dissabled untill the response comes
+                this.setState({ isButtonDisabled: false});
+
                 const editorState = EditorState.push(this.editor.state.editorState, ContentState.createFromText(''));
                 this.editor.setState({editorState});
                 this.props.handleClose();
@@ -373,7 +381,7 @@ export default class WeekDayEventPopUp extends React.Component {
 
                                         </li>
                                         <li>
-                                            <button className="menu-ico-txt btn" onClick={this.addEvent}>
+                                            <button className="menu-ico-txt btn"  disabled={this.state.isButtonDisabled} onClick={this.addEvent}>
                                                 <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
                                             </button>
                                         </li>

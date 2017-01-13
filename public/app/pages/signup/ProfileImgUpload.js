@@ -42,7 +42,40 @@ export default class ProfileImgUpload extends React.Component{
                 if (data.status.code == 200) {
 					_this.setState({loadingBarIsVisible : false});
                     Session.createSession("prg_lg", data.user);
-                    location.href ="/";
+
+                    if(typeof data.profile_image != 'undefined'){
+
+                        var _pay_load = {};
+                        _pay_load['__content'] = "";
+                        _pay_load['__hs_attachment'] = true;
+                        _pay_load['__post_type'] = "PP";//profile update post
+                        _pay_load['__profile_picture'] = data.profile_image;
+
+                        $.ajax({
+                            url: '/post/profile-image-post',
+                            method: "POST",
+                            dataType: "JSON",
+                            headers: {'prg-auth-header': Session.getSession('prg_lg')},
+                            data: _pay_load,
+                            cache: false,
+                            contentType: "application/x-www-form-urlencoded",
+                            success: function (data, text) {
+                                if (data.status.code == 200) {
+                                    location.href ="/";
+                                }
+                            },
+                            error: function (request, status, error) {
+                                console.log(request.responseText);
+                                console.log(status);
+                                console.log(error);
+                            }
+                        });
+
+                    } else{
+                        location.href ="/";
+                    }
+
+
                 }
             },
             error: function (request, status, error) {

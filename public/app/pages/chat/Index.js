@@ -6,6 +6,7 @@ import ReactDom from 'react-dom';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Session from '../../middleware/Session';
 import Chat from '../../middleware/Chat';
+import CallCenter from '../../middleware/CallCenter';
 import {Alert} from '../../config/Alert';
 import Lib from '../../middleware/Lib';
 import Autosuggest from 'react-autosuggest';
@@ -54,7 +55,7 @@ export default class Index extends React.Component{
             uri:'usr:proglobe'+this.getUrl()
         };
 
-        this.b6 = Chat.b6;
+        this.b6 = CallCenter.b6;
         this.convUsers = [];
         this.conversations = [];
         this.unreadConversations = [];
