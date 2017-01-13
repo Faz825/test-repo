@@ -922,3 +922,21 @@ body .modal-backdrop{
     background-color: rgba(0,0,0,.5);
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
+
+/**
+ * group custome styles
+ */
+.popup-holder .create-group-popup .model-body .upload-btn.btn {
+    border-color: #ccc;
+    color: #333333;
+    position: relative;
+    overflow: hidden;
+}
+.popup-holder .create-group-popup .model-body .upload-btn .imageSelector a {
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}

@@ -16,7 +16,6 @@ var TimeLinePostHandler ={
      * @param callBack
      */
     addNewPost:function(postData,callBack){
-        console.log("TIMEL HAN 1111 ");
         var _async = require('async'),
             Post = require('mongoose').model('Post'),
             SubscribedPost = require('mongoose').model('SubscribedPost'),
@@ -57,7 +56,6 @@ var TimeLinePostHandler ={
                 }
             },
             function savePostInDb(callBack){
-                console.log("TIMEL HAN 333 ");
 
                 Post.addNew(_post,function(postData){
 

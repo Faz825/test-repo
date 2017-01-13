@@ -71,5 +71,7 @@ GLOBAL.Alert={
 
     GROUP_ID_EMPTY:"Group id is empty",
     GROUP_DESCRIPTION_EMPTY:"Group description field is empty",
-    GROUP_MEMBERS_EMPTY:"Group members field is empty"
+    GROUP_MEMBERS_EMPTY:"Group members field is empty",
+    GROUP_IMAGE_SUCCESS:"Group image uploaded successfully",
+    GROUP_IMAGE_ERROR:"Error in uploading the group image"
 };

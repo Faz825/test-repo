@@ -1933,8 +1933,8 @@ pre code {
 .container {
   margin-right: auto;
   margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 .container:before, .container:after {
   content: " ";
@@ -1945,25 +1945,25 @@ pre code {
 }
 @media (min-width: 768px) {
   .container {
-    width: 970px;
+    width: 744px;
   }
 }
 @media (min-width: 992px) {
   .container {
-    width: 970px;
+    width: 964px;
   }
 }
 @media (min-width: 1200px) {
   .container {
-    width: 1200px;
+    width: 924px;
   }
 }
 
 .container-fluid {
   margin-right: auto;
   margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 .container-fluid:before, .container-fluid:after {
   content: " ";
@@ -1974,8 +1974,8 @@ pre code {
 }
 
 .row {
-  margin-left: -15px;
-  margin-right: -15px;
+  margin-left: -12px;
+  margin-right: -12px;
 }
 .row:before, .row:after {
   content: " ";
@@ -1988,8 +1988,8 @@ pre code {
 .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
   position: relative;
   min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
@@ -3618,8 +3618,8 @@ select[multiple].input-lg,
   min-height: 27px;
 }
 .form-horizontal .form-group {
-  margin-left: -15px;
-  margin-right: -15px;
+  margin-left: -12px;
+  margin-right: -12px;
 }
 .form-horizontal .form-group:before, .form-horizontal .form-group:after {
   content: " ";
@@ -3636,7 +3636,7 @@ select[multiple].input-lg,
   }
 }
 .form-horizontal .has-feedback .form-control-feedback {
-  right: 15px;
+  right: 12px;
 }
 @media (min-width: 768px) {
   .form-horizontal .form-group-lg .control-label {
@@ -4688,8 +4688,8 @@ tbody.collapse.in {
 
 .navbar-collapse {
   overflow-x: visible;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 12px;
+  padding-left: 12px;
   border-top: 1px solid transparent;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   -webkit-overflow-scrolling: touch;
@@ -4740,8 +4740,8 @@ tbody.collapse.in {
 .container > .navbar-collapse,
 .container-fluid > .navbar-header,
 .container-fluid > .navbar-collapse {
-  margin-right: -15px;
-  margin-left: -15px;
+  margin-right: -12px;
+  margin-left: -12px;
 }
 @media (min-width: 768px) {
   .container > .navbar-header,
@@ -4790,7 +4790,7 @@ tbody.collapse.in {
 
 .navbar-brand {
   float: left;
-  padding: 15px 15px;
+  padding: 15px 12px;
   font-size: 18px;
   line-height: 20px;
   height: 50px;
@@ -4803,14 +4803,14 @@ tbody.collapse.in {
 }
 @media (min-width: 768px) {
   .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
-    margin-left: -15px;
+    margin-left: -12px;
   }
 }
 
 .navbar-toggle {
   position: relative;
   float: right;
-  margin-right: 15px;
+  margin-right: 12px;
   padding: 9px 10px;
   margin-top: 8px;
   margin-bottom: 8px;
@@ -4838,7 +4838,7 @@ tbody.collapse.in {
 }
 
 .navbar-nav {
-  margin: 7.5px -15px;
+  margin: 7.5px -12px;
 }
 .navbar-nav > li > a {
   padding-top: 10px;
@@ -4881,9 +4881,9 @@ tbody.collapse.in {
 }
 
 .navbar-form {
-  margin-left: -15px;
-  margin-right: -15px;
-  padding: 10px 15px;
+  margin-left: -12px;
+  margin-right: -12px;
+  padding: 10px 12px;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -4996,8 +4996,8 @@ tbody.collapse.in {
 @media (min-width: 768px) {
   .navbar-text {
     float: left;
-    margin-left: 15px;
-    margin-right: 15px;
+    margin-left: 12px;
+    margin-right: 12px;
   }
 }
 
@@ -5008,7 +5008,7 @@ tbody.collapse.in {
 
   .navbar-right {
     float: right !important;
-    margin-right: -15px;
+    margin-right: -12px;
   }
   .navbar-right ~ .navbar-right {
     margin-right: 0;
@@ -5473,8 +5473,8 @@ a.badge:hover, a.badge:focus {
 }
 .container .jumbotron, .container-fluid .jumbotron {
   border-radius: 6px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 .jumbotron .container {
   max-width: 100%;
@@ -10249,49 +10249,40 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/* 
-  Method to use:
-  @include @border {
-    border ($style,  $sides, $emptySides){
-  }
+/*
+	Method to use:
+	@include @border {
+		border ($style,  $sides, $emptySides){
+	}
 */
-/* 
-  Method to use:
-  @include @mixin {
-    content
-  }
+/*
+	Method to use:
+	@include @mixin {
+		content
+	}
 */
 header {
   background: #fff;
-  padding: 15px;
+  padding: 12px 12px 8px;
 }
 header .branding {
   float: left;
-  margin-right: 110px;
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  header .branding {
-    margin-right: 60px;
-  }
+  margin-right: 46px;
+  width: 238px;
 }
 header .search-holder {
   float: left;
   position: relative;
-  margin: 5px 96px 0 0;
-  width: 450px;
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  header .search-holder {
-    margin: 5px 42px 0 0;
-    width: 350px;
-  }
+  margin: 0 91px 0 0;
+  width: 350px;
 }
 header .search-holder .form-control {
   width: 100%;
-  height: 40px;
+  height: 32px;
   text-align: center;
   background: #f6f6f6;
   border: none;
+  font-size: 0.6875em;
   -webkit-box-shadow: inset 0px 1px 5px -1px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: inset 0px 1px 5px -1px rgba(0, 0, 0, 0.4);
   box-shadow: inset 0px 1px 5px -1px rgba(0, 0, 0, 0.4);
@@ -10313,29 +10304,24 @@ header .search-holder .fa-search {
   top: 11px;
   left: 38%;
   color: #838383;
-  font-size: 1em;
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  header .search-holder .fa-search {
-    left: 36%;
-  }
+  font-size: 0.75em;
 }
 header .notification-holder {
   float: left;
 }
 header .notification-holder .opt-holder {
-  margin-right: 20px;
+  margin-right: 13px;
   position: relative;
   float: left;
 }
 header .notification-holder .opt-holder .icon-holder {
-  width: 50px;
-  height: 50px;
+  width: 32px;
+  height: 32px;
   border: 1px solid #f7f7f7;
   border-radius: 999px;
   cursor: pointer;
   text-align: center;
-  padding: 10px;
+  padding: 3px;
 }
 header .notification-holder .opt-holder .notifi-alert-holder {
   position: absolute;
@@ -10346,24 +10332,19 @@ header .notification-holder .opt-holder .notifi-alert-holder .notifi-num {
   color: #fff;
   background: #f11379;
   border-radius: 999px;
-  padding: 2px 5px;
+  padding: 2px 4px;
   line-height: 1;
-  font-size: 0.75em;
+  font-size: 0.4875em;
   font-weight: 500;
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  header .notification-holder .opt-holder {
-    margin-right: 12px;
-  }
 }
 header .notification-holder .profile-header-thumb {
   float: left;
-  width: 55px;
-  height: 55px;
+  width: 36px;
+  height: 36px;
   border-radius: 999px;
   overflow: hidden;
   cursor: pointer;
-  margin: -3px 0 0 8px;
+  margin: -1px 0 0 4px;
 }
 
 .dashboard-container {
@@ -10531,7 +10512,7 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-header h2 {
   margin-top: 36px;
-  font-size: 2.1875em;
+  font-size: 1.875em;
   font-family: Pantra-Bold;
   text-transform: uppercase;
   letter-spacing: -2px;
@@ -10545,14 +10526,14 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-header .menu-bar .folder-type {
   position: relative;
   margin-top: 39px;
-  margin-left: 60px;
+  margin-left: 42px;
   float: left;
   cursor: pointer;
   text-align: center;
   letter-spacing: -1px;
 }
 .folder-container .folder-header .menu-bar .folder-type h4 {
-  font-size: 1.375em;
+  font-size: 1.155em;
   letter-spacing: -1px;
   font-weight: 400;
   color: #000000;
@@ -10562,10 +10543,10 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-header .menu-bar .folder-type.active .highlighter {
   position: absolute;
-  bottom: 0px;
-  left: -10%;
-  height: 4px;
-  width: 120%;
+  bottom: 4px;
+  left: -15%;
+  height: 3px;
+  width: 135%;
   background-color: #00a5ef;
 }
 .folder-container .folder-header .crt-folder {
@@ -10574,29 +10555,30 @@ header .notification-holder .profile-header-thumb {
   margin-right: 10px;
 }
 .folder-container .folder-header .crt-folder .btn-crt-folder {
-  padding: 9px 28px 9px 28px;
+  padding: 8px 20px;
   background-color: #00a5ef;
   color: #ffffff;
-  font-size: 0.875em;
+  font-size: 0.6875em;
 }
 .folder-container .folder-header .search-folder {
   position: relative;
   float: right;
   margin-top: 30px;
-  width: 150px;
+  width: 115px;
 }
 .folder-container .folder-header .search-folder .inner-addon i {
   position: absolute;
-  padding: 10px;
-  left: 29px;
+  padding: 11px;
+  left: 17px;
   font-weight: 400;
   pointer-events: none;
+  font-size: 0.75em;
 }
 .folder-container .folder-header .search-folder .inner-addon input {
   border-radius: 7px;
-  padding-left: 58px;
-  height: 40px;
-  font-size: 0.875em;
+  padding-left: 44px;
+  height: 35px;
+  font-size: 0.6875em;
 }
 .folder-container .folder-body .folder {
   margin-top: 12px;
@@ -10622,6 +10604,7 @@ header .notification-holder .profile-header-thumb {
   position: relative;
   z-index: 1;
   padding-left: 0px;
+  padding-right: 0px;
   background-color: #ffffff;
   border-radius: 8px 0px 0px 8px;
 }
@@ -10635,17 +10618,17 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay:nth-child(1) {
   width: 1px;
-  height: 93%;
-  top: 10px;
+  height: 90%;
+  top: 5%;
   left: 10px;
   opacity: 0.2;
   box-shadow: 2px 0 0 0 #000000;
   z-index: 2;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay:nth-child(2) {
-  width: 12px;
-  height: 41px;
-  top: 40px;
+  width: 10px;
+  height: 37px;
+  top: 35px;
   right: 0px;
   opacity: 0.7;
   border-radius: 5px 0px 0px 5px;
@@ -10654,7 +10637,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover {
   position: relative;
   overflow: hidden;
-  height: 260px;
+  height: 208px;
   z-index: 1;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .folder-overlay {
@@ -10670,7 +10653,7 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper {
   position: relative;
-  padding: 66px 0px 66px;
+  padding: 60px 0px;
   overflow: hidden;
   text-align: center;
   height: 100%;
@@ -10678,9 +10661,9 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper {
   position: relative;
   margin: 0px auto 0;
-  padding: 5px;
-  height: 100px;
-  width: 100px;
+  padding: 4px;
+  height: 88px;
+  width: 88px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper .logo-shader {
   position: absolute;
@@ -10704,14 +10687,14 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper .logo-wrapper img {
   position: relative;
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   z-index: 5;
   border-radius: 999px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
-  margin-top: 25px;
-  font-size: 1.125em;
+  margin-top: 20px;
+  font-size: 0.9925em;
   color: #ffffff;
   font-weight: 400;
   letter-spacing: -1px;
@@ -10743,19 +10726,20 @@ header .notification-holder .profile-header-thumb {
   padding: 0px 15px;
   overflow: hidden;
   background-color: #ffffff;
-  height: 260px;
+  height: 208px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
   overflow: hidden;
-  height: 230px;
+  height: 180px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
   position: relative;
   min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 12px;
+  padding-right: 12px;
   margin-top: 0px;
-  padding: 15px;
+  margin-bottom: 15px;
+  padding: 6px;
 }
 @media (min-width: 768px) {
   .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
@@ -10767,8 +10751,8 @@ header .notification-holder .profile-header-thumb {
   .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
     position: relative;
     min-height: 1px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }
 @media (min-width: 1024px) and (max-width: 1279px) and (min-width: 768px) {
@@ -10779,7 +10763,7 @@ header .notification-holder .profile-header-thumb {
 }
 
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(1), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(2), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(3), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(4), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5) {
-  margin-top: 15px;
+  margin-top: 10px;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5) {
@@ -10787,7 +10771,7 @@ header .notification-holder .profile-header-thumb {
   }
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item {
-  min-height: 180px;
+  min-height: 155px;
   border: 1px solid #e1e1e1;
   box-shadow: 1px 0 12px -8px #000000;
   background-size: cover;
@@ -10798,45 +10782,45 @@ header .notification-holder .profile-header-thumb {
   text-align: center;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file i {
-  margin-top: 56px;
+  margin-top: 40px;
   font-size: 1.25em;
   color: #838383;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file p {
   font-weight: 400;
-  margin: 18px 16px;
+  margin: 14px 5px;
   color: #000000;
-  font-size: 0.875em;
+  font-size: 0.828125em;
   line-height: 19px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper {
   color: #000000;
   border-bottom: 1px solid #dbdbdb;
-  margin: 12px 10px 0;
+  margin: 18px 10px 0;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper p {
-  font-size: 0.75em;
+  font-size: 0.685625em;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper .date-created {
   margin-left: 3px;
-  margin-top: 8px;
+  margin-top: -5px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .time-wrapper .time-created {
-  margin: -10px 0 10px 3px;
+  margin: -14px 0 10px 3px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .folder-title-holder {
-  padding: 10px 14px;
+  padding: 10px 12px;
   color: #000000;
   line-height: 18px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .folder-title-holder .folder-title {
   font-weight: 500;
-  font-size: 0.9375em;
+  font-size: 0.823125em;
   word-break: break-all;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .item-type {
   position: absolute;
-  bottom: 10px;
+  bottom: 14px;
   right: 13px;
   height: 36px;
   width: 29px;
@@ -10855,21 +10839,22 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
-  bottom: 12px;
-  right: 34px;
+  bottom: 8px;
+  right: 22px;
   height: 18px;
   cursor: pointer;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all p {
-  margin: -3px 5px 0px 0px;
+  margin: -1px 5px 0px 0px;
   float: right;
   text-transform: uppercase;
   font-weight: 500;
-  font-size: 0.875em;
+  font-size: 0.704375em;
   color: #000000;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all i {
   float: right;
+  font-size: 0.9375em;
   font-weight: 400;
   color: #00a5ef;
 }
@@ -10961,7 +10946,9 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-box > div.header {
   float: left;
-  width: 100%;
+  width: 77.5%;
+  margin: 5px 12%;
+  text-align: center;
   background: transparent !important;
   height: 40px;
 }
@@ -10972,34 +10959,23 @@ header .notification-holder .profile-header-thumb {
   vertical-align: middle;
 }
 .calender-container .calender-box > div.header > i {
-  float: left;
-  width: 40px;
-  font-size: 1.125em;
+  font-size: 0.80125em;
   font-weight: bold;
   position: relative;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
-  padding: 0 10px;
   cursor: pointer;
 }
 .calender-container .calender-box > div.header > i.fa-angle-left {
-  text-align: left;
+  float: left;
 }
 .calender-container .calender-box > div.header > i.fa-angle-right {
-  text-align: left;
-  margin-left: -40px;
-  text-align: right !important;
+  float: right;
 }
 .calender-container .calender-box > div.header > span {
-  float: left;
-  width: 100%;
-  text-transform: uppercase;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
-  padding-left: 50px;
-  margin-left: -40px;
   text-align: center;
-  padding-right: 40px;
   color: #273859;
 }
 .calender-container .calender-box > div.header > span.middle-month {
@@ -11016,15 +10992,19 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-box > div.week {
   float: left;
-  width: 100%;
+  width: 86%;
   border-top: solid 1px #dee6eb;
   background: white;
 }
 .calender-container .calender-box > div.week:first-child {
   border-top: none;
 }
+.calender-container .calender-box > div.week:last-child {
+  margin-bottom: 10px;
+}
 .calender-container .calender-box > div.week {
   border-top: solid 1px #dee6eb;
+  margin: 0px 8%;
 }
 .calender-container .calender-box > div.week > span.day {
   float: left;
@@ -11048,7 +11028,7 @@ header .notification-holder .profile-header-thumb {
   font-family: "Work Sans", sans-serif;
 }
 .calender-container .calender-box > div.week > span.day-names {
-  font-size: 1.05em;
+  font-size: 0.5725em;
   height: 30px;
 }
 .calender-container .calender-box > div.week > span.day:first-child {
@@ -11126,7 +11106,7 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .mini-calender-box.calender-box {
   border: solid 1px #CCC;
-  padding: 30px;
+  padding: 5px;
   border-radius: 10px;
 }
 .calender-container .mini-calender-box.calender-box .header {
@@ -11136,7 +11116,7 @@ header .notification-holder .profile-header-thumb {
   color: #00a6ef;
   font-family: "Work Sans", sans-serif;
   font-weight: 500;
-  font-size: 1.046875em;
+  font-size: 0.80125em;
 }
 .calender-container .mini-calender-box.calender-box .week {
   border-left: none;
@@ -11183,11 +11163,17 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-header h2 {
   margin-top: 33px;
-  font-size: 2.1875em;
+  font-size: 1.875em;
   font-family: Pantra-Bold;
   text-transform: uppercase;
-  letter-spacing: -2px;
+  letter-spacing: -1px;
   color: #000000;
+}
+.calender-container .calender-header .calender-tab-holder {
+  text-align: center;
+}
+.calender-container .calender-header .calender-tab-holder .inner-wrapper {
+  display: inline-block;
 }
 .calender-container .calender-header .calender-type {
   position: relative;
@@ -11195,29 +11181,27 @@ header .notification-holder .profile-header-thumb {
   float: left;
   cursor: pointer;
   text-align: center;
-  width: 90px;
-  height: 40px;
   background-color: #ffffff;
   border: 1px solid #bcbfbf;
   border-right: none;
 }
 .calender-container .calender-header .calender-type:nth-child(1) {
-  margin-left: 11%;
-  border-radius: 3px 0px 0px 3px;
+  border-radius: 5px 0px 0px 5px;
 }
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
   .calender-container .calender-header .calender-type:nth-child(1) {
     margin-left: 0px;
-    border-radius: 3px 0px 0px 3px;
+    border-radius: 5px 0px 0px 5px;
   }
 }
 .calender-container .calender-header .calender-type:last-child {
   border-right: 1px solid #bcbfbf;
-  border-radius: 0px 3px 3px 0px;
+  border-radius: 0px 5px 5px 0px;
 }
 .calender-container .calender-header .calender-type h4 {
-  margin-top: 13px;
-  font-size: 0.75em;
+  margin: 0;
+  padding: 12px 25px;
+  font-size: 0.585625em;
   font-family: 400;
   color: #000000;
   text-transform: uppercase;
@@ -11232,20 +11216,21 @@ header .notification-holder .profile-header-thumb {
   position: relative;
   float: right;
   margin-top: 25px;
-  width: 150px;
+  width: 113px;
 }
 .calender-container .calender-header .search-folder .inner-addon i {
   position: absolute;
-  padding: 10px;
+  top: 9px;
   left: 29px;
   font-weight: 400;
   pointer-events: none;
+  font-size: 0.8em;
 }
 .calender-container .calender-header .search-folder .inner-addon input {
   border-radius: 7px;
-  padding-left: 58px;
-  height: 40px;
-  font-size: 0.875em;
+  padding-left: 46px;
+  height: 30px;
+  font-size: 0.6875em;
 }
 .calender-container .calender-body .col-sm-9 {
   padding-left: 0;
@@ -11256,7 +11241,7 @@ header .notification-holder .profile-header-thumb {
   box-shadow: 1px 0 12px -8px #000000;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header {
-  padding: 21px 21px 16px;
+  padding: 16px 4px 10px;
   overflow: hidden;
   background-color: #f6f6f6;
   border-top-left-radius: 10px;
@@ -11272,20 +11257,20 @@ header .notification-holder .profile-header-thumb {
   float: left;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper .date-nav i {
-  margin: 10px 12px 12px;
+  margin: 6px 12px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper .date {
   float: left;
   border-left: 1px solid #bcbfbf;
   border-right: 1px solid #bcbfbf;
   background-color: #ffffff;
-  min-width: 155px;
+  min-width: 75px;
   text-align: center;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header .date-wrapper .date p {
-  padding: 10px 14px 10px;
+  padding: 8px 18px;
   text-transform: uppercase;
-  font-size: 0.75em;
+  font-size: 0.576875em;
   color: #000000;
   font-weight: 500;
   margin: 0;
@@ -11308,7 +11293,7 @@ header .notification-holder .profile-header-thumb {
   margin-top: 3px;
   float: right;
   text-transform: uppercase;
-  font-size: 1.3125em;
+  font-size: 1.01em;
   color: #000000;
   font-weight: 400;
 }
@@ -11320,11 +11305,11 @@ header .notification-holder .profile-header-thumb {
   background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
-  margin: 30px 70px;
+  margin: 27px 20px;
   overflow: hidden;
-  font-size: 0.875em;
-  font-weight: 400;
-  color: #bebfbf;
+  font-size: 0.673125em;
+  font-weight: 500;
+  color: #000000;
   outline: none;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input:empty:before {
@@ -11332,21 +11317,21 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .calender-input-type {
   position: absolute;
-  top: 16px;
-  right: 35px;
+  top: 13px;
+  right: 39px;
   width: auto;
   height: auto;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .calender-input-type p {
   text-transform: uppercase;
   color: #00a6ef;
-  font-size: 0.9375em;
+  font-size: 0.72125em;
   font-weight: 400;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu {
   border-bottom: 1px solid #d9d9d9;
   background-color: #f6f6f6;
-  padding: 8px 20px;
+  padding: 4px 20px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper {
   float: right;
@@ -11358,7 +11343,6 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li {
   display: inline-block;
-  margin-right: 10px;
   background-color: #ffffff;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li button {
@@ -11369,9 +11353,12 @@ header .notification-holder .profile-header-thumb {
   border: 1px solid #bcbfbf;
   border-radius: 4px;
   text-align: center;
-  width: 35px;
-  height: 35px;
+  width: 28px;
+  height: 28px;
   outline: none;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico i {
+  font-size: 0.961875em;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico p {
   margin-bottom: 0;
@@ -11380,12 +11367,12 @@ header .notification-holder .profile-header-thumb {
   border: 1px solid #c4c4c4;
   border-radius: 4px;
   margin-left: 0;
-  height: 40px;
+  height: 31px;
   text-transform: uppercase;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .btn-group button {
   outline: none;
-  padding: 0 17px;
+  padding: 0 13px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-group {
   background: #ffffff;
@@ -11393,7 +11380,7 @@ header .notification-holder .profile-header-thumb {
   box-shadow: none;
   height: 100%;
   text-transform: uppercase;
-  font-size: 0.75em;
+  font-size: 0.576875em;
   font-weight: 500;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-group.event {
@@ -11409,24 +11396,27 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-txt.btn {
   text-transform: uppercase;
-  height: 40px;
+  height: 30px;
   border: 1px solid #00a6ef;
   border-radius: 4px;
   background-color: #00a6ef;
   text-align: center;
-  font-size: 0.75em;
+  font-size: 0.576875em;
   font-weight: 500;
   color: #ffffff;
-  padding: 0px 25px;
+  padding: 0px 14px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content {
   padding: 40px 70px 0;
   background-color: #ffffff;
 }
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-title img {
+  width: 14px;
+}
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-title span {
   font-family: "Work Sans", sans-serif;
   color: #00a6ef;
-  font-size: 1.09375em;
+  font-size: 0.84125em;
   font-weight: 700;
   margin-bottom: 0;
   vertical-align: middle;
@@ -11436,14 +11426,14 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-title-hr {
   width: 100%;
   border: 0;
-  border-top: 4px solid #f6f6f6;
+  border-top: 3px solid #f6f6f6;
   margin-top: 15px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list {
-  min-height: 180px;
+  min-height: 150px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li {
-  padding: 20px 0px 20px 30px;
+  padding: 15px 0px 15px 30px;
   border-bottom: 1px solid #f6f6f6;
   position: relative;
 }
@@ -11451,7 +11441,7 @@ header .notification-holder .profile-header-thumb {
   position: absolute;
   top: 22px;
   left: 30px;
-  font-size: 1.125em;
+  font-size: 0.75em;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li i.fa-circle:nth-child(1) {
   color: #00a6ef;
@@ -11468,7 +11458,7 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div {
   font-family: "Work Sans", sans-serif;
   color: #000000;
-  font-size: 0.875em;
+  font-size: 0.75em;
   vertical-align: middle;
   font-weight: 400;
   margin-left: 5px;
@@ -11489,16 +11479,19 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li .event-time {
   color: #00a6ef;
   font-weight: 500;
-  font-size: 0.875em;
+  font-size: 0.75em;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content {
   padding: 40px 70px 60px;
   background-color: #ffffff;
 }
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-title img {
+  width: 14px;
+}
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-title span {
   font-family: "Work Sans", sans-serif;
   color: #a6c649;
-  font-size: 1.09375em;
+  font-size: 0.84125em;
   font-weight: 700;
   margin-bottom: 0;
   vertical-align: middle;
@@ -11512,10 +11505,10 @@ header .notification-holder .profile-header-thumb {
   margin-top: 15px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list {
-  min-height: 180px;
+  min-height: 150px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li {
-  padding: 20px 30px;
+  padding: 15px 30px;
   border-bottom: 1px solid #d9d9d9;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li .checkbox-area {
@@ -11540,7 +11533,7 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label {
   font-family: "Work Sans", sans-serif;
   color: #000000;
-  font-size: 0.875em;
+  font-size: 0.75em;
   font-weight: 400;
   margin-bottom: 0;
   display: inline-block;
@@ -11564,7 +11557,7 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p {
   line-height: 19px;
-  font-size: 0.875em;
+  font-size: 0.75em;
   margin-bottom: 0;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p:nth-child(1) {
@@ -11581,7 +11574,7 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li .time-wrapper {
   color: #a6c649;
   font-family: "Work Sans", sans-serif;
-  font-size: 0.75em;
+  font-size: 0.625em;
   vertical-align: middle;
   font-weight: 700;
   display: inline-block;
@@ -12791,8 +12784,8 @@ header .notification-holder .profile-header-thumb {
   position: relative;
   position: relative;
   min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 12px;
+  padding-right: 12px;
   padding: 15px;
   border-bottom: 4px solid #e9ebee;
   cursor: pointer;
@@ -13056,6 +13049,243 @@ header .notification-holder .profile-header-thumb {
 }
 .call-center-container .call-center-inner-holder .recent-list .list-wrapper .recent-item .call-ico-wrapper .call-ico.video {
   margin-right: 16px;
+}
+
+.group-container {
+  background: #e9ebee;
+}
+.group-container .group-header {
+  position: relative;
+}
+.group-container .group-header .header-top {
+  position: relative;
+}
+.group-container .group-header .header-top .banner {
+  width: 100%;
+  height: 138px;
+}
+.group-container .group-header .header-top .banner .banner-img {
+  width: 100%;
+  height: 100%;
+}
+.group-container .group-header .header-top .members-holder {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 88px;
+  height: 28px;
+  border-radius: 5px;
+  background: #e2e2e5;
+  -webkit-box-shadow: rgba(2, 2, 2, 0.15) 0px 1px 4px;
+  box-shadow: rgba(2, 2, 2, 0.15) 0px 1px 4px;
+}
+.group-container .group-header .header-top .members-holder .member-icon {
+  background: url("../images/group/members-icon.png") no-repeat 0 0;
+  width: 17px;
+  height: 16px;
+  position: absolute;
+  top: 5px;
+  left: 10px;
+}
+.group-container .group-header .header-top .members-holder .mem-count {
+  float: right;
+  margin: 4px 10px 0 0;
+}
+.group-container .group-header .header-top .members-holder .mem-count .member-count {
+  color: #2d5164;
+  font-size: 0.77em;
+  font-weight: 400;
+  line-height: 1;
+  display: block;
+}
+.group-container .group-header .header-top .members-holder .mem-count .mem-text {
+  color: #7795a8;
+  text-transform: uppercase;
+  font-size: 0.513125em;
+  font-weight: 400;
+  margin: 0;
+  line-height: 1;
+  display: block;
+}
+.group-container .group-header .header-bottom {
+  position: relative;
+}
+.group-container .group-header .header-bottom .prof-img-holder {
+  width: 108px;
+  height: 108px;
+  border-radius: 5px;
+  overflow: hidden;
+  position: absolute;
+  top: -54px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  cursor: pointer;
+}
+.group-container .group-header .header-bottom .left-nav-wrapper {
+  float: left;
+}
+.group-container .group-header .header-bottom .right-nav-wrapper {
+  float: right;
+}
+.group-container .group-header .header-bottom .nav-item {
+  background: #fff;
+  text-align: center;
+  color: #b0b3bc;
+  overflow: hidden;
+  padding: 8px 10px;
+  border-right: 1px solid #d0d2d2;
+  float: left;
+}
+.group-container .group-header .header-bottom .nav-item:hover {
+  cursor: pointer;
+  background: #b0b3bc;
+  color: #fff;
+}
+.group-container .group-header .header-bottom .nav-item.active {
+  background: #b0b3bc;
+  color: #fff;
+}
+.group-container .group-header .header-bottom .nav-item.first-item {
+  border-radius: 5px 0 0 5px;
+}
+.group-container .group-header .header-bottom .nav-item.first-item .fa {
+  font-size: 0.8em;
+  margin-top: 4px;
+}
+.group-container .group-header .header-bottom .nav-item.left-second {
+  padding: 8px 12px;
+}
+.group-container .group-header .header-bottom .nav-item.left-second .fa {
+  font-size: 0.9em;
+}
+.group-container .group-header .header-bottom .nav-item.left-middle {
+  padding: 8px 27px;
+}
+.group-container .group-header .header-bottom .nav-item.left-middle .fa {
+  font-size: 1.1em;
+}
+.group-container .group-header .header-bottom .nav-item.right-middle {
+  padding: 8px 13px;
+}
+.group-container .group-header .header-bottom .nav-item.right-middle .fa {
+  font-size: 0.9em;
+}
+.group-container .group-header .header-bottom .nav-item.right-second {
+  padding: 8px 15px;
+}
+.group-container .group-header .header-bottom .nav-item.right-second .fa {
+  font-size: 0.9em;
+}
+.group-container .group-header .header-bottom .nav-item.last-item {
+  border-radius: 0 5px 5px 0;
+  border: none;
+  padding: 8px 18px;
+}
+.group-container .group-header .header-bottom .nav-item.last-item .fa {
+  font-size: 1em;
+}
+.group-container .group-header .header-bottom .nav-item .fa {
+  float: left;
+  margin-right: 6px;
+}
+.group-container .group-header .header-bottom .nav-item .nav-text {
+  float: left;
+  text-transform: uppercase;
+  font-size: 0.576875em;
+  font-weight: 500;
+  margin: 2px 0 0;
+}
+.group-container .group-content {
+  padding: 30px 0;
+}
+.group-container .group-content .sidebar {
+  padding-left: 0;
+}
+.group-container .group-content .sidebar .panel {
+  border-radius: 8px;
+  background: #fff;
+  margin-bottom: 10px;
+  -webkit-box-shadow: #d6d8db 0px 0px 12px 2px;
+  box-shadow: #d6d8db 0px 0px 12px 2px;
+}
+.group-container .group-content .sidebar .panel .panel-title {
+  font-weight: 400;
+  text-transform: capitalize;
+  color: #00a6ef;
+  font-size: 0.75em;
+}
+.group-container .group-content .sidebar .grp-desc {
+  padding: 15px 20px;
+}
+.group-container .group-content .sidebar .grp-desc .panel-title {
+  padding-bottom: 13px;
+  border-bottom: 1px solid #dee6eb;
+  margin-bottom: 14px;
+}
+.group-container .group-content .sidebar .grp-desc .desc {
+  font-size: 0.6875em;
+  color: #000;
+  margin: 0;
+}
+.group-container .group-content .sidebar .grp-members .panel-header {
+  padding: 14px 22px;
+}
+.group-container .group-content .sidebar .grp-members .panel-header .panel-title {
+  float: left;
+}
+.group-container .group-content .sidebar .grp-members .panel-header .mem-count {
+  float: right;
+  color: #989ba0;
+  font-size: 0.6875em;
+}
+.group-container .group-content .sidebar .grp-members .add-member {
+  border-top: 1px solid #dee6eb;
+}
+.group-container .group-content .sidebar .grp-members .add-member .form-control {
+  border: none;
+  padding: 15px 20px;
+  background: #f6f6f6;
+  border-radius: 0;
+  font-size: 0.75em;
+  color: #dee6eb;
+}
+.group-container .group-content .sidebar .grp-members .add-member .form-control:focus {
+  box-shadow: 0;
+}
+.group-container .group-content .sidebar .grp-members .all-members {
+  padding: 15px 16px;
+}
+.group-container .group-content .sidebar .grp-members .all-members .mem-img {
+  width: 37px;
+  height: 37px;
+  border-radius: 999px;
+  cursor: pointer;
+  float: left;
+  margin: 0 6px 6px 0;
+}
+.group-container .group-content .sidebar .grp-members .all-members .mem-img:nth-child(6n) {
+  margin-right: 0;
+}
+.group-container .group-content .sidebar .grp-members .all-members .mem-img.last-mem {
+  position: relative;
+}
+.group-container .group-content .sidebar .grp-members .all-members .mem-img.last-mem .mem-count {
+  width: 37px;
+  height: 37px;
+  background: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  border-radius: 999px;
+  text-align: center;
+  font-weight: 500;
+}
+.group-container .group-content .sidebar .grp-members .all-members .mem-img.last-mem .mem-count .count {
+  color: #fff;
+  line-height: 3;
+  font-size: 0.77em;
 }
 
 .popup-holder {
@@ -13801,6 +14031,262 @@ header .notification-holder .profile-header-thumb {
   height: 40px;
   box-shadow: inset 0px 1px 5px -1px rgba(0, 0, 0, 0.4);
 }
+.popup-holder .create-group-type-popup {
+  width: 800px;
+}
+.popup-holder .create-group-type-popup .model-header {
+  padding: 20px 20px 0;
+  position: relative;
+  text-align: center;
+}
+.popup-holder .create-group-type-popup .model-header .modal-title {
+  font-weight: 500;
+  color: #000000;
+  font-size: 1.875em;
+  margin: 33px 0 8px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.popup-holder .create-group-type-popup .model-header .sub-title {
+  font-size: 1.125em;
+  line-height: 1;
+  margin: 0;
+  color: #000;
+}
+.popup-holder .create-group-type-popup .model-header .close-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 23px;
+  height: 23px;
+  cursor: pointer;
+  background: url(../images/group/cls-icon.png) no-repeat 0 0;
+}
+.popup-holder .create-group-type-popup .model-body {
+  padding: 80px 0 50px;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper {
+  text-align: center;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper input[type=radio] {
+  display: none;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper label:before {
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  content: "";
+  background: url(../images/group/select-icon.png) no-repeat 0 0;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper.selected label:before {
+  background: url(../images/group/selected-icon.png) no-repeat 0 0;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper label {
+  position: relative;
+  padding-left: 50px;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper .inner-holder {
+  display: inline-block;
+  width: 100%;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper .select-content {
+  text-align: left;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper .select-content .type-icon {
+  float: left;
+  margin-right: 22px;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper .select-content .type-content {
+  float: left;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper .select-content .type-content .type-title {
+  color: #000;
+  font-weight: 500;
+  font-size: 1.5em;
+  margin: 5px 0;
+  line-height: 1;
+  text-transform: capitalize;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper .select-content .type-content .tool-tip .tool-tip-text {
+  font-size: 0.75em;
+  margin: 0 5px 0 0;
+  font-weight: 400;
+  color: #000;
+  float: left;
+  line-height: 1;
+  text-decoration: underline;
+}
+.popup-holder .create-group-type-popup .model-body .selector-wrapper .select-content .type-content .tool-tip .fa {
+  color: #00a6ef;
+  float: left;
+  cursor: pointer;
+  margin-top: -1px;
+}
+.popup-holder .create-group-type-popup .model-footer .footer-btn {
+  padding: 30px;
+  background: #f6f6f6;
+  text-align: right;
+}
+.popup-holder .create-group-type-popup .model-footer .footer-btn .btn {
+  display: inline-block;
+  text-transform: uppercase;
+  padding: 10px 33px;
+  border: none;
+  color: #fff;
+  font-weight: 400;
+  font-size: 0.6875em;
+  border-radius: 5px;
+}
+.popup-holder .create-group-type-popup .model-footer .footer-btn .btn.cancel-btn {
+  background: #b0b3bc;
+  margin-right: 10px;
+}
+.popup-holder .create-group-type-popup .model-footer .footer-btn .btn.success-btn {
+  background: #00a5ef;
+}
+.popup-holder .create-group-popup {
+  width: 800px;
+}
+.popup-holder .create-group-popup .model-header {
+  padding: 20px 20px 0;
+  position: relative;
+  text-align: center;
+}
+.popup-holder .create-group-popup .model-header .modal-title {
+  font-weight: 500;
+  color: #000000;
+  font-size: 1.875em;
+  margin: 33px 0 8px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.popup-holder .create-group-popup .model-header .close-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 23px;
+  height: 23px;
+  cursor: pointer;
+  background: url(../images/group/cls-icon.png) no-repeat 0 0;
+}
+.popup-holder .create-group-popup .model-body {
+  padding: 42px 90px 50px;
+}
+.popup-holder .create-group-popup .model-body .form-group {
+  margin-bottom: 28px;
+}
+.popup-holder .create-group-popup .model-body .form-group label {
+  font-weight: 400;
+  color: #989ba0;
+  font-size: 0.5625em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.popup-holder .create-group-popup .model-body .form-group .form-control {
+  border-color: #c3c5c5;
+}
+.popup-holder .create-group-popup .model-body .form-group textarea {
+  resize: none;
+}
+.popup-holder .create-group-popup .model-body .label {
+  font-weight: 400;
+  color: #989ba0;
+  font-size: 0.5625em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.popup-holder .create-group-popup .model-body .color-palette {
+  overflow: hidden;
+}
+.popup-holder .create-group-popup .model-body .color-palette div {
+  float: left;
+  margin: 0 16px 0 0;
+  width: 35px;
+  height: 35px;
+  border-radius: 100%;
+  cursor: pointer;
+  text-align: center;
+}
+.popup-holder .create-group-popup .model-body .color-palette div i {
+  margin-top: 8px;
+  color: #ffffff;
+  font-size: 1.125em;
+  display: none;
+}
+.popup-holder .create-group-popup .model-body .color-palette div.active i {
+  display: block;
+}
+.popup-holder .create-group-popup .model-body .color-palette div.pink {
+  background-color: #ed0677;
+}
+.popup-holder .create-group-popup .model-body .color-palette div.light-blue {
+  background-color: #1b9ed9;
+}
+.popup-holder .create-group-popup .model-body .color-palette div.light-green {
+  background-color: #a2c73e;
+}
+.popup-holder .create-group-popup .model-body .color-palette div.red {
+  background-color: #b01d5a;
+}
+.popup-holder .create-group-popup .model-body .color-palette div.dark-blue {
+  background-color: #091652;
+}
+.popup-holder .create-group-popup .model-body .color-palette div.gray {
+  background-color: #bbbdbe;
+}
+.popup-holder .create-group-popup .model-body .color-palette div.dark-green {
+  background-color: #067d41;
+}
+.popup-holder .create-group-popup .model-body .btn {
+  float: left;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border: none;
+  color: #fff;
+  font-weight: 400;
+  font-size: 0.6875em;
+  border-radius: 5px;
+}
+.popup-holder .create-group-popup .model-body .btn.choose-btn {
+  margin-right: 10px;
+  background: #fff;
+  color: #b0b3bc;
+  border: 1px solid #c3c5c5;
+}
+.popup-holder .create-group-popup .model-body .btn.cancel-btn {
+  background: #b0b3bc;
+}
+.popup-holder .create-group-popup .model-footer .footer-btn {
+  padding: 30px;
+  background: #f6f6f6;
+  text-align: right;
+}
+.popup-holder .create-group-popup .model-footer .footer-btn .btn {
+  display: inline-block;
+  text-transform: uppercase;
+  padding: 8px 33px;
+  border: none;
+  color: #fff;
+  font-weight: 400;
+  font-size: 0.6875em;
+  border-radius: 5px;
+}
+.popup-holder .create-group-popup .model-footer .footer-btn .btn.cancel-btn {
+  background: #b0b3bc;
+  margin-right: 10px;
+}
+.popup-holder .create-group-popup .model-footer .footer-btn .btn.success-btn {
+  background: #00a5ef;
+}
+.popup-holder .create-group-popup .model-footer .footer-btn .btn.back-btn {
+  padding: 8px 38px;
+  float: left;
+  background: #fff;
+  color: #b0b3bc;
+  border: 1px solid #c3c5c5;
+}
 
 .settings-icon {
   position: fixed;
@@ -13841,32 +14327,22 @@ footer .notification-alert-holder {
   position: relative;
   float: left;
   background: #fff;
-  border-radius: 10px 10px 0 0;
-  width: 125px;
-  height: 99px;
+  border-radius: 6px 6px 0 0;
+  width: 94px;
+  height: 73px;
   border: 1px solid #e2e2e2;
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  footer .notification-alert-holder {
-    width: 112px;
-  }
 }
 footer .notification-alert-holder .notifi-brand-icon {
   float: left;
   display: block;
-  padding: 28px 20px;
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  footer .notification-alert-holder .notifi-brand-icon {
-    padding: 28px 15px;
-  }
+  padding: 20px 10px 20px 13px;
 }
 footer .notification-alert-holder .notifi-icon-holder {
   float: right;
   margin-right: 5px;
 }
 footer .notification-alert-holder .notifi-icon-holder .notifi-icons {
-  padding: 8px 7px 6px;
+  padding: 6px 6px 5px;
   border-bottom: 1px solid #f2f3f3;
   cursor: pointer;
   position: relative;
@@ -13883,8 +14359,8 @@ footer .notification-alert-holder .notifi-icon-holder .notifi-icons .has-notifi 
   height: 7px;
   border: 2px solid #fff;
   position: absolute;
-  top: 6px;
-  right: 8px;
+  top: 4px;
+  right: 5px;
   border-radius: 999px;
 }
 footer .notification-alert-holder .notifi-icon-holder .notifi-icons.todo-notifi .has-notifi {
@@ -13899,17 +14375,17 @@ footer .notification-alert-holder .notifi-icon-holder .notifi-icons.social-notif
   }
 }
 footer .nav-holder {
-  width: 79.05%;
+  width: 78.8%;
   float: left;
   position: relative;
-  padding: 15px 0 8px;
-  margin: 0 5px 0;
+  padding: 11px 0 5px;
+  margin: 0 7px 0;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 10px 10px 0 0;
 }
 footer .nav-holder .nav-item {
   float: left;
-  padding: 0 4.1%;
+  padding: 0 3.76%;
   text-align: center;
   position: relative;
   border-right: 1px solid #817f88;
@@ -13918,14 +14394,26 @@ footer .nav-holder .nav-item {
 footer .nav-holder .nav-item:last-child {
   border: none;
 }
+footer .nav-holder .nav-item.notebooks .icon-holder {
+  padding: 13px 10px 10px;
+}
+footer .nav-holder .nav-item.folders .icon-holder {
+  padding: 12px 10px 10px;
+}
+footer .nav-holder .nav-item.news .icon-holder {
+  padding: 13px 10px 10px;
+}
+footer .nav-holder .nav-item.interests .icon-holder {
+  padding: 11px 10px 10px;
+}
 footer .nav-holder .nav-item .icon-holder {
-  width: 50px;
-  height: 50px;
+  width: 37px;
+  height: 37px;
   margin: 0 auto;
   background: #fff;
   text-align: center;
   border-radius: 999px;
-  padding: 12px;
+  padding: 10px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px;
 }
@@ -13936,19 +14424,9 @@ footer .nav-holder .nav-item .icon-holder > img {
 footer .nav-holder .nav-item .nav-title {
   font-weight: 500;
   color: #000;
-  font-size: 0.75em;
+  font-size: 0.6875em;
   text-transform: capitalize;
-  margin: 8px 0 0;
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  footer .nav-holder .nav-item {
-    padding: 0 3.2%;
-  }
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  footer .nav-holder {
-    width: 76.1%;
-  }
+  margin: 4px 0 0;
 }
 footer.dashboard-footer .nav-holder {
   background: rgba(255, 255, 255, 0.2);
@@ -13958,29 +14436,25 @@ footer.dashboard-footer .nav-holder .nav-item .nav-title {
 }
 footer .work-mode-holder {
   float: left;
-  width: 110px;
-  height: 98px;
+  width: 82px;
+  height: 73px;
   border: 1px solid #e2e2e2;
-  border-radius: 10px 10px 0 0;
+  border-radius: 6px 6px 0 0;
   cursor: pointer;
   background: #fff;
   text-align: center;
-  padding: 24px 0 0;
+  padding: 17px 0 0;
 }
 footer .work-mode-holder .section-title {
   color: #a6c74a;
   text-transform: capitalize;
-  font-size: 0.75em;
+  font-size: 0.6875em;
   font-weight: 500;
-  margin: 16px 0 0;
+  margin: 11px 0 0;
   line-height: 1;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   footer .work-mode-holder {
     width: 102px;
   }
-}
-
-#incomingCallAlert{
-  display: block;
 }

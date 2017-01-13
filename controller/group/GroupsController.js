@@ -10,10 +10,11 @@
 var GroupsController = {
 
     createGroup: function (req, res) {
-
+        
         var Groups = require('mongoose').model('Groups');
         var Folders = require('mongoose').model('Folders');
         var NoteBook = require('mongoose').model('NoteBook');
+        var Upload = require('mongoose').model('Upload');
         var CurrentSession = Util.getCurrentSession(req);
         var _async = require('async'),
             UserId = Util.getCurrentSession(req).id,
@@ -31,6 +32,7 @@ var GroupsController = {
                     description: req.body._description,
                     color: req.body._color,
                     group_pic_link: req.body._group_pic_link,
+                    group_pic_id: req.body._group_pic_link,
                     members: req.body._members,
                     created_by: Util.getCurrentSession(req).id,
                     type:(typeof req.body._type != 'undefined' ? req.body._type : 1)
@@ -41,22 +43,20 @@ var GroupsController = {
                     }
                 });
             },
-            //function uploadGroupImage(groupData, callBack){
-            //    if (typeof req.body._group_pic_link == 'undefined' || typeof req.body._group_pic_link == "") {
-            //        callBack(null, groupData);
-            //    }
-            //
-            //    var data = {
-            //        content_title: "Group Image",
-            //        file_name: req.body._group_pic_link,
-            //        is_default: 1,
-            //        entity_id: groupData._id,
-            //        entity_tag: UploadMeta.GROUP_IMAGE
-            //    }
-            //    ContentUploader.uploadFile(data, function (payLoad) {
-            //        callBack(null, groupData);
-            //    });
-            //},
+            function updateImageDocument(groupData, callBack) {
+                if (typeof req.body._group_pic_id != 'undefined') {
+                    var filter = { "_id" : req.body._group_pic_id };
+                    var value = { "entity_id" : groupData._id };
+                    Upload.updateUpload(filter, value, function (updateResult) {
+                        if(updateResult.error) {
+                            callBack(updateResult.error, null);
+                        }
+                        callBack(null, groupData);
+                    });
+                } else {
+                    callBack(null, groupData);
+                }
+            },
             function createDefaultFolder(groupData, callBack) {
 
                 if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {
@@ -364,6 +364,40 @@ var GroupsController = {
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS);
                 res.status(200).send(outPut);
+            }
+        });
+    },
+
+    /**
+     * Upload the group image
+     * @param req
+     * @param res
+     * @returns Object outPut
+     */
+    uploadGroupProfileImage: function (req, res) {
+
+        var CurrentSession = Util.getCurrentSession(req);
+        var User = require('mongoose').model('User');
+        var data = {
+            content_title: "Group profile Image",
+            file_name: req.body.image,
+            is_default: 1,
+            entity_id: null,
+            entity_tag: UploadMeta.GROUP_IMAGE,
+            status: 7
+        }
+        ContentUploader.uploadFile(data, function (payLoad) {
+            if (payLoad.status != 400) {
+                var outPut = {
+                    status: ApiHelper.getMessage(200, Alert.GROUP_IMAGE_SUCCESS, Alert.SUCCESS)
+                }
+                outPut['upload'] = payLoad;
+                res.status(200).json(outPut);
+            } else {
+                var outPut = {
+                    status: ApiHelper.getMessage(400, Alert.GROUP_IMAGE_ERROR, Alert.ERROR)
+                };
+                res.status(400).send(outPut);
             }
         });
     }
