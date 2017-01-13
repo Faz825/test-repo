@@ -871,7 +871,7 @@ footer .notification-alert-holder.slideOut{
 }
 
 .popup-holder .active-call-container .active-user-block{
-  height: 382px;
+  height: 512px;
 }
 
 .popup-holder .active-call-container .participants{
@@ -921,6 +921,28 @@ body .modal-backdrop{
     border-radius: 4px;
     background-color: rgba(0,0,0,.5);
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+#incomingCallAlert{
+  display: block;
+}
+
+#webcamStage{
+  position: relative;
+}
+
+#webcamStage .local{
+  position: absolute;
+  top: 13px;
+  right: 12px;
+  width: 119px;
+  height: 90px;
+  border: 2px solid #fff;
+  border-radius: 5px;
+}
+
+#webcamStage .remote{
+  width: 100%;
 }
 
 /**
