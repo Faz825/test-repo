@@ -248,7 +248,6 @@ export default class CallHandler extends React.Component {
                     callMode={this.state.callMode}
                     answerAudio={this.answerAudioMode.bind(this)}
                     answerVideo={this.answerVideoMode.bind(this)}
-                    reject={this.}
                 />
             )
         } else if (this.state.inProgressCall) {
