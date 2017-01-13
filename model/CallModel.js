@@ -1,10 +1,11 @@
 /**
  * Calender Event model for communicate callcenter collection in Database
  */
-'use strict'
-var  mongoose = require('mongoose'),
-    Schema   = mongoose.Schema;
 
+'use strict';
+
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
 GLOBAL.CallStatus = {
     MISSED: 1,
@@ -25,77 +26,55 @@ GLOBAL.CallType = {
 };
 
 var ReceiversListSchema = new Schema({
-    name:{
-        type:String,
-        default:null
+    name: {
+        type: String,
+        default: null
     },
-    user_id:{
-        type : Schema.ObjectId,
-        ref : 'User',
-        default : null
+    user_id: {
+        type: Schema.ObjectId,
+        ref: 'User',
+        default: null
     },
-    call_status:{
-        type : Number,
-        default : null /* 1 - missed | 2 - answered | 3 - rejected, 4 - cancelled */
+    call_status: {
+        type: Number,
+        default: null /* 1 - missed | 2 - answered | 3 - rejected, 4 - cancelled */
     }
 });
-
 
 var CallSchema = new Schema({
-
-    user_id : {
-        type : Schema.ObjectId,
-        ref : 'User',
-        default : null
+    user_id: {
+        type: Schema.ObjectId,
+        ref: 'User',
+        default: null
     },
-
-    contact_type : {
-        type : Number, /* 1 - individual | 2 - group | 3 - multi*/
-        default : null
+    contact_type: {
+        type: Number, /* 1 - individual | 2 - group | 3 - multi*/
+        default: null
     },
-
-    call_type : {
-        type : Number, /* 1 - video | 2 - audio*/
-        default : null
+    call_type: {
+        type: Number, /* 1 - video | 2 - audio*/
+        default: null
     },
-
-    call_started_at : {
-        type : Date,
-        default : null
+    call_started_at: {
+        type: Date,
+        default: null
     },
-
-    call_ended_at : {
-        type : Date,
-        default : null
+    call_ended_at: {
+        type: Date,
+        default: null
     },
-
-    call_duration : {
-        type : String,
-        default : null
+    call_duration: {
+        type: String,
+        default: null
     },
-
     receivers_list: [ReceiversListSchema],
-
-    created_at : {
-        type : Date
+    created_at: {
+        type: Date
     },
-
     updated_at: {
-        type : Date
+        type: Date
     }
-
-},{collection:"call_center"});
-
-
-CallSchema.pre('save', function(next){
-    var now = new Date();
-    this.updated_at = now;
-    if ( !this.created_at ) {
-        this.created_at = now;
-    }
-    next();
-});
-
+}, {collection: "call_center", timestamps: true});
 
 /**
  * Add Call Center records
@@ -112,12 +91,12 @@ CallSchema.statics.addNew = function (eventData, callBack) {
     callCenter.call_started_at = new Date();
     callCenter.receivers_list = eventData.receivers_list;
 
-    callCenter.save(function(err,resultSet){
-        if(err){
+    callCenter.save(function (err, resultSet) {
+        if (err) {
             console.log(err);
-            callBack({status:400,error:err});
-        }else{
-            callBack({status:200, event:resultSet});
+            callBack({status: 400, error: err});
+        } else {
+            callBack({status: 200, event: resultSet});
         }
     });
 };
@@ -127,7 +106,7 @@ CallSchema.statics.addNew = function (eventData, callBack) {
  * @param id
  * @param callBack
  */
-CallSchema.statics.getRecordById = function(id, callBack){
+CallSchema.statics.getRecordById = function (id, callBack) {
 
     var _this = this;
 
@@ -140,11 +119,10 @@ CallSchema.statics.getRecordById = function(id, callBack){
 
             callBack(resultSet);
         } else {
-            console.log(err)
+            console.log(err);
             callBack({status: 400, error: err})
         }
     });
-
 };
 
 
@@ -156,15 +134,14 @@ CallSchema.statics.getRecordById = function(id, callBack){
  */
 CallSchema.statics.get = function (filter, fields, callBack) {
 
-    var callCenter = new this();
-    var options = { multi: true };
+    var options = {multi: true};
     var _this = this;
 
     _this.find(filter, fields, options).lean().exec(function (err, records) {
-        if (err){
-            callBack({status:400,error:err},null);
+        if (err) {
+            callBack({status: 400, error: err}, null);
         } else {
-            callBack(null,{status:200,records:records});
+            callBack(null, {status: 200, records: records});
         }
     });
 };
@@ -178,17 +155,16 @@ CallSchema.statics.get = function (filter, fields, callBack) {
 CallSchema.statics.updateCallRecord = function (filter, value, callBack) {
 
     var _this = this;
-    var options = { multi: true };
+    var options = {multi: true};
 
-    _this.update(filter, value, options, function(err, update) {
-        if(err){
+    _this.update(filter, value, options, function (err, update) {
+        if (err) {
             console.log(err);
-            callBack({status:400,error:err});
-        }else{
-            callBack({status:200,event:update});
+            callBack({status: 400, error: err});
+        } else {
+            callBack({status: 200, event: update});
         }
     });
 };
-
 
 mongoose.model('Call', CallSchema);

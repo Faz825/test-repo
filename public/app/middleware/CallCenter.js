@@ -16,6 +16,7 @@ class CallCenter {
         }
         this.b6 = bit6Client;
         this.bit6Auth();
+        this.loggedUser = Session.getSession('prg_lg');
     }
 
     bit6Auth() {
@@ -83,14 +84,24 @@ class CallCenter {
     /**
      * @param oCall - bit6 incoming call object
      * **/
-    getCallType(oCall){
-        if(oCall.options.audio && !oCall.options.video){
+    getCallType(oCall) {
+        if (oCall.options.audio && !oCall.options.video) {
             return CallType.AUDIO;
-        }else if(oCall.options.audio && oCall.options.video){
+        } else if (oCall.options.audio && oCall.options.video) {
             return CallType.VIDEO;
-        }else{
+        } else {
             return false;
         }
+    }
+
+    addCallRecord(oRecord) {
+        $.ajax({
+            url: '/call/add-record',
+            method: "POST",
+            headers: {'prg-auth-header': this.loggedUser.token}
+        }).done(function (data) {
+            console.log(data);
+        });
     }
 }
 
