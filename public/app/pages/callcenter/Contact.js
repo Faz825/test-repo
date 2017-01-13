@@ -1,9 +1,9 @@
 /*
- * User component for call center
+ * Individual contact in contact list
  */
 
 import React from 'react';
-import {UserMode, ContactType} from '../../config/CallcenterStats';
+import {UserMode, ContactType, CallType} from '../../config/CallcenterStats';
 
 export default class Contact extends React.Component {
     constructor(props) {
@@ -40,7 +40,6 @@ export default class Contact extends React.Component {
             call_type = "user";
         }
 
-
         return (
             <div>
                 <div className="row contact-item recent-item">
@@ -54,33 +53,18 @@ export default class Contact extends React.Component {
                             <p className="status">{mood}</p>
                         </div>
                     </div>
-                    {
-                        (_this.props.type == "contact") ?
-                            <div className={"col-sm-2 contact-type " + call_type}>
-                                <span></span>
-                            </div>
-                            :
-                            null
-                    }
-                    {
-                        (_this.props.type == "recent") ?
-                            <div className={"col-sm-2 contact-type " + contact.callStatue}>
-                                <p className="call-count">{contact.calls}</p>
-                                <span className={contact.callType}></span>
-                                <p className="call-time">{contact.time}</p>
-                            </div>
-                            :
-                            null
-                    }
+                    <div className={"col-sm-2 contact-type " + call_type}>
+                        <span></span>
+                    </div>
                     <div className="col-sm-6">
                         <div className="call-ico-wrapper">
                             <button className="call-ico video" onClick={(event)=> {
-                                _this.handleClick(contact, "video")
+                                _this.handleClick(contact, CallType.VIDEO)
                             }}>
                                 <img src="images/call-center/video-ico.png"/>
                             </button>
                             <button className="call-ico phone" onClick={(event)=> {
-                                _this.handleClick(contact, "audio")
+                                _this.handleClick(contact, CallType.AUDIO)
                             }}>
                                 <img src="images/call-center/phone-ico.png"/>
                             </button>

@@ -1,10 +1,10 @@
 import React from 'react';
-import Contact from "./Contact";
+import Recent from "./Recent";
 
 export default class RecentList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
     }
 
     onCalling(user,callType) {
@@ -21,13 +21,13 @@ export default class RecentList extends React.Component {
                     <div className="contact-wrapper">
                         {oGroupedContacts.users.map(function (oContact) {
                             return (
-                                <Contact key={oContact.user_id} contact={oContact} type="recent" onCalling={_this.onCalling.bind(_this)}/>
+                                <Recent key={oContact.user_id} contact={oContact} type="recent" onCalling={_this.onCalling.bind(_this)}/>
                             )
                         })}
                     </div>
                 </div>
             )
-        })
+        });
         return (
             <div className="recent-list">
                 <div className="list-wrapper">

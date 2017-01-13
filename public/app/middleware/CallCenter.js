@@ -5,6 +5,7 @@
 import Socket from './Socket';
 import Session from '../middleware/Session';
 import {Config} from '../config/Config';
+import {CallType} from '../config/CallcenterStats';
 
 let bit6Client = null;
 
@@ -77,6 +78,19 @@ class CallCenter {
      * */
     contactsStatus(aContacts, status) {
         this.socket.emit('contacts status', {contacts: aContacts, status: status});
+    }
+
+    /**
+     * @param oCall - bit6 incoming call object
+     * **/
+    getCallType(oCall){
+        if(oCall.options.audio && !oCall.options.video){
+            return CallType.AUDIO;
+        }else if(oCall.options.audio && oCall.options.video){
+            return CallType.VIDEO;
+        }else{
+            return false;
+        }
     }
 }
 
