@@ -87,7 +87,7 @@ GLOBAL.AccessAllow = [
     '/profile-image', '/done', '/cache-check', '/collage-and-job', '/test/:id', '/news-feed', '/news', '/chat', '/chat/:chatWith', '/notes', '/notifications', '/notes/new-note/:notebook_id',
     '/notes/edit-note/:note_id', '/connections', '/connections/mutual/:uname', '/profile/:name', '/profile/:name/:post', '/folders', '/doc', '/get-connected-users/', '/work-mode',
     '/get-connected-users/:notebook/:name', '/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name',
-    '/calendar/:name', '/calendar', '/callcenter', '/group', '/group/:name'
+    '/calendar/:name', '/calendar', '/callcenter', '/groups', '/groups/:name'
 ];
 
 /**
@@ -222,11 +222,11 @@ router.get('/call/get-records', CallCenterController.call.getCallRecords);
 router.post('/call/add-record', CallCenterController.call.addCallRecord);
 
 //Group
-router.post('/group/add', GroupsController.createGroup);
-router.post('/group/update-description', GroupsController.updateDescription);
-router.post('/group/add-users', GroupsController.addUsers);
-router.post('/group/upload-image', GroupsController.uploadGroupProfileImage);
-router.post('/group/get', GroupsController.get);
+router.post('/groups/add', GroupsController.createGroup);
+router.post('/groups/update-description', GroupsController.updateDescription);
+router.post('/groups/add-users', GroupsController.addUsers);
+router.post('/groups/upload-image', GroupsController.uploadGroupProfileImage);
+router.post('/groups/get-group', GroupsController.getGroup);
 
 // Group Notebook
 router.post('/group/add-notebook', GroupNotebookController.addNewNotebook);

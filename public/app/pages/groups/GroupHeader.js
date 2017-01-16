@@ -23,7 +23,7 @@ export default class GroupHeader extends React.Component{
             <section className="group-header">
                 <div className="header-top">
                     <div className="banner">
-                        <img src="assets/images/group/group-header-bg.png" alt="banner" className="banner-img" />
+                        <img src="images/group/group-header-bg.png" alt="banner" className="banner-img" />
                     </div>
                     <div className="members-holder">
                         <span className="member-icon"></span>

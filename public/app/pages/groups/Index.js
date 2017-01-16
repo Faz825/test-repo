@@ -58,7 +58,7 @@ export default class Index extends React.Component{
         groupData['_type'] = this.state.defaultType;
         console.log(groupData);
         $.ajax({
-            url: '/group/add',
+            url: '/groups/add',
             method: "POST",
             dataType: "JSON",
             data: JSON.stringify(groupData),
@@ -69,7 +69,7 @@ export default class Index extends React.Component{
                 this.closeSecondStep();
                 this.closeFirstStep();
                 if(data.result.name_prefix) {
-                    window.location = '/group/'+data.result.name_prefix;
+                    window.location = '/groups/'+data.result.name_prefix;
                 }
             }
         }.bind(this));
@@ -354,7 +354,7 @@ export class CreateStepTwo extends React.Component{
         this.setState({loadingBarIsVisible : true});
         let _this =  this;
         $.ajax({
-            url: '/group/upload-image',
+            url: '/groups/upload-image',
             method: "POST",
             dataType: "JSON",
             headers: { 'prg-auth-header':_this.loggedUser.token },

@@ -81,7 +81,7 @@ router.get('/profile/:name', DefaultController.index);
 router.get('/profile/:name/:post', DefaultController.index);
 router.get('/calendar', DefaultController.index);
 router.get('/calendar/:name', DefaultController.index);
-router.get('/group/:name', DefaultController.index);
+router.get('/groups/:name', DefaultController.index);
 
 router.get('/get-connected-users/:notebook/:name', UserController.getNotesSharedUsers);
 router.get('/filter-shared-users/:notebook/:name', UserController.filterNoteBookSharedUsers);

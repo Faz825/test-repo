@@ -29,7 +29,7 @@ export default class Discussion extends React.Component{
     loadEvents() {
 
         $.ajax({
-            url : '/group/get',
+            url : '/groups/get-group',
             method : "POST",
             data : { name_prefix : this.state.currentGroup},
             dataType : "JSON",
