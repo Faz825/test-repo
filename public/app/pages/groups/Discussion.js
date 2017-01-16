@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import Session  from '../../middleware/Session';
+import GroupHeader from './GroupHeader';
 
 export default class Discussion extends React.Component{
 
@@ -15,10 +16,10 @@ export default class Discussion extends React.Component{
         super(props);
         var groupPrefix = this.props.params.name;
         this.state = {
+            description: '',
             user : user,
             currentGroup : (typeof(groupPrefix) != 'undefined' ? groupPrefix : '' )
         };
-        console.log("THE CURRENT GROUP ID :: " + this.state.currentGroup);
     }
 
     componentDidMount() {
@@ -26,6 +27,7 @@ export default class Discussion extends React.Component{
     }
 
     loadEvents() {
+
         $.ajax({
             url : '/group/get',
             method : "POST",
@@ -36,7 +38,7 @@ export default class Discussion extends React.Component{
                 if (data.status.code == 200) {
                     console.log(data);
                     console.log("GROUP DATA FETCHED");
-                    this.setState({group: data.group});
+                    this.setState({description: data.group.description});
                 }
             }.bind(this),
             error: function (request, status, error) {
@@ -49,58 +51,12 @@ export default class Discussion extends React.Component{
         return (
             <section className="group-container">
                 <div className="container">
-                    <section className="group-header">
-                        <div className="header-top">
-                            <div className="banner">
-                                <img src="assets/images/group/group-header-bg.png" alt="banner" className="banner-img" />
-                            </div>
-                            <div className="members-holder">
-                                <span className="member-icon"></span>
-                                <div className="mem-count">
-                                    <span className="member-count">03</span>
-                                    <p className="mem-text">Members</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="header-bottom clearfix">
-                            <div className="prof-img-holder">
-                                <img src="assets/images/group/grp-profile-pic.png" alt="grp-pic" />
-                            </div>
-                            <div className="left-nav-wrapper clearfix">
-                                <div className="nav-item first-item active">
-                                    <i className="fa fa-users" aria-hidden="true"></i>
-                                    <p className="nav-text">group discussion</p>
-                                </div>
-                                <div className="nav-item left-second">
-                                    <i className="fa fa-calendar" aria-hidden="true"></i>
-                                    <p className="nav-text">group calendar</p>
-                                </div>
-                                <div className="nav-item left-middle">
-                                    <i className="fa fa-comments" aria-hidden="true"></i>
-                                    <p className="nav-text">group chat</p>
-                                </div>
-                            </div>
-                            <div className="right-nav-wrapper clearfix">
-                                <div className="nav-item right-middle">
-                                    <i className="fa fa-file-text" aria-hidden="true"></i>
-                                    <p className="nav-text">group notebooks</p>
-                                </div>
-                                <div className="nav-item right-second">
-                                    <i className="fa fa-folder-open" aria-hidden="true"></i>
-                                    <p className="nav-text">group folders</p>
-                                </div>
-                                <div className="nav-item last-item">
-                                    <i className="fa fa-list" aria-hidden="true"></i>
-                                    <p className="nav-text">Task Manager</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                    <GroupHeader />
                     <section className="group-content">
                         <div className="sidebar col-sm-4">
                             <div className="grp-desc panel">
                                 <h3 className="panel-title">Description</h3>
-                                <p className="desc">{this.state.group.description}</p>
+                                <p className="desc">{this.state.description}</p>
                             </div>
                             <div className="grp-members panel">
                                 <div className="panel-header clearfix">
