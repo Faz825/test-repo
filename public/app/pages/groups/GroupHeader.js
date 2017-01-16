@@ -33,7 +33,7 @@ export default class GroupHeader extends React.Component{
             <section className="group-header">
                 <div className="header-top">
                     <div className="banner">
-                        <img src="images/group/group-header-bg.png" alt="banner" className="banner-img" />
+                        <img src="../images/group/group-header-bg.png" alt="banner" className="banner-img" />
                     </div>
                     <div className="members-holder">
                         <span className="member-icon"></span>
@@ -45,7 +45,7 @@ export default class GroupHeader extends React.Component{
                 </div>
                 <div className="header-bottom clearfix">
                     <div className="prof-img-holder">
-                        <img src="assets/images/group/grp-profile-pic.png" alt="grp-pic" />
+                        <img src="../images/group/grp-profile-pic.png" alt="grp-pic" />
                     </div>
                     <div className="left-nav-wrapper clearfix">
                         <div className={this.state.activeLayout=='discussion' ? "nav-item first-item active" : "nav-item first-item"} onClick={() => this.setActiveLayout('discussion')}>
