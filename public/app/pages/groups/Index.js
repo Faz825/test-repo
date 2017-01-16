@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import {Alert} from '../../config/Alert';
+import Folders  from './Folders';
 import Session  from '../../middleware/Session';
 import GroupChat  from './GroupChat';
 import GroupProfileImageUploader from '../../components/elements/GroupProfileImageUploader';
