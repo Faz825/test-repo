@@ -1,5 +1,5 @@
 /**
- * The Index view of the caleder section
+ * The Index view of the group section
  */
 import React from 'react';
 import {Alert} from '../../config/Alert';
@@ -66,9 +66,11 @@ export default class Index extends React.Component{
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
-                console.log(data);
                 this.closeSecondStep();
                 this.closeFirstStep();
+                if(data.result.name_prefix) {
+                    window.location = '/group/'+data.result.name_prefix;
+                }
             }
         }.bind(this));
     }

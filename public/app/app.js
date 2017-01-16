@@ -25,6 +25,7 @@ import NotificationsIndex from './pages/notifications/Index';
 import WorkmodeIndex from './pages/workmode/Index';
 import MutualConnections  from './pages/connection/MutualConnections';
 import GroupsIndex from './pages/groups/Index';
+import GroupsDiscussion from './pages/groups/Discussion';
 
 
 let rootRoute =(
@@ -64,8 +65,6 @@ let rootRoute =(
          */
 
         <Route name="connections" path="/connections" component={Connection}/>
-        <Route name="mutual-connections" path="/connections/mutual/:uname" component={MutualConnections}/>
-
 
 
 		/**
@@ -109,8 +108,8 @@ let rootRoute =(
         /**
          * Groups
          */
-
-        <Route name="groups" path="/groups" component={GroupsIndex}/>
+        <Route path="/group" component={GroupsIndex} />
+        <Route path="/group/:name" component={GroupsDiscussion} />
 
         /**
 		 * Workmode

@@ -5,8 +5,10 @@
 
 'use strict';
 var mongoose = require('mongoose'),
-    Schema   = mongoose.Schema,
-    uuid = require('node-uuid');
+    uuid = require('node-uuid'),
+    slug = require('mongoose-slug-generator'),
+    Schema   = mongoose.Schema;
+    mongoose.plugin(slug);
 
 GLOBAL.GroupSharedRequest = {
     REQUEST_PENDING: 1,
@@ -59,6 +61,11 @@ var GroupsSchema = new Schema({
     name:{
         type:String,
         default:null
+    },
+    name_prefix:{
+        type: String,
+        slug: "name",
+        unique: true
     },
     description:{
         type:String,
@@ -136,13 +143,13 @@ GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
     var _this = this;
 
 
-    /* TODO: We can use this aggrigation approch, 
+    /* TODO: We can use this aggrigation approch,
     when we are using new version (3.2) of MongoDB */
     /*_this.aggregate([
-        { 
-            "$match": { 
-                "_id": groupId       
-            } 
+        {
+            "$match": {
+                "_id": groupId
+            }
         },
         {
             "$filter": {
@@ -160,7 +167,7 @@ GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
                 "as" : "member"
             }
         }
-    ]).exec(function(err, results) { 
+    ]).exec(function(err, results) {
         if (err) throw err;
     });*/
 
@@ -175,7 +182,7 @@ GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
 
                 var member = members[i];
                 if(member.status == 3) {
-                    tmpArray.push(member.user_id);  
+                    tmpArray.push(member.user_id);
                 }
 
                 if(members.length == i + 1) {
@@ -191,6 +198,28 @@ GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
             callBack({status:400, error:err});
         }
     })
+};
+
+/**
+ * Get Groups By a given criteria
+ */
+GroupsSchema.statics.get = function(criteria,callBack){
+
+    var _this = this;
+
+    _this.find(criteria).exec(function (err, resultSet) {
+        if (!err) {
+            if (resultSet == null) {
+                callBack(null);
+                return;
+            }
+            callBack(resultSet);
+        } else {
+            console.log(err)
+            callBack({status: 400, error: err})
+        }
+    });
+
 };
 
 /**

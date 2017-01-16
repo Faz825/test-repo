@@ -88,7 +88,7 @@ GLOBAL.AccessAllow = [
     '/profile-image','/done','/cache-check','/collage-and-job','/test/:id','/news-feed','/news','/chat','/chat/:chatWith','/notes','/notifications','/notes/new-note/:notebook_id',
     '/notes/edit-note/:note_id','/connections', '/connections/mutual/:uname','/profile/:name','/profile/:name/:post','/folders','/doc', '/get-connected-users/', '/work-mode',
     '/get-connected-users/:notebook/:name','/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name',
-    '/calendar/:name', '/calendar','/callcenter', '/groups'
+    '/calendar/:name', '/calendar','/callcenter','/group','/group/:name',
 ];
 
 /**
@@ -227,10 +227,12 @@ router.post('/group/add', GroupsController.createGroup);
 router.post('/group/update-description', GroupsController.updateDescription);
 router.post('/group/add-users', GroupsController.addUsers);
 router.post('/group/upload-image', GroupsController.uploadGroupProfileImage);
+router.post('/group/get', GroupsController.get);
 
 // Group Notebook
 router.post('/group/add-notebook', GroupNotebookController.addNewNotebook);
 router.post('/group/remove-member', GroupsController.removeMember);
+
 
 // Group Folder
 router.post('/group-folders/add-new', GroupFolderController.addNewFolder);

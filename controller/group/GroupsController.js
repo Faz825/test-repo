@@ -10,7 +10,7 @@
 var GroupsController = {
 
     createGroup: function (req, res) {
-        
+
         var Groups = require('mongoose').model('Groups');
         var Folders = require('mongoose').model('Folders');
         var NoteBook = require('mongoose').model('NoteBook');
@@ -44,6 +44,8 @@ var GroupsController = {
                 });
             },
             function updateImageDocument(groupData, callBack) {
+                console.log("PIC ID :: " + req.body._group_pic_id);
+                console.log("GROUP ID :: " + groupData._id);
                 if (typeof req.body._group_pic_id != 'undefined') {
                     var filter = { "_id" : req.body._group_pic_id };
                     var value = { "entity_id" : groupData._id };
@@ -54,6 +56,7 @@ var GroupsController = {
                         callBack(null, groupData);
                     });
                 } else {
+                    console.log(" NO PIC ID");
                     callBack(null, groupData);
                 }
             },
@@ -400,7 +403,37 @@ var GroupsController = {
                 res.status(400).send(outPut);
             }
         });
+    },
+
+    /**
+     * This function returns a given group
+     * @param req
+     * @param res
+     * @returns Object outPut
+     */
+    get: function (req, res) {
+
+        var Group = require('mongoose').model('Groups');
+        var namePrefix = req.params['name_prefix'];
+        var _async = require('async');
+        console.log(groupId + " >> GROUP Fetching is initiated");
+        _async.waterfall([
+            function getEvent(callBack){
+                Group.get({"name_prefix" : namePrefix}, function(result) {
+                    if(result.error && result == null) {
+                        callBack(result.error, null);
+                    }
+                    callBack(null, result);
+                });
+            }
+        ], function (err, group) {
+            var outPut = {};
+            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            outPut['group'] = group;
+            res.status(200).send(outPut);
+            return;
+        });
     }
-};
+}
 
 module.exports = GroupsController;
