@@ -18,37 +18,12 @@ export default class Discussion extends React.Component{
         this.state = {
             user : user,
             currentGroup : group
+            membersCount : 0
         };
     }
 
-    // componentDidMount() {
-    //     this.loadEvents();
-    // }
-    //
-    // loadEvents() {
-    //
-    //     $.ajax({
-    //         url : '/groups/get-group',
-    //         method : "POST",
-    //         data : { name_prefix : this.state.currentGroup},
-    //         dataType : "JSON",
-    //         headers : { "prg-auth-header" : this.state.user.token },
-    //         success : function (data, text) {
-    //             if (data.status.code == 200) {
-    //                 console.log(data);
-    //                 console.log("GROUP DATA FETCHED");
-    //                 this.setState({description: data.group.description});
-    //             }
-    //         }.bind(this),
-    //         error: function (request, status, error) {
-    //             console.log(error);
-    //         }
-    //     });
-    // }
-
     render() {
         return (
-
             <section className="group-content">
                 <div className="sidebar col-sm-4">
                     <div className="grp-desc panel">

@@ -42,7 +42,9 @@ var GroupNotebookController = {
                 });
             },
             function getGroupMembers(notebook, callBack) {
-                Groups.getGroupMembers(notebook.group_id, function (r) {
+
+                var criteria = {_id: Util.toObjectId(notebook.group_id)};
+                Groups.getGroupMembers(criteria, function (r) {
 
                     for(var i = 0; i< r.members.length; i++){
                         if(r.members[i].toString() == _notebook.user_id.toString()){

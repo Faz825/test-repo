@@ -162,7 +162,8 @@ var GroupsController = {
         var groupId = req.body._groupId;
         _async.waterfall([
             function getGroupMembers(callBack) {
-                Groups.getGroupMembers(groupId, function (membersResult) {
+                var criteria = {_id: Util.toObjectId(groupId)};
+                Groups.getGroupMembers(criteria, function (membersResult) {
 
                     callBack(null, membersResult.members);
                 });
@@ -416,6 +417,7 @@ var GroupsController = {
         var _async = require('async');
         var namePrefix = req.body.name_prefix;
 
+
         _async.waterfall([
             function getEvent(callBack){
             var criteria = { "name_prefix" : namePrefix };
@@ -429,8 +431,102 @@ var GroupsController = {
             }
         ], function (err, group) {
             var outPut = {};
-            outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['group'] = group;
+            if(err){
+                outPut['status'] = ApiHelper.getMessage(500, Alert.ERROR, Alert.ERROR);
+                outPut['group'] = null;
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['group'] = group;
+            }
+            res.status(200).send(outPut);
+            return;
+        });
+    },
+
+    /**
+     * This function returns a given group
+     * @param req
+     * @param res
+     * @returns Object outPut
+     */
+    getGroupMembers: function (req, res) {
+        var Group = require('mongoose').model('Groups');
+        var name_prefix = req.body.name_prefix;
+        var _async = require('async');
+        _async.waterfall([
+            function getEvent(callBack){
+                var criteria = {name_prefix: name_prefix};
+                Group.getGroupMembers(criteria, function(result) {
+                    if(result.error && result == null) {
+                        callBack(result.error, null);
+                    }
+                    callBack(null, result);
+                });
+            }
+        ], function (err, group) {
+            var outPut = {};
+            if(err){
+                outPut['status'] = ApiHelper.getMessage(500, Alert.ERROR, Alert.ERROR);
+                outPut['members'] = null;
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['members'] = group;
+            }
+            res.status(200).send(outPut);
+            return;
+        });
+    },
+
+    /**
+     * This function returns 12 random members
+     * @param req
+     * @param res
+     * @returns Object outPut
+     */
+    getRandomMembers: function (req, res) {
+        var Group = require('mongoose').model('Groups');
+        var User = require('mongoose').model('User');
+        var name_prefix = req.body.name_prefix;
+        var _async = require('async');
+        _async.waterfall([
+            function getEvent(callBack){
+                var criteria = {name_prefix: name_prefix};
+                Group.getGroupMembers(criteria, function(result) {
+                    if(result.error && result == null) {
+                        callBack(result.error, null);
+                    }
+                    callBack(null, result.members);
+                });
+            },
+
+            function getUserData(members, callBack) {
+                for (var i = 0; i < 13; i++) {
+                    var member = members[i];
+                    var criteria = { "_id" : member};
+                    var arrUsers = [];
+                    User.findByCriteria(criteria, function(result) {
+                        if(!result.error) {
+                            vat tmpUser = result.user;
+                            arrUsers.push(tmpUser);
+                        }
+
+                        if(i==12 || i==members.length){
+                            callBack(null, arrUsers);
+                        }
+                    });
+                }
+            }
+
+
+        ], function (err, members) {
+            var outPut = {};
+            if(err){
+                outPut['status'] = ApiHelper.getMessage(500, Alert.ERROR, Alert.ERROR);
+                outPut['members'] = null;
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['members'] = members;
+            }
             res.status(200).send(outPut);
             return;
         });
