@@ -14,7 +14,7 @@ export default class CallModel extends React.Component {
             isCallBtnEnabled: true,
             isVideoBtnEnabled: true,
             isValoumeBtnEnabled: true
-        }
+        };
 
         this.userList = null;
     }
@@ -33,7 +33,6 @@ export default class CallModel extends React.Component {
         let isEnabled = this.state.isValoumeBtnEnabled;
         this.setState({isValoumeBtnEnabled: !isEnabled});
     }
-
 
     onMinimizePopup() {
         this.setState({inCall: false, minimizeBar: true});

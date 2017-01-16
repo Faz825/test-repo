@@ -98,6 +98,7 @@ class CallCenter {
         $.ajax({
             url: '/call/add-record',
             method: "POST",
+            data: {callRecord: oRecord},
             headers: {'prg-auth-header': this.loggedUser.token}
         }).done(function (data) {
             console.log(data);

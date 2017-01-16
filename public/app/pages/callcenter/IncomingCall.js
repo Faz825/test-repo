@@ -57,5 +57,4 @@ export default class IncomingCall extends React.Component {
             </div>
         );
     }
-
 }

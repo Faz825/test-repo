@@ -225,6 +225,10 @@ export default class CallHandler extends React.Component {
         c.connect({audio: true, video: true});
     }
 
+    rejectCall(){
+
+    }
+
     onMinimizePopup() {
         this.setState({inProgressCall: false, minimizeBar: true});
     }
