@@ -482,6 +482,7 @@ var TimeLinePostHandler ={
      * @param callBack
      */
     profileImagePost:function(postData,callBack){
+        console.log("Sedeema ---- 00");
         var _async = require('async'),
             Post = require('mongoose').model('Post'),
             SubscribedPost = require('mongoose').model('SubscribedPost'),
@@ -489,6 +490,7 @@ var TimeLinePostHandler ={
         _async.waterfall([
             //GET FRIEND LIST BASED ON POST OWNER
             function getPostVisibleUsers(callBack){
+            console.log("Sedeema ---- 01");
                 // Add to Cache when it is public or Friend only
                 // TODO:: think for Friend only algorithm separately
                 if(parseInt(_post.post_visible_mode) == PostVisibleMode.PUBLIC ||
@@ -513,6 +515,7 @@ var TimeLinePostHandler ={
                 }
             },
             function savePostInDb(callBack){
+                console.log("Sedeema ---- 02");
 
                 Post.addNew(_post,function(postData){
 
@@ -527,6 +530,7 @@ var TimeLinePostHandler ={
 
             },
             function subscribeToPost(callBack){
+                console.log("Sedeema ---- 03");
                 var _data = {
                     user_id:_post.created_by,
                     post_id:_post.post_id
@@ -538,6 +542,7 @@ var TimeLinePostHandler ={
             },
             //Add to Uploads
             function saveUploads(callBack){
+                console.log("Sedeema ---- 04");
 
                 var Upload = require('mongoose').model('Upload'),
                     upload_data = [],
@@ -570,11 +575,14 @@ var TimeLinePostHandler ={
 
             },
             function saveInCache(callBack){
-
-                Post.addToCache(_post.visible_users,_post,function(chData){ });
-                callBack(null)
+                console.log("Sedeema ---- 05");
+                Post.addToCache(_post.visible_users,_post,function(chData){
+                    "use strict";
+                    callBack(null)
+                });
             },
             function finalizedPost(callBack){
+                console.log("Sedeema ---- 06");
 
                 if(_post.post_owned_by !== undefined) {
                     var query = {
@@ -616,6 +624,7 @@ var TimeLinePostHandler ={
             }
 
         ],function(err,resultSet){
+            console.log("Sedeema ---- 07");
             callBack(_post)
         });
 
