@@ -228,6 +228,7 @@ router.post('/groups/add-users', GroupsController.addUsers);
 router.post('/groups/upload-image', GroupsController.uploadGroupProfileImage);
 router.post('/groups/get-group', GroupsController.getGroup);
 router.post('/groups/get-group-members', GroupsController.getGroupMembers);
+router.post('/groups/get-random-members', GroupsController.getRandomMembers);
 
 // Group Notebook
 router.post('/group/add-notebook', GroupNotebookController.addNewNotebook);

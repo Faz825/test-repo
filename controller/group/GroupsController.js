@@ -506,7 +506,7 @@ var GroupsController = {
                     var arrUsers = [];
                     User.findByCriteria(criteria, function(result) {
                         if(!result.error) {
-                            vat tmpUser = result.user;
+                            var tmpUser = result.user;
                             arrUsers.push(tmpUser);
                         }
 

@@ -17,7 +17,7 @@ export default class Discussion extends React.Component{
         var group = this.props.myGroup;
         this.state = {
             user : user,
-            currentGroup : group
+            currentGroup : group,
             membersCount : 0
         };
     }
