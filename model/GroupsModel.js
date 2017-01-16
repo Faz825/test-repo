@@ -139,7 +139,7 @@ GroupsSchema.statics.createGroup = function(groupData,callBack){
  * @param groupData
  * @param callBack
  */
-GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
+GroupsSchema.statics.getGroupMembers = function(criteria,callBack){
     var _this = this;
 
 
@@ -170,9 +170,8 @@ GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
     ]).exec(function(err, results) {
         if (err) throw err;
     });*/
-
-
-    _this.find({_id: Util.toObjectId(groupId)}).select('created_by members -_id').exec(function(err,resultSet){
+    
+    _this.find(criteria).select('created_by members -_id').exec(function(err,resultSet){
         if(!err){
 
             console.log(resultSet);
