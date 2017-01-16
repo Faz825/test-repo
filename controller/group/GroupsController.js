@@ -412,20 +412,19 @@ var GroupsController = {
      * @returns Object outPut
      */
     getGroup: function (req, res) {
-        console.log( req.params['name_prefix'] + " >> GROUP Fetching is initiated");
         var Group = require('mongoose').model('Groups');
-        var namePrefix = req.params['name_prefix'];
-        console.log(req.params);
-
         var _async = require('async');
+        var namePrefix = req.body.name_prefix;
 
         _async.waterfall([
             function getEvent(callBack){
-                Group.get({"name_prefix" : namePrefix}, function(result) {
-                    if(result.error && result == null) {
-                        callBack(result.error, null);
+            var criteria = { "name_prefix" : namePrefix };
+                Group.getGroup(criteria, function(result) {
+                    if(result.status==200) {
+                        callBack(null, result.group[0]);
+                    } else {
+                        callBack(null, null);
                     }
-                    callBack(null, result);
                 });
             }
         ], function (err, group) {

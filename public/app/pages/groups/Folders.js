@@ -99,8 +99,7 @@ export default class Index extends React.Component{
                                                     </div>
                                                 </div>
                                                 <div className="folder-col">
-                                                    <div className="folder-item image"
-                                                         style="background-image: url(assets/images/folder/sample_png.png)">
+                                                    <div className="folder-item image">
                                                         <div className="time-wrapper">
                                                             <p className="date-created">July 28, 2016</p>
                                                             <p className="time-created">12.34pm</p>
@@ -136,8 +135,7 @@ export default class Index extends React.Component{
                                                     </div>
                                                 </div>
                                                 <div className="folder-col">
-                                                    <div className="folder-item image"
-                                                         style="background-image: url(assets/images/folder/sample_png.png)">
+                                                    <div className="folder-item image">
                                                         <div className="time-wrapper">
                                                             <p className="date-created">July 28, 2016</p>
                                                             <p className="time-created">12.34pm</p>
@@ -230,8 +228,7 @@ export default class Index extends React.Component{
                                                     </div>
                                                 </div>
                                                 <div className="folder-col">
-                                                    <div className="folder-item image"
-                                                         style="background-image: url(assets/images/folder/sample_png.png)">
+                                                    <div className="folder-item image">
                                                         <div className="time-wrapper">
                                                             <p className="date-created">July 28, 2016</p>
                                                             <p className="time-created">12.34pm</p>
@@ -267,8 +264,7 @@ export default class Index extends React.Component{
                                                     </div>
                                                 </div>
                                                 <div className="folder-col">
-                                                    <div className="folder-item image"
-                                                         style="background-image: url(assets/images/folder/sample_png.png)">
+                                                    <div className="folder-item image">
                                                         <div className="time-wrapper">
                                                             <p className="date-created">July 28, 2016</p>
                                                             <p className="time-created">12.34pm</p>

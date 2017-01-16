@@ -203,17 +203,14 @@ GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
 /**
  * Get Groups By a given criteria
  */
-GroupsSchema.statics.get = function(criteria,callBack){
+GroupsSchema.statics.getGroup = function(criteria,callBack){
 
     var _this = this;
 
     _this.find(criteria).exec(function (err, resultSet) {
         if (!err) {
-            if (resultSet == null) {
-                callBack(null);
-                return;
-            }
-            callBack(resultSet);
+
+            callBack({status: 200, group: resultSet});
         } else {
             console.log(err)
             callBack({status: 400, error: err})
