@@ -5,6 +5,7 @@
 import Socket from './Socket';
 import Session from '../middleware/Session';
 import {Config} from '../config/Config';
+import {CallType} from '../config/CallcenterStats';
 
 let bit6Client = null;
 
@@ -15,6 +16,7 @@ class CallCenter {
         }
         this.b6 = bit6Client;
         this.bit6Auth();
+        this.loggedUser = Session.getSession('prg_lg');
     }
 
     bit6Auth() {
@@ -77,6 +79,30 @@ class CallCenter {
      * */
     contactsStatus(aContacts, status) {
         this.socket.emit('contacts status', {contacts: aContacts, status: status});
+    }
+
+    /**
+     * @param oCall - bit6 incoming call object
+     * **/
+    getCallType(oCall) {
+        if (oCall.options.audio && !oCall.options.video) {
+            return CallType.AUDIO;
+        } else if (oCall.options.audio && oCall.options.video) {
+            return CallType.VIDEO;
+        } else {
+            return false;
+        }
+    }
+
+    addCallRecord(oRecord) {
+        $.ajax({
+            url: '/call/add-record',
+            method: "POST",
+            data: {callRecord: oRecord},
+            headers: {'prg-auth-header': this.loggedUser.token}
+        }).done(function (data) {
+            console.log(data);
+        });
     }
 }
 

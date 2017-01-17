@@ -4,6 +4,7 @@
 
 import React from "react";
 import {Popover, OverlayTrigger} from 'react-bootstrap';
+import {CallType} from '../../config/CallcenterStats';
 
 export default class CallModel extends React.Component {
     constructor(props) {
@@ -13,72 +14,9 @@ export default class CallModel extends React.Component {
             isCallBtnEnabled: true,
             isVideoBtnEnabled: true,
             isValoumeBtnEnabled: true
-        }
+        };
 
-        this.userList = [
-            {
-                "user_id": "57fcded7a083f22a099afffe",
-                "email": "prasad2@gmail.com",
-                "mood": 1,
-                "contact_type": 1,
-                "call_type": 2,
-                "calls": 1,
-                "first_name": "prasad3",
-                "last_name": "sampath",
-                "zip_code": null,
-                "dob": "2-02-2013",
-                "country": "United States",
-                "user_name": "prasad2.sampath.86688",
-                "introduction": null,
-                "cur_exp_id": "57fcdeeba083f22a099affff",
-                "cur_working_at": "asd",
-                "cur_designation": "asd",
-                "call_time": "2:03 AM",
-                "city_details": "United States",
-                "connection_count": 0,
-                "calls": "2",
-                "images": {
-                    "profile_image": {
-                        "id": "DEFAULT",
-                        "file_name": "default_profile_image.png",
-                        "file_type": ".png",
-                        "http_url": "/images/default-profile-pic.png"
-                    }
-                },
-                "connected_at": "2016-10-11T12:47:03.594Z"
-            },
-            {
-                "user_id": "57fcded7a083f22a099afffe",
-                "email": "prasad2@gmail.com",
-                "mood": 1,
-                "contact_type": 1,
-                "call_type": 2,
-                "calls": 1,
-                "first_name": "prasad2",
-                "last_name": "sampath",
-                "zip_code": null,
-                "dob": "2-02-2013",
-                "country": "United States",
-                "user_name": "prasad2.sampath.86689",
-                "introduction": null,
-                "cur_exp_id": "57fcdeeba083f22a099affff",
-                "cur_working_at": "asd",
-                "cur_designation": "asd",
-                "call_time": "2:03 AM",
-                "city_details": "United States",
-                "connection_count": 0,
-                "calls": "2",
-                "images": {
-                    "profile_image": {
-                        "id": "DEFAULT",
-                        "file_name": "default_profile_image.png",
-                        "file_type": ".png",
-                        "http_url": "/images/default-profile-pic.png"
-                    }
-                },
-                "connected_at": "2016-10-11T12:47:03.594Z"
-            }
-        ];
+        this.userList = null;
     }
 
     onCallBtnClick() {
@@ -96,6 +34,14 @@ export default class CallModel extends React.Component {
         this.setState({isValoumeBtnEnabled: !isEnabled});
     }
 
+    onMinimizePopup() {
+        this.setState({inCall: false, minimizeBar: true});
+    }
+
+    onPopupClose() {
+        this.setState({inCall: false, minimizeBar: false});
+    }
+
     render() {
         let i = (
             <Popover id="popover-contained" className="share-popover-contained callpopup popup-holder"
@@ -107,7 +53,7 @@ export default class CallModel extends React.Component {
             </Popover>
         );
 
-        let _target_user = this.props.targetUser;
+        console.log(this.props.callMode == CallType.AUDIO);
 
         return (
             <div className="popup-holder">
@@ -123,7 +69,11 @@ export default class CallModel extends React.Component {
                                 <span className="expand-ico"></span>
                             </div>
                             <div className="active-user-block">
-                                <img src="/images/call-center/cc-active-user.png" />
+                                <div id="webcamStage">
+                                    {   (this.props.callMode == CallType.AUDIO) ?
+                                        <img src="/images/call-center/cc-active-user.png"/>
+                                        : null }
+                                </div>
                                 <div className="active-call-nav">
                                     <span className={(this.state.isVideoBtnEnabled) ? "video active" : "video"}
                                           onClick={this.onVideoBtnClick.bind(this)}></span>
@@ -134,7 +84,9 @@ export default class CallModel extends React.Component {
                                     <span className="hang-up" onClick={(e) => this.props.closePopup(e)}></span>
                                 </div>
                             </div>
-                            <UserBlock users={this.userList} loggedUser={this.props.loggedUser}/>
+                            {
+                                <UserBlock targetUser={this.props.targetUser} loggedUser={this.props.loggedUser}/>
+                            }
                             <div className="call-timer">
                                 <p className="call-status">On Call -</p>
                                 <p className="call-time">00 : 00 : 10</p>
@@ -154,7 +106,6 @@ export class UserBlock extends React.Component {
         this.state = {
             userName: this.props.loggedUser.user_name
         }
-
     }
 
     onUserClick(user) {
@@ -166,30 +117,31 @@ export class UserBlock extends React.Component {
     }
 
     render() {
+        //noinspection CheckTagEmptyBody
         let _this = this,
             _loggedUser = this.props.loggedUser,
-            _usersHtml = this.props.users.map(function (user, key) {
-                return (
-                    <div className={_this.isUserActive(user.user_name)} onClick={_this.onUserClick.bind(_this, user)}
-                         key={key}>
-                        <img src={user.images.profile_image.http_url}/>
-                        <span className="active-user"></span>
-                    </div>
-                )
-            });
+            _targetUser = this.props.targetUser,
+            _targetHtml = <div className={_this.isUserActive(_targetUser.user_name)}
+                               onClick={_this.onUserClick.bind(_this, _targetUser)}>
+                <img src={_targetUser.profile_image}/>
+                <span className="active-user"></span>
+            </div>;
+
         return (
             <div className="participants">
-                <div className={this.isUserActive(_loggedUser.user_name)}
+                <div id="origin_webcamStage" className={this.isUserActive(_loggedUser.user_name)}
                      onClick={this.onUserClick.bind(this, _loggedUser)}>
-                    <img
-                        src={(_loggedUser.profile_image) ? _loggedUser.profile_image : "/images/default-profile-pic.png"}/>
+                    {   (this.props.callMode == CallType.AUDIO) ?
+                        <img
+                            src={(_loggedUser.profile_image) ? _loggedUser.profile_image : "/images/default-profile-pic.png"}/>
+                        : null }
                     <div className="actions-wrapper">
                         <span className="video"></span>
                         <span className="mute"></span>
                     </div>
                     <span className="active-user"></span>
                 </div>
-                {_usersHtml}
+                {_targetHtml}
             </div>
         )
     }

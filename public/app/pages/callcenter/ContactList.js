@@ -8,8 +8,8 @@ export default class ContactList extends React.Component {
         this.contacts = [];
     }
 
-    onCalling(user, callType) {
-        this.props.onUserCall(user, callType);
+    onCalling(user, callMode) {
+        this.props.onUserCall(user, callMode);
     }
 
     render() {

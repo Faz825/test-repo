@@ -177,7 +177,7 @@ export default class DayView extends Component {
 
         // the button dissabled untill the response comes
         this.setState({ isButtonDisabled: true});
-        
+
         $.ajax({
             url: '/calendar/event/add',
             method: "POST",
@@ -469,7 +469,7 @@ export default class DayView extends Component {
 
         const editorState = EditorState.push(this.refs.EditorFieldValues.state.editorState, newContent);
         this.refs.EditorFieldValues.setState({editorState});
-        
+
         // removing name and the id from the list.
         this.sharedWithIds.splice(key,1);
         this.sharedWithNames.splice(key,1);
@@ -484,11 +484,11 @@ export default class DayView extends Component {
 
             // indexOf returnes the key of the matching value
             // splice removes the given key form the array.
-            this.sharedWithIds.splice(this.sharedWithIds.indexOf(arrUsers[i]),1); 
+            this.sharedWithIds.splice(this.sharedWithIds.indexOf(arrUsers[i]),1);
             this.sharedWithNames.splice(this.sharedWithNames.indexOf(arrUsers[i]),1);
 
             if(i == (arrUsers.length - 1)) {
-                this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});        
+                this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
             }
         }
 
@@ -570,10 +570,10 @@ export default class DayView extends Component {
                                 <div className="row calender-input">
                                     <div className="col-sm-12">
                                         <div className="input" id="editor-holder" >
-                                            <EditorField 
-                                                ref="EditorFieldValues" 
-                                                setTime={this.setTime.bind(this)} 
-                                                setSharedUsers={this.setSharedUsers.bind(this)} 
+                                            <EditorField
+                                                ref="EditorFieldValues"
+                                                setTime={this.setTime.bind(this)}
+                                                setSharedUsers={this.setSharedUsers.bind(this)}
                                                 removeUsersByName={this.removeUsersByName.bind(this)}
                                             />
 

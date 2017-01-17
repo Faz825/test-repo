@@ -89,7 +89,7 @@ var CallCenterController = {
          * @param res
          */
         addCallRecord: function (req, res) {
-
+            console.log(req.body.callRecord);
         },
 
         /**
