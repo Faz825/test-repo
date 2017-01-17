@@ -104,9 +104,10 @@ router.all('/*', oAuth.Authentication);
 router.get('/introduction/:uname', UserController.retrieveIntroduction);
 router.get('/get-folder-users/:folder/:name', UserController.getFolderUsers);
 router.get('/get-folder-users/:folder', UserController.getFolderUsers);
-router.get('/filter-folder-shared-users/:folder/:name', UserController.filterFolderSharedUsers);
+
 router.get('/connections/get', UserController.getConnections);
 router.get('/connection/count', UserController.connectionCount);
+
 router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
 router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
 router.post('/secretary/save', UserController.saveSecretary);
