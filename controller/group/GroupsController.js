@@ -44,8 +44,7 @@ var GroupsController = {
                 });
             },
             function updateImageDocument(groupData, callBack) {
-                console.log("PIC ID :: " + req.body._group_pic_id);
-                console.log("GROUP ID :: " + groupData._id);
+
                 if (typeof req.body._group_pic_id != 'undefined') {
                     var filter = { "_id" : req.body._group_pic_id };
                     var value = { "entity_id" : groupData._id };
@@ -56,7 +55,6 @@ var GroupsController = {
                         callBack(null, groupData);
                     });
                 } else {
-                    console.log(" NO PIC ID");
                     callBack(null, groupData);
                 }
             },
@@ -483,49 +481,65 @@ var GroupsController = {
      * @param res
      * @returns Object outPut
      */
-    getRandomMembers: function (req, res) {
+    getMembers: function (req, res) {
         var Group = require('mongoose').model('Groups');
         var User = require('mongoose').model('User');
+        var Upload = require('mongoose').model('Upload');
         var name_prefix = req.body.name_prefix;
+        var defaultRandomMemberCount = 12;
+
         var _async = require('async');
         _async.waterfall([
-            function getEvent(callBack){
+            function getGroupMembers(callBack){
+
                 var criteria = {name_prefix: name_prefix};
                 Group.getGroupMembers(criteria, function(result) {
                     if(result.error && result == null) {
                         callBack(result.error, null);
                     }
-                    callBack(null, result.members);
+                    callBack(null, result);
                 });
             },
-
-            function getUserData(members, callBack) {
-                for (var i = 0; i < 13; i++) {
-                    var member = members[i];
-                    var criteria = { "_id" : member};
-                    var arrUsers = [];
-                    User.findByCriteria(criteria, function(result) {
-                        if(!result.error) {
-                            var tmpUser = result.user;
-                            arrUsers.push(tmpUser);
+            function composeMembers(membersResult, callBack) {
+                var i = 0;
+                var arrUsers = [];
+                var BreakException = {};
+                var members = membersResult.memberObjs;
+                members.forEach(function(member) {
+                    Upload.getProfileImage(member.user_id, function (profileImageData) {
+                        var url = '';
+                        if (profileImageData.status != 200) {
+                            url = Config.DEFAULT_PROFILE_IMAGE;
+                        } else {
+                            url = profileImageData.image.profile_image.http_url;
                         }
 
-                        if(i==12 || i==members.length){
-                            callBack(null, arrUsers);
+                        var tmpUserObj = {
+                            name: member.name,
+                            user_id: member.user_id,
+                            status: member.status,
+                            permissions: member.permissions,
+                            _id:member._id,
+                            profile_image:url
+                        };
+                        arrUsers.push(tmpUserObj);
+                        i = i+1;
+
+                        if( ( i == members.length && members.length != defaultRandomMemberCount+1) || i == defaultRandomMemberCount ){
+                            callBack(null, membersResult, arrUsers);
                         }
                     });
-                }
+                });
             }
-
-
-        ], function (err, members) {
+        ], function (err, groupMembers, randomMembers) {
             var outPut = {};
             if(err){
                 outPut['status'] = ApiHelper.getMessage(500, Alert.ERROR, Alert.ERROR);
                 outPut['members'] = null;
             } else {
+                groupMembers['random_members'] = randomMembers;
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['members'] = members;
+                outPut['members'] = groupMembers;
             }
             res.status(200).send(outPut);
             return;

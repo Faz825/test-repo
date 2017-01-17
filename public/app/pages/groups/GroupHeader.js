@@ -24,8 +24,6 @@ export default class GroupHeader extends React.Component{
         this.props.setGroupLayout(_value);
         this.setState({activeLayout:_value});
         //this.activeLayout = _value;
-
-
     }
 
     render() {

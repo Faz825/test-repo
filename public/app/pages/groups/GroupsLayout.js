@@ -39,8 +39,6 @@ export default class GroupsLayout extends React.Component {
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
                 if (data.status.code == 200) {
-                    console.log(data);
-                    console.log("GROUP DATA FETCHED");
                     this.setState({group_name: groupPrefix, group: data.group});
                 }
             }.bind(this),

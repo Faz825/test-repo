@@ -170,25 +170,28 @@ GroupsSchema.statics.getGroupMembers = function(criteria,callBack){
     ]).exec(function(err, results) {
         if (err) throw err;
     });*/
-    
+
     _this.find(criteria).select('created_by members -_id').exec(function(err,resultSet){
         if(!err){
 
             console.log(resultSet);
-            var members = resultSet[0].members;
+            var memberObjs = resultSet[0].members;
             var tmpArray = [];
-            for (var i = 0; i < members.length; i++) {
+            var tmpObjArray = [];
+            for (var i = 0; i < memberObjs.length; i++) {
 
-                var member = members[i];
+                var member = memberObjs[i];
                 if(member.status == 3) {
                     tmpArray.push(member.user_id);
+                    tmpObjArray.push(member);
                 }
 
-                if(members.length == i + 1) {
+                if(memberObjs.length == i + 1) {
                     callBack({
                         owner : resultSet[0].created_by,
                         members : tmpArray,
-                        members_count : tmpArray.length
+                        members_count : tmpArray.length,
+                        memberObjs : tmpObjArray
                     });
                 }
             }
