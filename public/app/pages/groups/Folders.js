@@ -4,6 +4,7 @@
 import React from 'react';
 import {Alert} from '../../config/Alert';
 import Session  from '../../middleware/Session';
+import FolderList from '../folders/FoldersList';
 
 export default class Index extends React.Component{
 
@@ -14,10 +15,111 @@ export default class Index extends React.Component{
             window.location.href = "/";
         }
         super(props);
-        this.state = {};
+        this.state = {
+            loggedUser : Session.getSession('prg_lg'),
+            group: this.props.myGroup,
+            members_count:1,
+            folders:[]
+        };
+
+        this.loadFolders = this.loadFolders.bind(this);
+    }
+
+    componentWillMount() {
+        this.checkDefaultFolder();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(typeof nextProps.myGroup != 'undefined' && nextProps.myGroup) {
+            let _count = typeof nextProps.myGroup.members == 'undefined' ? 1 : nextProps.myGroup.members.length + 1;
+            this.setState({group: nextProps.myGroup, members_count: _count});
+        }
+    }
+
+    checkDefaultFolder(){
+
+        console.log("came to checkDefaultFolder---");
+        console.log(this.state.group);
+
+        if(typeof this.state.group != 'undefined') {
+            $.ajax({
+                url: '/group-folders/count/'+ this.state.group._id,
+                method: "GET",
+                dataType: "JSON",
+                headers: {'prg-auth-header': this.state.loggedUser.token}
+            }).done( function (data, text){
+                if(data.status.code == 200){
+                    console.log("results from checkDefaultFolder");
+                    console.log(data);
+                    if(data.count == 0){
+                        this.addDefaultFolder();
+                    } else{
+                        this.loadFolders();
+                    }
+                }
+            }.bind(this));
+        }
+
+    }
+
+    loadFolders(){
+
+        $.ajax({
+            url: '/group-folders/get-all/'+ this.state.group._id,
+            method: "GET",
+            dataType: "JSON",
+            headers: {'prg-auth-header': this.state.loggedUser.token}
+        }).done( function (data, text){
+
+            if(data.status.code == 200){
+                console.log("results from loadFolders --");
+                console.log(data);
+                this.setState({folders: data.folders});
+            }
+
+        }.bind(this));
+    }
+
+    addDefaultFolder(){
+
+        let _members = this.state.group.members;
+
+        let _data = {
+            folder_name: this.state.group.name,
+            folder_color: "#1b9ed9",
+            shared_with: this.state.group.members,
+            isDefault: 1,
+            folder_type:1,
+            group_id:this.state.group._id,
+            group_members: _members ? _members : []
+        }
+
+        $.ajax({
+            url: '/group-folders/add',
+            method: "POST",
+            dataType: "JSON",
+            headers: {'prg-auth-header': this.state.loggedUser.token},
+            data: _data
+        }).done( function (data, text){
+            if (data.status.code == 200) {
+                let folders = [data.folder];
+                this.setState({folders: folders});
+                console.log("folder added  successfully ", folders);
+            }
+        }.bind(this));
     }
 
     render() {
+
+        console.log("before loading folder list ");
+        console.log(this.state.folders);
+
+        let _this = this;
+        let folderList = this.state.folders.map(function(folder,key){
+            return (
+                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} />
+            )
+        });
 
         return (
             <section className="group-content">
@@ -43,260 +145,7 @@ export default class Index extends React.Component{
                         </div>
                     </section>
                     <section className="folder-body">
-                        <div className="row folder pink">
-                            <div className="folder-wrapper">
-                                <div className="drag-shader">
-                                    <p className="drag-title">Drag and Drop Link/Folder here</p>
-                                </div>
-                                <div className="col-sm-2">
-                                    <div className="folder-cover-wrapper">
-                                        <span className="folder-overlay"></span>
-                                        <span className="folder-overlay"></span>
-                                        <div className="folder-cover">
-                                            <div className="content-wrapper">
-                                                <div className="logo-wrapper">
-                                                    <img src="assets/images/user-rounded.png" alt="Folder Name" className="img-rounded"/>
-                                                        <div className="logo-shader"></div>
-                                                        <div className="logo-shader"></div>
-                                                </div>
-                                                <h3>My Folder</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-sm-10">
-                                    <div className="row">
-                                        <div className="folder-content-wrapper">
-                                            <div className="folder-items-wrapper">
-                                                <div className="folder-col">
-                                                    <div className="folder-item upload-file">
-                                                        <i className="fa fa-plus"></i>
-                                                        <p>Upload new file or image</p>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item pdf">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item doc">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item image">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item pdf">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item doc">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item image">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item pdf">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="see-all">
-                                                <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
-                                                <p>See All</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row folder pink">
-                            <div className="folder-wrapper drag">
-                                <div className="drag-shader">
-                                    <p className="drag-title">Drag and Drop Link/Folder here</p>
-                                </div>
-                                <div className="col-sm-2">
-                                    <div className="folder-cover-wrapper">
-                                        <span className="folder-overlay"></span>
-                                        <span className="folder-overlay"></span>
-                                        <div className="folder-cover">
-                                            <div className="folder-overlay"></div>
-                                            <div className="content-wrapper">
-                                                <div className="logo-wrapper">
-                                                    <img src="assets/images/user-rounded.png" alt="Folder Name" className="img-rounded"/>
-                                                        <div className="logo-shader"></div>
-                                                        <div className="logo-shader"></div>
-                                                </div>
-                                                <h3>Ambi</h3>
-                                            </div>
-                                            <div className="share-folder">
-                                                <i className="fa fa-share-alt" aria-hidden="true"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-sm-10">
-                                    <div className="row">
-                                        <div className="folder-content-wrapper">
-                                            <div className="folder-items-wrapper">
-                                                <div className="folder-col">
-                                                    <div className="folder-item upload-file">
-                                                        <i className="fa fa-plus"></i>
-                                                        <p>Upload new file or image</p>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item pdf">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item doc">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item image">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item pdf">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item doc">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item image">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                                <div className="folder-col">
-                                                    <div className="folder-item pdf">
-                                                        <div className="time-wrapper">
-                                                            <p className="date-created">July 28, 2016</p>
-                                                            <p className="time-created">12.34pm</p>
-                                                        </div>
-                                                        <div className="folder-title-holder">
-                                                            <p className="folder-title">Cambodia Final Paper</p>
-                                                        </div>
-                                                        <div className="item-type"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="see-all">
-                                                <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
-                                                <p>See All</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {folderList}
                     </section>
                 </div>
             </section>

@@ -15,7 +15,7 @@ export default class GroupsLayout extends React.Component {
         }
         super(props);
         this.state = {
-            groupLayout : 'folder',
+            groupLayout : 'discussion',
             user: user,
             group_name:'',
             group:{},
@@ -27,7 +27,7 @@ export default class GroupsLayout extends React.Component {
 
     }
 
-    componentDidMount() {
+    componentWillMount() {
         var groupPrefix = this.props.params.name;
         let _data = {
             name_prefix : groupPrefix
@@ -41,6 +41,8 @@ export default class GroupsLayout extends React.Component {
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
                 if (data.status.code == 200) {
+                    console.log("GROUP DATA FETCHED");
+                    console.log(data.group);
                     this.setState({group_name: groupPrefix, group: data.group});
                 }
             }.bind(this),
@@ -110,7 +112,7 @@ export default class GroupsLayout extends React.Component {
 
             <section className="group-container">
                 <div className="container">
-                    <GroupHeader setGroupLayout={this.setGroupLayout} membersCount={this.state.membersCount} />
+                    <GroupHeader myGroup={this.state.group} setGroupLayout={this.setGroupLayout} membersCount={this.state.membersCount} />
                     {this.loadLayoutPage()}
                 </div>
             </section>
