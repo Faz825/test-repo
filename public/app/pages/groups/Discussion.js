@@ -5,6 +5,8 @@ import React from 'react';
 import Session  from '../../middleware/Session';
 import GroupHeader from './GroupHeader';
 
+import SearchMembersField  from './elements/SearchMembersField';
+
 export default class Discussion extends React.Component{
 
     constructor(props) {
@@ -130,6 +132,10 @@ export class MembersWidget extends React.Component{
         }
     }
 
+    handleSearchUser(sharedWithIds, members){
+        this.setState({sharedWithIds:this.sharedWithIds, members:this.members});
+    }
+
     render() {
         var userBlocks = '';
         var overflowCount = this.state.membersCount-this.state.randomMembers.length;
@@ -142,11 +148,11 @@ export class MembersWidget extends React.Component{
                 if(userKey+1 == _this.state.randomMembers.length && _this.state.randomMembers.length < _this.state.membersCount) {
 
                     return <div className="mem-img last-mem">
-                                <img src={member.profile_image} alt="mem" />
-                                <div className="mem-count">
-                                    <span className="count">{overflowCountStr}</span>
-                                </div>
-                            </div>;
+                        <img src={member.profile_image} alt="mem" />
+                        <div className="mem-count">
+                            <span className="count">{overflowCountStr}</span>
+                        </div>
+                    </div>;
                 } else {
                     return <div className="mem-img"><img src={member.profile_image} alt="mem" /></div>;
                 }
@@ -161,6 +167,10 @@ export class MembersWidget extends React.Component{
                 </div>
                 <div className="add-member">
                     <input type="text" className="form-control" placeholder="+ Add a member to this group..." />
+                    <SearchMembersField
+                        handleSearchUser={this.handleSearchUser}
+                        placeholder="+ Add a member to this group..."
+                    />
                 </div>
                 <div className="all-members clearfix">
                     {userBlocks}
@@ -172,7 +182,7 @@ export class MembersWidget extends React.Component{
 }
 
 /**
- * The Members Widget
+ * The Calendar Widget
  */
 export class CalendarWidget extends React.Component{
 

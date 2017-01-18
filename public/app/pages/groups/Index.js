@@ -8,11 +8,13 @@ import Session  from '../../middleware/Session';
 import GroupChat  from './GroupChat';
 import GroupProfileImageUploader from '../../components/elements/GroupProfileImageUploader';
 
+import SearchMembersField  from './elements/SearchMembersField';
+
 import { Popover } from 'react-bootstrap';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 
-import Autosuggest from 'react-autosuggest';
-import Lib from '../../middleware/Lib';
+// import Autosuggest from 'react-autosuggest';
+// import Lib from '../../middleware/Lib';
 
 export default class Index extends React.Component{
 
@@ -215,7 +217,6 @@ export class CreateStepOne extends React.Component{
     }
 }
 
-
 /**
  * Popup 1 - The group creation
  */
@@ -228,8 +229,6 @@ export class CreateStepTwo extends React.Component{
             groupName : '',
             groupDescription : '',
             members : [],
-            value: '',
-            suggestions: [],
             sharedWithIds : [],
             groupProfileImgSrc : '',
             groupProfileImgId : ''
@@ -243,11 +242,6 @@ export class CreateStepTwo extends React.Component{
         this.setName = this.setName.bind(this);
         this.setDescription = this.setDescription.bind(this);
         this.handleCreate = this.handleCreate.bind(this);
-        this.removeUser = this.removeUser.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
-        this.getSuggestionValue = this.getSuggestionValue.bind(this);
-        this.renderSuggestion = this.renderSuggestion.bind(this);
         this.imgUpdated = this.imgUpdated.bind(this);
     }
 
@@ -276,78 +270,8 @@ export class CreateStepTwo extends React.Component{
         this.props.handleCreate(groupData);
     }
 
-    // suggest members funtions
-    removeUser(key){
-        this.sharedWithIds.splice(key,1);
-        this.members.splice(key,1);
-        this.setState({sharedWithIds:this.sharedWithIds, members:this.members});
-    }
-
-    getSuggestions(value, data) {
-        const escapedValue = Lib.escapeRegexCharacters(value.trim());
-        if (escapedValue === '') {
-            return [];
-        }
-        const regex = new RegExp('^' + escapedValue, 'i');
-        return data.filter(data => regex.test(data.first_name+" "+data.last_name));
-    }
-
-    getSuggestionValue(suggestion) {
-        if(this.sharedWithIds.indexOf(suggestion.user_id)==-1){
-            var userObject = {
-                "name" : suggestion.first_name+" "+suggestion.last_name,
-            	"user_id" : suggestion.user_id,
-             	"status" : 3
-            }
-            this.members.push(userObject);
-            this.sharedWithIds.push(suggestion.user_id);
-            this.setState({sharedWithIds:this.sharedWithIds, members:this.members, isAlreadySelected:false})
-        } else{
-            this.setState({isAlreadySelected:true});
-            console.log("already selected" + this.state.isAlreadySelected)
-        }
-
-        return "";
-    }
-
-    renderSuggestion(suggestion) {
-        return (
-            <div id={suggestion.user_id} className="suggestion-item">
-                <img className="suggestion-img" src={suggestion.images.profile_image.http_url} alt={suggestion.first_name} />
-                <span>{suggestion.first_name+" "+suggestion.last_name}</span>
-            </div>
-        );
-    }
-
-    onChange(event, { newValue }) {
-        this.setState({ value: newValue, isAlreadySelected:false });
-
-        if(newValue.length > 1){
-            $.ajax({
-                url: '/connection/search/'+newValue,
-                method: "GET",
-                dataType: "JSON",
-                success: function (data, text) {
-                    if(data.status.code == 200){
-                        this.users = data.suggested_users;
-                        this.setState({
-                            suggestions: this.getSuggestions(newValue, this.users)
-                        });
-                    }
-                }.bind(this),
-                error: function (request, status, error) {
-                    console.log(request.responseText);
-                    console.log(status);
-                    console.log(error);
-                }.bind(this)
-            });
-        }
-    }
-
-    onSuggestionsUpdateRequested({ value }) {
-        this.setState({
-            suggestions: this.getSuggestions(value, this.users)
-        });
+    handleSearchUser(sharedWithIds, members){
+        this.setState({sharedWithIds: sharedWithIds, members: members});
     }
 
     imgUpdated(data){
@@ -411,14 +335,10 @@ export class CreateStepTwo extends React.Component{
                                     </div>
                                     <div className="form-group invite-people">
                                         <label>Members</label>
-                                        <Autosuggest suggestions={suggestions}
-                                            onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                                            getSuggestionValue={this.getSuggestionValue}
-                                            renderSuggestion={this.renderSuggestion}
-                                            inputProps={inputProps} />
-                                        { this.state.members.length > 0 ?
-                                                <div className="user-holder">{shared_with_list}</div> : null
-                                        }
+                                        <SearchMembersField
+                                            handleSearchUser={this.handleSearchUser}
+                                            placeholder=""
+                                        />
                                     </div>
                                     <div className="form-group">
                                         <label for="desc">Description</label>
