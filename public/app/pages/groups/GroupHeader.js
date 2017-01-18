@@ -14,10 +14,20 @@ export default class GroupHeader extends React.Component{
         }
         super(props);
         this.state = {
-            user : user
+            user : user,
+            membersCount : this.props.membersCount
         };
         this.activeLayout = 'discussion';
         this.setActiveLayout = this.setActiveLayout.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+        // Basically, whenever you assign parent's props to a child's state
+        // the render method isn't always called on prop update
+        if (nextProps.membersCount !== this.state.membersCount) {
+            this.setState({ membersCount: nextProps.membersCount });
+        }
     }
 
     setActiveLayout(_value) {
@@ -36,7 +46,7 @@ export default class GroupHeader extends React.Component{
                     <div className="members-holder">
                         <span className="member-icon"></span>
                         <div className="mem-count">
-                            <span className="member-count">03</span>
+                            <span className="member-count">{this.state.membersCount}</span>
                             <p className="mem-text">Members</p>
                         </div>
                     </div>

@@ -18,7 +18,9 @@ export default class GroupsLayout extends React.Component {
             groupLayout : 'folder',
             user: user,
             group_name:'',
-            group:{}
+            group:{},
+            membersCount: 0,
+            randomMembers: []
         };
 
         this.setGroupLayout = this.setGroupLayout.bind(this);
@@ -47,6 +49,29 @@ export default class GroupsLayout extends React.Component {
                 this.setState({group_name: groupPrefix});
             }
         });
+
+        this.loadMembers();
+    }
+
+    /* This function returns all the active members of the group
+     * additionally the number of members
+     * Objects array of 12 random members( this amount is configurable )
+     * are retured
+     */
+    loadMembers() {
+        let data = JSON.stringify({ name_prefix : this.props.params.name});
+        $.ajax({
+            url: '/groups/get-members',
+            method: "POST",
+            dataType: "JSON",
+            data: data,
+            headers : { "prg-auth-header" : this.state.user.token },
+            contentType: "application/json; charset=utf-8",
+        }).done(function (data, text) {
+            if(data.status.code == 200){
+                this.setState({randomMembers: data.members.random_members, membersCount: data.members.members_count});
+            }
+        }.bind(this));
     }
 
     setGroupLayout(_value) {
@@ -58,7 +83,13 @@ export default class GroupsLayout extends React.Component {
 
         switch(this.state.groupLayout) {
             case 'discussion':
-                return (<Discussion myGroup={this.state.group}/>);
+                return (
+                    <Discussion
+                        myGroup={this.state.group}
+                        randomMembers={this.state.randomMembers}
+                        membersCount={this.state.membersCount}
+                    />
+                );
             case 'calendar':
                 return null;
             case 'chat':
@@ -79,7 +110,7 @@ export default class GroupsLayout extends React.Component {
 
             <section className="group-container">
                 <div className="container">
-                    <GroupHeader setGroupLayout={this.setGroupLayout} />
+                    <GroupHeader setGroupLayout={this.setGroupLayout} membersCount={this.state.membersCount} />
                     {this.loadLayoutPage()}
                 </div>
             </section>

@@ -20,25 +20,22 @@ export default class Discussion extends React.Component{
         this.state = {
             user : user,
             currentGroup : group,
-            membersCount : 0,
-            randomMembers : []
+            randomMembers : this.props.randomMembers,
+            membersCount : this.props.membersCount
         };
     }
 
-    componentDidMount() {
-        let data = JSON.stringify({ name_prefix : this.state.currentGroup.name_prefix});
-        $.ajax({
-            url: '/groups/get-members',
-            method: "POST",
-            dataType: "JSON",
-            data: data,
-            headers : { "prg-auth-header" : this.state.user.token },
-            contentType: "application/json; charset=utf-8",
-        }).done(function (data, text) {
-            if(data.status.code == 200){
-                this.setState({randomMembers: data.members.random_members, membersCount: data.members.members_count});
-            }
-        }.bind(this));
+    componentWillReceiveProps(nextProps) {
+
+        // Basically, whenever you assign parent's props to a child's state
+        // the render method isn't always called on prop update
+        if (nextProps.randomMembers !== this.state.randomMembers) {
+            this.setState({ randomMembers: nextProps.randomMembers });
+        }
+
+        if (nextProps.membersCount !== this.state.membersCount) {
+            this.setState({ membersCount: nextProps.membersCount });
+        }
     }
 
     render() {
@@ -117,6 +114,8 @@ export class MembersWidget extends React.Component{
             randomMembers : this.props.randomMembers,
             membersCount : this.props.membersCount
         };
+
+        this.addNewMembers = this.addNewMembers.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -134,6 +133,10 @@ export class MembersWidget extends React.Component{
 
     handleSearchUser(sharedWithIds, members){
         this.setState({sharedWithIds:this.sharedWithIds, members:this.members});
+    }
+
+    addNewMembers() {
+
     }
 
     render() {
@@ -166,11 +169,11 @@ export class MembersWidget extends React.Component{
                     <span className="mem-count">{this.state.membersCount} Members</span>
                 </div>
                 <div className="add-member">
-                    <input type="text" className="form-control" placeholder="+ Add a member to this group..." />
                     <SearchMembersField
                         handleSearchUser={this.handleSearchUser}
                         placeholder="+ Add a member to this group..."
                     />
+                    <Button onCLick={this.addNewMembers}>Add</Button>
                 </div>
                 <div className="all-members clearfix">
                     {userBlocks}
