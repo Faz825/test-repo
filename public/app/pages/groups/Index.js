@@ -234,7 +234,6 @@ export class CreateStepTwo extends React.Component{
             groupProfileImgId : ''
         };
 
-        this.users = [];
         this.sharedWithIds = [];
         this.members = [];
         this.loggedUser = Session.getSession('prg_lg');

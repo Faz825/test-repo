@@ -966,3 +966,7 @@ body .modal-backdrop{
 .group-container .group-content .sidebar .grp-members .all-members .mem-img img {
     width: 100%;
 }
+
+.group-container .group-content .sidebar .grp-members .add-member .search-field-holder {
+    padding: 0px 0px;
+}

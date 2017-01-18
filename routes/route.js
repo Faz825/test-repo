@@ -225,7 +225,7 @@ router.post('/call/add-record', CallCenterController.call.addCallRecord);
 //Group
 router.post('/groups/add', GroupsController.createGroup);
 router.post('/groups/update-description', GroupsController.updateDescription);
-router.post('/groups/add-users', GroupsController.addUsers);
+router.post('/groups/add-members', GroupsController.addMembers);
 router.post('/groups/upload-image', GroupsController.uploadGroupProfileImage);
 router.post('/groups/get-group', GroupsController.getGroup);
 router.post('/groups/get-group-members', GroupsController.getGroupMembers);

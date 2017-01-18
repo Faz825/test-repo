@@ -284,14 +284,14 @@ var GroupsController = {
      *               "name" : "Supun Sulan"
      *          }]
      */
-    addUsers: function (req, res) {
+    addMembers: function (req, res) {
 
         var outPut = {};
         var currentSession = Util.getCurrentSession(req);
         var async = require('async');
         var groups = require('mongoose').model('Groups');
         var groupId = (typeof req.body.__groupId != 'undefined') ? req.body.__groupId : null;
-        var newusers = (typeof req.body.__users != 'undefined') ? req.body.__users : [];
+        var newMembers = (typeof req.body.__members != 'undefined') ? req.body.__members : [];
 
         if(groupId == null) {
             outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_ID_EMPTY, Alert.GROUP_ID_EMPTY);
@@ -299,7 +299,7 @@ var GroupsController = {
             return;
         }
 
-        if(newusers == null) {
+        if(newMembers == null) {
             outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_MEMBERS_EMPTY, Alert.GROUP_MEMBERS_EMPTY);
             res.status(602).send(outPut);
             return;
@@ -312,7 +312,7 @@ var GroupsController = {
                 };
                 var value = {
                     $push : {
-                        "members" : {$each : newusers }
+                        "members" : {$each : newMembers }
                     }
                 };
                 groups.updateGroups(filter, value, function (updateResult) {

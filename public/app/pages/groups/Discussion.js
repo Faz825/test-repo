@@ -49,6 +49,7 @@ export default class Discussion extends React.Component{
                     <MembersWidget
                         randomMembers={this.state.randomMembers}
                         membersCount={this.state.membersCount}
+                        currentGroup={this.state.currentGroup}
                     />
                     <CalendarWidget />
                 </div>
@@ -109,13 +110,21 @@ export class MembersWidget extends React.Component{
 
     constructor(props) {
         super(props);
-        var group = this.props.myGroup;
+        let user =  Session.getSession('prg_lg');
+        if(user == null){
+            window.location.href = "/";
+        }
+        var group = this.props.currentGroup;
         this.state = {
+            user : user,
             randomMembers : this.props.randomMembers,
-            membersCount : this.props.membersCount
+            membersCount : this.props.membersCount,
+            members : [],
+            group : group
         };
 
         this.addNewMembers = this.addNewMembers.bind(this);
+        this.handleSearchUser = this.handleSearchUser.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -132,11 +141,27 @@ export class MembersWidget extends React.Component{
     }
 
     handleSearchUser(sharedWithIds, members){
-        this.setState({sharedWithIds:this.sharedWithIds, members:this.members});
+        this.setState({members: members});
     }
 
     addNewMembers() {
+        var groupData = {
+            __groupId : this.state.group._id,
+            __members : this.state.members
+        }
 
+        $.ajax({
+            url: '/groups/add-members',
+            method: "POST",
+            dataType: "JSON",
+            data: JSON.stringify(groupData),
+            headers : { "prg-auth-header" : this.state.user.token },
+            contentType: "application/json; charset=utf-8",
+        }).done(function (data, text) {
+            if(data.status.code == 200){
+                console.log(data);
+            }
+        }.bind(this));
     }
 
     render() {
@@ -168,12 +193,18 @@ export class MembersWidget extends React.Component{
                     <h3 className="panel-title">Group Members</h3>
                     <span className="mem-count">{this.state.membersCount} Members</span>
                 </div>
-                <div className="add-member">
-                    <SearchMembersField
-                        handleSearchUser={this.handleSearchUser}
-                        placeholder="+ Add a member to this group..."
-                    />
-                    <Button onCLick={this.addNewMembers}>Add</Button>
+                <div className="add-member invite-people clearfix">
+                    <div className="col-sm-10 search-field-holder">
+                        <SearchMembersField
+                            handleSearchUser={this.handleSearchUser}
+                            placeholder="+ Add a member to this group..."
+                        />
+                    </div>
+                    <button
+                        className="col-sm-2 btn btn-primary success-btn"
+                        onClick={this.addNewMembers}>
+                        Add
+                    </button>
                 </div>
                 <div className="all-members clearfix">
                     {userBlocks}

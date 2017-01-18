@@ -120,7 +120,7 @@ export default class SearchMembersField extends React.Component{
         }
 
         return (
-            <div class="search-member-field-holder">
+            <div className="search-member-field-holder">
                 <Autosuggest suggestions={suggestions}
                     onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
                     getSuggestionValue={this.getSuggestionValue}
