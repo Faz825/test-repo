@@ -38,7 +38,16 @@ export default class Discussion extends React.Component{
         }
     }
 
+    onPostSubmitSuccess() {
+        console.log("onPostSubmitSuccess");
+    }
+
     render() {
+        let workmodeClass = "workmode-switched";
+        let user = Session.getSession('prg_lg');
+        const {uname}= this.state;
+
+
         return (
             <section className="group-content">
                 <div className="sidebar col-sm-4">
@@ -76,7 +85,7 @@ export default class Discussion extends React.Component{
                             </div>
                         </div>
                         <div className="post-editor">
-                            <div contenteditable="true" className="edit-post-field">Post something...</div>
+                            <div className="edit-post-field">Post something...</div>
                         </div>
                         <div className="post-editor-footer clearfix">
                             <div className="post-opts-holder pull-left">
@@ -138,6 +147,10 @@ export class MembersWidget extends React.Component{
         if (nextProps.membersCount !== this.state.membersCount) {
             this.setState({ membersCount: nextProps.membersCount });
         }
+
+        if (nextProps.group !== this.state.group) {
+            this.setState({ group: nextProps.group });
+        }
     }
 
     handleSearchUser(sharedWithIds, members){
@@ -175,14 +188,14 @@ export class MembersWidget extends React.Component{
 
                 if(userKey+1 == _this.state.randomMembers.length && _this.state.randomMembers.length < _this.state.membersCount) {
 
-                    return <div className="mem-img last-mem">
+                    return <div key={userKey+1} className="mem-img last-mem">
                         <img src={member.profile_image} alt="mem" />
                         <div className="mem-count">
                             <span className="count">{overflowCountStr}</span>
                         </div>
                     </div>;
                 } else {
-                    return <div className="mem-img"><img src={member.profile_image} alt="mem" /></div>;
+                    return <div key={userKey+1} className="mem-img"><img src={member.profile_image} alt="mem" /></div>;
                 }
             });
         }
