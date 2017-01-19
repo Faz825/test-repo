@@ -50,7 +50,7 @@ var TimeLinePostHandler ={
                     callBack(null)
                 }
 
-                else if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST){
+                else if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_MEMBERS){
                     _post.visible_users= _post.visible_users;
                     callBack(null)
                 }
@@ -77,7 +77,7 @@ var TimeLinePostHandler ={
                 };
 
                 // if the post is a group post, all the group members needed to be subscribed.
-                if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST && _post.visible_users.length > 0){
+                if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_MEMBERS && _post.visible_users.length > 0){
 
                     var _visible_users = _post.visible_users;
                     if(_visible_users.indexOf(_post.created_by) == -1) {
@@ -136,7 +136,7 @@ var TimeLinePostHandler ={
             },
 
             function addNotification(callBack) {
-                if (_post.visible_users.length > 0 && parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST ) {
+                if (_post.visible_users.length > 0 && parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_MEMBERS ) {
 
                     var _data = {
                         sender : _post.created_by,
@@ -157,7 +157,7 @@ var TimeLinePostHandler ={
             },
             function notifyingUsers(notification_id, callBack) {
 
-                if (typeof notification_id != 'undefined' && _post.visible_users.length > 0 && parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST) {
+                if (typeof notification_id != 'undefined' && _post.visible_users.length > 0 && parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_MEMBERS) {
 
                     var _data = {
                         notification_id: notification_id,
@@ -277,7 +277,7 @@ var TimeLinePostHandler ={
                     callBack(null)
                 }
 
-                else if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST){
+                else if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_MEMBERS){
                     _post.visible_users= _post.visible_users;
                     callBack(null)
                 }
@@ -313,7 +313,7 @@ var TimeLinePostHandler ={
                 };
 
                 // if the post is a group post, all the group members needed to be subscribed.
-                if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_POST && _post.visible_users.length > 0){
+                if(parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_MEMBERS && _post.visible_users.length > 0){
 
                     var _visible_users = _post.visible_users;
                     if(_visible_users.indexOf(_post.created_by) == -1) {

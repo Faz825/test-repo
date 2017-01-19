@@ -321,8 +321,14 @@ export default class Index extends React.Component{
                                         </div>
                                     :
                                         <div>
-                                            <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
-                                                uname = {this.state.uname} profileUsr={this.state.user} connectionStatus={this.state.connectionStatus} />
+                                            <AddPostElement
+                                                onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                                uname = {this.state.uname}
+                                                profileUsr={this.state.user}
+                                                connectionStatus={this.state.connectionStatus}
+                                                postType={PostType.PERSONAL_POST}
+                                                postVisibleMode={PostVisibleMode.PUBLIC}
+                                            />
                                             <ListPostsElement posts={this.state.posts}
                                                 uname = {this.state.uname}
                                                 onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}

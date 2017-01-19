@@ -54,6 +54,8 @@ export default class SearchMembersField extends React.Component{
             this.members.push(userObject);
             this.sharedWithIds.push(suggestion.user_id);
             this.setState({sharedWithIds:this.sharedWithIds, members:this.members, isAlreadySelected:false});
+            console.log("BEFORE SET MEMBERS");
+            console.log(this.members);
             this.props.handleSearchUser(this.sharedWithIds, this.members);
 
         } else{

@@ -6,6 +6,8 @@ import Session  from '../../middleware/Session';
 import GroupHeader from './GroupHeader';
 
 import SearchMembersField  from './elements/SearchMembersField';
+import AddPostElement from '../../components/timeline/AddPostElement';
+import ListPostsElement from '../../components/timeline/ListPostsElement';
 
 export default class Discussion extends React.Component{
 
@@ -19,9 +21,11 @@ export default class Discussion extends React.Component{
         var group = this.props.myGroup;
         this.state = {
             user : user,
+            uname : user.user_name,
             currentGroup : group,
             randomMembers : this.props.randomMembers,
-            membersCount : this.props.membersCount
+            membersCount : this.props.membersCount,
+            posts:[],
         };
     }
 
@@ -42,11 +46,21 @@ export default class Discussion extends React.Component{
         console.log("onPostSubmitSuccess");
     }
 
+    onPostDeleteSuccess() {
+        console.log("onPostDeleteSuccess");
+    }
+    onLikeSuccess() {
+        console.log("onLikeSuccess");
+    }
+    onLoadProfile() {
+        console.log("onLoadProfile");
+    }
+
     render() {
         let workmodeClass = "workmode-switched";
-        let user = Session.getSession('prg_lg');
-        const {uname}= this.state;
-
+        // let user = Session.getSession('prg_lg');
+        const {user, uname}= this.state;
+        console.log("UNAME :::: " + uname);
 
         return (
             <section className="group-content">
@@ -63,7 +77,27 @@ export default class Discussion extends React.Component{
                     <CalendarWidget />
                 </div>
                 <div className="post-panel col-sm-8">
-                    <div className="post-editor-holder post">
+                    <div className="post-holder">
+                        <AddPostElement
+                            workModeStyles={workmodeClass}
+                            onPostSubmitSuccess={this.onPostSubmitSuccess.bind(this)}
+                            uname = {uname}
+                            profileUsr={user}
+                            connectionStatus={this.state.connectionStatus}
+                            postType={PostType.GROUP_POST}
+                            postVisibleMode={PostVisibleMode.GROUP_MEMBERS}
+                        />
+                        <ListPostsElement posts={this.state.posts}
+                            uname = {uname}
+                            onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}
+                            onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
+                            onLikeSuccess = {this.onLikeSuccess.bind(this)}
+                            onLoadProfile = {this.onLoadProfile.bind(this)}
+                        />
+                    </div>
+                    {/*
+                     ** This is the original the layout and the sytle to be displayed except the above post editor **
+                         <div className="post-editor-holder post">
                         <div className="post-header clearfix">
                             <div className="post-nav share-nav active">
                                 <div className="inner-wrapper">
@@ -105,7 +139,7 @@ export default class Discussion extends React.Component{
                                 <button className="btn post-btn">Post</button>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </section>
         );

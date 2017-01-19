@@ -48,7 +48,7 @@ export default class ProfileImgUpload extends React.Component{
                         var _pay_load = {};
                         _pay_load['__content'] = "";
                         _pay_load['__hs_attachment'] = true;
-                        _pay_load['__post_type'] = "PP";//profile update post
+                        _pay_load['__post_mode'] = "PP";//profile update post
                         _pay_load['__profile_picture'] = data.profile_image;
 
                         $.ajax({

@@ -50,7 +50,7 @@ describe('Main Controller Head', function () {
                     __on_friends_wall: true,
                     __profile_user_id: user._id,
                     page_link: '',
-                    __post_type: 'NP',
+                    __post_mode: 'NP',
                     __file_content: '',
                     __uuid: '',
                     __lct: 'colombo',
@@ -123,7 +123,7 @@ describe('Main Controller Head', function () {
                 .send({
                     __content: 'moch test content',
                     __pid: post.post_id,
-                    __post_type: 'SP',
+                    __post_mode: 'SP',
                     __own: user.id
                 })
                 .end(function (err, res) {
@@ -155,7 +155,7 @@ describe('Main Controller Head', function () {
                 .send({
                     __hs_attachment: true,
                     __content: '',
-                    __post_type: 'PP',
+                    __post_mode: 'PP',
                     __profile_picture: []
                 })
                 .end(function (err, res) {

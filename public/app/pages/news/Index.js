@@ -325,8 +325,15 @@ export default class Index extends React.Component{
                                     <h3 className="pg-newsfeed-right-title-section-date">{this.current_date}</h3>
                                 </div>
                             </div>
-                            <AddPostElement workModeStyles={workmodeClass} onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
-                                            uname = {uname} profileUsr={user} connectionStatus={this.state.connectionStatus}/>
+                            <AddPostElement
+                                workModeStyles={workmodeClass}
+                                onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                uname = {uname}
+                                profileUsr={user}
+                                connectionStatus={this.state.connectionStatus}
+                                postType={PostType.PERSONAL_POST}
+                                postVisibleMode={PostVisibleMode.PUBLIC}
+                            />
                             <ListPostsElement posts={this.state.posts}
                                               uname = {uname}
                                               onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}

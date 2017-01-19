@@ -32,7 +32,7 @@ var GroupsController = {
                     description: req.body._description,
                     color: req.body._color,
                     group_pic_link: req.body._group_pic_link,
-                    group_pic_id: req.body._group_pic_link,
+                    group_pic_id: req.body._group_pic_id,
                     members: req.body._members,
                     created_by: Util.getCurrentSession(req).id,
                     type:(typeof req.body._type != 'undefined' ? req.body._type : 1)
@@ -45,7 +45,7 @@ var GroupsController = {
             },
             function updateImageDocument(groupData, callBack) {
 
-                if (typeof req.body._group_pic_id != 'undefined') {
+                if (req.body._group_pic_id) {
                     var filter = { "_id" : req.body._group_pic_id };
                     var value = { "entity_id" : groupData._id };
                     Upload.updateUpload(filter, value, function (updateResult) {
@@ -173,9 +173,9 @@ var GroupsController = {
                     created_by: (req.body.__on_friends_wall === 'true') ? req.body.__profile_user_id : CurrentSession.id,
                     post_owned_by: CurrentSession.id,
                     page_link: (typeof req.body.page_link != 'undefined') ? req.body.page_link : "",
-                    post_visible_mode: PostVisibleMode.GROUP_POST,
+                    post_visible_mode: PostVisibleMode.GROUP_MEMBERS,
                     visible_users: members,
-                    post_mode: (typeof req.body.__post_type != 'undefined') ? req.body.__post_type : PostConfig.NORMAL_POST,
+                    post_mode: (typeof req.body.__post_mode != 'undefined') ? req.body.__post_mode : PostConfig.NORMAL_POST,
                     file_content: (typeof req.body.__file_content != 'undefined') ? req.body.__file_content : "",
                     upload_id: (typeof req.body.__uuid != 'undefined') ? req.body.__uuid : "",
                     location: (typeof req.body.__lct != 'undefined') ? req.body.__lct : "",

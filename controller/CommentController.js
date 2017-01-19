@@ -113,10 +113,10 @@ var CommentController ={
 
                 // All the group members already have a subscription for group posts.
                 // Assume that only group members allowed to comment on group posts.
-                if( _post_visible_mode && parseInt(_post_visible_mode) == PostVisibleMode.GROUP_POST) {
+                if( _post_visible_mode && parseInt(_post_visible_mode) == PostVisibleMode.GROUP_MEMBERS) {
                     callBack(null);
                 } else {
-                    
+
                     var _data = {
                         user_id:CurrentSession.id,
                         post_id:req.body.__post_id
@@ -124,7 +124,7 @@ var CommentController ={
                     SubscribedPost.saveSubscribe(_data, function(res){
                         callBack(null);
                     })
-                }                 
+                }
             },
             function getOtherSubscribedUsers(callBack){
 
