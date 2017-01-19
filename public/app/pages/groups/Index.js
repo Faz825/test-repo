@@ -80,19 +80,48 @@ export default class Index extends React.Component{
 
     render() {
         return (
-            <section className="groups-container">
+            <section className="group-dashboard-container">
                 <div className="container">
-                    <section className="groups-header">
+                    <section className="group-dashboard-header">
                         <div className="row">
-                            <div className="col-sm-3">
-                                <h2>My Groups</h2>
-                                <button
-                                    onClick={this.openFirstStep.bind(this)}
-                                    className="btn btn-info">Create a group
-                                </button>
+                            <div className="col-sm-6">
+                                <h2>group</h2>
                             </div>
-                            <GroupChat />
+                            <div className="col-sm-6 action-holder">
+                                <div className="crt-grp">
+                                    <button className="btn btn-crt-grp" onClick={this.openFirstStep.bind(this)}>CREATE A GROUP</button>
+                                </div>
+                                <div className="search-group">
+                                    <span className="inner-addon">
+                                        <i className="fa fa-search"></i>
+                                        <input type="text" className="form-control" placeholder="Search" />
+                                    </span>
+                                </div>
+                            </div>
                         </div>
+                    </section>
+                    <section className="group-content">
+                        <section className="group-list list-holder">
+                            <h3 className="list-title">My groups</h3>
+                            <div className="list-wrapper clearfix">
+                                <div className="list-item clearfix">
+                                    <img src="../images/group/dashboard/grp-icon.png" alt="" className="pull-left" />
+                                    <p className="list-item-title">Proglobe</p>
+                                </div>
+                                <div className="list-item clearfix">
+                                    <img src="../images/group/dashboard/grp-icon.png" alt="" className="pull-left" />
+                                    <p className="list-item-title">Proglobe</p>
+                                </div>
+                                <div className="list-item clearfix">
+                                    <img src="../images/group/dashboard/grp-icon.png" alt="" className="pull-left" />
+                                    <p className="list-item-title">Proglobe</p>
+                                </div>
+                                <div className="list-item clearfix">
+                                    <img src="../images/group/dashboard/grp-icon.png" alt="" className="pull-left" />
+                                    <p className="list-item-title">Proglobe</p>
+                                </div>
+                            </div>
+                        </section>
                     </section>
                 </div>
                 {this.state.firstStepOpen ?
