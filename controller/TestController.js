@@ -44,11 +44,11 @@ var TestController ={
     },
     sendMailTest:function(req,res){
         res.render('email-templates/signup', {
-            name: "piusha@eigth25media.com",
+            name: "tests@eigth25media.com",
         }, function(err, emailHTML) {
 
             var sendOptions = {
-                to: "piusha@eigth25media.com",
+                to: "tests@eigth25media.com",
                 subject: 'Proglobe Signup',
                 html: emailHTML
             };

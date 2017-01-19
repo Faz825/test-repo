@@ -15,7 +15,7 @@ describe('Main Controller Head', function () {
     });
     before(function (done) {
         agent.post('/doSignin')
-            .send({uname: 'ruzan+151@eight25media.com', password: '123456'})
+            .send({uname: 'tests+151@eight25media.com', password: '123456'})
             .end(function (err, res) {
                 expect(res.body.status.code).to.equal(200);
                 expect(res.body).to.be.an('object');

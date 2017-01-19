@@ -1,6 +1,3 @@
-/**
- * Created by gihan on 10/26/16.
- */
 
 var CalendarEventHandler = {
     init: function () {
