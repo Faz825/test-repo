@@ -15,7 +15,7 @@ describe('UserController', function () {
     });
     before(function (done) {
         agent.post('/doSignin')
-            .send({uname: 'ruzan+114@eight25media.com', password: '1234567'})
+            .send({uname: 'tests+114@eight25media.com', password: '1234567'})
             .end(function (err, res) {
                 user = res.body.user;
                 expect(res.body.status.code).to.equal(200);
@@ -38,7 +38,7 @@ describe('UserController', function () {
                 .send({
                     fName: 'mocha fName',
                     lName: 'mocha lName',
-                    email: 'ruzan+1' + rand + '@eight25media.com',
+                    email: 'tests+1' + rand + '@eight25media.com',
                     password: '123456',
                     status: 7,
                     secretary: '56c19ce0a42948a07f50a8ea'
@@ -349,7 +349,7 @@ describe('UserController', function () {
 
         it('doMobileApiSignin', function(done){
             agent.post('/doSignin/mob/')
-                .send({uname: 'ruzan+114@eight25media.com', password: '1234567'})
+                .send({uname: 'tests+114@eight25media.com', password: '1234567'})
                 .end(function (err, res) {
                     expect(res.body.status.code).to.equal(200);
                     expect(res.body).to.have.property('user');
