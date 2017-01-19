@@ -47,6 +47,9 @@ export default class Index extends React.Component{
         this.loadExperiences();
         this.loadProfileData();
         this.loadPosts(0);
+
+        this.postType = 1; // [ PERSONAL_POST:1, GROUP_POST:2 ]
+        this.postVisibleMode = 1; // [ PUBLIC:1, FRIEND_ONLY:2, ONLY_MY:3, SELECTED_USERS:4, GROUP_MEMBERS:5 ]
     }
 
     onAcceptFriendRequest(user_id){
@@ -326,8 +329,8 @@ export default class Index extends React.Component{
                                                 uname = {this.state.uname}
                                                 profileUsr={this.state.user}
                                                 connectionStatus={this.state.connectionStatus}
-                                                postType={PostType.PERSONAL_POST}
-                                                postVisibleMode={PostVisibleMode.PUBLIC}
+                                                postType={this.postType}
+                                                postVisibleMode={this.postVisibleMode}
                                             />
                                             <ListPostsElement posts={this.state.posts}
                                                 uname = {this.state.uname}

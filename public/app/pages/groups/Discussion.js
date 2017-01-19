@@ -27,6 +27,9 @@ export default class Discussion extends React.Component{
             membersCount : this.props.membersCount,
             posts:[],
         };
+
+        this.postType = 2; // [ PERSONAL_POST:1, GROUP_POST:2 ]
+        this.postVisibleMode = 5; // [ PUBLIC:1, FRIEND_ONLY:2, ONLY_MY:3, SELECTED_USERS:4, GROUP_MEMBERS:5 ]
     }
 
     componentWillReceiveProps(nextProps) {
@@ -60,8 +63,6 @@ export default class Discussion extends React.Component{
         let workmodeClass = "workmode-switched";
         // let user = Session.getSession('prg_lg');
         const {user, uname}= this.state;
-        console.log("UNAME :::: " + uname);
-
         return (
             <section className="group-content">
                 <div className="sidebar col-sm-4">
@@ -84,8 +85,8 @@ export default class Discussion extends React.Component{
                             uname = {uname}
                             profileUsr={user}
                             connectionStatus={this.state.connectionStatus}
-                            postType={PostType.GROUP_POST}
-                            postVisibleMode={PostVisibleMode.GROUP_MEMBERS}
+                            postType={this.postType}
+                            postVisibleMode={this.postVisibleMode}
                         />
                         <ListPostsElement posts={this.state.posts}
                             uname = {uname}

@@ -47,6 +47,9 @@ export default class Index extends React.Component{
             blockNewsFeed:_newsFeed
         };
         this.refreshInterval = null;
+        this.postType = 1; // [ PERSONAL_POST:1, GROUP_POST:2 ]
+        this.postVisibleMode = 1; // [ PUBLIC:1, FRIEND_ONLY:2, ONLY_MY:3, SELECTED_USERS:4, GROUP_MEMBERS:5 ]
+
         this.current_date = this.getCurrentDate();
         this.selectedArtical = this.selectedArtical.bind(this);
         this.onSaveArticleIconClick = this.onSaveArticleIconClick.bind(this);
@@ -331,8 +334,8 @@ export default class Index extends React.Component{
                                 uname = {uname}
                                 profileUsr={user}
                                 connectionStatus={this.state.connectionStatus}
-                                postType={PostType.PERSONAL_POST}
-                                postVisibleMode={PostVisibleMode.PUBLIC}
+                                postType={this.postType}
+                                postVisibleMode={this.postVisibleMode}
                             />
                             <ListPostsElement posts={this.state.posts}
                                               uname = {uname}

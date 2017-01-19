@@ -267,16 +267,10 @@ export class CreateStepTwo extends React.Component{
             _group_pic_link : this.state.groupProfileImgSrc,
             _group_pic_id : this.state.groupProfileImgId
         }
-
-        console.log("READY TO SUBMIT");
-        console.log(groupData);
         this.props.handleCreate(groupData);
     }
 
     handleSearchUser(sharedWithIds, members){
-        console.log(members);
-        console.log(sharedWithIds);
-        console.log("MEMBERS ARE SELECTED");
         this.setState({sharedWithIds: sharedWithIds, members: members});
     }
 

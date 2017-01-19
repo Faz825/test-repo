@@ -65,7 +65,7 @@ var PostSchema = new Schema({
     },
     post_type:{
         type:Number,
-        default:PostType.PROFILE_POST
+        default:PostType.PERSONAL_POST
     },
     shared_post_id:{
         type: Schema.ObjectId,
@@ -129,6 +129,7 @@ PostSchema.statics.addNew = function(post,callBack){
     _post.post_visible_mode = post.post_visible_mode;
     _post.visible_users = post.visible_users;
     _post.post_mode = post.post_mode;
+    _post.post_type = post.post_type;
     _post.location = post.location;
     _post.lat = post.lat;
     _post.lng = post.lng;
