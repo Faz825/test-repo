@@ -291,8 +291,12 @@ var GroupFolderController ={
             },
             function combineGroupFolders(_folders, shared_folders, callBack){
                 console.log("came to formatGroupFolders");
-                var _list = _folders.concat(shared_folders);
-                callBack(null, _list);
+                if( typeof shared_folders != 'undefined' && shared_folders != null && shared_folders) {
+                    var _list = _folders.concat(shared_folders);
+                    callBack(null, _list);
+                } else {
+                    callBack(null, _folders);
+                }
             },
             function getFolderDetails(folders,callBack){
                 console.log("came to getFolderDetails");
