@@ -78,14 +78,6 @@ body{
   margin-top: 6px;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
-  height: auto;
-  color: #000000;
-  font-size: 14px;
-  overflow: visible;
-	margin: 30px 22px 19px 22px;
-}
-
 .popup-holder .selected-time,
 .calender-container .selected-time {
 		color: #f11379;
@@ -118,14 +110,6 @@ body{
   -moz-box-shadow: none;
   -o-box-shadow: none;
   box-shadow: none;
-}
-
-.calender-container .calender-body.day-view .col-sm-9 .calender-view .input-menu {
-		padding: 6px 20px 5px 20px;
-}
-
-.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-txt.btn {
-	line-height: 37px;
 }
 
 /* - ReactAutoSuggest Custom Styles*/
