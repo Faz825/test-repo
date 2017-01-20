@@ -98,6 +98,11 @@ var GroupFolderController ={
 
     },
 
+    /**
+     * Get all group folders
+     * @param req
+     * @param res
+     */
     getFolders: function (req, res) {
         console.log("came to getFolders in GroupFolderController");
         var Folders = require('mongoose').model('Folders'),
@@ -171,6 +176,11 @@ var GroupFolderController ={
         });
     },
 
+    /**
+     * Get group folders
+     * @param req
+     * @param res
+     */
     getFolder: function (req, res) {
 
         var GroupFolders = require('mongoose').model('GroupFolders');
@@ -194,12 +204,12 @@ var GroupFolderController ={
         });
 
     },
+
     /**
      * get owned group folder count
      * @param req
      * @param res
      */
-
     getGroupFolderCount:function(req,res){
 
         var Folders = require('mongoose').model('Folders'),
@@ -222,8 +232,174 @@ var GroupFolderController ={
             }
         });
 
-    }
+    },
 
+
+    /**
+     * Get all group folders including own group folders and shared group folders
+     * @param req
+     * @param res
+     */
+    getAllGroupFolders:function(req,res){
+
+        console.log("came to getAllGroupFolder");
+
+        var GroupsSchema = require('mongoose').model('Groups'),
+            Folders = require('mongoose').model('Folders'),
+            FolderDocs = require('mongoose').model('FolderDocs'),
+            CurrentSession = Util.getCurrentSession(req),
+            _async = require('async'),
+            grep = require('grep-from-array');
+
+        var user_id = CurrentSession.id;
+
+
+        _async.waterfall([
+            function getOwnGroupFolders(callBack){
+                console.log("came to getOwnGroupFolders");
+                var criteria = {user_id : Util.toObjectId(user_id), type:FolderType.GROUP_FOLDER};
+                Folders.getFolders(criteria,function(resultSet){
+                    callBack(null,resultSet.folders);
+                });
+            },
+            function getSharedGroups(_folders,callBack){
+                console.log("came to getSharedGroups");
+                var criteria = {
+                    type:FolderType.GROUP_FOLDER,
+                    'members.user_id':Util.toObjectId(user_id)
+                };
+                GroupsSchema.getGroup(criteria,function(resultSet){
+                    callBack(null,_folders, resultSet.group);
+                });
+            },
+            function getSharedGroupFolders(_folders, _groups, callBack){
+                console.log("came to getSharedGroupFolders");
+                var groupIdArray = [];
+                for(var i in _groups) {
+                    groupIdArray.push(_groups[i]._id)
+                }
+
+                if(groupIdArray.length > 0) {
+                    var criteria = {group_id:{$in:groupIdArray}};
+                    Folders.getFolders(criteria,function(resultSet){
+                        callBack(null, _folders, resultSet.folders);
+                    });
+                } else {
+                    callBack(null, _folders, null);
+                }
+
+            },
+            function combineGroupFolders(_folders, shared_folders, callBack){
+                console.log("came to formatGroupFolders");
+                var _list = _folders.concat(shared_folders);
+                callBack(null, _list);
+            },
+            function getFolderDetails(folders,callBack){
+                console.log("came to getFolderDetails");
+                console.log(folders);
+                var dockedFolders = [];
+                _async.eachSeries(folders, function(folder, callBackFolder){
+
+                    var _isShared = false;
+                    var _sharedUsers = folder.shared_users;
+                    for (var su = 0; su < _sharedUsers.length; su++) {
+                        if (_sharedUsers[su].status == FolderSharedRequest.REQUEST_ACCEPTED) {
+                            _isShared = true;
+                        }
+                    }
+                    var _folder = {
+                        folder_id: folder._id,
+                        folder_name: folder.name,
+                        folder_color: folder.color,
+                        folder_user: folder.user_id == user_id ? folder.user_id : {first_name:"", profile_image:""},
+                        folder_shared_users: folder.shared_users,
+                        folder_updated_at: folder.updated_at,
+                        owned_by: folder.user_id == user_id ? 'me' : 'other',
+                        is_shared: _isShared,
+                        shared_mode: FolderSharedMode.VIEW_UPLOAD,
+                        documents: []
+                    };
+
+                    _async.waterfall([
+                        function getFolderDocuments(callBack) {
+                            console.log("came to getFolderDocuments");
+                            var documents_criteria = {
+                                folder_id: Util.toObjectId(folder._id)
+                            };
+
+                            FolderDocs.getDocuments(documents_criteria, function (resultSet) {
+                                var _documents = [];
+                                _async.eachSeries(resultSet.documents, function (doc, callBackDocument) {
+                                    var _doc = {
+                                        document_id: doc._id,
+                                        document_name: doc.name,
+                                        document_type: doc.content_type,
+                                        document_user: doc.user_id,
+                                        document_path: doc.file_path,
+                                        document_thumb_path: doc.thumb_path,
+                                        document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
+                                    };
+                                    _documents.push(_doc);
+                                    callBackDocument(null);
+                                }, function (err) {
+                                    _folder.documents = _documents;
+                                    //dockedFolders.push(_folder);
+                                    callBack(null);
+                                });
+                            });
+                        },
+                        function addFolderOwner(callBack) {
+                            console.log("came to addFolderOwner");
+                            if(folder.user_id != user_id) {
+
+                                var query={
+                                    q:folder.user_id.toString(),
+                                    index:'idx_usr'
+                                };
+                                ES.search(query,function(esResultSet){
+
+                                        if(typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].first_name != 'undefined'){
+                                            _folder.folder_user.first_name = esResultSet.result[0].first_name;
+                                        }
+                                        if(typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].images != 'undefined'
+                                            && typeof esResultSet.result[0].images.profile_image != 'undefined' && typeof esResultSet.result[0].images.profile_image.http_url != 'undefined'){
+                                            _folder.folder_user.profile_image = esResultSet.result[0].images.profile_image.http_url;
+                                        }
+                                        dockedFolders.push(_folder);
+                                        callBack(null);
+                                });
+                            } else {
+                                dockedFolders.push(_folder);
+                                callBack(null);
+                            }
+
+                        }
+                    ], function(err) {
+                        callBackFolder(null);
+                    })
+
+
+                },function(err){
+                    console.log("async eachseries callback")
+                    callBack(null, dockedFolders);
+                });
+            }
+
+        ],function(err,resultSet){
+            if(err){
+                var outPut ={
+                    status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
+                };
+                res.status(400).json(outPut);
+            }
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                folders:resultSet
+            };
+            res.status(200).json(outPut);
+        })
+
+    }
 };
 
 module.exports = GroupFolderController;

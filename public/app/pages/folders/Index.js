@@ -37,12 +37,14 @@ export default class Index extends React.Component{
             sharedWithNames : [],
             sharedWithUsernames : [],
             folders : [],
+            group_folders : [],
             addFolder : true,
             folderValue:'',
             folderSuggestions:[],
             folderSuggestionsList:{},
             selectedFileFolder:[],
-            onSelect: false
+            onSelect: false,
+            f_type: 'MY_FOLDER'
         };
 
         this.users = [];
@@ -67,6 +69,8 @@ export default class Index extends React.Component{
         this.getFolderSuggestionValue = this.getFolderSuggestionValue.bind(this);
         this.renderFolderSuggestion = this.renderFolderSuggestion.bind(this);
         this.showSelectedFileFolder = this.showSelectedFileFolder.bind(this);
+        this.changeFolderType = this.changeFolderType.bind(this);
+        this.loadGroupFolders = this.loadGroupFolders.bind(this);
 
     }
 
@@ -99,6 +103,7 @@ export default class Index extends React.Component{
                         this.addDefaultFolder();
                     } else{
                         this.loadFolders();
+                        this.loadGroupFolders();
                     }
                 }
             }.bind(this));
@@ -119,6 +124,25 @@ export default class Index extends React.Component{
                 console.log(folders);
                 this.setState({folders: folders});
             }
+        }.bind(this));
+
+    }
+
+    loadGroupFolders(){
+
+        $.ajax({
+            url: '/group-folders/all/',
+            method: "GET",
+            dataType: "JSON",
+            headers: {'prg-auth-header': this.state.loggedUser.token}
+        }).done( function (data, text){
+
+            if(data.status.code == 200){
+                console.log("results from loadAllGroupFolders --");
+                console.log(data);
+                this.setState({group_folders: data.folders});
+            }
+
         }.bind(this));
     }
 
@@ -548,6 +572,10 @@ export default class Index extends React.Component{
         );
     }
 
+    changeFolderType(_value) {
+        this.setState({f_type: _value});
+    }
+
     render(){
 
         const value = this.state.folderValue;
@@ -558,6 +586,12 @@ export default class Index extends React.Component{
         let folderList = _folders.map(function(folder,key){
             return (
                 <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} />
+            )
+        });
+
+        let groupFolderList = this.state.group_folders.map(function(folder,key){
+            return (
+                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadGroupFolders.bind(this)} />
             )
         });
 
@@ -577,12 +611,12 @@ export default class Index extends React.Component{
                                 <h2>Folders</h2>
                             </div>
                             <div className="col-sm-5 menu-bar">
-                                <div className="folder-type active">
+                                <div className={this.state.f_type == 'MY_FOLDER' ? "folder-type active" : "folder-type"} onClick={() => this.changeFolderType('MY_FOLDER')}>
                                     <h4>My Folders</h4>
                                     <div className="highlighter"></div>
 
                                 </div>
-                                <div className="folder-type">
+                                <div className={this.state.f_type == 'GROUP_FOLDER' ? "folder-type active" : "folder-type"} onClick={() => this.changeFolderType('GROUP_FOLDER')}>
                                     <h4>Group Folders</h4>
                                     <div className="highlighter"></div>
                                 </div>
@@ -600,13 +634,16 @@ export default class Index extends React.Component{
                                     </div>
                                 </div>
                                 <div className="crt-folder">
-                                    <button className="btn btn-crt-folder" onClick={this.handleClick.bind(this)}><i className="fa fa-plus"></i> New Folder</button>
+                                    {this.state.f_type == 'MY_FOLDER' ?
+                                        <button className="btn btn-crt-folder" onClick={this.handleClick.bind(this)}><i className="fa fa-plus"></i> New Folder</button>
+                                    : null}
+
                                 </div>
                             </div>
                         </div>
                     </section>
                     <section className="folder-body">
-                        {folderList}
+                        {this.state.f_type == 'MY_FOLDER' ? folderList : groupFolderList}
                     </section>
                 </div>
                 {this.addFolderPopup()}
