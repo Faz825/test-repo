@@ -298,65 +298,69 @@ var GroupFolderController ={
                 console.log("came to getFolderDetails");
                 console.log(folders);
                 var dockedFolders = [];
-                _async.eachSeries(folders, function(folder, callBackFolder){
+                if(typeof  folders != 'undefined' && folders) {
+                    _async.eachSeries(folders, function(folder, callBackFolder){
 
-                    var _isShared = false;
-                    var _sharedUsers = folder.shared_users;
-                    for (var su = 0; su < _sharedUsers.length; su++) {
-                        if (_sharedUsers[su].status == FolderSharedRequest.REQUEST_ACCEPTED) {
-                            _isShared = true;
+                        var _isShared = false;
+                        if(typeof folder.shared_users != 'undefined'  && folder.shared_users) {
+                            var _sharedUsers = folder.shared_users;
+                            for (var su = 0; su < _sharedUsers.length; su++) {
+                                if (_sharedUsers[su].status == FolderSharedRequest.REQUEST_ACCEPTED) {
+                                    _isShared = true;
+                                }
+                            }
                         }
-                    }
-                    var _folder = {
-                        folder_id: folder._id,
-                        folder_name: folder.name,
-                        folder_color: folder.color,
-                        folder_user: folder.user_id == user_id ? folder.user_id : {first_name:"", profile_image:""},
-                        folder_shared_users: folder.shared_users,
-                        folder_updated_at: folder.updated_at,
-                        owned_by: folder.user_id == user_id ? 'me' : 'other',
-                        is_shared: _isShared,
-                        shared_mode: FolderSharedMode.VIEW_UPLOAD,
-                        documents: []
-                    };
 
-                    _async.waterfall([
-                        function getFolderDocuments(callBack) {
-                            console.log("came to getFolderDocuments");
-                            var documents_criteria = {
-                                folder_id: Util.toObjectId(folder._id)
-                            };
+                        var _folder = {
+                            folder_id: folder._id,
+                            folder_name: folder.name,
+                            folder_color: folder.color,
+                            folder_user: folder.user_id == user_id ? folder.user_id : {first_name:"", profile_image:""},
+                            folder_shared_users: folder.shared_users,
+                            folder_updated_at: folder.updated_at,
+                            owned_by: folder.user_id == user_id ? 'me' : 'other',
+                            is_shared: _isShared,
+                            shared_mode: FolderSharedMode.VIEW_UPLOAD,
+                            documents: []
+                        };
 
-                            FolderDocs.getDocuments(documents_criteria, function (resultSet) {
-                                var _documents = [];
-                                _async.eachSeries(resultSet.documents, function (doc, callBackDocument) {
-                                    var _doc = {
-                                        document_id: doc._id,
-                                        document_name: doc.name,
-                                        document_type: doc.content_type,
-                                        document_user: doc.user_id,
-                                        document_path: doc.file_path,
-                                        document_thumb_path: doc.thumb_path,
-                                        document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
-                                    };
-                                    _documents.push(_doc);
-                                    callBackDocument(null);
-                                }, function (err) {
-                                    _folder.documents = _documents;
-                                    //dockedFolders.push(_folder);
-                                    callBack(null);
-                                });
-                            });
-                        },
-                        function addFolderOwner(callBack) {
-                            console.log("came to addFolderOwner");
-                            if(folder.user_id != user_id) {
-
-                                var query={
-                                    q:folder.user_id.toString(),
-                                    index:'idx_usr'
+                        _async.waterfall([
+                            function getFolderDocuments(callBack) {
+                                console.log("came to getFolderDocuments");
+                                var documents_criteria = {
+                                    folder_id: Util.toObjectId(folder._id)
                                 };
-                                ES.search(query,function(esResultSet){
+
+                                FolderDocs.getDocuments(documents_criteria, function (resultSet) {
+                                    var _documents = [];
+                                    _async.eachSeries(resultSet.documents, function (doc, callBackDocument) {
+                                        var _doc = {
+                                            document_id: doc._id,
+                                            document_name: doc.name,
+                                            document_type: doc.content_type,
+                                            document_user: doc.user_id,
+                                            document_path: doc.file_path,
+                                            document_thumb_path: doc.thumb_path,
+                                            document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
+                                        };
+                                        _documents.push(_doc);
+                                        callBackDocument(null);
+                                    }, function (err) {
+                                        _folder.documents = _documents;
+                                        //dockedFolders.push(_folder);
+                                        callBack(null);
+                                    });
+                                });
+                            },
+                            function addFolderOwner(callBack) {
+                                console.log("came to addFolderOwner");
+                                if(folder.user_id != user_id) {
+
+                                    var query={
+                                        q:folder.user_id.toString(),
+                                        index:'idx_usr'
+                                    };
+                                    ES.search(query,function(esResultSet){
 
                                         if(typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].first_name != 'undefined'){
                                             _folder.folder_user.first_name = esResultSet.result[0].first_name;
@@ -367,22 +371,25 @@ var GroupFolderController ={
                                         }
                                         dockedFolders.push(_folder);
                                         callBack(null);
-                                });
-                            } else {
-                                dockedFolders.push(_folder);
-                                callBack(null);
+                                    });
+                                } else {
+                                    dockedFolders.push(_folder);
+                                    callBack(null);
+                                }
+
                             }
-
-                        }
-                    ], function(err) {
-                        callBackFolder(null);
-                    })
+                        ], function(err) {
+                            callBackFolder(null);
+                        })
 
 
-                },function(err){
-                    console.log("async eachseries callback")
+                    },function(err){
+                        console.log("async eachseries callback")
+                        callBack(null, dockedFolders);
+                    });
+                } else {
                     callBack(null, dockedFolders);
-                });
+                }
             }
 
         ],function(err,resultSet){
