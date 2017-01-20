@@ -293,16 +293,14 @@ a:focus{
 
 .pg-top-profile-pic-options {
 	background-color: rgba(0, 0, 0, 0.3);
-	height: 100%;
-	padding-left: 10px;
-	padding-right: 10px;
+	height: 30px;
 	position: absolute;
 	top: 0;
+	width: 18px;
 }
 
 .pg-top-profile-pic-options a {
 	display: block;
-	margin-top: 13px;
 }
 
 .pgs-main-nav-area ul li a {font: 13px 'montserratregular', sans-serif;color: #7795a8;text-decoration:none;text-transform:uppercase;margin-left:15px;}
@@ -781,9 +779,13 @@ input[type=number]::-webkit-outer-spin-button {
 	width: 464px;
 }
 
+.pg-my-con-option:first-child{
+	margin: 0;
+}
+
 .pg-my-con-option {
 	display: inline-block;
-	margin-left: 19px;
+	margin-left: 3px;
 	vertical-align: top;
 }
 
@@ -1873,8 +1875,8 @@ textarea{
 }
 #react-autowhatever-1{
 	position: absolute;
-	width: 70%;
-	top : 23px;
+	width: 100%;
+    top: 30px;
 	left: 0;
 	margin: 0;
 	padding: 0;
@@ -3329,13 +3331,13 @@ textarea{
 
 .chat-notification-wrapper{
 	position: absolute;
-	width: 300px;
-	border-radius: 3px;
-	right: -130px;
-	top: 55px;
-	display: none;
-	z-index: 100;
-	cursor: default;
+    width: 230px;
+    border-radius: 3px;
+    right: -100px;
+    top: 50px;
+    display: none;
+    z-index: 100;
+    cursor: default;
 }
 
 .chat-notification-header .msg-holder{

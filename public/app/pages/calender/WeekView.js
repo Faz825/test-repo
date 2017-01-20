@@ -133,7 +133,7 @@ export default class WeekView extends React.Component {
         return (
 
             <section className="calender-body">
-                <div className="row calendar-main-row">
+                <div className="calendar-main-row">
                     <div className="calender-week-view">
                         <div className="view-header">
                             <div className="col-sm-6 remove-padding">

@@ -176,7 +176,7 @@ export default class FooterHolder extends React.Component {
                                 <div className="calender nav-item">
                                     <a href="/calendar">
                                         <div className="icon-holder">
-                                            <img src="/images/nav-icons/cal-icon.png" alt="Calendar"/>
+                                            <img src="/images/nav-icons/cal-icon.png" alt="Calendar" className="img-responsive" />
                                         </div>
                                         <p className="nav-title">Calendar</p>
                                     </a>
@@ -184,7 +184,7 @@ export default class FooterHolder extends React.Component {
                                 <div className="notebooks nav-item">
                                     <a href="#">
                                         <div className="icon-holder">
-                                            <img src="/images/nav-icons/note-icon.png" alt="notebooks"/>
+                                            <img src="/images/nav-icons/note-icon.png" alt="notebooks" className="img-responsive"/>
                                         </div>
                                         <p className="nav-title">Notebooks</p>
                                     </a>
@@ -192,7 +192,7 @@ export default class FooterHolder extends React.Component {
                                 <div className="folders nav-item">
                                     <a href="/folders">
                                         <div className="icon-holder">
-                                            <img src="/images/nav-icons/folder-icon.png" alt="folders"/>
+                                            <img src="/images/nav-icons/folder-icon.png" alt="folders" className="img-responsive"/>
                                         </div>
                                         <p className="nav-title">Folders</p>
                                     </a>
@@ -200,7 +200,7 @@ export default class FooterHolder extends React.Component {
                                 <div className="groups nav-item">
                                     <a href="/groups">
                                         <div className="icon-holder">
-                                            <img src="/images/nav-icons/groups-icon.png" alt="groups"/>
+                                            <img src="/images/nav-icons/groups-icon.png" alt="groups" className="img-responsive"/>
                                         </div>
                                         <p className="nav-title">Groups</p>
                                     </a>
@@ -208,7 +208,7 @@ export default class FooterHolder extends React.Component {
                                 <div className="news nav-item">
                                     <a href="#">
                                         <div className="icon-holder">
-                                            <img src="/images/nav-icons/news-icon.png" alt="news"/>
+                                            <img src="/images/nav-icons/news-icon.png" alt="news" className="img-responsive"/>
                                         </div>
                                         <p className="nav-title">News</p>
                                     </a>
@@ -216,7 +216,7 @@ export default class FooterHolder extends React.Component {
                                 <div className="interests nav-item">
                                     <a href="#">
                                         <div className="icon-holder">
-                                            <img src="/images/nav-icons/interest-ison.png" alt="interests"/>
+                                            <img src="/images/nav-icons/interest-ison.png" alt="interests" className="img-responsive"/>
                                         </div>
                                         <p className="nav-title">Interests</p>
                                     </a>
@@ -224,7 +224,7 @@ export default class FooterHolder extends React.Component {
                                 <div className="call-center nav-item">
                                     <a href="/callcenter">
                                         <div className="icon-holder">
-                                            <img src="/images/nav-icons/call-center-icon.png" alt="call-center"/>
+                                            <img src="/images/nav-icons/call-center-icon.png" alt="call-center" className="img-responsive"/>
                                         </div>
                                         <p className="nav-title">Call Center</p>
                                     </a>
