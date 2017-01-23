@@ -29,8 +29,29 @@ export default class Index extends React.Component{
             user : user,
             firstStepOpen : false,
             secondStepOpen : false,
-            defaultType : 1
+            defaultType : 1,
+            groups : []
         };
+    }
+
+    componentWillMount() {
+        var groupPrefix = this.props.params.name;
+        let _data = {};
+        $.ajax({
+            url : '/groups/get-groups',
+            method : "POST",
+            data : _data,
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
+                if (data.status.code == 200) {
+                    this.setState({groups: data.groups});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
     }
 
     openFirstStep() {
@@ -79,6 +100,15 @@ export default class Index extends React.Component{
     }
 
     render() {
+        var groupBlock = '';
+        if(this.state.groups.length > 0 ) {
+            groupBlock = this.state.groups.map(function(group,userKey){
+                return <a className="list-item clearfix" href={'groups/'+group.name_prefix}>
+                    <img src={group.group_pic_link} alt="" className="pull-left" />
+                    <p className="list-item-title">{group.name}</p>
+                </a>
+            });
+        }
         return (
             <section className="group-dashboard-container">
                 <div className="container">
@@ -104,22 +134,7 @@ export default class Index extends React.Component{
                         <section className="group-list list-holder">
                             <h3 className="list-title">My groups</h3>
                             <div className="list-wrapper clearfix">
-                                <div className="list-item clearfix">
-                                    <img src="../images/group/dashboard/grp-icon.png" alt="" className="pull-left" />
-                                    <p className="list-item-title">Proglobe</p>
-                                </div>
-                                <div className="list-item clearfix">
-                                    <img src="../images/group/dashboard/grp-icon.png" alt="" className="pull-left" />
-                                    <p className="list-item-title">Proglobe</p>
-                                </div>
-                                <div className="list-item clearfix">
-                                    <img src="../images/group/dashboard/grp-icon.png" alt="" className="pull-left" />
-                                    <p className="list-item-title">Proglobe</p>
-                                </div>
-                                <div className="list-item clearfix">
-                                    <img src="../images/group/dashboard/grp-icon.png" alt="" className="pull-left" />
-                                    <p className="list-item-title">Proglobe</p>
-                                </div>
+                                {groupBlock}
                             </div>
                         </section>
                     </section>

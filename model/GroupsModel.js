@@ -172,7 +172,7 @@ GroupsSchema.statics.getGroupMembers = function(criteria,callBack){
     });*/
 
     _this.find(criteria).select('created_by members -_id').exec(function(err,resultSet){
-        if(!err){
+        if(!err && typeof(resultSet[0]) != 'undefined'){
 
             console.log(resultSet);
             var memberObjs = resultSet[0].members;

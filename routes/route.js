@@ -228,7 +228,7 @@ router.post('/groups/update-description', GroupsController.updateDescription);
 router.post('/groups/add-members', GroupsController.addMembers);
 router.post('/groups/upload-image', GroupsController.uploadGroupProfileImage);
 router.post('/groups/get-group', GroupsController.getGroup);
-router.post('/groups/get-group-members', GroupsController.getGroupMembers);
+router.post('/groups/get-groups', GroupsController.getGroups);
 router.post('/groups/get-members', GroupsController.getMembers);
 
 // Group Notebook

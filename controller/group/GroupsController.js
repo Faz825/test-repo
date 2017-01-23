@@ -417,8 +417,8 @@ var GroupsController = {
 
 
         _async.waterfall([
-            function getEvent(callBack){
-            var criteria = { "name_prefix" : namePrefix };
+            function getGroup(callBack){
+                var criteria = { "name_prefix" : namePrefix };
                 Group.getGroup(criteria, function(result) {
                     if(result.status==200) {
                         callBack(null, result.group[0]);
@@ -442,33 +442,36 @@ var GroupsController = {
     },
 
     /**
-     * This function returns a given group
+     * This function returns groups under a given criteria
      * @param req
      * @param res
      * @returns Object outPut
      */
-    getGroupMembers: function (req, res) {
+    getGroups: function (req, res) {
         var Group = require('mongoose').model('Groups');
-        var name_prefix = req.body.name_prefix;
         var _async = require('async');
+
         _async.waterfall([
-            function getEvent(callBack){
-                var criteria = {name_prefix: name_prefix};
-                Group.getGroupMembers(criteria, function(result) {
-                    if(result.error && result == null) {
-                        callBack(result.error, null);
+            function getGroups(callBack){
+                var criteria = {};
+                Group.getGroup(criteria, function(result) {
+                    if(result.status==200) {
+                        callBack(null, result.group);
+                    } else {
+                        callBack(null, null);
                     }
-                    callBack(null, result);
                 });
             }
-        ], function (err, group) {
+        ], function (err, groups) {
             var outPut = {};
             if(err){
                 outPut['status'] = ApiHelper.getMessage(500, Alert.ERROR, Alert.ERROR);
-                outPut['members'] = null;
+                outPut['groups'] = null;
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['members'] = group;
+                outPut['groups'] = groups;
+                console.log(outPut['groups']);
+                console.log("GROUPS FROM BACKEND ");
             }
             res.status(200).send(outPut);
             return;
@@ -504,7 +507,7 @@ var GroupsController = {
                 var i = 0;
                 var arrUsers = [];
                 var BreakException = {};
-                var members = membersResult.memberObjs;
+                var members = typeof(membersResult.memberObjs) != 'undefined' ? membersResult.memberObjs : [];
                 members.forEach(function(member) {
                     Upload.getProfileImage(member.user_id, function (profileImageData) {
                         var url = '';

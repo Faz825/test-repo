@@ -95,8 +95,6 @@ export default class Discussion extends React.Component{
         let workmodeClass = "workmode-switched";
         // let user = Session.getSession('prg_lg');
         const {user, uname}= this.state;
-        console.log(this.state.currentGroup);
-        console.log("IN DISCUSSION ^^");
         return (
             <section className="group-content">
                 <div className="sidebar col-sm-4">
