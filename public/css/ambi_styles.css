@@ -10520,11 +10520,6 @@ header .notification-holder .profile-header-thumb {
   letter-spacing: 0px;
   color: #000000;
 }
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .folder-container .folder-header .menu-bar {
-    padding: 0;
-  }
-}
 .folder-container .folder-header .menu-bar .folder-type {
   position: relative;
   margin-top: 42px;
@@ -10562,7 +10557,7 @@ header .notification-holder .profile-header-thumb {
   margin-right: 23px;
 }
 .folder-container .folder-header .crt-folder .btn-crt-folder {
-  padding: 7px 30px 7px 11px;
+  padding: 8px 25px 6px 13px;
   background-color: #00a5ef;
   color: #ffffff;
   font-size: 0.75em;
@@ -10570,7 +10565,7 @@ header .notification-holder .profile-header-thumb {
   text-transform: lowercase;
 }
 .folder-container .folder-header .crt-folder .btn-crt-folder i {
-  margin-right: 10px;
+  margin-right: 14px;
 }
 .folder-container .folder-header .search-folder {
   position: relative;
@@ -10587,7 +10582,7 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.75em;
 }
 .folder-container .folder-header .search-folder .inner-addon input {
-  border-radius: 7px;
+  border-radius: 4px;
   padding-right: 30px;
   height: 33px;
   font-size: 0.6875em;
@@ -10706,16 +10701,12 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
   margin-top: 14px;
+  margin-left: 2px;
   font-size: 1em;
   color: #ffffff;
   font-weight: 400;
   letter-spacing: 0px;
   line-height: 0px;
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
-    font-size: 0.9375em;
-  }
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .share-folder {
   position: absolute;
@@ -10762,35 +10753,25 @@ header .notification-holder .profile-header-thumb {
     width: 20%;
   }
 }
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
-    position: relative;
-    min-height: 1px;
-    padding-left: 12px;
-    padding-right: 12px;
-  }
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:first-child {
+  padding: 13px 10px 0px 13px !important;
 }
-@media (min-width: 1024px) and (max-width: 1279px) and (min-width: 768px) {
-  .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
-    float: left;
-    width: 25%;
-  }
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5n + 1) {
+  padding: 13px 7px 0px 13px;
 }
-
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(1), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(2), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(3), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(4), .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5) {
   margin-top: 10px;
 }
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5) {
-    margin-top: 0px;
-  }
-}
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item {
+  position: relative;
   min-height: 147px;
   border: 1px solid #e1e1e1;
-  box-shadow: 1px 0 12px -8px #000000;
+  box-shadow: -2px 2px 6px -3px #000000;
   background-size: cover;
   cursor: pointer;
+}
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item:first-child {
+  box-shadow: none;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file {
   background-color: #ffffff;
@@ -10805,7 +10786,7 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file p {
   font-weight: 500;
-  margin: 15px 5px;
+  margin: 15px;
   color: #000000;
   font-size: 0.625em;
   line-height: 12px;
@@ -10838,7 +10819,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .item-type {
   position: absolute;
   bottom: 8px;
-  right: 13px;
+  right: 8px;
   height: 31px;
   width: 24px;
 }
@@ -12892,99 +12873,6 @@ header .notification-holder .profile-header-thumb {
   border-top: 1px solid #dee6eb;
   background-color: #ffffff;
 }
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item {
-  overflow: hidden;
-  margin-top: 6px;
-  margin-bottom: 10px;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper {
-  float: left;
-  position: relative;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper img {
-  width: 40px;
-  height: 40px;
-  border-radius: 100%;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status {
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  width: 13px;
-  height: 13px;
-  border-radius: 100%;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.online {
-  background-color: #63c66c;
-  border: 3px solid #ffffff;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.work-mode {
-  background-color: #de2424;
-  border: 3px solid #ffffff;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.offline {
-  background-color: #ffffff;
-  border: 2px solid #6ac374;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper {
-  float: left;
-  margin-left: 35px;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .name {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  font-size: 0.875em;
-  font-weight: 500;
-  color: #000000;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .status {
-  font-size: 0.75em;
-  font-weight: 400;
-  color: #000000;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type {
-  text-align: center;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type.user span {
-  margin-top: 14px;
-  width: 18px;
-  height: 20px;
-  display: inline-block;
-  background-image: url("../images/call-center/contact-user-ico.png");
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type.group span {
-  margin-top: 14px;
-  width: 36px;
-  height: 20px;
-  display: inline-block;
-  background-image: url("../images/call-center/contact-users-ico.png");
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper {
-  float: right;
-  margin-top: 11px;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico {
-  width: 31px;
-  height: 31px;
-  text-align: center;
-  border: 1px solid #06a7ef;
-  border-radius: 100%;
-  background-color: #ffffff;
-  outline: none;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico.video {
-  margin-right: 16px;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico.video img {
-  margin-top: -3px;
-  width: 15px;
-  height: 10px;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico.phone img {
-  margin-top: -3px;
-  width: 13px;
-  height: 13px;
-}
 .call-center-container .call-center-inner-holder .recent-list .contact-group {
   margin-top: 7px;
 }
@@ -13001,21 +12889,29 @@ header .notification-holder .profile-header-thumb {
   border-top: 1px solid #dee6eb;
   background-color: #ffffff;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item {
+.call-center-container .call-center-inner-holder .recent-list .contact-type {
+  text-align: left;
+  margin-top: 10px;
+}
+.call-center-container .call-center-inner-holder .contact-item {
   overflow: hidden;
   margin-top: 6px;
   margin-bottom: 10px;
+  border-bottom: 1px solid #dee6eb;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper {
+.call-center-container .call-center-inner-holder .contact-item:last-child {
+  border: none;
+}
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper {
   float: left;
   position: relative;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper img {
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper img {
   width: 40px;
   height: 40px;
   border-radius: 100%;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper .status {
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper .status {
   position: absolute;
   bottom: 0px;
   right: 0px;
@@ -13023,73 +12919,86 @@ header .notification-holder .profile-header-thumb {
   height: 13px;
   border-radius: 100%;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper .status.online {
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper .status.online {
   background-color: #63c66c;
   border: 3px solid #ffffff;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper .status.work-mode {
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper .status.work-mode {
   background-color: #de2424;
   border: 3px solid #ffffff;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper .status.offline {
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper .status.offline {
   background-color: #ffffff;
   border: 2px solid #6ac374;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .name-wrapper {
+.call-center-container .call-center-inner-holder .contact-item .name-wrapper {
   float: left;
   margin-left: 35px;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .name-wrapper .name {
-  margin-top: 5px;
-  margin-bottom: 0;
+.call-center-container .call-center-inner-holder .contact-item .name-wrapper .name {
+  margin-top: 0px;
+  margin-bottom: 0px;
   font-size: 0.875em;
   font-weight: 500;
   color: #000000;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .name-wrapper .status {
+.call-center-container .call-center-inner-holder .contact-item .name-wrapper .status {
   font-size: 0.75em;
   font-weight: 400;
   color: #000000;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type {
-  text-align: left;
-  margin-top: 10px;
+.call-center-container .call-center-inner-holder .contact-item .contact-type {
+  text-align: center;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type.missed .call-time {
+.call-center-container .call-center-inner-holder .contact-item .contact-type.user span {
+  margin-top: 14px;
+  width: 18px;
+  height: 20px;
+  display: inline-block;
+  background-image: url("../images/call-center/contact-user-ico.png");
+}
+.call-center-container .call-center-inner-holder .contact-item .contact-type.group span {
+  margin-top: 14px;
+  width: 36px;
+  height: 20px;
+  display: inline-block;
+  background-image: url("../images/call-center/contact-users-ico.png");
+}
+.call-center-container .call-center-inner-holder .contact-item .contact-type.missed .call-time {
   color: #de2424;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type.missed .call-count {
+.call-center-container .call-center-inner-holder .contact-item .contact-type.missed .call-count {
   background-color: #de2424;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type.missed .video {
+.call-center-container .call-center-inner-holder .contact-item .contact-type.missed .video {
   display: inline-block;
   vertical-align: middle;
   width: 20px;
   height: 13px;
   background-image: url("../images/call-center/video-ico-missed.png");
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type.missed .phone {
+.call-center-container .call-center-inner-holder .contact-item .contact-type.missed .phone {
   display: inline-block;
   vertical-align: middle;
   width: 16px;
   height: 16px;
   background-image: url("../images/call-center/phone-ico-missed.png");
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .video {
+.call-center-container .call-center-inner-holder .contact-item .contact-type .video {
   display: inline-block;
   vertical-align: middle;
   width: 20px;
   height: 13px;
   background-image: url("../images/call-center/video-ico.png");
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .phone {
+.call-center-container .call-center-inner-holder .contact-item .contact-type .phone {
   display: inline-block;
   vertical-align: middle;
   width: 16px;
   height: 16px;
   background-image: url("../images/call-center/phone-ico.png");
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .call-count {
+.call-center-container .call-center-inner-holder .contact-item .contact-type .call-count {
   margin-right: 43px;
   margin-left: 35px;
   display: inline-block;
@@ -13103,12 +13012,7 @@ header .notification-holder .profile-header-thumb {
   padding-top: 2px;
   text-align: center;
 }
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .call-count {
-    margin-right: 33px;
-  }
-}
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .call-time {
+.call-center-container .call-center-inner-holder .contact-item .contact-type .call-time {
   margin-left: 40px;
   display: inline-block;
   font-size: 0.875em;
@@ -13117,15 +13021,15 @@ header .notification-holder .profile-header-thumb {
   text-align: center;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .call-time {
+  .call-center-container .call-center-inner-holder .contact-item .contact-type .call-time {
     margin-left: 30px;
   }
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .call-ico-wrapper {
+.call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper {
   float: right;
-  margin-top: 11px;
+  margin-top: 7px;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .call-ico-wrapper .call-ico {
+.call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico {
   width: 31px;
   height: 31px;
   text-align: center;
@@ -13134,15 +13038,15 @@ header .notification-holder .profile-header-thumb {
   background-color: #ffffff;
   outline: none;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .call-ico-wrapper .call-ico.video {
-  margin-right: 11px;
+.call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.video {
+  margin-right: 16px;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .call-ico-wrapper .call-ico.video img {
+.call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.video img {
   margin-top: -3px;
   width: 15px;
   height: 10px;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .call-ico-wrapper .call-ico.phone img {
+.call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.phone img {
   margin-top: -3px;
   width: 13px;
   height: 13px;
@@ -13762,11 +13666,6 @@ header .notification-holder .profile-header-thumb {
   letter-spacing: 0px;
   color: #000000;
 }
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .group-container .group-folder-container .folder-header .menu-bar {
-    padding: 0;
-  }
-}
 .group-container .group-folder-container .folder-header .menu-bar .folder-type {
   position: relative;
   margin-top: 42px;
@@ -13804,7 +13703,7 @@ header .notification-holder .profile-header-thumb {
   margin-right: 23px;
 }
 .group-container .group-folder-container .folder-header .crt-folder .btn-crt-folder {
-  padding: 7px 30px 7px 11px;
+  padding: 8px 25px 6px 13px;
   background-color: #00a5ef;
   color: #ffffff;
   font-size: 0.75em;
@@ -13812,7 +13711,7 @@ header .notification-holder .profile-header-thumb {
   text-transform: lowercase;
 }
 .group-container .group-folder-container .folder-header .crt-folder .btn-crt-folder i {
-  margin-right: 10px;
+  margin-right: 14px;
 }
 .group-container .group-folder-container .folder-header .search-folder {
   position: relative;
@@ -13829,7 +13728,7 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.75em;
 }
 .group-container .group-folder-container .folder-header .search-folder .inner-addon input {
-  border-radius: 7px;
+  border-radius: 4px;
   padding-right: 30px;
   height: 33px;
   font-size: 0.6875em;
@@ -13948,16 +13847,12 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
   margin-top: 14px;
+  margin-left: 2px;
   font-size: 1em;
   color: #ffffff;
   font-weight: 400;
   letter-spacing: 0px;
   line-height: 0px;
-}
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
-    font-size: 0.9375em;
-  }
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .share-folder {
   position: absolute;
@@ -14004,35 +13899,25 @@ header .notification-holder .profile-header-thumb {
     width: 20%;
   }
 }
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
-    position: relative;
-    min-height: 1px;
-    padding-left: 12px;
-    padding-right: 12px;
-  }
+.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:first-child {
+  padding: 13px 10px 0px 13px !important;
 }
-@media (min-width: 1024px) and (max-width: 1279px) and (min-width: 768px) {
-  .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
-    float: left;
-    width: 25%;
-  }
+.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5n + 1) {
+  padding: 13px 7px 0px 13px;
 }
-
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(1), .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(2), .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(3), .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(4), .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5) {
   margin-top: 10px;
 }
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col:nth-child(5) {
-    margin-top: 0px;
-  }
-}
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item {
+  position: relative;
   min-height: 147px;
   border: 1px solid #e1e1e1;
-  box-shadow: 1px 0 12px -8px #000000;
+  box-shadow: -2px 2px 6px -3px #000000;
   background-size: cover;
   cursor: pointer;
+}
+.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item:first-child {
+  box-shadow: none;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file {
   background-color: #ffffff;
@@ -14047,7 +13932,7 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file p {
   font-weight: 500;
-  margin: 15px 5px;
+  margin: 15px;
   color: #000000;
   font-size: 0.625em;
   line-height: 12px;
@@ -14080,7 +13965,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .item-type {
   position: absolute;
   bottom: 8px;
-  right: 13px;
+  right: 8px;
   height: 31px;
   width: 24px;
 }
@@ -17031,42 +16916,46 @@ header .notification-holder .profile-header-thumb {
   color: #ffffff;
   padding: 0px 14px;
 }
-.popup-holder .create-folder-popup {
-  overflow: hidden;
-}
 .popup-holder .create-folder-popup .folder-header {
   overflow: hidden;
 }
 .popup-holder .create-folder-popup .folder-header h2 {
-  margin-top: 42px;
+  margin-top: 29px;
   text-align: center;
-  letter-spacing: -2px;
-  font-size: 1.80125em;
-  color: #000000;
+  text-transform: lowercase;
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 1.75em;
+  font-weight: 500;
+  line-height: 32px;
 }
 .popup-holder .create-folder-popup .folder-body {
-  padding: 10px 15%;
+  padding: 0 11%;
 }
 .popup-holder .create-folder-popup .folder-body .input-group {
-  margin-top: 26px;
+  margin-top: 17px;
 }
 .popup-holder .create-folder-popup .folder-body .input-group.name-holder {
-  margin-top: 21px;
+  margin-top: 9px;
 }
 .popup-holder .create-folder-popup .folder-body .input-group p {
+  text-transform: lowercase;
   font-weight: 500;
-  color: #000000;
-  font-size: 0.9375em;
+  font-size: 0.875em;
+  color: rgba(0, 0, 0, 0.87);
+  line-height: 24px;
 }
 .popup-holder .create-folder-popup .folder-body .input-group input {
-  border: 1px solid #e6e6e6;
-  border-radius: 5px;
-  background-color: #f6f6f6;
+  text-transform: lowercase;
   box-shadow: none;
-  font-size: 0.875em;
-  color: #a5a5a5;
-  height: 50px;
-  padding: 15px 20px;
+  font-size: 0.75em;
+  height: 30px;
+  padding: 7px;
+  border-radius: 4px;
+  border: 1px solid #ededed;
+  background-color: #f6f6f6;
+  color: #bebfbf;
+  font-weight: 400;
+  line-height: 16px;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .user-holder {
   float: left;
@@ -17087,17 +16976,20 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div {
   float: left;
-  margin: 0 16px 10px 0;
-  width: 35px;
-  height: 35px;
+  margin: 2px 20px 13px 0;
+  width: 25px;
+  height: 25px;
   border-radius: 100%;
   cursor: pointer;
   text-align: center;
 }
+.popup-holder .create-folder-popup .folder-body .input-group .color-palette div:last-child {
+  margin-right: 0px;
+}
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div i {
-  margin-top: 8px;
+  margin-top: 6px;
   color: #ffffff;
-  font-size: 1.125em;
+  font-size: 0.8125em;
   display: none;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div.active i {
@@ -17124,20 +17016,27 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div.dark-green {
   background-color: #067d41;
 }
+.popup-holder .create-folder-popup .folder-body .input-group .color-palette div.black {
+  background-color: #000000;
+}
 .popup-holder .create-folder-popup .folder-footer .action-bar {
-  margin-top: 42px;
+  margin-top: 56px;
 }
 .popup-holder .create-folder-popup .folder-footer .action-bar .btn-add-folder {
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding-top: 11px;
+  padding-bottom: 12px;
   width: 100%;
   text-align: center;
   font-weight: 400;
-  font-size: 1.235em;
+  font-size: 1.125em;
   color: #ffffff;
   background-color: #00a6ef;
-  border-radius: 0px;
-  text-transform: uppercase;
+  border-radius: 0px 0px 8px 8px;
+  text-transform: lowercase;
+  outline: none;
+}
+.popup-holder .create-folder-popup .folder-footer .action-bar .btn-add-folder:hover {
+  background-color: #0093db;
 }
 .popup-holder .share-folder-popup {
   position: relative;
@@ -17440,6 +17339,15 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .active-call-container .active-user-block img {
   width: 100%;
+}
+.popup-holder .active-call-container .active-user-block .call-receiver-status {
+  font-weight: 500;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  text-align: center;
 }
 .popup-holder .active-call-container .active-user-block .active-call-nav {
   position: absolute;
@@ -18098,6 +18006,9 @@ footer .nav-holder .nav-item.news .icon-holder {
 }
 footer .nav-holder .nav-item.interests .icon-holder {
   padding: 11px 10px 10px;
+}
+footer .nav-holder .nav-item.groups .icon-holder {
+  padding: 0;
 }
 footer .nav-holder .nav-item .icon-holder {
   width: 37px;

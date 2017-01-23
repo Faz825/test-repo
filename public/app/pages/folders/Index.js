@@ -484,7 +484,7 @@ export default class Index extends React.Component{
             <div>
                 {this.state.isShowingModal &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} className="modalPopup" width="575px">
+                    <ModalDialog onClose={this.handleClose.bind(this)} className="modalPopup" width="438px">
                         <div className="popup-holder">
                             <section className="create-folder-popup">
                                 <section className="folder-header">
@@ -495,7 +495,7 @@ export default class Index extends React.Component{
                                     </div>
                                 </section>
                                 <section className="folder-body">
-                                    <div className="row folder-name">
+                                    <div className="folder-name">
                                         <div className="col-sm-12 input-group">
                                             <p>Name your folder</p>
                                             <input type="text" className="form-control" value={this.state.CFName} onChange={this.handleNameChange.bind(this)} placeholder="Type a category name..." />
@@ -507,7 +507,7 @@ export default class Index extends React.Component{
                                             }
                                         </div>
                                     </div>
-                                    <div className="row folder-color">
+                                    <div className="folder-color">
                                         <div className="col-sm-12 input-group">
                                             <p>Choose a colour</p>
                                             <div className="color-palette clearfix">
@@ -532,6 +532,9 @@ export default class Index extends React.Component{
                                                 <div className={this.isActive('#067d41')} style={{backgroundColor: "#067d41"}} data-color="#067d41" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
+                                                <div className={this.isActive('#000000')} style={{backgroundColor: "#000000"}} data-color="#000000" onClick={this.colorPicker.bind(this)}>
+                                                    <i className="fa fa-check" aria-hidden="true"></i>
+                                                </div>
                                             </div>
                                             {
                                                 (this.state.isFolderClrEmpty)?
@@ -541,7 +544,7 @@ export default class Index extends React.Component{
                                             }
                                         </div>
                                     </div>
-                                    <div className="row invite-people">
+                                    <div className="invite-people">
                                         <div className="col-sm-12 input-group">
                                             <p>Invite some people</p>
                                             {<Autosuggest suggestions={suggestions}
@@ -559,7 +562,7 @@ export default class Index extends React.Component{
                                 <section className="folder-footer">
                                     <div className="row action-bar">
                                         <div className="col-sm-12">
-                                            <button className="btn btn-add-folder" onClick={this.onFolderCreate.bind(this)}>Add Folder</button>
+                                            <button className="btn btn-add-folder" onClick={this.onFolderCreate.bind(this)}>Create Folder</button>
                                         </div>
                                     </div>
                                 </section>

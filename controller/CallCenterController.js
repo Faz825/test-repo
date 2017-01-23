@@ -3,6 +3,7 @@
 var async = require('async');
 
 var Connection = require('mongoose').model('Connection');
+var mCall = require('mongoose').model('Call');
 
 var CallCenterController = {
     contact: {
@@ -89,9 +90,27 @@ var CallCenterController = {
          * @param res
          */
         addCallRecord: function (req, res) {
-            console.log(req.body.callRecord);
-        },
+            let oCallRecord = req.body.callRecord;
 
+            let CurrentSession = Util.getCurrentSession(req);
+
+            let oNewRecord = {
+                user_id: CurrentSession.id,
+                // should be support for both individual or group
+                contact_type: oCallRecord.contact.contactType,
+                call_channel: oCallRecord.callChannel,
+                receivers_list: oCallRecord.targets,
+                started_at: oCallRecord.dialedAt,
+                call_status: mCall.callStatus.MISSED,
+                call_type: mCall.callTypes.OUTGOING
+            };
+
+            mCall.addNew(oNewRecord, function (oCallRes) {
+                if (oCallRes.status == 200) {
+                    return res.status(200).json(oCallRes.data);
+                }
+            });
+        },
         /**
          * get call center records
          * @param req

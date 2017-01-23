@@ -18,7 +18,7 @@ export default class RecentList extends React.Component {
                 <div className="contact-group" key={key}>
                     <p className="group-name">{oGroupedContacts.letter}</p>
 
-                    <div className="contact-wrapper">
+                    <div className="list-wrapper">
                         {oGroupedContacts.users.map(function (oContact) {
                             return (
                                 <Recent key={oContact.user_id} contact={oContact} type="recent" onCalling={_this.onCalling.bind(_this)}/>
@@ -29,10 +29,8 @@ export default class RecentList extends React.Component {
             )
         });
         return (
-            <div className="recent-list contacts-list">
-                <div className="list-wrapper">
-                    {recentList}
-                </div>
+            <div className="recent-list">
+                {recentList}
             </div>
         );
     }

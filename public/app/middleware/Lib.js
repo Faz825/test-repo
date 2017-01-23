@@ -3,8 +3,6 @@
  */
 
 export default class Lib{
-
-
     /**
      * Remove HTML elements form the string
      * @param txt
