@@ -83,6 +83,7 @@ export default class CallModel extends React.Component {
                                           onClick={this.onVolumeBtnClick.bind(this)}></span>
                                     <span className="hang-up" onClick={(e) => this.props.closePopup(e)}></span>
                                 </div>
+                                <p className="call-receiver-status">Dialling....</p>
                             </div>
                             {
                                 <UserBlock targetUser={this.props.targetUser} loggedUser={this.props.loggedUser}/>
