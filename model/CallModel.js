@@ -86,16 +86,33 @@ var CallSchema = new Schema({
  * @param eventData
  * @param callBack
  */
-CallSchema.statics.addNew = function (eventData, callBack) {
+CallSchema.statics.addNew = function (oCall, callBack) {
 
-    var callCenter = new this();
-    callCenter.user_id = eventData.user_id;
-    callCenter.contact_type = eventData.contact_type;
-    callCenter.call_type = eventData.call_type;
-    callCenter.call_started_at = new Date();
-    callCenter.receivers_list = eventData.receivers_list;
+    var oNewCallRecord = new this();
 
-    callCenter.save(function (err, resultSet) {
+    for (var key in oCall) {
+        switch (key) {
+            case 'receivers_list':
+                var aReceivers = [];
+                for (let i = 0; i < oCall[key].length; i++) {
+                    aReceivers.push({
+                        user_id: oCall[key][i].user_id
+                    });
+                }
+                oNewCallRecord.receivers_list = aReceivers;
+                break;
+        }
+    }
+
+    oNewCallRecord.user_id = oCall.user_id;
+    oNewCallRecord.contact_type = oCall.contact_type;
+    oNewCallRecord.call_type = oCall.call_type;
+    oNewCallRecord.call_started_at = oCall.started_at;
+    oNewCallRecord.call_channel = oCall.call_channel;
+    oNewCallRecord.call_type = oCall.call_type;
+    oNewCallRecord.call_status = oCall.call_status;
+
+    oNewCallRecord.save(function (err, resultSet) {
         if (err) {
             callBack({status: 400, error: err});
         } else {
@@ -168,6 +185,18 @@ CallSchema.statics.updateCallRecord = function (filter, value, callBack) {
             callBack({status: 200, event: update});
         }
     });
+};
+
+CallSchema.statics.callStatus = {
+    MISSED: 1,
+    ANSWERED: 2,
+    REJECTED: 3, /* call rejected due to targeted user work-mode */
+    CANCELED: 4, /* call hanged-up by targeted user */
+};
+
+CallSchema.statics.callTypes = {
+    INCOMING: 1,
+    OUTGOING: 2
 };
 
 mongoose.model('Call', CallSchema);

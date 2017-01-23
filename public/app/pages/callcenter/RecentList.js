@@ -29,7 +29,7 @@ export default class RecentList extends React.Component {
             )
         });
         return (
-            <div className="recent-list contacts-list">
+            <div className="recent-list">
                 <div className="list-wrapper">
                     {recentList}
                 </div>

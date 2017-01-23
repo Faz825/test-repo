@@ -494,7 +494,6 @@ export default class Index extends React.Component {
     }
 
     onUserStateUpdate(eventKey) {
-        console.log(eventKey);
         this.setState({userStatus: eventKey});
     }
 
@@ -599,6 +598,8 @@ export default class Index extends React.Component {
         var c = this.b6.startCall(to, opts);
         this.attachCallEvents(c);
 
+        this.callRecord.contact = oTargetUser;
+        this.callRecord.callChannel = this.state.callMode;
         this.callRecord.targets.push({user_id: oTargetUser.user_id});
 
         c.connect(opts);
@@ -616,7 +617,10 @@ export default class Index extends React.Component {
         // Call progress
         c.on('progress', function () {
             _this.callRecord.dialedAt = new Date().toISOString();
-            CallCenter.addCallRecord(_this.callRecord);
+
+            CallCenter.addCallRecord(_this.callRecord).done(function (oData) {
+                console.log(oData);
+            });
         });
 
         // Number of video feeds/elements changed
@@ -642,6 +646,9 @@ export default class Index extends React.Component {
         c.on('end', function () {
             console.log('end');
             console.log(c);
+
+           // _this.setState({inProgressCall: false, targetUser: null, callMode: CallChannel.AUDIO});
+
             // TODO show call end details in popup
         });
     }

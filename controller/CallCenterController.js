@@ -97,15 +97,17 @@ var CallCenterController = {
             let oNewRecord = {
                 user_id: CurrentSession.id,
                 // should be support for both individual or group
-                contact_type: ContactType.INDIVIDUAL,
-                call_type: oCallRecord.type,
-                started_at:oCallRecord.dialedAt,
-                
+                contact_type: oCallRecord.contact.contactType,
+                call_channel: oCallRecord.callChannel,
+                receivers_list: oCallRecord.targets,
+                started_at: oCallRecord.dialedAt,
+                call_status: mCall.callStatus.MISSED,
+                call_type: mCall.callTypes.OUTGOING
             };
 
             mCall.addNew(oNewRecord, function (oCallRes) {
                 if (oCallRes.status == 200) {
-
+                    return res.status(200).json(oCallRes.data);
                 }
             });
         },

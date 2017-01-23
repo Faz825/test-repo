@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {UserMode, ContactType, CallType} from '../../config/CallcenterStats';
+import {UserMode, ContactType, CallChannel} from '../../config/CallcenterStats';
 
 export default class Contact extends React.Component {
     constructor(props) {
@@ -14,8 +14,8 @@ export default class Contact extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
-    handleClick(user, callType) {
-        this.props.onCalling(user, callType);
+    handleClick(user, callChannel) {
+        this.props.onCalling(user, callChannel);
     }
 
     render() {
@@ -59,12 +59,12 @@ export default class Contact extends React.Component {
                     <div className="col-sm-6">
                         <div className="call-ico-wrapper">
                             <button className="call-ico video" onClick={(event)=> {
-                                _this.handleClick(contact, CallType.VIDEO)
+                                _this.handleClick(contact, CallChannel.VIDEO)
                             }}>
                                 <img src="images/call-center/video-ico.png"/>
                             </button>
                             <button className="call-ico phone" onClick={(event)=> {
-                                _this.handleClick(contact, CallType.AUDIO)
+                                _this.handleClick(contact, CallChannel.AUDIO)
                             }}>
                                 <img src="images/call-center/phone-ico.png"/>
                             </button>

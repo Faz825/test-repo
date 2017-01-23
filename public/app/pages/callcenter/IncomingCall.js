@@ -1,5 +1,5 @@
 import React from 'react';
-import {CallType} from '../../config/CallcenterStats';
+import {CallChannel} from '../../config/CallcenterStats';
 
 export default class IncomingCall extends React.Component {
 
@@ -39,7 +39,7 @@ export default class IncomingCall extends React.Component {
                                 <h4 id="incomingCallFrom">User is calling...</h4>
                                 <p>
                                     {
-                                        (this.props.callMode == CallType.VIDEO) ?
+                                        (this.props.callMode == CallChannel.VIDEO) ?
                                             <button type="button" className="btn btn-success income-call"
                                                     id="answerVideo"
                                                     onClick={()=>this.answerVideo()}>Video

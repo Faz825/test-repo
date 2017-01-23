@@ -42,7 +42,7 @@ export default class Recent extends React.Component {
 
         return (
             <div>
-                <div className="row contact-item recent-item">
+                <div className="row recent-item">
                     <div className="col-sm-4">
                         <div className="image-wrapper">
                             <img src={contact.images.profile_image.http_url}/>

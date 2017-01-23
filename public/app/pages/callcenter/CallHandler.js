@@ -17,15 +17,28 @@ export default class CallHandler extends React.Component {
             inProgressCall: false,
             callMode: CallType.AUDIO,
             minimizeBar: false,
-            bit6Call: null
+            bit6Call: null,
+            contacts: []
         };
 
-        this.loadMyConnections();
+        this.loadContactData();
 
         if (Session.isSessionSet('prg_lg')) {
             this.b6 = CallCenter.b6;
             this.initCall(this.b6);
         }
+    }
+
+    loadContactData() {
+        let getContacts = CallCenter.getContacts();
+
+        let _this = this;
+
+        //  console.log(getContacts);
+
+        getContacts.done(function (data) {
+            _this.setState({contacts: data.contacts});
+        });
     }
 
     initCall(b6) {
@@ -74,14 +87,16 @@ export default class CallHandler extends React.Component {
 
             let _callType = CallCenter.getCallType(c);
 
-            console.log(_callType);
+            let targetUser = this.getContactBySlug(c.other);
+
+            console.log(targetUser);
 
             // Get caller details
             // let cf = b6.getNameFromIdentity(c.other);
             // let title_array = cf.split('proglobe');
             // let title = title_array[1];
 
-            this.setState({inComingCall: true, callMode: _callType, bit6Call: c});
+            this.setState({inComingCall: true, callMode: _callType, targetUser: targetUser, bit6Call: c});
 
         } else {
             console.log("Call blocked in work mode. Informing caller via messaging");
@@ -228,6 +243,7 @@ export default class CallHandler extends React.Component {
     hangUpCall() {
         let c = this.state.bit6Call;
         c.hangup();
+        this.setState({inComingCall: false});
     }
 
     onMinimizePopup() {
@@ -240,6 +256,21 @@ export default class CallHandler extends React.Component {
 
     componentDidMount() {
         console.log("CallHandler Rendering done");
+    }
+
+    getContactBySlug(slug) {
+        let _this = this;
+        let username = slug.split('usr:proglobe');
+
+        for (let i = 0; i < _this.state.contacts.length; i++) {
+            var letter = _this.state.contacts[i];
+
+            for (let x = 0; x < letter.users.length; x++) {
+                if (letter.users[x].user_name == username[1]) {
+                    return letter.users[x];
+                }
+            }
+        }
     }
 
     render() {
@@ -260,7 +291,7 @@ export default class CallHandler extends React.Component {
                             <CallModel
                                 callMode={this.state.callMode}
                                 loggedUser={this.state.loggedUser}
-                                targetUser={this.state.loggedUser}
+                                targetUser={this.state.targetUser}
                                 closePopup={this.onPopupClose.bind(this)}
                                 minimizePopup={this.onMinimizePopup.bind(this)}
                             />

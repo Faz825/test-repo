@@ -29,4 +29,4 @@ const CallChannel = {
     AUDIO: 2
 };
 
-export {UserMode, ContactType, CallStatus, CallType};
+export {UserMode, ContactType, CallStatus, CallType, CallChannel};
