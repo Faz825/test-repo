@@ -7,7 +7,7 @@ import ReactDom from 'react-dom';
 import {Modal, ButtonToolbar, DropdownButton, MenuItem} from 'react-bootstrap';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import {CallType} from '../../config/CallcenterStats';
+import {CallChannel} from '../../config/CallcenterStats';
 import ContactList from "./ContactList";
 import RecentList from "./RecentList";
 import StatusList from "./StatusList";
@@ -17,6 +17,7 @@ import CallCenter from '../../middleware/CallCenter';
 export default class Index extends React.Component {
     constructor(props) {
         super(props);
+
         if (Session.getSession('prg_lg') == null) {
             window.location.href = "/";
         } else {
@@ -28,7 +29,7 @@ export default class Index extends React.Component {
             loggedUser: Session.getSession('prg_lg'),
             targetUser: null,
             inProgressCall: false,
-            callMode: CallType.AUDIO,
+            callMode: CallChannel.AUDIO,
             userList: [],
             recentCalls: [],
             userStatus: "online",
@@ -37,7 +38,12 @@ export default class Index extends React.Component {
             showModal: false,
             minimizeBar: false,
             searchValue: ""
-        }
+        };
+
+        // Call Record
+        this.callRecord = {
+            targets: []
+        };
 
         this.loadContactData("recent", "all");
 
@@ -581,17 +587,19 @@ export default class Index extends React.Component {
             screen: false
         };
 
-        if (callMode == CallType.VIDEO) {
+        if (callMode == CallChannel.VIDEO) {
             opts.video = true;
-            this.setState({callMode: CallType.VIDEO});
+            this.setState({callMode: CallChannel.VIDEO});
         } else {
-            this.setState({callMode: CallType.AUDIO});
+            this.setState({callMode: CallChannel.AUDIO});
         }
 
         // Start the outgoing call
         let to = CallCenter.getBit6Identity(oTargetUser);
         var c = this.b6.startCall(to, opts);
         this.attachCallEvents(c);
+
+        this.callRecord.targets.push({user_id: oTargetUser.user_id});
 
         c.connect(opts);
 
@@ -603,18 +611,21 @@ export default class Index extends React.Component {
 
     // Attach call state events to a RtcDialog
     attachCallEvents(c) {
+        var _this = this;
+
         // Call progress
         c.on('progress', function () {
-            console.log('progress');
-            console.log(c);
-            // TODO show call progress details in popup
+            _this.callRecord.dialedAt = new Date().toISOString();
+            CallCenter.addCallRecord(_this.callRecord);
         });
+
         // Number of video feeds/elements changed
         c.on('videos', function () {
             console.log('video');
             console.log(c);
             // TODO show video call details in popup
         });
+
         // Call answered
         c.on('answer', function () {
             console.log('answered');

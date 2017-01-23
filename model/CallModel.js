@@ -7,11 +7,16 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
+GLOBAL.CallType = {
+    INCOMING: 1,
+    OUTGOING: 2
+};
+
 GLOBAL.CallStatus = {
     MISSED: 1,
     ANSWERED: 2,
-    REJECTED: 3,
-    CANCELLED: 4
+    REJECTED: 3, /* call rejected due to targeted user work-mode */
+    CANCELLED: 4 /* call hanged-up by targeted user */
 };
 
 GLOBAL.ContactType = {
@@ -20,24 +25,16 @@ GLOBAL.ContactType = {
     MULTI: 3
 };
 
-GLOBAL.CallType = {
+GLOBAL.CallChannel = {
     VIDEO: 1,
     AUDIO: 2
 };
 
 var ReceiversListSchema = new Schema({
-    name: {
-        type: String,
-        default: null
-    },
     user_id: {
         type: Schema.ObjectId,
         ref: 'User',
         default: null
-    },
-    call_status: {
-        type: Number,
-        default: null /* 1 - missed | 2 - answered | 3 - rejected, 4 - cancelled */
     }
 });
 
@@ -52,7 +49,11 @@ var CallSchema = new Schema({
         default: null
     },
     call_type: {
-        type: Number, /* 1 - video | 2 - audio*/
+        type: Number, /* 1 - incoming | 2 - outgoing */
+        default: null
+    },
+    call_channel: {
+        type: Number, /* 1 - video | 2 - audio */
         default: null
     },
     call_started_at: {
@@ -66,6 +67,10 @@ var CallSchema = new Schema({
     call_duration: {
         type: String,
         default: null
+    },
+    call_status: {
+        type: Number,
+        default: null /* 1 - missed | 2 - answered | 3 - rejected, 4 - cancelled */
     },
     receivers_list: [ReceiversListSchema],
     created_at: {
@@ -85,7 +90,6 @@ CallSchema.statics.addNew = function (eventData, callBack) {
 
     var callCenter = new this();
     callCenter.user_id = eventData.user_id;
-    callCenter.call_status = eventData.call_status;
     callCenter.contact_type = eventData.contact_type;
     callCenter.call_type = eventData.call_type;
     callCenter.call_started_at = new Date();
@@ -93,7 +97,6 @@ CallSchema.statics.addNew = function (eventData, callBack) {
 
     callCenter.save(function (err, resultSet) {
         if (err) {
-            console.log(err);
             callBack({status: 400, error: err});
         } else {
             callBack({status: 200, event: resultSet});

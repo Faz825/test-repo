@@ -6,7 +6,9 @@ export default class IncomingCall extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            endCall: false
+        };
     }
 
     answerAudio() {
@@ -17,8 +19,9 @@ export default class IncomingCall extends React.Component {
         this.props.answerVideo();
     }
 
-    reject() {
-        this.props.reject();
+    hangUp() {
+
+        this.props.hangUp();
     }
 
     render() {
@@ -47,7 +50,7 @@ export default class IncomingCall extends React.Component {
                                             onClick={()=>this.answerAudio()}>Audio
                                     </button>
                                     <button type="button" className="btn btn-danger income-call" id="reject"
-                                            onClick={()=>this.reject()}>Reject
+                                            onClick={()=>this.hangUp()}>Reject
                                     </button>
                                 </p>
                             </div>
@@ -55,6 +58,6 @@ export default class IncomingCall extends React.Component {
                     </div>
                 </div>
             </div>
-        );
+        )
     }
 }
