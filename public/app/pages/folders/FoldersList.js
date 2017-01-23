@@ -285,7 +285,7 @@ export default class FolderList extends React.Component{
                                                             (folderData.is_shared) ?
                                                                 <span className="sharedIcon"></span>
                                                                 :
-                                                                <i className="fa fa-share-alt" aria-hidden="true"></i>
+                                                                <span className="folder-share-icon"></span>
                                                         }
                                                     </div>
                                                 </OverlayTrigger>
@@ -307,9 +307,9 @@ export default class FolderList extends React.Component{
                                         <div className="folder-items-wrapper">
                                             <div className="inner-wrapper">
                                                 <div className="folder-col"  onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
-                                                    <div className="folder-item upload-file">
-                                                        <i className="fa fa-plus"></i>
-                                                        <p>Upload new file or image</p>
+                                                    <div className="folder-item upload-file" style={{borderColor: folderData.folder_color}}>
+                                                        <i className="fa fa-plus" style={{color: folderData.folder_color}}></i>
+                                                        <p style={{color: folderData.folder_color}}>Upload new file or image</p>
                                                     </div>
                                                 </div>
                                                 {_uploadFileList}
@@ -359,7 +359,7 @@ export default class FolderList extends React.Component{
                                                         {
                                                             (folderData.is_shared) ?
                                                                 <i className="fa fa-users" aria-hidden="true"></i> :
-                                                                <i className="fa fa-share-alt" aria-hidden="true"></i>
+                                                                <span className="folder-share-icon"></span>
                                                         }
                                                     </div>
                                                 </OverlayTrigger>

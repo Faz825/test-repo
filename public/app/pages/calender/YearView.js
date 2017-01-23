@@ -42,7 +42,7 @@ export default class YearView extends Component {
     render() {
         return (
         <section className="calender-body">
-            <div className="row calendar-main-row">
+            <div className="calendar-main-row">
                 <div className="calender-year-view">
                     <div className="view-header">
                         <div className="col-sm-6">

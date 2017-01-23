@@ -548,7 +548,7 @@ export default class DayView extends Component {
                 <div className="row calendar-main-row">
                     <div className="col-sm-9">
                         <div className="calender-view">
-                            <div className="view-header row">
+                            <div className="view-header">
                                 <div className="col-sm-6">
                                     <div className="date-wrapper">
                                         <div className="date-nav" onClick={() => this.previousDay()}>

@@ -312,40 +312,42 @@ export default class Index extends React.Component{
             <div id="pg-newsfeed-page" className="pg-page">
                 <div className="row row-clr">
                     <div className="container" id="middle-content-wrapper">
-                        <div className="col-xs-4" id="news-middle-container-left-col">
-                            <div id="pg-news-middle-container-left-col-details">
-                                <h2 className="pg-newsfeed-left-title-section-txt">NEWS</h2>
-                                <NewsArtical display_news_articles = {display_news_articles} selected = {_this.selectedArtical} saveArtical={_this.onSaveArticleIconClick}/>
-                                {this.getPopup()}
-                            </div>
-                        </div>
-                        <div className="col-xs-8" id="newsfeed-middle-container-right-col">
-                            <div className="row pg-newsfeed-right-title-section">
-                                <div className="col-xs-5">
-                                    <h2 className="pg-newsfeed-right-title-section-txt">Updates</h2>
-                                </div>
-                                <div className="col-xs-7">
-                                    <h3 className="pg-newsfeed-right-title-section-date">{this.current_date}</h3>
+                        <div className="row">
+                            <div className="col-xs-4" id="news-middle-container-left-col">
+                                <div id="pg-news-middle-container-left-col-details">
+                                    <h2 className="pg-newsfeed-left-title-section-txt">NEWS</h2>
+                                    <NewsArtical display_news_articles = {display_news_articles} selected = {_this.selectedArtical} saveArtical={_this.onSaveArticleIconClick}/>
+                                    {this.getPopup()}
                                 </div>
                             </div>
-                            <AddPostElement
-                                workModeStyles={workmodeClass}
-                                onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
-                                uname = {uname}
-                                profileUsr={user}
-                                connectionStatus={this.state.connectionStatus}
-                                postType={this.postType}
-                                postVisibleMode={this.postVisibleMode}
-                            />
-                            <ListPostsElement posts={this.state.posts}
-                                              uname = {uname}
-                                              onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}
-                                              onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
-                                              onLikeSuccess = {this.onLikeSuccess.bind(this)}
-                                              onLoadProfile = {this.onLoadProfile.bind(this)}
-                            />
+                            <div className="col-xs-8" id="newsfeed-middle-container-right-col">
+                                <div className="row pg-newsfeed-right-title-section">
+                                    <div className="col-xs-5">
+                                        <h2 className="pg-newsfeed-right-title-section-txt">Updates</h2>
+                                    </div>
+                                    <div className="col-xs-7">
+                                        <h3 className="pg-newsfeed-right-title-section-date">{this.current_date}</h3>
+                                    </div>
+                                </div>
+                                <AddPostElement
+                                    workModeStyles={workmodeClass}
+                                    onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                    uname = {uname}
+                                    profileUsr={user}
+                                    connectionStatus={this.state.connectionStatus}
+                                    postType={this.postType}
+                                    postVisibleMode={this.postVisibleMode}
+                                />
+                                <ListPostsElement posts={this.state.posts}
+                                                uname = {uname}
+                                                onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}
+                                                onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
+                                                onLikeSuccess = {this.onLikeSuccess.bind(this)}
+                                                onLoadProfile = {this.onLoadProfile.bind(this)}
+                                />
+                            </div>
+                            <div className="col-xs-6"></div>
                         </div>
-                        <div className="col-xs-6"></div>
                     </div>
                     {
                         (this.state.blockNewsFeed)?
