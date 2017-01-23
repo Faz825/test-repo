@@ -90,11 +90,11 @@ var CallCenterController = {
          * @param res
          */
         addCallRecord: function (req, res) {
-            let oCallRecord = req.body.callRecord;
+            var oCallRecord = req.body.callRecord;
 
-            let CurrentSession = Util.getCurrentSession(req);
+            var CurrentSession = Util.getCurrentSession(req);
 
-            let oNewRecord = {
+            var oNewRecord = {
                 user_id: CurrentSession.id,
                 // should be support for both individual or group
                 contact_type: oCallRecord.contact.contactType,

@@ -94,7 +94,7 @@ CallSchema.statics.addNew = function (oCall, callBack) {
         switch (key) {
             case 'receivers_list':
                 var aReceivers = [];
-                for (let i = 0; i < oCall[key].length; i++) {
+                for (var i = 0; i < oCall[key].length; i++) {
                     aReceivers.push({
                         user_id: oCall[key][i].user_id
                     });
