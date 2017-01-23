@@ -5,7 +5,7 @@
 import Socket from './Socket';
 import Session from '../middleware/Session';
 import {Config} from '../config/Config';
-import {CallType} from '../config/CallcenterStats';
+import {CallChannel} from '../config/CallcenterStats';
 
 let bit6Client = null;
 
@@ -47,6 +47,17 @@ class CallCenter {
         }
     }
 
+    getContacts() {
+        let _this = this;
+
+        return $.ajax({
+            url: '/contacts/all',
+            method: "GET",
+            dataType: "JSON",
+            headers: {'prg-auth-header': _this.loggedUser.token}
+        });
+    }
+
     /**
      * @param ident - bit6 ident
      * @param pass - bit6 password
@@ -86,22 +97,25 @@ class CallCenter {
      * **/
     getCallType(oCall) {
         if (oCall.options.audio && !oCall.options.video) {
-            return CallType.AUDIO;
+            return CallChannel.AUDIO;
         } else if (oCall.options.audio && oCall.options.video) {
-            return CallType.VIDEO;
+            return CallChannel.VIDEO;
         } else {
             return false;
         }
     }
 
+    /**
+     * @param oRecord - new call record with call status
+     * **/
     addCallRecord(oRecord) {
-        $.ajax({
+        let _this = this;
+
+        return $.ajax({
             url: '/call/add-record',
             method: "POST",
             data: {callRecord: oRecord},
-            headers: {'prg-auth-header': this.loggedUser.token}
-        }).done(function (data) {
-            console.log(data);
+            headers: {'prg-auth-header': _this.loggedUser.token}
         });
     }
 }

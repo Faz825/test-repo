@@ -4,7 +4,7 @@
 
 import React from "react";
 import {Popover, OverlayTrigger} from 'react-bootstrap';
-import {CallType} from '../../config/CallcenterStats';
+import {CallType, CallChannel} from '../../config/CallcenterStats';
 
 export default class CallModel extends React.Component {
     constructor(props) {
@@ -13,7 +13,8 @@ export default class CallModel extends React.Component {
         this.state = {
             isCallBtnEnabled: true,
             isVideoBtnEnabled: true,
-            isValoumeBtnEnabled: true
+            isValoumeBtnEnabled: true,
+            selectedUser: null
         };
 
         this.userList = null;
@@ -42,6 +43,11 @@ export default class CallModel extends React.Component {
         this.setState({inCall: false, minimizeBar: false});
     }
 
+    switchUser(oUser) {
+        console.log(oUser);
+        this.setState({selectedUser: oUser});
+    }
+
     render() {
         let i = (
             <Popover id="popover-contained" className="share-popover-contained callpopup popup-holder"
@@ -53,7 +59,7 @@ export default class CallModel extends React.Component {
             </Popover>
         );
 
-        console.log(this.props.callMode == CallType.AUDIO);
+        console.log(this.props.callMode);
 
         return (
             <div className="popup-holder">
@@ -70,8 +76,8 @@ export default class CallModel extends React.Component {
                             </div>
                             <div className="active-user-block">
                                 <div id="webcamStage">
-                                    {   (this.props.callMode == CallType.AUDIO) ?
-                                        <img src="/images/call-center/cc-active-user.png"/>
+                                    {   (this.props.callMode == CallChannel.AUDIO) ?
+                                        <img src={this.props.targetUser.images.profile_image.http_url}/>
                                         : null }
                                 </div>
                                 <div className="active-call-nav">
@@ -86,7 +92,8 @@ export default class CallModel extends React.Component {
                                 <p className="call-receiver-status">Dialling....</p>
                             </div>
                             {
-                                <UserBlock targetUser={this.props.targetUser} loggedUser={this.props.loggedUser}/>
+                                <UserBlock switchUser={this.switchUser.bind(this)} targetUser={this.props.targetUser}
+                                           loggedUser={this.props.loggedUser}/>
                             }
                             <div className="call-timer">
                                 <p className="call-status">On Call -</p>
@@ -109,8 +116,10 @@ export class UserBlock extends React.Component {
         }
     }
 
-    onUserClick(user) {
-        this.setState({userName: user.user_name});
+    onUserClick(oUser) {
+        console.log(this);
+       // this.props.switchUser(oUser);
+        this.setState({userName: oUser.user_name});
     }
 
     isUserActive(user) {
@@ -123,15 +132,15 @@ export class UserBlock extends React.Component {
             _loggedUser = this.props.loggedUser,
             _targetUser = this.props.targetUser,
             _targetHtml = <div className={_this.isUserActive(_targetUser.user_name)}
-                               onClick={_this.onUserClick.bind(_this, _targetUser)}>
-                <img src={_targetUser.profile_image}/>
+                               onClick={_this.onUserClick.bind(_targetUser)}>
+                <img src={_targetUser.images.profile_image.http_url}/>
                 <span className="active-user"></span>
             </div>;
 
         return (
             <div className="participants">
                 <div id="origin_webcamStage" className={this.isUserActive(_loggedUser.user_name)}
-                     onClick={this.onUserClick.bind(this, _loggedUser)}>
+                     onClick={this.onUserClick.bind(_loggedUser)}>
                     {   (this.props.callMode == CallType.AUDIO) ?
                         <img
                             src={(_loggedUser.profile_image) ? _loggedUser.profile_image : "/images/default-profile-pic.png"}/>
