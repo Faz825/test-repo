@@ -22,7 +22,8 @@ GLOBAL.PostConfig={
     LOCATION_POST:"LP",
     ALBUM_POST:"AP",
     SHARED_POST:"SP",
-    SHARE_PREFIX:"post:share:"
+    SHARE_PREFIX:"post:share:",
+    GROUP_PREFIX:"group:"
 };
 
 GLOBAL.PostType={
@@ -95,7 +96,12 @@ var PostSchema = new Schema({
     },
     updated_at:{
         type:Date
-    }
+    },
+    // this is exist only when the post is a group post
+    group_id:{
+        type: Schema.ObjectId,
+        default:null
+    },
 
 },{collection:'posts'});
 
@@ -135,6 +141,7 @@ PostSchema.statics.addNew = function(post,callBack){
     _post.lng = post.lng;
     _post.life_event = post.life_event;
     _post.shared_post_id = (typeof post.shared_post_id != "undefined")?post.shared_post_id:null;
+    _post.group_id = post.group_id;
     _post.save(function(err,postData){
 
         if(!err){
@@ -159,7 +166,25 @@ PostSchema.statics.addNew = function(post,callBack){
  */
 PostSchema.statics.addToCache=function(users,data,callBack){
 
+
+    if(data.post_type == PostType.GROUP_POST) {
+        // creating the index using group id.
+        var _cache_key = "idx_post:"+PostConfig.GROUP_PREFIX+data.group_id;
+        var payLoad={
+            index:_cache_key,
+            id:data.post_id.toString(),
+            type: 'posts',
+            data:data,
+            tag_fields:['content']
+        }
+
+        ES.createIndex(payLoad,function(resultSet){
+            callBack(resultSet)
+        });
+    }
+
     for(var i=0;i<users.length;i++){
+
         var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+users[i];
         var payLoad={
             index:_cache_key,
@@ -170,11 +195,12 @@ PostSchema.statics.addToCache=function(users,data,callBack){
         }
 
         ES.createIndex(payLoad,function(resultSet){
-
             callBack(resultSet)
         });
 
     }
+
+
 }
 
 
@@ -186,9 +212,7 @@ PostSchema.statics.addToCache=function(users,data,callBack){
  */
 PostSchema.statics.ch_getPost= function(userId,payload,callBack){
     var _this = this;
-
     var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+userId;
-
     var query={
         q:payload.q,
         index:_cache_key

@@ -25,11 +25,13 @@ export default class Discussion extends React.Component{
             currentGroup : group,
             randomMembers : this.props.randomMembers,
             membersCount : this.props.membersCount,
+            members : this.props.members,
             posts:[],
         };
 
         this.postType = 2; // [ PERSONAL_POST:1, GROUP_POST:2 ]
         this.postVisibleMode = 5; // [ PUBLIC:1, FRIEND_ONLY:2, ONLY_MY:3, SELECTED_USERS:4, GROUP_MEMBERS:5 ]
+        this.loadPosts(0);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -43,6 +45,36 @@ export default class Discussion extends React.Component{
         if (nextProps.membersCount !== this.state.membersCount) {
             this.setState({ membersCount: nextProps.membersCount });
         }
+
+        if (nextProps.members !== this.state.members) {
+            this.setState({ members: nextProps.members });
+        }
+
+        if (nextProps.myGroup !== this.state.currentGroup) {
+            this.setState({ currentGroup: nextProps.myGroup });
+        }
+    }
+
+    loadPosts(page){
+
+        let user = Session.getSession('prg_lg');
+        let _this =  this;
+        $.ajax({
+            url: '/pull/posts',
+            method: "GET",
+            dataType: "JSON",
+            data:{__pg:page,uname:_this.state.uname,__own:"me",posts_type:this.postType.GROUP_POST},
+            success: function (data, text) {
+                if(data.status.code == 200){
+                    this.setState({posts:data.posts})
+                }
+
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(status);
+                console.log(error);
+            }.bind(this)
+        });
     }
 
     onPostSubmitSuccess() {
@@ -63,6 +95,8 @@ export default class Discussion extends React.Component{
         let workmodeClass = "workmode-switched";
         // let user = Session.getSession('prg_lg');
         const {user, uname}= this.state;
+        console.log(this.state.currentGroup);
+        console.log("IN DISCUSSION ^^");
         return (
             <section className="group-content">
                 <div className="sidebar col-sm-4">
@@ -87,6 +121,8 @@ export default class Discussion extends React.Component{
                             connectionStatus={this.state.connectionStatus}
                             postType={this.postType}
                             postVisibleMode={this.postVisibleMode}
+                            members={this.state.members.members}
+                            group={this.state.currentGroup._id}
                         />
                         <ListPostsElement posts={this.state.posts}
                             uname = {uname}
