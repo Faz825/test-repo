@@ -194,9 +194,8 @@ export default class Index extends React.Component{
 
 
         return (
-
-            <div className="pg-page" id="pg-connections-page">
-                <div className="pg-connections-wrapper">
+            <div className="pg-page container" id="pg-connections-page">
+                <div className="pg-connections-wrapper row">
                     <div className="row row-clr pg-connections-page-header">
                         <div className="col-xs-10 col-xs-offset-1">
                             <div className="row">

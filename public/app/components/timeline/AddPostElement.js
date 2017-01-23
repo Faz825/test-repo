@@ -26,7 +26,9 @@ export default class AddPostElement extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            uuid:this.IDGenerator()
+            uuid:this.IDGenerator(),
+            postType:this.props.postType,
+            postVisibleMode:this.props.postVisibleMode
         }
 
     }
@@ -69,11 +71,13 @@ export default class AddPostElement extends React.Component{
             <div className="pg-timeline-white-box pg-round-border pg-box-shadow">
                 <div className="row row-clr pg-newsfeed-section" id="pg-newsfeed-post-section">
 
-                    <TextPostElement  afterPostSubmit = {this.afterPostSubmit.bind(this)}
+                    <TextPostElement afterPostSubmit = {this.afterPostSubmit.bind(this)}
                                       uuid={this.state.uuid}
                                       profileUsr = {this.props.profileUsr}
                                       workModeStyles = {this.props.workModeStyles}
-                        />
+                                      postType = {this.state.postType}
+                                      postVisibleMode = {this.state.postVisibleMode}
+                    />
                 </div>
             </div>
         )
@@ -91,7 +95,7 @@ export class TextPostElement extends React.Component{
             uploadedFiles           :[],
             fileIds                 :[],
             inProgressUploads       :{},
-            post_type               :"NP",
+            post_mode               :"NP",
             btnEnabled              :true,
             iniTextisVisible        : true,
             emptyPostWarningIsVisible : false,
@@ -100,7 +104,9 @@ export class TextPostElement extends React.Component{
             imgUploadInstID         : 0,
             lifeEventId             :"",
             percent_completed : 0,
-            video_err : ""
+            video_err : "",
+            postType                : this.props.postType,
+            postVisibleMode         : this.props.postVisibleMode // Currently this value is comming from the parent component.
         }
         this.loggedUser = Session.getSession('prg_lg');
         this.isValidToSubmit = false;
@@ -117,24 +123,24 @@ export class TextPostElement extends React.Component{
         if(this.state.text != ""){
             this.isValidToSubmit = true;
             _pay_load['__content'] = this.state.text;
-            _pay_load['__post_type'] = this.state.post_type;
+            _pay_load['__post_mode'] = this.state.post_mode;
         }
 
         if(this.state.location != ""){
             this.isValidToSubmit = true;
             _pay_load['__lct'] = this.state.location;
-            _pay_load['__post_type'] = "LP";
+            _pay_load['__post_mode'] = "LP";
 
         }else if(this.state.fileIds.length>0){
             this.isValidToSubmit = true;
             _pay_load['__file_content']  = JSON.stringify(this.state.fileIds);
             _pay_load['__hs_attachment'] =true;
             _pay_load['__uuid'] =this.props.uuid;
-            _pay_load['__post_type'] = "AP";
+            _pay_load['__post_mode'] = "AP";
         }else if(this.state.lifeEventId  != ""){
             this.isValidToSubmit = true;
             _pay_load['__lf_evt'] =this.state.lifeEventId;
-            _pay_load['__post_type'] ="LE";
+            _pay_load['__post_mode'] ="LE";
         }
 
         if(this.loggedUser.user_name !== this.props.profileUsr.user_name) {
@@ -143,6 +149,10 @@ export class TextPostElement extends React.Component{
         } else {
             _pay_load['__on_friends_wall'] = false;
         }
+
+        // set the post type weather a PERSONAL_POST or a GROUP_POST
+        _pay_load['__post_type'] = (typeof this.state.postType != "undefined" )? this.state.postType : PostType.PERSONAL_POST;
+        _pay_load['__post_visible_mode'] = (typeof this.state.postVisibleMode != "undefined" )? this.state.postVisibleMode : PostVisibleMode.PUBLIC;
 
         if(this.isValidToSubmit){
 
@@ -179,7 +189,7 @@ export class TextPostElement extends React.Component{
                 uploadedFiles:[],
                 fileIds:[],
                 inProgressUploads:{},
-                post_type:"NP",
+                post_mode:"NP",
                 iniTextisVisible: true,
                 isLocationPanelOpen: false,
                 isLifeEventPanelOpen:false,
@@ -346,7 +356,7 @@ export class TextPostElement extends React.Component{
 
             let file_ids = _this.state.fileIds;
             file_ids.push(data.video_upload.file_id)
-            _this.setState({uploadedFiles:uploadedFiles,file_ids:file_ids,post_type:"AP",btnEnabled:true});
+            _this.setState({uploadedFiles:uploadedFiles,file_ids:file_ids,post_mode:"AP",btnEnabled:true});
 
         });
 
@@ -401,7 +411,7 @@ export class TextPostElement extends React.Component{
 
                 let file_ids = this.state.fileIds;
                 file_ids.push(data.upload.file_id)
-                this.setState({uploadedFiles:uploadedFiles,file_ids:file_ids,post_type:"AP",btnEnabled:true});
+                this.setState({uploadedFiles:uploadedFiles,file_ids:file_ids,post_mode:"AP",btnEnabled:true});
 
             }
         }.bind(this)).error(function (request, status, error) {

@@ -85,7 +85,7 @@ export default class Calender extends React.Component {
 
         return(
             <div className="calender-body">
-                <div className="row calendar-main-row">
+                <div className="calendar-main-row">
                     <div className="calender-month-view">
 
                         <div className="view-header">

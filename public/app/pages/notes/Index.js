@@ -188,7 +188,7 @@ export default class Index extends React.Component {
             <div onClick={this.handleClick.bind(this)}>
                 {this.state.isShowingModal &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} width="50%" style={{marginTop : "-100px"}}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="40%" style={{marginTop : "-100px"}}>
                         <h3>Create a new note category.</h3>
                         <div className="col-xs-12">
                             <p>Category Name</p>
@@ -391,7 +391,7 @@ export default class Index extends React.Component {
             <div>
                 {this.state.isShowingNoteModal &&
                 <ModalContainer zIndex={9999} >
-                    <ModalDialog width="50%" className="note-popup" style={{padding : "0", borderRadius : "3px" , transform : "none"}}>
+                    <ModalDialog width="40%" className="note-popup" style={{padding : "0", borderRadius : "3px" , transform : "none"}}>
                         <div className="editor-popup-holder">
                             <div className="popup-header">
                                 <span className="closeBtn" onClick={this.closeNotePopup.bind(this)}></span>

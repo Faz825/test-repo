@@ -15,18 +15,17 @@ describe('Main Controller Head', function () {
     });
     before(function (done) {
         agent.post('/doSignin')
-            .send({uname: 'ruzan@eight25media.com', password: '123456'})
+            .send({uname: 'tests+151@eight25media.com', password: '123456'})
             .end(function (err, res) {
                 expect(res.body.status.code).to.equal(200);
                 expect(res.body).to.be.an('object');
+                expect(res.body).to.have.property('user');
+                expect(res.body.user).not.to.be.empty;
                 user = res.body.user;
                 done();
             });
     });
-
-
     after(function (done) {
-
         agent.post('/post/delete')
             .send({
                 __post_id: post.post_id
@@ -36,9 +35,7 @@ describe('Main Controller Head', function () {
                 expect(err).to.be.null;
                 done();
             });
-
     });
-
     afterEach(function (done) {
         done();
     });
@@ -50,46 +47,73 @@ describe('Main Controller Head', function () {
                 .send({
                     __hs_attachment: false,
                     __content: 'moch test content',
+                    __on_friends_wall: true,
                     __profile_user_id: user._id,
                     page_link: '',
-                    __post_type: 'NP',
+                    __post_mode: 'NP',
                     __file_content: '',
                     __uuid: '',
                     __lct: 'colombo',
-                    __lf_evt: ''
+                    __lf_evt: '',
+                    __visible_users: []
                 })
                 .end(function (err, res) {
                     post = res.body.post;
                     expect(res.body.status.code).to.equal(200);
+                    expect(res.body).to.have.property('post');
+                    expect(res.body.post).to.be.an('object');
+                    expect(res.body.post).not.to.be.empty;
+                    expect(err).to.be.null;
+                    expect(res.body.post).to.have.property('post_id');
+                    expect(res.body.post).to.have.property('shared_post_id');
+                    expect(res.body.post).to.have.property('shared_post');
+                    expect(res.body.post.shared_post).to.be.an('object');
+                    expect(res.body.post).to.have.property('upload');
+                    expect(res.body.post.upload).to.be.an('array');
                     expect(res.body.post).to.have.property('content');
                     expect(res.body.post).to.have.property('post_mode');
                     expect(res.body.post).to.have.property('has_attachment');
                     expect(res.body.post).to.have.property('visible_users');
+                    expect(res.body.post.visible_users).to.be.an('array');
                     expect(res.body.post).to.have.property('page_link');
                     expect(res.body.post).to.have.property('location');
                     expect(res.body.post).to.have.property('life_event');
-                    expect(res.body.post).to.be.an('object');
-                    expect(res.body.post).not.to.be.empty;
-                    expect(err).to.be.null;
+                    expect(res.body.post).to.have.property('date');
+                    expect(res.body.post.date).to.be.an('object');
+                    //expect(res.body.post).to.have.property('created_by');
+                    //expect(res.body.post.created_by).to.be.an('object');
+                    //expect(res.body.post).to.have.property('post_owned_by');
+                    //expect(res.body.post.post_owned_by).to.be.an('object');
                     done();
                 });
         });
 
         it('getPost', function (done) {
-            agent.get('/pull/posts?uname=' + user.user_name + '&__own=me&__pg=')
-                .set({uname: user.user_name, __own: 'me', __pg: ''})
+            agent.get('/pull/posts?uname='+user.user_name+'&__own=me&__pg=0')
                 .end(function (err, res) {
                     expect(res.body.status.code).to.equal(200);
                     expect(err).to.be.null;
-                    expect(res.body.posts[0]).to.have.property('content');
-                    expect(res.body.posts[0]).to.have.property('post_mode');
-                    expect(res.body.posts[0]).to.have.property('has_attachment');
-                    expect(res.body.posts[0]).to.have.property('post_id');
-                    expect(res.body.posts[0]).to.have.property('created_by');
-                    expect(res.body.posts[0]).to.have.property('location');
-                    expect(res.body.posts[0]).to.have.property('life_event');
+                    expect(res.body).to.have.property('posts');//console.log(JSON.stringify(res.body.posts))
                     expect(res.body.posts).to.be.an('array');
-                    expect(res.body.posts).not.to.be.empty;
+                    expect(res.body.posts[0]).to.have.property('post_id');
+                    expect(res.body.posts[0]).to.have.property('has_attachment');
+                    expect(res.body.posts[0]).to.have.property('post_mode');
+                    expect(res.body.posts[0]).to.have.property('content');
+                    expect(res.body.posts[0]).to.have.property('created_by');
+                    expect(res.body.posts[0].created_by).to.be.an('object');
+                    expect(res.body.posts[0]).to.have.property('post_owned_by');
+                    expect(res.body.posts[0].post_owned_by).to.be.an('object');
+                    expect(res.body.posts[0]).to.have.property('post_visible_mode');
+                    expect(res.body.posts[0]).to.have.property('date');
+                    expect(res.body.posts[0].date).to.be.an('object');
+                    expect(res.body.posts[0]).to.have.property('location');
+                    expect(res.body.posts[0]).to.have.property('lat');
+                    expect(res.body.posts[0]).to.have.property('lng');
+                    expect(res.body.posts[0]).to.have.property('life_event');
+                    expect(res.body.posts[0]).to.have.property('upload');
+                    expect(res.body.posts[0].upload).to.be.an('array');
+                    expect(res.body.posts[0]).to.have.property('shared_post');
+                    expect(res.body.posts[0].shared_post).to.be.an('object');
                     done();
                 });
         });
@@ -99,16 +123,28 @@ describe('Main Controller Head', function () {
                 .send({
                     __content: 'moch test content',
                     __pid: post.post_id,
-                    __post_type: 'SP',
+                    __post_mode: 'SP',
                     __own: user.id
                 })
                 .end(function (err, res) {
                     expect(res.body.status.code).to.equal(200);
-                    expect(err).to.be.null;
                     expect(res.body).to.have.property('post');
-                    expect(res.body.post).to.have.property('content');
                     expect(res.body.post).to.be.an('object');
                     expect(res.body.post).not.to.be.empty;
+                    expect(err).to.be.null;
+                    expect(res.body.post).to.have.property('content');
+                    expect(res.body.post).to.have.property('created_by');
+                    expect(res.body.post.created_by).to.be.an('object');
+                    expect(res.body.post).to.have.property('post_owned_by');
+                    expect(res.body.post.post_owned_by).to.be.an('object');
+                    expect(res.body.post).to.have.property('post_mode');
+                    expect(res.body.post).to.have.property('post_visible_mode');
+                    expect(res.body.post).to.have.property('visible_users');
+                    expect(res.body.post.visible_users).to.be.an('array');
+                    expect(res.body.post).to.have.property('date');
+                    expect(res.body.post.date).to.be.an('object');
+                    expect(res.body.post).to.have.property('shared_post');
+                    expect(res.body.post.shared_post).to.be.an('object');
                     done();
                 });
         });
@@ -117,30 +153,38 @@ describe('Main Controller Head', function () {
 
             agent.post('/post/profile-image-post')
                 .send({
-                    __hs_attachment: false,
-                    __content: 'moch profile image post',
-                    __profile_user_id: user._id,
-                    page_link: '',
-                    __post_type: 'AP',
-                    __file_content: '',
-                    __uuid: '',
-                    __lct: 'colombo',
-                    __lf_evt: '',
-                    __profile_picture: ''
+                    __hs_attachment: true,
+                    __content: '',
+                    __post_mode: 'PP',
+                    __profile_picture: []
                 })
                 .end(function (err, res) {
                     profile_post = res.body.post;
                     expect(res.body.status.code).to.equal(200);
+                    expect(res.body).to.have.property('post');
+                    expect(res.body.post).to.be.an('object');
+                    expect(res.body.post).not.to.be.empty;
+                    expect(err).to.be.null;
+                    expect(res.body.post).to.have.property('post_id');
+                    expect(res.body.post).to.have.property('shared_post_id');
+                    expect(res.body.post).to.have.property('shared_post');
+                    expect(res.body.post.shared_post).to.be.an('object');
+                    expect(res.body.post).to.have.property('upload');
+                    expect(res.body.post.upload).to.be.an('array');
                     expect(res.body.post).to.have.property('content');
                     expect(res.body.post).to.have.property('post_mode');
                     expect(res.body.post).to.have.property('has_attachment');
                     expect(res.body.post).to.have.property('visible_users');
+                    expect(res.body.post.visible_users).to.be.an('array');
                     expect(res.body.post).to.have.property('page_link');
                     expect(res.body.post).to.have.property('location');
                     expect(res.body.post).to.have.property('life_event');
-                    expect(res.body.post).to.be.an('object');
-                    expect(res.body.post).not.to.be.empty;
-                    expect(err).to.be.null;
+                    expect(res.body.post).to.have.property('date');
+                    expect(res.body.post.date).to.be.an('object');
+                    expect(res.body.post).to.have.property('created_by');
+                    expect(res.body.post.created_by).to.be.an('object');
+                    expect(res.body.post).to.have.property('post_owned_by');
+                    expect(res.body.post.post_owned_by).to.be.an('object');
                     done();
                 });
         });

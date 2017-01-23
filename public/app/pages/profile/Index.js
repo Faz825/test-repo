@@ -43,9 +43,13 @@ export default class Index extends React.Component{
         this.onAcceptFriendRequest = this.onAcceptFriendRequest.bind(this);
         this.onUnfriendUser = this.onUnfriendUser.bind(this);
         this.onLoadMutualFriends = this.onLoadMutualFriends.bind(this);
+        this.onUpdateProfileImages = this.onUpdateProfileImages.bind(this);
         this.loadExperiences();
         this.loadProfileData();
         this.loadPosts(0);
+
+        this.postType = 1; // [ PERSONAL_POST:1, GROUP_POST:2 ]
+        this.postVisibleMode = 1; // [ PUBLIC:1, FRIEND_ONLY:2, ONLY_MY:3, SELECTED_USERS:4, GROUP_MEMBERS:5 ]
     }
 
     onAcceptFriendRequest(user_id){
@@ -240,6 +244,21 @@ export default class Index extends React.Component{
         window.location.href = '/connections/mutual/'+this.state.uname;
     }
 
+    onUpdateProfileImages() {
+        console.log("going to call onUpdateProfileImages ---- 02");
+        this.loadProfileData();
+        let _this = this;
+
+        function doCallPost(_time) {
+            setTimeout(function() {
+                _this.loadPosts(0);
+            }, _time);
+        }
+
+        doCallPost(500);
+        doCallPost(1000);
+    }
+
     render(){
         let profileName;
 
@@ -261,7 +280,9 @@ export default class Index extends React.Component{
                     onAcceptFriendRequest = {this.onAcceptFriendRequest}
                     onUnfriendUser = {this.onUnfriendUser}
                     usrId={this.state.usrId}
-                    onLoadMutualFriends = {this.onLoadMutualFriends}/>
+                    onLoadMutualFriends = {this.onLoadMutualFriends}
+                    onUpdateProfileImages = {this.onUpdateProfileImages}
+                />
                 <div className="row row-clr">
                     <div className="container">
                         <div className="profile-content-container" id="middle-content-wrapper">
@@ -303,8 +324,14 @@ export default class Index extends React.Component{
                                         </div>
                                     :
                                         <div>
-                                            <AddPostElement onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
-                                                uname = {this.state.uname} profileUsr={this.state.user} connectionStatus={this.state.connectionStatus} />
+                                            <AddPostElement
+                                                onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                                uname = {this.state.uname}
+                                                profileUsr={this.state.user}
+                                                connectionStatus={this.state.connectionStatus}
+                                                postType={this.postType}
+                                                postVisibleMode={this.postVisibleMode}
+                                            />
                                             <ListPostsElement posts={this.state.posts}
                                                 uname = {this.state.uname}
                                                 onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}

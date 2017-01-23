@@ -7,17 +7,13 @@
 GLOBAL.UploadMeta ={
     PROFILE_IMAGE:"profile_image",
     COVER_IMAGE:"cover_image",
-
     TIME_LINE_IMAGE:"time_line_image",
     TIME_LINE_VIDEO:"post_video",
     COMMENT_IMAGE:"comment_image",
     TIME_LINE_VIDEO_IMAGE:"post_video_image",
     FOLDER_DOCUMENT:"folder_document",
     FOLDER_DOCUMENT_THUMB:"folder_document_thumb",
-    GROUP_IMAGE:"group_image",
-
-
-
+    GROUP_IMAGE:"group_image"
 }
 
 
@@ -193,12 +189,31 @@ UploadSchema.statics.getProfileImage=function(userId,callBack){
         }
 
     });
-
-
-
 }
 
+/**
+ * Update a Group
+ * @param filter
+ * @param value
+ * @param callBack
+ */
+UploadSchema.statics.updateUpload = function(filter, value, callBack){
 
+    var _this = this;
+    var options = {multi: true};
+
+    this.update(filter, value, options, function(err, update) {
+        if(err){
+            console.log(err);
+            console.log("Error - An Error occured in updating the upload document");
+            callBack({status:400,error:err});
+        } else {
+            console.log(update);
+            console.log("Success - The upload document updating is success.");
+            callBack({status:200, upload:update});
+        }
+    });
+}
 
 String.prototype.toObjectId = function() {
     var ObjectId = (require('mongoose').Types.ObjectId);

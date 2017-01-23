@@ -1,6 +1,3 @@
-/**
- * Created by gihan on 9/1/16.
- */
 
 import React from 'react'
 import Session  from '../../middleware/Session';

@@ -34,7 +34,7 @@ export default class Header extends Component {
 
         return (
             <div className="row row-clr" id="pg-profile-banner-area">
-                <CoverImage dt={this.props.user} readOnly={read_only} onFriendsProfile={isOnFriendsProfile}/>
+                <CoverImage dt={this.props.user} readOnly={read_only} onFriendsProfile={isOnFriendsProfile} onUpdateProfileImages = {this.props.onUpdateProfileImages}/>
                 {
                     (isOnFriendsProfile)?
                         <MutualConnectionIndicator mutualCount={this.props.user.mutual_connection_count}
@@ -47,7 +47,7 @@ export default class Header extends Component {
                                   onUnfriendUser = {this.props.onUnfriendUser}
                                   usrId={this.props.usrId}
                                   loggedUser={this.props.loggedUser}/>
-                <ProfileInfo dt={this.props.user} readOnly={read_only} loadExperiences={this.props.loadExperiences} uname={this.props.uname} loadProfileData={this.props.loadProfileData}/>
+                <ProfileInfo dt={this.props.user} readOnly={read_only} loadExperiences={this.props.loadExperiences} uname={this.props.uname} loadProfileData={this.props.loadProfileData} onUpdateProfileImages = {this.props.onUpdateProfileImages}/>
             </div>
         )
     }
@@ -141,7 +141,7 @@ export class CoverImage extends React.Component{
                     var _pay_load = {};
                     _pay_load['__content'] = "";
                     _pay_load['__hs_attachment'] = true;
-                    _pay_load['__post_type'] = "CP";//cover update post
+                    _pay_load['__post_mode'] = "CP";//cover update post
                     _pay_load['__profile_picture'] = data.cover_image;
 
                     $.ajax({
@@ -154,7 +154,8 @@ export class CoverImage extends React.Component{
                         contentType: "application/x-www-form-urlencoded",
                         success: function (data, text) {
                             if (data.status.code == 200) {
-                                document.location.reload(true)
+                                //document.location.reload(true)
+                                _this.props.onUpdateProfileImages();
                             }
                         },
                         error: function (request, status, error) {
@@ -323,7 +324,7 @@ export class ProfileInfo extends React.Component{
                     var _pay_load = {};
                     _pay_load['__content'] = "";
                     _pay_load['__hs_attachment'] = true;
-                    _pay_load['__post_type'] = "PP";//profile update post
+                    _pay_load['__post_mode'] = "PP";//profile update post
                     _pay_load['__profile_picture'] = data.profile_image;
 
                     $.ajax({
@@ -336,7 +337,9 @@ export class ProfileInfo extends React.Component{
                         contentType: "application/x-www-form-urlencoded",
                         success: function (data, text) {
                             if (data.status.code == 200) {
-                                document.location.reload(true)
+                                //document.location.reload(true)
+                                console.log("going to call onUpdateProfileImages ---- 01");
+                                _this.props.onUpdateProfileImages();
                             }
                         },
                         error: function (request, status, error) {

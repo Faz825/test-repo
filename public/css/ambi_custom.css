@@ -78,14 +78,6 @@ body{
   margin-top: 6px;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
-  height: auto;
-  color: #000000;
-  font-size: 14px;
-  overflow: visible;
-	margin: 30px 22px 19px 22px;
-}
-
 .popup-holder .selected-time,
 .calender-container .selected-time {
 		color: #f11379;
@@ -118,14 +110,6 @@ body{
   -moz-box-shadow: none;
   -o-box-shadow: none;
   box-shadow: none;
-}
-
-.calender-container .calender-body.day-view .col-sm-9 .calender-view .input-menu {
-		padding: 6px 20px 5px 20px;
-}
-
-.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li .menu-ico-txt.btn {
-	line-height: 37px;
 }
 
 /* - ReactAutoSuggest Custom Styles*/
@@ -871,7 +855,7 @@ footer .notification-alert-holder.slideOut{
 }
 
 .popup-holder .active-call-container .active-user-block{
-  height: 382px;
+  height: 512px;
 }
 
 .popup-holder .active-call-container .participants{
@@ -880,7 +864,7 @@ footer .notification-alert-holder.slideOut{
 
 .callModelMinimized{
   position: fixed;
-  bottom: 99px;
+  bottom: 73px;
   width: 250px;
   background: #fff;
   box-shadow: 4px 1px 40px -12px #000;
@@ -921,4 +905,52 @@ body .modal-backdrop{
     border-radius: 4px;
     background-color: rgba(0,0,0,.5);
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+#incomingCallAlert{
+  display: block;
+}
+
+#webcamStage{
+  position: relative;
+}
+
+#webcamStage .local{
+  position: absolute;
+  top: 13px;
+  right: 12px;
+  width: 119px;
+  height: 90px;
+  border: 2px solid #fff;
+  border-radius: 5px;
+}
+
+#webcamStage .remote{
+  width: 100%;
+}
+
+/**
+ * group custome styles
+ */
+.popup-holder .create-group-popup .model-body .upload-btn.btn {
+    border-color: #ccc;
+    color: #333333;
+    position: relative;
+    overflow: hidden;
+}
+.popup-holder .create-group-popup .model-body .upload-btn .imageSelector a {
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.group-container .group-content .sidebar .grp-members .all-members .mem-img img {
+    width: 100%;
+}
+
+.group-container .group-content .sidebar .grp-members .add-member .search-field-holder {
+    padding: 0px 0px;
 }

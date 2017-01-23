@@ -5,8 +5,10 @@
 
 'use strict';
 var mongoose = require('mongoose'),
-    Schema   = mongoose.Schema,
-    uuid = require('node-uuid');
+    uuid = require('node-uuid'),
+    slug = require('mongoose-slug-generator'),
+    Schema   = mongoose.Schema;
+    mongoose.plugin(slug);
 
 GLOBAL.GroupSharedRequest = {
     REQUEST_PENDING: 1,
@@ -59,6 +61,11 @@ var GroupsSchema = new Schema({
     name:{
         type:String,
         default:null
+    },
+    name_prefix:{
+        type: String,
+        slug: "name",
+        unique: true
     },
     description:{
         type:String,
@@ -132,17 +139,17 @@ GroupsSchema.statics.createGroup = function(groupData,callBack){
  * @param groupData
  * @param callBack
  */
-GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
+GroupsSchema.statics.getGroupMembers = function(criteria,callBack){
     var _this = this;
 
 
-    /* TODO: We can use this aggrigation approch, 
+    /* TODO: We can use this aggrigation approch,
     when we are using new version (3.2) of MongoDB */
     /*_this.aggregate([
-        { 
-            "$match": { 
-                "_id": groupId       
-            } 
+        {
+            "$match": {
+                "_id": groupId
+            }
         },
         {
             "$filter": {
@@ -160,29 +167,31 @@ GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
                 "as" : "member"
             }
         }
-    ]).exec(function(err, results) { 
+    ]).exec(function(err, results) {
         if (err) throw err;
     });*/
 
-
-    _this.find({_id: Util.toObjectId(groupId)}).select('created_by members -_id').exec(function(err,resultSet){
+    _this.find(criteria).select('created_by members -_id').exec(function(err,resultSet){
         if(!err){
 
             console.log(resultSet);
-            var members = resultSet[0].members;
+            var memberObjs = resultSet[0].members;
             var tmpArray = [];
-            for (var i = 0; i < members.length; i++) {
+            var tmpObjArray = [];
+            for (var i = 0; i < memberObjs.length; i++) {
 
-                var member = members[i];
+                var member = memberObjs[i];
                 if(member.status == 3) {
-                    tmpArray.push(member.user_id);  
+                    tmpArray.push(member.user_id);
+                    tmpObjArray.push(member);
                 }
 
-                if(members.length == i + 1) {
+                if(memberObjs.length == i + 1) {
                     callBack({
                         owner : resultSet[0].created_by,
                         members : tmpArray,
-                        members_count : tmpArray.length
+                        members_count : tmpArray.length,
+                        memberObjs : tmpObjArray
                     });
                 }
             }
@@ -191,6 +200,25 @@ GroupsSchema.statics.getGroupMembers = function(groupId,callBack){
             callBack({status:400, error:err});
         }
     })
+};
+
+/**
+ * Get Groups By a given criteria
+ */
+GroupsSchema.statics.getGroup = function(criteria,callBack){
+
+    var _this = this;
+
+    _this.find(criteria).sort({created_at:1}).exec(function (err, resultSet) {
+        if (!err) {
+
+            callBack({status: 200, group: resultSet});
+        } else {
+            console.log(err)
+            callBack({status: 400, error: err})
+        }
+    });
+
 };
 
 /**

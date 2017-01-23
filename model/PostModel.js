@@ -11,7 +11,7 @@ GLOBAL.PostVisibleMode ={
     FRIEND_ONLY:2,
     ONLY_MY:3,
     SELECTED_USERS:4,
-    GROUP_POST:5
+    GROUP_MEMBERS:5
 };
 
 GLOBAL.PostConfig={
@@ -25,7 +25,10 @@ GLOBAL.PostConfig={
     SHARE_PREFIX:"post:share:"
 };
 
-
+GLOBAL.PostType={
+    PERSONAL_POST :1,
+    GROUP_POST:2
+};
 
 var PostSchema = new Schema({
     has_attachment:{
@@ -59,6 +62,10 @@ var PostSchema = new Schema({
     post_mode:{
         type:String,
         default:PostConfig.NORMAL_POST
+    },
+    post_type:{
+        type:Number,
+        default:PostType.PERSONAL_POST
     },
     shared_post_id:{
         type: Schema.ObjectId,
@@ -122,6 +129,7 @@ PostSchema.statics.addNew = function(post,callBack){
     _post.post_visible_mode = post.post_visible_mode;
     _post.visible_users = post.visible_users;
     _post.post_mode = post.post_mode;
+    _post.post_type = post.post_type;
     _post.location = post.location;
     _post.lat = post.lat;
     _post.lng = post.lng;

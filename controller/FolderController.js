@@ -238,51 +238,55 @@ var FolderController ={
                     function getDocumentsDB(folders,callBack){
                         console.log("getOwnFolders - getDocumentsDB");
                         _async.eachSeries(folders, function(folder, callBackFolder){
-                            var _isShared = false;
-                            var _sharedUsers = folder.shared_users;
-                            for(var su = 0; su < _sharedUsers.length; su++){
-                                if(_sharedUsers[su].status == FolderSharedRequest.REQUEST_ACCEPTED){
-                                    _isShared = true;
-                                }
-                            }
-                            var _folder = {
-                                folder_id:folder._id,
-                                folder_name:folder.name,
-                                folder_color:folder.color,
-                                folder_user:folder.user_id,
-                                folder_shared_users:folder.shared_users,
-                                folder_updated_at:folder.updated_at,
-                                owned_by: 'me',
-                                is_shared:_isShared,
-                                shared_mode:FolderSharedMode.VIEW_UPLOAD,
-                                documents:[]
-                            }, documents_criteria = {
-                                folder_id: Util.toObjectId(folder._id)
-                            };
-                            FolderDocs.getDocuments(documents_criteria,function(resultSet){
-                                var _documents = [];
-                                _async.eachSeries(resultSet.documents, function(doc, callBackDocument){
-                                    var _doc = {
-                                        document_id:doc._id,
-                                        document_name:doc.name,
-                                        document_type:doc.content_type,
-                                        document_user:doc.user_id,
-                                        document_path:doc.file_path,
-                                        document_thumb_path:doc.thumb_path,
-                                        document_updated_at:DateTime.noteCreatedDate(doc.updated_at)
-                                    };
-                                    _documents.push(_doc);
-                                    callBackDocument(null);
-                                },function(err){
-                                    _folder.documents = _documents;
-                                    if(_folder.folder_name == "My Folder"){
-                                        myFolder.push(_folder);
-                                    } else{
-                                        ownFolders.push(_folder);
+                            if (typeof folder.type != 'undefined' && folder.type == FolderType.GROUP_FOLDER) { //get only personal folders not group folders
+                                callBackFolder(null);
+                            } else {
+                                var _isShared = false;
+                                var _sharedUsers = folder.shared_users;
+                                for (var su = 0; su < _sharedUsers.length; su++) {
+                                    if (_sharedUsers[su].status == FolderSharedRequest.REQUEST_ACCEPTED) {
+                                        _isShared = true;
                                     }
-                                    callBackFolder(null);
+                                }
+                                var _folder = {
+                                    folder_id: folder._id,
+                                    folder_name: folder.name,
+                                    folder_color: folder.color,
+                                    folder_user: folder.user_id,
+                                    folder_shared_users: folder.shared_users,
+                                    folder_updated_at: folder.updated_at,
+                                    owned_by: 'me',
+                                    is_shared: _isShared,
+                                    shared_mode: FolderSharedMode.VIEW_UPLOAD,
+                                    documents: []
+                                }, documents_criteria = {
+                                    folder_id: Util.toObjectId(folder._id)
+                                };
+                                FolderDocs.getDocuments(documents_criteria, function (resultSet) {
+                                    var _documents = [];
+                                    _async.eachSeries(resultSet.documents, function (doc, callBackDocument) {
+                                        var _doc = {
+                                            document_id: doc._id,
+                                            document_name: doc.name,
+                                            document_type: doc.content_type,
+                                            document_user: doc.user_id,
+                                            document_path: doc.file_path,
+                                            document_thumb_path: doc.thumb_path,
+                                            document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
+                                        };
+                                        _documents.push(_doc);
+                                        callBackDocument(null);
+                                    }, function (err) {
+                                        _folder.documents = _documents;
+                                        if (_folder.folder_name == "My Folder") {
+                                            myFolder.push(_folder);
+                                        } else {
+                                            ownFolders.push(_folder);
+                                        }
+                                        callBackFolder(null);
+                                    });
                                 });
-                            });
+                            }
                         },function(err){
                             console.log("async eachseries callback")
                             callBack(null);

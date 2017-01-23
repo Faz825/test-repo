@@ -55,7 +55,9 @@ var ContentUploader ={
             function saveOnDb(cdnReturn,callBack){
                 if(cdnReturn != null && cdnReturn.status == 200){
                     Upload.saveOnDb(cdnReturn.upload_meta,function(dbResultSet){
-
+                        if(typeof dbResultSet.image._id != 'undefined' ) {
+                            cdnReturn.upload_meta.document_id = dbResultSet.image._id;
+                        }
                         callBack(null,cdnReturn.upload_meta);
                     });
                 }else{
@@ -555,9 +557,6 @@ var ContentUploader ={
         _async.waterfall([
 
             function uploadActualImage(callBack){
-                console.log("================================")
-                console.log("uploadActualImage")
-                console.log(payLoad.fileName)
 
                 var newFileName = file_id + "_"+payLoad.orig_entity_tag+payLoad.ext;
                 var _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+payLoad.entity_id+"/"+newFileName;
@@ -586,9 +585,6 @@ var ContentUploader ={
 
             },
             function uploadThumbnailImage(callBack){
-                console.log("================================")
-                console.log("uploadThumbnailImage")
-                console.log(payLoad.fileName)
 
                 var newFileName = file_id + "_"+payLoad.thumb_entity_tag+payLoad.ext;
                 var _http_url = Config.CDN_URL+Config.CDN_UPLOAD_PATH+payLoad.entity_id+"/"+newFileName;

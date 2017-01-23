@@ -87,7 +87,7 @@ GLOBAL.AccessAllow = [
     '/profile-image', '/done', '/cache-check', '/collage-and-job', '/test/:id', '/news-feed', '/news', '/chat', '/chat/:chatWith', '/notes', '/notifications', '/notes/new-note/:notebook_id',
     '/notes/edit-note/:note_id', '/connections', '/connections/mutual/:uname', '/profile/:name', '/profile/:name/:post', '/folders', '/doc', '/get-connected-users/', '/work-mode',
     '/get-connected-users/:notebook/:name', '/filter-shared-users/:notebook/:name', '/news/channels/:category_id', '/news/channels/:category_id/:channel_name',
-    '/calendar/:name', '/calendar', '/callcenter', '/groups'
+    '/calendar/:name', '/calendar', '/callcenter', '/groups', '/groups/:name'
 ];
 
 /**
@@ -104,9 +104,10 @@ router.all('/*', oAuth.Authentication);
 router.get('/introduction/:uname', UserController.retrieveIntroduction);
 router.get('/get-folder-users/:folder/:name', UserController.getFolderUsers);
 router.get('/get-folder-users/:folder', UserController.getFolderUsers);
-router.get('/filter-folder-shared-users/:folder/:name', UserController.filterFolderSharedUsers);
+
 router.get('/connections/get', UserController.getConnections);
 router.get('/connection/count', UserController.connectionCount);
+
 router.get('/user/get-user-suggestions/:name', UserController.getUserSuggestions);
 router.get('/news-info/get-saved-articles', UserController.getSavedArticles);
 router.post('/secretary/save', UserController.saveSecretary);
@@ -222,16 +223,24 @@ router.get('/call/get-records', CallCenterController.call.getCallRecords);
 router.post('/call/add-record', CallCenterController.call.addCallRecord);
 
 //Group
-router.post('/group/add', GroupsController.createGroup);
-router.post('/group/update-description', GroupsController.updateDescription);
-router.post('/group/add-users', GroupsController.addUsers);
+router.post('/groups/add', GroupsController.createGroup);
+router.post('/groups/update-description', GroupsController.updateDescription);
+router.post('/groups/add-members', GroupsController.addMembers);
+router.post('/groups/upload-image', GroupsController.uploadGroupProfileImage);
+router.post('/groups/get-group', GroupsController.getGroup);
+router.post('/groups/get-group-members', GroupsController.getGroupMembers);
+router.post('/groups/get-members', GroupsController.getMembers);
 
 // Group Notebook
 router.post('/group/add-notebook', GroupNotebookController.addNewNotebook);
 router.post('/group/remove-member', GroupsController.removeMember);
 
+
 // Group Folder
 router.post('/group-folders/add-new', GroupFolderController.addNewFolder);
-router.get('/group-folders/get-all', GroupFolderController.getFolders);
+router.get('/group-folders/get-all/:group_id', GroupFolderController.getFolders);
+router.get('/group-folders/count/:group_id', GroupFolderController.getGroupFolderCount);
+router.post('/group-folders/add', GroupFolderController.addNewFolder);
+router.get('/group-folders/all', GroupFolderController.getAllGroupFolders);
 
 module.exports = router;
