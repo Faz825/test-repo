@@ -10249,13 +10249,13 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/* 
+/*
 	Method to use:
 	@include @border {
 		border ($style,  $sides, $emptySides){
 	}
 */
-/* 
+/*
 	Method to use:
 	@include @mixin {
 		content
@@ -17810,6 +17810,24 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .create-group-popup .model-body .color-palette div.dark-green {
   background-color: #067d41;
+}
+.popup-holder .create-group-popup .model-body .user-holder {
+  float: left;
+  margin-bottom: -10px;
+}
+.popup-holder .create-group-popup .model-body .user-holder .user {
+  margin-top: 10px;
+  margin-right: 5px;
+  border: 1px solid #1b9ed9;
+  border-radius: 5px;
+  padding: 5px;
+  color: #1b9ed9;
+  font-size: 0.75em;
+  float: left;
+}
+.popup-holder .create-group-popup .model-body .user-holder .user i {
+  margin-left: 5px;
+  cursor: pointer;
 }
 .popup-holder .create-group-popup .model-body .btn {
   float: left;
