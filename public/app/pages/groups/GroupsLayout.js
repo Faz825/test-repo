@@ -20,7 +20,8 @@ export default class GroupsLayout extends React.Component {
             group_name:'',
             group:{},
             membersCount: 0,
-            randomMembers: []
+            randomMembers: [],
+            members: []
         };
 
         this.setGroupLayout = this.setGroupLayout.bind(this);
@@ -41,8 +42,6 @@ export default class GroupsLayout extends React.Component {
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
                 if (data.status.code == 200) {
-                    console.log("GROUP DATA FETCHED");
-                    console.log(data.group);
                     this.setState({group_name: groupPrefix, group: data.group});
                 }
             }.bind(this),
@@ -71,7 +70,7 @@ export default class GroupsLayout extends React.Component {
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
-                this.setState({randomMembers: data.members.random_members, membersCount: data.members.members_count});
+                this.setState({randomMembers: data.members.random_members, membersCount: data.members.members_count, members: data.members});
             }
         }.bind(this));
     }
@@ -90,6 +89,7 @@ export default class GroupsLayout extends React.Component {
                         myGroup={this.state.group}
                         randomMembers={this.state.randomMembers}
                         membersCount={this.state.membersCount}
+                        members={this.state.members}
                     />
                 );
             case 'calendar':

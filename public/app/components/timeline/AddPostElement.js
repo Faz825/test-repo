@@ -28,9 +28,21 @@ export default class AddPostElement extends React.Component{
         this.state={
             uuid:this.IDGenerator(),
             postType:this.props.postType,
-            postVisibleMode:this.props.postVisibleMode
+            postVisibleMode:this.props.postVisibleMode,
+            members: typeof(this.props.members) != 'undefined' ? this.props.members : [],
+            group: typeof(this.props.group) != 'undefined' ? this.props.group : null
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+        if (nextProps.group !== this.state.group) {
+            this.setState({ group: nextProps.group });
         }
 
+        if (nextProps.members !== this.state.members) {
+            this.setState({ members: nextProps.members });
+        }
     }
 
     loadTab(tab_id,tab_container_id){
@@ -63,6 +75,7 @@ export default class AddPostElement extends React.Component{
 
 
     render(){
+
         let logged_user = Session.getSession('prg_lg');
         if(this.props.uname != logged_user.user_name && this.props.connectionStatus != 0){
             return (<div />)
@@ -77,6 +90,8 @@ export default class AddPostElement extends React.Component{
                                       workModeStyles = {this.props.workModeStyles}
                                       postType = {this.state.postType}
                                       postVisibleMode = {this.state.postVisibleMode}
+                                      members = {this.state.members}
+                                      group = {this.state.group}
                     />
                 </div>
             </div>
@@ -86,6 +101,7 @@ export default class AddPostElement extends React.Component{
 }
 
 export class TextPostElement extends React.Component{
+
     constructor(props){
         super(props)
         this.state={
@@ -106,7 +122,9 @@ export class TextPostElement extends React.Component{
             percent_completed : 0,
             video_err : "",
             postType                : this.props.postType,
-            postVisibleMode         : this.props.postVisibleMode // Currently this value is comming from the parent component.
+            postVisibleMode         : this.props.postVisibleMode, // Currently this value is comming from the parent component.
+            members                 : this.props.members,
+            group                   : this.props.group
         }
         this.loggedUser = Session.getSession('prg_lg');
         this.isValidToSubmit = false;
@@ -114,10 +132,33 @@ export class TextPostElement extends React.Component{
         this.selectImage = this.selectImage.bind(this);
         this.handleAjaxSuccess = this.handleAjaxSuccess.bind(this);
         this.removeImage = this.removeImage.bind(this);
+
+        this.postType = {
+            PERSONAL_POST :1,
+            GROUP_POST:2
+        };
+
+        this.postVisibleMode = {
+            PUBLIC:1,
+            FRIEND_ONLY:2,
+            ONLY_MY:3,
+            SELECTED_USERS:4,
+            GROUP_MEMBERS:5
+        }
     }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.members !== this.state.members) {
+            this.setState({ members: nextProps.members });
+        }
+
+        if (nextProps.group !== this.state.group) {
+            this.setState({ group: nextProps.group });
+        }
+    }
+
     submitPost(event){
         let _this = this;
-
         this.setState({emptyPostWarningIsVisible : false,btnEnabled:false});
         var _pay_load = {};
         if(this.state.text != ""){
@@ -151,8 +192,14 @@ export class TextPostElement extends React.Component{
         }
 
         // set the post type weather a PERSONAL_POST or a GROUP_POST
-        _pay_load['__post_type'] = (typeof this.state.postType != "undefined" )? this.state.postType : PostType.PERSONAL_POST;
-        _pay_load['__post_visible_mode'] = (typeof this.state.postVisibleMode != "undefined" )? this.state.postVisibleMode : PostVisibleMode.PUBLIC;
+        _pay_load['__post_type'] = (typeof this.state.postType != "undefined" )? this.state.postType : this.postType.PERSONAL_POST;
+        _pay_load['__post_visible_mode'] = (typeof this.state.postVisibleMode != "undefined" )? this.state.postVisibleMode : this.postVisibleMode.PUBLIC;
+
+        if(this.state.postType ==  this.postType.GROUP_POST) {
+            _pay_load['__visible_users'] = this.state.members;
+        }
+
+        _pay_load['__group_id'] = this.state.group;
 
         if(this.isValidToSubmit){
 
@@ -172,9 +219,6 @@ export class TextPostElement extends React.Component{
     handleAjaxSuccess(data){
 
         if (data.status.code == 200) {
-
-            console.log(data.post.post_id);
-
             let _data = {
                 post_id:data.post.post_id,
                 isOwnPost:true
@@ -415,9 +459,6 @@ export class TextPostElement extends React.Component{
 
             }
         }.bind(this)).error(function (request, status, error) {
-
-            console.log(request.status)
-            console.log(status);
             console.log(error);
         });
     }
@@ -445,6 +486,7 @@ export class TextPostElement extends React.Component{
 
     }
     render(){
+
         let full_name = this.loggedUser.first_name +" "+ this.loggedUser.last_name;
         let proImg = (this.loggedUser.profile_image != '')? this.loggedUser.profile_image : "/images/default_profile_image.png";
         let opt = {
@@ -603,7 +645,6 @@ export class LifeEventSelector extends React.Component{
     }
 
     selectChange(e){
-
         this.props.onLifeEventSelect( e.target.value)
     }
 

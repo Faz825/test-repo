@@ -12892,99 +12892,6 @@ header .notification-holder .profile-header-thumb {
   border-top: 1px solid #dee6eb;
   background-color: #ffffff;
 }
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item {
-  overflow: hidden;
-  margin-top: 6px;
-  margin-bottom: 10px;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper {
-  float: left;
-  position: relative;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper img {
-  width: 40px;
-  height: 40px;
-  border-radius: 100%;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status {
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  width: 13px;
-  height: 13px;
-  border-radius: 100%;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.online {
-  background-color: #63c66c;
-  border: 3px solid #ffffff;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.work-mode {
-  background-color: #de2424;
-  border: 3px solid #ffffff;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .image-wrapper .status.offline {
-  background-color: #ffffff;
-  border: 2px solid #6ac374;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper {
-  float: left;
-  margin-left: 35px;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .name {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  font-size: 0.875em;
-  font-weight: 500;
-  color: #000000;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .name-wrapper .status {
-  font-size: 0.75em;
-  font-weight: 400;
-  color: #000000;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type {
-  text-align: center;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type.user span {
-  margin-top: 14px;
-  width: 18px;
-  height: 20px;
-  display: inline-block;
-  background-image: url("../images/call-center/contact-user-ico.png");
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .contact-type.group span {
-  margin-top: 14px;
-  width: 36px;
-  height: 20px;
-  display: inline-block;
-  background-image: url("../images/call-center/contact-users-ico.png");
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper {
-  float: right;
-  margin-top: 11px;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico {
-  width: 31px;
-  height: 31px;
-  text-align: center;
-  border: 1px solid #06a7ef;
-  border-radius: 100%;
-  background-color: #ffffff;
-  outline: none;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico.video {
-  margin-right: 16px;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico.video img {
-  margin-top: -3px;
-  width: 15px;
-  height: 10px;
-}
-.call-center-container .call-center-inner-holder .contacts-list .contact-group .contact-wrapper .contact-item .call-ico-wrapper .call-ico.phone img {
-  margin-top: -3px;
-  width: 13px;
-  height: 13px;
-}
 .call-center-container .call-center-inner-holder .recent-list .contact-group {
   margin-top: 7px;
 }
@@ -13001,21 +12908,29 @@ header .notification-holder .profile-header-thumb {
   border-top: 1px solid #dee6eb;
   background-color: #ffffff;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item {
+.call-center-container .call-center-inner-holder .recent-list .contact-type {
+  text-align: left;
+  margin-top: 10px;
+}
+.call-center-container .call-center-inner-holder .contact-item {
   overflow: hidden;
   margin-top: 6px;
   margin-bottom: 10px;
+  border-bottom: 1px solid #dee6eb;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper {
+.call-center-container .call-center-inner-holder .contact-item:last-child {
+  border: none;
+}
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper {
   float: left;
   position: relative;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper img {
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper img {
   width: 40px;
   height: 40px;
   border-radius: 100%;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper .status {
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper .status {
   position: absolute;
   bottom: 0px;
   right: 0px;
@@ -13023,73 +12938,86 @@ header .notification-holder .profile-header-thumb {
   height: 13px;
   border-radius: 100%;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper .status.online {
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper .status.online {
   background-color: #63c66c;
   border: 3px solid #ffffff;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper .status.work-mode {
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper .status.work-mode {
   background-color: #de2424;
   border: 3px solid #ffffff;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .image-wrapper .status.offline {
+.call-center-container .call-center-inner-holder .contact-item .image-wrapper .status.offline {
   background-color: #ffffff;
   border: 2px solid #6ac374;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .name-wrapper {
+.call-center-container .call-center-inner-holder .contact-item .name-wrapper {
   float: left;
   margin-left: 35px;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .name-wrapper .name {
-  margin-top: 5px;
-  margin-bottom: 0;
+.call-center-container .call-center-inner-holder .contact-item .name-wrapper .name {
+  margin-top: 0px;
+  margin-bottom: 0px;
   font-size: 0.875em;
   font-weight: 500;
   color: #000000;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .name-wrapper .status {
+.call-center-container .call-center-inner-holder .contact-item .name-wrapper .status {
   font-size: 0.75em;
   font-weight: 400;
   color: #000000;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type {
-  text-align: left;
-  margin-top: 10px;
+.call-center-container .call-center-inner-holder .contact-item .contact-type {
+  text-align: center;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type.missed .call-time {
+.call-center-container .call-center-inner-holder .contact-item .contact-type.user span {
+  margin-top: 14px;
+  width: 18px;
+  height: 20px;
+  display: inline-block;
+  background-image: url("../images/call-center/contact-user-ico.png");
+}
+.call-center-container .call-center-inner-holder .contact-item .contact-type.group span {
+  margin-top: 14px;
+  width: 36px;
+  height: 20px;
+  display: inline-block;
+  background-image: url("../images/call-center/contact-users-ico.png");
+}
+.call-center-container .call-center-inner-holder .contact-item .contact-type.missed .call-time {
   color: #de2424;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type.missed .call-count {
+.call-center-container .call-center-inner-holder .contact-item .contact-type.missed .call-count {
   background-color: #de2424;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type.missed .video {
+.call-center-container .call-center-inner-holder .contact-item .contact-type.missed .video {
   display: inline-block;
   vertical-align: middle;
   width: 20px;
   height: 13px;
   background-image: url("../images/call-center/video-ico-missed.png");
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type.missed .phone {
+.call-center-container .call-center-inner-holder .contact-item .contact-type.missed .phone {
   display: inline-block;
   vertical-align: middle;
   width: 16px;
   height: 16px;
   background-image: url("../images/call-center/phone-ico-missed.png");
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .video {
+.call-center-container .call-center-inner-holder .contact-item .contact-type .video {
   display: inline-block;
   vertical-align: middle;
   width: 20px;
   height: 13px;
   background-image: url("../images/call-center/video-ico.png");
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .phone {
+.call-center-container .call-center-inner-holder .contact-item .contact-type .phone {
   display: inline-block;
   vertical-align: middle;
   width: 16px;
   height: 16px;
   background-image: url("../images/call-center/phone-ico.png");
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .call-count {
+.call-center-container .call-center-inner-holder .contact-item .contact-type .call-count {
   margin-right: 43px;
   margin-left: 35px;
   display: inline-block;
@@ -13103,12 +13031,7 @@ header .notification-holder .profile-header-thumb {
   padding-top: 2px;
   text-align: center;
 }
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .call-count {
-    margin-right: 33px;
-  }
-}
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .call-time {
+.call-center-container .call-center-inner-holder .contact-item .contact-type .call-time {
   margin-left: 40px;
   display: inline-block;
   font-size: 0.875em;
@@ -13117,15 +13040,15 @@ header .notification-holder .profile-header-thumb {
   text-align: center;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
-  .call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .contact-type .call-time {
+  .call-center-container .call-center-inner-holder .contact-item .contact-type .call-time {
     margin-left: 30px;
   }
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .call-ico-wrapper {
+.call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper {
   float: right;
-  margin-top: 11px;
+  margin-top: 7px;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .call-ico-wrapper .call-ico {
+.call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico {
   width: 31px;
   height: 31px;
   text-align: center;
@@ -13134,15 +13057,15 @@ header .notification-holder .profile-header-thumb {
   background-color: #ffffff;
   outline: none;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .call-ico-wrapper .call-ico.video {
-  margin-right: 11px;
+.call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.video {
+  margin-right: 16px;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .call-ico-wrapper .call-ico.video img {
+.call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.video img {
   margin-top: -3px;
   width: 15px;
   height: 10px;
 }
-.call-center-container .call-center-inner-holder .recent-list .contact-group .list-wrapper .recent-item .call-ico-wrapper .call-ico.phone img {
+.call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.phone img {
   margin-top: -3px;
   width: 13px;
   height: 13px;
@@ -17441,6 +17364,15 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .active-call-container .active-user-block img {
   width: 100%;
 }
+.popup-holder .active-call-container .active-user-block .call-receiver-status {
+  font-weight: 500;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+}
 .popup-holder .active-call-container .active-user-block .active-call-nav {
   position: absolute;
   width: 100%;
@@ -17811,6 +17743,24 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .create-group-popup .model-body .color-palette div.dark-green {
   background-color: #067d41;
 }
+.popup-holder .create-group-popup .model-body .user-holder {
+  float: left;
+  margin-bottom: -10px;
+}
+.popup-holder .create-group-popup .model-body .user-holder .user {
+  margin-top: 10px;
+  margin-right: 5px;
+  border: 1px solid #1b9ed9;
+  border-radius: 5px;
+  padding: 5px;
+  color: #1b9ed9;
+  font-size: 0.75em;
+  float: left;
+}
+.popup-holder .create-group-popup .model-body .user-holder .user i {
+  margin-left: 5px;
+  cursor: pointer;
+}
 .popup-holder .create-group-popup .model-body .btn {
   float: left;
   text-transform: uppercase;
@@ -18080,6 +18030,9 @@ footer .nav-holder .nav-item.news .icon-holder {
 }
 footer .nav-holder .nav-item.interests .icon-holder {
   padding: 11px 10px 10px;
+}
+footer .nav-holder .nav-item.groups .icon-holder {
+  padding: 0;
 }
 footer .nav-holder .nav-item .icon-holder {
   width: 37px;

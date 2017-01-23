@@ -162,7 +162,7 @@ export default class Index extends React.Component {
                         "email": "test2@gmail.com",
                         "onlineStatus": 1,
                         "contactType": 2,
-                        "call_type": 2,
+                        "call_type": "phone",
                         "calls": 1,
                         "first_name": "test3",
                         "last_name": "ambi",

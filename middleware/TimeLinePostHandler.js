@@ -56,7 +56,6 @@ var TimeLinePostHandler ={
                 }
             },
             function savePostInDb(callBack){
-
                 Post.addNew(_post,function(postData){
 
                     if(postData.status ==200){
@@ -70,7 +69,6 @@ var TimeLinePostHandler ={
 
             },
             function subscribeToPost(callBack){
-
                 var _data = {
                     user_id:_post.created_by,
                     post_id:_post.post_id
@@ -84,19 +82,21 @@ var TimeLinePostHandler ={
                         _visible_users.push(_post.created_by);
                     }
 
-                    for (var i = 0; i < _visible_users.length; i++) {
-                        var _user = _visible_users[i];
+                    var i = 0;
+                    _visible_users.forEach(function(_user) {
+
                         _data = {
                             user_id:_user,
                             post_id:_post.post_id
                         };
 
                         SubscribedPost.saveSubscribe(_data, function(res){
+                            i = i+1;
                             if(i == _visible_users.length) {
                                 callBack(null);
                             }
                         });
-                    }
+                    });
                 } else {
                     SubscribedPost.saveSubscribe(_data, function(res){
                         callBack(null);
@@ -116,8 +116,6 @@ var TimeLinePostHandler ={
                        post_id: _post.post_id
                     };
 
-                    console.log("TimeLinePostHandler - addNewPost - copyToCDN - payLoad - ")
-                    console.log(payLoad)
                     ContentUploader.copyFromTempToDb(payLoad,function(uploadData){
                         _post['upload']= uploadData;
                         callBack(null)
@@ -125,13 +123,10 @@ var TimeLinePostHandler ={
                 }else{
                     callBack(null)
                 }
-
             },
 
             function saveInCache(callBack){
-
-                Post.addToCache(_post.visible_users,_post,function(chData){ });
-
+                Post.addToCache(_post.visible_users,_post,function(chData){});
                 callBack(null)
             },
 

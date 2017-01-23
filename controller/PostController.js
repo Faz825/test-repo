@@ -34,9 +34,13 @@ var PostController ={
             lng:(typeof req.body.__lng  != 'undefined')?req.body.__lng:"",
             life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:"",
             shared_post:"",
-            visible_users:(typeof req.body.__visible_users != 'undefined')?req.body.__visible_users: []
+            visible_users:(typeof req.body.__visible_users != 'undefined')?req.body.__visible_users: [],
+            group_id:(typeof req.body.__group_id != 'undefined')?req.body.__group_id: null,
         };
+
+
         console.log("PostController - addPost - data - ");
+        console.log(data);
         TimeLinePostHandler.addNewPost(data,function(resultSet){
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['post']      = resultSet;
@@ -66,7 +70,7 @@ var PostController ={
 
             var Post = require('mongoose').model('Post'),
 
-            payLoad ={
+            payLoad = {
                 _page:_page,
                 q:(req.query.__own =="me")?"created_by:"+_id:"*"
             };
