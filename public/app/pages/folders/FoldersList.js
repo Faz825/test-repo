@@ -289,8 +289,6 @@ export default class FolderList extends React.Component{
                 break;
         }
 
-        console.log(borderClr);
-
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
                 {
