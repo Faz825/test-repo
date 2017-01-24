@@ -475,7 +475,7 @@ export class File extends React.Component{
             <div className="folder-col">
                 <div className="clearfix" onClick={()=>this.viewFile(data)}>
                     <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
-                        <div className="inner-wrapper">
+                        <div className={(imgClass)? "img-wrapper" : "inner-wrapper"}>
                             <div className="time-wrapper">
                                 <p className="date-created">{data.document_updated_at.createdDate}</p>
                                 <p className="time-created">{data.document_updated_at.createdTime}</p>
