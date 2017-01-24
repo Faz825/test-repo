@@ -210,9 +210,13 @@ PostSchema.statics.addToCache=function(users,data,callBack){
  * @param userId
  * @param callBack
  */
-PostSchema.statics.ch_getPost= function(userId,payload,callBack){
+PostSchema.statics.ch_getPost= function(id,payload,type,callBack){
     var _this = this;
-    var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+userId;
+    var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+id;
+    if(type == PostType.GROUP_POST) {
+        _cache_key = "idx_post:"+PostConfig.GROUP_PREFIX+id;
+    }
+
     var query={
         q:payload.q,
         index:_cache_key
@@ -223,15 +227,13 @@ PostSchema.statics.ch_getPost= function(userId,payload,callBack){
         if(csResultSet == null){
             callBack(null);
         }else{
-            _this.postList(userId,csResultSet.result,function(lpData){
+            _this.postList(id,csResultSet.result,function(lpData){
                 callBack(lpData);
             });
         }
 
     });
-
 }
-
 
 
 /**
@@ -252,9 +254,6 @@ PostSchema.statics.db_getPost = function(criteria,callBack){
 
                 //Find User from ElasticSearch
                 ES.search(query,function(csResultSet){
-
-                    //console.log("DB Get Post");
-                    //console.log(csResultSet);
 
                     var _postData = {
                         post_id:postData._id.toString(),

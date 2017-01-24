@@ -31,7 +31,7 @@ export default class Discussion extends React.Component{
 
         this.postType = 2; // [ PERSONAL_POST:1, GROUP_POST:2 ]
         this.postVisibleMode = 5; // [ PUBLIC:1, FRIEND_ONLY:2, ONLY_MY:3, SELECTED_USERS:4, GROUP_MEMBERS:5 ]
-        this.loadPosts(0);
+        this.currentGroup =this.state.currentGroup;
     }
 
     componentWillReceiveProps(nextProps) {
@@ -52,23 +52,32 @@ export default class Discussion extends React.Component{
 
         if (nextProps.myGroup !== this.state.currentGroup) {
             this.setState({ currentGroup: nextProps.myGroup });
+            this.currentGroup = nextProps.myGroup;
+            this.loadPosts(0);
         }
     }
 
     loadPosts(page){
-
         let user = Session.getSession('prg_lg');
         let _this =  this;
+
+        var data = {
+            __group_id: this.currentGroup._id,
+            __posts_type: this.postType,
+            __pg: page,
+            uname: this.state.uname,
+            __own: "me"
+        };
         $.ajax({
             url: '/pull/posts',
             method: "GET",
             dataType: "JSON",
-            data:{__pg:page,uname:_this.state.uname,__own:"me",posts_type:this.postType.GROUP_POST},
+            data:data,
             success: function (data, text) {
+
                 if(data.status.code == 200){
                     this.setState({posts:data.posts})
                 }
-
             }.bind(this),
             error: function (request, status, error) {
                 console.log(status);
@@ -122,7 +131,8 @@ export default class Discussion extends React.Component{
                             members={this.state.members.members}
                             group={this.state.currentGroup._id}
                         />
-                        <ListPostsElement posts={this.state.posts}
+                        <ListPostsElement
+                            posts={this.state.posts}
                             uname = {uname}
                             onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}
                             onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}

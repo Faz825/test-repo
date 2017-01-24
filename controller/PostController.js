@@ -57,40 +57,65 @@ var PostController ={
 
      */
     getPost:function(req,res){
+        var Post = require('mongoose').model('Post');
+        var postsType   = typeof(req.query.__posts_type) != 'undefined' ? req.query.__posts_type : PostType.PERSONAL_POST;
+        var page   = req.query.__pg;
 
-        var query={
-            q:"user_name:"+req.query.uname,
-            index:'idx_usr'
-        };
+        if(postsType == PostType.GROUP_POST) {
 
-        ES.search(query,function(esResultSet){
-
-            var _id     = esResultSet.result[0].user_id;
-            var _page   = req.query.__pg;
-
-            var Post = require('mongoose').model('Post'),
-
-            payLoad = {
-                _page:_page,
-                q:(req.query.__own =="me")?"created_by:"+_id:"*"
+            var id = req.query.__group_id;
+            var payLoad = {
+                _page: page,
+                q:"post_type:2",
             };
 
-            Post.ch_getPost(_id,payLoad,function(resultSet){
-
+            Post.ch_getPost(id,payLoad,postsType,function(resultSet){
                 var outPut ={};
-
                 if(resultSet == null){
-                    outPut['status']    = ApiHelper.getMessage(200, Alert.LIST_EMPTY, Alert.SUCCESS);
-                    outPut['posts']     = [];
+
+                    outPut['status'] = ApiHelper.getMessage(200, Alert.LIST_EMPTY, Alert.SUCCESS);
+                    outPut['posts'] = [];
                     res.status(200).send(outPut);
                     return 0;
                 }
-                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['posts']      =resultSet;
+
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['posts'] = resultSet;
                 res.status(200).send(outPut);
                 return 0;
             });
-        });
+        } else {
+
+            var query={
+                q:"user_name:"+req.query.uname,
+                index:'idx_usr'
+            };
+            ES.search(query,function(esResultSet){
+
+                var _id     = esResultSet.result[0].user_id;
+                var _page   = req.query.__pg;
+                var payLoad = {
+                    _page:_page,
+                    q:(req.query.__own =="me")?"created_by:"+_id:"*"
+                };
+
+                Post.ch_getPost(_id,payLoad,postsType,function(resultSet){
+
+                    var outPut ={};
+
+                    if(resultSet == null){
+                        outPut['status']    = ApiHelper.getMessage(200, Alert.LIST_EMPTY, Alert.SUCCESS);
+                        outPut['posts']     = [];
+                        res.status(200).send(outPut);
+                        return 0;
+                    }
+                    outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                    outPut['posts']      =resultSet;
+                    res.status(200).send(outPut);
+                    return 0;
+                });
+            });
+        }
 
     },
 
