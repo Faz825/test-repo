@@ -286,7 +286,7 @@ export class MembersWidget extends React.Component{
                     <span className="mem-count">{this.state.membersCount} Members</span>
                 </div>
                 <div className="add-member invite-people clearfix">
-                    <div className="col-sm-10 search-field-holder">
+                    <div className="search-field-holder">
                         <SearchMembersField
                             handleSearchUser={this.handleSearchUser}
                             placeholder="+ Add a member to this group..."
