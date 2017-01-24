@@ -233,7 +233,7 @@ export default class FolderList extends React.Component{
         let documents = folderData.documents;
         let ownerImg, ownerName;
         let fldrClr = folderData.folder_color;
-        let borderClr;
+        let borderClr= "#828182";
 
         let i = (
             <Popover id="popover-contained" className="share-popover-contained" style={{maxWidth: "635px", width: "635px"}}>
@@ -404,6 +404,12 @@ export default class FolderList extends React.Component{
                                     <div className="folder-content-wrapper">
                                         <div className="folder-items-wrapper">
                                             <div className="inner-wrapper">
+                                                <div className="folder-col"  onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
+                                                    <div className="folder-item upload-file" style={{borderColor: borderClr}}>
+                                                        <i className="fa fa-plus" style={{color: folderData.folder_color}}></i>
+                                                        <p style={{color: folderData.folder_color}}>Upload new file or image</p>
+                                                    </div>
+                                                </div>
                                                 {_fileList}
                                             </div>
                                             {

@@ -86,7 +86,7 @@ export default class Index extends React.Component{
 
         let _data = {
             folder_name: this.state.group.name,
-            folder_color: "#1b9ed9",
+            folder_color: "#00a6ef",
             shared_with: this.state.group.members,
             isDefault: 1,
             folder_type:1,

@@ -87,7 +87,7 @@ export default class Index extends React.Component{
         if(this.defaultFolder.length == 0){
             let _dF = {
                 CFName:"My Folder",
-                CFColor:"#1b9ed9"
+                CFColor:"#00a6ef"
             };
             this.defaultFolder.push(_dF);
 
@@ -99,7 +99,7 @@ export default class Index extends React.Component{
             }).done( function (data, text){
                 if(data.status.code == 200 && this.loadFolderRequest){
                     if(data.count == 0){
-                        this.setState({CFName:"My Folder", CFColor:"#1b9ed9"});
+                        this.setState({CFName:"My Folder", CFColor:"#00a6ef"});
                         this.addDefaultFolder();
                     } else{
                         this.loadFolders();
