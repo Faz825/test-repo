@@ -118,7 +118,7 @@ export default class GlobalSearch extends React.Component{
         const { value, suggestions, suggestionsList } = this.state;
 
         const inputProps = {
-            placeholder: 'Search...',
+            placeholder: 'search',
             value,
             onChange: this.onChange,
             className: 'form-control'

@@ -10249,13 +10249,13 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/*
+/* 
 	Method to use:
 	@include @border {
 		border ($style,  $sides, $emptySides){
 	}
 */
-/*
+/* 
 	Method to use:
 	@include @mixin {
 		content
@@ -10278,33 +10278,35 @@ header .search-holder {
 }
 header .search-holder .form-control {
   width: 100%;
-  height: 32px;
+  height: 31px;
   text-align: center;
   background: #f6f6f6;
   border: none;
+  padding: 8px 12px 7px;
   font-size: 0.6875em;
   -webkit-box-shadow: inset 0px 1px 5px -1px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: inset 0px 1px 5px -1px rgba(0, 0, 0, 0.4);
   box-shadow: inset 0px 1px 5px -1px rgba(0, 0, 0, 0.4);
 }
 header .search-holder .form-control:-moz-placeholder {
-  color: #838383;
+  color: #bebfbf;
 }
 header .search-holder .form-control::-moz-placeholder {
-  color: #838383;
+  color: #bebfbf;
 }
 header .search-holder .form-control:-ms-input-placeholder {
-  color: #838383;
+  color: #bebfbf;
 }
 header .search-holder .form-control::-webkit-input-placeholder {
-  color: #838383;
+  color: #bebfbf;
 }
 header .search-holder .fa-search {
   position: absolute;
-  top: 11px;
-  left: 38%;
-  color: #838383;
+  top: 10px;
+  left: 39.5%;
+  color: #bebfbf;
   font-size: 0.75em;
+  opacity: 0.7;
 }
 header .notification-holder {
   float: left;
@@ -10575,10 +10577,11 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-header .search-folder .inner-addon i {
   position: absolute;
-  padding: 10px 12px;
-  right: 0px;
+  right: 11px;
+  top: 9px;
   font-weight: 400;
   pointer-events: none;
+  color: #bebfbf;
   font-size: 0.75em;
 }
 .folder-container .folder-header .search-folder .inner-addon input {
@@ -10586,6 +10589,18 @@ header .notification-holder .profile-header-thumb {
   padding-right: 30px;
   height: 33px;
   font-size: 0.6875em;
+}
+.folder-container .folder-header .search-folder .inner-addon input:-moz-placeholder {
+  color: #bebfbf;
+}
+.folder-container .folder-header .search-folder .inner-addon input::-moz-placeholder {
+  color: #bebfbf;
+}
+.folder-container .folder-header .search-folder .inner-addon input:-ms-input-placeholder {
+  color: #bebfbf;
+}
+.folder-container .folder-header .search-folder .inner-addon input::-webkit-input-placeholder {
+  color: #bebfbf;
 }
 .folder-container .folder-body .folder {
   margin-bottom: 20px;
@@ -10766,18 +10781,17 @@ header .notification-holder .profile-header-thumb {
   position: relative;
   min-height: 147px;
   border: 1px solid #e1e1e1;
-  box-shadow: -2px 2px 6px -3px #000000;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   background-size: cover;
   cursor: pointer;
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item:first-child {
-  box-shadow: none;
+  border-radius: 2px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file {
   background-color: #ffffff;
   text-align: center;
   border: 3px solid;
   border-style: dashed;
+  box-shadow: none;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file i {
   margin-top: 43px;
@@ -10828,6 +10842,9 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.pdf .item-type {
   background-image: url("../images/folder/types/pdf.png");
+}
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image {
+  border-color: transparent;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .time-wrapper, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .folder-title-holder {
   color: #ffffff;
@@ -13721,10 +13738,11 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-folder-container .folder-header .search-folder .inner-addon i {
   position: absolute;
-  padding: 10px 12px;
-  right: 0px;
+  right: 11px;
+  top: 9px;
   font-weight: 400;
   pointer-events: none;
+  color: #bebfbf;
   font-size: 0.75em;
 }
 .group-container .group-folder-container .folder-header .search-folder .inner-addon input {
@@ -13732,6 +13750,18 @@ header .notification-holder .profile-header-thumb {
   padding-right: 30px;
   height: 33px;
   font-size: 0.6875em;
+}
+.group-container .group-folder-container .folder-header .search-folder .inner-addon input:-moz-placeholder {
+  color: #bebfbf;
+}
+.group-container .group-folder-container .folder-header .search-folder .inner-addon input::-moz-placeholder {
+  color: #bebfbf;
+}
+.group-container .group-folder-container .folder-header .search-folder .inner-addon input:-ms-input-placeholder {
+  color: #bebfbf;
+}
+.group-container .group-folder-container .folder-header .search-folder .inner-addon input::-webkit-input-placeholder {
+  color: #bebfbf;
 }
 .group-container .group-folder-container .folder-body .folder {
   margin-bottom: 20px;
@@ -13912,18 +13942,17 @@ header .notification-holder .profile-header-thumb {
   position: relative;
   min-height: 147px;
   border: 1px solid #e1e1e1;
-  box-shadow: -2px 2px 6px -3px #000000;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   background-size: cover;
   cursor: pointer;
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item:first-child {
-  box-shadow: none;
+  border-radius: 2px;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file {
   background-color: #ffffff;
   text-align: center;
   border: 3px solid;
   border-style: dashed;
+  box-shadow: none;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.upload-file i {
   margin-top: 43px;
@@ -13974,6 +14003,9 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.pdf .item-type {
   background-image: url("../images/folder/types/pdf.png");
+}
+.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image {
+  border-color: transparent;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .time-wrapper, .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .folder-title-holder {
   color: #ffffff;
@@ -16996,25 +17028,25 @@ header .notification-holder .profile-header-thumb {
   display: block;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div.pink {
-  background-color: #ed0677;
+  background-color: #ed1e7a;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div.light-blue {
-  background-color: #1b9ed9;
+  background-color: #00a6ef;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div.light-green {
-  background-color: #a2c73e;
+  background-color: #a6c74a;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div.red {
-  background-color: #b01d5a;
+  background-color: #b21e53;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div.dark-blue {
-  background-color: #091652;
+  background-color: #000f75;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div.gray {
-  background-color: #bbbdbe;
+  background-color: #bebfbf;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div.dark-green {
-  background-color: #067d41;
+  background-color: #038247;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .color-palette div.black {
   background-color: #000000;

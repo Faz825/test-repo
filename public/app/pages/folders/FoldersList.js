@@ -232,6 +232,9 @@ export default class FolderList extends React.Component{
         let folderData = this.props.folderData;
         let documents = folderData.documents;
         let ownerImg, ownerName;
+        let fldrClr = folderData.folder_color;
+        let borderClr;
+
         let i = (
             <Popover id="popover-contained" className="share-popover-contained" style={{maxWidth: "635px", width: "635px"}}>
                 <SharePopup folderData={folderData}/>
@@ -258,6 +261,35 @@ export default class FolderList extends React.Component{
             )
 
         });
+
+        switch(fldrClr) {
+            case "#ed1e7a":
+                borderClr = "#f57fb4";
+                break;
+            case "#00a6ef":
+                borderClr = "#b3e4fa";
+                break;
+            case "#a6c74a":
+                borderClr = "#e6efcc";
+                break;
+            case "#bebfbf":
+                borderClr = "#dedfdf";
+                break;
+            case "#000000":
+                borderClr = "#828182";
+                break;
+            case "#038247":
+                borderClr = "#d2e3a4";
+                break;
+            case "#000f75":
+                borderClr = "#7fd2f7";
+                break;
+            case "#b21e53":
+                borderClr = "#b21e53";
+                break;
+        }
+
+        console.log(borderClr);
 
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
@@ -307,7 +339,7 @@ export default class FolderList extends React.Component{
                                         <div className="folder-items-wrapper">
                                             <div className="inner-wrapper">
                                                 <div className="folder-col"  onClick={(event)=>{this.onOpenClick(folderData.folder_id)}}>
-                                                    <div className="folder-item upload-file" style={{borderColor: folderData.folder_color}}>
+                                                    <div className="folder-item upload-file" style={{borderColor: borderClr}}>
                                                         <i className="fa fa-plus" style={{color: folderData.folder_color}}></i>
                                                         <p style={{color: folderData.folder_color}}>Upload new file or image</p>
                                                     </div>
