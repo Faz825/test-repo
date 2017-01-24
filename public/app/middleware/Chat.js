@@ -137,6 +137,8 @@ class Chat {
                 console.log(_uri);
                 let _msg = "On work mode";
 
+                _this.b6.session.displayName = me.first_name + " " + me.last_name;
+
                 _this.b6.compose(_uri).text(_msg).send(function (err) {
                     if (err) {
                         console.log('error', err);
@@ -191,7 +193,7 @@ class Chat {
             if (Session.getSession('prg_lg') != null) {
 
                 if (b6.session.authenticated) {
-                    b6.session.activeDisplayName = Session.getSession('prg_lg').first_name+" "+Session.getSession('prg_lg').last_name;
+                    b6.session.displayName = Session.getSession('prg_lg').first_name+" "+Session.getSession('prg_lg').last_name;
                     console.log('User is logged in');
                     return true;
                 }
@@ -206,7 +208,7 @@ class Chat {
                         bit6Auth(true);
                     }
                     else {
-                        b6.session.activeDisplayName = Session.getSession('prg_lg').first_name+" "+Session.getSession('prg_lg').last_name;
+                        b6.session.displayName = Session.getSession('prg_lg').first_name+" "+Session.getSession('prg_lg').last_name;
                         return true;
                     }
                 });
@@ -692,7 +694,7 @@ class Chat {
                     if (err) {
                         bit6Auth(true);
                     } else {
-                        b6.session.activeDisplayName = Session.getSession('prg_lg').first_name+" "+Session.getSession('prg_lg').last_name;
+                        b6.session.displayName = Session.getSession('prg_lg').first_name+" "+Session.getSession('prg_lg').last_name;
                         addGroupMember(member, groupId, _role);
                         return true;
                     }

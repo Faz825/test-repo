@@ -168,6 +168,7 @@ export class ConversationList extends React.Component{
         var title = proglobe_title_array[1];
 
         let _blockMessages = this.checkWorkMode();
+        let oUser = Session.getSession('prg_lg');
 
         // New conversation
         if (op > 0) {
@@ -257,6 +258,7 @@ export class ConversationList extends React.Component{
                                 let _uri = c.uri; console.log(_uri);
                                 let _msg = "On work mode";
 
+                                b6.session.displayName = oUser.first_name + " " + oUser.last_name;
                                 b6.compose(_uri).text(_msg).send(function(err) {
                                     if (err) {
                                         console.log('error', err);

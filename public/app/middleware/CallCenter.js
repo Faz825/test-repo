@@ -26,7 +26,7 @@ class CallCenter {
 
             if (this.b6.session.authenticated) {
                 console.log('user already logged in');
-                this.b6.session.activeDisplayName = oUser.first_name + " " + oUser.last_name;
+                this.b6.session.displayName = oUser.first_name + " " + oUser.last_name;
             } else {
                 // Convert username to an bit6 identity
                 let ident = _this.getBit6Identity(oUser);
@@ -39,7 +39,7 @@ class CallCenter {
                         _this.bit6SignUp(ident, pass, oUser);
                     } else {
                         console.log('logged in');
-                        _this.b6.session.activeDisplayName = oUser.first_name + " " + oUser.last_name;
+                        _this.b6.session.displayName = oUser.first_name + " " + oUser.last_name;
                         return true;
                     }
                 });
@@ -71,7 +71,7 @@ class CallCenter {
                 return false;
             }
             else {
-                _this.b6.session.activeDisplayName = oUser.first_name + " " + oUser.last_name;
+                _this.b6.session.displayName = oUser.first_name + " " + oUser.last_name;
                 return true;
             }
         });

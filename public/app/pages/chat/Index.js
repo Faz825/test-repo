@@ -449,7 +449,8 @@ export default class Index extends React.Component{
 
         this.checkChatWith = this.state.chatWith;
         this.makeConversationRead(this.state.uri);
-
+        let user = Session.getSession('prg_lg');
+        this.b6.session.displayName = user.first_name + " " + user.last_name;
         this.b6.compose(this.state.uri).text(msg).send(function(err) {
             if (err) {
                 console.log('error', err);

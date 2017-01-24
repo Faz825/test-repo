@@ -406,7 +406,8 @@ export default class QuickChatHandler extends React.Component{
     }
 
     sendChat(msgObj){
-
+        let user = Session.getSession('prg_lg');
+        Chat.b6.session.displayName = user.first_name + " " + user.last_name;
         Chat.b6.compose(msgObj.uri).text(msgObj.message).send(function(err) {
             if (err) {
                 console.log('error', err);

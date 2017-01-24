@@ -109,7 +109,8 @@ export default class CallHandler extends React.Component {
         let _uri = c.other;
         console.log(_uri);
         let _msg = "On work mode";
-
+        let user = Session.getSession('prg_lg');
+        b6.session.displayName = user.first_name + " " + user.last_name;
         b6.compose(_uri).text(_msg).send(function (err) {
             if (err) {
                 console.log('error', err);
