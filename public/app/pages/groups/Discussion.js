@@ -229,8 +229,8 @@ export class MembersWidget extends React.Component{
             this.setState({ membersCount: nextProps.membersCount });
         }
 
-        if (nextProps.group !== this.state.group) {
-            this.setState({ group: nextProps.group });
+        if (nextProps.currentGroup !== this.state.group) {
+            this.setState({ group: nextProps.currentGroup });
         }
     }
 
@@ -239,6 +239,7 @@ export class MembersWidget extends React.Component{
     }
 
     addNewMembers() {
+
         var groupData = {
             __groupId : this.state.group._id,
             __members : this.state.members
@@ -296,7 +297,7 @@ export class MembersWidget extends React.Component{
                     </div>
                     <button
                         className="col-sm-2 btn btn-primary success-btn"
-                        onClick={this.addNewMembers}>
+                        onClick={() => this.addNewMembers()}>
                         Add
                     </button>
                 </div>
@@ -320,6 +321,19 @@ export class CalendarWidget extends React.Component{
         this.state = {
             currentDate : moment().format('YYYY-MM-DD')
         };
+
+        this.nextDay = this.nextDay.bind(this);
+        this.previousDay = this.previousDay.bind(this);
+    }
+
+    nextDay() {
+        let nextDay = moment(this.state.currentDate).add(1,'days').format('YYYY-MM-DD');
+        this.setState({currentDate : nextDay});
+    }
+
+    previousDay() {
+        let prevDay = moment(this.state.currentDate).add(-1, 'days').format('YYYY-MM-DD');
+        this.setState({currentDate : prevDay});
     }
 
     render() {
@@ -327,15 +341,15 @@ export class CalendarWidget extends React.Component{
             <div className="grp-day-panel panel">
                 <div className="day-slide-header">
                     <div className="day-slider">
-                        <p className="date">{moment(this.state.currentDate).format('dddd')}, {moment(this.state.currentDate).format('YY')}</p>
-                        <span className="fa fa-angle-left prev slide-btn"></span>
-                        <span className="fa fa-angle-right next slide-btn"></span>
+                        <p className="date">{moment(this.state.currentDate).format('dddd')}, {moment(this.state.currentDate).format('D')}</p>
+                        <span className="fa fa-angle-left prev slide-btn" onClick={() => this.previousDay()}></span>
+                        <span className="fa fa-angle-right next slide-btn" onClick={() => this.nextDay()}></span>
                     </div>
                 </div>
                 <div className="date-selected clearfix">
                     <div className="date-wrapper pull-left">
                         <p className="day-name">{moment(this.state.currentDate).format('dddd')}</p>
-                        <p className="day-num">{moment(this.state.currentDate).format('YY')}</p>
+                        <p className="day-num">{moment(this.state.currentDate).format('D')}</p>
                     </div>
                     <p className="month-name pull-right">{moment(this.state.currentDate).format('MMMM')}</p>
                 </div>

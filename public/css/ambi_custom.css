@@ -956,6 +956,10 @@ body .modal-backdrop{
     word-wrap: break-word;
 }
 
+.group-container .group-header .header-bottom .prof-img-holder img {
+    width: 100%;
+}
+
 .group-container .group-content .sidebar .grp-members .all-members .mem-img img {
     width: 100%;
 }

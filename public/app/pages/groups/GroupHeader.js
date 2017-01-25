@@ -52,7 +52,7 @@ export default class GroupHeader extends React.Component{
                 </div>
                 <div className="header-bottom clearfix">
                     <div className="prof-img-holder">
-                        <img src="../images/group/grp-profile-pic.png" alt="grp-pic" />
+                        <img src=   {this.state.group.group_pic_link ? this.state.group.group_pic_link : "../images/group/grp-profile-pic.png"} alt="grp-pic" />
                     </div>
                     <div className="left-nav-wrapper clearfix">
                         <div className={this.state.activeLayout=='discussion' ? "nav-item first-item active" : "nav-item first-item"} onClick={() => this.setActiveLayout('discussion')}>
