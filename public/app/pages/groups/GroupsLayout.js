@@ -4,6 +4,7 @@ import Session  from '../../middleware/Session';
 import GroupHeader from './GroupHeader';
 import Folders from './Folders';
 import Discussion from './Discussion';
+import Calendar from './Calendar';
 
 export default class GroupsLayout extends React.Component {
 
@@ -93,7 +94,14 @@ export default class GroupsLayout extends React.Component {
                     />
                 );
             case 'calendar':
-                return null;
+                return (
+                    <Calendar
+                        myGroup={this.state.group}
+                        randomMembers={this.state.randomMembers}
+                        membersCount={this.state.membersCount}
+                        members={this.state.members}
+                    />
+                );
             case 'chat':
                 return null;
             case 'notebook':
