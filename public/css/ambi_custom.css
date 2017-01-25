@@ -951,6 +951,11 @@ body .modal-backdrop{
     left: 0px;
 }
 
+.group-dashboard-container .group-content .list-holder .list-wrapper .list-item .list-item-title {
+    width: 70px;
+    word-wrap: break-word;
+}
+
 .group-container .group-content .sidebar .grp-members .all-members .mem-img img {
     width: 100%;
 }
@@ -969,4 +974,12 @@ body .modal-backdrop{
 
 .group-container .group-content .sidebar .grp-members .add-member .form-control{
     padding: 15px 62px 15px 20px;
+}
+
+.group-container .group-content .event-task-holder .title-holder {
+    width: 100%;
+}
+
+.group-container .group-content .event-task-holder ul li {
+    font-size: 0.625em;
 }

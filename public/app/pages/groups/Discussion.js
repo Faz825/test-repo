@@ -2,6 +2,8 @@
  * The Group discussion page
  */
 import React from 'react';
+import moment from 'moment';
+
 import Session  from '../../middleware/Session';
 import GroupHeader from './GroupHeader';
 
@@ -315,7 +317,9 @@ export class CalendarWidget extends React.Component{
     constructor(props) {
         super(props);
         var group = this.props.myGroup;
-        this.state = {};
+        this.state = {
+            currentDate : moment().format('YYYY-MM-DD')
+        };
     }
 
     render() {
@@ -323,17 +327,17 @@ export class CalendarWidget extends React.Component{
             <div className="grp-day-panel panel">
                 <div className="day-slide-header">
                     <div className="day-slider">
-                        <p className="date">Wednesday, 9</p>
+                        <p className="date">{moment(this.state.currentDate).format('dddd')}, {moment(this.state.currentDate).format('YY')}</p>
                         <span className="fa fa-angle-left prev slide-btn"></span>
                         <span className="fa fa-angle-right next slide-btn"></span>
                     </div>
                 </div>
                 <div className="date-selected clearfix">
                     <div className="date-wrapper pull-left">
-                        <p className="day-name">Wednesday</p>
-                        <p className="day-num">9</p>
+                        <p className="day-name">{moment(this.state.currentDate).format('dddd')}</p>
+                        <p className="day-num">{moment(this.state.currentDate).format('YY')}</p>
                     </div>
-                    <p className="month-name pull-right">December</p>
+                    <p className="month-name pull-right">{moment(this.state.currentDate).format('MMMM')}</p>
                 </div>
                 <div className="event-task-holder">
                     <div className="event-wrapper inner-wrapper">
@@ -341,12 +345,22 @@ export class CalendarWidget extends React.Component{
                             <i className="fa fa-calendar task-icon" aria-hidden="true"></i>
                             <h3 className="title">Event</h3>
                         </div>
+                        <ul className="events-tasks-list events-list">
+                            <li>Event one</li>
+                            <li>Event two</li>
+                            <li>Event three</li>
+                        </ul>
                     </div>
                     <div className="task-wrapper inner-wrapper">
                         <div className="title-holder clearfix">
                             <span className="task-icon"></span>
                             <h3 className="title">Tasks</h3>
                         </div>
+                        <ul className="events-tasks-list tasks-list">
+                            <li>Task one</li>
+                            <li>Task two</li>
+                            <li>Task three</li>
+                        </ul>
                     </div>
                 </div>
             </div>

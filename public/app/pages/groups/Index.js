@@ -13,9 +13,6 @@ import SearchMembersField  from './elements/SearchMembersField';
 import { Popover } from 'react-bootstrap';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 
-// import Autosuggest from 'react-autosuggest';
-// import Lib from '../../middleware/Lib';
-
 export default class Index extends React.Component{
 
     constructor(props) {
@@ -104,7 +101,7 @@ export default class Index extends React.Component{
         if(this.state.groups.length > 0 ) {
             groupBlock = this.state.groups.map(function(group,userKey){
                 return <a className="list-item clearfix" href={'groups/'+group.name_prefix}>
-                    <img src={group.group_pic_link} alt="" className="pull-left" />
+                    <img src={group.group_pic_link ? group.group_pic_link : "images/group/dashboard/grp-icon.png"} alt="Group icon" className="pull-left" />
                     <p className="list-item-title">{group.name}</p>
                 </a>
             });
