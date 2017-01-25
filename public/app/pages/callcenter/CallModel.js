@@ -51,7 +51,7 @@ export default class CallModel extends React.Component {
     render() {
         let i = (
             <Popover id="popover-contained" className="share-popover-contained callpopup popup-holder"
-                     style={{maxWidth: "265px", width: "265px", zIndex: 9999}}>
+                     style={{maxWidth: "265px", zIndex: 9999, marginLeft: "18px"}}>
                 <div className="call-center-new-participant">
                     <i className="fa fa-search" aria-hidden="true"></i>
                     <input type="text" className="form-control" placeholder="Type name"/>
