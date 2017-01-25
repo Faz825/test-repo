@@ -12789,7 +12789,7 @@ header .notification-holder .profile-header-thumb {
   height: 40px;
   border-radius: 100%;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode {
   position: absolute;
   bottom: 0px;
   right: 0px;
@@ -12797,15 +12797,15 @@ header .notification-holder .profile-header-thumb {
   height: 13px;
   border-radius: 100%;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.online {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode.online {
   background-color: #63c66c;
   border: 3px solid #ffffff;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.work-mode {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode.work-mode {
   background-color: #de2424;
   border: 3px solid #ffffff;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.offline {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode.offline {
   background-color: #ffffff;
   border: 2px solid #6ac374;
 }
@@ -13064,6 +13064,62 @@ header .notification-holder .profile-header-thumb {
   margin-top: -3px;
   width: 13px;
   height: 13px;
+}
+.call-center-container .cc-online-status-popup {
+  overflow: hidden;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px 2px #ebeff1;
+}
+.call-center-container .cc-online-status-popup .status-type {
+  margin-top: 1px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.call-center-container .cc-online-status-popup .status-type:first-child {
+  margin-top: 9px;
+}
+.call-center-container .cc-online-status-popup .status-type:hover {
+  background-color: #00a5ef;
+}
+.call-center-container .cc-online-status-popup .status-type:hover .type {
+  color: #ffffff;
+}
+.call-center-container .cc-online-status-popup .status-type .status {
+  margin-top: 5px;
+  margin-left: 11px;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  float: left;
+}
+.call-center-container .cc-online-status-popup .status-type .status.online {
+  background-color: #63c66c;
+  border: 3px solid #ffffff;
+}
+.call-center-container .cc-online-status-popup .status-type .status.work-mode {
+  background-color: #de2424;
+  border: 3px solid #ffffff;
+}
+.call-center-container .cc-online-status-popup .status-type .status.offline {
+  background-color: #ffffff;
+  border: 2px solid #6ac374;
+}
+.call-center-container .cc-online-status-popup .status-type .type {
+  margin-top: 1px;
+  margin-bottom: 2px;
+  margin-left: 8px;
+  float: left;
+  font-size: 0.75em;
+  color: #464646;
+}
+.call-center-container .cc-online-status-popup .mood-msg {
+  border-top: 1px solid #dee6eb;
+}
+.call-center-container .cc-online-status-popup .mood-msg p {
+  margin: 2px 0 6px 10px;
+  font-size: 0.75em;
+  color: #464646;
 }
 
 .group-container {

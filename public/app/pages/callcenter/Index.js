@@ -37,7 +37,8 @@ export default class Index extends React.Component {
             activeSubCat: "",
             showModal: false,
             minimizeBar: false,
-            searchValue: ""
+            searchValue: "",
+            isStatusVisible: false
         };
 
         // Call Record
@@ -494,7 +495,12 @@ export default class Index extends React.Component {
     }
 
     onUserStateUpdate(eventKey) {
-        this.setState({userStatus: eventKey});
+        console.log(eventKey);
+        this.setState({userStatus: eventKey, isStatusVisible : false});
+    }
+
+    onUserStatusClick(){
+        this.setState({isStatusVisible : true});
     }
 
     headerNav() {
@@ -508,11 +514,31 @@ export default class Index extends React.Component {
                         <div className="image-wrapper">
                             <img
                                 src={(this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image}/>
-                            <span className={"status " + this.state.userStatus}></span>
+                            {(!this.state.isStatusVisible)?
+                                <span className={"status user-mode " + this.state.userStatus} onClick={this.onUserStatusClick.bind(this)}></span>
+                                :                                
+                                <section className="cc-online-status-popup">
+                                    <div className="status-type" onClick={(event)=> {this.onUserStateUpdate("online")}}>
+                                        <span className="status online"></span>
+                                        <p className="type">Online</p>
+                                    </div>
+                                    <div className="status-type" onClick={(event)=> {this.onUserStateUpdate("work-mode")}}>
+                                        <span className="status work-mode"></span>
+                                        <p className="type">Work Mode</p>
+                                    </div>
+                                    <div className="status-type" onClick={(event)=> {this.onUserStateUpdate("offline")}}>
+                                        <span className="status offline"></span>
+                                        <p className="type">Offline</p>
+                                    </div>
+                                    <div className="mood-msg">
+                                        <p>Edit Mood Message</p>
+                                    </div>
+                                </section>
+                            }
                         </div>
                         <div className="name-wrapper">
                             <p className="name">{this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name}</p>
-                            <div className="status-update">
+                            {/*<div className="status-update">
                                 <ButtonToolbar>
                                     <DropdownButton bsSize="small" title={this.state.userStatus}
                                                     id="dropdown-size-small">
@@ -523,7 +549,7 @@ export default class Index extends React.Component {
                                             mode</MenuItem>
                                     </DropdownButton>
                                 </ButtonToolbar>
-                            </div>
+                            </div>*/}
                         </div>
                     </div>
                     <div className="col-sm-6">
