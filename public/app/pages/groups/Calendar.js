@@ -4,11 +4,11 @@
 import React from 'react';
 import Session  from '../../middleware/Session';
 
-import DayView from './calendar/DayView';
-import YearView from './calendar/YearView';
-import MonthView from './calendar/MonthView';
-import WeekView from './calendar/WeekView';
-import CalenderView from './calendar/MonthView';
+import DayView from './../calender/DayView';
+import YearView from './../calender/YearView';
+import MonthView from './../calender/MonthView';
+import WeekView from './../calender/WeekView';
+import CalenderView from './../calender/MonthView';
 
 import moment from 'moment';
 
