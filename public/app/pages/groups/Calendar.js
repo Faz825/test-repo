@@ -81,15 +81,16 @@ export default class Index extends React.Component {
         switch (this.state.current) {
             case 'week':
                 return (<WeekView isGroupCall={true} groupCall={groupCall}/>);
+                return (<WeekView isGroupCall={true}/>);
             case 'day':
-                return (<DayView dayDate={this.state.dayViewDate} selectedEvent={null}/>);
+                return (<DayView isGroupCall={true} dayDate={this.state.dayViewDate} selectedEvent={null}/>);
             case 'month':
-                return (<MonthView ref="MonthViewComponent" selected={this.state.monthViewDate}
-                                   setDayView={this.loadDayView}/>);
+                return (<MonthView isGroupCall={true} ref="MonthViewComponent" selected={this.state.monthViewDate}
+                                   setDayView={true.loadDayView}/>);
             case 'year':
-                return (<YearView setMonthView={this.loadMonthView.bind(this)}/>);
+                return (<YearView isGroupCall={true} setMonthView={this.loadMonthView.bind(this)}/>);
             default:
-                return (<DayView dayDate={this.state.dayViewDate} user={user}/>);
+                return (<DayView isGroupCall={true} viewType={"group_calendar"} dayDate={this.state.dayViewDate} user={user}/>);
         }
     }
 
