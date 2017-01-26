@@ -27,47 +27,60 @@ export default class Index extends React.Component {
             current: 'day',
             dayViewDate: moment().format('YYYY-MM-DD'),
             monthViewDate: moment().startOf("day"),
-            user: user
+            user: user,
+            group:this.props.myGroup
         };
         this.relativeView = this.relativeView.bind(this);
         this.loadDayView = this.loadDayView.bind(this);
         this.loadMonthView = this.loadMonthView.bind(this);
     }
 
-    componentDidMount() {
-        if (this.props.params.name) {
-
-            $.ajax({
-                url: '/calendar/event/get',
-                method: "POST",
-                data: {eventId: this.props.params.name},
-                dataType: "JSON",
-                headers: {"prg-auth-header": this.state.user.token},
-                success: function (data, text) {
-                    if (data.status.code == 200) {
-                        var event = data.event;
-                        console.log(event.start_date_time);
-                        console.log(moment(event.start_date_time).format('YYYY-MM-DD'));
-                        this.dayViewDate = moment(event.start_date_time).format('YYYY-MM-DD');
-                        this.setState({
-                            dayViewDate: moment(event.start_date_time).format('YYYY-MM-DD'),
-                            current: 'day'
-                        });
-                    }
-                }.bind(this),
-                error: function (request, status, error) {
-                    console.log(error);
-                }
-            });
-
+    componentWillReceiveProps(nextProps) {
+        if(typeof nextProps.myGroup != 'undefined' && nextProps.myGroup) {
+            this.setState({group: nextProps.myGroup});
         }
+    }
+
+    componentDidMount() {
+        //if (this.props.params.name) {
+        //
+        //    $.ajax({
+        //        url: '/calendar/event/get',
+        //        method: "POST",
+        //        data: {eventId: this.props.params.name},
+        //        dataType: "JSON",
+        //        headers: {"prg-auth-header": this.state.user.token},
+        //        success: function (data, text) {
+        //            if (data.status.code == 200) {
+        //                var event = data.event;
+        //                console.log(event.start_date_time);
+        //                console.log(moment(event.start_date_time).format('YYYY-MM-DD'));
+        //                this.dayViewDate = moment(event.start_date_time).format('YYYY-MM-DD');
+        //                this.setState({
+        //                    dayViewDate: moment(event.start_date_time).format('YYYY-MM-DD'),
+        //                    current: 'day'
+        //                });
+        //            }
+        //        }.bind(this),
+        //        error: function (request, status, error) {
+        //            console.log(error);
+        //        }
+        //    });
+        //
+        //}
     }
 
     relativeView() {
 
+        let groupCall = {
+            isGroupCall: true,
+            groupId: this.state.group._id,
+            group:this.state.group
+        };
+
         switch (this.state.current) {
             case 'week':
-                return (<WeekView/>);
+                return (<WeekView isGroupCall={true} groupCall={groupCall}/>);
             case 'day':
                 return (<DayView dayDate={this.state.dayViewDate} selectedEvent={null}/>);
             case 'month':

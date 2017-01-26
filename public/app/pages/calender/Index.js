@@ -61,10 +61,15 @@ export default class Index extends React.Component{
     }
 
     relativeView() {
+        let groupCall = {
+            isGroupCall: false,
+            groupId: '',
+            group:''
+        }
 
         switch(this.state.current) {
             case 'week':
-                return (<WeekView/>);
+                return (<WeekView isGroupCall={false} groupCall={groupCall}/>);
             case 'day':
                 return  (<DayView dayDate={this.state.dayViewDate} selectedEvent={this.props.params.name} />);
             case 'month':
