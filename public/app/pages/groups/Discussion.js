@@ -11,6 +11,9 @@ import SearchMembersField  from './elements/SearchMembersField';
 import AddPostElement from '../../components/timeline/AddPostElement';
 import ListPostsElement from '../../components/timeline/ListPostsElement';
 
+import RichTextEditor from '../../components/elements/RichTextEditor';
+import Lib    from '../../middleware/Lib';
+
 export default class Discussion extends React.Component{
 
     constructor(props) {
@@ -29,11 +32,18 @@ export default class Discussion extends React.Component{
             membersCount : this.props.membersCount,
             members : this.props.members,
             posts:[],
+            currentDescription : group.description,
+            showSave : false
         };
 
         this.postType = 2; // [ PERSONAL_POST:1, GROUP_POST:2 ]
         this.postVisibleMode = 5; // [ PUBLIC:1, FRIEND_ONLY:2, ONLY_MY:3, SELECTED_USERS:4, GROUP_MEMBERS:5 ]
-        this.currentGroup =this.state.currentGroup;
+        this.currentDescription = group.description;
+
+        this.currentGroup = this.state.currentGroup;
+        this.saveDescription = this.saveDescription.bind(this);
+        this.handleDescription = this.handleDescription.bind(this);
+        this.enableSaveDescription = this.enableSaveDescription.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -53,7 +63,7 @@ export default class Discussion extends React.Component{
         }
 
         if (nextProps.myGroup !== this.state.currentGroup) {
-            this.setState({ currentGroup: nextProps.myGroup });
+            this.setState({ currentGroup: nextProps.myGroup, currentDescription : nextProps.myGroup.description});
             this.currentGroup = nextProps.myGroup;
             this.loadPosts(0);
         }
@@ -102,6 +112,35 @@ export default class Discussion extends React.Component{
         console.log("onLoadProfile");
     }
 
+    enableSaveDescription() {
+        this.setState({showSave : true});
+    }
+
+    saveDescription() {
+        var data = {
+            __groupId: this.state.currentGroup._id,
+            __description: this.state.currentDescription
+        };
+
+        $.ajax({
+            url: '/groups/update-description',
+            method: "POST",
+            dataType: "JSON",
+            data: JSON.stringify(data),
+            headers : { "prg-auth-header" : this.state.user.token },
+            contentType: "application/json; charset=utf-8",
+        }).done(function (data, text) {
+            if(data.status.code == 200){
+                this.setState({showSave : false});
+            }
+        }.bind(this));
+    }
+
+    handleDescription(event) {
+        let _text  = Lib.sanitize(event.target.innerHTML);
+        this.setState({currentDescription : _text});
+    }
+
     render() {
         let workmodeClass = "workmode-switched";
         // let user = Session.getSession('prg_lg');
@@ -111,7 +150,16 @@ export default class Discussion extends React.Component{
                 <div className="sidebar col-sm-4">
                     <div className="grp-desc panel">
                         <h3 className="panel-title">Description</h3>
-                        <p className="desc">{this.state.currentGroup.description}</p>
+                        <div className="desc"
+                            contentEditable={true}
+                            dangerouslySetInnerHTML={{__html: this.state.currentDescription}}
+                            onFocus={this.enableSaveDescription}
+                            onBlur={this.saveDescription}
+                            onInput={(event)=>{this.handleDescription(event)}}>
+                        </div>
+                        {this.state.showSave ?
+                            <span className="save-btn" onInput={()=>{this.saveDescription()}}>save</span>
+                        : ''}
                     </div>
                     <MembersWidget
                         randomMembers={this.state.randomMembers}

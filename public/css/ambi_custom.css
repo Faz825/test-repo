@@ -987,3 +987,12 @@ body .modal-backdrop{
 .group-container .group-content .event-task-holder ul li {
     font-size: 0.625em;
 }
+
+.group-container .group-content .sidebar .grp-desc .desc {
+    outline: none;
+}
+
+.group-container .group-content .sidebar .grp-desc .save-btn {
+    color: #00a6ef;
+    cursor: pointer;
+}
