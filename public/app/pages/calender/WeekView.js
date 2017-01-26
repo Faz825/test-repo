@@ -18,9 +18,16 @@ export default class WeekView extends React.Component {
             events:[],
             weekStartDate:'',
             weekEndDate:'',
+            groupCall:this.props.groupCall
         }
         this.loggedUser =  Session.getSession('prg_lg');
         this.currentWeek = 0;
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(typeof nextProps.myGroup != 'undefined' && nextProps.myGroup) {
+            this.setState({groupCall: nextProps.groupCall});
+        }
     }
 
     componentDidMount() {
@@ -86,7 +93,9 @@ export default class WeekView extends React.Component {
 
         let postData = {
             start_date:week_start,
-            end_date:week_end
+            end_date:week_end,
+            isGroupCall:this.props.isGroupCall,
+            groupId:this.state.groupCall.groupId
         };
 
         this.currentWeek = curWeekOfMonth;
@@ -105,7 +114,9 @@ export default class WeekView extends React.Component {
 
         let postData = {
             start_date:week_start,
-            end_date:week_end
+            end_date:week_end,
+            isGroupCall:this.props.isGroupCall,
+            groupId:this.state.groupCall.groupId
         };
 
         this.currentWeek = curWeekOfMonth;
@@ -154,7 +165,7 @@ export default class WeekView extends React.Component {
                             </div>
                         </div>
 
-                        <WeekDays week_startDt={this.state.weekStartDate} events={this.state.events} loadData={this.processDataCall.bind(this)} />
+                        <WeekDays week_startDt={this.state.weekStartDate} events={this.state.events} loadData={this.processDataCall.bind(this)} isGroupCall={this.props.isGroupCall}/>
 
                     </div>
                 </div>
@@ -180,7 +191,7 @@ export class WeekDays extends React.Component {
             if(i > 0) {
                 dateObj = moment(this.props.week_startDt).add(i,"days");
             }
-            days.push(<LoadDayList current_date={dateObj} weekly_events={this.props.events} loadData={this.props.loadData} week_startDt={this.props.week_startDt} key={i}/>);
+            days.push(<LoadDayList current_date={dateObj} weekly_events={this.props.events} loadData={this.props.loadData} week_startDt={this.props.week_startDt} key={i} isGroupCall={this.props.isGroupCall} />);
 
         }
 
@@ -235,10 +246,10 @@ export class LoadDayList extends React.Component {
                     <h3>{currDt.format('DD')}</h3>
                 </div>
                 <div className="day-tile-body">
-                    {<DailyEvents daily_events={this.getEventsForTheDay()}/>}
+                    {<DailyEvents daily_events={this.getEventsForTheDay()} isGroupCall={this.props.isGroupCall}/>}
                 </div>
                 {this.state.showDailyPopUp ?
-                    <WeekDayEventPopUp handleClose={this.handleClose.bind(this)} loadData={this.props.loadData} curr_date={currDt} week_startDt={this.props.week_startDt}/>
+                    <WeekDayEventPopUp handleClose={this.handleClose.bind(this)} loadData={this.props.loadData} curr_date={currDt} week_startDt={this.props.week_startDt} isGroupCall={this.props.isGroupCall}/>
                     : null
                 }
             </div>
@@ -269,9 +280,12 @@ export class DailyEvents extends React.Component {
 
     render() {
 
+        console.log("rendaring dayily events >>>>>>>----->>>>");
+        console.log(this.props.isGroupCall);
+        console.log(this.props.daily_events);
         let groupedEvents = GroupArray(this.props.daily_events, 'type');
-
-        let _events = null,_todos = null, _this = this;
+        console.log(groupedEvents);
+        let _events = null,_todos = null,_tasks = null, _this = this;
 
         if(typeof groupedEvents['1'] != "undefined"){
             _events = groupedEvents['1'].map(function(event, key){
@@ -285,6 +299,16 @@ export class DailyEvents extends React.Component {
         }
         if(typeof groupedEvents['2'] != "undefined"){
             _todos = groupedEvents['2'].map(function(event, key){
+                let _text = event.description.blocks[0].text;
+                return(
+                    <li className={_this.isPending(event) == false ? "events" : "events pending"} key={key}>
+                        {_this.isPending(event) == false ? <p className="item">{_text}</p> : <p className="item pending">{_text}</p>}
+                    </li>
+                );
+            });
+        }
+        if(typeof groupedEvents['3'] != "undefined"){
+            _tasks = groupedEvents['3'].map(function(event, key){
                 let _text = event.description.blocks[0].text;
                 return(
                     <li className={_this.isPending(event) == false ? "events" : "events pending"} key={key}>
@@ -307,17 +331,32 @@ export class DailyEvents extends React.Component {
                         </ul>
                     </div>
                 </div>
-                <div className="content-wrapper todos">
-                    <div className="header-wrapper">
-                        <img src="/images/calender/icon-to-do.png"/>
+                {this.props.isGroupCall == false ?
+                    <div className="content-wrapper todos">
+                        <div className="header-wrapper">
+                            <img src="/images/calender/icon-to-do.png"/>
                             <p>Todo	&rsquo;s</p>
+                        </div>
+                        <div className="body-wrapper">
+                            <ul className="list-items">
+                                {_todos}
+                            </ul>
+                        </div>
                     </div>
-                    <div className="body-wrapper">
-                        <ul className="list-items">
-                            {_todos}
-                        </ul>
+                    :
+                    <div className="content-wrapper tasks">
+                        <div className="header-wrapper">
+                            <img src="/images/calender/icon-to-do.png"/>
+                            <p>Tasks</p>
+                        </div>
+                        <div className="body-wrapper">
+                            <ul className="list-items">
+                                {_tasks}
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                }
+
             </div>
         );
     }

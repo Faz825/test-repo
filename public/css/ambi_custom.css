@@ -886,6 +886,18 @@ footer .notification-alert-holder.slideOut{
   margin: 0;
 }
 
+.call-center-inner-holder .cc-online-status-popup{
+  position: absolute;
+  top: 34px;
+  left: 71px;
+  z-index: 1;
+  width: 135px;
+}
+
+.call-center-container .user-status .user-mode{
+  cursor: pointer;
+}
+
 /* Model overlay is overlaping */
 body .modal-backdrop{
   display: none;

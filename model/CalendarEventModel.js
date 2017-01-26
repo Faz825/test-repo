@@ -36,6 +36,11 @@ GLOBAL.CalenderPriority = {
     HIGH: 3,
 };
 
+GLOBAL.CalenderEventType = {
+    PERSONAL_EVENT: 1,
+    GROUP_EVENT: 2
+};
+
 /**
  * CalenderEvent Basic information
  */
@@ -68,8 +73,13 @@ var CalendarEventSchema = new Schema({
     },
 
     type : {
-        type : Number, /*1- Event | 2 - To-Do | 3 - Task */
+        type : Number, /* 1- Event | 2 - To-Do | 3 - Task */
         default : null
+    },
+
+    event_type : {
+        type : Number, /* 1- PERSONAL_EVENT | 2 - GROUP_EVENT */
+        default : 1
     },
 
     start_date_time : {
@@ -79,6 +89,12 @@ var CalendarEventSchema = new Schema({
     event_time : {
         type : String,
         default : null
+    },
+
+    group_id:{
+        type: Schema.ObjectId,
+        ref: 'Groups',
+        default:null
     },
 
     event_timezone : {

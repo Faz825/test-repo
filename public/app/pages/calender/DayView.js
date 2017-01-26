@@ -54,6 +54,8 @@ export default class DayView extends Component {
             isButtonDisabled : false
         };
 
+        this.isGroupCall = this.props.isGroupCall;
+
         this.sharedWithIds = [];
         this.sharedWithNames = [];
         this.selectedEvent = this.props.selectedEvent;
@@ -355,7 +357,7 @@ export default class DayView extends Component {
                     this.setState({
                         editOn : true,
                         editEventId : eventId,
-                        defaultType : (data.event.type == 1 ? 'event' : 'todo')
+                        defaultType : (data.event.type == 1 ? 'event' : ((this.isGroupCall) ? 'task' : 'todo'))
                     });
                     this.handleTimeChange(data.event.start_date_time);
                 }
@@ -516,6 +518,7 @@ export default class DayView extends Component {
     render() {
 
         let shared_with_list = [];
+        let _class = (this.isGroupCall) ? "task" : "to-do";
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
                 return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
@@ -611,7 +614,10 @@ export default class DayView extends Component {
                                             </div>
                                         </div>
                                         <div className="calender-input-type">
+                                            {(this.isGroupCall) ?
+                                            <p>{this.state.defaultType == 'task' ? 'task' : this.state.defaultType }</p> :
                                             <p>{this.state.defaultType == 'todo' ? 'to-do' : this.state.defaultType }</p>
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -647,9 +653,24 @@ export default class DayView extends Component {
                                                         <button type="button" className={"menu-ico-group btn event " + (this.state.defaultType == 'event' ? "active" : null)} eventType="event" onClick={() => this.changeType('event')}>
                                                             <i className="fa fa-calendar" aria-hidden="true"></i> Event
                                                         </button>
-                                                        <button type="button" className={"menu-ico-group btn todo " + (this.state.defaultType == 'todo' ? "active" : null)} eventType="todo" onClick={() => this.changeType('todo')}>
-                                                            <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
-                                                        </button>
+                                                        {
+                                                            (this.isGroupCall) ?
+                                                                <button type="button"
+                                                                        className={"menu-ico-group btn task " + (this.state.defaultType == 'task' ? "active" : null)}
+                                                                        eventType="task"
+                                                                        onClick={() => this.changeType('task')}>
+                                                                    <i className="fa fa-wpforms" aria-hidden="true"></i>
+                                                                    &nbsp;To-do
+                                                                </button>
+                                                                :
+                                                                <button type="button"
+                                                                        className={"menu-ico-group btn todo " + (this.state.defaultType == 'todo' ? "active" : null)}
+                                                                        eventType="todo"
+                                                                        onClick={() => this.changeType('todo')}>
+                                                                    <i className="fa fa-wpforms" aria-hidden="true"></i>
+                                                                    &nbsp;Task
+                                                                </button>
+                                                        }
                                                     </div>
 
                                                 </li>
@@ -686,20 +707,31 @@ export default class DayView extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="row to-do-list-area">
+                            <div className={"row " + _class + "-list-area"}>
                                 <div className="col-sm-12">
-                                    <div className="to-do-list-area-content">
-                                        <div className="to-do-list-area-content-title">
-                                            <img src="/images/calender/icon-to-do.png" /><span>To-Do	&rsquo;s</span>
+                                    <div className={_class+ "-list-area-content"}>
+                                        <div className={_class+ "-list-area-content-title"}>
+                                            {(this.isGroupCall) ?
+                                            <span><img src="/images/calender/icon-to-do.png" />  <span>Tasks</span> </span>:
+                                            <span><img src="/images/calender/icon-to-do.png" /><span>To-Do	&rsquo;s</span></span> }
+
                                         </div>
                                         <div className="to-do-list-area-content-title-hr"></div>
+                                        {
+                                            (this.isGroupCall) ?
                                         <DayTodosList
                                             events={this.state.events}
                                             onClickItem={this.markTodo.bind(this)}
                                             clickEdit={this.clickEdit.bind(this)}
                                             selectedEvent={this.selectedEvent}
-                                            delete={this.openModal.bind(this)}
-                                        />
+                                            delete={this.openModal.bind(this)} /> :
+
+                                        <DayTodosList
+                                            events={this.state.events}
+                                            onClickItem={this.markTodo.bind(this)}
+                                            clickEdit={this.clickEdit.bind(this)}
+                                            selectedEvent={this.selectedEvent}
+                                            delete={this.openModal.bind(this)} />}
                                     </div>
                                 </div>
                             </div>
