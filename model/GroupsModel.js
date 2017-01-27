@@ -331,4 +331,66 @@ GroupsSchema.statics.updateGroups = function(filter, value, callBack){
     });
 };
 
+/**
+ * Create connections related to the group
+ * @param groupData
+ * @param userId
+ * @param callBack
+ */
+GroupsSchema.statics.addConnections = function(groupData, userId, callBack){
+
+    var Connection = require('mongoose').model('Connection');
+    var connectionData = new Connection();
+    connectionData.connected_with = groupData._id;
+    connectionData.connected_with_type = ConnectedType.GROUP_CONNECTION;
+    connectionData.action_user_id = userId;
+    connectionData.status = ConnectionStatus.REQUEST_ACCEPTED;
+
+    var connections = [];
+    groupData.members.forEach(function(member) {
+
+        // create connection in DB
+        connectionData.user_id = member.user_id;
+        Connection.createConnection(connectionData, function(connectionResult) {
+            console.log("CREATE CONNECTION");
+            connections.push(connectionResult.connection);
+        });
+
+        // get member object from ES
+        var query={
+            q:"user_id:"+member.user_id,
+            index:'idx_usr'
+        };
+        ES.search(query,function(esResultSet){
+            var _group_key = ConnectionConfig.ES_INDEX_NAME+groupData._id;
+            var groupPayLoad={
+                index:_group_key,
+                id:member.user_id.toString(),
+                type: 'connections',
+                data:esResultSet.result[0],
+                tag_fields:['content']
+            };
+
+            // create ES index with group id
+            ES.createIndex(groupPayLoad,function(resultSet){
+                console.log("GROUP INDEX IS CREATED " +_group_key);
+            });
+        });
+
+        var _user_key = ConnectionConfig.ES_INDEX_NAME+member.user_id;
+        var userPayLoad={
+            index:_user_key,
+            id:groupData._id.toString(),
+            type: 'connections',
+            data:groupData,
+            tag_fields:['content']
+        }
+        // create ES index with user id
+        ES.createIndex(userPayLoad,function(resultSet){
+            console.log("USER INDEX CREATED " + _user_key);
+        });
+    });
+    callBack({status:200, value:null});
+};
+
 mongoose.model('Groups',GroupsSchema);

@@ -137,54 +137,8 @@ var GroupsController = {
             function createConnections(groupData, callBack) {
 
                 if (notifyUsers.length > 0) {
-
-                    var connectionData = new Connection();
-                    connectionData.connected_with = groupData._id;
-                    connectionData.connected_with_type = ConnectedType.GROUP_CONNECTION;
-                    connectionData.action_user_id = userId;
-                    connectionData.status = ConnectionStatus.REQUEST_ACCEPTED;
-
-                    notifyUsers.forEach(function(member) {
-
-                        // create connection in DB
-                        connectionData.user_id = member.user_id;
-                        Connection.createConnection(connectionData, function(connectionResult) {
-                            console.log("CREATE CONNECTION");
-                        });
-
-                        // get member object from ES
-                        var query={
-                            q:"user_id:"+member.user_id,
-                            index:'idx_usr'
-                        };
-                        ES.search(query,function(esResultSet){
-                            var _group_key = ConnectionConfig.ES_INDEX_NAME+groupData._id;
-                            var groupPayLoad={
-                                index:_group_key,
-                                id:member.user_id.toString(),
-                                type: 'connections',
-                                data:esResultSet.result[0],
-                                tag_fields:['content']
-                            };
-
-                            // create ES index with group id
-                            ES.createIndex(groupPayLoad,function(resultSet){
-                                console.log("GROUP INDEX IS CREATED");
-                            });
-                        });
-
-                        var _user_key = ConnectionConfig.ES_INDEX_NAME+member.user_id;
-                        var userPayLoad={
-                            index:_user_key,
-                            id:groupData._id.toString(),
-                            type: 'connections',
-                            data:groupData,
-                            tag_fields:['content']
-                        }
-                        // create ES index with user id
-                        ES.createIndex(userPayLoad,function(resultSet){
-                            console.log("USER INDEX CREATED");
-                        });
+                    Groups.addConnections(groupData, userId, function() {
+                        console.log("CREATING CONNECTIONS");
                     });
                     callBack(null, groupData);
                 } else {
@@ -375,6 +329,22 @@ var GroupsController = {
                 groups.updateGroups(filter, value, function (updateResult) {
                     callBack(null, updateResult.group);
                 });
+            },
+            function createConnections(groupData, callBack) {
+
+                if (newMembers.length > 0) {
+                    var criteria = { "_id" : groupId };
+                    groups.getGroup(criteria, function(result) {
+                        if(result.status==200) {
+                            groups.addConnections(result.group[0], currentSession.id, function() {
+                                console.log("CREATING CONNECTIONS");
+                            });
+                        }
+                    });
+                    callBack(null, groupData);
+                } else {
+                    callBack(null, groupData);
+                }
             }
         ], function (err) {
             outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
