@@ -10832,7 +10832,7 @@ header .notification-holder .profile-header-thumb {
   position: absolute;
   bottom: 8px;
   right: 8px;
-  height: 31px;
+  height: 32px;
   width: 24px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.doc .item-type, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.docx .item-type {
@@ -14062,7 +14062,7 @@ header .notification-holder .profile-header-thumb {
   position: absolute;
   bottom: 8px;
   right: 8px;
-  height: 31px;
+  height: 32px;
   width: 24px;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.doc .item-type, .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.docx .item-type {
@@ -14957,9 +14957,6 @@ header .notification-holder .profile-header-thumb {
   padding: 15px 30px;
   border-bottom: 1px solid #d9d9d9;
 }
-.group-container .group-calendar-container .task-list-area .task-list-area-content .task-list-area-content-list li .checkbox-area {
-  display: inline-block;
-}
 .group-container .group-calendar-container .task-list-area .task-list-area-content .task-list-area-content-list li .checkbox label:before {
   border-radius: 3px;
 }
@@ -15587,6 +15584,7 @@ header .notification-holder .profile-header-thumb {
   background-color: #FFFFFF;
   float: left;
   width: calc(25% - 6px) !important;
+  min-height: 233px;
 }
 .group-container .group-calendar-container .calender-year-view .view-tile-area .month-tiles .month-tile:nth-child(4), .group-container .group-calendar-container .calender-year-view .view-tile-area .month-tiles .month-tile :nth-child(8), .group-container .group-calendar-container .calender-year-view .view-tile-area .month-tiles .month-tile :nth-child(12) {
   margin-right: 0px !important;
@@ -15611,6 +15609,7 @@ header .notification-holder .profile-header-thumb {
   padding-bottom: 3px;
 }
 .group-container .group-calendar-container .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar div.week .day {
+  min-height: 10px;
   margin-top: 4px;
   padding: 6px 0 0px 0 !important;
   border: none !important;
@@ -16089,10 +16088,14 @@ header .notification-holder .profile-header-thumb {
   color: #000000;
   font-size: 0.480625em;
 }
-.group-container .group-calendar-container .calender-month-view .view-tile-area .calender-box .week .day .event-area li.event:before {
+.group-container .group-calendar-container .calender-month-view .view-tile-area .calender-box .week .day .event-area li.color-1:before {
+  margin-top: 2px;
+  font-size: 5px;
   color: #00a6ef !important;
 }
-.group-container .group-calendar-container .calender-month-view .view-tile-area .calender-box .week .day .event-area li.task:before {
+.group-container .group-calendar-container .calender-month-view .view-tile-area .calender-box .week .day .event-area li.color-3:before {
+  margin-top: 2px;
+  font-size: 5px;
   color: #ff0000 !important;
 }
 .group-container .group-calendar-container .calender-month-view .view-tile-area .calender-box .week.names .day-names {

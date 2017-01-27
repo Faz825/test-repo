@@ -709,22 +709,17 @@ export default class DayView extends Component {
                             </div>
                             <div className={"row " + _class + "-list-area"}>
                                 <div className="col-sm-12">
-                                    <div className={_class+ "-list-area-content"}>
-                                        <div className={_class+ "-list-area-content-title"}>
+                                    <div className={_class + "-list-area-content"}>
+                                        <div className={_class + "-list-area-content-title"}>
                                             {(this.isGroupCall) ?
                                             <span><img src="/images/calender/icon-to-do.png" />  <span>Tasks</span> </span>:
                                             <span><img src="/images/calender/icon-to-do.png" /><span>To-Do	&rsquo;s</span></span> }
 
                                         </div>
-                                        <div className="to-do-list-area-content-title-hr"></div>
+                                        <div className={_class+ "-list-area-content-title-hr"}></div>
                                         {
                                             (this.isGroupCall) ?
-                                        <DayTodosList
-                                            events={this.state.events}
-                                            onClickItem={this.markTodo.bind(this)}
-                                            clickEdit={this.clickEdit.bind(this)}
-                                            selectedEvent={this.selectedEvent}
-                                            delete={this.openModal.bind(this)} /> :
+                                        null :
 
                                         <DayTodosList
                                             events={this.state.events}

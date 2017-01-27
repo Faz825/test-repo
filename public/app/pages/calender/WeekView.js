@@ -344,7 +344,7 @@ export class DailyEvents extends React.Component {
                         </div>
                     </div>
                     :
-                    <div className="content-wrapper tasks">
+                    <div className="content-wrapper task">
                         <div className="header-wrapper">
                             <img src="/images/calender/icon-to-do.png"/>
                             <p>Tasks</p>
