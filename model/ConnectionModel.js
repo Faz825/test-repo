@@ -18,6 +18,11 @@ GLOBAL.ConnectionStatus ={
 
 };
 
+GLOBAL.ConnectedType ={
+    PERSONAL_CONNECTION: 1,
+    GROUP_CONNECTION: 2
+};
+
 GLOBAL.ConnectionConfig ={
     CACHE_NAME:"connections:",
     ES_INDEX_NAME:"idx_connections:"
@@ -35,7 +40,8 @@ var ConnectionSchema = new Schema({
     },
     connected_with_type:{
         type:Number,
-        required:true
+        required:true,
+        default: ConnectedType.PERSONAL_CONNECTION
     },
     status:{
         type:Number,
@@ -54,6 +60,28 @@ var ConnectionSchema = new Schema({
     }
 
 },{collection:"connections"});
+
+/**
+ * Create a new connection
+ * @param connectionData an Object of this
+ */
+ConnectionSchema.statics.createConnection = function (connectionData, callBack) {
+
+    connectionData.save(function (err, resultSet) {
+        if (!err) {
+            callBack({
+                status: 200,
+                connection: {
+                    id: resultSet._id,
+                }
+            });
+        } else {
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status: 400, error: err});
+        }
+    });
+};
 
 ConnectionSchema.statics.sendConnectionRequest=function(user_id,connected_users,unconnected_users,callBack){
     var _connected_users =[],now = new Date(), _this = this,_async = require('async');
