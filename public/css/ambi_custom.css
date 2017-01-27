@@ -859,7 +859,8 @@ footer .notification-alert-holder.slideOut{
 }
 
 .popup-holder .active-call-container .participants{
-  height: 113px;
+    height: 100px;
+    margin: 20px 0 0;
 }
 
 .callModelMinimized{
@@ -884,18 +885,6 @@ footer .notification-alert-holder.slideOut{
 
 .callModelMinimized .opt-wrapper .fa:last-child{
   margin: 0;
-}
-
-.call-center-inner-holder .cc-online-status-popup{
-  position: absolute;
-  top: 34px;
-  left: 71px;
-  z-index: 1;
-  width: 135px;
-}
-
-.call-center-container .user-status .user-mode{
-  cursor: pointer;
 }
 
 /* Model overlay is overlaping */

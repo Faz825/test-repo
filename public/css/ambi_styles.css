@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,6 +1418,7 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3118,6 +3119,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3670,6 +3672,7 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10246,13 +10249,13 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/*
+/* 
 	Method to use:
 	@include @border {
 		border ($style,  $sides, $emptySides){
 	}
 */
-/*
+/* 
 	Method to use:
 	@include @mixin {
 		content
@@ -10614,6 +10617,7 @@ header .notification-holder .profile-header-thumb {
   margin-right: 15px;
   overflow: hidden;
   border-radius: 5px;
+  background: #fff;
   box-shadow: 1px 0 12px -8px #000000;
 }
 .folder-container .folder-body .folder .folder-wrapper .drag-shader {
@@ -10622,14 +10626,11 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 {
   position: relative;
   z-index: 1;
-  padding-left: 0px;
-  padding-right: 7px;
+  padding-left: 0;
+  padding-right: 0;
+  width: 15.766667%;
   background-color: #ffffff;
   border-radius: 8px 0px 0px 8px;
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper {
-  position: relative;
-  background-color: #ffffff;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay {
   position: absolute;
@@ -10654,7 +10655,6 @@ header .notification-holder .profile-header-thumb {
   z-index: 2;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover {
-  position: relative;
   overflow: hidden;
   height: 208px;
   z-index: 1;
@@ -10738,10 +10738,11 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 {
   position: relative;
   z-index: 0;
+  padding-right: 0;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper {
   position: relative;
-  padding: 0px 12px 0px 14px;
+  padding: 0px 12px 0px 24px;
   overflow: hidden;
   background-color: #ffffff;
   height: 208px;
@@ -10871,7 +10872,12 @@ header .notification-holder .profile-header-thumb {
   color: #00a5ef;
 }
 .folder-container .folder-body .folder.see-all .folder-wrapper {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
   display: flex;
+  flex-wrap: wrap;
 }
 .folder-container .folder-body .folder.see-all .folder-wrapper .drag-shader .drag-title {
   margin-top: 19% !important;
@@ -10891,7 +10897,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
   height: auto;
 }
-.folder-container .folder-body .folder.pink .folder-cover {
+.folder-container .folder-body .folder.pink .col-sm-2 {
   background-color: #ed0677;
 }
 .folder-container .folder-body .folder.pink .upload-file {
@@ -10900,7 +10906,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.pink .upload-file p, .folder-container .folder-body .folder.pink .upload-file i {
   color: #ed0677 !important;
 }
-.folder-container .folder-body .folder.light-blue .folder-cover {
+.folder-container .folder-body .folder.light-blue .col-sm-2 {
   background-color: #1b9ed9;
 }
 .folder-container .folder-body .folder.light-blue .upload-file {
@@ -10909,7 +10915,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.light-blue .upload-file p, .folder-container .folder-body .folder.light-blue .upload-file i {
   color: #1b9ed9 !important;
 }
-.folder-container .folder-body .folder.light-green .folder-cover {
+.folder-container .folder-body .folder.light-green .col-sm-2 {
   background-color: #a2c73e;
 }
 .folder-container .folder-body .folder.light-green .upload-file {
@@ -10918,7 +10924,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.light-green .upload-file p, .folder-container .folder-body .folder.light-green .upload-file i {
   color: #a2c73e !important;
 }
-.folder-container .folder-body .folder.red .folder-cover {
+.folder-container .folder-body .folder.red .col-sm-2 {
   background-color: #b01d5a;
 }
 .folder-container .folder-body .folder.red .upload-file {
@@ -10927,7 +10933,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.red .upload-file p, .folder-container .folder-body .folder.red .upload-file i {
   color: #b01d5a !important;
 }
-.folder-container .folder-body .folder.dark-blue .folder-cover {
+.folder-container .folder-body .folder.dark-blue .col-sm-2 {
   background-color: #091652;
 }
 .folder-container .folder-body .folder.dark-blue .upload-file {
@@ -10936,7 +10942,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.dark-blue .upload-file p, .folder-container .folder-body .folder.dark-blue .upload-file i {
   color: #091652 !important;
 }
-.folder-container .folder-body .folder.gray .folder-cover {
+.folder-container .folder-body .folder.gray .col-sm-2 {
   background-color: #bbbdbe;
 }
 .folder-container .folder-body .folder.gray .upload-file {
@@ -10945,7 +10951,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.gray .upload-file p, .folder-container .folder-body .folder.gray .upload-file i {
   color: #bbbdbe !important;
 }
-.folder-container .folder-body .folder.dark-green .folder-cover {
+.folder-container .folder-body .folder.dark-green .col-sm-2 {
   background-color: #067d41;
 }
 .folder-container .folder-body .folder.dark-green .upload-file {
@@ -12792,23 +12798,24 @@ header .notification-holder .profile-header-thumb {
   height: 40px;
   border-radius: 100%;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode {
   position: absolute;
   bottom: 0px;
   right: 0px;
   width: 13px;
+  cursor: pointer;
   height: 13px;
   border-radius: 100%;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.online {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode.online {
   background-color: #63c66c;
   border: 3px solid #ffffff;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.work-mode {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode.work-mode {
   background-color: #de2424;
   border: 3px solid #ffffff;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.offline {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode.offline {
   background-color: #ffffff;
   border: 2px solid #6ac374;
 }
@@ -12873,6 +12880,67 @@ header .notification-holder .profile-header-thumb {
 }
 .call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4.active .selector {
   background-color: #00a5ef;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup {
+  position: absolute;
+  top: 34px;
+  left: 71px;
+  z-index: 1;
+  width: 135px;
+  overflow: hidden;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px 2px #ebeff1;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type {
+  margin-top: 1px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type:first-child {
+  margin-top: 9px;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type:hover {
+  background-color: #00a5ef;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type:hover .type {
+  color: #ffffff;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status {
+  margin-top: 5px;
+  margin-left: 11px;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  float: left;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status.online {
+  background-color: #63c66c;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status.work-mode {
+  background-color: #de2424;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status.offline {
+  background-color: #ffffff;
+  border: 2px solid #6ac374;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .type {
+  margin-top: 1px;
+  margin-bottom: 2px;
+  margin-left: 8px;
+  float: left;
+  font-size: 0.75em;
+  color: #464646;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .mood-msg {
+  border-top: 1px solid #dee6eb;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .mood-msg p {
+  margin: 2px 0 6px 10px;
+  font-size: 0.75em;
+  color: #464646;
 }
 .call-center-container .call-center-inner-holder .contacts-list .contact-group {
   margin-top: 7px;
@@ -13054,17 +13122,18 @@ header .notification-holder .profile-header-thumb {
   border-radius: 100%;
   background-color: #ffffff;
   outline: none;
+  padding: 0;
 }
 .call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.video {
   margin-right: 16px;
 }
 .call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.video img {
-  margin-top: -3px;
+  margin: -3px auto 0;
   width: 15px;
   height: 10px;
 }
 .call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.phone img {
-  margin-top: -3px;
+  margin: -3px auto 0;
   width: 13px;
   height: 13px;
 }
@@ -13778,6 +13847,7 @@ header .notification-holder .profile-header-thumb {
   margin-right: 15px;
   overflow: hidden;
   border-radius: 5px;
+  background: #fff;
   box-shadow: 1px 0 12px -8px #000000;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .drag-shader {
@@ -13786,14 +13856,11 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 {
   position: relative;
   z-index: 1;
-  padding-left: 0px;
-  padding-right: 7px;
+  padding-left: 0;
+  padding-right: 0;
+  width: 15.766667%;
   background-color: #ffffff;
   border-radius: 8px 0px 0px 8px;
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper {
-  position: relative;
-  background-color: #ffffff;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay {
   position: absolute;
@@ -13818,7 +13885,6 @@ header .notification-holder .profile-header-thumb {
   z-index: 2;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover {
-  position: relative;
   overflow: hidden;
   height: 208px;
   z-index: 1;
@@ -13902,10 +13968,11 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 {
   position: relative;
   z-index: 0;
+  padding-right: 0;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper {
   position: relative;
-  padding: 0px 12px 0px 14px;
+  padding: 0px 12px 0px 24px;
   overflow: hidden;
   background-color: #ffffff;
   height: 208px;
@@ -14035,7 +14102,12 @@ header .notification-holder .profile-header-thumb {
   color: #00a5ef;
 }
 .group-container .group-folder-container .folder-body .folder.see-all .folder-wrapper {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
   display: flex;
+  flex-wrap: wrap;
 }
 .group-container .group-folder-container .folder-body .folder.see-all .folder-wrapper .drag-shader .drag-title {
   margin-top: 19% !important;
@@ -14055,7 +14127,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
   height: auto;
 }
-.group-container .group-folder-container .folder-body .folder.pink .folder-cover {
+.group-container .group-folder-container .folder-body .folder.pink .col-sm-2 {
   background-color: #ed0677;
 }
 .group-container .group-folder-container .folder-body .folder.pink .upload-file {
@@ -14064,7 +14136,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.pink .upload-file p, .group-container .group-folder-container .folder-body .folder.pink .upload-file i {
   color: #ed0677 !important;
 }
-.group-container .group-folder-container .folder-body .folder.light-blue .folder-cover {
+.group-container .group-folder-container .folder-body .folder.light-blue .col-sm-2 {
   background-color: #1b9ed9;
 }
 .group-container .group-folder-container .folder-body .folder.light-blue .upload-file {
@@ -14073,7 +14145,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.light-blue .upload-file p, .group-container .group-folder-container .folder-body .folder.light-blue .upload-file i {
   color: #1b9ed9 !important;
 }
-.group-container .group-folder-container .folder-body .folder.light-green .folder-cover {
+.group-container .group-folder-container .folder-body .folder.light-green .col-sm-2 {
   background-color: #a2c73e;
 }
 .group-container .group-folder-container .folder-body .folder.light-green .upload-file {
@@ -14082,7 +14154,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.light-green .upload-file p, .group-container .group-folder-container .folder-body .folder.light-green .upload-file i {
   color: #a2c73e !important;
 }
-.group-container .group-folder-container .folder-body .folder.red .folder-cover {
+.group-container .group-folder-container .folder-body .folder.red .col-sm-2 {
   background-color: #b01d5a;
 }
 .group-container .group-folder-container .folder-body .folder.red .upload-file {
@@ -14091,7 +14163,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.red .upload-file p, .group-container .group-folder-container .folder-body .folder.red .upload-file i {
   color: #b01d5a !important;
 }
-.group-container .group-folder-container .folder-body .folder.dark-blue .folder-cover {
+.group-container .group-folder-container .folder-body .folder.dark-blue .col-sm-2 {
   background-color: #091652;
 }
 .group-container .group-folder-container .folder-body .folder.dark-blue .upload-file {
@@ -14100,7 +14172,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.dark-blue .upload-file p, .group-container .group-folder-container .folder-body .folder.dark-blue .upload-file i {
   color: #091652 !important;
 }
-.group-container .group-folder-container .folder-body .folder.gray .folder-cover {
+.group-container .group-folder-container .folder-body .folder.gray .col-sm-2 {
   background-color: #bbbdbe;
 }
 .group-container .group-folder-container .folder-body .folder.gray .upload-file {
@@ -14109,7 +14181,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.gray .upload-file p, .group-container .group-folder-container .folder-body .folder.gray .upload-file i {
   color: #bbbdbe !important;
 }
-.group-container .group-folder-container .folder-body .folder.dark-green .folder-cover {
+.group-container .group-folder-container .folder-body .folder.dark-green .col-sm-2 {
   background-color: #067d41;
 }
 .group-container .group-folder-container .folder-body .folder.dark-green .upload-file {
@@ -17082,62 +17154,6 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .create-folder-popup .folder-footer .action-bar .btn-add-folder:hover {
   background-color: #0093db;
 }
-.popup-holder .cc-online-status-popup {
-  overflow: hidden;
-  background-color: #f7f7f7;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px 2px #ebeff1;
-}
-.popup-holder .cc-online-status-popup .status-type {
-  margin-top: 1px;
-  overflow: hidden;
-  cursor: pointer;
-}
-.popup-holder .cc-online-status-popup .status-type:first-child {
-  margin-top: 9px;
-}
-.popup-holder .cc-online-status-popup .status-type:hover {
-  background-color: #00a5ef;
-}
-.popup-holder .cc-online-status-popup .status-type:hover .type {
-  color: #ffffff;
-}
-.popup-holder .cc-online-status-popup .status-type .status {
-  margin-top: 5px;
-  margin-left: 11px;
-  width: 10px;
-  height: 10px;
-  border-radius: 100%;
-  float: left;
-}
-.popup-holder .cc-online-status-popup .status-type .status.online {
-  background-color: #63c66c;
-  border: 3px solid #ffffff;
-}
-.popup-holder .cc-online-status-popup .status-type .status.work-mode {
-  background-color: #de2424;
-  border: 3px solid #ffffff;
-}
-.popup-holder .cc-online-status-popup .status-type .status.offline {
-  background-color: #ffffff;
-  border: 2px solid #6ac374;
-}
-.popup-holder .cc-online-status-popup .status-type .type {
-  margin-top: 1px;
-  margin-bottom: 2px;
-  margin-left: 8px;
-  float: left;
-  font-size: 0.75em;
-  color: #464646;
-}
-.popup-holder .cc-online-status-popup .mood-msg {
-  border-top: 1px solid #dee6eb;
-}
-.popup-holder .cc-online-status-popup .mood-msg p {
-  margin: 2px 0 6px 10px;
-  font-size: 0.75em;
-  color: #464646;
-}
 .popup-holder .share-folder-popup {
   position: relative;
   margin: 0px -10px;
@@ -17497,8 +17513,8 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .active-call-container .participants .user-block {
   position: relative;
   margin-right: 6px;
-  width: 118px;
-  height: 76px;
+  width: 105px;
+  height: 75px;
   border-radius: 8px;
   display: inline-block;
   border: 3px solid #ffffff;
