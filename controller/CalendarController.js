@@ -147,9 +147,11 @@ var CalendarController = {
                     event_time: req.body.event_time,
                     event_timezone: req.body.event_timezone,
                     shared_users: sharedUserList,
-                    priority:  (typeof req.body.priority != 'undefined' ? req.body.priority : CalenderPriority.LOW)
+                    priority:  (typeof req.body.priority != 'undefined' ? req.body.priority : CalenderPriority.LOW),
+                    event_type : req.body.event_type
                 };
-
+                console.log(eventData);
+                console.log("EVENT DATA");
                 CalendarEvent.addNew(eventData, function (event) {
 
                     var sharedUsers = event.event.shared_users;
@@ -966,13 +968,14 @@ var CalendarController = {
         var CalendarEvent = require('mongoose').model('CalendarEvent');
         var moment = require('moment');
         var day = req.body.day;
+        var eventType = typeof(req.body.event_type) != 'undefined' ? req.body.event_type : 1; // PRESONAL_EVENT || GROUP_EVENT
         var _Events = [];
 
         var user_id = Util.toObjectId(CurrentSession.id);
         var startTimeOfDay = moment(day, 'YYYY-MM-DD').format('YYYY-MM-DD'); //format the given date as mongo date object
         var endTimeOfDay = moment(day, 'YYYY-MM-DD').add(1, "day").format('YYYY-MM-DD'); //get the next day of given date
         var _async = require('async');
-        var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, user_id: user_id};
+        var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, user_id: user_id, event_type: eventType};
 
         _async.waterfall([
 
@@ -1017,9 +1020,9 @@ var CalendarController = {
                                             _async.each(resultSet.events, function (result, callBack) {
                                                 var _Shared_users = result.shared_users;
                                                 if(_Shared_users != null && typeof _Shared_users != 'undefined'){
-                                                    
+
                                                     for(var inc = 0; inc < _Shared_users.length; inc++){
-                                                        
+
                                                         if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING || _Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
 
                                                             _async.waterfall([

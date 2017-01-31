@@ -79,7 +79,7 @@ var CalendarEventSchema = new Schema({
 
     event_type : {
         type : Number, /* 1- PERSONAL_EVENT | 2 - GROUP_EVENT */
-        default : 1
+        default : CalenderEventType.PERSONAL_EVENT
     },
 
     start_date_time : {
