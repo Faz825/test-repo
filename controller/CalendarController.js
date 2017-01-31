@@ -148,7 +148,8 @@ var CalendarController = {
                     event_timezone: req.body.event_timezone,
                     shared_users: sharedUserList,
                     priority:  (typeof req.body.priority != 'undefined' ? req.body.priority : CalenderPriority.LOW),
-                    event_type : req.body.event_type
+                    calendar_origin : req.body.calendar_origin,
+                    group_id : req.body.group_id
                 };
                 console.log(eventData);
                 console.log("EVENT DATA");
@@ -968,14 +969,17 @@ var CalendarController = {
         var CalendarEvent = require('mongoose').model('CalendarEvent');
         var moment = require('moment');
         var day = req.body.day;
-        var eventType = typeof(req.body.event_type) != 'undefined' ? req.body.event_type : 1; // PRESONAL_EVENT || GROUP_EVENT
+        var calendar_origin = typeof(req.body.calendar_origin) != 'undefined' ? req.body.calendar_origin : 1; // PRESONAL_CALENDAR || GROUP_CALENDAR
         var _Events = [];
 
         var user_id = Util.toObjectId(CurrentSession.id);
         var startTimeOfDay = moment(day, 'YYYY-MM-DD').format('YYYY-MM-DD'); //format the given date as mongo date object
         var endTimeOfDay = moment(day, 'YYYY-MM-DD').add(1, "day").format('YYYY-MM-DD'); //get the next day of given date
         var _async = require('async');
-        var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, user_id: user_id, event_type: eventType};
+        var criteria =  { start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay }, user_id: user_id, calendar_origin: calendar_origin};
+        if(calendar_origin == CalendarOrigin.GROUP_CALENDAR) {
+            criteria['group_id'] = req.body.group_id;
+        }
 
         _async.waterfall([
 
@@ -1073,6 +1077,48 @@ var CalendarController = {
                             callBack(null, _Events);
                         }
 
+                    },
+                    function getMyGroupEvents(resultSet, callBack) {
+
+                        if(calendar_origin == CalendarOrigin.GROUP_CALENDAR) {
+                            callBack(null, _Events);
+                        } else {
+
+                            var query={
+                                q:"status:3", // accepted
+                                index:'idx_connections:'+user_id
+                            };
+
+                            ES.search(query,function(groupIndexes){
+                                if(groupIndexes != null && groupIndexes.result_count > 0) {
+                                    var i = 0;
+                                    var arrEvents = [];
+                                    groupIndexes.result.forEach(function(group) {
+
+                                        var criteria = {
+                                            start_date_time: {$gte: startTimeOfDay, $lt: endTimeOfDay },
+                                            group_id: group._id
+                                        };
+
+                                        CalendarEvent.getSortedCalenderItems(criteria, function (err, resultSet) {
+
+                                            if(err) {
+                                                callBack(null, null);
+                                            } else {
+                                                Array.prototype.push.apply(_Events, resultSet.events); // this trick is for merging two arrays. Can't use concat becase concat creates a new array
+                                                i = i+1;
+                                                if(i == groupIndexes.result_count) {
+                                                    callBack(null, _Events);
+                                                }
+                                            }
+
+                                        });
+                                    });
+                                } else {
+                                    callBack(null, _Events);
+                                }
+                            });
+                        }
                     }
                 ], function (err, _Events) {
                     callBack(null, _Events);
@@ -1098,11 +1144,13 @@ var CalendarController = {
                 if (events.length == 0) {
                     callBack(null, []);
                 }
-
+                
                 for (var e = 0; e < events.length; e++) {
 
                     var event = events[e];
-                    var sharedUsers = event.shared_users;
+
+                    // console.log("event ====");
+                    var sharedUsers = (event.shared_users) ? event.shared_users : [];
 
                     if (sharedUsers.length == 0) {
                         if (e + 1 == (events.length)) {

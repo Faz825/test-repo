@@ -34,7 +34,7 @@ export default class Index extends React.Component {
         this.loadDayView = this.loadDayView.bind(this);
         this.loadMonthView = this.loadMonthView.bind(this);
 
-        this.calenderType = 2;// 1 - PERSONAL_CALENDAR, 2 - GROUP_CALENDAR
+        this.calendarOrigin = 2;// 1 - PERSONAL_CALENDAR, 2 - GROUP_CALENDAR
     }
 
     componentWillReceiveProps(nextProps) {
@@ -85,14 +85,18 @@ export default class Index extends React.Component {
                 return (<WeekView isGroupCall={true} groupCall={groupCall}/>);
                 return (<WeekView isGroupCall={true}/>);
             case 'day':
-                return (<DayView calenderType={this.calenderType} dayDate={this.state.dayViewDate} selectedEvent={null}/>);
+                return (<DayView
+                    groupId={this.state.group._id}
+                    calendarOrigin={this.calendarOrigin}
+                    dayDate={this.state.dayViewDate}
+                    selectedEvent={null}/>);
             case 'month':
                 return (<MonthView isGroupCall={true} ref="MonthViewComponent" selected={this.state.monthViewDate}
                                    setDayView={true.loadDayView}/>);
             case 'year':
                 return (<YearView isGroupCall={true} setMonthView={this.loadMonthView.bind(this)}/>);
             default:
-                return (<DayView calenderType={this.calenderType} isGroupCall={true} viewType={"group_calendar"} dayDate={this.state.dayViewDate} user={user}/>);
+                return (<DayView calendarOrigin={this.calendarOrigin} isGroupCall={true} viewType={"group_calendar"} dayDate={this.state.dayViewDate} user={user}/>);
         }
     }
 

@@ -94,11 +94,18 @@ export default class DayView extends Component {
     }
 
     loadEvents() {
+        var data = {
+            day : this.currentDay,
+            calendar_origin : this.props.calendarOrigin, // PERSONAL_CALENDAR || GROUP_CALENDAR
+        };
+        if(this.props.calendarOrigin == 2) {
+            data['group_id'] = this.props.groupId
+        }
 
         $.ajax({
             url : '/calendar/day/all',
             method : "POST",
-            data : { day : this.currentDay },
+            data : data,
             dataType : "JSON",
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
@@ -174,7 +181,8 @@ export default class DayView extends Component {
             event_time : strTime,
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
-            event_type : this.props.calenderType
+            calendar_origin : this.props.calendarOrigin,
+            group_id : (this.props.calendarOrigin == 2) ? this.props.groupId : null // Only group calendar have group id
         };
 
         // the button dissabled untill the response comes
@@ -529,7 +537,7 @@ export default class DayView extends Component {
     render() {
 
         let shared_with_list = [];
-        let _class = (this.props.calenderType == 2) ? "task" : "to-do";
+        let _class = (this.props.calendarOrigin == 2) ? "task" : "to-do";
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
                 return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
@@ -665,7 +673,7 @@ export default class DayView extends Component {
                                                             >
                                                             <i className="fa fa-calendar" aria-hidden="true"></i> Event
                                                         </button>
-                                                        {(this.props.calenderType == 2) ?
+                                                        {(this.props.calendarOrigin == 2) ?
                                                             <button type="button"
                                                                     className={"menu-ico-group btn task " + (this.state.defaultType == 'task' ? "active" : null)}
                                                                     eventType="task"
@@ -721,7 +729,7 @@ export default class DayView extends Component {
                                 <div className="col-sm-12">
                                     <div className={_class + "-list-area-content"}>
                                         <div className={_class + "-list-area-content-title"}>
-                                            {(this.props.calenderType == 2) ?
+                                            {(this.props.calendarOrigin == 2) ?
                                                 <span><img src="/images/calender/icon-to-do.png" />  <span>Tasks</span> </span>
                                             :
                                                 <span><img src="/images/calender/icon-to-do.png" /><span>To-Do	&rsquo;s</span></span>
@@ -729,7 +737,7 @@ export default class DayView extends Component {
 
                                         </div>
                                         <div className={_class+ "-list-area-content-title-hr"}></div>
-                                        {(this.props.calenderType == 2) ?
+                                        {(this.props.calendarOrigin == 2) ?
                                             null
                                         :
                                             <DayTodosList
