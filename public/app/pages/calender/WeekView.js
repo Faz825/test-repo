@@ -93,9 +93,7 @@ export default class WeekView extends React.Component {
 
         let postData = {
             start_date:week_start,
-            end_date:week_end,
-            isGroupCall:this.props.isGroupCall,
-            groupId:this.state.groupCall.groupId
+            end_date:week_end
         };
 
         this.currentWeek = curWeekOfMonth;
@@ -114,9 +112,7 @@ export default class WeekView extends React.Component {
 
         let postData = {
             start_date:week_start,
-            end_date:week_end,
-            isGroupCall:this.props.isGroupCall,
-            groupId:this.state.groupCall.groupId
+            end_date:week_end
         };
 
         this.currentWeek = curWeekOfMonth;
@@ -127,6 +123,12 @@ export default class WeekView extends React.Component {
     }
 
     processDataCall(postData) {
+
+        if(this.state.groupCall.isGroupCall){
+            postData['isGroupCall'] = this.state.groupCall.isGroupCall;
+            postData['groupId'] = this.state.groupCall.groupId;
+        }
+
         $.ajax({
             url: '/calendar/events/date_range',
             method: "GET",
@@ -165,7 +167,7 @@ export default class WeekView extends React.Component {
                             </div>
                         </div>
 
-                        <WeekDays week_startDt={this.state.weekStartDate} events={this.state.events} loadData={this.processDataCall.bind(this)} isGroupCall={this.props.isGroupCall}/>
+                        <WeekDays week_startDt={this.state.weekStartDate} events={this.state.events} loadData={this.processDataCall.bind(this)} isGroupCall={this.state.groupCall.isGroupCall}/>
 
                     </div>
                 </div>
