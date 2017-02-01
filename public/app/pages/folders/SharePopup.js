@@ -158,7 +158,7 @@ export default class SharePopup extends React.Component{
         let ownerName = this.state.owner.first_name;
 
         let i = (
-            <Popover id="popover-contained" className="share-folder-popover add-new-user" style={{maxWidth: "280px", width: "280px", marginTop: "6.2%", marginLeft: "20%"}}>
+            <Popover id="popover-contained" className="share-folder-popover add-new-user" style={{maxWidth: "280px", width: "280px", marginTop: "6.2%", marginLeft: "20%", boxShadow: "none"}}>
                 <SharePopupNewUsr  folderData={_folderData}/>
             </Popover>
         );
@@ -238,7 +238,7 @@ export default class SharePopup extends React.Component{
                         <div className="row">
                             <div className="col-sm-12">
                                 <div className="search-people-wrapper">
-                                    <i className="fa fa-search" aria-hidden="true"></i>
+                                    <span className="input-ico"></span>
                                     <input className="form-control search-people" type="text" placeholder="Search" onChange={(event)=>this.filterSharedUsers(_folderData.folder_id, event)}/>
                                 </div>
                             </div>
@@ -279,7 +279,7 @@ export default class SharePopup extends React.Component{
                                 {
                                     (!this.state.seeAllSharedUsers && this.state.sharedUsers.length > 2) ?
                                         <div onClick={this.allSharedUsers.bind(this)}>
-                                            <i className="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                            <span className="see-all-ico"></span>
                                             <p>See All</p>
                                         </div> : null
                                 }
@@ -289,7 +289,7 @@ export default class SharePopup extends React.Component{
                                 (_folderData.owned_by == 'me')?
                                     <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
                                         <p className="add-people">
-                                            <i className="fa fa-plus"></i> Add more
+                                            + Add more
                                         </p>
                                     </OverlayTrigger> : null
                             }
@@ -451,7 +451,7 @@ export class SharePopupNewUsr extends React.Component{
             <div className="popup-holder" >
                 <section className="share-folder-add-people-popup">
                     <div className="input-wrapper">
-                        <i className="fa fa-search"></i>
+                        <span className="input-ico"></span>
                         <input type="text" className="form-control" placeholder="Type name" onChange={this._handleAddNewUser}/>
                     </div>
                     {_newUserList}
