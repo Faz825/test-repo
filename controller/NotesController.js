@@ -98,8 +98,12 @@ var NotesController ={
 
                                 Groups.getGroupDataFiltered(group_criteria, filter, function (r) {
 
-                                    _push_status.status = r[0].members[0].status;
+                                    if( r.status == 200 && r.data != 'undefined' && r.data.length > 0) {
+                                        _push_status.status = r.data[0].members[0].status;
+                                    }
+
                                     callBack(null);
+
 
                                 });
                             }else {
@@ -326,7 +330,9 @@ var NotesController ={
 
                                     Groups.getGroupDataFiltered(group_criteria, filter, function (r) {
 
-                                       _push_status.status = r[0].members[0].status;
+                                        if( r.status == 200 && r.data != 'undefined' && r.data.length > 0) {
+                                            _push_status.status = r.data[0].members[0].status;
+                                        }
                                         callBack(null, resultSet);
 
                                     });

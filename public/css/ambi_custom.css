@@ -892,8 +892,21 @@ body .modal-backdrop{
   display: none;
 }
 
+.share-popover-contained, .share-popover-contained .popup-holder, .share-folder-popover, .share-folder-popover .popover-content{
+    border: transparent ;
+    background: transparent;
+}
+
+.share-popover-contained .arrow {
+    display: none;
+}
+
 .share-popover-contained.callpopup .arrow{
   top: 28px !important;
+}
+
+.share-popover-contained .popover-content{
+    padding: 0;
 }
 
 .share-popover-contained.callpopup .popover-content{

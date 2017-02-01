@@ -33,6 +33,8 @@ export default class Index extends React.Component {
         this.relativeView = this.relativeView.bind(this);
         this.loadDayView = this.loadDayView.bind(this);
         this.loadMonthView = this.loadMonthView.bind(this);
+
+        this.calendarOrigin = 2;// 1 - PERSONAL_CALENDAR, 2 - GROUP_CALENDAR
     }
 
     componentWillReceiveProps(nextProps) {
@@ -83,14 +85,18 @@ export default class Index extends React.Component {
                 return (<WeekView isGroupCall={true} groupCall={groupCall}/>);
                 return (<WeekView isGroupCall={true}/>);
             case 'day':
-                return (<DayView isGroupCall={true} dayDate={this.state.dayViewDate} selectedEvent={null}/>);
+                return (<DayView
+                    groupId={this.state.group._id}
+                    calendarOrigin={this.calendarOrigin}
+                    dayDate={this.state.dayViewDate}
+                    selectedEvent={null}/>);
             case 'month':
                 return (<MonthView isGroupCall={true} ref="MonthViewComponent" selected={this.state.monthViewDate}
                                    setDayView={true.loadDayView}/>);
             case 'year':
                 return (<YearView isGroupCall={true} setMonthView={this.loadMonthView.bind(this)}/>);
             default:
-                return (<DayView isGroupCall={true} viewType={"group_calendar"} dayDate={this.state.dayViewDate} user={user}/>);
+                return (<DayView calendarOrigin={this.calendarOrigin} isGroupCall={true} viewType={"group_calendar"} dayDate={this.state.dayViewDate} user={user}/>);
         }
     }
 
@@ -111,46 +117,44 @@ export default class Index extends React.Component {
         return (
             <section className="group-content">
                 <div className="group-calendar-container">
-                    <div className="container">
-                        <section className="calender-header">
-                            <div className="col-sm-3">
-                                <h2>Calendar</h2>
-                            </div>
-                            <div className="col-sm-6 calender-tab-holder">
-                                <div className="inner-wrapper clearfix">
-                                    <div
-                                        className={ this.state.current == 'day' ? 'calender-type active' : 'calender-type'}
-                                        view="day" onClick={() => this.setView('day')}>
-                                        <h4>Day</h4>
-                                    </div>
-                                    <div
-                                        className={ this.state.current == 'week' ? 'calender-type active' : 'calender-type'}
-                                        view="week" onClick={() => this.setView('week')}>
-                                        <h4>Week</h4>
-                                    </div>
-                                    <div
-                                        className={ this.state.current == 'month' ? 'calender-type active' : 'calender-type'}
-                                        view="month" onClick={() => this.setView('month')}>
-                                        <h4>Month</h4>
-                                    </div>
-                                    <div
-                                        className={ this.state.current == 'year' ? 'calender-type active' : 'calender-type'}
-                                        view="year" onClick={() => this.setView('year')}>
-                                        <h4>Year</h4>
-                                    </div>
+                    <section className="calender-header row">
+                        <div className="col-sm-3">
+                            <h2>Calendar</h2>
+                        </div>
+                        <div className="col-sm-6 calender-tab-holder">
+                            <div className="inner-wrapper clearfix">
+                                <div
+                                    className={ this.state.current == 'day' ? 'calender-type active' : 'calender-type'}
+                                    view="day" onClick={() => this.setView('day')}>
+                                    <h4>Day</h4>
+                                </div>
+                                <div
+                                    className={ this.state.current == 'week' ? 'calender-type active' : 'calender-type'}
+                                    view="week" onClick={() => this.setView('week')}>
+                                    <h4>Week</h4>
+                                </div>
+                                <div
+                                    className={ this.state.current == 'month' ? 'calender-type active' : 'calender-type'}
+                                    view="month" onClick={() => this.setView('month')}>
+                                    <h4>Month</h4>
+                                </div>
+                                <div
+                                    className={ this.state.current == 'year' ? 'calender-type active' : 'calender-type'}
+                                    view="year" onClick={() => this.setView('year')}>
+                                    <h4>Year</h4>
                                 </div>
                             </div>
-                            <div className="col-sm-3">
-                                <div className="search-folder">
-                                    <span className="inner-addon">
-                                        <i className="fa fa-search"></i>
-                                        <input type="text" className="form-control" placeholder="Search"/>
-                                    </span>
-                                </div>
+                        </div>
+                        <div className="col-sm-3">
+                            <div className="search-folder">
+                                <span className="inner-addon">
+                                    <i className="fa fa-search"></i>
+                                    <input type="text" className="form-control" placeholder="Search"/>
+                                </span>
                             </div>
-                        </section>
-                        {this.relativeView()}
-                    </div>
+                        </div>
+                    </section>
+                    {this.relativeView()}
                 </div>
             </section>
         );

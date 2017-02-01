@@ -276,12 +276,7 @@ GroupsSchema.statics.getGroupDataFiltered = function(criteria,filter,callBack){
 
     _this.find(criteria , filter).exec(function (err, resultSet) {
         if (!err) {
-            if (resultSet == null) {
-                callBack(null);
-                return;
-            }
-
-            callBack(resultSet);
+            callBack({status: 200, data: resultSet});
         } else {
             console.log(err)
             callBack({status: 400, error: err})

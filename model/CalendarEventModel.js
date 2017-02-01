@@ -36,9 +36,9 @@ GLOBAL.CalenderPriority = {
     HIGH: 3,
 };
 
-GLOBAL.CalenderEventType = {
-    PERSONAL_EVENT: 1,
-    GROUP_EVENT: 2
+GLOBAL.CalendarOrigin = {
+    PERSONAL_CALENDAR: 1,
+    GROUP_CALENDAR: 2
 };
 
 /**
@@ -77,9 +77,9 @@ var CalendarEventSchema = new Schema({
         default : null
     },
 
-    event_type : {
-        type : Number, /* 1- PERSONAL_EVENT | 2 - GROUP_EVENT */
-        default : 1
+    calendar_origin : {
+        type : Number, /* 1- PERSONAL_CALENDAR | 2 - GROUP_CALENDAR */
+        default : CalendarOrigin.PERSONAL_CALENDAR
     },
 
     start_date_time : {
@@ -151,11 +151,13 @@ CalendarEventSchema.statics.addNew = function (eventData,callBack) {
     calenderEvent.plain_text = (eventData.plain_text ? eventData.plain_text : 'No title');
     calenderEvent.status = CalendarStatus.PENDING;
     calenderEvent.type = (eventData.type ? eventData.type : 1);
+    calenderEvent.calendar_origin = (eventData.calendar_origin ? eventData.calendar_origin : 1);
     calenderEvent.start_date_time = eventData.start_date;
     calenderEvent.event_time = eventData.event_time;
     calenderEvent.event_timezone = eventData.event_timezone;
     calenderEvent.shared_users = eventData.shared_users;
     calenderEvent.priority = eventData.priority;
+    calenderEvent.group_id = eventData.group_id;
 
     calenderEvent.save(function(err,resultSet){
 
