@@ -10614,6 +10614,7 @@ header .notification-holder .profile-header-thumb {
   margin-right: 15px;
   overflow: hidden;
   border-radius: 5px;
+  background: #fff;
   box-shadow: 1px 0 12px -8px #000000;
 }
 .folder-container .folder-body .folder .folder-wrapper .drag-shader {
@@ -10622,14 +10623,11 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 {
   position: relative;
   z-index: 1;
-  padding-left: 0px;
-  padding-right: 7px;
+  padding-left: 0;
+  padding-right: 0;
+  width: 15.766667%;
   background-color: #ffffff;
   border-radius: 8px 0px 0px 8px;
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper {
-  position: relative;
-  background-color: #ffffff;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay {
   position: absolute;
@@ -10654,7 +10652,6 @@ header .notification-holder .profile-header-thumb {
   z-index: 2;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover {
-  position: relative;
   overflow: hidden;
   height: 208px;
   z-index: 1;
@@ -10738,10 +10735,11 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 {
   position: relative;
   z-index: 0;
+  padding-right: 0;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper {
   position: relative;
-  padding: 0px 12px 0px 14px;
+  padding: 0px 12px 0px 24px;
   overflow: hidden;
   background-color: #ffffff;
   height: 208px;
@@ -10871,7 +10869,12 @@ header .notification-holder .profile-header-thumb {
   color: #00a5ef;
 }
 .folder-container .folder-body .folder.see-all .folder-wrapper {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
   display: flex;
+  flex-wrap: wrap;
 }
 .folder-container .folder-body .folder.see-all .folder-wrapper .drag-shader .drag-title {
   margin-top: 19% !important;
@@ -10891,7 +10894,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
   height: auto;
 }
-.folder-container .folder-body .folder.pink .folder-cover {
+.folder-container .folder-body .folder.pink .col-sm-2 {
   background-color: #ed0677;
 }
 .folder-container .folder-body .folder.pink .upload-file {
@@ -10900,7 +10903,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.pink .upload-file p, .folder-container .folder-body .folder.pink .upload-file i {
   color: #ed0677 !important;
 }
-.folder-container .folder-body .folder.light-blue .folder-cover {
+.folder-container .folder-body .folder.light-blue .col-sm-2 {
   background-color: #1b9ed9;
 }
 .folder-container .folder-body .folder.light-blue .upload-file {
@@ -10909,7 +10912,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.light-blue .upload-file p, .folder-container .folder-body .folder.light-blue .upload-file i {
   color: #1b9ed9 !important;
 }
-.folder-container .folder-body .folder.light-green .folder-cover {
+.folder-container .folder-body .folder.light-green .col-sm-2 {
   background-color: #a2c73e;
 }
 .folder-container .folder-body .folder.light-green .upload-file {
@@ -10918,7 +10921,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.light-green .upload-file p, .folder-container .folder-body .folder.light-green .upload-file i {
   color: #a2c73e !important;
 }
-.folder-container .folder-body .folder.red .folder-cover {
+.folder-container .folder-body .folder.red .col-sm-2 {
   background-color: #b01d5a;
 }
 .folder-container .folder-body .folder.red .upload-file {
@@ -10927,7 +10930,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.red .upload-file p, .folder-container .folder-body .folder.red .upload-file i {
   color: #b01d5a !important;
 }
-.folder-container .folder-body .folder.dark-blue .folder-cover {
+.folder-container .folder-body .folder.dark-blue .col-sm-2 {
   background-color: #091652;
 }
 .folder-container .folder-body .folder.dark-blue .upload-file {
@@ -10936,7 +10939,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.dark-blue .upload-file p, .folder-container .folder-body .folder.dark-blue .upload-file i {
   color: #091652 !important;
 }
-.folder-container .folder-body .folder.gray .folder-cover {
+.folder-container .folder-body .folder.gray .col-sm-2 {
   background-color: #bbbdbe;
 }
 .folder-container .folder-body .folder.gray .upload-file {
@@ -10945,7 +10948,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder.gray .upload-file p, .folder-container .folder-body .folder.gray .upload-file i {
   color: #bbbdbe !important;
 }
-.folder-container .folder-body .folder.dark-green .folder-cover {
+.folder-container .folder-body .folder.dark-green .col-sm-2 {
   background-color: #067d41;
 }
 .folder-container .folder-body .folder.dark-green .upload-file {
@@ -11385,6 +11388,7 @@ header .notification-holder .profile-header-thumb {
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .event-title {
   margin-top: 13px;
   margin-left: 30px;
+  margin-bottom: 0px;
   color: #00a6ef;
   font-family: "Work Sans";
   font-size: 1.5em;
@@ -11392,17 +11396,135 @@ header .notification-holder .profile-header-thumb {
   letter-spacing: 1px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
-  margin: 27px 20px;
+  margin: 6px 31px 15px;
   overflow: hidden;
   font-size: 0.875em;
   font-weight: 500;
-  color: #000000;
   outline: none;
   letter-spacing: 1px;
   color: rgba(136, 136, 136, 0.57);
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input:empty:before {
   content: attr(placeholder);
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper {
+  overflow: hidden;
+  margin-top: 15px;
+  margin-bottom: 9px;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
+  margin-left: 29px;
+  float: left;
+  max-width: 480px;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .title {
+  margin-top: 4px;
+  margin-bottom: 0px;
+  float: left;
+  font-size: 0.875em;
+  font-weight: 500;
+  outline: none;
+  letter-spacing: 1px;
+  color: rgba(136, 136, 136, 0.57);
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container {
+  float: left;
+  margin-top: 0px;
+  margin-left: 3px;
+  max-width: 310px;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .person {
+  float: left;
+  margin-left: 3px;
+  padding: 4px;
+  font-size: 0.875em;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #00a6ef;
+  border-radius: 3px;
+  background-color: rgba(0, 166, 239, 0.3);
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .person.selected {
+  color: #ffffff;
+  background-color: #00a6ef;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input {
+  margin-top: 3px;
+  margin-left: 3px;
+  float: left;
+  border: none;
+  outline: none;
+  font-size: 0.875em;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: rgba(136, 136, 136, 0.57);
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input:-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input::-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input:-ms-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input::-webkit-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
+  float: right;
+  margin-right: 10px;
+  margin-left: 0px;
+  overflow: hidden;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper.active-time .title {
+  display: none;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper.active-time .time-input {
+  margin-right: 20px;
+  max-width: 75px;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .title {
+  margin-top: 4px;
+  margin-bottom: 0px;
+  float: left;
+  font-size: 0.875em;
+  font-weight: 500;
+  outline: none;
+  letter-spacing: 1px;
+  color: rgba(136, 136, 136, 0.57);
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .time-input {
+  margin-top: 3px;
+  margin-left: 3px;
+  float: left;
+  border: none;
+  outline: none;
+  font-size: 0.875em;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #000000;
+  max-width: 62px;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .time-input:-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .time-input::-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .time-input:-ms-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .time-input::-webkit-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .calender-input-type {
   position: absolute;
@@ -11426,7 +11548,7 @@ header .notification-holder .profile-header-thumb {
   padding: 4px 20px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper {
-  float: right;
+  float: left;
   overflow: hidden;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper {
@@ -11718,49 +11840,43 @@ header .notification-holder .profile-header-thumb {
 }
 
 .calender-week-view .view-header {
-  padding: 21px 21px;
   overflow: hidden;
-  background-color: #f6f6f6;
   margin-bottom: 12px;
-  -webkit-box-shadow: 0px 4px 5px -1px #c4c4c4;
-  box-shadow: 0px 4px 5px -1px #c4c4c4;
 }
 .calender-week-view .view-header .date-wrapper {
   float: left;
   border: 1px solid #bcbfbf;
-  border-radius: 3px;
-  background-color: #e9ebee;
+  border-radius: 6px;
+  background-color: #ffffff;
 }
 .calender-week-view .view-header .date-wrapper .date-nav {
   float: left;
+  cursor: pointer;
 }
 .calender-week-view .view-header .date-wrapper .date-nav i {
-  padding: 11px 12px 12px;
+  padding: 8px 9px 9px 7px;
 }
 .calender-week-view .view-header .date-wrapper .date {
   float: left;
   border-left: 1px solid #bcbfbf;
   border-right: 1px solid #bcbfbf;
-  background-color: #ffffff;
-  min-width: 155px;
   text-align: center;
+  padding: 4px 26px;
 }
 .calender-week-view .view-header .date-wrapper .date p {
-  padding: 11px 14px 11px;
-  text-transform: uppercase;
-  font-size: 0.75em;
-  color: #000000;
+  font-size: 1em;
+  color: rgba(0, 0, 0, 0.87);
   font-weight: 500;
   margin-bottom: 0;
 }
 .calender-week-view .view-header .calender-date p {
-  margin-top: 4px;
-  margin-bottom: 0;
+  margin: 0 17px 0 0;
   float: right;
-  text-transform: uppercase;
-  font-size: 1.3125em;
-  color: #000000;
-  font-weight: 400;
+  text-transform: capitalize;
+  font-size: 1.625em;
+  color: rgba(0, 0, 0, 0.87);
+  font-weight: 300;
+  line-height: 1;
 }
 .calender-week-view .view-tile-area {
   margin-bottom: 90px;
@@ -11773,20 +11889,33 @@ header .notification-holder .profile-header-thumb {
   font-size: 16px;
   overflow: hidden;
   display: inline-block;
-  margin-bottom: 8px;
-  width: calc(50% - 4px);
-  margin-right: 8px;
+  width: 213px;
+  margin: 0 24px 22px 0;
   border-radius: 8px;
   -webkit-box-shadow: 0px 0px 6px 1px #c4c4c4;
   box-shadow: 0px 0px 6px 1px #c4c4c4;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile:nth-of-type(2n) {
+.calender-week-view .view-tile-area .week-tiles .day-tile:nth-of-type(4n) {
   margin-right: 0;
 }
+.calender-week-view .view-tile-area .week-tiles .day-tile.selected .day-tile-header {
+  background: #000f75;
+  border: none;
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile.selected .day-tile-header .date {
+  color: #000f75;
+  padding: 1px 3px 3px;
+  background: #fff;
+  border-radius: 999px;
+}
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header {
-  background-color: #f6f6f6;
-  padding: 5% 7%;
-  border-bottom: 1px solid #dee6eb;
+  background-color: #00a6ef;
+  padding: 10px 12px 12px;
+  height: 44px;
+  border-bottom: 1px solid #fff;
+  position: relative;
+  -webkit-box-shadow: #000 2px 0px 10px;
+  box-shadow: #000 2px 0px 10px;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header:before {
   display: table;
@@ -11797,40 +11926,30 @@ header .notification-holder .profile-header-thumb {
   display: table;
   content: " ";
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header h5 {
-  float: left;
-  text-align: left;
-  width: 50%;
-  margin: 0;
-  text-transform: uppercase;
-  font-size: 0.934375em;
-  color: #ed1e7a;
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header .day {
+  text-align: center;
+  text-transform: capitalize;
+  line-height: 1;
+  color: #fff;
+  margin: 3px 0 0;
   font-weight: 500;
+  font-size: 1em;
+  text-shadow: rgba(6, 6, 6, 0.33) -1px 2px 2px;
 }
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header h6 {
-  float: left;
-  text-align: right;
-  width: 50%;
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header .date {
+  position: absolute;
+  left: 13px;
+  top: 8px;
+  line-height: 1;
+  color: #fff;
   margin: 0;
-  text-transform: uppercase;
-  font-size: 0.77875em;
-  color: #989ba0;
-  font-weight: 500;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header h3 {
-  float: left;
-  text-align: left;
-  font-size: 1.5575em;
-  color: #c1c1c1;
-  clear: both;
-  width: 100%;
-  margin-top: 8px;
-  margin-bottom: 0;
+  font-size: 1.625em;
+  text-shadow: rgba(6, 6, 6, 0.33) -1px 2px 2px;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body {
   background-color: #ffffff;
-  padding: 5% 7%;
-  height: 215px;
+  padding: 22px 12px;
+  height: 189px;
   overflow-y: scroll;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body:before {
@@ -11863,11 +11982,19 @@ header .notification-holder .profile-header-thumb {
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .list-items li.pending p {
   color: #989ba0;
 }
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.events .body-wrapper .enter-event-text {
+  color: #bebfbf;
+  font-weight: 400;
+  cursor: pointer;
+  margin: 10px 0 0px 16px;
+  display: block;
+  font-size: 0.5em;
+}
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .header-wrapper p {
-  color: #a6c649;
+  color: #038247;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li:before {
-  color: #a6c649;
+  color: #038247;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper.todos .body-wrapper .list-items li.pending::before {
   color: #989ba0;
@@ -11880,72 +12007,57 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper img {
   float: left;
-  height: 16px;
-  margin-left: 5px;
+  height: 10px;
+  margin-left: 0;
   margin-top: 3px;
-  width: 14px;
+  width: 8px;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .header-wrapper p {
   float: left;
-  margin-left: 10px;
+  margin-left: 6px;
   font-weight: 700;
   color: #00a6ef;
   text-transform: uppercase;
-  font-size: 0.855625em;
+  font-size: 0.625em;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper {
   overflow: hidden;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items {
   margin-top: -2px;
-  margin-left: 25px;
+  margin-left: 15px;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li {
   font-family: "Work Sans", sans-serif;
   font-weight: 500;
   color: black;
-  margin-top: -15px;
   margin-bottom: 5px;
-  overflow: hidden;
   position: relative;
-}
-.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li:first-child {
-  margin-top: 0px;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li:before {
   content: "\f111";
   font-family: FontAwesome;
   line-height: 1;
-  font-size: 8px;
+  font-size: 5px;
   position: absolute;
-  top: 0;
+  top: 3px;
   left: 0;
-  margin-top: 6px;
-  margin-right: 4px;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li .item {
   float: left;
   font-weight: 400;
-  color: #000000;
-  font-size: 0.743125em;
-  margin-left: 12px;
+  color: #313131;
+  font-size: 0.625em;
+  margin: 0 0 0 8px;
+  line-height: 1;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li .time {
   float: right;
-  font-weight: 400;
-  color: #999999;
-  font-size: 0.743125em;
-}
-@media screen and (min-width: 50em) {
-  .calender-week-view .view-tile-area .week-tiles .day-tile {
-    width: calc(25% - 6px);
-  }
-  .calender-week-view .view-tile-area .week-tiles .day-tile:nth-of-type(2n) {
-    margin-right: 8px;
-  }
-  .calender-week-view .view-tile-area .week-tiles .day-tile:nth-of-type(4n) {
-    margin-right: 0;
-  }
+  font-weight: 500;
+  color: #c1c1c1;
+  margin: 0;
+  line-height: 1;
+  font-size: 0.625em;
 }
 .calender-week-view .remove-padding {
   padding: 0;
@@ -12829,23 +12941,24 @@ header .notification-holder .profile-header-thumb {
   height: 40px;
   border-radius: 100%;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode {
   position: absolute;
   bottom: 0px;
   right: 0px;
   width: 13px;
+  cursor: pointer;
   height: 13px;
   border-radius: 100%;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.online {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode.online {
   background-color: #63c66c;
   border: 3px solid #ffffff;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.work-mode {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode.work-mode {
   background-color: #de2424;
   border: 3px solid #ffffff;
 }
-.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .status.offline {
+.call-center-container .call-center-inner-holder .inner-header .user-status .image-wrapper .user-mode.offline {
   background-color: #ffffff;
   border: 2px solid #6ac374;
 }
@@ -12910,6 +13023,67 @@ header .notification-holder .profile-header-thumb {
 }
 .call-center-container .call-center-inner-holder .inner-header .rw-contact-menu .col-sm-2-4.active .selector {
   background-color: #00a5ef;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup {
+  position: absolute;
+  top: 34px;
+  left: 71px;
+  z-index: 1;
+  width: 135px;
+  overflow: hidden;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px 2px #ebeff1;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type {
+  margin-top: 1px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type:first-child {
+  margin-top: 9px;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type:hover {
+  background-color: #00a5ef;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type:hover .type {
+  color: #ffffff;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status {
+  margin-top: 5px;
+  margin-left: 11px;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  float: left;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status.online {
+  background-color: #63c66c;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status.work-mode {
+  background-color: #de2424;
+  border: 3px solid #ffffff;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status.offline {
+  background-color: #ffffff;
+  border: 2px solid #6ac374;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .type {
+  margin-top: 1px;
+  margin-bottom: 2px;
+  margin-left: 8px;
+  float: left;
+  font-size: 0.75em;
+  color: #464646;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .mood-msg {
+  border-top: 1px solid #dee6eb;
+}
+.call-center-container .call-center-inner-holder .cc-online-status-popup .mood-msg p {
+  margin: 2px 0 6px 10px;
+  font-size: 0.75em;
+  color: #464646;
 }
 .call-center-container .call-center-inner-holder .contacts-list .contact-group {
   margin-top: 7px;
@@ -13091,17 +13265,18 @@ header .notification-holder .profile-header-thumb {
   border-radius: 100%;
   background-color: #ffffff;
   outline: none;
+  padding: 0;
 }
 .call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.video {
   margin-right: 16px;
 }
 .call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.video img {
-  margin-top: -3px;
+  margin: -3px auto 0;
   width: 15px;
   height: 10px;
 }
 .call-center-container .call-center-inner-holder .contact-item .call-ico-wrapper .call-ico.phone img {
-  margin-top: -3px;
+  margin: -3px auto 0;
   width: 13px;
   height: 13px;
 }
@@ -13815,6 +13990,7 @@ header .notification-holder .profile-header-thumb {
   margin-right: 15px;
   overflow: hidden;
   border-radius: 5px;
+  background: #fff;
   box-shadow: 1px 0 12px -8px #000000;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .drag-shader {
@@ -13823,14 +13999,11 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 {
   position: relative;
   z-index: 1;
-  padding-left: 0px;
-  padding-right: 7px;
+  padding-left: 0;
+  padding-right: 0;
+  width: 15.766667%;
   background-color: #ffffff;
   border-radius: 8px 0px 0px 8px;
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper {
-  position: relative;
-  background-color: #ffffff;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay {
   position: absolute;
@@ -13855,7 +14028,6 @@ header .notification-holder .profile-header-thumb {
   z-index: 2;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover {
-  position: relative;
   overflow: hidden;
   height: 208px;
   z-index: 1;
@@ -13939,10 +14111,11 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 {
   position: relative;
   z-index: 0;
+  padding-right: 0;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper {
   position: relative;
-  padding: 0px 12px 0px 14px;
+  padding: 0px 12px 0px 24px;
   overflow: hidden;
   background-color: #ffffff;
   height: 208px;
@@ -14072,7 +14245,12 @@ header .notification-holder .profile-header-thumb {
   color: #00a5ef;
 }
 .group-container .group-folder-container .folder-body .folder.see-all .folder-wrapper {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
   display: flex;
+  flex-wrap: wrap;
 }
 .group-container .group-folder-container .folder-body .folder.see-all .folder-wrapper .drag-shader .drag-title {
   margin-top: 19% !important;
@@ -14092,7 +14270,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
   height: auto;
 }
-.group-container .group-folder-container .folder-body .folder.pink .folder-cover {
+.group-container .group-folder-container .folder-body .folder.pink .col-sm-2 {
   background-color: #ed0677;
 }
 .group-container .group-folder-container .folder-body .folder.pink .upload-file {
@@ -14101,7 +14279,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.pink .upload-file p, .group-container .group-folder-container .folder-body .folder.pink .upload-file i {
   color: #ed0677 !important;
 }
-.group-container .group-folder-container .folder-body .folder.light-blue .folder-cover {
+.group-container .group-folder-container .folder-body .folder.light-blue .col-sm-2 {
   background-color: #1b9ed9;
 }
 .group-container .group-folder-container .folder-body .folder.light-blue .upload-file {
@@ -14110,7 +14288,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.light-blue .upload-file p, .group-container .group-folder-container .folder-body .folder.light-blue .upload-file i {
   color: #1b9ed9 !important;
 }
-.group-container .group-folder-container .folder-body .folder.light-green .folder-cover {
+.group-container .group-folder-container .folder-body .folder.light-green .col-sm-2 {
   background-color: #a2c73e;
 }
 .group-container .group-folder-container .folder-body .folder.light-green .upload-file {
@@ -14119,7 +14297,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.light-green .upload-file p, .group-container .group-folder-container .folder-body .folder.light-green .upload-file i {
   color: #a2c73e !important;
 }
-.group-container .group-folder-container .folder-body .folder.red .folder-cover {
+.group-container .group-folder-container .folder-body .folder.red .col-sm-2 {
   background-color: #b01d5a;
 }
 .group-container .group-folder-container .folder-body .folder.red .upload-file {
@@ -14128,7 +14306,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.red .upload-file p, .group-container .group-folder-container .folder-body .folder.red .upload-file i {
   color: #b01d5a !important;
 }
-.group-container .group-folder-container .folder-body .folder.dark-blue .folder-cover {
+.group-container .group-folder-container .folder-body .folder.dark-blue .col-sm-2 {
   background-color: #091652;
 }
 .group-container .group-folder-container .folder-body .folder.dark-blue .upload-file {
@@ -14137,7 +14315,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.dark-blue .upload-file p, .group-container .group-folder-container .folder-body .folder.dark-blue .upload-file i {
   color: #091652 !important;
 }
-.group-container .group-folder-container .folder-body .folder.gray .folder-cover {
+.group-container .group-folder-container .folder-body .folder.gray .col-sm-2 {
   background-color: #bbbdbe;
 }
 .group-container .group-folder-container .folder-body .folder.gray .upload-file {
@@ -14146,7 +14324,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder.gray .upload-file p, .group-container .group-folder-container .folder-body .folder.gray .upload-file i {
   color: #bbbdbe !important;
 }
-.group-container .group-folder-container .folder-body .folder.dark-green .folder-cover {
+.group-container .group-folder-container .folder-body .folder.dark-green .col-sm-2 {
   background-color: #067d41;
 }
 .group-container .group-folder-container .folder-body .folder.dark-green .upload-file {
@@ -14585,6 +14763,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .event-title {
   margin-top: 13px;
   margin-left: 30px;
+  margin-bottom: 0px;
   color: #00a6ef;
   font-family: "Work Sans";
   font-size: 1.5em;
@@ -14592,17 +14771,135 @@ header .notification-holder .profile-header-thumb {
   letter-spacing: 1px;
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .input {
-  margin: 27px 20px;
+  margin: 6px 31px 15px;
   overflow: hidden;
   font-size: 0.875em;
   font-weight: 500;
-  color: #000000;
   outline: none;
   letter-spacing: 1px;
   color: rgba(136, 136, 136, 0.57);
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .input:empty:before {
   content: attr(placeholder);
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper {
+  overflow: hidden;
+  margin-top: 15px;
+  margin-bottom: 9px;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
+  margin-left: 29px;
+  float: left;
+  max-width: 480px;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .title {
+  margin-top: 4px;
+  margin-bottom: 0px;
+  float: left;
+  font-size: 0.875em;
+  font-weight: 500;
+  outline: none;
+  letter-spacing: 1px;
+  color: rgba(136, 136, 136, 0.57);
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container {
+  float: left;
+  margin-top: 0px;
+  margin-left: 3px;
+  max-width: 310px;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .person {
+  float: left;
+  margin-left: 3px;
+  padding: 4px;
+  font-size: 0.875em;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #00a6ef;
+  border-radius: 3px;
+  background-color: rgba(0, 166, 239, 0.3);
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .person.selected {
+  color: #ffffff;
+  background-color: #00a6ef;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input {
+  margin-top: 3px;
+  margin-left: 3px;
+  float: left;
+  border: none;
+  outline: none;
+  font-size: 0.875em;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: rgba(136, 136, 136, 0.57);
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input:-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input::-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input:-ms-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input::-webkit-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
+  float: right;
+  margin-right: 10px;
+  margin-left: 0px;
+  overflow: hidden;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper.active-time .title {
+  display: none;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper.active-time .time-input {
+  margin-right: 20px;
+  max-width: 75px;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .title {
+  margin-top: 4px;
+  margin-bottom: 0px;
+  float: left;
+  font-size: 0.875em;
+  font-weight: 500;
+  outline: none;
+  letter-spacing: 1px;
+  color: rgba(136, 136, 136, 0.57);
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .time-input {
+  margin-top: 3px;
+  margin-left: 3px;
+  float: left;
+  border: none;
+  outline: none;
+  font-size: 0.875em;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #000000;
+  max-width: 62px;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .time-input:-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .time-input::-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .time-input:-ms-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper .time-input::-webkit-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .calender-input-type {
   position: absolute;
@@ -14626,7 +14923,7 @@ header .notification-holder .profile-header-thumb {
   padding: 4px 20px;
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper {
-  float: right;
+  float: left;
   overflow: hidden;
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper {
@@ -17231,62 +17528,6 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .create-folder-popup .folder-footer .action-bar .btn-add-folder:hover {
   background-color: #0093db;
 }
-.popup-holder .cc-online-status-popup {
-  overflow: hidden;
-  background-color: #f7f7f7;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px 2px #ebeff1;
-}
-.popup-holder .cc-online-status-popup .status-type {
-  margin-top: 1px;
-  overflow: hidden;
-  cursor: pointer;
-}
-.popup-holder .cc-online-status-popup .status-type:first-child {
-  margin-top: 9px;
-}
-.popup-holder .cc-online-status-popup .status-type:hover {
-  background-color: #00a5ef;
-}
-.popup-holder .cc-online-status-popup .status-type:hover .type {
-  color: #ffffff;
-}
-.popup-holder .cc-online-status-popup .status-type .status {
-  margin-top: 5px;
-  margin-left: 11px;
-  width: 10px;
-  height: 10px;
-  border-radius: 100%;
-  float: left;
-}
-.popup-holder .cc-online-status-popup .status-type .status.online {
-  background-color: #63c66c;
-  border: 3px solid #ffffff;
-}
-.popup-holder .cc-online-status-popup .status-type .status.work-mode {
-  background-color: #de2424;
-  border: 3px solid #ffffff;
-}
-.popup-holder .cc-online-status-popup .status-type .status.offline {
-  background-color: #ffffff;
-  border: 2px solid #6ac374;
-}
-.popup-holder .cc-online-status-popup .status-type .type {
-  margin-top: 1px;
-  margin-bottom: 2px;
-  margin-left: 8px;
-  float: left;
-  font-size: 0.75em;
-  color: #464646;
-}
-.popup-holder .cc-online-status-popup .mood-msg {
-  border-top: 1px solid #dee6eb;
-}
-.popup-holder .cc-online-status-popup .mood-msg p {
-  margin: 2px 0 6px 10px;
-  font-size: 0.75em;
-  color: #464646;
-}
 .popup-holder .share-folder-popup {
   position: relative;
   overflow: hidden;
@@ -17696,8 +17937,8 @@ header .notification-holder .profile-header-thumb {
 .popup-holder .active-call-container .participants .user-block {
   position: relative;
   margin-right: 6px;
-  width: 118px;
-  height: 76px;
+  width: 105px;
+  height: 75px;
   border-radius: 8px;
   display: inline-block;
   border: 3px solid #ffffff;
