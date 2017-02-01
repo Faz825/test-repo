@@ -10,6 +10,7 @@ import Session from '../../middleware/Session';
 import MiniCalender from './MiniCalender';
 import DayEventsList from './DayEventsList';
 import DayTodosList from './DayTodosList';
+import DayTasksList from './DayTasksList';
 import SharedUsers from './SharedUsers';
 import EditorField from './EditorField';
 import Socket  from '../../middleware/Socket';
@@ -738,7 +739,12 @@ export default class DayView extends Component {
                                         </div>
                                         <div className={_class+ "-list-area-content-title-hr"}></div>
                                         {(this.props.calendarOrigin == 2) ?
-                                            null
+                                            <DayTasksList
+                                                events={this.state.events}
+                                                onClickItem={this.markTodo.bind(this)}
+                                                clickEdit={this.clickEdit.bind(this)}
+                                                selectedEvent={this.selectedEvent}
+                                                delete={this.openModal.bind(this)} />
                                         :
                                             <DayTodosList
                                                 events={this.state.events}

@@ -22,7 +22,7 @@ export default class DayTodosList extends React.Component {
 
 		let _this = this;
 		let items = this.props.events.map(function(event,key){
-			if(event.type == 1 || event.type == 3) {
+			if(event.type == 1 || event.type == 2) {
 				return;
 			}
 
@@ -103,7 +103,7 @@ export default class DayTodosList extends React.Component {
 		});
 
 		return(
-			<ul className="list-unstyled to-do-list-area-content-list">
+			<ul className="list-unstyled task-list-area-content-list">
 				{items}
 			</ul>
 		);
