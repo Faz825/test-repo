@@ -63,47 +63,51 @@ var CallCenterController = {
                 function (aConns, callback) {
                     var aAlphabet = [];
 
-                    aConns.sort(function (a, b) {
-                        var textA = a.first_name.toUpperCase();
-                        var textB = b.first_name.toUpperCase();
-                        return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-                    });
-
-                    for (var i = 0; i < aConns.length; i++) {
-                        var first_letter = aConns[i].first_name[0].toUpperCase();
-
-                        if (aAlphabet.indexOf(first_letter) == -1) {
-                            aAlphabet.push(first_letter);
-                        }
-                    }
-
-                    aAlphabet.sort();
-
-                    var aContacts = [];
-                    var aContactIds = [];
-
-                    for (var i = 0; i < aAlphabet.length; i++) {
-                        aContacts.push({
-                            letter: aAlphabet[i],
-                            users: []
+                    if (aConns.length > 0) {
+                        aConns.sort(function (a, b) {
+                            var textA = a.first_name.toUpperCase();
+                            var textB = b.first_name.toUpperCase();
+                            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                         });
-                    }
 
-                    for (var i = 0; i < aConns.length; i++) {
-                        var first_letter = aConns[i].first_name[0].toUpperCase();
+                        for (var i = 0; i < aConns.length; i++) {
+                            var first_letter = aConns[i].first_name[0].toUpperCase();
 
-                        aContactIds.push(aConns[i].user_id);
-
-                        for (var x = 0; x < aContacts.length; x++) {
-                            if (aContacts[x].letter == first_letter) {
-                                // online status must be coming from Elastic Search.
-                                aConns[i].onlineStatus = 1;
-                                // contactType must be coming from Elastic Search.
-                                aConns[i].contactType = 1;
-                                aContacts[x].users.push(aConns[i]);
+                            if (aAlphabet.indexOf(first_letter) == -1) {
+                                aAlphabet.push(first_letter);
                             }
                         }
+
+                        aAlphabet.sort();
+
+                        var aContacts = [];
+                        var aContactIds = [];
+
+                        for (var i = 0; i < aAlphabet.length; i++) {
+                            aContacts.push({
+                                letter: aAlphabet[i],
+                                users: []
+                            });
+                        }
+
+                        for (var i = 0; i < aConns.length; i++) {
+                            var first_letter = aConns[i].first_name[0].toUpperCase();
+
+                            aContactIds.push(aConns[i].user_id);
+
+                            for (var x = 0; x < aContacts.length; x++) {
+                                if (aContacts[x].letter == first_letter) {
+                                    // online status must be coming from Elastic Search.
+                                    aConns[i].onlineStatus = 1;
+                                    // contactType must be coming from Elastic Search.
+                                    aConns[i].contactType = 1;
+                                    aContacts[x].users.push(aConns[i]);
+                                }
+                            }
+                        }
+
                     }
+
 
                     var outPut = {
                         status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),

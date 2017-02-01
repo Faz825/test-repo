@@ -24,6 +24,9 @@ var GroupsController = {
             User = require('mongoose').model('User'),
             notifyUsers = (typeof req.body._members != 'undefined' ? req.body._members : []); //this should be an array
 
+        // add group owner as a group member
+        // status is hard coded due to : non member request accept process
+        req.body._members.push({user_id: CurrentSession.id, name: CurrentSession.name, status: 3});
 
         _async.waterfall([
             function createGroup(callBack) {
@@ -36,7 +39,7 @@ var GroupsController = {
                     group_pic_id: req.body._group_pic_id,
                     members: req.body._members,
                     created_by: Util.getCurrentSession(req).id,
-                    type:(typeof req.body._type != 'undefined' ? req.body._type : 1)
+                    type: (typeof req.body._type != 'undefined' ? req.body._type : 1)
                 };
                 Groups.createGroup(_group, function (resultSet) {
                     if (resultSet.status == 200) {
@@ -47,10 +50,10 @@ var GroupsController = {
             function updateImageDocument(groupData, callBack) {
 
                 if (req.body._group_pic_id) {
-                    var filter = { "_id" : req.body._group_pic_id };
-                    var value = { "entity_id" : groupData._id };
+                    var filter = {"_id": req.body._group_pic_id};
+                    var value = {"entity_id": groupData._id};
                     Upload.updateUpload(filter, value, function (updateResult) {
-                        if(updateResult.error) {
+                        if (updateResult.error) {
                             callBack(updateResult.error, null);
                         }
                         callBack(null, groupData);
@@ -137,7 +140,7 @@ var GroupsController = {
             function createConnections(groupData, callBack) {
 
                 if (notifyUsers.length > 0) {
-                    Groups.addConnections(groupData, userId, function() {
+                    Groups.addConnections(groupData, userId, function () {
                         console.log("CREATING CONNECTIONS");
                     });
                     callBack(null, groupData);
@@ -252,13 +255,13 @@ var GroupsController = {
         var groupId = (typeof req.body.__groupId != 'undefined') ? req.body.__groupId : null;
         var description = (typeof req.body.__description != 'undefined') ? req.body.__description : null;
 
-        if(groupId == null) {
+        if (groupId == null) {
             outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_ID_EMPTY, Alert.GROUP_ID_EMPTY);
             res.status(602).send(outPut);
             return;
         }
 
-        if(description == null) {
+        if (description == null) {
             outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_DESCRIPTION_EMPTY, Alert.GROUP_DESCRIPTION_EMPTY);
             res.status(602).send(outPut);
             return;
@@ -267,10 +270,10 @@ var GroupsController = {
         async.waterfall([
             function updateDb(callBack) {
                 var filter = {
-                    "_id" : groupId
+                    "_id": groupId
                 };
                 var value = {
-                    "description" : description
+                    "description": description
                 };
                 groups.updateGroups(filter, value, function (updateResult) {
                     callBack(null, updateResult.group);
@@ -304,13 +307,13 @@ var GroupsController = {
         var groupId = (typeof req.body.__groupId != 'undefined') ? req.body.__groupId : null;
         var newMembers = (typeof req.body.__members != 'undefined') ? req.body.__members : [];
 
-        if(groupId == null) {
+        if (groupId == null) {
             outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_ID_EMPTY, Alert.GROUP_ID_EMPTY);
             res.status(602).send(outPut);
             return;
         }
 
-        if(newMembers == null) {
+        if (newMembers == null) {
             outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_MEMBERS_EMPTY, Alert.GROUP_MEMBERS_EMPTY);
             res.status(602).send(outPut);
             return;
@@ -319,11 +322,11 @@ var GroupsController = {
         async.waterfall([
             function updateDb(callBack) {
                 var filter = {
-                    "_id" : groupId
+                    "_id": groupId
                 };
                 var value = {
-                    $push : {
-                        "members" : {$each : newMembers }
+                    $push: {
+                        "members": {$each: newMembers}
                     }
                 };
                 groups.updateGroups(filter, value, function (updateResult) {
@@ -333,10 +336,10 @@ var GroupsController = {
             function createConnections(groupData, callBack) {
 
                 if (newMembers.length > 0) {
-                    var criteria = { "_id" : groupId };
-                    groups.getGroup(criteria, function(result) {
-                        if(result.status==200) {
-                            groups.addConnections(result.group[0], currentSession.id, function() {
+                    var criteria = {"_id": groupId};
+                    groups.getGroup(criteria, function (result) {
+                        if (result.status == 200) {
+                            groups.addConnections(result.group[0], currentSession.id, function () {
                                 console.log("CREATING CONNECTIONS");
                             });
                         }
@@ -364,8 +367,8 @@ var GroupsController = {
 
             function removeUserFromGroup(callBack) {
                 var criteria = {
-                  '_id': Util.toObjectId(group_id),
-                  'members.user_id': Util.toObjectId(member_id)
+                    '_id': Util.toObjectId(group_id),
+                    'members.user_id': Util.toObjectId(member_id)
                 };
 
                 var _status = {
@@ -444,10 +447,10 @@ var GroupsController = {
 
 
         _async.waterfall([
-            function getGroup(callBack){
-                var criteria = { "name_prefix" : namePrefix };
-                Group.getGroup(criteria, function(result) {
-                    if(result.status==200) {
+            function getGroup(callBack) {
+                var criteria = {"name_prefix": namePrefix};
+                Group.getGroup(criteria, function (result) {
+                    if (result.status == 200) {
                         callBack(null, result.group[0]);
                     } else {
                         callBack(null, null);
@@ -456,7 +459,7 @@ var GroupsController = {
             }
         ], function (err, group) {
             var outPut = {};
-            if(err){
+            if (err) {
                 outPut['status'] = ApiHelper.getMessage(500, Alert.ERROR, Alert.ERROR);
                 outPut['group'] = null;
             } else {
@@ -479,10 +482,10 @@ var GroupsController = {
         var _async = require('async');
 
         _async.waterfall([
-            function getGroups(callBack){
+            function getGroups(callBack) {
                 var criteria = {};
-                Group.getGroup(criteria, function(result) {
-                    if(result.status==200) {
+                Group.getGroup(criteria, function (result) {
+                    if (result.status == 200) {
                         callBack(null, result.group);
                     } else {
                         callBack(null, null);
@@ -491,7 +494,7 @@ var GroupsController = {
             }
         ], function (err, groups) {
             var outPut = {};
-            if(err){
+            if (err) {
                 outPut['status'] = ApiHelper.getMessage(500, Alert.ERROR, Alert.ERROR);
                 outPut['groups'] = null;
             } else {
@@ -520,11 +523,11 @@ var GroupsController = {
 
         var _async = require('async');
         _async.waterfall([
-            function getGroupMembers(callBack){
+            function getGroupMembers(callBack) {
 
                 var criteria = {name_prefix: name_prefix};
-                Group.getGroupMembers(criteria, function(result) {
-                    if(result.error && result == null) {
+                Group.getGroupMembers(criteria, function (result) {
+                    if (result.error && result == null) {
                         callBack(result.error, null);
                     }
                     callBack(null, result);
@@ -535,7 +538,7 @@ var GroupsController = {
                 var arrUsers = [];
                 var BreakException = {};
                 var members = typeof(membersResult.memberObjs) != 'undefined' ? membersResult.memberObjs : [];
-                members.forEach(function(member) {
+                members.forEach(function (member) {
                     Upload.getProfileImage(member.user_id, function (profileImageData) {
                         var url = '';
                         if (profileImageData.status != 200) {
@@ -549,13 +552,13 @@ var GroupsController = {
                             user_id: member.user_id,
                             status: member.status,
                             permissions: member.permissions,
-                            _id:member._id,
-                            profile_image:url
+                            _id: member._id,
+                            profile_image: url
                         };
                         arrUsers.push(tmpUserObj);
-                        i = i+1;
+                        i = i + 1;
 
-                        if( ( i == members.length && members.length != defaultRandomMemberCount+1) || i == defaultRandomMemberCount ){
+                        if (( i == members.length && members.length != defaultRandomMemberCount + 1) || i == defaultRandomMemberCount) {
                             callBack(null, membersResult, arrUsers);
                         }
                     });
@@ -563,7 +566,7 @@ var GroupsController = {
             }
         ], function (err, groupMembers, randomMembers) {
             var outPut = {};
-            if(err){
+            if (err) {
                 outPut['status'] = ApiHelper.getMessage(500, Alert.ERROR, Alert.ERROR);
                 outPut['members'] = null;
             } else {

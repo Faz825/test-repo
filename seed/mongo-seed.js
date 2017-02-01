@@ -1,36 +1,17 @@
 var seeder = require('mongoose-seed');
+var Config = require('../config/app.config');
+var mongoseeds = require('./mongo-seeds.json');
 
 // Connect to MongoDB via Mongoose 
-seeder.connect(Config.DB_HOST, Config.DB_NAME, function () {
+seeder.connect('mongodb://' + Config.DB_HOST + '/' + Config.DB_NAME, function () {
 
-    // Load Mongoose models 
     seeder.loadModels([
-        'app/model1File.js',
-        'app/model2File.js'
+        '../model/SecretaryModel.js',
     ]);
 
-    // Clear specified collections 
-    seeder.clearModels(['Model1', 'Model2'], function () {
-
-        // Callback to populate DB once collections have been cleared 
-        seeder.populateModels(data);
-
+    seeder.clearModels(['Secretary'], function () {
+        seeder.populateModels(mongoseeds, function (error, data) {
+            process.exit();
+        });
     });
 });
-
-// Data array containing seed data - documents organized by Model 
-var data = [
-    {
-        'model': 'Model1',
-        'documents': [
-            {
-                'name': 'Doc1',
-                'value': 200
-            },
-            {
-                'name': 'Doc2',
-                'value': 400
-            }
-        ]
-    }
-];

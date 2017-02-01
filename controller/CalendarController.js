@@ -4,7 +4,6 @@
  * The Calender Controller
  */
 var CalendarController = {
-
     /**
      * Return a specific event by a given ID
      * @param req
@@ -12,7 +11,6 @@ var CalendarController = {
      * @return Json
     */
     getEvent: function(req,res) {
-
         var eventId = req.body.eventId;
         var CalendarEvent = require('mongoose').model('CalendarEvent');
         var User = require('mongoose').model('User');
