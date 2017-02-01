@@ -82,8 +82,10 @@ export default class Index extends React.Component {
 
         switch (this.state.current) {
             case 'week':
-                return (<WeekView isGroupCall={true} groupCall={groupCall}/>);
-                return (<WeekView isGroupCall={true}/>);
+                return (<WeekView
+                    calendarOrigin={this.calendarOrigin}
+                    isGroupCall={true}
+                    groupCall={groupCall}/>);
             case 'day':
                 return (<DayView
                     groupId={this.state.group._id}

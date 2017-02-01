@@ -339,7 +339,7 @@ CalendarEventSchema.statics.getSortedCalenderItems = function(criteria,callBack)
  * @param data object
  *
  */
-CalendarEventSchema.statics.getWeeklyCalenderEvensForSharedUser = function(data,callBack){
+CalendarEventSchema.statics.getWeeklyCalenderEvensForSharedUser = function(data, callBack){
 
     var _this = this;
     var moment = require('moment');
@@ -385,7 +385,7 @@ CalendarEventSchema.statics.getWeeklyCalenderEvensForSharedUser = function(data,
  *
  */
 CalendarEventSchema.statics.getWeeklyCalenderEvens = function(data,callBack){
-
+    console.log("1111");
     var _this = this;
     var moment = require('moment');
     var week = data['week'],month = (data['month'] -1),year = data['year'];
@@ -396,7 +396,7 @@ CalendarEventSchema.statics.getWeeklyCalenderEvens = function(data,callBack){
     if(week == 5){
         endDateOfWeek =  moment([year, month]).endOf('month').subtract(1,"millisecond");
     }
-
+    console.log("222");
     //get days betweek the week
     var dateArray = [];
     var currentDate = startDateOfWeek;
@@ -404,8 +404,24 @@ CalendarEventSchema.statics.getWeeklyCalenderEvens = function(data,callBack){
         dateArray.push(currentDate);
         currentDate = moment(currentDate).add(1, 'days');
     }
+    console.log("333");
+    var criteria =  { start_date_time: {$gte: startDateOfWeek, $lt: endDateOfWeek }};
 
-    var criteria =  { start_date_time: {$gte: startDateOfWeek, $lt: endDateOfWeek }, status: 1, user_id: data['user_id']};
+    switch (data['filter_by']) {
+        case 'group':
+            criteria['group_id'] = data['group_id'];
+            break;
+
+        case 'shared':
+            criteria['_id'] = data['_id'];
+             _id: data['_id']
+            break;
+        default:
+            criteria['user_id'] = data['user_id']
+    }
+    console.log(criteria);
+    console.log(" filter_by :: " + data['filter_by']);
+    // var criteria =  { start_date_time: {$gte: startDateOfWeek, $lt: endDateOfWeek }, status: 1, user_id: data['user_id']};
 
     _this.find(criteria).sort({created_at:-1}).exec(function(err,resultSet){
         if(!err){

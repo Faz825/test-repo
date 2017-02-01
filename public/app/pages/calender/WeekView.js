@@ -127,6 +127,7 @@ export default class WeekView extends React.Component {
         if(this.state.groupCall.isGroupCall){
             postData['isGroupCall'] = this.state.groupCall.isGroupCall;
             postData['groupId'] = this.state.groupCall.groupId;
+            postData['calendarOrigin'] = this.props.calendarOrigin;
         }
 
         $.ajax({
