@@ -59,25 +59,25 @@ var GroupsController = {
                     callBack(null, groupData);
                 }
             },
-            function createDefaultFolder(groupData, callBack) {
-
-                if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {
-
-                    var _folderData = {
-                        name: groupData.name,
-                        color: groupData.color,
-                        isGrouped: 1,
-                        user_id: userId,
-                        group_id: groupData._id
-                    };
-                    Folders.addNewFolder(_folderData, function (resultSet) {
-
-                        callBack(null, groupData);
-                    });
-                } else {
-                    callBack(null, groupData);
-                }
-            },
+            // function createDefaultFolder(groupData, callBack) {
+            //
+            //     if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {
+            //
+            //         var _folderData = {
+            //             name: groupData.name,
+            //             color: groupData.color,
+            //             isGrouped: 1,
+            //             user_id: userId,
+            //             group_id: groupData._id
+            //         };
+            //         Folders.addNewFolder(_folderData, function (resultSet) {
+            //
+            //             callBack(null, groupData);
+            //         });
+            //     } else {
+            //         callBack(null, groupData);
+            //     }
+            // },
             function createDefaultNoteBook(groupData, callBack) {
 
                 if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {
