@@ -15,7 +15,7 @@ export default class StatusList extends React.Component {
 
     render() {
         let _this = this;
-        let statusList = this.props.userList.map(function (oGroupedContacts, key) {
+        let statusList = this.props.userContacts.map(function (oGroupedContacts, key) {
             return (
                 <div className="contact-group" key={key}>
                     <p className="group-name">{oGroupedContacts.letter}</p>

@@ -17,6 +17,7 @@ class CallCenter {
         this.b6 = bit6Client;
         this.bit6Auth();
         this.loggedUser = Session.getSession('prg_lg');
+        this.socket = Socket.socket;
     }
 
     bit6Auth() {
@@ -38,7 +39,6 @@ class CallCenter {
                         console.log(err);
                         _this.bit6SignUp(ident, pass, oUser);
                     } else {
-                        console.log('logged in');
                         _this.b6.session.displayName = oUser.first_name + " " + oUser.last_name;
                         return true;
                     }
@@ -48,6 +48,17 @@ class CallCenter {
     }
 
     getContacts() {
+        let _this = this;
+
+        return $.ajax({
+            url: '/contacts/all',
+            method: "GET",
+            dataType: "JSON",
+            headers: {'prg-auth-header': _this.loggedUser.token}
+        });
+    }
+
+    getCallRecords() {
         let _this = this;
 
         return $.ajax({
@@ -88,8 +99,8 @@ class CallCenter {
      * @param aContacts - multiple user-id's or single user-id
      * @param status - status of user (online,offline,work-mode)
      * */
-    contactsStatus(aContacts, status) {
-        this.socket.emit('contacts status', {contacts: aContacts, status: status});
+    changeUserMode(oContact, status) {
+        this.socket.emit('contacts status', {contact: oContact, status: status});
     }
 
     /**
@@ -115,6 +126,20 @@ class CallCenter {
             url: '/call/add-record',
             method: "POST",
             data: {callRecord: oRecord},
+            headers: {'prg-auth-header': _this.loggedUser.token}
+        });
+    }
+
+    /**
+     * @param oUserMode - change user mode - online, offline & work-mode
+     * **/
+    updateUserMode(oUserMode) {
+        let _this = this;
+
+        return $.ajax({
+            url: '/me/update/user-mode',
+            method: "POST",
+            data: {userMode: oUserMode},
             headers: {'prg-auth-header': _this.loggedUser.token}
         });
     }

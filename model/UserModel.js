@@ -893,35 +893,35 @@ UserSchema.statics.getUser = function (criteria, showOptions, callBack) {
 UserSchema.statics.getUserAllDetails = function (criteria, callBack) {
     var _this = this;
     _this.findOne(criteria)
-        .exec(function(err,resultSet){
-            if(!err){
+        .exec(function (err, resultSet) {
+            if (!err) {
                 var _profileData = {
-                    id:resultSet._id,
-                    token:uuid.v1()+resultSet._id,
-                    first_name:resultSet.first_name,
-                    last_name:resultSet.last_name,
-                    email:resultSet.email,
-                    status:resultSet.status,
-                    user_name:resultSet.user_name,
-                    country:resultSet.country,
-                    dob:resultSet.dob,
-                    secretary_id:resultSet.secretary
+                    id: resultSet._id,
+                    token: uuid.v1() + resultSet._id,
+                    first_name: resultSet.first_name,
+                    last_name: resultSet.last_name,
+                    email: resultSet.email,
+                    status: resultSet.status,
+                    user_name: resultSet.user_name,
+                    country: resultSet.country,
+                    dob: resultSet.dob,
+                    secretary_id: resultSet.secretary
                 };
 
-                for(var i=0;i<resultSet.working_experiences.length;i++){
-                    if(resultSet.working_experiences[i].is_current_work_place){
-                        _profileData['company_name']=resultSet.working_experiences[i].company_name;
-                        _profileData['job_title']=resultSet.working_experiences[i].title;
+                for (var i = 0; i < resultSet.working_experiences.length; i++) {
+                    if (resultSet.working_experiences[i].is_current_work_place) {
+                        _profileData['company_name'] = resultSet.working_experiences[i].company_name;
+                        _profileData['job_title'] = resultSet.working_experiences[i].title;
                     }
                 }
 
-                if(resultSet.education_details.length > 0){
-                    _profileData['school']=resultSet.education_details[0].school;
-                    _profileData['grad_date']=resultSet.education_details[0].date_attended_to;
+                if (resultSet.education_details.length > 0) {
+                    _profileData['school'] = resultSet.education_details[0].school;
+                    _profileData['grad_date'] = resultSet.education_details[0].date_attended_to;
                 }
                 callBack({
-                    status:200,
-                    user:_profileData
+                    status: 200,
+                    user: _profileData
                 });
             } else {
                 console.log("Server Error --------")
@@ -976,7 +976,7 @@ UserSchema.statics.formatUser = function (userObject, showOptions) {
             country: userObject.country,
             user_name: userObject.user_name,
             introduction: userObject.introduction,
-            onlineMode:userObject.onlineMode
+            onlineMode: userObject.onlineMode
         };
         for (var i = 0; i < userObject.working_experiences.length; i++) {
             if (userObject.working_experiences[i].is_current_work_place) {
@@ -1412,9 +1412,9 @@ UserSchema.statics.getSenderDetails = function (related_senders, callBack) {
 };
 
 UserSchema.statics.modes = {
-    ONLINE    : 1,
-    OFFLINE   : 2,
-    WORK_MODE : 3
+    ONLINE: 1,
+    OFFLINE: 2,
+    WORK_MODE: 3
 };
 
 mongoose.model('User', UserSchema);
