@@ -300,7 +300,6 @@ var GroupFolderController ={
             },
             function getFolderDetails(folders,callBack){
                 console.log("came to getFolderDetails");
-                console.log(folders);
                 var dockedFolders = [];
                 if(typeof  folders != 'undefined' && folders) {
                     _async.eachSeries(folders, function(folder, callBackFolder){
