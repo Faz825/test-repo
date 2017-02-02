@@ -425,9 +425,8 @@ export class SharePopupNewUsr extends React.Component{
         let _this = this;
 
         let _newUserList = suggestions.map(function(suggestion,key){
-            //console.log(suggestion)
 
-            let profileImg = (suggestion.profile_image == "")? "/images/default-profile-pic.png" : suggestion.profile_image;
+            let profileImg = (suggestion.images.profile_image.http_url == "")? "/images/default-profile-pic.png" : suggestion.images.profile_image.http_url;
             let name = suggestion.first_name;
 
             return(
