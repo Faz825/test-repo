@@ -10260,18 +10260,18 @@ h1, h2, h3, h4, h5, h6 {
 */
 header {
   background: #fff;
-  padding: 12px 12px 8px;
+  padding: 10px 12px 0px;
 }
 header .branding {
   float: left;
-  margin-right: 46px;
-  width: 238px;
+  margin-right: 183px;
+  width: 101px;
 }
 header .search-holder {
   float: left;
   position: relative;
-  margin: 0 91px 0 0;
-  width: 350px;
+  margin: 0 76px 0 0;
+  width: 332px;
 }
 header .search-holder .form-control {
   width: 100%;
@@ -10307,25 +10307,66 @@ header .search-holder .fa-search {
 }
 header .notification-holder {
   float: left;
+  margin: -4px 0 0;
 }
 header .notification-holder .opt-holder {
-  margin-right: 13px;
+  margin-right: 15px;
   position: relative;
   float: left;
 }
 header .notification-holder .opt-holder .icon-holder {
-  width: 32px;
-  height: 32px;
-  border: 1px solid #f7f7f7;
+  width: 39px;
+  height: 39px;
+  border: 2px solid #f5f5f5;
   border-radius: 999px;
   cursor: pointer;
   text-align: center;
   padding: 3px;
+  display: inline-block;
+}
+header .notification-holder .opt-holder.news-feed .icon-holder {
+  background: url(../images/header-icons/news-feed-notifi-icon.png) no-repeat center center;
+}
+header .notification-holder .opt-holder.news-feed:hover .icon-holder {
+  background: url(../images/header-icons/news-feed-notifi-hover-icon.png) no-repeat center center;
+}
+header .notification-holder .opt-holder.news-feed.selected .icon-holder {
+  border: 2px solid rgba(165, 199, 73, 0.5);
+  background: url(../images/header-icons/news-feed-notifi-click-icon.png) #a6c74a no-repeat center center;
+}
+header .notification-holder .opt-holder.news-feed .notifi-alert-holder .notifi-num {
+  background-color: #a6c74a;
+}
+header .notification-holder .opt-holder.chat-icon .icon-holder {
+  background: url(../images/header-icons/chat-notifi-icon.png) no-repeat center center;
+}
+header .notification-holder .opt-holder.chat-icon:hover .icon-holder {
+  background: url(../images/header-icons/chat-notifi-hover-icon.png) no-repeat center center;
+}
+header .notification-holder .opt-holder.chat-icon.selected .icon-holder {
+  border: 2px solid rgba(0, 166, 239, 0.5);
+  background: url(../images/header-icons/chat-notifi-click-icon.png) #00a6ef no-repeat center center;
+}
+header .notification-holder .opt-holder.chat-icon .notifi-alert-holder .notifi-num {
+  background-color: #00a6ef;
+}
+header .notification-holder .opt-holder.friends-icon .icon-holder {
+  background: url(../images/header-icons/friends-notifi-icon.png) no-repeat center center;
+}
+header .notification-holder .opt-holder.friends-icon:hover .icon-holder {
+  background: url(../images/header-icons/friends-notifi-hover-icon.png) no-repeat center center;
+}
+header .notification-holder .opt-holder.friends-icon.selected .icon-holder {
+  border: 2px solid rgba(237, 30, 122, 0.5);
+  background: url(../images/header-icons/friends-notifi-click-icon.png) #ed1e7a no-repeat center center;
+}
+header .notification-holder .opt-holder.friends-icon .notifi-alert-holder .notifi-num {
+  background-color: #ed1e7a;
 }
 header .notification-holder .opt-holder .notifi-alert-holder {
   position: absolute;
-  top: -6px;
-  right: -4px;
+  top: -11px;
+  right: 1px;
 }
 header .notification-holder .opt-holder .notifi-alert-holder .notifi-num {
   color: #fff;
@@ -10338,12 +10379,12 @@ header .notification-holder .opt-holder .notifi-alert-holder .notifi-num {
 }
 header .notification-holder .profile-header-thumb {
   float: left;
-  width: 36px;
-  height: 36px;
+  width: 45px;
+  height: 43px;
   border-radius: 999px;
   overflow: hidden;
   cursor: pointer;
-  margin: -1px 0 0 4px;
+  margin: -1px 0 0 1px;
 }
 
 .dashboard-container {
@@ -10356,7 +10397,7 @@ header .notification-holder .profile-header-thumb {
 .dashboard-container .time-holder {
   position: absolute;
   width: 100%;
-  top: 6.6%;
+  top: 5.6%;
   left: 0;
   text-align: center;
 }
@@ -10367,56 +10408,54 @@ header .notification-holder .profile-header-thumb {
 }
 .dashboard-container .time-holder .date-text {
   text-transform: uppercase;
-  font-size: 1.125em;
+  font-size: 0.875em;
+  letter-spacing: 1px;
   font-weight: 300;
-  text-shadow: rgba(0, 0, 0, 0.4) 0px 1px 3px;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   .dashboard-container .time-holder .date-text {
-    font-size: 1em;
+    font-size: 0.875em;
   }
 }
 .dashboard-container .time-holder .time-text {
   font-weight: 200;
-  font-size: 7.5em;
-  text-shadow: rgba(0, 0, 0, 0.4) 0px 2px 3px;
+  font-size: 5.625em;
   margin-top: 20px;
   line-height: 0.7;
+  letter-spacing: 5px;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   .dashboard-container .time-holder .time-text {
-    font-size: 7em;
+    font-size: 5.625em;
   }
 }
 .dashboard-container .greeting-holder {
   text-align: center;
   position: absolute;
   width: 100%;
-  top: 26.7%;
+  top: 27.7%;
   left: 0;
 }
 .dashboard-container .greeting-holder .greeting-text {
   color: #fff;
-  font-family: Pantra-Bold;
-  font-size: 4.125em;
-  text-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px;
+  font-size: 3.25em;
   margin: 0;
   line-height: 1.2;
+  letter-spacing: 3px;
+  font-weight: 700;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   .dashboard-container .greeting-holder .greeting-text {
-    font-size: 3.75em;
+    font-size: 3.25em;
   }
 }
 .dashboard-container .main-task-holder {
   position: absolute;
   width: 100%;
-  top: 43.4%;
+  top: 44.2%;
   left: 0;
 }
 .dashboard-container .main-task-holder .inner-wrapper {
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 12px;
   padding: 4vh 35px;
   width: 55%;
   margin: 0 auto;
@@ -10425,8 +10464,9 @@ header .notification-holder .profile-header-thumb {
 }
 .dashboard-container .main-task-holder .inner-wrapper .section-title {
   font-weight: 700;
-  font-size: 1.5em;
-  margin: 0 0 27px;
+  font-size: 1.25em;
+  margin: 0 0 12px;
+  letter-spacing: 1px;
 }
 .dashboard-container .main-task-holder .inner-wrapper .task-field {
   border-radius: 0;
@@ -10434,9 +10474,10 @@ header .notification-holder .profile-header-thumb {
   text-align: center;
   padding: 0 10px 18px;
   color: #fff;
-  height: 52px;
-  font-size: 2.75em;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  height: 64px;
+  font-weight: 300;
+  font-size: 2.25em;
+  border-bottom: 1px solid #e2e2e2;
   border-top: 0;
   border-left: 0;
   border-right: 0;
@@ -10453,27 +10494,29 @@ header .notification-holder .profile-header-thumb {
   text-align: center;
   position: absolute;
   width: 100%;
-  top: 74%;
+  top: 78%;
   left: 0;
 }
 .dashboard-container .quote-holder .quote-text {
-  font-weight: 300;
-  margin: 0 0 10px;
+  font-weight: 500;
+  margin: 0 0 15px;
   letter-spacing: 1px;
   color: #fff;
   line-height: 1;
+  font-size: 0.75em;
 }
 .dashboard-container .quote-holder .quote-author {
-  color: #fff;
   text-transform: uppercase;
-  color: #00a5ef;
-  font-size: 0.75em;
+  color: #00a6ef;
+  font-size: 0.5625em;
   margin: 0;
+  font-weight: 300;
+  letter-spacing: 1px;
 }
 .dashboard-container .weather-holder {
   position: absolute;
-  top: 6.3vh;
-  right: 1.7vw;
+  top: 8.3vh;
+  right: 1.1vw;
   text-align: right;
 }
 .dashboard-container .weather-holder .weather-icon {
@@ -10481,20 +10524,21 @@ header .notification-holder .profile-header-thumb {
 }
 .dashboard-container .weather-holder .weather-text {
   color: #fff;
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   font-weight: 300;
-  font-size: 2.25em;
+  font-size: 2em;
   line-height: 0.8;
-  text-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 .dashboard-container .weather-holder .weather-location {
   margin: 0;
   color: #fff;
-  text-transform: uppercase;
-  font-weight: 500;
+  text-transform: capitalize;
+  font-weight: 400;
   line-height: 1;
-  font-size: 0.75em;
-  text-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px;
+  font-size: 0.875em;
+  letter-spacing: 1px;
 }
 .dashboard-container .wallpaper-holder {
   z-index: -1;
@@ -10504,6 +10548,15 @@ header .notification-holder .profile-header-thumb {
   left: 0;
   position: fixed;
   background-size: cover;
+}
+.dashboard-container .wallpaper-holder .overlay {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: url(../images/bg-overlay.png) repeat 0 0;
 }
 
 .folder-container {
@@ -10614,7 +10667,6 @@ header .notification-holder .profile-header-thumb {
   margin-right: 15px;
   overflow: hidden;
   border-radius: 5px;
-  background: #fff;
   box-shadow: 1px 0 12px -8px #000000;
 }
 .folder-container .folder-body .folder .folder-wrapper .drag-shader {
@@ -11003,16 +11055,66 @@ header .notification-holder .profile-header-thumb {
   overflow: hidden;
   box-shadow: 0px 2px 5px 1px #c4c4c4;
 }
-.calender-container .calender-box .month-name {
+.calender-container .calender-box .month-name-wrapper {
+  background-color: #00a6ef;
+  padding: 13px 28px 9px;
   text-align: center;
-  color: #fff;
+  position: relative;
+}
+.calender-container .calender-box .month-name-wrapper .month-name {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.87);
   font-size: 2.25em;
   font-weight: 500;
   text-transform: capitalize;
-  padding: 9px 0 13px;
   line-height: 1;
   margin: 0;
-  background-color: #00a6ef;
+}
+.calender-container .calender-box .month-name-wrapper .date-wrapper {
+  position: absolute;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  background-color: transparent;
+  top: 15px;
+  left: 29px;
+  overflow: hidden;
+}
+.calender-container .calender-box .month-name-wrapper .date-wrapper .date-nav {
+  float: left;
+  cursor: pointer;
+}
+.calender-container .calender-box .month-name-wrapper .date-wrapper .date-nav i {
+  padding: 8px 9px 9px 7px;
+  color: #fff;
+}
+.calender-container .calender-box .month-name-wrapper .date-wrapper .date {
+  float: left;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #fff;
+  text-align: center;
+  padding: 4px 21px;
+  text-transform: lowercase;
+}
+.calender-container .calender-box .month-name-wrapper .date-wrapper .date p {
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.87);
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.calender-container .calender-box .month-name-wrapper .calender-date {
+  position: absolute;
+  top: 16px;
+  right: 30px;
+}
+.calender-container .calender-box .month-name-wrapper .calender-date p {
+  margin-top: 0;
+  margin-bottom: 0;
+  float: right;
+  text-transform: uppercase;
+  font-size: 2.25em;
+  color: #ffffff;
+  font-weight: 300;
+  line-height: 0.7;
 }
 .calender-container .calender-box > div.header {
   float: left;
@@ -11150,7 +11252,7 @@ header .notification-holder .profile-header-thumb {
   cursor: pointer;
   font-weight: normal;
   height: 108px;
-  padding: 7px 10px 0 0;
+  padding: 9px 9px 0 0;
   border-left: solid 1px #dee6eb;
   position: relative;
   font-family: "Work Sans", sans-serif;
@@ -11173,11 +11275,12 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-box > div.week.names > span {
   color: #00a6ef;
-  font-weight: 500;
+  font-weight: 400;
   padding: 13px 0 12px;
   text-align: center;
   line-height: 1;
   height: auto;
+  font-size: 1em;
 }
 .calender-container .calender-box > div.week.names > span:nth-child(1) {
   color: #aaaaaa;
@@ -11229,18 +11332,26 @@ header .notification-holder .profile-header-thumb {
   height: 50px;
 }
 .calender-container .calender-box > div.week > span.day.selected > .squre {
-  border-radius: 999px;
-  width: auto;
-  padding: 5px 7px 7px 5px;
-  background: #00a6ef;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00a6ef;
   color: #ffffff;
+  min-width: 30px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.calender-container .calender-box > div.week > span.day.selected > .squre:before {
+  content: '';
+  float: left;
+  width: auto;
+  padding-bottom: 100%;
 }
 .calender-container .calender-box > div.week > span.day .squre {
   padding: 0;
-  font-size: 1.25em;
+  font-size: 1.125em;
   letter-spacing: -2px;
-  color: #000;
+  color: #555555;
   line-height: 1;
 }
 .calender-container .calender-box > div.week > span.day .event-counts {
@@ -14206,7 +14317,6 @@ header .notification-holder .profile-header-thumb {
   margin-right: 15px;
   overflow: hidden;
   border-radius: 5px;
-  background: #fff;
   box-shadow: 1px 0 12px -8px #000000;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .drag-shader {
@@ -14594,16 +14704,66 @@ header .notification-holder .profile-header-thumb {
   overflow: hidden;
   box-shadow: 0px 2px 5px 1px #c4c4c4;
 }
-.group-container .group-calendar-container .calender-box .month-name {
+.group-container .group-calendar-container .calender-box .month-name-wrapper {
+  background-color: #00a6ef;
+  padding: 13px 28px 9px;
   text-align: center;
-  color: #fff;
+  position: relative;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .month-name {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.87);
   font-size: 2.25em;
   font-weight: 500;
   text-transform: capitalize;
-  padding: 9px 0 13px;
   line-height: 1;
   margin: 0;
-  background-color: #00a6ef;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper {
+  position: absolute;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  background-color: transparent;
+  top: 15px;
+  left: 29px;
+  overflow: hidden;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date-nav {
+  float: left;
+  cursor: pointer;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date-nav i {
+  padding: 8px 9px 9px 7px;
+  color: #fff;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date {
+  float: left;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #fff;
+  text-align: center;
+  padding: 4px 21px;
+  text-transform: lowercase;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date p {
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.87);
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .calender-date {
+  position: absolute;
+  top: 16px;
+  right: 30px;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .calender-date p {
+  margin-top: 0;
+  margin-bottom: 0;
+  float: right;
+  text-transform: uppercase;
+  font-size: 2.25em;
+  color: #ffffff;
+  font-weight: 300;
+  line-height: 0.7;
 }
 .group-container .group-calendar-container .calender-box > div.header {
   float: left;
@@ -14741,7 +14901,7 @@ header .notification-holder .profile-header-thumb {
   cursor: pointer;
   font-weight: normal;
   height: 108px;
-  padding: 7px 10px 0 0;
+  padding: 9px 9px 0 0;
   border-left: solid 1px #dee6eb;
   position: relative;
   font-family: "Work Sans", sans-serif;
@@ -14764,11 +14924,12 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span {
   color: #00a6ef;
-  font-weight: 500;
+  font-weight: 400;
   padding: 13px 0 12px;
   text-align: center;
   line-height: 1;
   height: auto;
+  font-size: 1em;
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(1) {
   color: #aaaaaa;
@@ -14820,18 +14981,26 @@ header .notification-holder .profile-header-thumb {
   height: 50px;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre {
-  border-radius: 999px;
-  width: auto;
-  padding: 5px 7px 7px 5px;
-  background: #00a6ef;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00a6ef;
   color: #ffffff;
+  min-width: 30px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre:before {
+  content: '';
+  float: left;
+  width: auto;
+  padding-bottom: 100%;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .squre {
   padding: 0;
-  font-size: 1.25em;
+  font-size: 1.125em;
   letter-spacing: -2px;
-  color: #000;
+  color: #555555;
   line-height: 1;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-counts {
@@ -15772,16 +15941,66 @@ header .notification-holder .profile-header-thumb {
   overflow: hidden;
   box-shadow: 0px 2px 5px 1px #c4c4c4;
 }
-.group-container .group-calendar-container .calender-box .month-name {
+.group-container .group-calendar-container .calender-box .month-name-wrapper {
+  background-color: #00a6ef;
+  padding: 13px 28px 9px;
   text-align: center;
-  color: #fff;
+  position: relative;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .month-name {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.87);
   font-size: 2.25em;
   font-weight: 500;
   text-transform: capitalize;
-  padding: 9px 0 13px;
   line-height: 1;
   margin: 0;
-  background-color: #00a6ef;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper {
+  position: absolute;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  background-color: transparent;
+  top: 15px;
+  left: 29px;
+  overflow: hidden;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date-nav {
+  float: left;
+  cursor: pointer;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date-nav i {
+  padding: 8px 9px 9px 7px;
+  color: #fff;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date {
+  float: left;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #fff;
+  text-align: center;
+  padding: 4px 21px;
+  text-transform: lowercase;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date p {
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.87);
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .calender-date {
+  position: absolute;
+  top: 16px;
+  right: 30px;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .calender-date p {
+  margin-top: 0;
+  margin-bottom: 0;
+  float: right;
+  text-transform: uppercase;
+  font-size: 2.25em;
+  color: #ffffff;
+  font-weight: 300;
+  line-height: 0.7;
 }
 .group-container .group-calendar-container .calender-box > div.header {
   float: left;
@@ -15919,7 +16138,7 @@ header .notification-holder .profile-header-thumb {
   cursor: pointer;
   font-weight: normal;
   height: 108px;
-  padding: 7px 10px 0 0;
+  padding: 9px 9px 0 0;
   border-left: solid 1px #dee6eb;
   position: relative;
   font-family: "Work Sans", sans-serif;
@@ -15942,11 +16161,12 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span {
   color: #00a6ef;
-  font-weight: 500;
+  font-weight: 400;
   padding: 13px 0 12px;
   text-align: center;
   line-height: 1;
   height: auto;
+  font-size: 1em;
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(1) {
   color: #aaaaaa;
@@ -15998,18 +16218,26 @@ header .notification-holder .profile-header-thumb {
   height: 50px;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre {
-  border-radius: 999px;
-  width: auto;
-  padding: 5px 7px 7px 5px;
-  background: #00a6ef;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00a6ef;
   color: #ffffff;
+  min-width: 30px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre:before {
+  content: '';
+  float: left;
+  width: auto;
+  padding-bottom: 100%;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .squre {
   padding: 0;
-  font-size: 1.25em;
+  font-size: 1.125em;
   letter-spacing: -2px;
-  color: #000;
+  color: #555555;
   line-height: 1;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-counts {
@@ -16593,16 +16821,66 @@ header .notification-holder .profile-header-thumb {
   overflow: hidden;
   box-shadow: 0px 2px 5px 1px #c4c4c4;
 }
-.group-container .group-calendar-container .calender-box .month-name {
+.group-container .group-calendar-container .calender-box .month-name-wrapper {
+  background-color: #00a6ef;
+  padding: 13px 28px 9px;
   text-align: center;
-  color: #fff;
+  position: relative;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .month-name {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.87);
   font-size: 2.25em;
   font-weight: 500;
   text-transform: capitalize;
-  padding: 9px 0 13px;
   line-height: 1;
   margin: 0;
-  background-color: #00a6ef;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper {
+  position: absolute;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  background-color: transparent;
+  top: 15px;
+  left: 29px;
+  overflow: hidden;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date-nav {
+  float: left;
+  cursor: pointer;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date-nav i {
+  padding: 8px 9px 9px 7px;
+  color: #fff;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date {
+  float: left;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #fff;
+  text-align: center;
+  padding: 4px 21px;
+  text-transform: lowercase;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date p {
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.87);
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .calender-date {
+  position: absolute;
+  top: 16px;
+  right: 30px;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .calender-date p {
+  margin-top: 0;
+  margin-bottom: 0;
+  float: right;
+  text-transform: uppercase;
+  font-size: 2.25em;
+  color: #ffffff;
+  font-weight: 300;
+  line-height: 0.7;
 }
 .group-container .group-calendar-container .calender-box > div.header {
   float: left;
@@ -16740,7 +17018,7 @@ header .notification-holder .profile-header-thumb {
   cursor: pointer;
   font-weight: normal;
   height: 108px;
-  padding: 7px 10px 0 0;
+  padding: 9px 9px 0 0;
   border-left: solid 1px #dee6eb;
   position: relative;
   font-family: "Work Sans", sans-serif;
@@ -16763,11 +17041,12 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span {
   color: #00a6ef;
-  font-weight: 500;
+  font-weight: 400;
   padding: 13px 0 12px;
   text-align: center;
   line-height: 1;
   height: auto;
+  font-size: 1em;
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(1) {
   color: #aaaaaa;
@@ -16819,18 +17098,26 @@ header .notification-holder .profile-header-thumb {
   height: 50px;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre {
-  border-radius: 999px;
-  width: auto;
-  padding: 5px 7px 7px 5px;
-  background: #00a6ef;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00a6ef;
   color: #ffffff;
+  min-width: 30px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre:before {
+  content: '';
+  float: left;
+  width: auto;
+  padding-bottom: 100%;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .squre {
   padding: 0;
-  font-size: 1.25em;
+  font-size: 1.125em;
   letter-spacing: -2px;
-  color: #000;
+  color: #555555;
   line-height: 1;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-counts {
@@ -17207,16 +17494,66 @@ header .notification-holder .profile-header-thumb {
   overflow: hidden;
   box-shadow: 0px 2px 5px 1px #c4c4c4;
 }
-.group-container .group-calendar-container .calender-box .month-name {
+.group-container .group-calendar-container .calender-box .month-name-wrapper {
+  background-color: #00a6ef;
+  padding: 13px 28px 9px;
   text-align: center;
-  color: #fff;
+  position: relative;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .month-name {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.87);
   font-size: 2.25em;
   font-weight: 500;
   text-transform: capitalize;
-  padding: 9px 0 13px;
   line-height: 1;
   margin: 0;
-  background-color: #00a6ef;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper {
+  position: absolute;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  background-color: transparent;
+  top: 15px;
+  left: 29px;
+  overflow: hidden;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date-nav {
+  float: left;
+  cursor: pointer;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date-nav i {
+  padding: 8px 9px 9px 7px;
+  color: #fff;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date {
+  float: left;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #fff;
+  text-align: center;
+  padding: 4px 21px;
+  text-transform: lowercase;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .date-wrapper .date p {
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.87);
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .calender-date {
+  position: absolute;
+  top: 16px;
+  right: 30px;
+}
+.group-container .group-calendar-container .calender-box .month-name-wrapper .calender-date p {
+  margin-top: 0;
+  margin-bottom: 0;
+  float: right;
+  text-transform: uppercase;
+  font-size: 2.25em;
+  color: #ffffff;
+  font-weight: 300;
+  line-height: 0.7;
 }
 .group-container .group-calendar-container .calender-box > div.header {
   float: left;
@@ -17354,7 +17691,7 @@ header .notification-holder .profile-header-thumb {
   cursor: pointer;
   font-weight: normal;
   height: 108px;
-  padding: 7px 10px 0 0;
+  padding: 9px 9px 0 0;
   border-left: solid 1px #dee6eb;
   position: relative;
   font-family: "Work Sans", sans-serif;
@@ -17377,11 +17714,12 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span {
   color: #00a6ef;
-  font-weight: 500;
+  font-weight: 400;
   padding: 13px 0 12px;
   text-align: center;
   line-height: 1;
   height: auto;
+  font-size: 1em;
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(1) {
   color: #aaaaaa;
@@ -17433,18 +17771,26 @@ header .notification-holder .profile-header-thumb {
   height: 50px;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre {
-  border-radius: 999px;
-  width: auto;
-  padding: 5px 7px 7px 5px;
-  background: #00a6ef;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00a6ef;
   color: #ffffff;
+  min-width: 30px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre:before {
+  content: '';
+  float: left;
+  width: auto;
+  padding-bottom: 100%;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .squre {
   padding: 0;
-  font-size: 1.25em;
+  font-size: 1.125em;
   letter-spacing: -2px;
-  color: #000;
+  color: #555555;
   line-height: 1;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-counts {
@@ -18700,19 +19046,18 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action {
   position: relative;
-  margin-top: 2px;
+  margin-top: 4px;
   margin-left: 74px;
   float: left;
   cursor: pointer;
+  width: 22px;
+  height: 22px;
 }
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action i {
-  padding: 5px 5px;
-  color: #1b9ed9;
-  height: 20px;
-  width: 20px;
-  font-size: 0.625em;
-  border: 1px solid #1b9ed9;
-  border-radius: 100%;
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action .remove-people {
+  position: absolute;
+  background-image: url("../images/folder/remove-people.png");
+  width: 22px;
+  height: 22px;
 }
 .popup-holder .share-folder-popup .folder-footer .footer-action-wrapper {
   margin-top: 24px;
@@ -18835,19 +19180,19 @@ header .notification-holder .profile-header-thumb {
   color: #000000;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .action {
+  position: relative;
   margin-top: 5px;
   margin-right: 20px;
   float: right;
   cursor: pointer;
+  width: 23px;
+  height: 23px;
 }
-.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .action i {
-  width: 20px;
-  height: 20px;
-  padding: 4px 5px;
-  color: #1b9ed9;
-  font-size: 0.625em;
-  border: 1px solid #1b9ed9;
-  border-radius: 100%;
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .action .add-people {
+  position: absolute;
+  background-image: url("../images/folder/add-people.png");
+  width: 23px;
+  height: 23px;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:hover {
   background-color: #1b9ed9;
@@ -19485,11 +19830,16 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .work-mode-popup-wrapper .header-wrapper {
   text-align: center;
+  padding-top: 19px;
 }
 .popup-holder .work-mode-popup-wrapper .header-wrapper .logo {
   display: inline-block;
+  margin-left: -25px;
+  margin-top: -23px;
 }
 .popup-holder .work-mode-popup-wrapper .header-wrapper .header {
+  margin-left: 15px;
+  margin-top: 25px;
   color: rgba(0, 0, 0, 0.87);
   font-family: Pantra-Bold;
   font-size: 36px;
@@ -19500,16 +19850,19 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper {
   overflow: hidden;
+  margin-left: 101px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .inner-header {
+  margin-top: 22px;
   color: rgba(0, 0, 0, 0.87);
   font-family: "Work Sans";
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 24px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper {
   overflow: hidden;
+  margin-top: 17px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option {
   text-align: left;
@@ -19542,7 +19895,8 @@ header .notification-holder .profile-header-thumb {
   text-align: left;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .select-content .type-icon {
-  margin-top: 8px;
+  margin-top: 6px;
+  margin-left: 12px;
   float: left;
   margin-right: 22px;
 }
@@ -19550,7 +19904,7 @@ header .notification-holder .profile-header-thumb {
   float: left;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .select-content .type-content .type-title {
-  margin-top: 6px;
+  margin-top: 2px;
   color: rgba(0, 0, 0, 0.87);
   font-family: "Work Sans";
   font-size: 0.875em;
@@ -19642,11 +19996,11 @@ header .notification-holder .profile-header-thumb {
 
 .settings-icon {
   position: fixed;
-  bottom: 30px;
-  left: 2.6vw;
-  width: 41px;
+  bottom: 21px;
+  left: 2.1vw;
+  width: 32px;
   z-index: 1;
-  height: 40px;
+  height: 32px;
   background: url(../images/icons/cog-icon.png) no-repeat 0 0;
   cursor: pointer;
   transition: 0.5s all;
@@ -19660,11 +20014,11 @@ header .notification-holder .profile-header-thumb {
 
 .widget-icon {
   position: absolute;
-  top: 6.5vh;
+  top: 16.6vh;
   left: 0;
   background: url(../images/icons/widget-icon.png) no-repeat 0 0;
-  width: 50px;
-  height: 50px;
+  width: 39px;
+  height: 39px;
   cursor: pointer;
 }
 
@@ -19679,7 +20033,7 @@ footer .notification-alert-holder {
   position: relative;
   float: left;
   background: #fff;
-  border-radius: 6px 6px 0 0;
+  border-radius: 11px 11px 0 0;
   width: 94px;
   height: 73px;
   border: 1px solid #e2e2e2;
@@ -19691,35 +20045,65 @@ footer .notification-alert-holder .notifi-brand-icon {
 }
 footer .notification-alert-holder .notifi-icon-holder {
   float: right;
-  margin-right: 5px;
+  margin: 5px 4px 0 0;
 }
 footer .notification-alert-holder .notifi-icon-holder .notifi-icons {
-  padding: 6px 6px 5px;
-  border-bottom: 1px solid #f2f3f3;
+  border-bottom: 1px solid #dddddd;
   cursor: pointer;
   position: relative;
+  text-align: center;
 }
 footer .notification-alert-holder .notifi-icon-holder .notifi-icons:last-child {
   border: none;
 }
-footer .notification-alert-holder .notifi-icon-holder .notifi-icons img {
+footer .notification-alert-holder .notifi-icon-holder .notifi-icons .icon {
+  margin: 4px 6px 5px;
   display: block;
+}
+footer .notification-alert-holder .notifi-icon-holder .notifi-icons.productivity-notifi {
+  margin-top: 2px;
+}
+footer .notification-alert-holder .notifi-icon-holder .notifi-icons.productivity-notifi:hover .icon {
+  background: url(../images/icons/productivity-hover-icon.png) no-repeat 0 0;
+}
+footer .notification-alert-holder .notifi-icon-holder .notifi-icons.productivity-notifi .has-notifi {
+  background: #a6c74a;
+}
+footer .notification-alert-holder .notifi-icon-holder .notifi-icons.productivity-notifi .icon {
+  width: 14px;
+  height: 11px;
+  background: url(../images/icons/productivity-icon.png) no-repeat 0 0;
+}
+footer .notification-alert-holder .notifi-icon-holder .notifi-icons.todo-notifi:hover .icon {
+  background: url(../images/icons/to-do-hover-icon.png) no-repeat 0 0;
+}
+footer .notification-alert-holder .notifi-icon-holder .notifi-icons.todo-notifi .has-notifi {
+  background: #ed1e7a;
+}
+footer .notification-alert-holder .notifi-icon-holder .notifi-icons.todo-notifi .icon {
+  width: 11px;
+  height: 12px;
+  background: url(../images/icons/to-do-icon.png) no-repeat 0 0;
+}
+footer .notification-alert-holder .notifi-icon-holder .notifi-icons.social-notifi:hover .icon {
+  background: url(../images/icons/social-notifi-hover-icon.png) no-repeat 0 0;
+}
+footer .notification-alert-holder .notifi-icon-holder .notifi-icons.social-notifi .has-notifi {
+  background: #00a6ef;
+}
+footer .notification-alert-holder .notifi-icon-holder .notifi-icons.social-notifi .icon {
+  width: 12px;
+  height: 12px;
+  background: url(../images/icons/social-notifi-icon.png) no-repeat 0 0;
 }
 footer .notification-alert-holder .notifi-icon-holder .notifi-icons .has-notifi {
   display: block;
   width: 7px;
   height: 7px;
-  border: 2px solid #fff;
   position: absolute;
-  top: 4px;
-  right: 5px;
+  top: -4px;
+  right: -2px;
   border-radius: 999px;
-}
-footer .notification-alert-holder .notifi-icon-holder .notifi-icons.todo-notifi .has-notifi {
-  background: #f11379;
-}
-footer .notification-alert-holder .notifi-icon-holder .notifi-icons.social-notifi .has-notifi {
-  background: #a6c74a;
 }
 @media (min-width: 1024px) and (max-width: 1279px) {
   footer .notification-alert-holder .notifi-icon-holder {
@@ -19730,81 +20114,125 @@ footer .nav-holder {
   width: 78.8%;
   float: left;
   position: relative;
-  padding: 11px 0 5px;
+  padding: 12px 0 7px;
   margin: 0 7px 0;
-  background: rgba(255, 255, 255, 0.8);
+  background-color: rgba(241, 243, 243, 0.54);
   border-radius: 10px 10px 0 0;
 }
 footer .nav-holder .nav-item {
   float: left;
-  padding: 0 3.75%;
+  padding: 0 3.85%;
   text-align: center;
   position: relative;
-  border-right: 1px solid #817f88;
   cursor: pointer;
 }
-footer .nav-holder .nav-item:last-child {
-  border: none;
+footer .nav-holder .nav-item:last-child:after {
+  display: none;
+}
+footer .nav-holder .nav-item:after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 1px;
+  height: 80%;
+  background: #e3e3e1;
+}
+footer .nav-holder .nav-item.notebooks.active .icon-holder {
+  background-color: #00a6ef;
+  background-image: url(../images/nav-icons/note-click-icon.png);
 }
 footer .nav-holder .nav-item.notebooks .icon-holder {
-  padding: 13px 10px 10px;
+  background-image: url(../images/nav-icons/note-icon.png);
+}
+footer .nav-holder .nav-item.folders.active .icon-holder {
+  background-color: #00a6ef;
+  background-image: url(../images/nav-icons/folder-click-icon.png);
 }
 footer .nav-holder .nav-item.folders .icon-holder {
-  padding: 12px 10px 10px;
+  background-image: url(../images/nav-icons/folder-icon.png);
+}
+footer .nav-holder .nav-item.news.active .icon-holder {
+  background-color: #00a6ef;
+  background-image: url(../images/nav-icons/folder-click-icon.png);
 }
 footer .nav-holder .nav-item.news .icon-holder {
-  padding: 13px 10px 10px;
+  background-image: url(../images/nav-icons/news-icon.png);
+}
+footer .nav-holder .nav-item.interests.active .icon-holder {
+  background-color: #00a6ef;
+  background-image: url(../images/nav-icons/interest-click-icon.png);
 }
 footer .nav-holder .nav-item.interests .icon-holder {
-  padding: 11px 10px 10px;
+  background-image: url(../images/nav-icons/interest-icon.png);
+}
+footer .nav-holder .nav-item.groups.active .icon-holder {
+  background-color: #00a6ef;
+  background-image: url(../images/nav-icons/groups-click-icon.png);
 }
 footer .nav-holder .nav-item.groups .icon-holder {
-  padding: 0;
+  background-image: url(../images/nav-icons/groups-icon.png);
+}
+footer .nav-holder .nav-item.calendar.active .icon-holder {
+  background-color: #00a6ef;
+  background-image: url(../images/nav-icons/cal-click-icon.png);
+}
+footer .nav-holder .nav-item.calendar .icon-holder {
+  background-image: url(../images/nav-icons/cal-icon.png);
+}
+footer .nav-holder .nav-item.call-center.active .icon-holder {
+  background-color: #00a6ef;
+  background-image: url(../images/nav-icons/call-center-click-icon.png);
+}
+footer .nav-holder .nav-item.call-center .icon-holder {
+  background-image: url(../images/nav-icons/call-center-icon.png);
 }
 footer .nav-holder .nav-item .icon-holder {
-  width: 37px;
-  height: 37px;
+  width: 35px;
+  height: 35px;
   margin: 0 auto;
-  background: #fff;
+  background-color: #fff;
   text-align: center;
   border-radius: 999px;
-  padding: 10px;
+  display: block;
+  background-position: center center;
+  background-repeat: no-repeat;
   -webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px;
 }
-footer .nav-holder .nav-item .icon-holder > img {
-  width: 100%;
-  height: auto;
-}
 footer .nav-holder .nav-item .nav-title {
-  font-weight: 500;
-  color: #000;
-  font-size: 0.6875em;
+  font-weight: 400;
+  color: #333333;
+  font-size: 0.5625em;
   text-transform: capitalize;
-  margin: 4px 0 0;
+  margin: 10px 0 0;
+  letter-spacing: 1px;
+  line-height: 1;
 }
 footer.dashboard-footer .nav-holder {
-  background: rgba(255, 255, 255, 0.2);
+  background-color: rgba(241, 243, 243, 0.54);
 }
 footer.dashboard-footer .nav-holder .nav-item .nav-title {
-  color: #fff;
+  color: #333333;
 }
 footer .work-mode-holder {
   float: left;
   width: 82px;
   height: 73px;
   border: 1px solid #e2e2e2;
-  border-radius: 6px 6px 0 0;
+  border-radius: 11px 11px 0 0;
   cursor: pointer;
   background: #fff;
   text-align: center;
-  padding: 17px 0 0;
+  padding: 12px 0 0;
 }
 footer .work-mode-holder .section-title {
-  color: #a6c74a;
-  text-transform: capitalize;
-  font-size: 0.6875em;
-  font-weight: 500;
-  margin: 11px 0 0;
+  color: #333333;
+  text-transform: none;
+  font-family: Pantra-Bold;
+  font-size: 0.5625em;
+  margin: 14px 0 0;
   line-height: 1;
+  opacity: 0.66;
+  letter-spacing: 1px;
 }

@@ -195,7 +195,7 @@ export default class SharePopup extends React.Component{
                                                 </select>
                                             </div>
                                             <div className="action" onClick={(event)=>this.handleClick(user)}>
-                                                <i className="fa fa-minus" aria-hidden="true"></i>
+                                                <span className="remove-people"></span>
                                             </div>
                                         </div>
                                         : null
@@ -220,7 +220,7 @@ export default class SharePopup extends React.Component{
                                                 <p className="pending">Request Pending</p>
                                             </div>
                                             <div className="action" onClick={()=>this.handleClick(user)}>
-                                                <i className="fa fa-minus" aria-hidden="true"></i>
+                                                <span className="remove-people"></span>
                                             </div>
                                         </div>
                                         : null
@@ -435,16 +435,14 @@ export class SharePopupNewUsr extends React.Component{
             let name = suggestion.first_name;
 
             return(
-                <div className="suggestions-wrapper" key={key}>
-                    <div className="suggestion">
-                        <img className="user-image img-circle" src={profileImg} alt={name}/>
+                <div className="suggestion" key={key}>
+                    <img className="user-image img-circle" src={profileImg} alt={name}/>
 
-                        <div className="name-wrapper">
-                            <p className="name">{suggestion.first_name} {suggestion.last_name}</p>
-                        </div>
-                        <div className="action" onClick={()=>_this.shareFolder(suggestion)}>
-                            <i className="fa fa-plus" aria-hidden="true"></i>
-                        </div>
+                    <div className="name-wrapper">
+                        <p className="name">{suggestion.first_name} {suggestion.last_name}</p>
+                    </div>
+                    <div className="action" onClick={()=>_this.shareFolder(suggestion)}>
+                        <span className="add-people"></span>
                     </div>
                 </div>
             )
@@ -458,7 +456,9 @@ export class SharePopupNewUsr extends React.Component{
                         <span className="input-ico"></span>
                         <input type="text" className="form-control" placeholder="Type name" onChange={this._handleAddNewUser}/>
                     </div>
-                    {_newUserList}
+                    <div className="suggestions-wrapper">
+                        {_newUserList}
+                    </div>
                     {this.getPopupAddUser()}
                 </section>
             </div>

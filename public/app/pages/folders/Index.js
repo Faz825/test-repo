@@ -484,7 +484,7 @@ export default class Index extends React.Component{
             <div>
                 {this.state.isShowingModal &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} className="modalPopup" width="438px">
+                    <ModalDialog onClose={this.handleClose.bind(this)} className="create-folder modalPopup" width="438px">
                         <div className="popup-holder">
                             <section className="create-folder-popup">
                                 <section className="folder-header">

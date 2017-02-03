@@ -546,6 +546,10 @@ a.rc-time-picker-panel-clear-btn {
   border-radius: 5px;
 }
 
+.create-folder.modalPopup {
+    box-shadow: none;
+}
+
 /* Footer on collapse */
 .body-container.sub-page{
 	padding-bottom: 100px;
