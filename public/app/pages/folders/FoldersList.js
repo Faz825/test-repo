@@ -289,7 +289,7 @@ export default class FolderList extends React.Component{
                 break;
         }
 
-        let _folderName = folderData.folder_name == 'undefined' ? folderData.folder_name : folderData.folder_name.length <= 15 ? folderData.folder_name : folderData.folder_name.slice(0,14) + '...';
+        let _folderName = folderData.folder_name == 'undefined' ? folderData.folder_name : folderData.folder_name.length <= 12 ? folderData.folder_name : folderData.folder_name.slice(0,14) + '...';
 
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>

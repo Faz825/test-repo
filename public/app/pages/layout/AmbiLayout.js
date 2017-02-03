@@ -178,8 +178,8 @@ export default class AmbiLayout extends React.Component {
     }
 
     handleClick() {
-        //this.setState({isShowingModal: true});
-        this.setState({isShowingWMP: true});
+        this.setState({isShowingModal: true});
+        //this.setState({isShowingWMP: true});
     }
 
     handleClose() {

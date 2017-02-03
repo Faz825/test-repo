@@ -509,7 +509,7 @@ export default class Index extends React.Component{
                                     </div>
                                     <div className="folder-color">
                                         <div className="col-sm-12 input-group">
-                                            <p>Choose a colour</p>
+                                            <p>Choose a color</p>
                                             <div className="color-palette clearfix">
                                                 <div className={this.isActive('#00a6ef')} style={{backgroundColor: "#00a6ef"}} data-color="#00a6ef" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
