@@ -614,7 +614,7 @@ export default class DayView extends Component {
                                         />
                                     </div>
 
-                                    <div className="tag-wrapper">
+                                    <div className="tag-wrapper clearfix">
                                         <div className={this.state.tagged + " people-wrapper"}  >
                                             <p className="title" onClick={this._onHashClick.bind(this)}>People in the event &#58;</p>
                                             <div className="people-container">
