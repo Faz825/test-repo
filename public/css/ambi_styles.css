@@ -19477,6 +19477,168 @@ header .notification-holder .profile-header-thumb {
   padding: 17px 40px;
   font-size: 0.8375em;
 }
+.popup-holder .work-mode-popup-wrapper {
+  width: 621px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+.popup-holder .work-mode-popup-wrapper .header-wrapper {
+  text-align: center;
+}
+.popup-holder .work-mode-popup-wrapper .header-wrapper .logo {
+  display: inline-block;
+}
+.popup-holder .work-mode-popup-wrapper .header-wrapper .header {
+  color: rgba(0, 0, 0, 0.87);
+  font-family: Pantra-Bold;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 32px;
+  text-transform: lowercase;
+  display: inline-block;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper {
+  overflow: hidden;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .inner-header {
+  color: rgba(0, 0, 0, 0.87);
+  font-family: "Work Sans";
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper {
+  overflow: hidden;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option {
+  text-align: left;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option input[type="checkbox"] {
+  display: none;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .selector-label:before {
+  width: 34px;
+  height: 32px;
+  position: absolute;
+  top: 0px;
+  left: 0;
+  content: "";
+  background: url(../images/work-mode/select-icon.png) no-repeat 0 0;
+  cursor: pointer;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.selected .selector-label:before {
+  background: url(../images/work-mode/selected-icon.png) no-repeat 0 0;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option label {
+  position: relative;
+  padding-left: 50px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .inner-holder {
+  display: inline-block;
+  width: 100%;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .select-content {
+  text-align: left;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .select-content .type-icon {
+  margin-top: 8px;
+  float: left;
+  margin-right: 22px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .select-content .type-content {
+  float: left;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .select-content .type-content .type-title {
+  margin-top: 6px;
+  color: rgba(0, 0, 0, 0.87);
+  font-family: "Work Sans";
+  font-size: 0.875em;
+  font-weight: 400;
+  line-height: 20px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper {
+  overflow: hidden;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option {
+  float: left;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time {
+  overflow: hidden;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .t_input {
+  width: 34px;
+  height: 32px;
+  border-radius: 3px;
+  border: 1px solid #bebfbf;
+  background-color: rgba(0, 0, 0, 0.02);
+  outline: none;
+  color: #000000;
+  font-family: "Work Sans";
+  font-size: 10px;
+  font-weight: 400;
+  text-align: center;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .t_input:-moz-placeholder {
+  color: rgba(0, 0, 0, 0.37);
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .t_input::-moz-placeholder {
+  color: rgba(0, 0, 0, 0.37);
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .t_input:-ms-input-placeholder {
+  color: rgba(0, 0, 0, 0.37);
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .t_input::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.37);
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option input[type="radio"] {
+  display: none;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option .selector-label:before {
+  width: 14px;
+  height: 13px;
+  position: absolute;
+  top: 0px;
+  left: 0;
+  content: "";
+  background: url(../images/work-mode/t-select-icon.png) no-repeat 0 0;
+  cursor: pointer;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.selected .selector-label:before {
+  background: url(../images/work-mode/t-selected-icon.png) no-repeat 0 0;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option label {
+  position: relative;
+  padding-left: 50px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option .inner-holder {
+  display: inline-block;
+  width: 100%;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option .type-content {
+  float: left;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option .type-content .type-title {
+  color: rgba(0, 0, 0, 0.87);
+  font-family: "Work Sans";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+.popup-holder .work-mode-popup-wrapper .footer {
+  overflow: hidden;
+}
+.popup-holder .work-mode-popup-wrapper .footer .work-mode {
+  background-color: #bebfbf;
+  color: #ffffff;
+  font-family: Pantra-Bold;
+  font-size: 24px;
+  text-transform: lowercase;
+  line-height: 32px;
+  width: 100%;
+  border-radius: 0px 0px 12px 12px;
+  outline: none;
+}
 
 .settings-icon {
   position: fixed;
