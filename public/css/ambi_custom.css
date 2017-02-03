@@ -39,7 +39,7 @@ body{
 	width: 100%;
 	float: left;
 	position: absolute;
-	top: auto;
+	top: 65px;
 	left: auto;
 	overflow-y: scroll;
 	z-index: 9999;
@@ -565,7 +565,7 @@ a.rc-time-picker-panel-clear-btn {
 
 footer.navHidden{
 	width: 132px;
-    height: 99px;
+  height: 73px;
 }
 
 footer .nav-holder,
@@ -885,6 +885,62 @@ footer .notification-alert-holder.slideOut{
 
 .callModelMinimized .opt-wrapper .fa:last-child{
   margin: 0;
+}
+
+.popup-holder .call-center-new-participant .user-block {
+    padding: 12px 10px;
+    position: relative;
+}
+
+.popup-holder .call-center-new-participant .img-holder,
+.popup-holder .call-center-new-participant .user-details {
+  float: left;
+}
+
+.popup-holder .call-center-new-participant .img-holder {
+    width: 21px;
+    height: 21px;
+}
+
+.popup-holder .call-center-new-participant .img-holder img{
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.popup-holder .call-center-new-participant .user-details{
+    margin-left: 12px;
+}
+
+.popup-holder .call-center-new-participant .user-details .user-name{
+    margin: 7px 0 0px;
+    font-size: 0.9em;
+    color: #2d5164;
+    text-transform: capitalize;
+}
+
+.popup-holder .call-center-new-participant .action{
+    float: right;
+    font-size: 0.857em;
+    color: #2d5164;
+    margin: 2px 0 0;
+}
+
+.popup-holder .call-center-new-participant .action .btn-add{
+    padding: 1px 7px 3px 9px;
+    border: none;
+    border-radius: 100%;
+    background-color: #FFFFFF;
+    box-shadow: 0px 1px 5px -1px #000;
+    outline: none;
+}
+
+.popup-holder .call-center-new-participant .action .btn-add .fa-plus{
+    color: #61b3de;
+    margin-top: 0;
+    position: relative;
+    top: auto;
+    left: auto;
 }
 
 /* Model overlay is overlaping */

@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,6 +1418,7 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3118,6 +3119,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3670,6 +3672,7 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10246,13 +10249,13 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/*
+/* 
 	Method to use:
 	@include @border {
 		border ($style,  $sides, $emptySides){
 	}
 */
-/*
+/* 
 	Method to use:
 	@include @mixin {
 		content
@@ -10999,7 +11002,20 @@ header .notification-holder .profile-header-thumb {
   width: 100% !important;
   background: #f6f6f6;
   border: none;
+  border-radius: 10px;
+  overflow: hidden;
   box-shadow: 0px 2px 5px 1px #c4c4c4;
+}
+.calender-container .calender-box .month-name {
+  text-align: center;
+  color: #fff;
+  font-size: 2.25em;
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 9px 0 13px;
+  line-height: 1;
+  margin: 0;
+  background-color: #00a6ef;
 }
 .calender-container .calender-box > div.header {
   float: left;
@@ -11066,24 +11082,20 @@ header .notification-holder .profile-header-thumb {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   border-left: solid 1px #CCC;
-  text-align: left;
-  line-height: 30px !important;
+  text-align: right;
   display: inline-block;
   vertical-align: middle;
   background: white;
   cursor: pointer;
   font-weight: normal;
   height: 108px;
-  padding-top: 12px;
-  padding-left: 2%;
-  padding-right: 0%;
+  padding: 7px 10px 0 0;
   border-left: solid 1px #dee6eb;
   position: relative;
   font-family: "Work Sans", sans-serif;
 }
 .calender-container .calender-box > div.week > span.day-names {
-  font-size: 0.5725em;
-  height: 30px;
+  font-size: 1em;
 }
 .calender-container .calender-box > div.week > span.day:first-child {
   border-left: none;
@@ -11100,28 +11112,66 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-box > div.week.names > span {
   color: #00a6ef;
-  height: 50px;
+  font-weight: 500;
+  padding: 13px 0 12px;
+  text-align: center;
+  line-height: 1;
+  height: auto;
+}
+.calender-container .calender-box > div.week.names > span:nth-child(1) {
+  color: #aaaaaa;
+}
+.calender-container .calender-box > div.week.names > span:nth-child(7) {
+  color: #aaaaaa;
 }
 .calender-container .calender-box > div.week > span.day.selected > .squre {
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  padding: 3px 5px;
-  background: #00a6ef;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00a6ef;
   color: #ffffff;
-  text-align: center;
+  min-width: 30px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.calender-container .calender-box > div.week > span.day.selected > .squre:before {
+  content: '';
+  float: left;
+  width: auto;
+  padding-bottom: 100%;
 }
 .calender-container .calender-box > div.week > span.day .squre {
   padding: 0;
-  font-size: 1.4em;
+  font-size: 1.25em;
+  letter-spacing: -2px;
+  color: #000;
+  line-height: 1;
 }
 .calender-container .calender-box > div.week > span.day .event-counts {
   color: #a4a4a4;
   font-weight: normal;
   position: absolute;
-  top: 14px;
-  right: 25px;
+  top: 16px;
+  left: 25px;
   font-size: 0.6875em;
+}
+.calender-container .calender-box > div.week > span.day:nth-child(1) {
+  background: #f5f5f5;
+}
+.calender-container .calender-box > div.week > span.day:nth-child(1).day-names {
+  background: #fff;
+}
+.calender-container .calender-box > div.week > span.day:nth-child(1) .squre {
+  color: #bebfbf;
+}
+.calender-container .calender-box > div.week > span.day:nth-child(7) {
+  background: #f5f5f5;
+}
+.calender-container .calender-box > div.week > span.day:nth-child(7).day-names {
+  background: #fff;
+}
+.calender-container .calender-box > div.week > span.day:nth-child(7) .squre {
+  color: #bebfbf;
 }
 .calender-container .calender-box > div.week > span.day .event-area {
   height: 50px;
@@ -11139,14 +11189,15 @@ header .notification-holder .profile-header-thumb {
   line-height: 1.6;
   margin-bottom: 0px;
   border-radius: 4px;
+  text-align: right;
 }
 .calender-container .calender-box > div.week > span.day .event-area > ul li:before {
   content: "\f111";
   font-family: FontAwesome;
   font-size: 6px;
-  float: left;
+  float: right;
   margin-top: 4px;
-  margin-left: -10px;
+  margin-right: -10px;
 }
 .calender-container .mini-calender-box.calender-box {
   width: auto;
@@ -11915,7 +11966,7 @@ header .notification-holder .profile-header-thumb {
   overflow: hidden;
   display: inline-block;
   width: 213px;
-  margin: 0 24px 22px 0;
+  margin: 0 16px 22px 0;
   border-radius: 8px;
   -webkit-box-shadow: 0px 0px 6px 1px #c4c4c4;
   box-shadow: 0px 0px 6px 1px #c4c4c4;
@@ -11929,8 +11980,9 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile.selected .day-tile-header .date {
   color: #000f75;
-  padding: 1px 3px 3px;
+  padding: 2px 3px 3px;
   background: #fff;
+  font-size: 1.5em;
   border-radius: 999px;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header {
@@ -12088,54 +12140,46 @@ header .notification-holder .profile-header-thumb {
   padding: 0;
 }
 
-.calender-body {
-  margin-bottom: 100px;
-}
-
 .calender-month-view .view-header {
-  padding: 21px 21px;
   overflow: hidden;
-  background-color: #f6f6f6;
-  border-bottom: 1px solid #CCC;
-  -webkit-box-shadow: 0px 0px 5px 1px #c4c4c4;
-  box-shadow: 0px 0px 5px 1px #c4c4c4;
+  margin-bottom: 12px;
 }
 .calender-month-view .view-header .date-wrapper {
   float: left;
   border: 1px solid #bcbfbf;
-  border-radius: 3px;
-  background-color: #e9ebee;
+  border-radius: 6px;
+  background-color: #ffffff;
 }
 .calender-month-view .view-header .date-wrapper .date-nav {
   float: left;
+  cursor: pointer;
 }
 .calender-month-view .view-header .date-wrapper .date-nav i {
-  padding: 11px 12px 12px;
+  padding: 8px 9px 9px 7px;
 }
 .calender-month-view .view-header .date-wrapper .date {
   float: left;
   border-left: 1px solid #bcbfbf;
   border-right: 1px solid #bcbfbf;
-  background-color: #ffffff;
-  min-width: 155px;
   text-align: center;
+  padding: 4px 26px;
+  text-transform: lowercase;
 }
 .calender-month-view .view-header .date-wrapper .date p {
-  padding: 11px 14px 11px;
-  text-transform: uppercase;
-  font-size: 0.75em;
-  color: #000000;
+  font-size: 1em;
+  color: rgba(0, 0, 0, 0.87);
   font-weight: 500;
   margin-bottom: 0;
 }
 .calender-month-view .view-header .calender-date p {
-  margin-top: 4px;
+  margin-top: 0;
   margin-bottom: 0;
   float: right;
   text-transform: uppercase;
-  font-size: 1.3125em;
+  font-size: 2.25em;
   color: #000000;
-  font-weight: 400;
+  font-weight: 300;
+  line-height: 0.7;
 }
 .calender-month-view .view-tile-area .color-1 {
   color: #00a6ef;
@@ -14399,7 +14443,20 @@ header .notification-holder .profile-header-thumb {
   width: 100% !important;
   background: #f6f6f6;
   border: none;
+  border-radius: 10px;
+  overflow: hidden;
   box-shadow: 0px 2px 5px 1px #c4c4c4;
+}
+.group-container .group-calendar-container .calender-box .month-name {
+  text-align: center;
+  color: #fff;
+  font-size: 2.25em;
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 9px 0 13px;
+  line-height: 1;
+  margin: 0;
+  background-color: #00a6ef;
 }
 .group-container .group-calendar-container .calender-box > div.header {
   float: left;
@@ -14466,24 +14523,20 @@ header .notification-holder .profile-header-thumb {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   border-left: solid 1px #CCC;
-  text-align: left;
-  line-height: 30px !important;
+  text-align: right;
   display: inline-block;
   vertical-align: middle;
   background: white;
   cursor: pointer;
   font-weight: normal;
   height: 108px;
-  padding-top: 12px;
-  padding-left: 2%;
-  padding-right: 0%;
+  padding: 7px 10px 0 0;
   border-left: solid 1px #dee6eb;
   position: relative;
   font-family: "Work Sans", sans-serif;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day-names {
-  font-size: 0.5725em;
-  height: 30px;
+  font-size: 1em;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day:first-child {
   border-left: none;
@@ -14500,28 +14553,66 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span {
   color: #00a6ef;
-  height: 50px;
+  font-weight: 500;
+  padding: 13px 0 12px;
+  text-align: center;
+  line-height: 1;
+  height: auto;
+}
+.group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(1) {
+  color: #aaaaaa;
+}
+.group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(7) {
+  color: #aaaaaa;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre {
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  padding: 3px 5px;
-  background: #00a6ef;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00a6ef;
   color: #ffffff;
-  text-align: center;
+  min-width: 30px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre:before {
+  content: '';
+  float: left;
+  width: auto;
+  padding-bottom: 100%;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .squre {
   padding: 0;
-  font-size: 1.4em;
+  font-size: 1.25em;
+  letter-spacing: -2px;
+  color: #000;
+  line-height: 1;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-counts {
   color: #a4a4a4;
   font-weight: normal;
   position: absolute;
-  top: 14px;
-  right: 25px;
+  top: 16px;
+  left: 25px;
   font-size: 0.6875em;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1) {
+  background: #f5f5f5;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1).day-names {
+  background: #fff;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1) .squre {
+  color: #bebfbf;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7) {
+  background: #f5f5f5;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7).day-names {
+  background: #fff;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7) .squre {
+  color: #bebfbf;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-area {
   height: 50px;
@@ -14539,14 +14630,15 @@ header .notification-holder .profile-header-thumb {
   line-height: 1.6;
   margin-bottom: 0px;
   border-radius: 4px;
+  text-align: right;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-area > ul li:before {
   content: "\f111";
   font-family: FontAwesome;
   font-size: 6px;
-  float: left;
+  float: right;
   margin-top: 4px;
-  margin-left: -10px;
+  margin-right: -10px;
 }
 .group-container .group-calendar-container .mini-calender-box.calender-box {
   width: auto;
@@ -15427,7 +15519,20 @@ header .notification-holder .profile-header-thumb {
   width: 100% !important;
   background: #f6f6f6;
   border: none;
+  border-radius: 10px;
+  overflow: hidden;
   box-shadow: 0px 2px 5px 1px #c4c4c4;
+}
+.group-container .group-calendar-container .calender-box .month-name {
+  text-align: center;
+  color: #fff;
+  font-size: 2.25em;
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 9px 0 13px;
+  line-height: 1;
+  margin: 0;
+  background-color: #00a6ef;
 }
 .group-container .group-calendar-container .calender-box > div.header {
   float: left;
@@ -15494,24 +15599,20 @@ header .notification-holder .profile-header-thumb {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   border-left: solid 1px #CCC;
-  text-align: left;
-  line-height: 30px !important;
+  text-align: right;
   display: inline-block;
   vertical-align: middle;
   background: white;
   cursor: pointer;
   font-weight: normal;
   height: 108px;
-  padding-top: 12px;
-  padding-left: 2%;
-  padding-right: 0%;
+  padding: 7px 10px 0 0;
   border-left: solid 1px #dee6eb;
   position: relative;
   font-family: "Work Sans", sans-serif;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day-names {
-  font-size: 0.5725em;
-  height: 30px;
+  font-size: 1em;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day:first-child {
   border-left: none;
@@ -15528,28 +15629,66 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span {
   color: #00a6ef;
-  height: 50px;
+  font-weight: 500;
+  padding: 13px 0 12px;
+  text-align: center;
+  line-height: 1;
+  height: auto;
+}
+.group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(1) {
+  color: #aaaaaa;
+}
+.group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(7) {
+  color: #aaaaaa;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre {
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  padding: 3px 5px;
-  background: #00a6ef;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00a6ef;
   color: #ffffff;
-  text-align: center;
+  min-width: 30px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre:before {
+  content: '';
+  float: left;
+  width: auto;
+  padding-bottom: 100%;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .squre {
   padding: 0;
-  font-size: 1.4em;
+  font-size: 1.25em;
+  letter-spacing: -2px;
+  color: #000;
+  line-height: 1;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-counts {
   color: #a4a4a4;
   font-weight: normal;
   position: absolute;
-  top: 14px;
-  right: 25px;
+  top: 16px;
+  left: 25px;
   font-size: 0.6875em;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1) {
+  background: #f5f5f5;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1).day-names {
+  background: #fff;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1) .squre {
+  color: #bebfbf;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7) {
+  background: #f5f5f5;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7).day-names {
+  background: #fff;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7) .squre {
+  color: #bebfbf;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-area {
   height: 50px;
@@ -15567,14 +15706,15 @@ header .notification-holder .profile-header-thumb {
   line-height: 1.6;
   margin-bottom: 0px;
   border-radius: 4px;
+  text-align: right;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-area > ul li:before {
   content: "\f111";
   font-family: FontAwesome;
   font-size: 6px;
-  float: left;
+  float: right;
   margin-top: 4px;
-  margin-left: -10px;
+  margin-right: -10px;
 }
 .group-container .group-calendar-container .mini-calender-box.calender-box {
   width: auto;
@@ -16050,7 +16190,20 @@ header .notification-holder .profile-header-thumb {
   width: 100% !important;
   background: #f6f6f6;
   border: none;
+  border-radius: 10px;
+  overflow: hidden;
   box-shadow: 0px 2px 5px 1px #c4c4c4;
+}
+.group-container .group-calendar-container .calender-box .month-name {
+  text-align: center;
+  color: #fff;
+  font-size: 2.25em;
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 9px 0 13px;
+  line-height: 1;
+  margin: 0;
+  background-color: #00a6ef;
 }
 .group-container .group-calendar-container .calender-box > div.header {
   float: left;
@@ -16117,24 +16270,20 @@ header .notification-holder .profile-header-thumb {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   border-left: solid 1px #CCC;
-  text-align: left;
-  line-height: 30px !important;
+  text-align: right;
   display: inline-block;
   vertical-align: middle;
   background: white;
   cursor: pointer;
   font-weight: normal;
   height: 108px;
-  padding-top: 12px;
-  padding-left: 2%;
-  padding-right: 0%;
+  padding: 7px 10px 0 0;
   border-left: solid 1px #dee6eb;
   position: relative;
   font-family: "Work Sans", sans-serif;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day-names {
-  font-size: 0.5725em;
-  height: 30px;
+  font-size: 1em;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day:first-child {
   border-left: none;
@@ -16151,28 +16300,66 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span {
   color: #00a6ef;
-  height: 50px;
+  font-weight: 500;
+  padding: 13px 0 12px;
+  text-align: center;
+  line-height: 1;
+  height: auto;
+}
+.group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(1) {
+  color: #aaaaaa;
+}
+.group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(7) {
+  color: #aaaaaa;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre {
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  padding: 3px 5px;
-  background: #00a6ef;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00a6ef;
   color: #ffffff;
-  text-align: center;
+  min-width: 30px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre:before {
+  content: '';
+  float: left;
+  width: auto;
+  padding-bottom: 100%;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .squre {
   padding: 0;
-  font-size: 1.4em;
+  font-size: 1.25em;
+  letter-spacing: -2px;
+  color: #000;
+  line-height: 1;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-counts {
   color: #a4a4a4;
   font-weight: normal;
   position: absolute;
-  top: 14px;
-  right: 25px;
+  top: 16px;
+  left: 25px;
   font-size: 0.6875em;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1) {
+  background: #f5f5f5;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1).day-names {
+  background: #fff;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1) .squre {
+  color: #bebfbf;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7) {
+  background: #f5f5f5;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7).day-names {
+  background: #fff;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7) .squre {
+  color: #bebfbf;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-area {
   height: 50px;
@@ -16190,14 +16377,15 @@ header .notification-holder .profile-header-thumb {
   line-height: 1.6;
   margin-bottom: 0px;
   border-radius: 4px;
+  text-align: right;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-area > ul li:before {
   content: "\f111";
   font-family: FontAwesome;
   font-size: 6px;
-  float: left;
+  float: right;
   margin-top: 4px;
-  margin-left: -10px;
+  margin-right: -10px;
 }
 .group-container .group-calendar-container .mini-calender-box.calender-box {
   width: auto;
@@ -16364,53 +16552,46 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-calendar-container .calender-header .search-folder .inner-addon input::-webkit-input-placeholder {
   color: #bebfbf;
 }
-.group-container .group-calendar-container .calender-body {
-  margin-bottom: 100px;
-}
 .group-container .group-calendar-container .calender-month-view .view-header {
-  padding: 21px 21px;
   overflow: hidden;
-  background-color: #f6f6f6;
-  border-bottom: 1px solid #CCC;
-  -webkit-box-shadow: 0px 0px 5px 1px #c4c4c4;
-  box-shadow: 0px 0px 5px 1px #c4c4c4;
+  margin-bottom: 12px;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper {
   float: left;
   border: 1px solid #bcbfbf;
-  border-radius: 3px;
-  background-color: #e9ebee;
+  border-radius: 6px;
+  background-color: #ffffff;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper .date-nav {
   float: left;
+  cursor: pointer;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper .date-nav i {
-  padding: 11px 12px 12px;
+  padding: 8px 9px 9px 7px;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper .date {
   float: left;
   border-left: 1px solid #bcbfbf;
   border-right: 1px solid #bcbfbf;
-  background-color: #ffffff;
-  min-width: 155px;
   text-align: center;
+  padding: 4px 26px;
+  text-transform: lowercase;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper .date p {
-  padding: 11px 14px 11px;
-  text-transform: uppercase;
-  font-size: 0.75em;
-  color: #000000;
+  font-size: 1em;
+  color: rgba(0, 0, 0, 0.87);
   font-weight: 500;
   margin-bottom: 0;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .calender-date p {
-  margin-top: 4px;
+  margin-top: 0;
   margin-bottom: 0;
   float: right;
   text-transform: uppercase;
-  font-size: 1.3125em;
+  font-size: 2.25em;
   color: #000000;
-  font-weight: 400;
+  font-weight: 300;
+  line-height: 0.7;
 }
 .group-container .group-calendar-container .calender-month-view .view-tile-area .color-1 {
   color: #00a6ef;
@@ -16521,7 +16702,20 @@ header .notification-holder .profile-header-thumb {
   width: 100% !important;
   background: #f6f6f6;
   border: none;
+  border-radius: 10px;
+  overflow: hidden;
   box-shadow: 0px 2px 5px 1px #c4c4c4;
+}
+.group-container .group-calendar-container .calender-box .month-name {
+  text-align: center;
+  color: #fff;
+  font-size: 2.25em;
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 9px 0 13px;
+  line-height: 1;
+  margin: 0;
+  background-color: #00a6ef;
 }
 .group-container .group-calendar-container .calender-box > div.header {
   float: left;
@@ -16588,24 +16782,20 @@ header .notification-holder .profile-header-thumb {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   border-left: solid 1px #CCC;
-  text-align: left;
-  line-height: 30px !important;
+  text-align: right;
   display: inline-block;
   vertical-align: middle;
   background: white;
   cursor: pointer;
   font-weight: normal;
   height: 108px;
-  padding-top: 12px;
-  padding-left: 2%;
-  padding-right: 0%;
+  padding: 7px 10px 0 0;
   border-left: solid 1px #dee6eb;
   position: relative;
   font-family: "Work Sans", sans-serif;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day-names {
-  font-size: 0.5725em;
-  height: 30px;
+  font-size: 1em;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day:first-child {
   border-left: none;
@@ -16622,28 +16812,66 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-box > div.week.names > span {
   color: #00a6ef;
-  height: 50px;
+  font-weight: 500;
+  padding: 13px 0 12px;
+  text-align: center;
+  line-height: 1;
+  height: auto;
+}
+.group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(1) {
+  color: #aaaaaa;
+}
+.group-container .group-calendar-container .calender-box > div.week.names > span:nth-child(7) {
+  color: #aaaaaa;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre {
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  padding: 3px 5px;
-  background: #00a6ef;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00a6ef;
   color: #ffffff;
-  text-align: center;
+  min-width: 30px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day.selected > .squre:before {
+  content: '';
+  float: left;
+  width: auto;
+  padding-bottom: 100%;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .squre {
   padding: 0;
-  font-size: 1.4em;
+  font-size: 1.25em;
+  letter-spacing: -2px;
+  color: #000;
+  line-height: 1;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-counts {
   color: #a4a4a4;
   font-weight: normal;
   position: absolute;
-  top: 14px;
-  right: 25px;
+  top: 16px;
+  left: 25px;
   font-size: 0.6875em;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1) {
+  background: #f5f5f5;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1).day-names {
+  background: #fff;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(1) .squre {
+  color: #bebfbf;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7) {
+  background: #f5f5f5;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7).day-names {
+  background: #fff;
+}
+.group-container .group-calendar-container .calender-box > div.week > span.day:nth-child(7) .squre {
+  color: #bebfbf;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-area {
   height: 50px;
@@ -16661,14 +16889,15 @@ header .notification-holder .profile-header-thumb {
   line-height: 1.6;
   margin-bottom: 0px;
   border-radius: 4px;
+  text-align: right;
 }
 .group-container .group-calendar-container .calender-box > div.week > span.day .event-area > ul li:before {
   content: "\f111";
   font-family: FontAwesome;
   font-size: 6px;
-  float: left;
+  float: right;
   margin-top: 4px;
-  margin-left: -10px;
+  margin-right: -10px;
 }
 .group-container .group-calendar-container .mini-calender-box.calender-box {
   width: auto;
@@ -16835,53 +17064,46 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-calendar-container .calender-header .search-folder .inner-addon input::-webkit-input-placeholder {
   color: #bebfbf;
 }
-.group-container .group-calendar-container .calender-body {
-  margin-bottom: 100px;
-}
 .group-container .group-calendar-container .calender-month-view .view-header {
-  padding: 21px 21px;
   overflow: hidden;
-  background-color: #f6f6f6;
-  border-bottom: 1px solid #CCC;
-  -webkit-box-shadow: 0px 0px 5px 1px #c4c4c4;
-  box-shadow: 0px 0px 5px 1px #c4c4c4;
+  margin-bottom: 12px;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper {
   float: left;
   border: 1px solid #bcbfbf;
-  border-radius: 3px;
-  background-color: #e9ebee;
+  border-radius: 6px;
+  background-color: #ffffff;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper .date-nav {
   float: left;
+  cursor: pointer;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper .date-nav i {
-  padding: 11px 12px 12px;
+  padding: 8px 9px 9px 7px;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper .date {
   float: left;
   border-left: 1px solid #bcbfbf;
   border-right: 1px solid #bcbfbf;
-  background-color: #ffffff;
-  min-width: 155px;
   text-align: center;
+  padding: 4px 26px;
+  text-transform: lowercase;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper .date p {
-  padding: 11px 14px 11px;
-  text-transform: uppercase;
-  font-size: 0.75em;
-  color: #000000;
+  font-size: 1em;
+  color: rgba(0, 0, 0, 0.87);
   font-weight: 500;
   margin-bottom: 0;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .calender-date p {
-  margin-top: 4px;
+  margin-top: 0;
   margin-bottom: 0;
   float: right;
   text-transform: uppercase;
-  font-size: 1.3125em;
+  font-size: 2.25em;
   color: #000000;
-  font-weight: 400;
+  font-weight: 300;
+  line-height: 0.7;
 }
 .group-container .group-calendar-container .calender-month-view .view-tile-area .color-1 {
   color: #00a6ef;
@@ -17669,6 +17891,7 @@ header .notification-holder .profile-header-thumb {
   color: #bebfbf;
   font-weight: 400;
   line-height: 16px;
+  color: #000;
 }
 .popup-holder .create-folder-popup .folder-body .input-group .user-holder {
   float: left;
