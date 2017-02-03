@@ -87,30 +87,25 @@ export default class Calender extends React.Component {
             <div className="calender-body">
                 <div className="calendar-main-row">
                     <div className="calender-month-view">
-
-                        <div className="view-header">
-                            <div className="col-sm-6 remove-padding">
-                                <div className="date-wrapper">
-                                    <div className="date-nav">
-                                        <i className="fa fa-angle-left" aria-hidden="true" onClick={this.previous.bind(this)}></i>
-                                    </div>
-                                    <div className="date">
-                                        {this.renderMonthNameLabel()}
-                                    </div>
-                                    <div className="date-nav">
-                                        <i className="fa fa-angle-right" aria-hidden="true" onClick={this.next.bind(this)}></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-sm-6 calender-date  remove-padding">
-                                {this.renderMonthLabel()}
-                            </div>
-                        </div>
-
-
                         <div className="view-tile-area clearfix">
                             <div className="calender-box">
-                                <p className="month-name">{this.state.month.format("MMMM")}</p>
+                                <div className="month-name-wrapper">
+                                    <div className="date-wrapper">
+                                        <div className="date-nav">
+                                            <i className="fa fa-angle-left" aria-hidden="true" onClick={this.previous.bind(this)}></i>
+                                        </div>
+                                        <div className="date">
+                                            {this.renderMonthNameLabel()}
+                                        </div>
+                                        <div className="date-nav">
+                                            <i className="fa fa-angle-right" aria-hidden="true" onClick={this.next.bind(this)}></i>
+                                        </div>
+                                    </div>
+                                    <p className="month-name">{this.state.month.format("MMMM")}</p>
+                                    <div className="calender-date">
+                                        <p>{this.renderMonthLabel()}</p>
+                                    </div>
+                                </div>
                                 <DayNames />
                                 {this.renderWeeks()}
                             </div>

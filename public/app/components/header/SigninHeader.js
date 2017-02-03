@@ -64,14 +64,10 @@ export default class Header extends React.Component {
                         <GlobalSearch/>
                         <div className="notification-holder clearfix">
                             <div className="news-feed opt-holder">
-                                <div className="icon-holder">
-                                    <img src="/images/header-icons/news-feed-notifi-icon.png" alt="News-feed" />
-                                </div>
+                                <div className="icon-holder"></div>
                             </div>
                             <div onClick={()=>this.showChatList()} className="chat-icon opt-holder chat-dropdown-holder dropDown-holder" id="chat_notification_a">
-                                <div className="icon-holder">
-                                    <img src="/images/header-icons/chat-notifi-icon.png" alt="chat notifi" />
-                                </div>
+                                <div className="icon-holder"></div>
                                 <div id="unread_chat_count_header" className="notifi-num notifi-alert-holder"></div>
                                 <div id="chat_notification_wrapper" className="chat-notification-wrapper">
                                     <img className="drop_downarrow" src="/images/drop_arrow.png" alt="" />
@@ -84,9 +80,7 @@ export default class Header extends React.Component {
                                 </div>
                             </div>
                             <div className="friends-icon opt-holder">
-                                <div className="icon-holder">
-                                    <img src="/images/header-icons/friends-notifi-icon.png" alt="friends notifi" />
-                                </div>
+                                <div className="icon-holder"></div>
                                 <div className="notifi-alert-holder">
                                     <span className="notifi-num">2</span>
                                 </div>
