@@ -839,8 +839,16 @@ footer .notification-alert-holder.slideOut{
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper {
+    width: 343px !important;
+    margin-right: 15px;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper.tagged .people-container{
     width: 100%;
-    max-width: 343px !important;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper{
+    z-index: 0;
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper, .calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper {
