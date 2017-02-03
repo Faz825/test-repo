@@ -216,6 +216,7 @@ export default class DayView extends Component {
                 this.refs.EditorFieldValues.setState({editorState});
                 this.resetEventForm();
                 this.loadEvents();
+                this.setTagged();
             }
         }.bind(this));
     }
@@ -287,6 +288,7 @@ export default class DayView extends Component {
 
                 this.resetEventForm();
                 this.loadEvents();
+                this.setTagged();
             }
         }.bind(this));
     }

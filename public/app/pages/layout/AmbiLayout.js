@@ -7,6 +7,7 @@ import AmbiDashboard  from '../dashboard/AmbiDashboard';
 import CallHandler  from '../callcenter/CallHandler';
 import QuickChatHandler from '../chat/QuickChatHandler';
 import WorkMode from '../workmode/Index';
+import WorkModePopup from '../workmode/WorkModePopup';
 import NotificationPop from '../notifications/NotificationPop';
 import PubSub from 'pubsub-js';
 import Chat from '../../middleware/Chat';
@@ -52,6 +53,7 @@ export default class AmbiLayout extends React.Component {
             rightBottom: _rightBottom,
             socialNotifications: _socialNotifications,
             isShowingModal: false,
+            isShowingWMP: false,
             notifiType: "",
             notificationCount: "",
             isNavHidden: false
@@ -176,11 +178,12 @@ export default class AmbiLayout extends React.Component {
     }
 
     handleClick() {
-        this.setState({isShowingModal: true});
+        //this.setState({isShowingModal: true});
+        this.setState({isShowingWMP: true});
     }
 
     handleClose() {
-        this.setState({isShowingModal: false});
+        this.setState({isShowingModal: false, isShowingWMP: false});
     }
 
     onWorkmodeClick() {
@@ -223,6 +226,18 @@ export default class AmbiLayout extends React.Component {
                         <ModalDialog width="65%" className="workmode-popup-holder">
                             <div className="workmode-popup-wrapper">
                                 <WorkMode />
+                                <i className="fa fa-times close-icon" aria-hidden="true"
+                                   onClick={this.handleClose.bind(this)}></i>
+                            </div>
+                        </ModalDialog>
+                    </ModalContainer>
+                }
+                {
+                    this.state.isShowingWMP &&
+                    <ModalContainer zIndex={9999}>
+                        <ModalDialog width="65%" className="workmode-popup-holder">
+                            <div className="workmode-popup-wrapper">
+                                <WorkModePopup />
                                 <i className="fa fa-times close-icon" aria-hidden="true"
                                    onClick={this.handleClose.bind(this)}></i>
                             </div>
