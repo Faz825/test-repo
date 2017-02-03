@@ -423,6 +423,7 @@ export class SharePopupNewUsr extends React.Component{
 
         const { value, suggestions } = this.state;
         let _this = this;
+        console.log(suggestions);
 
         let _newUserList = suggestions.map(function(suggestion,key){
 
