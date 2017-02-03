@@ -805,6 +805,24 @@ footer .notification-alert-holder.slideOut{
     max-width: 62px;
 }
 
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
+    width: 100% !important;
+    max-width: 430px !important;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
+    float: left !important;
+}
+
+.calender-container  .react-autosuggest__suggestion .suggestion-item img {
+    width: 40px;
+    margin: 10px;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li.btn-group .btn {
+    z-index: 0;
+}
+
 /* custom styles for ipad view */
 @media (min-width: 768px) {
 		.calender-container .mini-calender-box.calender-box .header span {

@@ -80,15 +80,16 @@ export default class DayView extends Component {
     }
 
     _onHashClick() {
-        let showUserPanel = this.state.showUserPanel;
+        // this.SharedUserField.nameInput.focus();
+        // let showUserPanel = this.state.showUserPanel;
         let showUserPanelWindow = this.state.showUserPanelWindow;
-        this.setState({showUserPanel : (showUserPanel == 'active' ? '' : 'active'), showUserPanelWindow : (showUserPanelWindow == true ? false : true) });
+        this.setState({showUserPanelWindow : (showUserPanelWindow == true ? false : true) });
     }
 
     _onAtClick() {
-        let showTimePanel = this.state.showTimePanel;
+        // let showTimePanel = this.state.showTimePanel;
         let showTimePanelWindow = this.state.showTimePanelWindow;
-        this.setState({showTimePanel : (showTimePanel == 'active' ? '' : 'active'), showTimePanelWindow : (showTimePanelWindow == true ? false : true) });
+        this.setState({showTimePanelWindow : (showTimePanelWindow == true ? false : true) });
     }
 
     componentDidMount() {
@@ -504,6 +505,8 @@ export default class DayView extends Component {
     setTagged() {
         if(this.sharedWithIds.length > 0) {
             this.setState({'tagged' : 'tagged'});
+        } else {
+            this.setState({'tagged' : ''});
         }
     }
 
@@ -612,25 +615,33 @@ export default class DayView extends Component {
                                     </div>
 
                                     <div className="tag-wrapper">
-                                        <div className={this.state.tagged + " people-wrapper"}>
-                                            <p className="title">People in the event &#58;</p>
+                                        <div className={this.state.tagged + " people-wrapper"}  >
+                                            <p className="title" onClick={this._onHashClick.bind(this)}>People in the event &#58;</p>
                                             <div className="people-container">
                                                 {shared_with_list}
-                                                <SharedUsers
-                                                    ref="SharedUserField"
-                                                    setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
-                                                    removeUser={this.removeUser}
-                                                />
+                                                {this.state.showUserPanelWindow ?
+                                                    <SharedUsers
+                                                        ref="SharedUserField"
+                                                        setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
+                                                        removeUser={this.removeUser}
+                                                    />
+                                                :
+                                                    null
+                                                }
                                             </div>
                                         </div>
-                                        <div className="time-wrapper">
-                                            <p className="title">Insert time &#58;</p>
-                                            <TimePicker
-                                                style={{ width: 100 }}
-                                                showSecond={showSecond}
-                                                onChange={this.handleTimeChange}
-                                                placeholder="00:00"
-                                            />
+                                        <div className="time-wrapper" >
+                                            <p className="title"  onClick={this._onAtClick.bind(this)}>Insert time &#58;</p>
+                                            {this.state.showTimePanelWindow ?
+                                                <TimePicker
+                                                    style={{ width: 100 }}
+                                                    showSecond={showSecond}
+                                                    onChange={this.handleTimeChange}
+                                                    placeholder="00:00"
+                                                />
+                                            :
+                                                null
+                                            }
                                         </div>
                                     </div>
                                     <div className="calender-input-type">
@@ -643,9 +654,6 @@ export default class DayView extends Component {
                                     <div className="items-wrapper">
                                         <ul className="input-items-wrapper">
                                             <li>
-                                                <i className="fa fa-smile-o" aria-hidden="true"></i>
-                                            </li>
-                                            <li>
                                                 <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
                                                     <span>A</span>
                                                 </OverlayTrigger>
@@ -655,9 +663,9 @@ export default class DayView extends Component {
                                             </li>
 
                                             <li>
-                                                <button onClick={this._onAtClick.bind(this)} className="menu-ico">
+                                                <span onClick={this._onAtClick.bind(this)} >
                                                     <i className="fa fa-at" aria-hidden="true"></i>
-                                                </button>
+                                                </span>
                                             </li>
                                             <li className="btn-group">
                                                 <button
