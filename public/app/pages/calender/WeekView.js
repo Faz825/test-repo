@@ -252,7 +252,14 @@ export class LoadDayList extends React.Component {
                     {<DailyEvents daily_events={this.getEventsForTheDay()} isGroupCall={this.props.isGroupCall}/>}
                 </div>
                 {this.state.showDailyPopUp ?
-                    <WeekDayEventPopUp handleClose={this.handleClose.bind(this)} loadData={this.props.loadData} curr_date={currDt} week_startDt={this.props.week_startDt} isGroupCall={this.props.isGroupCall}/>
+                    <WeekDayEventPopUp
+                        handleClose={this.handleClose.bind(this)}
+                        loadData={this.props.loadData}
+                        curr_date={currDt}
+                        week_startDt={this.props.week_startDt}
+                        isGroupCall={this.props.isGroupCall}
+                        calendarOrigin={this.props.calendarOrigin} 
+                    />
                     : null
                 }
             </div>

@@ -12517,11 +12517,11 @@ header .notification-holder .profile-header-thumb {
 .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar div.week .day {
   min-height: 10px;
   margin-top: 4px;
-  padding: 6px 0 0px 0;
-  border: none;
+  padding: 6px 0 0px 0 !important;
+  border: none !important;
 }
 .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar div.week .day.different-month .squre {
-  color: #a8bfcd;
+  color: #a8bfcd !important;
 }
 .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar div.week .day.day-names {
   font-size: 9.25px !important;
@@ -12531,8 +12531,9 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar div.week .day .squre {
   position: relative;
-  font-size: 0.5em;
+  font-size: 8px !important;
   color: rgba(0, 0, 0, 0.87);
+  font-weight: 700;
 }
 .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar div.week .day.active:before {
   position: absolute;
@@ -16446,11 +16447,11 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-calendar-container .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar div.week .day {
   min-height: 10px;
   margin-top: 4px;
-  padding: 6px 0 0px 0;
-  border: none;
+  padding: 6px 0 0px 0 !important;
+  border: none !important;
 }
 .group-container .group-calendar-container .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar div.week .day.different-month .squre {
-  color: #a8bfcd;
+  color: #a8bfcd !important;
 }
 .group-container .group-calendar-container .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar div.week .day.day-names {
   font-size: 9.25px !important;
@@ -16460,8 +16461,9 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar div.week .day .squre {
   position: relative;
-  font-size: 0.5em;
+  font-size: 8px !important;
   color: rgba(0, 0, 0, 0.87);
+  font-weight: 700;
 }
 .group-container .group-calendar-container .calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar div.week .day.active:before {
   position: absolute;

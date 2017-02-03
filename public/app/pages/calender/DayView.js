@@ -655,16 +655,16 @@ export default class DayView extends Component {
                                         <ul className="input-items-wrapper">
                                             <li>
                                                 <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
-                                                    <span>A</span>
+                                                    <span className="ico font_style">B</span>
                                                 </OverlayTrigger>
                                             </li>
                                             <li>
-                                                <span onClick={this._onHashClick.bind(this)}>#</span>
+                                                <span className="ico tag" onClick={this._onHashClick.bind(this)}>#</span>
                                             </li>
 
                                             <li>
                                                 <span onClick={this._onAtClick.bind(this)} >
-                                                    <i className="fa fa-at" aria-hidden="true"></i>
+                                                    <i className="fa fa-at  ico time" aria-hidden="true"></i>
                                                 </span>
                                             </li>
                                             <li className="btn-group">
@@ -710,6 +710,11 @@ export default class DayView extends Component {
                                         </ul>
                                     </div>
                                 </div>
+                            </div>
+                            <div className="msg-holder pull-left">
+                                {this.state.msgOn ?
+                                    <p className="text-danger">{this.state.errorMsg}</p>
+                                : null }
                             </div>
                             {/*<div className="form-holder">
                                 <div className="row calender-input">
