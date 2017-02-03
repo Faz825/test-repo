@@ -353,12 +353,11 @@ export default class WeekDayEventPopUp extends React.Component {
                                     */ }
                                     <div className="tag-wrapper clearfix">
                                         <div className={this.state.tagged + " people-wrapper"}  >
-                                            <p className="title" onClick={this._onHashClick.bind(this)}>People in the event &#58;</p>
+                                            <p className="title" onClick={this._onHashClick.bind(this)}>People in the event&#58;</p>
                                             <div className="people-container">
                                                 {shared_with_list}
                                                 {this.state.showUserPanelWindow ?
                                                     <SharedUsers
-                                                        ref="SharedUserField"
                                                         setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
                                                         removeUser={this.removeUser}
                                                     />
@@ -371,9 +370,8 @@ export default class WeekDayEventPopUp extends React.Component {
                                             <p className="title"  onClick={this._onAtClick.bind(this)}>Time &#58;</p>
                                             {this.state.showTimePanelWindow ?
                                                 <TimePicker
-                                                    style={{ width: 100 }}
                                                     showSecond={showSecond}
-                                                    onChange={this.handleTimeChange}
+                                                    onChange={this.handleTimeChange.bind(this)}
                                                     placeholder="00:00"
                                                 />
                                             :
