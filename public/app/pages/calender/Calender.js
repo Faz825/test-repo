@@ -108,8 +108,9 @@ export default class Calender extends React.Component {
                         </div>
 
 
-                        <div className="view-tile-area">
+                        <div className="view-tile-area clearfix">
                             <div className="calender-box">
+                                <p className="month-name">{this.state.month.format("MMMM")}</p>
                                 <DayNames />
                                 {this.renderWeeks()}
                             </div>
@@ -144,7 +145,7 @@ export default class Calender extends React.Component {
 
     renderMonthLabel() {
         return(
-            <p>{this.state.month.format("MMMM, YYYY")}</p>
+            <p>{this.state.month.format("YYYY")}</p>
         );
     }
 

@@ -511,25 +511,25 @@ export default class Index extends React.Component{
                                         <div className="col-sm-12 input-group">
                                             <p>Choose a colour</p>
                                             <div className="color-palette clearfix">
-                                                <div className={this.isActive('#ed1e7a')} style={{backgroundColor: "#ed1e7a"}} data-color="#ed1e7a" onClick={this.colorPicker.bind(this)}>
-                                                    <i className="fa fa-check" aria-hidden="true"></i>
-                                                </div>
                                                 <div className={this.isActive('#00a6ef')} style={{backgroundColor: "#00a6ef"}} data-color="#00a6ef" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
                                                 <div className={this.isActive('#a6c74a')} style={{backgroundColor: "#a6c74a"}} data-color="#a6c74a" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
-                                                <div className={this.isActive('#b21e53')} style={{backgroundColor: "#b21e53"}} data-color="#b21e53" onClick={this.colorPicker.bind(this)}>
-                                                    <i className="fa fa-check" aria-hidden="true"></i>
-                                                </div>
-                                                <div className={this.isActive('#000f75')} style={{backgroundColor: "#000f75"}} data-color="#000f75" onClick={this.colorPicker.bind(this)}>
+                                                <div className={this.isActive('#ed1e7a')} style={{backgroundColor: "#ed1e7a"}} data-color="#ed1e7a" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
                                                 <div className={this.isActive('#bebfbf')} style={{backgroundColor: "#bebfbf"}} data-color="#bebfbf" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
+                                                <div className={this.isActive('#000f75')} style={{backgroundColor: "#000f75"}} data-color="#000f75" onClick={this.colorPicker.bind(this)}>
+                                                    <i className="fa fa-check" aria-hidden="true"></i>
+                                                </div>
                                                 <div className={this.isActive('#038247')} style={{backgroundColor: "#038247"}} data-color="#038247" onClick={this.colorPicker.bind(this)}>
+                                                    <i className="fa fa-check" aria-hidden="true"></i>
+                                                </div>
+                                                <div className={this.isActive('#b21e53')} style={{backgroundColor: "#b21e53"}} data-color="#b21e53" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
                                                 <div className={this.isActive('#000000')} style={{backgroundColor: "#000000"}} data-color="#000000" onClick={this.colorPicker.bind(this)}>
