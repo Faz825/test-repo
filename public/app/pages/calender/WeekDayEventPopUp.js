@@ -30,7 +30,8 @@ export default class WeekDayEventPopUp extends React.Component {
             showUserPanelWindow : false,
             msgOn : false,
             errorMsg : '',
-            isButtonDisabled : false
+            isButtonDisabled : false,
+            tagged: ''
         }
 
         this.loggedUser = user;
@@ -75,6 +76,7 @@ export default class WeekDayEventPopUp extends React.Component {
           this.setState({isAlreadySelected:true});
           console.log("already selected" + this.state.isAlreadySelected)
       }
+      this.setTagged();
       return "";
     }
 
@@ -100,6 +102,15 @@ export default class WeekDayEventPopUp extends React.Component {
         this.sharedWithIds.splice(key,1);
         this.sharedWithNames.splice(key,1);
         this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
+        this.setTagged();
+    }
+
+    setTagged() {
+        if(this.sharedWithIds.length > 0) {
+            this.setState({'tagged' : 'tagged'});
+        } else {
+            this.setState({'tagged' : ''});
+        }
     }
 
     removeUsersByName(arrUsers) {
