@@ -843,11 +843,11 @@ footer .notification-alert-holder.slideOut{
 }
 
 .calender-year-view .view-tile-area .month-tiles .month-tile {
-  min-height: 309px;
+  min-height: 233px;
 }
-.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day {
-  min-height: 37px;
-}
+/*.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day {*/
+  /*min-height: 37px;*/
+/*}*/
 
 /* Call center */
 .call-center-header .actions-wrapper .crt-call{
