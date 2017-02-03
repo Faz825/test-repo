@@ -100,7 +100,7 @@ export default class EditorField extends Component {
         var diff = this.getDifference(currentPlainText, plainText);
 
         if(currentContent != plainText && plainText.length > currentPlainText.length && diff.includes("#")) {
-            
+
             var splited = diff.split("#");
             splited = splited.filter(function(v){return v!==''});
             var arrNames = [];
@@ -115,7 +115,7 @@ export default class EditorField extends Component {
                 arrNames.push(aName);
             }
 
-            this.props.removeUsersByName(arrNames);        
+            this.props.removeUsersByName(arrNames);
         }
         this.setState({editorState});
     }
@@ -157,7 +157,7 @@ export default class EditorField extends Component {
                     onChange={this.onChange}
                     plugins={plugins}
                     ref={(element) => { this.editor = element; }}
-                    placeholder="Type in an Event or a To-do here use # to tag people, @ to set time of the event"
+                    placeholder="Enter an event description"
                 />
                 <EmojiSuggestions />
                 <MentionSuggestions

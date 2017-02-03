@@ -74,9 +74,6 @@ body{
   width: 400px;
   height: auto;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .rc-time-picker {
-  margin-top: 6px;
-}
 
 .popup-holder .selected-time,
 .calender-container .selected-time {
@@ -110,6 +107,10 @@ body{
   -moz-box-shadow: none;
   -o-box-shadow: none;
   box-shadow: none;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper.tagged .people-container .react-autosuggest__container {
+    float: left;
 }
 
 /* - ReactAutoSuggest Custom Styles*/
@@ -791,18 +792,17 @@ footer .notification-alert-holder.slideOut{
           transform: scale(0);
 }
 
-.shared-users-time-panel .react-autosuggest__container input,
-.shared-users-time-panel .rc-time-picker-input {
-    border: 0px !important;
-    border-bottom: 2px solid #ddd !important;
-    outline: none !important;
-    padding: 6px 0px !important;
-    border-radius: 0px !important;
-    -webkit-box-shadow: none !important;
-    -moz-box-shadow: none !important;
-    -o-box-shadow: none !important;
-    box-shadow: none !important;
-    margin-top: -5px !important;
+.calender-container .time-wrapper .rc-time-picker-input {
+    margin-top: 0px;
+    margin-left: 3px;
+    float: left;
+    border: none;
+    outline: none;
+    font-size: 0.875em;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: #000000;
+    max-width: 62px;
 }
 
 /* custom styles for ipad view */

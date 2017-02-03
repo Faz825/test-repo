@@ -512,8 +512,14 @@ var CalendarController = {
 
         // Clone the value before .endOf()
         var endDate = moment([year, Number(month - 1)]).endOf('month').add(1, 'day').format('YYYY-MM-DD');
+        var calendar_origin = typeof(req.query.calendarOrigin) != 'undefined' ? req.query.calendarOrigin : 1; // PRESONAL_CALENDAR || GROUP_CALENDAR
+        var criteria = {start_date_time: {$gte: startDate, $lt: endDate}, status: 1};
 
-        var criteria = {start_date_time: {$gte: startDate, $lt: endDate}, status: 1, user_id: user_id};
+        if(calendar_origin == CalendarOrigin.GROUP_CALENDAR) {
+            criteria['group_id'] = req.query.groupId;
+        } else {
+            criteria['user_id'] = user_id;
+        }
 
         _async.waterfall([
             function getEventsFromDB(callBack) {
@@ -577,7 +583,40 @@ var CalendarController = {
                 } else {
                     callBack(null, _Events);
                 }
+            },
+            function getMyGroups(resultSet, callBack) {
+                var query={
+                    q:"status:3", // accepted
+                    index:'idx_connections:'+user_id
+                };
 
+                ES.search(query,function(groupIndexes){
+                    callBack(null, _Events);
+                });
+            },
+            function getMyGroupEvents(indexes, callBack) {
+
+                if(indexes != null && indexes.result_count > 0 && calendar_origin != CalendarOrigin.GROUP_CALENDAR) {
+
+                    var i = 0;
+                    indexes.result.forEach(function(group) {
+                        var groupCriteria = {start_date_time: {$gte: startDate, $lt: endDate}, status: 1, group_id:  group._id};
+                        CalendarEvent.getSortedCalenderItems(groupCriteria, function (err, resultSet) {
+                            if(err) {
+                                callBack(null, null);
+                            } else {
+                                Array.prototype.push.apply(_Events, resultSet.events); // this trick is for merging two arrays. Can't use concat becase concat creates a new array
+                                i = i+1;
+                                if(i == indexes.result_count) {
+                                    callBack(null, _Events);
+                                }
+                            }
+
+                        });
+                    });
+                } else {
+                    callBack(null, _Events);
+                }
             }
         ], function (err, _Events) {
 

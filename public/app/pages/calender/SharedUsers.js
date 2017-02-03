@@ -134,32 +134,20 @@ export default class SharedUsers extends Component {
     }
 
     render() {
-
         const { value, suggestions, suggestionsList } = this.state;
         const inputProps = {
-            placeholder: 'Type a name...',
+            placeholder: "type someone's name",
             value,
             onChange: this.onChange,
-            className: 'form-control',
+            className: 'people-input',
         };
-
-        // let shared_with_list = [];
-
-        // if(this.state.sharedWithNames.length > 0){
-        //     shared_with_list = this.state.sharedWithNames.map((name,key)=>{
-        //         return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
-        //     });
-        // }
-
         return (
-            <div className={this.props.showPanel + " panel user-panel"}>
-                <Autosuggest suggestions={suggestions}
-                    onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                    getSuggestionValue={this.getSuggestionValue}
-                    renderSuggestion={this.renderSuggestion}
-                    inputProps={inputProps}
-                />
-            </div>
+            <Autosuggest suggestions={suggestions}
+                onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                getSuggestionValue={this.getSuggestionValue}
+                renderSuggestion={this.renderSuggestion}
+                inputProps={inputProps}
+            />
         )
     }
 }

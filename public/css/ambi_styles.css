@@ -11394,7 +11394,7 @@ header .notification-holder .profile-header-thumb {
   letter-spacing: 1px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
-  margin: 6px 31px 15px;
+  margin: 30px 31px 15px;
   overflow: hidden;
   font-size: 0.875em;
   font-weight: 500;
@@ -14794,7 +14794,7 @@ header .notification-holder .profile-header-thumb {
   letter-spacing: 1px;
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .input {
-  margin: 6px 31px 15px;
+  margin: 30px 31px 15px;
   overflow: hidden;
   font-size: 0.875em;
   font-weight: 500;
@@ -17271,10 +17271,11 @@ header .notification-holder .profile-header-thumb {
   border-radius: 8px;
 }
 .popup-holder .calendar-week-popup-wrapper {
-  width: 680px;
-  border: 1px solid #ddd;
   position: relative;
-  border-radius: 8px;
+  width: 641px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  background-color: #ffffff;
 }
 .popup-holder .calendar-week-popup-wrapper .model-header:before {
   display: table;
@@ -17286,17 +17287,24 @@ header .notification-holder .profile-header-thumb {
   content: " ";
 }
 .popup-holder .calendar-week-popup-wrapper .model-header .model-title-wrapper {
-  padding: 10px;
+  padding: 10px 10px 0;
 }
 .popup-holder .calendar-week-popup-wrapper .model-header .model-title-wrapper .model-title-inner-wrapper h4 {
   font-family: "Work Sans", sans-serif;
   font-weight: 500;
   margin: 0;
-  font-size: 1.135em;
+  font-size: 0.875em;
   line-height: 1.42857143;
-  text-transform: uppercase;
   text-align: right;
-  color: #000000;
+  font-weight: 500;
+  line-height: 24px;
+  text-transform: uppercase;
+}
+.popup-holder .calendar-week-popup-wrapper .model-header .model-title-wrapper .model-title-inner-wrapper h4.event {
+  color: #00a6ef;
+}
+.popup-holder .calendar-week-popup-wrapper .model-header .model-title-wrapper .model-title-inner-wrapper h4.todos {
+  color: #038247;
 }
 .popup-holder .calendar-week-popup-wrapper .model-header .model-title-wrapper .model-title-inner-wrapper .close {
   opacity: 1;
@@ -17317,42 +17325,174 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-date-wrapper {
   padding: 10px 0 0;
-  border: 1px solid #dee6eb;
-  border-radius: 15px;
-  width: 125px;
   text-align: center;
-  height: 125px;
   float: left;
   margin-left: 25px;
+  width: 107px;
+  height: 115px;
+  border-radius: 8px;
+  border: 1px solid #ededed;
+  background-color: rgba(255, 255, 255, 0.5);
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-date-wrapper h4 {
   font-family: "Work Sans", sans-serif;
   font-weight: 700;
-  font-size: 1.640625em;
-  color: #ed1e7a;
+  font-size: 0.75em;
   margin: 0;
+  color: #00a6ef;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-date-wrapper p {
   font-family: "Work Sans", sans-serif;
   font-weight: 700;
-  color: #c1c1c1;
-  font-size: 5.59125em;
-  line-height: 1;
-  margin: 0;
+  font-size: 4em;
+  margin: -8px 0;
+  color: rgba(51, 51, 51, 0.5);
+  letter-spacing: 4px;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area {
   position: relative;
-  width: calc(100% - 188px);
+  width: calc(100% - 155px);
   float: left;
   margin-left: 20px;
 }
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper {
+  overflow: hidden;
+  margin-top: 15px;
+  margin-bottom: 9px;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper {
+  float: left;
+  max-width: 320px;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper.tagged {
+  width: auto;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper.tagged .title {
+  display: none;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper.tagged .people-container {
+  max-width: 315px;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .title {
+  margin-top: 4px;
+  margin-bottom: 0px;
+  float: left;
+  font-size: 0.875em;
+  font-weight: 500;
+  outline: none;
+  letter-spacing: 1px;
+  color: rgba(136, 136, 136, 0.57);
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container {
+  float: left;
+  margin-top: 0px;
+  margin-left: 3px;
+  max-width: 145px;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .person {
+  float: left;
+  margin-top: 2px;
+  margin-left: 3px;
+  padding: 3px;
+  font-size: 0.875em;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #00a6ef;
+  border-radius: 3px;
+  background-color: rgba(0, 166, 239, 0.3);
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .person.selected {
+  color: #ffffff;
+  background-color: #00a6ef;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input {
+  margin-top: 3px;
+  margin-left: 3px;
+  float: left;
+  border: none;
+  outline: none;
+  font-size: 0.875em;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: rgba(136, 136, 136, 0.57);
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input:-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input::-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input:-ms-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input::-webkit-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper {
+  float: right;
+  margin-right: 10px;
+  margin-left: 0px;
+  overflow: hidden;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper.active-time .title {
+  display: none;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper.active-time .time-input {
+  margin-right: 20px;
+  max-width: 75px;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper .title {
+  margin-top: 4px;
+  margin-bottom: 0px;
+  float: left;
+  font-size: 0.875em;
+  font-weight: 500;
+  outline: none;
+  letter-spacing: 1px;
+  color: rgba(136, 136, 136, 0.57);
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper .time-input {
+  margin-top: 3px;
+  margin-left: 3px;
+  float: left;
+  border: none;
+  outline: none;
+  font-size: 0.875em;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #000000;
+  max-width: 62px;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper .time-input:-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper .time-input::-moz-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper .time-input:-ms-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper .time-input::-webkit-input-placeholder {
+  color: rgba(136, 136, 136, 0.57);
+  font-weight: 500;
+}
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .input {
   width: 100%;
-  min-height: 164px;
-  color: #bebfbf;
+  min-height: 95px;
   outline: none;
-  font-size: 1em;
+  font-size: 0.875em;
+  color: #666666;
+  font-weight: 400;
+  letter-spacing: 1px;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .input:after {
   clear: both;
@@ -17367,11 +17507,18 @@ header .notification-holder .profile-header-thumb {
   content: " ";
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper {
+  position: relative;
+  overflow: hidden;
   width: 100%;
-  padding: 10px;
-  border-top: 1px solid #dcdcdc;
-  background-color: #f6f6f6;
-  border-radius: 8px;
+}
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper:before {
+  position: absolute;
+  top: 0;
+  left: 4.7%;
+  content: '';
+  width: calc(100% - 9.1%);
+  height: 5px;
+  border-top: 2px solid #bebfbf;
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper:before {
   display: table;
@@ -17383,78 +17530,104 @@ header .notification-holder .profile-header-thumb {
   content: " ";
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper {
-  display: inline-block;
+  overflow: hidden;
   color: #bcbfbf;
+  margin-top: 17px;
+  margin-left: 30px;
+  margin-bottom: 17px;
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li {
-  display: inline-block;
+  float: left;
+  margin-right: 11px;
   background-color: #ffffff;
-}
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li button {
-  font-weight: 500;
-}
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico {
-  background: transparent;
-  border: 1px solid #bcbfbf;
-  border-radius: 4px;
+  width: 30px;
+  height: 30px;
   text-align: center;
-  width: 28px;
-  height: 28px;
-  outline: none;
+  display: inline-block;
+  border-radius: 5px;
+  border: 1px solid #dbdbdb;
+  cursor: pointer;
 }
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico i {
-  font-size: 0.961875em;
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li:last-child {
+  margin: 0;
 }
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico p {
-  margin-bottom: 0;
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li.btn-group {
+  width: 120px;
+  border: none;
 }
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .btn-group {
-  border: 1px solid #c4c4c4;
-  border-radius: 4px;
-  margin-left: 0;
-  height: 31px;
-  text-transform: uppercase;
-}
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .btn-group button {
-  outline: none;
-  padding: 0 13px;
-}
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group {
-  background: #ffffff;
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li.btn-group .btn {
+  font-size: 0.5em;
   color: #ffffff;
-  box-shadow: none;
-  height: 100%;
-  text-transform: uppercase;
-  font-size: 0.576875em;
   font-weight: 500;
+  width: 60px;
+  height: 30px;
+  float: left;
+  background-color: #ffffff;
+  box-shadow: none;
+  border: 1px solid #dbdbdb;
+  outline: none;
+  text-transform: uppercase;
 }
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group.event {
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li.btn-group .btn.event {
+  border-radius: 6px 0px 0px 6px;
   color: #00a6ef;
 }
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group.event.active {
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li.btn-group .btn.event.active {
   background-color: #00a6ef;
+  border-color: #00a6ef;
   color: #ffffff;
-  box-shadow: none;
 }
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group.todo {
-  color: #a6c649;
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li.btn-group .btn.todo {
+  border-radius: 0px 6px 6px 0px;
+  color: #038247;
 }
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group.todo.active {
-  background-color: #a6c649;
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li.btn-group .btn.todo.active {
+  background-color: #038247;
+  border-color: #038247;
   color: #ffffff;
-  box-shadow: none;
 }
-.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-txt.btn {
-  text-transform: uppercase;
-  height: 30px;
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li.post {
+  float: right;
+  width: auto;
+  margin-right: 28px;
+  border: none;
+}
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li.post .btn {
+  width: 130px;
+  font-size: 0.75em;
+  color: #ffffff;
+  font-weight: 400;
+  background-color: #00a6ef;
+  box-shadow: none;
   border: 1px solid #00a6ef;
-  border-radius: 4px;
-  background-color: #00a6ef;
-  text-align: center;
-  font-size: 0.576875em;
-  font-weight: 500;
-  color: #ffffff;
-  padding: 0px 14px;
+  border-radius: 6px;
+  outline: none;
+  text-transform: uppercase;
+}
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li.post .btn .fly-ico {
+  width: 8px;
+  height: 8px;
+  margin-right: 4px;
+  background-image: url("../images/calender/enter.png");
+  display: inline-block;
+}
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .ico {
+  vertical-align: text-top;
+}
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .ico.fa {
+  vertical-align: text-bottom;
+}
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .ico.emoji {
+  color: #f1c40f;
+}
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .ico.font_style {
+  color: #333333;
+}
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .ico.tag {
+  color: #00a6ef;
+}
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .ico.time {
+  color: #ed1e7a;
 }
 .popup-holder .create-folder-popup .folder-header {
   overflow: hidden;
