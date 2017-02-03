@@ -275,10 +275,11 @@ export default class WeekDayEventPopUp extends React.Component {
         let _this = this;
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
-                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{_this.removeUser(key, name)}}></i></span>
+                // return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{_this.removeUser(key, name)}}></i></span>
+                return <span key={key} className="person selected">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
             });
-        } else {
-            shared_with_list = <span className="user-label">Only me</span>
+        // } else {
+        //     shared_with_list = <span className="user-label">Only me</span>
         }
         return(
             <ModalContainer zIndex={9999}>
@@ -356,7 +357,7 @@ export default class WeekDayEventPopUp extends React.Component {
                                             </div>
                                         </div>
                                         <div className="time-wrapper" >
-                                            <p className="title"  onClick={this._onAtClick.bind(this)}>Insert time &#58;</p>
+                                            <p className="title"  onClick={this._onAtClick.bind(this)}>Time &#58;</p>
                                             {this.state.showTimePanelWindow ?
                                                 <TimePicker
                                                     style={{ width: 100 }}
@@ -393,16 +394,16 @@ export default class WeekDayEventPopUp extends React.Component {
                                                 type="button"
                                                 className={"btn event "+(this.state.eventType == 'event' ? "active" : null)}
                                                 eventType="event"
-                                                onClick={() => this.changeType('event')}
+                                                onClick={() => this.changeEventType('event')}
                                                 >
                                                 <i className="fa fa-calendar" aria-hidden="true"></i> Event
                                             </button>
-                                            {(this.props.calendarOrigin == 1) ?
+                                            {(this.props.isGroupCall == false) ?
                                                 <button
                                                     type="button"
                                                     className={"btn todo "+(this.state.eventType == 'todo' ? "active" : null)}
                                                     eventType="todo"
-                                                    onClick={() => this.changeType('todo')}
+                                                    onClick={() => this.changeEventType('todo')}
                                                     >
                                                     <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
                                                 </button>
@@ -411,7 +412,7 @@ export default class WeekDayEventPopUp extends React.Component {
                                                     type="button"
                                                     className={"btn task "+(this.state.eventType == 'task' ? "active" : null)}
                                                     eventType="task"
-                                                    onClick={() => this.changeType('task')}
+                                                    onClick={() => this.changeEventType('task')}
                                                     >
                                                     <i className="fa fa-wpforms" aria-hidden="true"></i> Tasks
                                                 </button>

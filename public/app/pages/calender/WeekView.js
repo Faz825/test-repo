@@ -168,7 +168,7 @@ export default class WeekView extends React.Component {
                             </div>
                         </div>
 
-                        <WeekDays week_startDt={this.state.weekStartDate} events={this.state.events} loadData={this.processDataCall.bind(this)} isGroupCall={this.state.groupCall.isGroupCall}/>
+                        <WeekDays week_startDt={this.state.weekStartDate} events={this.state.events} loadData={this.processDataCall.bind(this)} isGroupCall={this.state.groupCall.isGroupCall} />
 
                     </div>
                 </div>
@@ -258,7 +258,6 @@ export class LoadDayList extends React.Component {
                         curr_date={currDt}
                         week_startDt={this.props.week_startDt}
                         isGroupCall={this.props.isGroupCall}
-                        calendarOrigin={this.props.calendarOrigin} 
                     />
                     : null
                 }

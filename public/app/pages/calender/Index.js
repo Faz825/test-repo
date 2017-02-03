@@ -70,7 +70,7 @@ export default class Index extends React.Component{
 
         switch(this.state.current) {
             case 'week':
-                return (<WeekView calendarOrigin={this.calendarOrigin} calendarOrigin={this.calendarOrigin} isGroupCall={false} groupCall={groupCall}/>);
+                return (<WeekView calendarOrigin={this.calendarOrigin} isGroupCall={false} groupCall={groupCall}/>);
             case 'day':
                 return  (<DayView calendarOrigin={this.calendarOrigin} dayDate={this.state.dayViewDate} selectedEvent={this.props.params.name} />);
             case 'month':

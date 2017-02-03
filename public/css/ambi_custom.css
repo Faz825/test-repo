@@ -792,7 +792,7 @@ footer .notification-alert-holder.slideOut{
           transform: scale(0);
 }
 
-.calender-container .time-wrapper .rc-time-picker-input {
+.time-wrapper .rc-time-picker-input {
     margin-top: 0px;
     margin-left: 3px;
     float: left;
@@ -815,12 +815,16 @@ footer .notification-alert-holder.slideOut{
 }
 
 .calender-container  .react-autosuggest__suggestion .suggestion-item img {
-    width: 40px;
-    margin: 10px;
+    width: 30px;
+    margin: 1px 10px;
 }
 
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li.btn-group .btn {
     z-index: 0;
+}
+
+#react-autowhatever-1 {
+    z-index: 1;
 }
 
 /* custom styles for ipad view */
