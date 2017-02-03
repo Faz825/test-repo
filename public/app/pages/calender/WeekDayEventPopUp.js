@@ -380,12 +380,12 @@ export default class WeekDayEventPopUp extends React.Component {
                                                 <span className="ico font_style">B</span>
                                             </OverlayTrigger>
                                         </li>
-                                        <li>
-                                            <span className="ico tag" onClick={this._onHashClick.bind(this)}>#</span>
+                                        <li onClick={this._onHashClick.bind(this)}>
+                                            <span className="ico tag" >#</span>
                                         </li>
 
-                                        <li>
-                                            <span onClick={this._onAtClick.bind(this)} >
+                                        <li onClick={this._onAtClick.bind(this)}>
+                                            <span  >
                                                 <i className="fa fa-at  ico time" aria-hidden="true"></i>
                                             </span>
                                         </li>
