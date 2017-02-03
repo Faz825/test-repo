@@ -851,6 +851,11 @@ footer .notification-alert-holder.slideOut{
     z-index: 0;
 }
 
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input,
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input {
+    letter-spacing: 0.5px;
+}
+
 #react-autowhatever-1 {
     z-index: 1;
 }
