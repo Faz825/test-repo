@@ -10878,25 +10878,10 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .item-type {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 7px;
+  right: 7px;
   height: 32px;
   width: 24px;
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.doc .item-type, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.docx .item-type {
-  background-image: url("../images/folder/types/docs.png");
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.pdf .item-type {
-  background-image: url("../images/folder/types/pdf.png");
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image {
-  border-color: transparent;
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .time-wrapper, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .folder-title-holder {
-  color: #ffffff;
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .item-type {
-  background-image: url("../images/folder/types/jpg.png");
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
@@ -14527,25 +14512,10 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .item-type {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 7px;
+  right: 7px;
   height: 32px;
   width: 24px;
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.doc .item-type, .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.docx .item-type {
-  background-image: url("../images/folder/types/docs.png");
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.pdf .item-type {
-  background-image: url("../images/folder/types/pdf.png");
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image {
-  border-color: transparent;
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .time-wrapper, .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .folder-title-holder {
-  color: #ffffff;
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .item-type {
-  background-image: url("../images/folder/types/jpg.png");
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
