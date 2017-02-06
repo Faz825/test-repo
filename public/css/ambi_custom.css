@@ -808,10 +808,12 @@ footer .notification-alert-holder.slideOut{
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
     width: 100% !important;
     max-width: 430px !important;
+    height: 25px;
 }
 
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
     float: left !important;
+    height: 25px;
 }
 
 .calendar-input-area .react-autosuggest__suggestion,
@@ -836,11 +838,13 @@ footer .notification-alert-holder.slideOut{
 
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper {
     float: left !important;
+    height: 25px;
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper {
     width: 100%;
     max-width: 343px !important;
+    height: 25px;
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper, .calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper {
