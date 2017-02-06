@@ -73,17 +73,12 @@ var UploadController = {
             var nameArr = n.split(extension);
             name = nameArr[0];
         }
-        console.log("11111");
         _imageFiles[n]['name'] = name;
         _imageFiles[n]['binaryData'] = binaryData;
         _imageFiles[n]['extension'] = extension;
         _imageFiles[n]['content_type'] = extension.substr(1);
         _imageFiles[n]['user_id'] = Util.toObjectId(CurrentSession.id);
         _imageFiles[n]['folder_id'] = Util.toObjectId(_imageFiles[n]['upload_id']);
-
-
-        console.log("22222");
-        console.log(_imageFiles);
 
         _async.waterfall([
 
