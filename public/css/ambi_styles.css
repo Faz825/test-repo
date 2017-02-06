@@ -19001,10 +19001,16 @@ header .notification-holder .profile-header-thumb {
   height: 46px;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper {
+  width: 177px;
   margin-left: 20px;
   float: left;
+  overflow: hidden;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper .name {
+  width: 175px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   margin-top: 2px;
   margin-left: 2px;
   font-size: 0.9375em;
@@ -19012,6 +19018,10 @@ header .notification-holder .profile-header-thumb {
   color: #000000;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper .name-title {
+  width: 175px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   margin-top: -8px;
   margin-left: 2px;
   font-size: 0.6875em;
@@ -19176,6 +19186,10 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.875em;
   font-weight: 500;
   color: #000000;
+  width: 165px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .action {
   position: relative;
