@@ -861,9 +861,21 @@ footer .notification-alert-holder.slideOut{
     height: 25px;
 }
 
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
+    float: left !important;
+    height: 25px;
+}
+
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
+    width: 100%;
+    max-width: 430px !important;
+    height: 25px;
+}
+
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper {
     width: 343px !important;
     margin-right: 15px;
+    height: 25px;
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper.tagged .people-container{
