@@ -1,6 +1,3 @@
-/**
- * Created by phizuupc on 12/19/2016.
- */
 'use strict';
 
 /**
@@ -25,8 +22,12 @@ var GroupsController = {
             notifyUsers = (typeof req.body._members != 'undefined' ? req.body._members : []); //this should be an array
 
         // add group owner as a group member
-        // status is hard coded due to : non member request accept process
-        req.body._members.push({user_id: CurrentSession.id, name: CurrentSession.name, status: 3});
+        // status is hard coded due to : no member request accept process
+        req.body._members.push({
+            user_id: CurrentSession.id,
+            name: CurrentSession.first_name + ' ' + CurrentSession.last_name,
+            status: 3
+        });
 
         _async.waterfall([
             function createGroup(callBack) {
@@ -138,7 +139,6 @@ var GroupsController = {
                 }
             },
             function createConnections(groupData, callBack) {
-
                 if (notifyUsers.length > 0) {
                     Groups.addConnections(groupData, userId, function () {
                         console.log("CREATING CONNECTIONS");
