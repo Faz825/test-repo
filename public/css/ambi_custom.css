@@ -905,6 +905,14 @@ footer .notification-alert-holder.slideOut{
     z-index: 1;
 }
 
+.create-group-popup .invite-people .react-autosuggest__container {
+    position: relative;
+}
+
+.create-group-popup .invite-people #react-autowhatever-1 {
+    top: 34px;
+}
+
 /* custom styles for ipad view */
 @media (min-width: 768px) {
 		.calender-container .mini-calender-box.calender-box .header span {
