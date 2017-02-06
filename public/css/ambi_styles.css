@@ -10892,7 +10892,7 @@ header .notification-holder .profile-header-thumb {
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
   bottom: 4px;
-  right: 25px;
+  right: 22px;
   height: 18px;
   cursor: pointer;
 }
@@ -10905,6 +10905,7 @@ header .notification-holder .profile-header-thumb {
   color: #000000;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all i {
+  margin-right: 5px;
   float: right;
   font-size: 0.8125em;
   font-weight: 400;
@@ -10934,7 +10935,7 @@ header .notification-holder .profile-header-thumb {
   height: auto;
 }
 .folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
-  padding-bottom: 10px;
+  padding-bottom: 18px;
   height: auto;
 }
 .folder-container .folder-body .folder.pink .col-sm-2 {
@@ -14533,7 +14534,7 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
   bottom: 4px;
-  right: 25px;
+  right: 22px;
   height: 18px;
   cursor: pointer;
 }
@@ -14546,6 +14547,7 @@ header .notification-holder .profile-header-thumb {
   color: #000000;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all i {
+  margin-right: 5px;
   float: right;
   font-size: 0.8125em;
   font-weight: 400;
@@ -14575,7 +14577,7 @@ header .notification-holder .profile-header-thumb {
   height: auto;
 }
 .group-container .group-folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
-  padding-bottom: 10px;
+  padding-bottom: 18px;
   height: auto;
 }
 .group-container .group-folder-container .folder-body .folder.pink .col-sm-2 {
