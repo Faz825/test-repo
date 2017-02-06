@@ -216,6 +216,7 @@ export default class DayView extends Component {
                 this.refs.EditorFieldValues.setState({editorState});
                 this.resetEventForm();
                 this.loadEvents();
+                this.setTagged();
             }
         }.bind(this));
     }
@@ -287,6 +288,7 @@ export default class DayView extends Component {
 
                 this.resetEventForm();
                 this.loadEvents();
+                this.setTagged();
             }
         }.bind(this));
     }
@@ -616,7 +618,7 @@ export default class DayView extends Component {
 
                                     <div className="tag-wrapper clearfix">
                                         <div className={this.state.tagged + " people-wrapper"}  >
-                                            <p className="title" onClick={this._onHashClick.bind(this)}>People in the event &#58;</p>
+                                            <p className="title" onClick={this._onHashClick.bind(this)}>People in the event&#58;</p>
                                             <div className="people-container">
                                                 {shared_with_list}
                                                 {this.state.showUserPanelWindow ?

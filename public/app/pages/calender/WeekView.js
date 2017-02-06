@@ -242,9 +242,10 @@ export class LoadDayList extends React.Component {
 
     render() {
         let currDt = moment(this.props.current_date);
+        let isCurrentToday = moment().format('YYYY-MM-DD') == moment(this.props.current_date).format('YYYY-MM-DD');
         return(
-            <div className={(this.state.cardSelected)? "day-tile selected" : "day-tile"} onDoubleClick={() => this.handleClick()}>
-                <div className="day-tile-header">
+            <div className={isCurrentToday ? "day-tile selected" : "day-tile"} onDoubleClick={() => this.handleClick()}>
+                <div className="day-tile-header selected">
                     <h3 className="date">{currDt.format('DD')}</h3>
                     <h3 className="day">{currDt.format('dddd')}</h3>
                 </div>
@@ -289,9 +290,6 @@ export class DailyEvents extends React.Component {
 
     render() {
 
-        console.log("rendaring dayily events >>>>>>>----->>>>");
-        console.log(this.props.isGroupCall);
-        console.log(this.props.daily_events);
         let groupedEvents = GroupArray(this.props.daily_events, 'type');
         console.log(groupedEvents);
         let _events = null,_todos = null,_tasks = null, _this = this;

@@ -428,15 +428,9 @@ export default class WeekDayEventPopUp extends React.Component {
                                             }
                                         </li>
                                         <li className="post">
-                                            { this.state.editOn == false ?
-                                                <button className="menu-ico-txt btn" disabled={this.state.isButtonDisabled} onClick={this.addEvent}>
-                                                    <span className="fly-ico"></span> Enter
-                                                </button>
-                                                :
-                                                <div className="menu-ico-txt btn" onClick={this.updateEvent}>
-                                                    <i className="fa fa-paper-plane" aria-hidden="true"></i> Update
-                                                </div>
-                                            }
+                                            <button className="menu-ico-txt btn" disabled={this.state.isButtonDisabled} onClick={this.addEvent}>
+                                                <span className="fly-ico"></span> Enter
+                                            </button>
                                         </li>
                                     </ul>
                                     <div className="msg-holder pull-left">
