@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.6 (http://getbootstrap.com)
- * Copyright 2011-2015 Twitter, Inc.
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,7 +1418,6 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3119,7 +3118,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3672,7 +3670,6 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10249,13 +10246,13 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/* 
+/*
 	Method to use:
 	@include @border {
 		border ($style,  $sides, $emptySides){
 	}
 */
-/* 
+/*
 	Method to use:
 	@include @mixin {
 		content
@@ -10669,9 +10666,8 @@ header .notification-holder .profile-header-thumb {
   margin-left: 15px;
   margin-right: 15px;
   overflow: hidden;
-  border-radius: 5px;
-  background: #fff;
-  box-shadow: 1px 0 12px -8px #000000;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.27);
 }
 .folder-container .folder-body .folder .folder-wrapper .drag-shader {
   display: none;
@@ -10683,7 +10679,6 @@ header .notification-holder .profile-header-thumb {
   padding-right: 0;
   width: 15.766667%;
   background-color: #ffffff;
-  border-radius: 8px 0px 0px 8px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay {
   position: absolute;
@@ -10883,25 +10878,10 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .item-type {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 7px;
+  right: 7px;
   height: 32px;
   width: 24px;
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.doc .item-type, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.docx .item-type {
-  background-image: url("../images/folder/types/docs.png");
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.pdf .item-type {
-  background-image: url("../images/folder/types/pdf.png");
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image {
-  border-color: transparent;
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .time-wrapper, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .folder-title-holder {
-  color: #ffffff;
-}
-.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .item-type {
-  background-image: url("../images/folder/types/jpg.png");
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
@@ -14320,9 +14300,8 @@ header .notification-holder .profile-header-thumb {
   margin-left: 15px;
   margin-right: 15px;
   overflow: hidden;
-  border-radius: 5px;
-  background: #fff;
-  box-shadow: 1px 0 12px -8px #000000;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.27);
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .drag-shader {
   display: none;
@@ -14334,7 +14313,6 @@ header .notification-holder .profile-header-thumb {
   padding-right: 0;
   width: 15.766667%;
   background-color: #ffffff;
-  border-radius: 8px 0px 0px 8px;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-overlay {
   position: absolute;
@@ -14534,25 +14512,10 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item .item-type {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 7px;
+  right: 7px;
   height: 32px;
   width: 24px;
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.doc .item-type, .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.docx .item-type {
-  background-image: url("../images/folder/types/docs.png");
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.pdf .item-type {
-  background-image: url("../images/folder/types/pdf.png");
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image {
-  border-color: transparent;
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .time-wrapper, .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .folder-title-holder {
-  color: #ffffff;
-}
-.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .item-type {
-  background-image: url("../images/folder/types/jpg.png");
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
@@ -19008,10 +18971,16 @@ header .notification-holder .profile-header-thumb {
   height: 46px;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper {
+  width: 177px;
   margin-left: 20px;
   float: left;
+  overflow: hidden;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper .name {
+  width: 175px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   margin-top: 2px;
   margin-left: 2px;
   font-size: 0.9375em;
@@ -19019,6 +18988,10 @@ header .notification-holder .profile-header-thumb {
   color: #000000;
 }
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper .name-title {
+  width: 175px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   margin-top: -8px;
   margin-left: 2px;
   font-size: 0.6875em;
@@ -19183,6 +19156,10 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.875em;
   font-weight: 500;
   color: #000000;
+  width: 165px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .action {
   position: relative;

@@ -13,7 +13,7 @@ export default class RecentList extends React.Component {
 
     render() {
         let _this = this;
-        let recentList = this.props.userList.map(function (oGroupedContacts, key) {
+        let recentList = this.props.userContacts.map(function (oGroupedContacts, key) {
             return (
                 <div className="contact-group" key={key}>
                     <p className="group-name">{oGroupedContacts.letter}</p>

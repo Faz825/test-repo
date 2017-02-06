@@ -1,10 +1,10 @@
 // Callcenter status
 
 const UserMode = {
-    "ONLINE": 1,
-    "OFFLINE": 2,
-    "WORK_MODE": 3
-}
+    "ONLINE": {VALUE: 1, TITLE: 'ONLINE'},
+    "OFFLINE": {VALUE: 2, TITLE: 'OFFLINE'},
+    "WORK_MODE": {VALUE: 3, TITLE: 'WORK-MODE'}
+};
 
 const CallType = {
     "INCOMING": 1,

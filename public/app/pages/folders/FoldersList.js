@@ -491,7 +491,11 @@ export class File extends React.Component{
                             <div className="folder-title-holder">
                                 <p className="folder-title">{data.document_name}</p>
                             </div>
-                            <span className="item-type"></span>
+                            <div className="item-type">
+                                <svg width="24" height="32">
+                                    <image xlinkHref={"images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
+                                </svg>
+                            </div>
                         </div>
                         {
                             (data.document_thumb_path)?

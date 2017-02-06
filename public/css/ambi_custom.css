@@ -474,9 +474,9 @@ a.rc-time-picker-panel-clear-btn {
   font-size: 0.8em;
 }
 
-.folder .folder-wrapper{
-  border: 1px solid transparent;
-}
+/*.folder .folder-wrapper{*/
+  /*border: 1px solid transparent;*/
+/*}*/
 
 .folder .folder-item{
   position: relative;
