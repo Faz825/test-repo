@@ -10806,7 +10806,7 @@ header .notification-holder .profile-header-thumb {
   padding-right: 12px;
   margin-top: 0px;
   margin-bottom: 15px;
-  padding: 13px 4px 0px 15px;
+  padding: 13px 8px 0px 15px;
 }
 @media (min-width: 768px) {
   .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
@@ -10891,8 +10891,8 @@ header .notification-holder .profile-header-thumb {
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
-  bottom: 8px;
-  right: 16px;
+  bottom: 4px;
+  right: 25px;
   height: 18px;
   cursor: pointer;
 }
@@ -10934,6 +10934,7 @@ header .notification-holder .profile-header-thumb {
   height: auto;
 }
 .folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
+  padding-bottom: 10px;
   height: auto;
 }
 .folder-container .folder-body .folder.pink .col-sm-2 {
@@ -14446,7 +14447,7 @@ header .notification-holder .profile-header-thumb {
   padding-right: 12px;
   margin-top: 0px;
   margin-bottom: 15px;
-  padding: 13px 4px 0px 15px;
+  padding: 13px 8px 0px 15px;
 }
 @media (min-width: 768px) {
   .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col {
@@ -14531,8 +14532,8 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
-  bottom: 8px;
-  right: 16px;
+  bottom: 4px;
+  right: 25px;
   height: 18px;
   cursor: pointer;
 }
@@ -14574,6 +14575,7 @@ header .notification-holder .profile-header-thumb {
   height: auto;
 }
 .group-container .group-folder-container .folder-body .folder.see-all .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper {
+  padding-bottom: 10px;
   height: auto;
 }
 .group-container .group-folder-container .folder-body .folder.pink .col-sm-2 {
