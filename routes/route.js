@@ -221,6 +221,7 @@ router.post('/calendar/delete', CalendarController.deleteCalendarEvent);
 router.get('/contacts/all', CallCenterController.contact.getAll);
 router.get('/call/get-records', CallCenterController.call.getCallRecords);
 router.post('/call/add-record', CallCenterController.call.addCallRecord);
+router.post('/me/update/user-mode', CallCenterController.me.updateMode);
 
 //Group
 router.post('/groups/add', GroupsController.createGroup);

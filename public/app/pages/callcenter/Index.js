@@ -7,7 +7,7 @@ import ReactDom from 'react-dom';
 import {Modal, ButtonToolbar, DropdownButton, MenuItem} from 'react-bootstrap';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import {CallChannel} from '../../config/CallcenterStats';
+import {CallChannel, UserMode} from '../../config/CallcenterStats';
 import ContactList from "./ContactList";
 import RecentList from "./RecentList";
 import StatusList from "./StatusList";
@@ -30,7 +30,7 @@ export default class Index extends React.Component {
             targetUser: null,
             inProgressCall: false,
             callMode: CallChannel.AUDIO,
-            userList: [],
+            userContacts: [],
             recentCalls: [],
             userStatus: "online",
             activeMainCat: "",
@@ -38,7 +38,8 @@ export default class Index extends React.Component {
             showModal: false,
             minimizeBar: false,
             searchValue: "",
-            isStatusVisible: false
+            isStatusVisible: false,
+            activeTabData: null
         };
 
         // Call Record
@@ -46,12 +47,19 @@ export default class Index extends React.Component {
             targets: []
         };
 
-        this.loadContactData("recent", "all");
+        // Get Contacts
+        let _this = this;
+
+        CallCenter.getContacts().done(function (data) {
+            if (data.status.code == 200) {
+                _this.setState({userContacts: data.contacts});
+            }
+        });
 
         this.answerVideo = this.answerVideo.bind(this);
         this.answerAudio = this.answerAudio.bind(this);
         this.reject = this.reject.bind(this);
-        this.currUserList;
+        this.currUserList = null;
     }
 
     initCall(b6) {
@@ -60,6 +68,73 @@ export default class Index extends React.Component {
         b6.on('video', function (v, d, op) {
             _this.onVideoCall(v, d, op);
         });
+    }
+
+    getContacts(cat, subCat) {
+        switch (cat) {
+            case 'contact':
+                if (subCat == 'all') {
+                    this.setActiveTabData(cat, subCat);
+                    this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
+                } else if (subCat == 'individual') {
+                    this.setActiveTabData(cat, subCat);
+                    this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
+                } else if (subCat == 'groups') {
+                    this.setActiveTabData(cat, subCat);
+                    this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
+                }
+                break;
+        }
+    }
+
+    setActiveTabData(cat, subCat) {
+        if (cat == "contact" && subCat == "all") {
+            this.setState({activeTabData: this.state.userContacts});
+        } else if (cat == "contact" && subCat == "individual") {
+            let dataSet = [],
+                usersSet = [],
+                letter = "";
+
+            let aContacts = this.state.userContacts;
+
+            for (var key in aContacts) {
+                letter = aContacts[key].letter;
+                for (var subKey in aContacts[key].users) {
+                    let type = aContacts[key].users[subKey].contactType;
+                    if (type == 1) {
+                        usersSet.push(aContacts[key].users[subKey]);
+                    }
+                }
+                if (usersSet.length >= 1) {
+                    dataSet.push({"letter": letter, "users": usersSet});
+                    usersSet = [];
+                }
+            }
+
+            this.setState({activeTabData: dataSet});
+        } else if (cat == "contact" && subCat == "groups") {
+            let dataSet = [],
+                usersSet = [],
+                letter = "";
+
+            let aContacts = this.state.userContacts;
+
+            for (var key in aContacts) {
+                letter = aContacts[key].letter;
+                for (var subKey in aContacts[key].users) {
+                    let type = aContacts[key].users[subKey].contactType;
+                    if (type == 2) {
+                        usersSet.push(aContacts[key].users[subKey]);
+                    }
+                }
+                if (usersSet.length >= 1) {
+                    dataSet.push({"letter": letter, "users": usersSet});
+                    usersSet = [];
+                }
+            }
+
+            this.setState({activeTabData: dataSet});
+        }
     }
 
     loadContactData(cat, subCat) {
@@ -316,7 +391,7 @@ export default class Index extends React.Component {
             });
             if (data.status.code == 200) {
                 if (cat == "contact" && subCat == "all") {
-                    this.setState({userList: data.contacts});
+                    this.setState({userContacts: data.contacts});
                 }
                 else if (cat == "contact" && subCat == "groups") {
                     let dataSet = [],
@@ -337,7 +412,7 @@ export default class Index extends React.Component {
                         }
                     }
 
-                    this.setState({userList: dataSet});
+                    this.setState({userContacts: dataSet});
 
                 }
                 else if (cat == "contact" && subCat == "individual") {
@@ -359,10 +434,10 @@ export default class Index extends React.Component {
                         }
                     }
 
-                    this.setState({userList: dataSet});
+                    this.setState({userContacts: dataSet});
                 }
                 else if (cat == "recent" && subCat == "all") {
-                    this.setState({userList: userGroupList});
+                    this.setState({userContacts: userGroupList});
                 }
                 else if (cat == "status" && subCat == "online") {
                     let dataSet = [],
@@ -383,7 +458,7 @@ export default class Index extends React.Component {
                         }
                     }
 
-                    this.setState({userList: dataSet});
+                    this.setState({userContacts: dataSet});
                 }
                 else if (cat == "status" && subCat == "busy") {
                     let dataSet = [],
@@ -404,20 +479,20 @@ export default class Index extends React.Component {
                         }
                     }
 
-                    this.setState({userList: dataSet});
+                    this.setState({userContacts: dataSet});
                 }
                 else if (cat == "recent" && subCat == "missed") {
-                    this.setState({userList: userGroupList});
+                    this.setState({userContacts: userGroupList});
                 } else if (cat == "recent" && subCat == "individual") {
-                    this.setState({userList: userGroupList});
+                    this.setState({userContacts: userGroupList});
                 } else if (cat == "recent" && subCat == "groups") {
-                    this.setState({userList: userGroupList});
+                    this.setState({userContacts: userGroupList});
                 }
                 else {
-                    this.setState({userList: []});
+                    this.setState({userContacts: []});
                 }
             }
-            this.currUserList = this.state.userList;
+            this.currUserList = this.state.userContacts;
             this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
         }.bind(this));
     }
@@ -466,13 +541,13 @@ export default class Index extends React.Component {
         return (
             <div className="row rw-contact-menu">
                 <div className={(subCat == "all") ? "col-sm-4 active" : "col-sm-4" } onClick={(event)=> {
-                    this.loadContactData("contact", "all")
+                    this.getContacts("contact", "all")
                 }}>All <span className="selector"></span></div>
                 <div className={(subCat == "individual") ? "col-sm-4 active" : "col-sm-4" } onClick={(event)=> {
-                    this.loadContactData("contact", "individual")
+                    this.getContacts("contact", "individual")
                 }}>Individual <span className="selector"></span></div>
                 <div className={(subCat == "groups") ? "col-sm-4 active" : "col-sm-4" } onClick={(event)=> {
-                    this.loadContactData("contact", "groups")
+                    this.getContacts("contact", "groups")
                 }}>Groups <span className="selector"></span></div>
             </div>
         )
@@ -494,13 +569,26 @@ export default class Index extends React.Component {
         )
     }
 
-    onUserStateUpdate(eventKey) {
-        console.log(eventKey);
-        this.setState({userStatus: eventKey, isStatusVisible : false});
+    onUserStateUpdate(mode) {
+        this.setState({userStatus: mode, isStatusVisible: false});
+
+        CallCenter.updateUserMode(mode).done(function (data) {
+            CallCenter.changeUserMode(mode);
+        });
     }
 
-    onUserStatusClick(){
-        this.setState({isStatusVisible : true});
+    onUserStatusClick() {
+        this.setState({isStatusVisible: true});
+    }
+
+    getUserStatusClass(userStatus) {
+        if (userStatus == UserMode.ONLINE.VALUE) {
+            return 'online';
+        } else if (userStatus == UserMode.WORK_MODE.VALUE) {
+            return 'work-mode';
+        } else {
+            return 'offline';
+        }
     }
 
     headerNav() {
@@ -514,21 +602,28 @@ export default class Index extends React.Component {
                         <div className="image-wrapper">
                             <img
                                 src={(this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image}/>
-                            {(!this.state.isStatusVisible)?
-                                <span className={"status user-mode " + this.state.userStatus} onClick={this.onUserStatusClick.bind(this)}></span>
-                                :                                
+                            {(!this.state.isStatusVisible) ?
+                                <span className={"status user-mode " + this.getUserStatusClass(this.state.userStatus)}
+                                      onClick={this.onUserStatusClick.bind(this)}></span>
+                                :
                                 <section className="cc-online-status-popup">
-                                    <div className="status-type" onClick={(event)=> {this.onUserStateUpdate("online")}}>
+                                    <div className="status-type" onClick={(event)=> {
+                                        this.onUserStateUpdate(UserMode.ONLINE.VALUE)
+                                    }}>
                                         <span className="status online"></span>
-                                        <p className="type">Online</p>
+                                        <p className="type">{UserMode.ONLINE.TITLE}</p>
                                     </div>
-                                    <div className="status-type" onClick={(event)=> {this.onUserStateUpdate("work-mode")}}>
+                                    <div className="status-type" onClick={(event)=> {
+                                        this.onUserStateUpdate(UserMode.WORK_MODE.VALUE)
+                                    }}>
                                         <span className="status work-mode"></span>
-                                        <p className="type">Work Mode</p>
+                                        <p className="type">{UserMode.WORK_MODE.TITLE}</p>
                                     </div>
-                                    <div className="status-type" onClick={(event)=> {this.onUserStateUpdate("offline")}}>
+                                    <div className="status-type" onClick={(event)=> {
+                                        this.onUserStateUpdate(UserMode.OFFLINE.VALUE)
+                                    }}>
                                         <span className="status offline"></span>
-                                        <p className="type">Offline</p>
+                                        <p className="type">{UserMode.OFFLINE.TITLE}</p>
                                     </div>
                                     <div className="mood-msg">
                                         <p>Edit Mood Message</p>
@@ -539,17 +634,17 @@ export default class Index extends React.Component {
                         <div className="name-wrapper">
                             <p className="name">{this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name}</p>
                             {/*<div className="status-update">
-                                <ButtonToolbar>
-                                    <DropdownButton bsSize="small" title={this.state.userStatus}
-                                                    id="dropdown-size-small">
-                                        <MenuItem eventKey="online"
-                                                  onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
-                                        <MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
-                                        <MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work
-                                            mode</MenuItem>
-                                    </DropdownButton>
-                                </ButtonToolbar>
-                            </div>*/}
+                             <ButtonToolbar>
+                             <DropdownButton bsSize="small" title={this.state.userStatus}
+                             id="dropdown-size-small">
+                             <MenuItem eventKey="online"
+                             onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
+                             <MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
+                             <MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work
+                             mode</MenuItem>
+                             </DropdownButton>
+                             </ButtonToolbar>
+                             </div>*/}
                         </div>
                     </div>
                     <div className="col-sm-6">
@@ -561,7 +656,7 @@ export default class Index extends React.Component {
                             </div>
                             <div className={(mainCat == "contact") ? "col-sm-4 active" : "col-sm-4" }
                                  onClick={(event)=> {
-                                     this.loadContactData("contact", "all")
+                                     this.getContacts("contact", "all")
                                  }}>Contact
                             </div>
                             <div className={(mainCat == "status") ? "col-sm-4 active" : "col-sm-4" }
@@ -673,7 +768,7 @@ export default class Index extends React.Component {
             console.log('end');
             console.log(c);
 
-           // _this.setState({inProgressCall: false, targetUser: null, callMode: CallChannel.AUDIO});
+            // _this.setState({inProgressCall: false, targetUser: null, callMode: CallChannel.AUDIO});
 
             // TODO show call end details in popup
         });
@@ -704,19 +799,19 @@ export default class Index extends React.Component {
 
     onSearch(e) {
         let val = e.target.value,
-            userList = this.currUserList,
+            userContacts = this.currUserList,
             dataSet = [],
             usersSet = [],
             letter = "";
         this.setState({searchValue: val});
 
-        for (var key in userList) {
-            letter = userList[key].letter;
+        for (var key in userContacts) {
+            letter = userContacts[key].letter;
 
-            for (var subKey in userList[key].users) {
-                let name = userList[key].users[subKey].first_name + " " + userList[key].users[subKey].last_name;
+            for (var subKey in userContacts[key].users) {
+                let name = userContacts[key].users[subKey].first_name + " " + userContacts[key].users[subKey].last_name;
                 if (name.includes(val)) {
-                    usersSet.push(userList[key].users[subKey]);
+                    usersSet.push(userContacts[key].users[subKey]);
                 }
             }
 
@@ -732,9 +827,9 @@ export default class Index extends React.Component {
         }
 
         if (val == "") {
-            this.setState({userList: this.currUserList});
+            this.setState({userContacts: this.currUserList});
         } else {
-            this.setState({userList: dataSet});
+            this.setState({userContacts: dataSet});
         }
     }
 
@@ -767,19 +862,22 @@ export default class Index extends React.Component {
                         {this.headerNav()}
                         {
                             (mainCat == "recent") ?
-                                <RecentList userList={this.state.userList} onUserCall={this.onDialing.bind(this)}/>
+                                <RecentList userContacts={this.state.userContacts}
+                                            onUserCall={this.onDialing.bind(this)}/>
                                 :
                                 null
                         }
                         {
                             (mainCat == "contact") ?
-                                <ContactList userList={this.state.userList} onUserCall={this.onDialing.bind(this)}/>
+                                <ContactList userContacts={this.state.activeTabData}
+                                             onUserCall={this.onDialing.bind(this)}/>
                                 :
                                 null
                         }
                         {
                             (mainCat == "status") ?
-                                <StatusList userList={this.state.userList} onUserCall={this.onDialing.bind(this)}/>
+                                <StatusList userContacts={this.state.userContacts}
+                                            onUserCall={this.onDialing.bind(this)}/>
                                 :
                                 null
                         }

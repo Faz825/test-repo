@@ -3,11 +3,11 @@
  */
 
 var ES = {
-    esClient:null,
-    init:function(){
+    esClient: null,
+    init: function () {
         var _es = require('elasticsearch');
         this.esClient = new _es.Client({
-            host: Config.ES_HOST+":"+Config.ES_PORT,
+            host: Config.ES_HOST + ":" + Config.ES_PORT,
 
         });
         this.esClient.ping({
@@ -25,23 +25,23 @@ var ES = {
      *
      * @param callBack
      */
-    createIndex:function(payLoad,callBack){
+    createIndex: function (payLoad, callBack) {
         var _esData = {
-            index:payLoad.index,
-            type:payLoad.type,
-            id:payLoad.id
+            index: payLoad.index,
+            type: payLoad.type,
+            id: payLoad.id
         };
 
-        if(typeof payLoad.tag_fields != 'undefined' ){
+        if (typeof payLoad.tag_fields != 'undefined') {
             _esData['tags'] = [];
-            for(var i=0;i< payLoad.tag_fields.length;i++){
+            for (var i = 0; i < payLoad.tag_fields.length; i++) {
                 _esData['tags'].push(payLoad.data[payLoad.tag_fields[i]]);
             }
         }
 
         _esData['body'] = payLoad.data;
         this.esClient.index(_esData, function (error, response) {
-            if(error)
+            if (error)
                 console.log(error);
 
             callBack(response);
@@ -53,17 +53,17 @@ var ES = {
      *
      * @param callBack
      */
-    update:function(payLoad,callBack){
+    update: function (payLoad, callBack) {
 
         var _esData = {
-            index:payLoad.index,
-            type:payLoad.type,
-            id:payLoad.id
+            index: payLoad.index,
+            type: payLoad.type,
+            id: payLoad.id
         };
 
-        if(typeof payLoad.tag_fields != 'undefined' ){
+        if (typeof payLoad.tag_fields != 'undefined') {
             _esData['tags'] = [];
-            for(var i=0;i< payLoad.tag_fields.length;i++){
+            for (var i = 0; i < payLoad.tag_fields.length; i++) {
 
                 _esData['tags'].push(payLoad.data[payLoad.tag_fields[i]]);
             }
@@ -71,7 +71,7 @@ var ES = {
 
         _esData['body'] = {doc: payLoad.data};
         this.esClient.update(_esData, function (error, response) {
-            if(error)
+            if (error)
                 console.log(error);
 
 
@@ -85,14 +85,14 @@ var ES = {
      * @param payLoad
      * @param callBack
      */
-    search:function(payLoad,callBack){
-        var search_param ={
-                q:payLoad.q,
-                size:1000
+    search: function (payLoad, callBack) {
+        var search_param = {
+                q: payLoad.q,
+                size: 1000
             },
             _this = this;
 
-        if(typeof payLoad.index != "undefined"){
+        if (typeof payLoad.index != "undefined") {
             search_param['index'] = payLoad.index
         }
 
@@ -105,25 +105,25 @@ var ES = {
         });
 
     },
-    formatSearchResult:function(result){
+    formatSearchResult: function (result) {
         //console.log("==============formatSearchResult================")
-        var _tmp ={
-            result_count:Number(result.hits.total)
+        var _tmp = {
+            result_count: Number(result.hits.total)
         }
         _tmp['result'] = [];
-        for(var a=0;a<result.hits.hits.length;a++){
+        for (var a = 0; a < result.hits.hits.length; a++) {
             //console.log("=============="+a+"================")
             _tmp['result'].push(result.hits.hits[a]._source);
         }
 
         return _tmp;
     },
-    delete:function(payload, callback){
+    delete: function (payload, callback) {
 
         var _esData = {
-            index:payload.index,
-            type:payload.type,
-            id:payload.id
+            index: payload.index,
+            type: payload.type,
+            id: payload.id
         };
 
         this.esClient.delete(_esData).then(function (resp) {
@@ -134,11 +134,11 @@ var ES = {
         });
 
     },
-    isIndexExists:function (payload, callback) {
+    isIndexExists: function (payload, callback) {
         var _esData = {
-            index:payload.index,
-            type:payload.type,
-            id:payload.id
+            index: payload.index,
+            type: payload.type,
+            id: payload.id
         }
 
         this.esClient.exists(_esData, function (error, exists) {
@@ -149,8 +149,6 @@ var ES = {
             }
         });
     }
-
 };
-
 
 module.exports = ES;

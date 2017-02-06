@@ -1,0 +1,17 @@
+{
+  "secretaries": {
+    "model": "Secretary",
+    "documents": [
+      {
+        "full_name": "Donna",
+        "gender": "F",
+        "image_name": "donna.png"
+      },
+      {
+        "full_name": "Bob",
+        "gender": "M",
+        "image_name": "bob.png"
+      }
+    ]
+  }
+}

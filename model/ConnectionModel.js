@@ -3,63 +3,63 @@
  */
 
 'use strict'
-var  mongoose = require('mongoose'),
-    Schema   = mongoose.Schema;
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 /**
  * Define Connection Status
  */
-GLOBAL.ConnectionStatus ={
-    REQUEST_ACCEPTED:1,
-    RESPONSE_DECLINED:2,
-    REQUEST_BLOCKED:3,
-    REQUEST_SENT:4,
-    CONNECTION_UNFRIEND:5,
-    CONNECTION_BLOCKED:6
+GLOBAL.ConnectionStatus = {
+    REQUEST_ACCEPTED: 1,
+    RESPONSE_DECLINED: 2,
+    REQUEST_BLOCKED: 3,
+    REQUEST_SENT: 4,
+    CONNECTION_UNFRIEND: 5,
+    CONNECTION_BLOCKED: 6
 
 };
 
-GLOBAL.ConnectedType ={
+GLOBAL.ConnectedType = {
     PERSONAL_CONNECTION: 1,
     GROUP_CONNECTION: 2
 };
 
-GLOBAL.ConnectionConfig ={
-    CACHE_NAME:"connections:",
-    ES_INDEX_NAME:"idx_connections:"
-}
+GLOBAL.ConnectionConfig = {
+    CACHE_NAME: "connections:",
+    ES_INDEX_NAME: "idx_connections:"
+};
 
 var ConnectionSchema = new Schema({
-    user_id:{
+    user_id: {
         type: Schema.ObjectId,
-        default:null
+        default: null
     },
-    connected_with:{
+    connected_with: {
         type: Schema.ObjectId,
         ref: 'User',
-        default:null
+        default: null
     },
-    connected_with_type:{
-        type:Number,
-        required:true,
+    connected_with_type: {
+        type: Number,
+        required: true,
         default: ConnectedType.PERSONAL_CONNECTION
     },
-    status:{
-        type:Number,
-        default:0
+    status: {
+        type: Number,
+        default: 0
     },
-    action_user_id:{
+    action_user_id: {
         type: Schema.ObjectId,
         ref: 'User',
-        default:null
+        default: null
     },
-    created_at:{
-        type:Date
+    created_at: {
+        type: Date
     },
-    updated_at:{
-        type:Date
+    updated_at: {
+        type: Date
     }
 
-},{collection:"connections"});
+}, {collection: "connections"});
 
 /**
  * Create a new connection
@@ -83,52 +83,52 @@ ConnectionSchema.statics.createConnection = function (connectionData, callBack) 
     });
 };
 
-ConnectionSchema.statics.sendConnectionRequest=function(user_id,connected_users,unconnected_users,callBack){
-    var _connected_users =[],now = new Date(), _this = this,_async = require('async');
+ConnectionSchema.statics.sendConnectionRequest = function (user_id, connected_users, unconnected_users, callBack) {
+    var _connected_users = [], now = new Date(), _this = this, _async = require('async');
     //REMOVE UNSELECTED CONNECTIONS
-    if(unconnected_users.length > 0){
+    if (unconnected_users.length > 0) {
         var _formatted_unconnected_ids = [];
-        for(var a=0;a<unconnected_users.length;a++){
-            this.remove({connected_with:unconnected_users[a].toObjectId()},function(err){
+        for (var a = 0; a < unconnected_users.length; a++) {
+            this.remove({connected_with: unconnected_users[a].toObjectId()}, function (err) {
                 console.log(err);
             })
         }
     }
-    if(connected_users.length >0){
-        _async.each(connected_users, function(connected_user, callBack){
+    if (connected_users.length > 0) {
+        _async.each(connected_users, function (connected_user, callBack) {
 
             _this.collection.update(
                 {
                     $or: [
                         {
-                            user_id:Util.toObjectId(connected_user.toObjectId()),
-                            connected_with:Util.toObjectId(user_id)
+                            user_id: Util.toObjectId(connected_user.toObjectId()),
+                            connected_with: Util.toObjectId(user_id)
                         },
                         {
-                            user_id:Util.toObjectId(user_id),
-                            connected_with:Util.toObjectId(connected_user.toObjectId())
+                            user_id: Util.toObjectId(user_id),
+                            connected_with: Util.toObjectId(connected_user.toObjectId())
                         }
                     ]
                 }
-                ,{
-                    $set:{
+                , {
+                    $set: {
                         user_id: Util.toObjectId(user_id),
                         connected_with: connected_user.toObjectId(),
                         created_at: now,
-                        action_user_id:Util.toObjectId(user_id),
-                        status:ConnectionStatus.REQUEST_SENT
+                        action_user_id: Util.toObjectId(user_id),
+                        status: ConnectionStatus.REQUEST_SENT
                     }
-                },{upsert:true,multi:false},function(err,rsUpdate){
-                    if(!err){
+                }, {upsert: true, multi: false}, function (err, rsUpdate) {
+                    if (!err) {
                         callBack(null);
-                    }else{
+                    } else {
                         console.log("user connection removed \n");
                         console.log(err);
                     }
                 })
 
-        },function(err){
-            callBack({status:200,connected:"ok"});
+        }, function (err) {
+            callBack({status: 200, connected: "ok"});
         });
 
         // for (var i = 0; connected_users.length > i; i++) {
@@ -141,8 +141,8 @@ ConnectionSchema.statics.sendConnectionRequest=function(user_id,connected_users,
         //     });
         // }
         // this.collection.insert(_connected_users,function(err,resultSet){});
-    }else {
-        callBack({status:200,connected:"empty"});
+    } else {
+        callBack({status: 200, connected: "empty"});
     }
 
 }
@@ -152,59 +152,59 @@ ConnectionSchema.statics.sendConnectionRequest=function(user_id,connected_users,
  * @param userId
  * @param callBack
  */
-ConnectionSchema.statics.getFriends = function(userId,status,callBack){
-    var _this = this,_async = require('async'),
-        _friendIds=[],_friends={},
+ConnectionSchema.statics.getFriends = function (userId, status, callBack) {
+    var _this = this, _async = require('async'),
+        _friendIds = [], _friends = {},
         _status = {
-            $in:status
+            $in: status
         }
 
     _async.waterfall([
-        function getMyRequestAcceptedUsers(callBack){
-            _this.find({user_id:userId,status:_status})
-                .exec(function(err,resultSet){
-                if(!err){
-                    for(var a = 0;a<resultSet.length;a++){
-                        var usr_id= resultSet[a].connected_with.toString();
-                        if(_friendIds.indexOf(usr_id) == -1) {
-                            var _usr_id = resultSet[a].connected_with.toString();
-                            _friendIds.push(_usr_id);
-                            _friends[_usr_id]  = resultSet[a];
+        function getMyRequestAcceptedUsers(callBack) {
+            _this.find({user_id: userId, status: _status})
+                .exec(function (err, resultSet) {
+                    if (!err) {
+                        for (var a = 0; a < resultSet.length; a++) {
+                            var usr_id = resultSet[a].connected_with.toString();
+                            if (_friendIds.indexOf(usr_id) == -1) {
+                                var _usr_id = resultSet[a].connected_with.toString();
+                                _friendIds.push(_usr_id);
+                                _friends[_usr_id] = resultSet[a];
+                            }
                         }
+                        callBack(null);
+                    } else {
+                        console.log("Server Error --------");
+                        console.log(err);
+                        callBack(null);
                     }
-                    callBack(null);
-                }else{
-                    console.log("Server Error --------");
-                    console.log(err);
-                    callBack(null);
-                }
-            });
+                });
         },
-        function getIAcceptedRequest(callBack){
-            _this.find({connected_with:userId,status:_status})
-                .exec(function(err,resultSet){
-                if(!err){
-                    for(var a = 0;a<resultSet.length;a++){
-                        var usr_id= resultSet[a].user_id.toString();
-                        if(_friendIds.indexOf(usr_id) == -1) {
-                            var _usr_id = resultSet[a].user_id.toString();
-                            _friendIds.push(_usr_id);
-                            _friends[_usr_id]  = resultSet[a];
+        function getIAcceptedRequest(callBack) {
+            _this.find({connected_with: userId, status: _status})
+                .exec(function (err, resultSet) {
+                    if (!err) {
+                        for (var a = 0; a < resultSet.length; a++) {
+                            var usr_id = resultSet[a].user_id.toString();
+                            if (_friendIds.indexOf(usr_id) == -1) {
+                                var _usr_id = resultSet[a].user_id.toString();
+                                _friendIds.push(_usr_id);
+                                _friends[_usr_id] = resultSet[a];
+                            }
                         }
+                        callBack(null, _friendIds, _friends);
+                    } else {
+                        console.log("Server Error --------");
+                        console.log(err);
+                        callBack(null);
                     }
-                    callBack(null,_friendIds,_friends);
-                }else{
-                    console.log("Server Error --------");
-                    console.log(err);
-                    callBack(null);
-                }
-            });
+                });
         }
-    ],function(err,_friendIds,_friends){
+    ], function (err, _friendIds, _friends) {
 
         callBack({
-            friends_ids:_friendIds,
-            friends:_friends
+            friends_ids: _friendIds,
+            friends: _friends
         })
     });
 }
@@ -217,12 +217,12 @@ ConnectionSchema.statics.getFriends = function(userId,status,callBack){
  * @param connectedUsers
  * @param getIdOnly
  */
-ConnectionSchema.statics.formatConnectedUsers = function(connectedUsers,getIdOnly){
+ConnectionSchema.statics.formatConnectedUsers = function (connectedUsers, getIdOnly) {
 
-    if(typeof getIdOnly != 'undefined' && getIdOnly === true){
+    if (typeof getIdOnly != 'undefined' && getIdOnly === true) {
         var _tmp_connected_user_ids = [];
 
-        for(var i=0;i<connectedUsers.length;i++){
+        for (var i = 0; i < connectedUsers.length; i++) {
             _tmp_connected_user_ids.push(connectedUsers[i].connected_with.toString());
         }
         return _tmp_connected_user_ids;
@@ -239,55 +239,54 @@ ConnectionSchema.statics.formatConnectedUsers = function(connectedUsers,getIdOnl
  * @param userId
  * @param callBack
  */
-ConnectionSchema.statics.getFriendsCount = function(userId,callBack){
+ConnectionSchema.statics.getFriendsCount = function (userId, callBack) {
     var _this = this,
         _async = require('async'),
-        friendsCount=0;
-
+        friendsCount = 0;
 
 
     _async.waterfall([
-        function getMyRequestAcceptedUsers(callBack){
-            _this.count({user_id:userId,status:ConnectionStatus.REQUEST_ACCEPTED})
-                .exec(function(err,resultCount){
-                    if(!err){
+        function getMyRequestAcceptedUsers(callBack) {
+            _this.count({user_id: userId, status: ConnectionStatus.REQUEST_ACCEPTED})
+                .exec(function (err, resultCount) {
+                    if (!err) {
                         friendsCount = resultCount
                         callBack(null);
-                    }else{
+                    } else {
                         console.log("Server Error --------");
                         console.log(err);
                         callBack(null);
                     }
                 });
         },
-        function getIAcceptedRequest(callBack){
-            _this.count({connected_with:userId,status:ConnectionStatus.REQUEST_ACCEPTED})
-                .exec(function(err,resultCount){
-                    if(!err){
-                        friendsCount = friendsCount+resultCount;
-                        callBack(null,friendsCount);
-                    }else{
+        function getIAcceptedRequest(callBack) {
+            _this.count({connected_with: userId, status: ConnectionStatus.REQUEST_ACCEPTED})
+                .exec(function (err, resultCount) {
+                    if (!err) {
+                        friendsCount = friendsCount + resultCount;
+                        callBack(null, friendsCount);
+                    } else {
                         console.log("Server Error --------");
                         console.log(err);
                         callBack(null);
                     }
                 });
         }
-    ],function(err,friendsCount){
+    ], function (err, friendsCount) {
         callBack(friendsCount)
     });
 }
 
 
-function onInsert(err,resultSet,callBack){
+function onInsert(err, resultSet, callBack) {
 
     callBack(resultSet)
 
 }
-ConnectionSchema.pre('save', function(next){
+ConnectionSchema.pre('save', function (next) {
     var now = new Date();
     this.updated_at = now;
-    if ( !this.created_at ) {
+    if (!this.created_at) {
         this.created_at = now;
     }
     next();
@@ -298,56 +297,54 @@ ConnectionSchema.pre('save', function(next){
  * Get Connection requests that received for me
  * @param userId
  */
-ConnectionSchema.statics.getConnectionRequests = function(criteria,callBack){
+ConnectionSchema.statics.getConnectionRequests = function (criteria, callBack) {
 
-    var _this = this, _async = require('async'),_formatted_connection_requests= [];
+    var _this = this, _async = require('async'), _formatted_connection_requests = [];
 
     var _query = {
-        connected_with:Util.toObjectId(criteria.user_id),
-        status:ConnectionStatus.REQUEST_SENT
+        connected_with: Util.toObjectId(criteria.user_id),
+        status: ConnectionStatus.REQUEST_SENT
     }
 
 
+    _this.find(_query)
+        .exec(function (err, resultSet) {
+            if (!err) {
+                _async.each(resultSet,
+                    function (connection, callBack) {
+                        var query = {
+                            q: connection.user_id.toString(),
+                            index: 'idx_usr'
+                        };
+                        ES.search(query, function (esResultSet) {
 
-        _this.find(_query)
-            .exec(function(err,resultSet){
-                if(!err){
-                    _async.each(resultSet,
-                        function(connection,callBack){
-                            var query={
-                                q:connection.user_id.toString(),
-                                index:'idx_usr'
-                            };
-                            ES.search(query,function(esResultSet){
-
-                                if(typeof esResultSet.result[0] == "undefined"){
-                                    callBack();
-                                }else{
-                                    _formatted_connection_requests.push(esResultSet.result[0]);
-                                    callBack();
-                                }
-
-
-                            });
-
-                        },function(err){
-                            if(err){
-                                console.log("getConnectionRequests \n ")
-                                console.log(err)
-                                callBack({status:400,error:err});
-                            }else{
-                                callBack({status:200,requested_connections:_formatted_connection_requests});
+                            if (typeof esResultSet.result[0] == "undefined") {
+                                callBack();
+                            } else {
+                                _formatted_connection_requests.push(esResultSet.result[0]);
+                                callBack();
                             }
 
-                        })
-                }else{
-                    console.log("Server Error --------");
-                    console.log(err);
-                    callBack(null);
-                }
 
-            });
+                        });
 
+                    }, function (err) {
+                        if (err) {
+                            console.log("getConnectionRequests \n ")
+                            console.log(err)
+                            callBack({status: 400, error: err});
+                        } else {
+                            callBack({status: 200, requested_connections: _formatted_connection_requests});
+                        }
+
+                    })
+            } else {
+                console.log("Server Error --------");
+                console.log(err);
+                callBack(null);
+            }
+
+        });
 
 
 }
@@ -361,56 +358,56 @@ ConnectionSchema.statics.getConnectionRequests = function(criteria,callBack){
  * @param criteria
  * @param callBack
  */
-ConnectionSchema.statics.acceptConnectionRequest = function(criteria,callBack){
+ConnectionSchema.statics.acceptConnectionRequest = function (criteria, callBack) {
 
     var _this = this, _async = require('async');
 
     _async.waterfall([
 
-        function changeStatus(callBack){
+        function changeStatus(callBack) {
             var now = new Date();
             _this.update({
-                user_id:Util.toObjectId(criteria.sender_id),
-                connected_with:Util.toObjectId(criteria.user_id)
-            },{
-                $set:{
-                    status:ConnectionStatus.REQUEST_ACCEPTED,
-                    updated_at:now,
-                    action_user_id:Util.toObjectId(criteria.user_id)
+                user_id: Util.toObjectId(criteria.sender_id),
+                connected_with: Util.toObjectId(criteria.user_id)
+            }, {
+                $set: {
+                    status: ConnectionStatus.REQUEST_ACCEPTED,
+                    updated_at: now,
+                    action_user_id: Util.toObjectId(criteria.user_id)
                 }
-            },{upsert:false,multi:false},function(err,rsUpdate){
-                if(!err){
+            }, {upsert: false, multi: false}, function (err, rsUpdate) {
+                if (!err) {
                     callBack(null);
-                }else{
+                } else {
                     console.log("acceptConnectionRequest \n");
                     console.log(err);
                 }
             })
         },
-        function updateIndexConnection(callBack){
+        function updateIndexConnection(callBack) {
 
             //UPDATE OWN CONNECTION ES
-            var query={
-                q:criteria.sender_id.toString(),
-                index:'idx_usr'
-            };
+            var query = {
+                q: criteria.sender_id.toString(),
+                index: 'idx_usr'
 
-            ES.search(query,function(esResultSet){
+            };
+            ES.search(query, function (esResultSet) {
 
                 var now = new Date();
                 esResultSet.result[0]['connected_at'] = now;
                 var _data = esResultSet.result[0];
 
-                var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString();
-                var payLoad={
-                    index:_cache_key,
-                    id:criteria.sender_id.toString(),
+                var _cache_key = ConnectionConfig.ES_INDEX_NAME + criteria.user_id.toString();
+                var payLoad = {
+                    index: _cache_key,
+                    id: criteria.sender_id.toString(),
                     type: 'connections',
-                    data:_data,
-                    tag_fields:[esResultSet.result[0].first_name,esResultSet.result[0].last_name]
+                    data: _data,
+                    tag_fields: [esResultSet.result[0].first_name, esResultSet.result[0].last_name]
                 }
 
-                ES.createIndex(payLoad,function(resultSet){
+                ES.createIndex(payLoad, function (resultSet) {
                     //DONE
                     console.log("createIndex")
                     console.log(resultSet)
@@ -420,26 +417,26 @@ ConnectionSchema.statics.acceptConnectionRequest = function(criteria,callBack){
 
 
             //UPDATE FRIEND'S CONNECTION ES
-            var query={
-                q:criteria.user_id.toString(),
-                index:'idx_usr'
+            var query = {
+                q: criteria.user_id.toString(),
+                index: 'idx_usr'
             };
-            ES.search(query,function(esResultSet){
+            ES.search(query, function (esResultSet) {
 
                 var now = new Date();
                 esResultSet.result[0]['connected_at'] = now;
                 var _data = esResultSet.result[0];
 
-                var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.sender_id.toString();
-                var payLoad={
-                    index:_cache_key,
-                    id:criteria.user_id.toString(),
+                var _cache_key = ConnectionConfig.ES_INDEX_NAME + criteria.sender_id.toString();
+                var payLoad = {
+                    index: _cache_key,
+                    id: criteria.user_id.toString(),
                     type: 'connections',
-                    data:_data,
-                    tag_fields:[esResultSet.result[0].first_name,esResultSet.result[0].last_name]
+                    data: _data,
+                    tag_fields: [esResultSet.result[0].first_name, esResultSet.result[0].last_name]
                 }
 
-                ES.createIndex(payLoad,function(resultSet){
+                ES.createIndex(payLoad, function (resultSet) {
                     console.log("createIndex")
                     console.log(resultSet)
                     //DONE
@@ -449,8 +446,8 @@ ConnectionSchema.statics.acceptConnectionRequest = function(criteria,callBack){
             callBack(null)
         }
 
-    ],function(err,resultSet){
-            callBack({status:200})
+    ], function (err, resultSet) {
+        callBack({status: 200})
     });
 
 }
@@ -460,30 +457,30 @@ ConnectionSchema.statics.acceptConnectionRequest = function(criteria,callBack){
  * @param criteria
  * @param callBack
  */
-ConnectionSchema.statics.getMyConnection = function(criteria,callBack){
+ConnectionSchema.statics.getMyConnection = function (criteria, callBack) {
 
-    var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString(),
+    var _cache_key = ConnectionConfig.ES_INDEX_NAME + criteria.user_id.toString(),
         _async = require('async');
 
-    var query={
-        q:criteria.q,
-        index:_cache_key
-    },
-    formatted_users = [];
+    var query = {
+            q: criteria.q,
+            index: _cache_key
+        },
+        formatted_users = [];
 
-    ES.search(query,function(esResultSet){
+    ES.search(query, function (esResultSet) {
 
-        if(esResultSet != null){
+        if (esResultSet != null) {
             _async.each(esResultSet.result,
-                function(result,callBack){
+                function (result, callBack) {
 
-                    var query={
-                        q:"user_id:"+result.user_id,
-                        index:'idx_usr'
+                    var query = {
+                        q: "user_id:" + result.user_id,
+                        index: 'idx_usr'
                     };
-                    ES.search(query,function(sesResultSet){
-                        if(result.user_id != criteria.user_id){
-                            if(result.connected_at){
+                    ES.search(query, function (sesResultSet) {
+                        if (result.user_id != criteria.user_id) {
+                            if (result.connected_at) {
                                 sesResultSet.result[0]['connected_at'] = result.connected_at;
                             }
                             formatted_users.push(sesResultSet.result[0]);
@@ -492,11 +489,11 @@ ConnectionSchema.statics.getMyConnection = function(criteria,callBack){
 
                     });
                 },
-                function(err){
-                    callBack({result_count:formatted_users.length,results:formatted_users})
+                function (err) {
+                    callBack({result_count: formatted_users.length, results: formatted_users})
                 });
-        }else{
-            callBack({result_count:0,results:[]})
+        } else {
+            callBack({result_count: 0, results: []})
         }
     });
 
@@ -507,79 +504,79 @@ ConnectionSchema.statics.getMyConnection = function(criteria,callBack){
  * @param criteria
  * @param callBack
  */
-ConnectionSchema.statics.getMyConnectionsBindUnfriendConnections = function(criteria,callBack){
+ConnectionSchema.statics.getMyConnectionsBindUnfriendConnections = function (criteria, callBack) {
 
-    var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString(),
+    var _cache_key = ConnectionConfig.ES_INDEX_NAME + criteria.user_id.toString(),
         _async = require('async'), _this = this;
 
     var formatted_users = [], responseObj = {};
 
     _async.waterfall([
         function getEsUsers(callBack) {
-            var query={
-                    q:criteria.q,
-                    index:_cache_key
-                }
+            var query = {
+                q: criteria.q,
+                index: _cache_key
+            }
 
-            ES.search(query,function(esResultSet){
+            ES.search(query, function (esResultSet) {
 
-                if(esResultSet != null){
+                if (esResultSet != null) {
                     _async.each(esResultSet.result,
-                        function(result,callBack){
+                        function (result, callBack) {
 
-                            var query={
-                                q:"user_id:"+result.user_id,
-                                index:'idx_usr'
+                            var query = {
+                                q: "user_id:" + result.user_id,
+                                index: 'idx_usr'
                             };
-                            ES.search(query,function(sesResultSet){
-                                if(result.user_id != criteria.user_id){
+                            ES.search(query, function (sesResultSet) {
+                                if (result.user_id != criteria.user_id) {
                                     formatted_users.push(sesResultSet.result[0]);
                                 }
                                 callBack(null);
 
                             });
                         },
-                        function(err){
-                            responseObj = {result_count:formatted_users.length,results:formatted_users};
+                        function (err) {
+                            responseObj = {result_count: formatted_users.length, results: formatted_users};
                             callBack(null, responseObj);
                         });
-                }else{
-                    responseObj = {result_count:0,results:[]};
+                } else {
+                    responseObj = {result_count: 0, results: []};
                     callBack(null, responseObj);
                 }
 
             });
         },
         function getUnfriendUsers(resultSet, callBack) {
-            var query={
-                    $or: [
-                        {
-                            connected_with:Util.toObjectId(criteria.user_id),
-                            status:ConnectionStatus.CONNECTION_UNFRIEND
-                        },
-                        {
-                            user_id:Util.toObjectId(criteria.user_id),
-                            status:ConnectionStatus.CONNECTION_UNFRIEND
-                        }
-                    ]
-                };
+            var query = {
+                $or: [
+                    {
+                        connected_with: Util.toObjectId(criteria.user_id),
+                        status: ConnectionStatus.CONNECTION_UNFRIEND
+                    },
+                    {
+                        user_id: Util.toObjectId(criteria.user_id),
+                        status: ConnectionStatus.CONNECTION_UNFRIEND
+                    }
+                ]
+            };
 
             _this.find(query)
-                .exec(function(err,dbResult){
-                    _async.each(dbResult, function(result,callBack){
-                           var friendsId = null;
+                .exec(function (err, dbResult) {
+                    _async.each(dbResult, function (result, callBack) {
+                            var friendsId = null;
 
-                            if(criteria.user_id == result.user_id){
+                            if (criteria.user_id == result.user_id) {
                                 friendsId = result.connected_with;
-                            }else{
+                            } else {
                                 friendsId = result.user_id;
                             }
-                            var esQuery={
-                                q:"user_id:"+friendsId.toString(),
-                                index:'idx_usr'
+                            var esQuery = {
+                                q: "user_id:" + friendsId.toString(),
+                                index: 'idx_usr'
                             };
-                            ES.search(esQuery,function(sesResultSet){
-                                if(result._id != criteria.user_id){
+                            ES.search(esQuery, function (sesResultSet) {
+                                if (result._id != criteria.user_id) {
                                     sesResultSet.result[0]['connection_status'] = 'CONNECTION_UNFRIEND';
                                     formatted_users.push(sesResultSet.result[0]);
                                 }
@@ -587,8 +584,8 @@ ConnectionSchema.statics.getMyConnectionsBindUnfriendConnections = function(crit
 
                             });
                         },
-                        function(err){
-                            responseObj = {result_count:formatted_users.length,results:formatted_users};
+                        function (err) {
+                            responseObj = {result_count: formatted_users.length, results: formatted_users};
                             callBack(null);
                         });
 
@@ -602,90 +599,89 @@ ConnectionSchema.statics.getMyConnectionsBindUnfriendConnections = function(crit
 };
 
 
-ConnectionSchema.statics.getFriendSuggestion = function(criteria,callBack){
+ConnectionSchema.statics.getFriendSuggestion = function (criteria, callBack) {
 
     var _async = require('async'),
         User = require('mongoose').model('User'),
         _this = this;
 
     _async.waterfall([
-        function getUsersConnections(callBack){
+        function getUsersConnections(callBack) {
 
-            _this.getFriends(criteria.user_id,criteria.status,function(myFriends){
+            _this.getFriends(criteria.user_id, criteria.status, function (myFriends) {
 
-                callBack(null,myFriends.friends)
+                callBack(null, myFriends.friends)
 
             });
         },
-        function getAllUsers(myFriends,callBack){
+        function getAllUsers(myFriends, callBack) {
 
-            User.getAllUsers(criteria.country,criteria.user_id,function(resultSet){
-                callBack(null,{
-                    total_result:resultSet.total_result,
-                    users:resultSet.users,
-                    my_friends:myFriends
+            User.getAllUsers(criteria.country, criteria.user_id, function (resultSet) {
+                callBack(null, {
+                    total_result: resultSet.total_result,
+                    users: resultSet.users,
+                    my_friends: myFriends
                 })
             })
         },
-        function mergeConnection(connections,callBack){
-            var _my_friends =connections.my_friends,
-                _formattedFriendList =[],
+        function mergeConnection(connections, callBack) {
+            var _my_friends = connections.my_friends,
+                _formattedFriendList = [],
                 _allUsers = connections.users;
 
 
-            for(var i =0;i<_allUsers.length;i++){
-                var _c_users ={},
+            for (var i = 0; i < _allUsers.length; i++) {
+                var _c_users = {},
                     _my_friend = _my_friends[_allUsers[i].user_id.toString()];
 
-                if(typeof _my_friend == 'undefined' && criteria.filter_ids.indexOf(_allUsers[i].user_id) == -1){
+                if (typeof _my_friend == 'undefined' && criteria.filter_ids.indexOf(_allUsers[i].user_id) == -1) {
                     _allUsers[i].connection_status = 0
                     _formattedFriendList.push(_allUsers[i]);
 
                 }
 
             }
-            callBack(null,{
+            callBack(null, {
                 total_result: _formattedFriendList.length,
-                friends:_formattedFriendList
+                friends: _formattedFriendList
             })
         }
 
 
-    ],function(err,resultSet){
+    ], function (err, resultSet) {
 
-        if(!err){
-            callBack({status:200,friends:resultSet.friends,total_result:resultSet.total_result})
-        }else{
+        if (!err) {
+            callBack({status: 200, friends: resultSet.friends, total_result: resultSet.total_result})
+        } else {
             console.log("LOOP ERROR")
-            console.log({status:400,error:err});
+            console.log({status: 400, error: err});
         }
 
     });
 
 
-
 };
 
-ConnectionSchema.statics.getMyConnectionData = function(criteria,callBack){
-    var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString(),
+ConnectionSchema.statics.getMyConnectionData = function (criteria, callBack) {
+    var _cache_key = ConnectionConfig.ES_INDEX_NAME + criteria.user_id.toString(),
         _async = require('async');
 
-    var query={
-            q:criteria.q,
-            index:_cache_key
+    var query = {
+            q: criteria.q,
+            index: _cache_key
         },
         formatted_users = [];
 
-    ES.search(query,function(esResultSet){
+    ES.search(query, function (esResultSet) {
 
-        if(esResultSet != null){
+        if (esResultSet != null) {
 
             formatted_users = esResultSet.result;
-            callBack({result_count:formatted_users.length,results:formatted_users})
+            callBack({result_count: formatted_users.length, results: formatted_users})
 
 
-        }else{
-            callBack({result_count:0,results:[]})
+        } else {
+            callBack({result_count: 0, results: []})
         }
 
     });
@@ -697,22 +693,22 @@ ConnectionSchema.statics.getMyConnectionData = function(criteria,callBack){
  * @param userId
  * @param callBack
  */
-ConnectionSchema.statics.checkRequestSentReceived = function(i,other,callBack){
+ConnectionSchema.statics.checkRequestSentReceived = function (i, other, callBack) {
     var _this = this;
 
     var criteria = {
-        status:ConnectionStatus.REQUEST_SENT,
-        $or:[
-            {$and:[{user_id:Util.toObjectId(i)},{connected_with:Util.toObjectId(other)}]},
-            {$and:[{user_id:Util.toObjectId(other)},{connected_with:Util.toObjectId(i)}]}
+        status: ConnectionStatus.REQUEST_SENT,
+        $or: [
+            {$and: [{user_id: Util.toObjectId(i)}, {connected_with: Util.toObjectId(other)}]},
+            {$and: [{user_id: Util.toObjectId(other)}, {connected_with: Util.toObjectId(i)}]}
         ]
     };
 
     _this.find(criteria)
-        .exec(function(err,result){
-            if(!err){
+        .exec(function (err, result) {
+            if (!err) {
                 callBack(result);
-            }else{
+            } else {
                 console.log("Server Error --------");
                 console.log(err);
                 callBack(null);
@@ -725,51 +721,51 @@ ConnectionSchema.statics.checkRequestSentReceived = function(i,other,callBack){
  * @param userId
  * @param callBack
  */
-ConnectionSchema.statics.unfriendUser = function(criteria,callBack){
+ConnectionSchema.statics.unfriendUser = function (criteria, callBack) {
 
     var _this = this, _async = require('async');
 
     _async.parallel([
 
-        function changeStatus(callBack){
+        function changeStatus(callBack) {
             var now = new Date();
             _this.update(
                 {
                     $or: [
                         {
-                            user_id:Util.toObjectId(criteria.sender_id),
-                            connected_with:Util.toObjectId(criteria.user_id)
+                            user_id: Util.toObjectId(criteria.sender_id),
+                            connected_with: Util.toObjectId(criteria.user_id)
                         },
                         {
-                            user_id:Util.toObjectId(criteria.user_id),
-                            connected_with:Util.toObjectId(criteria.sender_id)
+                            user_id: Util.toObjectId(criteria.user_id),
+                            connected_with: Util.toObjectId(criteria.sender_id)
                         }
                     ]
                 }
-                ,{
-                    $set:{
-                        status:ConnectionStatus.CONNECTION_UNFRIEND,
-                        updated_at:now
+                , {
+                    $set: {
+                        status: ConnectionStatus.CONNECTION_UNFRIEND,
+                        updated_at: now
                     }
-                },{upsert:false,multi:false},function(err,rsUpdate){
-                    if(!err){
+                }, {upsert: false, multi: false}, function (err, rsUpdate) {
+                    if (!err) {
                         callBack(null);
-                    }else{
+                    } else {
                         console.log("user connection removed \n");
                         console.log(err);
                     }
                 })
         },
-        function updateOwnConnectionES(callBack){
+        function updateOwnConnectionES(callBack) {
             //UPDATE OWN CONNECTION ES
-            var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.user_id.toString();
-            var payLoad={
-                index:_cache_key,
-                id:criteria.sender_id.toString(),
+            var _cache_key = ConnectionConfig.ES_INDEX_NAME + criteria.user_id.toString();
+            var payLoad = {
+                index: _cache_key,
+                id: criteria.sender_id.toString(),
                 type: 'connections'
             }
 
-            ES.delete(payLoad,function(resultSet){
+            ES.delete(payLoad, function (resultSet) {
                 console.log("own connection removeIndex");
                 //console.log(resultSet);
                 callBack(null);
@@ -778,14 +774,14 @@ ConnectionSchema.statics.unfriendUser = function(criteria,callBack){
         },
         function updateFriendsConnectionES(callBack) {
             //UPDATE FRIEND'S CONNECTION ES
-            var _cache_key = ConnectionConfig.ES_INDEX_NAME+criteria.sender_id.toString();
-            var payLoad={
-                index:_cache_key,
-                id:criteria.user_id.toString(),
+            var _cache_key = ConnectionConfig.ES_INDEX_NAME + criteria.sender_id.toString();
+            var payLoad = {
+                index: _cache_key,
+                id: criteria.user_id.toString(),
                 type: 'connections'
             }
 
-            ES.delete(payLoad,function(resultSet){
+            ES.delete(payLoad, function (resultSet) {
                 console.log("friend's connection removeIndex");
                 //console.log(resultSet);
                 callBack(null);
@@ -793,13 +789,14 @@ ConnectionSchema.statics.unfriendUser = function(criteria,callBack){
 
         }
 
-    ],function(err){
-        callBack({status:200})
+    ], function (err) {
+        callBack({status: 200})
     });
 }
 
-String.prototype.toObjectId = function() {
+String.prototype.toObjectId = function () {
     var ObjectId = (require('mongoose').Types.ObjectId);
     return new ObjectId(this.toString());
 };
-mongoose.model('Connection',ConnectionSchema);
+
+mongoose.model('Connection', ConnectionSchema);

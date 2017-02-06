@@ -3,25 +3,25 @@
  */
 
 
-var ConnectionController ={
+var ConnectionController = {
 
     /**
      * Get Connection request
      * @param req
      * @param res
      */
-    getRequestedConnections :function(req,res){
-        var Connection =require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
+    getRequestedConnections: function (req, res) {
+        var Connection = require('mongoose').model('Connection'), CurrentSession = Util.getCurrentSession(req);
 
-        var criteria ={
-            user_id:CurrentSession.id,
-            result_per_page:3
+        var criteria = {
+            user_id: CurrentSession.id,
+            result_per_page: 3
 
         }
-        Connection.getConnectionRequests(criteria,function(resultSet){
+        Connection.getConnectionRequests(criteria, function (resultSet) {
             var outPut = {
-                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
-                req_cons:resultSet.requested_connections
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                req_cons: resultSet.requested_connections
             }
 
             res.status(200).send(outPut);
@@ -34,24 +34,24 @@ var ConnectionController ={
      * @param req
      * @param res
      */
-    getMyConnections:function(req,res){
+    getMyConnections: function (req, res) {
         console.log(req.query['q']);
         console.log('default');
-        var Connection = require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
+        var Connection = require('mongoose').model('Connection'), CurrentSession = Util.getCurrentSession(req);
         var criteria = {
-            user_id :CurrentSession.id,
-            q:req.query['q']
+            user_id: CurrentSession.id,
+            q: req.query['q']
         }
 
-        Connection.getMyConnection(criteria,function(resultSet){
+        Connection.getMyConnection(criteria, function (resultSet) {
             var outPut = {
-                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
 
             }
-            outPut['header'] ={
-                total_result:resultSet.result_count,
-                result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
-                total_pages:Math.ceil(resultSet.result_count/Config.CONNECTION_RESULT_PER_PAGE)
+            outPut['header'] = {
+                total_result: resultSet.result_count,
+                result_per_page: Config.CONNECTION_RESULT_PER_PAGE,
+                total_pages: Math.ceil(resultSet.result_count / Config.CONNECTION_RESULT_PER_PAGE)
             };
 
             outPut['my_con'] = resultSet.results
@@ -66,29 +66,29 @@ var ConnectionController ={
      * @param req
      * @param res
      */
-    getMySortedConnections:function(req,res){
+    getMySortedConnections: function (req, res) {
 
-        var Connection = require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
+        var Connection = require('mongoose').model('Connection'), CurrentSession = Util.getCurrentSession(req);
         var criteria = {
-            user_id :CurrentSession.id,
-            q:req.query['q']
+            user_id: CurrentSession.id,
+            q: req.query['q']
         }, sortingOption = req.params['option'];
 
-        Connection.getMyConnection(criteria,function(resultSet){
+        Connection.getMyConnection(criteria, function (resultSet) {
             var outPut = {
-                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
 
             }
-            outPut['header'] ={
-                total_result:resultSet.result_count,
-                result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
-                total_pages:Math.ceil(resultSet.result_count/Config.CONNECTION_RESULT_PER_PAGE)
+            outPut['header'] = {
+                total_result: resultSet.result_count,
+                result_per_page: Config.CONNECTION_RESULT_PER_PAGE,
+                total_pages: Math.ceil(resultSet.result_count / Config.CONNECTION_RESULT_PER_PAGE)
             };
 
             var _allConnections = resultSet.results,
                 sortedUsers = [];
 
-            switch(sortingOption){
+            switch (sortingOption) {
                 case 'name':
                     sortedUsers = Util.sortByKeyASC(_allConnections, 'first_name');
                     break;
@@ -110,23 +110,23 @@ var ConnectionController ={
      * @param req
      * @param res
      */
-    getMyConnectionsBindUnfriendConnections:function(req,res){
+    getMyConnectionsBindUnfriendConnections: function (req, res) {
         console.log(req.query['q']);
-        var Connection = require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
+        var Connection = require('mongoose').model('Connection'), CurrentSession = Util.getCurrentSession(req);
         var criteria = {
-            user_id :CurrentSession.id,
-            q:req.query['q']
+            user_id: CurrentSession.id,
+            q: req.query['q']
         }
 
-        Connection.getMyConnectionsBindUnfriendConnections(criteria,function(resultSet){
+        Connection.getMyConnectionsBindUnfriendConnections(criteria, function (resultSet) {
             var outPut = {
-                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
 
             }
-            outPut['header'] ={
-                total_result:resultSet.result_count,
-                result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
-                total_pages:Math.ceil(resultSet.result_count/Config.CONNECTION_RESULT_PER_PAGE)
+            outPut['header'] = {
+                total_result: resultSet.result_count,
+                result_per_page: Config.CONNECTION_RESULT_PER_PAGE,
+                total_pages: Math.ceil(resultSet.result_count / Config.CONNECTION_RESULT_PER_PAGE)
             };
 
             outPut['my_con'] = resultSet.results;
@@ -141,22 +141,22 @@ var ConnectionController ={
      * @param req
      * @param res
      */
-    acceptFriendRequest:function(req,res){
-        var Connection =require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
-        var criteria ={
-            sender_id  :req.body.sender_id,
-            user_id:CurrentSession.id
+    acceptFriendRequest: function (req, res) {
+        var Connection = require('mongoose').model('Connection'), CurrentSession = Util.getCurrentSession(req);
+        var criteria = {
+            sender_id: req.body.sender_id,
+            user_id: CurrentSession.id
         }
-        Connection.acceptConnectionRequest(criteria,function(resultSet){
+        Connection.acceptConnectionRequest(criteria, function (resultSet) {
             var outPut = {
-                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
             }
             res.status(200).send(outPut);
             return 0
         });
     },
 
-    getMutualConnections:function(req,res){
+    getMutualConnections: function (req, res) {
 
         var User = require('mongoose').model('User'),
             Connection = require('mongoose').model('Connection'),
@@ -166,35 +166,35 @@ var ConnectionController ={
             _mutual_cons = [];
 
         _async.waterfall([
-                function getMyConnections(callback){
+                function getMyConnections(callback) {
                     var criteria = {
-                        user_id :CurrentSession.id,
-                        q:req.params['q']
+                        user_id: CurrentSession.id,
+                        q: req.params['q']
                     };
 
-                    Connection.getMyConnection(criteria,function(resultSet){
+                    Connection.getMyConnection(criteria, function (resultSet) {
                         var my_cons = resultSet.results;
                         callback(null, my_cons);
                     })
                 },
-                function getFriendsConnection(resultSet, callback){
+                function getFriendsConnection(resultSet, callback) {
                     var myConnection = resultSet,
                         criteria = {
-                            user_id :req.params['uid'],
-                            q:req.params['q']
+                            user_id: req.params['uid'],
+                            q: req.params['q']
                         };
 
-                    Connection.getMyConnection(criteria,function(resultSet){
+                    Connection.getMyConnection(criteria, function (resultSet) {
                         var friend_cons = resultSet.results;
 
-                        for(var inc = 0; inc < myConnection.length; inc++){
+                        for (var inc = 0; inc < myConnection.length; inc++) {
                             var user_id = myConnection[inc].user_id;
-                            if(user_id != req.params['uid']) {
+                            if (user_id != req.params['uid']) {
 
                                 var mutual_con = _grep(friend_cons, function (e) {
                                     return e.user_id == user_id;
                                 });
-                                if(mutual_con[0] != null){
+                                if (mutual_con[0] != null) {
                                     _mutual_cons.push(mutual_con[0]);
                                 }
                             }
@@ -202,9 +202,9 @@ var ConnectionController ={
                         callback(null);
                     });
                 }
-            ],function(err){
+            ], function (err) {
                 var outPut = {
-                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS)
+                    status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
                 };
                 outPut['mutual_cons'] = _mutual_cons;
                 outPut['mutual_cons_count'] = _mutual_cons.length;
@@ -220,32 +220,32 @@ var ConnectionController ={
      * @param req
      * @param res
      */
-    getFriendSuggestion:function(req,res){
+    getFriendSuggestion: function (req, res) {
 
-        var Connection =require('mongoose').model('Connection'),
-            filter_ids=[],CurrentSession = Util.getCurrentSession(req);
+        var Connection = require('mongoose').model('Connection'),
+            filter_ids = [], CurrentSession = Util.getCurrentSession(req);
         filter_ids.push(CurrentSession.id);
-        var criteria ={
-            pg:0,
-            country:CurrentSession.country,
-            user_id:CurrentSession.id,
+        var criteria = {
+            pg: 0,
+            country: CurrentSession.country,
+            user_id: CurrentSession.id,
             status: [ConnectionStatus.REQUEST_ACCEPTED, ConnectionStatus.REQUEST_SENT],
-            random:3,
-            filter_ids:filter_ids
+            random: 3,
+            filter_ids: filter_ids
         };
 
 
-        Connection.getFriendSuggestion(criteria,function(resultSet){
+        Connection.getFriendSuggestion(criteria, function (resultSet) {
 
-            var outPut	={};
+            var outPut = {};
 
-            if(resultSet.status !== 400){
+            if (resultSet.status !== 400) {
 
-                outPut['status'] = ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS);
-                outPut['header'] ={
-                    total_result:resultSet.total_result,
-                    result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
-                    total_pages:Math.ceil(resultSet.total_result/Config.CONNECTION_RESULT_PER_PAGE)
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['header'] = {
+                    total_result: resultSet.total_result,
+                    result_per_page: Config.CONNECTION_RESULT_PER_PAGE,
+                    total_pages: Math.ceil(resultSet.total_result / Config.CONNECTION_RESULT_PER_PAGE)
                 };
 
                 //LOAD RANDOM FRIEND SUGGESTIONS
@@ -254,17 +254,17 @@ var ConnectionController ={
 
                 /*if(resultSet.total_result > 3){
 
-                    for(var a =0 ;a<3;a++){
-                        var r = Util.getRandomInt(0,resultSet.total_result-1);
-                        _connection.push(resultSet.friends[r]);
-                    }
+                 for(var a =0 ;a<3;a++){
+                 var r = Util.getRandomInt(0,resultSet.total_result-1);
+                 _connection.push(resultSet.friends[r]);
+                 }
 
 
 
 
 
 
-                    outPut['connections'] = _connection;
+                 outPut['connections'] = _connection;
 
 
 
@@ -272,15 +272,15 @@ var ConnectionController ={
 
 
 
-                }else{
-                    outPut['connections'] = resultSet.friends;
-                }*/
+                 }else{
+                 outPut['connections'] = resultSet.friends;
+                 }*/
 
                 outPut['connections'] = resultSet.friends
                 res.status(200).send(outPut);
                 return 0
-            }else{
-                outPut['status'] = ApiHelper.getMessage(400,Alert.CONNECTION_USERS_EMPTY,Alert.ERROR);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECTION_USERS_EMPTY, Alert.ERROR);
 
                 res.status(400).send(outPut);
                 return 0;
@@ -294,13 +294,13 @@ var ConnectionController ={
      * @param req
      * @param res
      */
-    sendFriendRequest:function(req,res){
-        var Connection =require('mongoose').model('Connection'),CurrentSession = Util.getCurrentSession(req);
+    sendFriendRequest: function (req, res) {
+        var Connection = require('mongoose').model('Connection'), CurrentSession = Util.getCurrentSession(req);
 
         var req_connected_users = JSON.parse(req.body.connected_users);
         var req_unconnected_users = [];
 
-        Connection.sendConnectionRequest(CurrentSession.id,req_connected_users,req_unconnected_users, function (resultSet) {
+        Connection.sendConnectionRequest(CurrentSession.id, req_connected_users, req_unconnected_users, function (resultSet) {
             var outPut = {};
             if (resultSet.status !== 200) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECT_ERROR, Alert.ERROR);
@@ -320,37 +320,37 @@ var ConnectionController ={
      * @param req
      * @param res
      */
-    getUniqueFriendRequest:function(req,res){
-        var Connection =require('mongoose').model('Connection'),
-         req_connected_users = JSON.parse(req.body.cur_b_ids),CurrentSession = Util.getCurrentSession(req);
-         req_connected_users.push(CurrentSession.id);
-        var criteria ={
-            pg:0,
-            country:CurrentSession.country,
-            user_id:CurrentSession.id,
+    getUniqueFriendRequest: function (req, res) {
+        var Connection = require('mongoose').model('Connection'),
+            req_connected_users = JSON.parse(req.body.cur_b_ids), CurrentSession = Util.getCurrentSession(req);
+        req_connected_users.push(CurrentSession.id);
+        var criteria = {
+            pg: 0,
+            country: CurrentSession.country,
+            user_id: CurrentSession.id,
             status: [ConnectionStatus.REQUEST_ACCEPTED, ConnectionStatus.REQUEST_SENT],
-            random:3,
-            filter_ids:req_connected_users
+            random: 3,
+            filter_ids: req_connected_users
         };
 
 
-        Connection.getFriendSuggestion(criteria,function(resultSet){
+        Connection.getFriendSuggestion(criteria, function (resultSet) {
 
             var outPut = {};
 
-            if(resultSet.status !== 400){
-                var rand = Util.getRandomInt(0,resultSet.total_result);
-                outPut['status'] = ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS);
-                outPut['header'] ={
-                    total_result:resultSet.total_result,
-                    result_per_page:Config.CONNECTION_RESULT_PER_PAGE,
-                    total_pages:Math.ceil(resultSet.total_result/Config.CONNECTION_RESULT_PER_PAGE)
+            if (resultSet.status !== 400) {
+                var rand = Util.getRandomInt(0, resultSet.total_result);
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['header'] = {
+                    total_result: resultSet.total_result,
+                    result_per_page: Config.CONNECTION_RESULT_PER_PAGE,
+                    total_pages: Math.ceil(resultSet.total_result / Config.CONNECTION_RESULT_PER_PAGE)
                 };
                 outPut['connection'] = resultSet.friends[rand];
                 res.status(200).send(outPut);
                 return 0
-            }else{
-                outPut['status'] = ApiHelper.getMessage(400,Alert.CONNECTION_USERS_EMPTY,Alert.ERROR);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CONNECTION_USERS_EMPTY, Alert.ERROR);
 
                 res.status(400).send(outPut);
                 return 0;
@@ -359,7 +359,7 @@ var ConnectionController ={
         });
     },
 
-    checkConnection:function(req,res){
+    checkConnection: function (req, res) {
 
         var User = require('mongoose').model('User'),
             Connection = require('mongoose').model('Connection'),
@@ -369,61 +369,60 @@ var ConnectionController ={
             _alreadyConnected = false, _alreadyRequestSent = false, _alreadyRequestReceived = false, _otherUserId = null;
 
         _async.waterfall([
-                function getOtherUserDetails(callback){
-                    var query={
-                        q:"user_name:"+req.params['uname'],
-                        index:'idx_usr'
+                function getOtherUserDetails(callback) {
+                    var query = {
+                        q: "user_name:" + req.params['uname'],
+                        index: 'idx_usr'
                     };
                     //Find User from Elastic search
-                    ES.search(query,function(csResultSet){
+                    ES.search(query, function (csResultSet) {
                         _otherUserId = csResultSet.result[0]['user_id'];
                         callback(null);
                     });
                 },
-                function checkAlreadyConnected(callback){
+                function checkAlreadyConnected(callback) {
                     var criteria = {
-                        user_id :CurrentSession.id,
-                        q:'user_name:'+req.params['uname']
+                        user_id: CurrentSession.id,
+                        q: 'user_name:' + req.params['uname']
                     };
 
-                    Connection.getMyConnectionData(criteria,function(resultSet){
+                    Connection.getMyConnectionData(criteria, function (resultSet) {
                         console.log(resultSet);
-                        if(resultSet.results.length > 0){
+                        if (resultSet.results.length > 0) {
                             _alreadyConnected = true;
                         }
                         callback(null);
                     })
                 },
-                function checkAlreadyRequested(callback){
-                    if(_alreadyConnected == false){
-                        Connection.checkRequestSentReceived(CurrentSession.id, _otherUserId,function(resultSet){
-                            if(resultSet.length > 0){
+                function checkAlreadyRequested(callback) {
+                    if (_alreadyConnected == false) {
+                        Connection.checkRequestSentReceived(CurrentSession.id, _otherUserId, function (resultSet) {
+                            if (resultSet.length > 0) {
                                 console.log(resultSet[0].connected_with);
-                                if(resultSet[0].user_id.toString() == CurrentSession.id){
+                                if (resultSet[0].user_id.toString() == CurrentSession.id) {
                                     _alreadyRequestSent = true;
                                 }
-                                if(resultSet[0].connected_with.toString() == CurrentSession.id){
+                                if (resultSet[0].connected_with.toString() == CurrentSession.id) {
                                     _alreadyRequestReceived = true;
                                 }
                                 callback(null)
-                            }else{
+                            } else {
                                 callback(null)
                             }
                         });
-                    } else{
+                    } else {
                         callback(null)
                     }
                 }
 
 
-
-            ],function(err){
+            ], function (err) {
                 var outPut = {
-                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
-                    alreadyConnected:_alreadyConnected,
-                    alreadyRequestSent:_alreadyRequestSent,
-                    alreadyRequestReceived:_alreadyRequestReceived,
-                    profile_user_id:_otherUserId
+                    status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                    alreadyConnected: _alreadyConnected,
+                    alreadyRequestSent: _alreadyRequestSent,
+                    alreadyRequestReceived: _alreadyRequestReceived,
+                    profile_user_id: _otherUserId
                 };
                 res.status(200).send(outPut);
                 return 0;
@@ -436,47 +435,47 @@ var ConnectionController ={
      * @param req
      * @param res
      */
-    unfriendUser:function(req,res){
+    unfriendUser: function (req, res) {
         var Connection = require('mongoose').model('Connection'),
             NoteBook = require('mongoose').model('NoteBook'),
             _async = require('async'),
             CurrentSession = Util.getCurrentSession(req);
 
         _async.waterfall([
-            function updateConnection(callback){
-                var criteria ={
-                    sender_id  :req.body.sender_id,
-                    user_id:CurrentSession.id
+            function updateConnection(callback) {
+                var criteria = {
+                    sender_id: req.body.sender_id,
+                    user_id: CurrentSession.id
                 };
 
-                Connection.unfriendUser(criteria,function(resultSet){
+                Connection.unfriendUser(criteria, function (resultSet) {
                     console.log('connections');
                     callback(null);
                 });
             },
-            function updateNotebookByLoggedUser(callback){
-                var criteria ={
-                    sender_id  :req.body.sender_id,
-                    user_id:CurrentSession.id
+            function updateNotebookByLoggedUser(callback) {
+                var criteria = {
+                    sender_id: req.body.sender_id,
+                    user_id: CurrentSession.id
                 };
 
-                NoteBook.sharedNotebookOnUnfriend(criteria,function(resultSet){
+                NoteBook.sharedNotebookOnUnfriend(criteria, function (resultSet) {
                     callback(null);
                 });
             },
-            function updateNotebookByRemovedUser(callback){
-                var criteria ={
-                    user_id  :req.body.sender_id,
-                    sender_id:CurrentSession.id.toString()
+            function updateNotebookByRemovedUser(callback) {
+                var criteria = {
+                    user_id: req.body.sender_id,
+                    sender_id: CurrentSession.id.toString()
                 };
 
-                NoteBook.sharedNotebookOnUnfriend(criteria,function(resultSet){
+                NoteBook.sharedNotebookOnUnfriend(criteria, function (resultSet) {
                     callback(null);
                 });
             }
-        ],function(err){
+        ], function (err) {
             var outPut = {
-                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS)
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
             };
             res.status(200).send(outPut);
         });
@@ -487,7 +486,7 @@ var ConnectionController ={
      * @param req
      * @param res
      */
-    searchConnection:function(req,res){
+    searchConnection: function (req, res) {
         var User = require('mongoose').model('User'),
             Connection = require('mongoose').model('Connection'),
             CurrentSession = Util.getCurrentSession(req);
@@ -496,14 +495,14 @@ var ConnectionController ={
             _search = req.params['q'];
 
         var criteria = {
-            user_id :_user_id,
-            q:'first_name:'+_search+'* OR last_name:'+_search+'*'
+            user_id: _user_id,
+            q: 'first_name:' + _search + '* OR last_name:' + _search + '*'
         };
 
-        Connection.getMyConnectionData(criteria,function(resultSet){
+        Connection.getMyConnectionData(criteria, function (resultSet) {
             var outPut = {
-                status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
-                suggested_users:resultSet.results
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                suggested_users: resultSet.results
             };
             res.status(200).send(outPut);
             return 0;
@@ -519,7 +518,7 @@ var ConnectionController ={
      * @return outPut.status
      * @return outPut.suggested_users{name : '', title: '', avatar : '', user_id : '' }
      */
-    getConnections:function(req,res){
+    getConnections: function (req, res) {
         var User = require('mongoose').model('User'),
             Connection = require('mongoose').model('Connection'),
             CurrentSession = Util.getCurrentSession(req);
@@ -528,34 +527,34 @@ var ConnectionController ={
             _search = req.params['q'];
 
         var criteria = {
-            user_id :_user_id,
-            q:'first_name:'+_search+'* OR last_name:'+_search+'*'
+            user_id: _user_id,
+            q: 'first_name:' + _search + '* OR last_name:' + _search + '*'
         };
         var suggested_users = [];
 
-        Connection.getMyConnectionData(criteria,function(resultSet){
+        Connection.getMyConnectionData(criteria, function (resultSet) {
 
-            if(resultSet.results.length == 0) {
+            if (resultSet.results.length == 0) {
                 var outPut = {
-                    status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                    status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                     suggested_users: suggested_users
                 };
                 res.status(200).send(outPut);
             }
 
-            for(var i = 0; i < resultSet.results.length; i++){
+            for (var i = 0; i < resultSet.results.length; i++) {
                 var user = resultSet.results[i];
                 var userObj = {
-                    name : user.first_name + ' '+user.last_name,
+                    name: user.first_name + ' ' + user.last_name,
                     title: (user.cur_designation ? user.cur_designation : 'Unknown'),
-                    avatar : user.images.profile_image.http_url,
-                    user_id : user.user_id
+                    avatar: user.images.profile_image.http_url,
+                    user_id: user.user_id
                 }
                 suggested_users.push(userObj);
 
-                if(i+1 == resultSet.results.length){
+                if (i + 1 == resultSet.results.length) {
                     var outPut = {
-                        status:ApiHelper.getMessage(200,Alert.SUCCESS,Alert.SUCCESS),
+                        status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
                         suggested_users: suggested_users
                     };
                     res.status(200).send(outPut);
