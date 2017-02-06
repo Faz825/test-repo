@@ -30,7 +30,8 @@ export default class WeekDayEventPopUp extends React.Component {
             showUserPanelWindow : false,
             msgOn : false,
             errorMsg : '',
-            isButtonDisabled : false
+            isButtonDisabled : false,
+            tagged: ''
         }
 
         this.loggedUser = user;
@@ -75,6 +76,7 @@ export default class WeekDayEventPopUp extends React.Component {
           this.setState({isAlreadySelected:true});
           console.log("already selected" + this.state.isAlreadySelected)
       }
+      this.setTagged();
       return "";
     }
 
@@ -100,6 +102,15 @@ export default class WeekDayEventPopUp extends React.Component {
         this.sharedWithIds.splice(key,1);
         this.sharedWithNames.splice(key,1);
         this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
+        this.setTagged();
+    }
+
+    setTagged() {
+        if(this.sharedWithIds.length > 0) {
+            this.setState({'tagged' : 'tagged'});
+        } else {
+            this.setState({'tagged' : ''});
+        }
     }
 
     removeUsersByName(arrUsers) {
@@ -110,11 +121,11 @@ export default class WeekDayEventPopUp extends React.Component {
 
             // indexOf returnes the key of the matching value
             // splice removes the given key form the array.
-            this.sharedWithIds.splice(this.sharedWithIds.indexOf(arrUsers[i]),1); 
+            this.sharedWithIds.splice(this.sharedWithIds.indexOf(arrUsers[i]),1);
             this.sharedWithNames.splice(this.sharedWithNames.indexOf(arrUsers[i]),1);
 
             if(i == (arrUsers.length - 1)) {
-                this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});        
+                this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
             }
         }
 
@@ -275,10 +286,11 @@ export default class WeekDayEventPopUp extends React.Component {
         let _this = this;
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
-                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{_this.removeUser(key, name)}}></i></span>
+                // return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{_this.removeUser(key, name)}}></i></span>
+                return <span key={key} className="person selected">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
             });
-        } else {
-            shared_with_list = <span className="user-label">Only me</span>
+        // } else {
+        //     shared_with_list = <span className="user-label">Only me</span>
         }
         return(
             <ModalContainer zIndex={9999}>
@@ -307,6 +319,7 @@ export default class WeekDayEventPopUp extends React.Component {
                                             removeUsersByName={this.removeUsersByName.bind(this)}
                                             />
                                     : null }
+                                    { /*
                                     <div className="shared-users-time-panel row">
                                         <div className="col-sm-3">
                                             <p>
@@ -337,52 +350,94 @@ export default class WeekDayEventPopUp extends React.Component {
                                             : null }
                                         </div>
                                     </div>
-
+                                    */ }
+                                    <div className="tag-wrapper clearfix">
+                                        <div className={this.state.tagged + " people-wrapper"}  >
+                                            <p className="title" onClick={this._onHashClick.bind(this)}>People in the event&#58;</p>
+                                            <div className="people-container">
+                                                {shared_with_list}
+                                                {this.state.showUserPanelWindow ?
+                                                    <SharedUsers
+                                                        setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
+                                                        removeUser={this.removeUser}
+                                                    />
+                                                :
+                                                    null
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className="time-wrapper" >
+                                            <p className="title"  onClick={this._onAtClick.bind(this)}>Time &#58;</p>
+                                            {this.state.showTimePanelWindow ?
+                                                <TimePicker
+                                                    showSecond={showSecond}
+                                                    onChange={this.handleTimeChange.bind(this)}
+                                                    placeholder="00:00"
+                                                />
+                                            :
+                                                null
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="model-footer">
                                 <div className="input-items-outer-wrapper">
+                                    <ul className="input-items-wrapper">
+                                        <li>
+                                            <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
+                                                <span className="ico font_style">B</span>
+                                            </OverlayTrigger>
+                                        </li>
+                                        <li onClick={this._onHashClick.bind(this)}>
+                                            <span className="ico tag" >#</span>
+                                        </li>
+
+                                        <li onClick={this._onAtClick.bind(this)}>
+                                            <span  >
+                                                <i className="fa fa-at  ico time" aria-hidden="true"></i>
+                                            </span>
+                                        </li>
+                                        <li className="btn-group">
+                                            <button
+                                                type="button"
+                                                className={"btn event "+(this.state.eventType == 'event' ? "active" : null)}
+                                                eventType="event"
+                                                onClick={() => this.changeEventType('event')}
+                                                >
+                                                <i className="fa fa-calendar" aria-hidden="true"></i> Event
+                                            </button>
+                                            {(this.props.isGroupCall == false) ?
+                                                <button
+                                                    type="button"
+                                                    className={"btn todo "+(this.state.eventType == 'todo' ? "active" : null)}
+                                                    eventType="todo"
+                                                    onClick={() => this.changeEventType('todo')}
+                                                    >
+                                                    <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
+                                                </button>
+                                            :
+                                                <button
+                                                    type="button"
+                                                    className={"btn task "+(this.state.eventType == 'task' ? "active" : null)}
+                                                    eventType="task"
+                                                    onClick={() => this.changeEventType('task')}
+                                                    >
+                                                    <i className="fa fa-wpforms" aria-hidden="true"></i> Tasks
+                                                </button>
+                                            }
+                                        </li>
+                                        <li className="post">
+                                            <button className="menu-ico-txt btn" disabled={this.state.isButtonDisabled} onClick={this.addEvent}>
+                                                <span className="fly-ico"></span> Enter
+                                            </button>
+                                        </li>
+                                    </ul>
                                     <div className="msg-holder pull-left">
                                         {this.state.msgOn ?
                                             <p className="text-danger">{this.state.errorMsg}</p>
                                         : null }
                                     </div>
-                                    <ul className="input-items-wrapper pull-right">
-                                        <li>
-                                            <button className="menu-ico">
-                                                <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
-                                                    <p>A</p>
-                                                </OverlayTrigger>
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button onClick={this._onHashClick.bind(this)} className="menu-ico">
-                                                <i className="fa fa-hashtag" aria-hidden="true"></i>
-                                            </button>
-                                        </li>
-
-                                        <li>
-                                            <button onClick={this._onAtClick.bind(this)} className="menu-ico">
-                                                <i className="fa fa-at" aria-hidden="true"></i>
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <div className="btn-group">
-                                                <button type="button" className={"menu-ico-group btn event " + (this.state.eventType == 'event' ? "active" : null)} onClick={() => this.changeEventType('event')}>
-                                                    <i className="fa fa-calendar" aria-hidden="true"></i> Event
-                                                </button>
-                                                <button type="button" className={"menu-ico-group btn todo " + (this.state.eventType == 'todo' ? "active" : null)} onClick={() => this.changeEventType('todo')}>
-                                                    <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
-                                                </button>
-                                            </div>
-
-                                        </li>
-                                        <li>
-                                            <button className="menu-ico-txt btn"  disabled={this.state.isButtonDisabled} onClick={this.addEvent}>
-                                                <i className="fa fa-paper-plane" aria-hidden="true"></i> Enter
-                                            </button>
-                                        </li>
-                                    </ul>
                                 </div>
                             </div>
                         </div>

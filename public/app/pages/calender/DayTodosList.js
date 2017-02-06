@@ -22,7 +22,7 @@ export default class DayTodosList extends React.Component {
 
 		let _this = this;
 		let items = this.props.events.map(function(event,key){
-			if(event.type == 1) {
+			if(event.type == 1 || event.type == 3) {
 				return;
 			}
 
@@ -43,7 +43,7 @@ export default class DayTodosList extends React.Component {
 			}
 
 			if(event.shared_users.length > 0 ) {
-				
+
 				usersString = event.shared_users.map(function(user,userKey){
 					if(event.user_id ==  _this.state.user.id || (user.shared_status == 3 &&_this.state.user.id == user.id )) {
 						acceptedClass = 'event-description accepted';
@@ -79,11 +79,11 @@ export default class DayTodosList extends React.Component {
 						{event.user_id == _this.state.user.id ?
 							<input id="check1" name="check" value="check1" type="checkbox" />
 						: ''}
-						<label for="check1" 
-							onClick={event.user_id == _this.state.user.id ? 
+						<label for="check1"
+							onClick={event.user_id == _this.state.user.id ?
 								_this.props.onClickItem.bind(_this, event._id, event.status)
 								: ''
-							} 
+							}
 							className={event.user_id == _this.state.user.id ? "description-holder" : "description-holder disabled" }
 						>
 							<div className={acceptedClass} >{event.plain_text}</div>

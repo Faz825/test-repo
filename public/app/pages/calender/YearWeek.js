@@ -30,7 +30,7 @@ export default class YearWeek extends React.Component {
 
 
             days.push(<span key={day.date.toString()}
-                            className={"day" + (day.isToday ? " today" : "") + (day.isCurrentMonth ? "" : " different-month") }
+                            className={"day" + ((day.isToday && day.isCurrentMonth) ? " active" : "") + (day.isCurrentMonth ? "" : " different-month") }
                             onClick={this.props.select.bind(null, day)}>
                 <div className="squre">{this.renderNormalDate(day)}</div>
                         <div className="action-area">

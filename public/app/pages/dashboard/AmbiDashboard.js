@@ -87,7 +87,9 @@ export default class AmbiDashboard extends React.Component {
 		            <p className="weather-location">San francisco</p>
 		        </section>
 		        <span className="widget-icon"></span>
-		        <div className="wallpaper-holder" style={wallpaper}></div>
+		        <div className="wallpaper-holder" style={wallpaper}>
+					<span className="overlay"></span>
+				</div>
 	        </section>
 		);
 	}

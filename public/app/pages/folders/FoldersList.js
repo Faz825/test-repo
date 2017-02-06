@@ -289,6 +289,8 @@ export default class FolderList extends React.Component{
                 break;
         }
 
+        let _folderName = folderData.folder_name == 'undefined' ? folderData.folder_name : folderData.folder_name.length <= 12 ? folderData.folder_name : folderData.folder_name.slice(0,14) + '...';
+
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
                 {
@@ -305,7 +307,7 @@ export default class FolderList extends React.Component{
                                                 <span className="logo-shader"></span>
                                                 <span className="logo-shader"></span>
                                             </div>
-                                            <h3>{folderData.folder_name}</h3>
+                                            <h3 title={folderData.folder_name}>{_folderName}</h3>
                                         </div>
                                         {
                                             (this.props.folderCount != 0)?
@@ -380,7 +382,7 @@ export default class FolderList extends React.Component{
                                                 <span className="logo-shader"></span>
                                                 <span className="logo-shader"></span>
                                             </div>
-                                            <h3>{folderData.folder_name}</h3>
+                                            <h3 title={folderData.folder_name}>{_folderName}</h3>
                                         </div>
                                         {
                                             (this.props.folderCount != 0)?
@@ -489,7 +491,11 @@ export class File extends React.Component{
                             <div className="folder-title-holder">
                                 <p className="folder-title">{data.document_name}</p>
                             </div>
-                            <span className="item-type"></span>
+                            <div className="item-type">
+                                <svg width="24" height="32">
+                                    <image xlinkHref={"images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
+                                </svg>
+                            </div>
                         </div>
                         {
                             (data.document_thumb_path)?

@@ -22,7 +22,7 @@ export default class DayEventsList extends React.Component {
         let _this = this;
         let  items = this.props.events.map(function(event,key){
 
-            if(event.type == 2) {
+            if(event.type == 2 || event.type == 3) {
                 return;
             }
 
@@ -44,7 +44,7 @@ export default class DayEventsList extends React.Component {
 
             if(event.shared_users.length > 0 ) {
                 usersString = event.shared_users.map(function(user,userKey){
-                    
+
                     if(user.shared_status == 3 && _this.state.user.id == user.id ) {
                         acceptedClass = 'event-description accepted';
                     }
@@ -56,7 +56,7 @@ export default class DayEventsList extends React.Component {
                                 {userKey+1 == event.shared_users.length ? '' : ', '}
                             </span>;
                 });
-                
+
                 if(event.user_id != _this.state.user.id) {
                     ownerString = <span className='selected-people'>{event.owner_name}{event.shared_users.length > 0 ? ', ' : ''}</span>
                 } else {

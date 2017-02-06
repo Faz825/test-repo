@@ -10,6 +10,7 @@ import Session from '../../middleware/Session';
 import MiniCalender from './MiniCalender';
 import DayEventsList from './DayEventsList';
 import DayTodosList from './DayTodosList';
+import DayTasksList from './DayTasksList';
 import SharedUsers from './SharedUsers';
 import EditorField from './EditorField';
 import Socket  from '../../middleware/Socket';
@@ -52,7 +53,8 @@ export default class DayView extends Component {
             errorMsg : '',
             showModal : false,
             deleteEventId : '',
-            isButtonDisabled : false
+            isButtonDisabled : false,
+            tagged: ''
         };
 
         this.sharedWithIds = [];
@@ -78,15 +80,16 @@ export default class DayView extends Component {
     }
 
     _onHashClick() {
-        let showUserPanel = this.state.showUserPanel;
+        // this.SharedUserField.nameInput.focus();
+        // let showUserPanel = this.state.showUserPanel;
         let showUserPanelWindow = this.state.showUserPanelWindow;
-        this.setState({showUserPanel : (showUserPanel == 'active' ? '' : 'active'), showUserPanelWindow : (showUserPanelWindow == true ? false : true) });
+        this.setState({showUserPanelWindow : (showUserPanelWindow == true ? false : true) });
     }
 
     _onAtClick() {
-        let showTimePanel = this.state.showTimePanel;
+        // let showTimePanel = this.state.showTimePanel;
         let showTimePanelWindow = this.state.showTimePanelWindow;
-        this.setState({showTimePanel : (showTimePanel == 'active' ? '' : 'active'), showTimePanelWindow : (showTimePanelWindow == true ? false : true) });
+        this.setState({showTimePanelWindow : (showTimePanelWindow == true ? false : true) });
     }
 
     componentDidMount() {
@@ -213,6 +216,7 @@ export default class DayView extends Component {
                 this.refs.EditorFieldValues.setState({editorState});
                 this.resetEventForm();
                 this.loadEvents();
+                this.setTagged();
             }
         }.bind(this));
     }
@@ -284,6 +288,7 @@ export default class DayView extends Component {
 
                 this.resetEventForm();
                 this.loadEvents();
+                this.setTagged();
             }
         }.bind(this));
     }
@@ -470,6 +475,7 @@ export default class DayView extends Component {
             this.setState({isAlreadySelected:true});
             console.log("already selected" + this.state.isAlreadySelected)
         }
+        this.setTagged();
         return "";
     }
 
@@ -495,6 +501,15 @@ export default class DayView extends Component {
         this.sharedWithIds.splice(key,1);
         this.sharedWithNames.splice(key,1);
         this.setState({sharedWithIds : this.sharedWithIds, sharedWithNames : this.sharedWithNames});
+        this.setTagged();
+    }
+
+    setTagged() {
+        if(this.sharedWithIds.length > 0) {
+            this.setState({'tagged' : 'tagged'});
+        } else {
+            this.setState({'tagged' : ''});
+        }
     }
 
     removeUsersByName(arrUsers) {
@@ -540,10 +555,12 @@ export default class DayView extends Component {
         let _class = (this.props.calendarOrigin == 2) ? "task" : "to-do";
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
-                return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
+                // return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
+                return <span key={key} className="person selected">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
             });
-        } else {
-            shared_with_list = <span className="user-label">Only me</span>
+        // } else {
+        //     // shared_with_list = <span className="user-label">Only me</span>
+        //     shared_with_list = <span className="person">Only me</span>
         }
         const typoPopover = (
             <Popover id="calendar-popover-typo">
@@ -567,28 +584,141 @@ export default class DayView extends Component {
         const showSecond = false;
         return (
             <section className="calender-body day-view">
-                <div className="row calendar-main-row">
+                <div className="row">
                     <div className="col-sm-9">
                         <div className="calender-view">
                             <div className="view-header">
-                                <div className="col-sm-6">
+                                <div className="col-sm-3">
                                     <div className="date-wrapper">
                                         <div className="date-nav" onClick={() => this.previousDay()}>
                                             <i className="fa fa-angle-left" aria-hidden="true"></i>
                                         </div>
                                         <div className="date">
-                                            <p>{moment(this.state.currentDay).format('ddd, D')}</p>
+                                            <p>{moment(this.state.currentDay).format('Do')}</p>
                                         </div>
                                         <div className="date-nav" onClick={() => this.nextDay()}>
                                             <i className="fa fa-angle-right" aria-hidden="true"></i>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-sm-6 calender-date">
-                                    <p>{moment(this.state.currentDay).format('dddd, MMM D, YYYY')}</p>
+                                <div className="col-sm-9 calender-date">
+                                    <p>{moment(this.state.currentDay).format('dddd')}</p>
                                 </div>
                             </div>
-                            <div className="form-holder">
+                            <div className="row calender-input">
+                                <div className="col-sm-12">
+                                    <div className="input">
+                                        <EditorField
+                                            ref="EditorFieldValues"
+                                            setTime={this.setTime.bind(this)}
+                                            setSharedUsers={this.setSharedUsers.bind(this)}
+                                            removeUsersByName={this.removeUsersByName.bind(this)}
+                                        />
+                                    </div>
+
+                                    <div className="tag-wrapper clearfix">
+                                        <div className={this.state.tagged + " people-wrapper"}  >
+                                            <p className="title" onClick={this._onHashClick.bind(this)}>People in the event&#58;</p>
+                                            <div className="people-container">
+                                                {shared_with_list}
+                                                {this.state.showUserPanelWindow ?
+                                                    <SharedUsers
+                                                        ref="SharedUserField"
+                                                        setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
+                                                        removeUser={this.removeUser}
+                                                    />
+                                                :
+                                                    null
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className="time-wrapper" >
+                                            <p className="title"  onClick={this._onAtClick.bind(this)}>Insert time &#58;</p>
+                                            {this.state.showTimePanelWindow ?
+                                                <TimePicker
+                                                    style={{ width: 100 }}
+                                                    showSecond={showSecond}
+                                                    onChange={this.handleTimeChange}
+                                                    placeholder="00:00"
+                                                />
+                                            :
+                                                null
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="calender-input-type">
+                                        <p>{this.state.defaultType}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row input-menu">
+                                <div className="col-sm-12">
+                                    <div className="items-wrapper">
+                                        <ul className="input-items-wrapper">
+                                            <li>
+                                                <OverlayTrigger trigger="click" rootClose placement="bottom" overlay={typoPopover}>
+                                                    <span className="ico font_style">B</span>
+                                                </OverlayTrigger>
+                                            </li>
+                                            <li  onClick={this._onHashClick.bind(this)}>
+                                                <span className="ico tag">#</span>
+                                            </li>
+
+                                            <li onClick={this._onAtClick.bind(this)}>
+                                                <span  >
+                                                    <i className="fa fa-at  ico time" aria-hidden="true"></i>
+                                                </span>
+                                            </li>
+                                            <li className="btn-group">
+                                                <button
+                                                    type="button"
+                                                    className={"btn event "+(this.state.defaultType == 'event' ? "active" : null)}
+                                                    eventType="event"
+                                                    onClick={() => this.changeType('event')}
+                                                    >
+                                                    <i className="fa fa-calendar" aria-hidden="true"></i> Event
+                                                </button>
+                                                {(this.props.calendarOrigin == 1) ?
+                                                    <button
+                                                        type="button"
+                                                        className={"btn todo "+(this.state.defaultType == 'todo' ? "active" : null)}
+                                                        eventType="todo"
+                                                        onClick={() => this.changeType('todo')}
+                                                        >
+                                                        <i className="fa fa-wpforms" aria-hidden="true"></i> To-do
+                                                    </button>
+                                                :
+                                                    <button
+                                                        type="button"
+                                                        className={"btn task "+(this.state.defaultType == 'task' ? "active" : null)}
+                                                        eventType="task"
+                                                        onClick={() => this.changeType('task')}
+                                                        >
+                                                        <i className="fa fa-wpforms" aria-hidden="true"></i> Tasks
+                                                    </button>
+                                                }
+                                            </li>
+                                            <li className="post">
+                                                { this.state.editOn == false ?
+                                                    <button className="menu-ico-txt btn" disabled={this.state.isButtonDisabled} onClick={this.addEvent}>
+                                                        <span className="fly-ico"></span> Enter
+                                                    </button>
+                                                    :
+                                                    <div className="menu-ico-txt btn" onClick={this.updateEvent}>
+                                                        <i className="fa fa-paper-plane" aria-hidden="true"></i> Update
+                                                    </div>
+                                                }
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="msg-holder pull-left">
+                                {this.state.msgOn ?
+                                    <p className="text-danger">{this.state.errorMsg}</p>
+                                : null }
+                            </div>
+                            {/*<div className="form-holder">
                                 <div className="row calender-input">
                                     <div className="col-sm-12">
                                         <div className="input" id="editor-holder" >
@@ -707,7 +837,7 @@ export default class DayView extends Component {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>*/}
                             <div className="row events-list-area">
                                 <div className="col-sm-12">
                                     <div className="events-list-area-content">
@@ -738,7 +868,12 @@ export default class DayView extends Component {
                                         </div>
                                         <div className={_class+ "-list-area-content-title-hr"}></div>
                                         {(this.props.calendarOrigin == 2) ?
-                                            null
+                                            <DayTasksList
+                                                events={this.state.events}
+                                                onClickItem={this.markTodo.bind(this)}
+                                                clickEdit={this.clickEdit.bind(this)}
+                                                selectedEvent={this.selectedEvent}
+                                                delete={this.openModal.bind(this)} />
                                         :
                                             <DayTodosList
                                                 events={this.state.events}

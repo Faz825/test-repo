@@ -39,7 +39,7 @@ body{
 	width: 100%;
 	float: left;
 	position: absolute;
-	top: auto;
+	top: 65px;
 	left: auto;
 	overflow-y: scroll;
 	z-index: 9999;
@@ -74,9 +74,6 @@ body{
   width: 400px;
   height: auto;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .rc-time-picker {
-  margin-top: 6px;
-}
 
 .popup-holder .selected-time,
 .calender-container .selected-time {
@@ -110,6 +107,26 @@ body{
   -moz-box-shadow: none;
   -o-box-shadow: none;
   box-shadow: none;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper.tagged .people-container .react-autosuggest__container {
+    float: left;
+}
+
+.calender-container .calender-box .month-name-holder{
+  background-color: #00a6ef;
+  padding: 9px 0 13px;
+  position: relative;
+}
+
+.calender-container .calender-box .month-name{
+  text-align: center;
+  color: #fff;
+  font-size: 2.25em;
+  font-weight: 500;
+  text-transform: capitalize;
+  line-height: 1;
+  margin: 0;
 }
 
 /* - ReactAutoSuggest Custom Styles*/
@@ -281,7 +298,7 @@ body{
 .calender-container .calender-body .col-sm-9 .calender-view .list-unstyled li .action-icons {
 	color: #ddd;
 	font-size: 15px;
-	margin-right: 10px;
+	margin-right: 2px;
 	cursor: pointer;
 }
 
@@ -457,9 +474,9 @@ a.rc-time-picker-panel-clear-btn {
   font-size: 0.8em;
 }
 
-.folder .folder-wrapper{
-  border: 1px solid transparent;
-}
+/*.folder .folder-wrapper{*/
+  /*border: 1px solid transparent;*/
+/*}*/
 
 .folder .folder-item{
   position: relative;
@@ -545,6 +562,10 @@ a.rc-time-picker-panel-clear-btn {
   border-radius: 5px;
 }
 
+.create-folder.modalPopup {
+    box-shadow: none;
+}
+
 /* Footer on collapse */
 .body-container.sub-page{
 	padding-bottom: 100px;
@@ -564,7 +585,7 @@ a.rc-time-picker-panel-clear-btn {
 
 footer.navHidden{
 	width: 132px;
-    height: 99px;
+  height: 73px;
 }
 
 footer .nav-holder,
@@ -791,18 +812,97 @@ footer .notification-alert-holder.slideOut{
           transform: scale(0);
 }
 
-.shared-users-time-panel .react-autosuggest__container input,
-.shared-users-time-panel .rc-time-picker-input {
-    border: 0px !important;
-    border-bottom: 2px solid #ddd !important;
-    outline: none !important;
-    padding: 6px 0px !important;
-    border-radius: 0px !important;
-    -webkit-box-shadow: none !important;
-    -moz-box-shadow: none !important;
-    -o-box-shadow: none !important;
-    box-shadow: none !important;
-    margin-top: -5px !important;
+.time-wrapper .rc-time-picker-input {
+    margin-top: 0px;
+    margin-left: 3px;
+    float: left;
+    border: none;
+    outline: none;
+    font-size: 0.875em;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: #000000;
+    max-width: 62px;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
+    width: 100% !important;
+    max-width: 430px !important;
+    height: 25px;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
+    float: left !important;
+    height: 25px;
+}
+
+.calendar-input-area .react-autosuggest__suggestion,
+.calender-container  .react-autosuggest__suggestion {
+    width: 235px;
+}
+
+.calendar-input-area .react-autosuggest__suggestion .suggestion-item img,
+.calender-container  .react-autosuggest__suggestion .suggestion-item img {
+    width: 18px;
+    margin: 1px 5px 1px 10px;
+}
+
+.calendar-input-area .react-autosuggest__suggestion .suggestion-item span,
+.calender-container  .react-autosuggest__suggestion .suggestion-item span {
+    font-size: 12px;
+}
+
+.calendar-input-area .react-autosuggest__container, .calender-container .react-autosuggest__container {
+    position: relative;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper {
+    float: left !important;
+    height: 25px;
+}
+
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
+    float: left !important;
+    height: 25px;
+}
+
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
+    width: 100%;
+    max-width: 430px !important;
+    height: 25px;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper {
+    width: 343px !important;
+    margin-right: 15px;
+    height: 25px;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper.tagged .people-container{
+    width: 100%;
+    max-width: 343px !important;
+    height: 25px;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper{
+    z-index: 0;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper, .calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper {
+    overflow: visible;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li.btn-group .btn {
+    z-index: 0;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input,
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input {
+    letter-spacing: 0.5px;
+}
+
+#react-autowhatever-1 {
+    z-index: 1;
 }
 
 /* custom styles for ipad view */
@@ -843,11 +943,11 @@ footer .notification-alert-holder.slideOut{
 }
 
 .calender-year-view .view-tile-area .month-tiles .month-tile {
-  min-height: 309px;
+  min-height: 233px;
 }
-.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day {
-  min-height: 37px;
-}
+/*.calender-year-view .view-tile-area .month-tiles .month-tile .mini-calendar > div.week > span.day {*/
+  /*min-height: 37px;*/
+/*}*/
 
 /* Call center */
 .call-center-header .actions-wrapper .crt-call{
@@ -885,6 +985,62 @@ footer .notification-alert-holder.slideOut{
 
 .callModelMinimized .opt-wrapper .fa:last-child{
   margin: 0;
+}
+
+.popup-holder .call-center-new-participant .user-block {
+    padding: 12px 10px;
+    position: relative;
+}
+
+.popup-holder .call-center-new-participant .img-holder,
+.popup-holder .call-center-new-participant .user-details {
+  float: left;
+}
+
+.popup-holder .call-center-new-participant .img-holder {
+    width: 21px;
+    height: 21px;
+}
+
+.popup-holder .call-center-new-participant .img-holder img{
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.popup-holder .call-center-new-participant .user-details{
+    margin-left: 12px;
+}
+
+.popup-holder .call-center-new-participant .user-details .user-name{
+    margin: 7px 0 0px;
+    font-size: 0.9em;
+    color: #2d5164;
+    text-transform: capitalize;
+}
+
+.popup-holder .call-center-new-participant .action{
+    float: right;
+    font-size: 0.857em;
+    color: #2d5164;
+    margin: 2px 0 0;
+}
+
+.popup-holder .call-center-new-participant .action .btn-add{
+    padding: 1px 7px 3px 9px;
+    border: none;
+    border-radius: 100%;
+    background-color: #FFFFFF;
+    box-shadow: 0px 1px 5px -1px #000;
+    outline: none;
+}
+
+.popup-holder .call-center-new-participant .action .btn-add .fa-plus{
+    color: #61b3de;
+    margin-top: 0;
+    position: relative;
+    top: auto;
+    left: auto;
 }
 
 /* Model overlay is overlaping */

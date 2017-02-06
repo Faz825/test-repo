@@ -49,7 +49,7 @@ export default class SearchMembersField extends React.Component{
             var userObject = {
                 "name" : suggestion.first_name+" "+suggestion.last_name,
             	"user_id" : suggestion.user_id,
-             	"status" : 3
+             	"status" : 3 // ACCEPTED 
             }
             this.members.push(userObject);
             this.sharedWithIds.push(suggestion.user_id);

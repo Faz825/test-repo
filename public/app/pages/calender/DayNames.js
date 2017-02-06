@@ -15,13 +15,13 @@ export default class DayNames extends React.Component {
     render() {
 
         return <div className="week names">
-            <span className="day day-names">{ this.state.mini ? "Sun" : "Sunday" }</span>
-            <span className="day day-names">{ this.state.mini ? "Mon" : "Monday" }</span>
-            <span className="day day-names">{ this.state.mini ? "Tue" : "Tuesday" }</span>
-            <span className="day day-names">{ this.state.mini ? "Wed" : "Wednesday" }</span>
-            <span className="day day-names">{ this.state.mini ? "Thu" : "Thursday" }</span>
-            <span className="day day-names">{ this.state.mini ? "Fri" : "Friday" }</span>
-            <span className="day day-names">{ this.state.mini ? "Sat" : "Saturday" }</span>
+            <span className="day day-names">{ this.state.mini ? "S" : "Sunday" }</span>
+            <span className="day day-names">{ this.state.mini ? "M" : "Monday" }</span>
+            <span className="day day-names">{ this.state.mini ? "T" : "Tuesday" }</span>
+            <span className="day day-names">{ this.state.mini ? "W" : "Wednesday" }</span>
+            <span className="day day-names">{ this.state.mini ? "T" : "Thursday" }</span>
+            <span className="day day-names">{ this.state.mini ? "F" : "Friday" }</span>
+            <span className="day day-names">{ this.state.mini ? "S" : "Saturday" }</span>
         </div>;
     }
 }

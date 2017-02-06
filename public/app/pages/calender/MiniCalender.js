@@ -14,7 +14,7 @@ export default class MiniCalender extends React.Component {
         let user =  Session.getSession('prg_lg');
         this.state ={
             month:this.props.selected.clone(),
-        }; 
+        };
         // this.select = this.select.bind(this);
     }
 
@@ -38,7 +38,7 @@ export default class MiniCalender extends React.Component {
 
     render() {
         return(
-            <div className="calender-box mini-calender-box">
+            <div className="mini-calender-box">
                 <div className="header">
                     <i className="fa fa-angle-left" onClick={this.previous.bind(this)}></i>
                     {this.renderMonthLabel()}

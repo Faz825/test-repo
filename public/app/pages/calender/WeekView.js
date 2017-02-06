@@ -127,6 +127,7 @@ export default class WeekView extends React.Component {
         if(this.state.groupCall.isGroupCall){
             postData['isGroupCall'] = this.state.groupCall.isGroupCall;
             postData['groupId'] = this.state.groupCall.groupId;
+            postData['calendarOrigin'] = this.props.calendarOrigin;
         }
 
         $.ajax({
@@ -167,7 +168,7 @@ export default class WeekView extends React.Component {
                             </div>
                         </div>
 
-                        <WeekDays week_startDt={this.state.weekStartDate} events={this.state.events} loadData={this.processDataCall.bind(this)} isGroupCall={this.state.groupCall.isGroupCall}/>
+                        <WeekDays week_startDt={this.state.weekStartDate} events={this.state.events} loadData={this.processDataCall.bind(this)} isGroupCall={this.state.groupCall.isGroupCall} />
 
                     </div>
                 </div>
@@ -213,7 +214,8 @@ export class LoadDayList extends React.Component {
         super(props);
         let user = Session.getSession('prg_lg');
         this.state = {
-            showDailyPopUp: false
+            showDailyPopUp: false,
+            cardSelected: false
         }
     }
 
@@ -230,28 +232,34 @@ export class LoadDayList extends React.Component {
     }
 
     handleClose() {
-        this.setState({showDailyPopUp: false});
+        this.setState({showDailyPopUp: false, cardSelected: false});
     }
 
     handleClick() {
-        this.setState({showDailyPopUp: true});
+        this.setState({showDailyPopUp: true, cardSelected: true});
     }
 
 
     render() {
         let currDt = moment(this.props.current_date);
+        let isCurrentToday = moment().format('YYYY-MM-DD') == moment(this.props.current_date).format('YYYY-MM-DD');
         return(
-            <div className="day-tile" onDoubleClick={() => this.handleClick()}>
-                <div className="day-tile-header">
-                    <h5>{currDt.format('dddd')}</h5>
-                    <h6>{currDt.format("MMMM")}</h6>
-                    <h3>{currDt.format('DD')}</h3>
+            <div className={isCurrentToday ? "day-tile selected" : "day-tile"} onDoubleClick={() => this.handleClick()}>
+                <div className="day-tile-header selected">
+                    <h3 className="date">{currDt.format('DD')}</h3>
+                    <h3 className="day">{currDt.format('dddd')}</h3>
                 </div>
                 <div className="day-tile-body">
                     {<DailyEvents daily_events={this.getEventsForTheDay()} isGroupCall={this.props.isGroupCall}/>}
                 </div>
                 {this.state.showDailyPopUp ?
-                    <WeekDayEventPopUp handleClose={this.handleClose.bind(this)} loadData={this.props.loadData} curr_date={currDt} week_startDt={this.props.week_startDt} isGroupCall={this.props.isGroupCall}/>
+                    <WeekDayEventPopUp
+                        handleClose={this.handleClose.bind(this)}
+                        loadData={this.props.loadData}
+                        curr_date={currDt}
+                        week_startDt={this.props.week_startDt}
+                        isGroupCall={this.props.isGroupCall}
+                    />
                     : null
                 }
             </div>
@@ -282,9 +290,6 @@ export class DailyEvents extends React.Component {
 
     render() {
 
-        console.log("rendaring dayily events >>>>>>>----->>>>");
-        console.log(this.props.isGroupCall);
-        console.log(this.props.daily_events);
         let groupedEvents = GroupArray(this.props.daily_events, 'type');
         console.log(groupedEvents);
         let _events = null,_todos = null,_tasks = null, _this = this;
@@ -293,7 +298,7 @@ export class DailyEvents extends React.Component {
             _events = groupedEvents['1'].map(function(event, key){
                 let _text = event.description.blocks[0].text;
                 return(
-                    <li className={_this.isPending(event) == false ? "events" : "events pending"} key={key}>
+                    <li className={_this.isPending(event) == false ? "events clearfix" : "events pending"} key={key}>
                         {_this.isPending(event) == false ? <p className="item">{_text}</p> : <p className="item pending">{_text}</p>}
                     </li>
                 );
@@ -303,7 +308,7 @@ export class DailyEvents extends React.Component {
             _todos = groupedEvents['2'].map(function(event, key){
                 let _text = event.description.blocks[0].text;
                 return(
-                    <li className={_this.isPending(event) == false ? "events" : "events pending"} key={key}>
+                    <li className={_this.isPending(event) == false ? "events clearfix" : "events pending"} key={key}>
                         {_this.isPending(event) == false ? <p className="item">{_text}</p> : <p className="item pending">{_text}</p>}
                     </li>
                 );
@@ -313,7 +318,7 @@ export class DailyEvents extends React.Component {
             _tasks = groupedEvents['3'].map(function(event, key){
                 let _text = event.description.blocks[0].text;
                 return(
-                    <li className={_this.isPending(event) == false ? "events" : "events pending"} key={key}>
+                    <li className={_this.isPending(event) == false ? "events clearfix" : "events pending"} key={key}>
                         {_this.isPending(event) == false ? <p className="item">{_text}</p> : <p className="item pending">{_text}</p>}
                     </li>
                 );

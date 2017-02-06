@@ -5,6 +5,7 @@ import GroupHeader from './GroupHeader';
 import Folders from './Folders';
 import Discussion from './Discussion';
 import Calendar from './Calendar';
+import NoteBooks from './NoteBooks';
 
 export default class GroupsLayout extends React.Component {
 
@@ -105,7 +106,7 @@ export default class GroupsLayout extends React.Component {
             case 'chat':
                 return null;
             case 'notebook':
-                return null;
+                return (<NoteBooks myGroup={this.state.group}/>);
             case 'folder':
                 return  (<Folders myGroup={this.state.group}/>);
             case 'task_manager':
