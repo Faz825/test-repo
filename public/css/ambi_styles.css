@@ -10883,6 +10883,12 @@ header .notification-holder .profile-header-thumb {
   height: 32px;
   width: 24px;
 }
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image {
+  border-color: transparent;
+}
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .time-wrapper, .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .folder-title-holder {
+  color: #ffffff;
+}
 .folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
   bottom: 8px;
@@ -14516,6 +14522,12 @@ header .notification-holder .profile-header-thumb {
   right: 7px;
   height: 32px;
   width: 24px;
+}
+.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image {
+  border-color: transparent;
+}
+.group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .time-wrapper, .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .folder-title-holder {
+  color: #ffffff;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .see-all {
   position: absolute;
@@ -19811,12 +19823,17 @@ header .notification-holder .profile-header-thumb {
   background-color: #ffffff;
 }
 .popup-holder .work-mode-popup-wrapper .header-wrapper {
+  margin-top: 16px;
   text-align: center;
 }
 .popup-holder .work-mode-popup-wrapper .header-wrapper .logo {
+  margin-top: -23px;
+  margin-left: -22px;
+  margin-right: 15px;
   display: inline-block;
 }
 .popup-holder .work-mode-popup-wrapper .header-wrapper .header {
+  margin-top: 27px;
   color: rgba(0, 0, 0, 0.87);
   font-family: Pantra-Bold;
   font-size: 36px;
@@ -19827,19 +19844,70 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper {
   overflow: hidden;
+  margin-left: 100px;
+  margin-top: 23px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .inner-header {
   color: rgba(0, 0, 0, 0.87);
   font-family: "Work Sans";
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 24px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper {
+  margin-top: 8px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper {
   overflow: hidden;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option {
   text-align: left;
+  margin-bottom: 10px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option:first-child {
+  margin-top: 7px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.news-feed .type-title {
+  margin-top: 2px;
+  margin-left: 15px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.calls .type-icon {
+  margin-top: 4px;
+  margin-left: 1px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.calls .type-title {
+  margin-top: 6px;
+  margin-left: 23px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.messages .type-icon {
+  margin-left: -2px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.messages .type-title {
+  margin-left: 16px;
+  margin-top: 4px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.social .type-icon {
+  margin-left: -2px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.social .type-title {
+  margin-top: 5px;
+  margin-left: 17px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.notifications .type-icon {
+  margin-top: 3px;
+  margin-left: -2px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.notifications .type-title {
+  margin-top: 5px;
+  margin-left: 18px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.all .type-icon {
+  margin-top: 5px;
+  margin-left: -2px;
+}
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option.all .type-title {
+  margin-left: 18px;
+  margin-top: 5px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option input[type="checkbox"] {
   display: none;
@@ -19859,7 +19927,7 @@ header .notification-holder .profile-header-thumb {
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option label {
   position: relative;
-  padding-left: 50px;
+  padding-left: 64px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .inner-holder {
   display: inline-block;
@@ -19869,15 +19937,14 @@ header .notification-holder .profile-header-thumb {
   text-align: left;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .select-content .type-icon {
-  margin-top: 8px;
+  margin-top: 6px;
   float: left;
-  margin-right: 22px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .select-content .type-content {
   float: left;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .option-selector-wrapper .option .select-content .type-content .type-title {
-  margin-top: 6px;
+  margin-bottom: 0px;
   color: rgba(0, 0, 0, 0.87);
   font-family: "Work Sans";
   font-size: 0.875em;
