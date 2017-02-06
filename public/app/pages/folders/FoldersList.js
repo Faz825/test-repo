@@ -493,11 +493,7 @@ export class File extends React.Component{
                             </div>
                             <div className="item-type">
                                 <svg width="24" height="32">
-                                    <image xlinkHref={"images/folder/types/"+
-                                    (data.document_type == "doc" || data.document_type == "docx") ? "docs" :
-                                    (data.document_type == "pdf") ? "pdfs" :
-                                    (data.document_type == "image") ? "jpgs" : ""
-                                    +".svg"} width="24" height="32"/>
+                                    <image xlinkHref={"images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
                                 </svg>
                             </div>
                         </div>
