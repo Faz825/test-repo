@@ -363,24 +363,6 @@ GroupsSchema.statics.addConnections = function(groupData, userId, callBack){
                 callBack(null, groupData);
             });
         },
-        function createGroupIndex(groupData, callBack) {
-            // creates the group index
-            var groupKey = ConnectionConfig.ES_INDEX_NAME+groupData._id;
-            var groupPayLoad={
-                index:groupKey,
-                id:userId.toString(),
-                type: 'connections',
-                data:{
-                    members_list : groupData.members
-                },
-            };
-
-            // create ES index with group id
-            ES.createIndex(groupPayLoad, function(resultSet){
-                console.log("ES INDEX IS CREATED FOR : " +ConnectionConfig.ES_INDEX_NAME+groupData._id);
-                callBack(null, groupData);
-            });
-        },
         function createUserIndexes(groupData, callBack) {
 
             groupData.members.forEach(function(member) {
@@ -391,46 +373,43 @@ GroupsSchema.statics.addConnections = function(groupData, userId, callBack){
                     console.log("CREATE DB CONNECTION FOR "+ member.user_id.toString());
                 });
 
-                var query = {
-                    index : ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id,
-                    type: 'connections',
-                    id: member.user_id.toString()
+                var query={
+                    q:"user_id:"+member.user_id,
+                    index:'idx_usr'
                 };
 
-                ES.search(query,function(isExists){
-                    if(isExists == null) {
-                        var groupsArr = [];
-                        groupsArr.push(groupData);
-                        var userKey = ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id
-                        var groupPayLoad={
-                            index:userKey,
-                            id:member.user_id.toString(),
-                            type: 'connections',
-                            data:{
-                                group_list : groupsArr
-                            },
-                        };
-                        ES.createIndex(groupPayLoad, function(resultSet){
-                            console.log("ES INDEX IS CREATED FOR : " + ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id);
-                        });
-                    }else{
-                        var oldGroupList = isExists.result[0].group_list;
-                        oldGroupList.push(groupData);
-                        var userKey = ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id
-                        var groupPayLoad={
-                            index:userKey,
-                            id:member.user_id.toString(),
-                            type: 'connections',
-                            data:{
-                                group_list : oldGroupList
-                            },
-                        };
-                        ES.update(groupPayLoad, function(resultSet){
-                            console.log("ES INDEX IS UPDATED FOR : " + ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id);
-                        });
-                    }
-                    callBack(null, groupData);
+                // for getting member
+                ES.search(query,function(userResult){
+
+                    //creates the group index
+                    var groupKey = ConnectionConfig.ES_INDEX_NAME+groupData._id;
+                    var groupPayLoad={
+                        index:groupKey,
+                        id:member.user_id.toString(),
+                        type: 'connections',
+                        data: userResult.result[0],
+                    };
+
+                    // create ES index with group id
+                    ES.createIndex(groupPayLoad, function(resultSet){
+                        console.log("ES INDEX IS CREATED FOR : " +ConnectionConfig.ES_INDEX_NAME+groupData._id);
+                        callBack(null, groupData);
+                    });
                 });
+
+                // create ES index with user id
+                var userKey = ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id
+                var groupPayLoad={
+                    index:userKey,
+                    id:groupData._id.toString(),
+                    type: 'connections',
+                    data:groupData
+                };
+
+                ES.createIndex(groupPayLoad, function(resultSet){
+                    console.log("ES INDEX IS CREATED FOR : " + ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id);
+                });
+                callBack(null, groupData);
             });
         }
     ], function (err, groupData) {

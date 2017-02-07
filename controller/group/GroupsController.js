@@ -483,13 +483,19 @@ var GroupsController = {
 
         _async.waterfall([
             function getGroups(callBack) {
-                var criteria = {};
-                Group.getGroup(criteria, function (result) {
-                    if (result.status == 200) {
-                        callBack(null, result.group);
-                    } else {
-                        callBack(null, null);
+                var userId = Util.getCurrentSession(req).id.toString();
+                var query = {
+                    index : ConnectionConfig.ES_GROUP_INDEX_NAME+userId,
+                    type: 'connections',
+                    id: userId
+                };
+                console.log(" THE INDEX IS : " + ConnectionConfig.ES_GROUP_INDEX_NAME+userId);
+                ES.search(query,function(groupsResult){
+                    var groups = [];
+                    if(groupsResult) {
+                        groups = groupsResult.result;
                     }
+                    callBack(null, groups);
                 });
             }
         ], function (err, groups) {
