@@ -19,7 +19,6 @@ export default class RecentList extends React.Component {
 
         if (typeof this.props.userContacts !== 'undefined' && this.props.userContacts.length > 0) {
             recentList = this.props.userContacts.map(function (oGroupedContacts, key) {
-                console.log(oGroupedContacts)
                 return (
                     <div className="contact-group" key={key}>
                         <p className="group-name">{oGroupedContacts.letter}</p>
