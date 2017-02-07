@@ -7,27 +7,36 @@ export default class RecentList extends React.Component {
         this.state = {};
     }
 
-    onCalling(user,callType) {
-        this.props.onUserCall(user,callType);
+    onCalling(user, callType) {
+        this.props.onUserCall(user, callType);
     }
 
     render() {
         let _this = this;
-        let recentList = this.props.userContacts.map(function (oGroupedContacts, key) {
-            return (
-                <div className="contact-group" key={key}>
-                    <p className="group-name">{oGroupedContacts.letter}</p>
 
-                    <div className="list-wrapper">
-                        {oGroupedContacts.users.map(function (oContact) {
-                            return (
-                                <Recent key={oContact.user_id} contact={oContact} type="recent" onCalling={_this.onCalling.bind(_this)}/>
-                            )
-                        })}
+        let recentList = '';
+
+        if (typeof this.props.userContacts !== 'undefined' && this.props.userContacts.length > 0) {
+            recentList = this.props.userContacts.map(function (oGroupedContacts, key) {
+                return (
+                    <div className="contact-group" key={key}>
+                        <p className="group-name">{oGroupedContacts.letter}</p>
+
+                        <div className="list-wrapper">
+                            {oGroupedContacts.users.map(function (oContact) {
+                                return (
+                                    <Recent key={oContact.user_id} contact={oContact} type="recent"
+                                            onCalling={_this.onCalling.bind(_this)}/>
+                                )
+                            })}
+                        </div>
                     </div>
-                </div>
-            )
-        });
+                )
+            });
+        } else {
+            recentList = (<h3>No recent call.</h3>);
+        }
+
         return (
             <div className="recent-list">
                 {recentList}

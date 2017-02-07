@@ -42,6 +42,7 @@ var ES = {
         _esData['body'] = payLoad.data;
         this.esClient.index(_esData, function (error, response) {
             if (error)
+                console.log('===============================================');
                 console.log(error);
 
             callBack(response);

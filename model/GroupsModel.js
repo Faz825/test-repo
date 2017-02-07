@@ -124,6 +124,8 @@ GroupsSchema.statics.createGroup = function(groupData,callBack){
     _group.members = groupData.members;
     _group.type = groupData.type;
 
+    var _async = require('async');
+
     _group.save({lean:true},function(err,result){
 
         if(!err){
@@ -134,7 +136,6 @@ GroupsSchema.statics.createGroup = function(groupData,callBack){
         }else{
             callBack({status:400,error:err});
         }
-
     });
 };
 
