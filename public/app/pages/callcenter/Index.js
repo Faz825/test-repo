@@ -176,6 +176,7 @@ export default class Index extends React.Component {
                         "contactType": 2,
                         "call_type": 'phone',
                         "calls": 1,
+                        "callStatus": 1,
                         "first_name": "test1",
                         "last_name": "ambi",
                         "zip_code": null,
@@ -219,6 +220,7 @@ export default class Index extends React.Component {
                         "contactType": 2,
                         "call_type": 'video',
                         "calls": 1,
+                        "callStatus": 2,
                         "first_name": "test2",
                         "last_name": "ambi",
                         "zip_code": null,
@@ -267,6 +269,7 @@ export default class Index extends React.Component {
                         "contactType": 2,
                         "call_type": "phone",
                         "calls": 1,
+                        "callStatus": 1,
                         "first_name": "test3",
                         "last_name": "ambi",
                         "zip_code": null,
@@ -541,7 +544,7 @@ export default class Index extends React.Component {
         let subCat = this.state.activeSubCat;
 
         return (
-            <div className="row rw-contact-menu">
+            <div className="rw-contact-menu sub-menu">
                 <div className={(subCat == "all") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
                     this.loadContactData("recent", "all")
                 }}>All <span className="selector"></span></div>
@@ -566,14 +569,14 @@ export default class Index extends React.Component {
         let subCat = this.state.activeSubCat;
 
         return (
-            <div className="row rw-contact-menu">
-                <div className={(subCat == "all") ? "col-sm-4 active" : "col-sm-4" } onClick={(event)=> {
+            <div className="rw-contact-menu sub-menu">
+                <div className={(subCat == "all") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
                     this.getContacts("contact", "all")
                 }}>All <span className="selector"></span></div>
-                <div className={(subCat == "individual") ? "col-sm-4 active" : "col-sm-4" } onClick={(event)=> {
+                <div className={(subCat == "individual") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
                     this.getContacts("contact", "individual")
                 }}>Individual <span className="selector"></span></div>
-                <div className={(subCat == "groups") ? "col-sm-4 active" : "col-sm-4" } onClick={(event)=> {
+                <div className={(subCat == "groups") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
                     this.getContacts("contact", "groups")
                 }}>Groups <span className="selector"></span></div>
             </div>
@@ -585,11 +588,11 @@ export default class Index extends React.Component {
         let subCat = this.state.activeSubCat;
 
         return (
-            <div className="row rw-contact-menu">
-                <div className={(subCat == "online") ? "col-sm-6 active" : "col-sm-6" } onClick={(event)=> {
+            <div className="rw-contact-menu sub-menu">
+                <div className={(subCat == "online") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
                     this.loadContactData("status", "online")
                 }}>Online <span className="selector"></span></div>
-                <div className={(subCat == "busy") ? "col-sm-6 active" : "col-sm-6" } onClick={(event)=> {
+                <div className={(subCat == "busy") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
                     this.loadContactData("status", "busy")
                 }}>Busy <span className="selector"></span></div>
             </div>
@@ -623,79 +626,78 @@ export default class Index extends React.Component {
         let subCat = this.state.activeSubCat;
 
         return (
-            <div className="inner-header">
-                <div className="row">
-                    <div className="col-sm-6 user-status">
-                        <div className="image-wrapper">
-                            <img
-                                src={(this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image}/>
-                            {(!this.state.isStatusVisible) ?
-                                <span className={"status user-mode " + this.getUserStatusClass(this.state.userStatus)}
-                                      onClick={this.onUserStatusClick.bind(this)}></span>
-                                :
-                                <section className="cc-online-status-popup">
-                                    <div className="status-type" onClick={(event)=> {
-                                        this.onUserStateUpdate(UserMode.ONLINE.VALUE)
-                                    }}>
-                                        <span className="status online"></span>
-                                        <p className="type">{UserMode.ONLINE.TITLE}</p>
-                                    </div>
-                                    <div className="status-type" onClick={(event)=> {
-                                        this.onUserStateUpdate(UserMode.WORK_MODE.VALUE)
-                                    }}>
-                                        <span className="status work-mode"></span>
-                                        <p className="type">{UserMode.WORK_MODE.TITLE}</p>
-                                    </div>
-                                    <div className="status-type" onClick={(event)=> {
-                                        this.onUserStateUpdate(UserMode.OFFLINE.VALUE)
-                                    }}>
-                                        <span className="status offline"></span>
-                                        <p className="type">{UserMode.OFFLINE.TITLE}</p>
-                                    </div>
-                                    <div className="mood-msg">
-                                        <p>Edit Mood Message</p>
-                                    </div>
-                                </section>
-                            }
+            <div className="inner-header clearfix">
+                <div className="col-sm-6 user-status">
+                    <div className="image-wrapper">
+                        <img
+                            src={(this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image}/>
+                        {(!this.state.isStatusVisible) ?
+                            <span className={"status user-mode " + this.getUserStatusClass(this.state.userStatus)}
+                                    onClick={this.onUserStatusClick.bind(this)}></span>
+                            :
+                            <section className="cc-online-status-popup">
+                                <div className="status-type" onClick={(event)=> {
+                                    this.onUserStateUpdate(UserMode.ONLINE.VALUE)
+                                }}>
+                                    <span className="status online"></span>
+                                    <p className="type">{UserMode.ONLINE.TITLE}</p>
+                                </div>
+                                <div className="status-type" onClick={(event)=> {
+                                    this.onUserStateUpdate(UserMode.WORK_MODE.VALUE)
+                                }}>
+                                    <span className="status work-mode"></span>
+                                    <p className="type">{UserMode.WORK_MODE.TITLE}</p>
+                                </div>
+                                <div className="status-type" onClick={(event)=> {
+                                    this.onUserStateUpdate(UserMode.OFFLINE.VALUE)
+                                }}>
+                                    <span className="status offline"></span>
+                                    <p className="type">{UserMode.OFFLINE.TITLE}</p>
+                                </div>
+                                <div className="mood-msg">
+                                    <p>Edit Mood Message</p>
+                                </div>
+                            </section>
+                        }
+                    </div>
+                    <div className="name-wrapper">
+                        <p className="name">{this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name}</p>
+                        <p className="status">{this.getUserStatusClass(this.state.userStatus)}</p>
+                        {/*<div className="status-update">
+                            <ButtonToolbar>
+                            <DropdownButton bsSize="small" title={this.state.userStatus}
+                            id="dropdown-size-small">
+                            <MenuItem eventKey="online"
+                            onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
+                            <MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
+                            <MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work
+                            mode</MenuItem>
+                            </DropdownButton>
+                            </ButtonToolbar>
+                            </div>*/}
+                    </div>
+                </div>
+                <div className="col-sm-6 tab-wrapper">
+                    <div className="rw-contact-menu main-menu">
+                        <div className={(mainCat == "recent") ? "col-sm-4 active" : "col-sm-4" }
+                                onClick={(event)=> {
+                                    this.getCallRecords("recent", "all")
+                                }}>Recent
                         </div>
-                        <div className="name-wrapper">
-                            <p className="name">{this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name}</p>
-                            {/*<div className="status-update">
-                             <ButtonToolbar>
-                             <DropdownButton bsSize="small" title={this.state.userStatus}
-                             id="dropdown-size-small">
-                             <MenuItem eventKey="online"
-                             onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
-                             <MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
-                             <MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work
-                             mode</MenuItem>
-                             </DropdownButton>
-                             </ButtonToolbar>
-                             </div>*/}
+                        <div className={(mainCat == "contact") ? "col-sm-4 active" : "col-sm-4" }
+                                onClick={(event)=> {
+                                    this.getContacts("contact", "all")
+                                }}>Contact
+                        </div>
+                        <div className={(mainCat == "status") ? "col-sm-4 active" : "col-sm-4" }
+                                onClick={(event)=> {
+                                    this.getContactsByStatus("status", "online")
+                                }}>Status
                         </div>
                     </div>
-                    <div className="col-sm-6">
-                        <div className="row rw-contact-menu">
-                            <div className={(mainCat == "recent") ? "col-sm-4 active" : "col-sm-4" }
-                                 onClick={(event)=> {
-                                     this.getCallRecords("recent", "all")
-                                 }}>Recent
-                            </div>
-                            <div className={(mainCat == "contact") ? "col-sm-4 active" : "col-sm-4" }
-                                 onClick={(event)=> {
-                                     this.getContacts("contact", "all")
-                                 }}>Contact
-                            </div>
-                            <div className={(mainCat == "status") ? "col-sm-4 active" : "col-sm-4" }
-                                 onClick={(event)=> {
-                                     this.getContactsByStatus("status", "online")
-                                 }}>Status
-                            </div>
-                        </div>
-                        {(mainCat == "recent") ? this.headerNavRecent() : null}
-                        {(mainCat == "contact") ? this.headerNavContact() : null}
-                        {(mainCat == "status") ? this.headerNavStatus() : null}
-                    </div>
+                    {(mainCat == "recent") ? this.headerNavRecent() : null}
+                    {(mainCat == "contact") ? this.headerNavContact() : null}
+                    {(mainCat == "status") ? this.headerNavStatus() : null}
                 </div>
             </div>
         )

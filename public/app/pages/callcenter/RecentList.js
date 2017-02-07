@@ -15,6 +15,7 @@ export default class RecentList extends React.Component {
         let _this = this;
 
         let recentList = '';
+        
 
         if (typeof this.props.userContacts !== 'undefined' && this.props.userContacts.length > 0) {
             recentList = this.props.userContacts.map(function (oGroupedContacts, key) {
@@ -34,11 +35,11 @@ export default class RecentList extends React.Component {
                 )
             });
         } else {
-            recentList = (<h3>No recent call.</h3>);
+            usersList = (<h3 className="no-data">No contacts.</h3>);
         }
 
         return (
-            <div className="recent-list">
+            <div className="recent-list contacts-list">
                 {recentList}
             </div>
         );
