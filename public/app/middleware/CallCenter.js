@@ -62,7 +62,7 @@ class CallCenter {
         let _this = this;
 
         return $.ajax({
-            url: '/contacts/all',
+            url: '/call/get-records',
             method: "GET",
             dataType: "JSON",
             headers: {'prg-auth-header': _this.loggedUser.token}
