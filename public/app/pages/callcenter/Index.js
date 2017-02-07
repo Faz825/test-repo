@@ -53,6 +53,13 @@ export default class Index extends React.Component {
         CallCenter.getContacts().done(function (data) {
             if (data.status.code == 200) {
                 _this.setState({userContacts: data.contacts});
+                _this.getCallRecords("recent", "all");
+            }
+        });
+
+        CallCenter.getCallRecords().done(function (data) {
+            if (data.status.code == 200) {
+                _this.setState({recentCalls: data.call_records});
             }
         });
 
@@ -71,20 +78,17 @@ export default class Index extends React.Component {
     }
 
     getContacts(cat, subCat) {
-        switch (cat) {
-            case 'contact':
-                if (subCat == 'all') {
-                    this.setActiveTabData(cat, subCat);
-                    this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
-                } else if (subCat == 'individual') {
-                    this.setActiveTabData(cat, subCat);
-                    this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
-                } else if (subCat == 'groups') {
-                    this.setActiveTabData(cat, subCat);
-                    this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
-                }
-                break;
-        }
+        this.setActiveTabData(cat, subCat);
+        this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
+    }
+
+    getCallRecords(cat, subCat) {
+        this.setActiveTabData(cat, subCat);
+        this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
+    }
+
+    getContactsByStatus(cat, subCat) {
+
     }
 
     setActiveTabData(cat, subCat) {
@@ -134,6 +138,29 @@ export default class Index extends React.Component {
             }
 
             this.setState({activeTabData: dataSet});
+        } else if (cat == "recent" && subCat == "all") {
+            let callRecords = [];
+            let aRecentCalls = this.state.recentCalls;
+
+            for (var i = 0; i < aRecentCalls.length; i++) {
+                let callChannel = CallChannel.AUDIO;
+
+                if (aRecentCalls[i].call_channel == CallChannel.VIDEO) {
+                    callChannel = CallChannel.VIDEO;
+                }
+
+                callRecords.push({
+                    user_id: aRecentCalls[i].receivers_list[0].user_id,
+                    first_name: aRecentCalls[i].receivers_list[0].first_name,
+                    last_name: aRecentCalls[i].receivers_list[0].last_name,
+                    calls: 1,
+                    call_type: callChannel,
+                    contact_type: 1,
+                    images: aRecentCalls[i].receivers_list[0].images
+                });
+            }
+
+            this.setState({activeTabData: callRecords});
         }
     }
 
@@ -651,7 +678,7 @@ export default class Index extends React.Component {
                         <div className="row rw-contact-menu">
                             <div className={(mainCat == "recent") ? "col-sm-4 active" : "col-sm-4" }
                                  onClick={(event)=> {
-                                     this.loadContactData("recent", "all")
+                                     this.getCallRecords("recent", "all")
                                  }}>Recent
                             </div>
                             <div className={(mainCat == "contact") ? "col-sm-4 active" : "col-sm-4" }
@@ -661,7 +688,7 @@ export default class Index extends React.Component {
                             </div>
                             <div className={(mainCat == "status") ? "col-sm-4 active" : "col-sm-4" }
                                  onClick={(event)=> {
-                                     this.loadContactData("status", "online")
+                                     this.getContactsByStatus("status", "online")
                                  }}>Status
                             </div>
                         </div>
