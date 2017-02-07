@@ -18421,6 +18421,486 @@ header .notification-holder .profile-header-thumb {
   margin: 0;
 }
 
+.notebook-container {
+  background-color: #e9ebee;
+}
+.notebook-container .notebook-header h2 {
+  margin-top: 43px;
+  margin-left: -3px;
+  font-size: 2.25em;
+  font-family: Pantra-Bold;
+  text-transform: lowercase;
+  line-height: 0px;
+  letter-spacing: 0px;
+  color: #000000;
+}
+.notebook-container .notebook-header .menu-bar {
+  padding-left: 0;
+}
+.notebook-container .notebook-header .menu-bar .notebook-type {
+  position: relative;
+  margin-top: 42px;
+  margin-left: 13px;
+  float: left;
+  cursor: pointer;
+  text-align: center;
+  letter-spacing: -1px;
+}
+.notebook-container .notebook-header .menu-bar .notebook-type h4 {
+  font-size: 1.125em;
+  letter-spacing: 1px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.58);
+  line-height: 0px;
+  text-transform: lowercase;
+}
+.notebook-container .notebook-header .menu-bar .notebook-type:first-child {
+  margin-left: -10px;
+}
+.notebook-container .notebook-header .menu-bar .notebook-type.active h4 {
+  color: rgba(0, 0, 0, 0.87);
+}
+.notebook-container .notebook-header .menu-bar .notebook-type.active .highlighter {
+  position: absolute;
+  bottom: -4px;
+  left: 0px;
+  height: 2px;
+  width: 100%;
+  background-color: #00a5ef;
+}
+.notebook-container .notebook-header .menu-buttons {
+  padding-left: 0;
+}
+.notebook-container .notebook-header .menu-buttons .crt-notebook {
+  float: right;
+  margin-top: 24px;
+  margin-right: 24px;
+}
+.notebook-container .notebook-header .menu-buttons .crt-notebook .btn-crt-notebook {
+  position: absolute;
+  padding: 9px 16px 6px 29px;
+  background-color: #038247;
+  color: #ffffff;
+  font-size: 0.75em;
+  line-height: 16px;
+  text-transform: lowercase;
+}
+.notebook-container .notebook-header .menu-buttons .crt-notebook .btn-crt-notebook i {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  left: 11px;
+  top: 12px;
+}
+.notebook-container .notebook-header .menu-buttons .search-notebook {
+  position: relative;
+  float: right;
+  margin-top: 24px;
+  width: 130px;
+}
+.notebook-container .notebook-header .menu-buttons .search-notebook .inner-addon i {
+  position: absolute;
+  right: 11px;
+  top: 9px;
+  font-weight: 400;
+  pointer-events: none;
+  color: #bebfbf;
+  font-size: 0.75em;
+}
+.notebook-container .notebook-header .menu-buttons .search-notebook .inner-addon input {
+  border-radius: 4px;
+  padding-right: 30px;
+  height: 33px;
+  font-size: 0.75em;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.19);
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+.notebook-container .notebook-header .menu-buttons .search-notebook .inner-addon input:-moz-placeholder {
+  color: #bebfbf;
+}
+.notebook-container .notebook-header .menu-buttons .search-notebook .inner-addon input::-moz-placeholder {
+  color: #bebfbf;
+}
+.notebook-container .notebook-header .menu-buttons .search-notebook .inner-addon input:-ms-input-placeholder {
+  color: #bebfbf;
+}
+.notebook-container .notebook-header .menu-buttons .search-notebook .inner-addon input::-webkit-input-placeholder {
+  color: #bebfbf;
+}
+.notebook-container .notebook-body .notebook {
+  margin-bottom: 20px;
+}
+.notebook-container .notebook-body .notebook:nth-child(1) {
+  margin-top: 25px;
+}
+.notebook-container .notebook-body .notebook:last-child {
+  margin-bottom: 0;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper {
+  position: relative;
+  margin-left: 15px;
+  margin-right: 15px;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.27);
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .drag-shader {
+  display: none;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 {
+  position: relative;
+  z-index: 1;
+  padding-left: 0;
+  padding-right: 0;
+  width: 15.766667%;
+  background-color: #ffffff;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-overlay {
+  position: absolute;
+  background-color: #ffffff;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-overlay:nth-child(1) {
+  width: 1px;
+  height: 90%;
+  top: 5%;
+  left: 10px;
+  opacity: 0.2;
+  box-shadow: 2px 0 0 0 #000000;
+  z-index: 2;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-overlay:nth-child(2) {
+  width: 10px;
+  height: 35px;
+  top: 30px;
+  right: 0px;
+  opacity: 0.7;
+  border-radius: 3px 0px 0px 3px;
+  z-index: 2;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover {
+  overflow: hidden;
+  height: 208px;
+  z-index: 1;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .notebook-overlay {
+  position: absolute;
+  background-color: #ffffff;
+  width: 1px;
+  height: 243px;
+  top: 10px;
+  left: 10px;
+  opacity: 0.2;
+  box-shadow: 2px 0 0 0 #000000;
+  z-index: 1;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .content-wrapper {
+  position: relative;
+  padding: 56px 0px;
+  overflow: hidden;
+  text-align: center;
+  height: 100%;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .content-wrapper .logo-wrapper {
+  position: relative;
+  margin: 0px auto 0;
+  padding: 5px;
+  height: 86px;
+  width: 86px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .content-wrapper .logo-wrapper .logo-shader {
+  position: absolute;
+  border-radius: 100%;
+  background-color: #ffffff;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .content-wrapper .logo-wrapper .logo-shader:nth-child(1) {
+  left: 5px;
+  top: 5px;
+  width: 90px;
+  height: 90px;
+  z-index: 4;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .content-wrapper .logo-wrapper .logo-shader:nth-child(2) {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  z-index: 3;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .content-wrapper .logo-wrapper img {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  z-index: 5;
+  border-radius: 999px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .content-wrapper h3 {
+  margin-top: 14px;
+  margin-left: 2px;
+  font-size: 1em;
+  color: #ffffff;
+  font-weight: 400;
+  letter-spacing: 0px;
+  line-height: 0px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .share-notebook {
+  position: absolute;
+  bottom: 14px;
+  right: 15px;
+  width: 19px;
+  height: 22px;
+  cursor: pointer;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .share-notebook .notebook-share-icon {
+  display: block;
+  width: 21px;
+  height: 19px;
+  background: url(../images/notebook/share-icon.png) no-repeat 0 0;
+  cursor: pointer;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 {
+  position: relative;
+  z-index: 0;
+  padding-right: 0;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper {
+  position: relative;
+  padding: 0px 12px 0px 24px;
+  overflow: hidden;
+  background-color: #ffffff;
+  height: 208px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper {
+  overflow: hidden;
+  height: 180px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col {
+  position: relative;
+  min-height: 1px;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-top: 0px;
+  margin-bottom: 15px;
+  padding: 13px 8px 0px 15px;
+}
+@media (min-width: 768px) {
+  .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col {
+    float: left;
+    width: 20%;
+  }
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col:first-child {
+  padding: 13px 10px 0px 13px !important;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col:nth-child(5n + 1) {
+  padding: 13px 7px 0px 13px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col:nth-child(1), .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col:nth-child(2), .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col:nth-child(3), .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col:nth-child(4), .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col:nth-child(5) {
+  margin-top: 10px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item {
+  position: relative;
+  min-height: 147px;
+  border: 1px solid;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  background-size: cover;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.upload-file {
+  background-color: #ffffff;
+  text-align: center;
+  border: 3px solid;
+  border-style: dashed;
+  box-shadow: none;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.upload-file i {
+  margin-top: 43px;
+  font-size: 1.125em;
+  color: #838383;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.upload-file p {
+  font-weight: 500;
+  margin: 15px;
+  color: #000000;
+  font-size: 0.625em;
+  line-height: 12px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .time-wrapper {
+  color: #000000;
+  border-bottom: 1px solid #dbdbdb;
+  margin: 5px 10px 0px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .time-wrapper p {
+  font-size: 0.625em;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .time-wrapper p.date-created {
+  margin-left: 2px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .time-wrapper p.time-created {
+  margin: -9px 0 4px 2px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .notebook-title-holder {
+  padding: 15px 13px;
+  color: #000000;
+  line-height: 18px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .notebook-title-holder .notebook-title {
+  font-weight: 500;
+  font-size: 0.75em;
+  line-height: 15px;
+  word-break: break-all;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .item-type {
+  position: absolute;
+  bottom: 7px;
+  right: 7px;
+  height: 32px;
+  width: 24px;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.image {
+  border-color: transparent;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.image .time-wrapper, .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.image .notebook-title-holder {
+  color: #ffffff;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .see-all {
+  position: absolute;
+  bottom: 4px;
+  right: 22px;
+  height: 18px;
+  cursor: pointer;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .see-all p {
+  margin: -3px 5px 0px 0px;
+  float: right;
+  text-transform: lowercase;
+  font-weight: 500;
+  font-size: 0.75em;
+  color: #000000;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .see-all i {
+  margin-right: 5px;
+  float: right;
+  font-size: 0.8125em;
+  font-weight: 400;
+  color: #00a5ef;
+}
+.notebook-container .notebook-body .notebook.see-all .notebook-wrapper {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+  flex-wrap: wrap;
+}
+.notebook-container .notebook-body .notebook.see-all .notebook-wrapper .drag-shader .drag-title {
+  margin-top: 19% !important;
+}
+.notebook-container .notebook-body .notebook.see-all .notebook-wrapper .col-sm-2 .notebook-cover-wrapper {
+  height: 100%;
+}
+.notebook-container .notebook-body .notebook.see-all .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover {
+  height: 100%;
+}
+.notebook-container .notebook-body .notebook.see-all .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .notebook-overlay:nth-child(1) {
+  height: 95.5%;
+}
+.notebook-container .notebook-body .notebook.see-all .notebook-wrapper .col-sm-10 .notebook-content-wrapper {
+  height: auto;
+}
+.notebook-container .notebook-body .notebook.see-all .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper {
+  padding-bottom: 18px;
+  height: auto;
+}
+.notebook-container .notebook-body .notebook.pink .col-sm-2 {
+  background-color: #ed0677;
+}
+.notebook-container .notebook-body .notebook.pink .upload-file {
+  border-color: #ed0677 !important;
+}
+.notebook-container .notebook-body .notebook.pink .upload-file p, .notebook-container .notebook-body .notebook.pink .upload-file i {
+  color: #ed0677 !important;
+}
+.notebook-container .notebook-body .notebook.light-blue .col-sm-2 {
+  background-color: #1b9ed9;
+}
+.notebook-container .notebook-body .notebook.light-blue .upload-file {
+  border-color: #1b9ed9 !important;
+}
+.notebook-container .notebook-body .notebook.light-blue .upload-file p, .notebook-container .notebook-body .notebook.light-blue .upload-file i {
+  color: #1b9ed9 !important;
+}
+.notebook-container .notebook-body .notebook.light-green .col-sm-2 {
+  background-color: #a2c73e;
+}
+.notebook-container .notebook-body .notebook.light-green .upload-file {
+  border-color: #a2c73e !important;
+}
+.notebook-container .notebook-body .notebook.light-green .upload-file p, .notebook-container .notebook-body .notebook.light-green .upload-file i {
+  color: #a2c73e !important;
+}
+.notebook-container .notebook-body .notebook.red .col-sm-2 {
+  background-color: #b01d5a;
+}
+.notebook-container .notebook-body .notebook.red .upload-file {
+  border-color: #b01d5a !important;
+}
+.notebook-container .notebook-body .notebook.red .upload-file p, .notebook-container .notebook-body .notebook.red .upload-file i {
+  color: #b01d5a !important;
+}
+.notebook-container .notebook-body .notebook.dark-blue .col-sm-2 {
+  background-color: #091652;
+}
+.notebook-container .notebook-body .notebook.dark-blue .upload-file {
+  border-color: #091652 !important;
+}
+.notebook-container .notebook-body .notebook.dark-blue .upload-file p, .notebook-container .notebook-body .notebook.dark-blue .upload-file i {
+  color: #091652 !important;
+}
+.notebook-container .notebook-body .notebook.gray .col-sm-2 {
+  background-color: #bbbdbe;
+}
+.notebook-container .notebook-body .notebook.gray .upload-file {
+  border-color: #bbbdbe !important;
+}
+.notebook-container .notebook-body .notebook.gray .upload-file p, .notebook-container .notebook-body .notebook.gray .upload-file i {
+  color: #bbbdbe !important;
+}
+.notebook-container .notebook-body .notebook.dark-green .col-sm-2 {
+  background-color: #067d41;
+}
+.notebook-container .notebook-body .notebook.dark-green .upload-file {
+  border-color: #067d41 !important;
+}
+.notebook-container .notebook-body .notebook.dark-green .upload-file p, .notebook-container .notebook-body .notebook.dark-green .upload-file i {
+  color: #067d41 !important;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper.drag {
+  border: 1px solid #848484;
+  border-style: dashed;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper.drag .drag-shader {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #c4c4c4;
+  z-index: 2;
+  text-align: center;
+  opacity: 0.95;
+}
+.notebook-container .notebook-body .notebook .notebook-wrapper.drag .drag-shader .drag-title {
+  margin-top: 10%;
+  font-size: 1.5em;
+  font-family: Andelo-Mono;
+  font-weight: 700;
+  color: #000000;
+}
+
 .popup-holder {
   background-color: #ffffff;
   border-radius: 8px;
@@ -19827,7 +20307,7 @@ header .notification-holder .profile-header-thumb {
   background-color: #ffffff;
 }
 .popup-holder .work-mode-popup-wrapper .header-wrapper {
-  margin-top: 16px;
+  padding-top: 16px;
   text-align: center;
 }
 .popup-holder .work-mode-popup-wrapper .header-wrapper .logo {
@@ -19988,12 +20468,15 @@ header .notification-holder .profile-header-thumb {
   margin-top: 7px;
   margin-left: 26px;
 }
+.popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time.invalid .t_input {
+  border-color: #ff0013;
+}
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .colon {
   position: absolute;
   width: 3px;
   height: 3px;
   background-color: #000000;
-  left: 37px;
+  left: 48px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .colon.top {
   top: 10px;
@@ -20002,7 +20485,7 @@ header .notification-holder .profile-header-thumb {
   top: 20px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .t_input {
-  width: 34px;
+  width: 42px;
   height: 32px;
   border-radius: 3px;
   border: 1px solid #bebfbf;
