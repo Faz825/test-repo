@@ -11864,6 +11864,15 @@ header .notification-holder .profile-header-thumb {
   border-color: #038247;
   color: #ffffff;
 }
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li.btn-group .btn.task {
+  border-radius: 0px 6px 6px 0px;
+  color: #ff0000;
+}
+.calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li.btn-group .btn.task.active {
+  background-color: #ff0000;
+  border-color: #ff0000;
+  color: #ffffff;
+}
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li.post {
   float: right;
   width: auto;
@@ -15505,6 +15514,15 @@ header .notification-holder .profile-header-thumb {
   border-color: #038247;
   color: #ffffff;
 }
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li.btn-group .btn.task {
+  border-radius: 0px 6px 6px 0px;
+  color: #ff0000;
+}
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li.btn-group .btn.task.active {
+  background-color: #ff0000;
+  border-color: #ff0000;
+  color: #ffffff;
+}
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li.post {
   float: right;
   width: auto;
@@ -18474,7 +18492,7 @@ header .notification-holder .profile-header-thumb {
 .notebook-container .notebook-header .menu-buttons .crt-notebook {
   float: right;
   margin-top: 24px;
-  margin-right: 24px;
+  margin-right: 155px;
 }
 .notebook-container .notebook-header .menu-buttons .crt-notebook .btn-crt-notebook {
   position: absolute;
@@ -18542,7 +18560,7 @@ header .notification-holder .profile-header-thumb {
   margin-left: 15px;
   margin-right: 15px;
   overflow: hidden;
-  border-radius: 6px;
+  border-radius: 10px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.27);
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .drag-shader {
@@ -18561,13 +18579,16 @@ header .notification-holder .profile-header-thumb {
   background-color: #ffffff;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-overlay:nth-child(1) {
-  width: 1px;
+  width: 13px;
   height: 90%;
   top: 5%;
   left: 10px;
   opacity: 0.2;
   box-shadow: 2px 0 0 0 #000000;
   z-index: 2;
+  background-image: url("../images/notebook/spinner.png");
+  background-repeat: repeat-y;
+  background-color: transparent;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-overlay:nth-child(2) {
   width: 10px;
