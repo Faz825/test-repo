@@ -137,10 +137,14 @@ export default class WorkModePopup extends React.Component {
                                     </div>
                                 </div>
                                 <div className="option custom-time">
-                                    <input type="text" className="t_input" placeholder="hh"/>
+                                    <select className="t_input">
+                                        <option>hh</option>
+                                    </select>
                                     <span className="colon top"></span>
                                     <span className="colon bottom"></span>
-                                    <input type="text" className="t_input" placeholder="mm"/>
+                                    <select className="t_input">
+                                        <option>mm</option>
+                                    </select>
                                 </div>
                             </div>
                             
