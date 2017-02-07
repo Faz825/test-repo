@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.6 (http://getbootstrap.com)
- * Copyright 2011-2015 Twitter, Inc.
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,7 +1418,6 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3119,7 +3118,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3672,7 +3670,6 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10249,13 +10246,13 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/* 
+/*
 	Method to use:
 	@include @border {
 		border ($style,  $sides, $emptySides){
 	}
 */
-/* 
+/*
 	Method to use:
 	@include @mixin {
 		content
@@ -18588,6 +18585,7 @@ header .notification-holder .profile-header-thumb {
   color: #bebfbf;
 }
 .notebook-container .notebook-body .notebook {
+  position: relative;
   margin-bottom: 20px;
 }
 .notebook-container .notebook-body .notebook:nth-child(1) {
@@ -18595,6 +18593,29 @@ header .notification-holder .profile-header-thumb {
 }
 .notebook-container .notebook-body .notebook:last-child {
   margin-bottom: 0;
+}
+.notebook-container .notebook-body .notebook .notebook-overlay {
+  position: absolute;
+  background-color: #ffffff;
+}
+.notebook-container .notebook-body .notebook .notebook-overlay:nth-child(1) {
+  width: 13px;
+  height: 90%;
+  top: 5%;
+  left: 10px;
+  z-index: 2;
+  background-image: url("../images/notebook/spinner.png");
+  background-repeat: repeat-y;
+  background-color: transparent;
+}
+.notebook-container .notebook-body .notebook .notebook-overlay:nth-child(2) {
+  width: 10px;
+  height: 35px;
+  top: 30px;
+  right: 0px;
+  opacity: 0.7;
+  border-radius: 3px 0px 0px 3px;
+  z-index: 2;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper {
   position: relative;
@@ -18614,31 +18635,6 @@ header .notification-holder .profile-header-thumb {
   padding-right: 0;
   width: 15.766667%;
   background-color: #ffffff;
-}
-.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-overlay {
-  position: absolute;
-  background-color: #ffffff;
-}
-.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-overlay:nth-child(1) {
-  width: 13px;
-  height: 90%;
-  top: 5%;
-  left: 10px;
-  opacity: 0.2;
-  box-shadow: 2px 0 0 0 #000000;
-  z-index: 2;
-  background-image: url("../images/notebook/spinner.png");
-  background-repeat: repeat-y;
-  background-color: transparent;
-}
-.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-overlay:nth-child(2) {
-  width: 10px;
-  height: 35px;
-  top: 30px;
-  right: 0px;
-  opacity: 0.7;
-  border-radius: 3px 0px 0px 3px;
-  z-index: 2;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover {
   overflow: hidden;
@@ -20538,7 +20534,7 @@ header .notification-holder .profile-header-thumb {
   width: 3px;
   height: 3px;
   background-color: #000000;
-  left: 48px;
+  left: 42px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .colon.top {
   top: 10px;
@@ -20547,7 +20543,7 @@ header .notification-holder .profile-header-thumb {
   top: 20px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .t_input {
-  width: 42px;
+  width: 35px;
   height: 32px;
   border-radius: 3px;
   border: 1px solid #bebfbf;
@@ -20572,10 +20568,10 @@ header .notification-holder .profile-header-thumb {
   color: rgba(0, 0, 0, 0.37);
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .t_input:first-child {
-  margin-right: 2px;
+  margin-left: 3px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.custom-time .t_input:last-child {
-  margin-left: 7px;
+  margin-left: 10px;
 }
 .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option input[type="radio"] {
   display: none;
