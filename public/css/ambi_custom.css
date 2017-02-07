@@ -1162,8 +1162,25 @@ body .modal-backdrop{
     width: 100%;
 }
 
+.group-container .group-content .event-task-holder ul li:before {
+    color: #00a6ef;
+    content: "\f111";
+    font-family: FontAwesome;
+    line-height: 1;
+    font-size: 5px;
+    margin-right: 10px;
+}
+
+.group-container .group-content .event-task-holder ul.tasks-list li:before {
+    color: #ff0000;
+}
+
 .group-container .group-content .event-task-holder ul li {
     font-size: 0.625em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
+    overflow: hidden;
 }
 
 .group-container .group-content .sidebar .grp-desc .desc {

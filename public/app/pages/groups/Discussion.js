@@ -166,7 +166,7 @@ export default class Discussion extends React.Component{
                         membersCount={this.state.membersCount}
                         currentGroup={this.state.currentGroup}
                     />
-                    <CalendarWidget />
+                    <CalendarWidget currentGroup={this.state.currentGroup} />
                 </div>
                 <div className="post-panel col-sm-8">
                     <div className="post-holder">
@@ -190,51 +190,6 @@ export default class Discussion extends React.Component{
                             onLoadProfile = {this.onLoadProfile.bind(this)}
                         />
                     </div>
-                    {/*
-                     ** This is the original the layout and the sytle to be displayed except the above post editor **
-                         <div className="post-editor-holder post">
-                        <div className="post-header clearfix">
-                            <div className="post-nav share-nav active">
-                                <div className="inner-wrapper">
-                                    <i className="fa fa-pencil-square-o pull-left" aria-hidden="true"></i>
-                                    <p className="nav-title pull-left">Share Update</p>
-                                </div>
-                            </div>
-                            <div className="post-nav media-nav">
-                                <div className="inner-wrapper">
-                                    <i className="fa fa-picture-o pull-left" aria-hidden="true"></i>
-                                    <p className="nav-title pull-left">Photo/Video</p>
-                                </div>
-                            </div>
-                            <div className="post-nav loc-nav">
-                                <div className="inner-wrapper">
-                                    <i className="fa fa-map-marker pull-left" aria-hidden="true"></i>
-                                    <p className="nav-title pull-left">Share Location</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="post-editor">
-                            <div className="edit-post-field">Post something...</div>
-                        </div>
-                        <div className="post-editor-footer clearfix">
-                            <div className="post-opts-holder pull-left">
-                                <span className="photo-icon opt"></span>
-                                <span className="tag-icon opt"></span>
-                                <span className="smiley-icon opt"></span>
-                                <div className="location-opt clearfix">
-                                    <span className="loc-icon opt"></span>
-                                    <div className="loc-text-holder clearfix">
-                                        <p className="loc-text">New york</p>
-                                        <i className="fa fa-times" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                                <span className="event-icon opt"></span>
-                            </div>
-                            <div className="btn-holder pull-right">
-                                <button className="btn post-btn">Post</button>
-                            </div>
-                        </div>
-                    </div> */}
                 </div>
             </section>
         );
@@ -365,26 +320,82 @@ export class CalendarWidget extends React.Component{
 
     constructor(props) {
         super(props);
-        var group = this.props.myGroup;
+        var currentGroup = this.props.currentGroup;
+        let user =  Session.getSession('prg_lg');
         this.state = {
-            currentDate : moment().format('YYYY-MM-DD')
+            user : user,
+            currentDate : moment().format('YYYY-MM-DD'),
+            currentGroup : currentGroup,
+            events : []
         };
 
+        this.loadEvents = this.loadEvents.bind(this);
         this.nextDay = this.nextDay.bind(this);
         this.previousDay = this.previousDay.bind(this);
+
+        this.currentDate = this.state.currentDate;
+        this.calendarOrigin = 2; // PERSONAL_CALENDAR || GROUP_CALENDAR
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.currentGroup !== this.state.group) {
+            this.setState({ currentGroup: nextProps.currentGroup });
+            this.loadEvents();
+        }
     }
 
     nextDay() {
         let nextDay = moment(this.state.currentDate).add(1,'days').format('YYYY-MM-DD');
         this.setState({currentDate : nextDay});
+        this.currentDate = nextDay;
+        this.loadEvents();
     }
 
     previousDay() {
         let prevDay = moment(this.state.currentDate).add(-1, 'days').format('YYYY-MM-DD');
         this.setState({currentDate : prevDay});
+        this.currentDate = prevDay;
+        this.loadEvents();
+    }
+
+    loadEvents() {
+
+        var data = {
+            day : this.currentDate,
+            calendar_origin : this.calendarOrigin,
+            group_id : this.state.currentGroup._id
+        };
+
+        $.ajax({
+            url : '/calendar/day/all',
+            method : "POST",
+            data : data,
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
+                if (data.status.code == 200) {
+                    console.log(data);
+                    this.setState({events: data.events});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
     }
 
     render() {
+
+        var events = [];
+        var tasks = [];
+        this.state.events.map(function(event,key){
+			if(event.type == 1) {
+				events.push(<li>{event.plain_text}</li>);
+			} else {
+                tasks.push(<li>{event.plain_text}</li>);
+            }
+		});
+
         return (
             <div className="grp-day-panel panel">
                 <div className="day-slide-header">
@@ -408,9 +419,7 @@ export class CalendarWidget extends React.Component{
                             <h3 className="title">Event</h3>
                         </div>
                         <ul className="events-tasks-list events-list">
-                            <li>Event one</li>
-                            <li>Event two</li>
-                            <li>Event three</li>
+                            {events}
                         </ul>
                     </div>
                     <div className="task-wrapper inner-wrapper">
@@ -419,9 +428,7 @@ export class CalendarWidget extends React.Component{
                             <h3 className="title">Tasks</h3>
                         </div>
                         <ul className="events-tasks-list tasks-list">
-                            <li>Task one</li>
-                            <li>Task two</li>
-                            <li>Task three</li>
+                            {tasks}
                         </ul>
                     </div>
                 </div>
