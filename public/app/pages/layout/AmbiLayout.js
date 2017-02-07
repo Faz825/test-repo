@@ -178,8 +178,8 @@ export default class AmbiLayout extends React.Component {
     }
 
     handleClick() {
-        this.setState({isShowingModal: true});
-        //this.setState({isShowingWMP: true});
+        // this.setState({isShowingModal: true});
+        this.setState({isShowingWMP: true});
     }
 
     handleClose() {
@@ -235,7 +235,7 @@ export default class AmbiLayout extends React.Component {
                 {
                     this.state.isShowingWMP &&
                     <ModalContainer zIndex={9999}>
-                        <ModalDialog width="65%" className="workmode-popup-holder">
+                        <ModalDialog className="workmode-popup-holder">
                             <div className="workmode-popup-wrapper">
                                 <WorkModePopup />
                                 <i className="fa fa-times close-icon" aria-hidden="true"
