@@ -30,6 +30,10 @@ GLOBAL.GroupPermissions = {
     VIEW_FOLDER: 10,
 };
 
+GLOBAL.GroupConfig = {
+    ES_INDEX: "idx_group"
+};
+
 var SharedMemberSchema = new Schema({
     name:{
         type:String,
@@ -336,56 +340,107 @@ GroupsSchema.statics.addConnections = function(groupData, userId, callBack){
 
     var Connection = require('mongoose').model('Connection');
     var connectionData = new Connection();
+    var _async = require('async');
     connectionData.connected_with = groupData._id;
     connectionData.connected_with_type = ConnectedType.GROUP_CONNECTION;
     connectionData.action_user_id = userId;
     connectionData.status = ConnectionStatus.REQUEST_ACCEPTED;
 
-    var connections = [];
-    groupData.members.forEach(function(member) {
-
-        // create connection in DB
-        connectionData.user_id = member.user_id;
-        Connection.createConnection(connectionData, function(connectionResult) {
-            console.log("CREATE CONNECTION");
-            connections.push(connectionResult.connection);
-        });
-
-        // get member object from ES
-        var query={
-            q:"user_id:"+member.user_id,
-            index:'idx_usr'
-        };
-        ES.search(query,function(esResultSet){
-            var _group_key = ConnectionConfig.ES_INDEX_NAME+groupData._id;
+    _async.waterfall([
+        function createIndex(callBack) {
+            // creates the group index
+            var groupKey = GroupConfig.ES_INDEX;
             var groupPayLoad={
-                index:_group_key,
-                id:member.user_id.toString(),
-                type: 'connections',
-                data:esResultSet.result[0],
-                tag_fields:['content']
+                index:groupKey,
+                id:groupData._id.toString(),
+                type: 'group',
+                data: groupData
             };
 
             // create ES index with group id
-            ES.createIndex(groupPayLoad,function(resultSet){
-                console.log("GROUP INDEX IS CREATED " +_group_key);
+            ES.createIndex(groupPayLoad, function(resultSet){
+                console.log("ES INDEX IS CREATED FOR : " + GroupConfig.ES_INDEX);
+                callBack(null, groupData);
             });
-        });
+        },
+        function createGroupIndex(groupData, callBack) {
+            // creates the group index
+            var groupKey = ConnectionConfig.ES_INDEX_NAME+groupData._id;
+            var groupPayLoad={
+                index:groupKey,
+                id:userId.toString(),
+                type: 'connections',
+                data:{
+                    members_list : groupData.members
+                },
+            };
 
-        var _user_key = ConnectionConfig.ES_INDEX_NAME+member.user_id;
-        var userPayLoad={
-            index:_user_key,
-            id:groupData._id.toString(),
-            type: 'connections',
-            data:groupData,
-            tag_fields:['content']
+            // create ES index with group id
+            ES.createIndex(groupPayLoad, function(resultSet){
+                console.log("ES INDEX IS CREATED FOR : " +ConnectionConfig.ES_INDEX_NAME+groupData._id);
+                callBack(null, groupData);
+            });
+        },
+        function createUserIndexes(groupData, callBack) {
+
+            groupData.members.forEach(function(member) {
+
+                // create connection in DB
+                connectionData.user_id = member.user_id;
+                Connection.createConnection(connectionData, function(connectionResult) {
+                    console.log("CREATE DB CONNECTION FOR "+ member.user_id.toString());
+                });
+
+                var query = {
+                    index : ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id,
+                    type: 'connections',
+                    id: member.user_id.toString()
+                };
+
+                ES.search(query,function(isExists){
+                    if(isExists == null) {
+                        var groupsArr = [];
+                        groupsArr.push(groupData);
+                        var userKey = ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id
+                        var groupPayLoad={
+                            index:userKey,
+                            id:member.user_id.toString(),
+                            type: 'connections',
+                            data:{
+                                group_list : groupsArr
+                            },
+                        };
+                        ES.createIndex(groupPayLoad, function(resultSet){
+                            console.log("ES INDEX IS CREATED FOR : " + ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id);
+                        });
+                    }else{
+                        var oldGroupList = isExists.result[0].group_list;
+                        oldGroupList.push(groupData);
+                        var userKey = ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id
+                        var groupPayLoad={
+                            index:userKey,
+                            id:member.user_id.toString(),
+                            type: 'connections',
+                            data:{
+                                group_list : oldGroupList
+                            },
+                        };
+                        ES.update(groupPayLoad, function(resultSet){
+                            console.log("ES INDEX IS UPDATED FOR : " + ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id);
+                        });
+                    }
+                    callBack(null, groupData);
+                });
+            });
         }
-        // create ES index with user id
-        ES.createIndex(userPayLoad,function(resultSet){
-            console.log("USER INDEX CREATED " + _user_key);
-        });
+    ], function (err, groupData) {
+        if(err) {
+            console.log(err);
+            callBack({status:400, error:err});
+        } else {
+            callBack({status:200, value:null});
+        }
     });
-    callBack({status:200, value:null});
 };
 
 mongoose.model('Groups',GroupsSchema);
