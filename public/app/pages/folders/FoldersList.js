@@ -468,6 +468,10 @@ export class File extends React.Component{
             imgClass = "",
             isSelected = "";
 
+        let folder_icons = [
+            "aac", "aib", "avib", "doc", "docx", "flac", "gif", "jpg", "jpeg", "js", "mov", "mp3", "mp4", "pdf", "png", "psd", "tiff", "txt", "xls", "xlsx", "html"
+        ];
+
         if(data.isSelected){
             isSelected = "selected-file";
         }
@@ -493,7 +497,12 @@ export class File extends React.Component{
                             </div>
                             <div className="item-type">
                                 <svg width="24" height="32">
-                                    <image xlinkHref={"images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
+                                    {
+                                        (folder_icons.indexOf(data.document_type) == -1) ?
+                                            <image xlinkHref={"images/folder/types/default_icon.svg"} width="24" height="32"/> :
+                                            <image xlinkHref={"images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
+                                    }
+
                                 </svg>
                             </div>
                         </div>

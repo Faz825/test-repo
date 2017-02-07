@@ -486,14 +486,14 @@ a.rc-time-picker-panel-clear-btn {
   position: relative;
   z-index: 1;
   float: left;
-  height: 180px;
+  height: 145px;
   width: 100%;
 }
 
 .folder-item .img-overlay{
   display: block;
   width: 100%;
-  height: 180px;
+  height: 145px;
   z-index: 0;
   position: absolute;
   top: 0;

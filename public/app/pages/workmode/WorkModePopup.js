@@ -25,7 +25,7 @@ export default class WorkModePopup extends React.Component {
                         <div className="components-wrapper">
 
                             <div className="option-selector-wrapper">
-                                <div className="option selected">
+                                <div className="option news-feed selected">
                                     <div className="inner-holder clearfix">
                                         <input type="checkbox" name="workmode_option" id="newsfeed" />
                                         <label for="newsfeed" className="selector-label selected">
@@ -38,7 +38,7 @@ export default class WorkModePopup extends React.Component {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="option">
+                                <div className="option calls">
                                     <div className="inner-holder clearfix">
                                         <input type="checkbox" name="workmode_option" id="calls" />
                                         <label for="calls" className="selector-label">
@@ -51,7 +51,7 @@ export default class WorkModePopup extends React.Component {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="option">
+                                <div className="option messages">
                                     <div className="inner-holder clearfix">
                                         <input type="checkbox" name="workmode_option" id="messages" />
                                         <label for="messages" className="selector-label">
@@ -64,7 +64,7 @@ export default class WorkModePopup extends React.Component {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="option">
+                                <div className="option social">
                                     <div className="inner-holder clearfix">
                                         <input type="checkbox" name="workmode_option" id="social" />
                                         <label for="social" className="selector-label">
@@ -77,7 +77,7 @@ export default class WorkModePopup extends React.Component {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="option">
+                                <div className="option notifications">
                                     <div className="inner-holder clearfix">
                                         <input type="checkbox" name="workmode_option" id="notifications" />
                                         <label for="notifications" className="selector-label">
@@ -90,7 +90,7 @@ export default class WorkModePopup extends React.Component {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="option">
+                                <div className="option all">
                                     <div className="inner-holder clearfix">
                                         <input type="checkbox" name="workmode_option" id="all" />
                                         <label for="all" className="selector-label">
@@ -126,7 +126,7 @@ export default class WorkModePopup extends React.Component {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="option">
+                                <div className="option custom">
                                     <div className="inner-holder clearfix">
                                         <input type="radio" name="workmode_option_time" id="custom" />
                                         <label for="custom" className="selector-label">
@@ -137,15 +137,21 @@ export default class WorkModePopup extends React.Component {
                                     </div>
                                 </div>
                                 <div className="option custom-time">
-                                    <input type="text" className="t_input" placeholder="hh" />&colon;<input type="text" className="t_input" placeholder="mm" />
+                                    <input type="text" className="t_input" placeholder="hh"/>
+                                    <span className="colon top"></span>
+                                    <span className="colon bottom"></span>
+                                    <input type="text" className="t_input" placeholder="mm"/>
                                 </div>
                             </div>
+                            
+                        </div>
 
-                        </div>
-                        <div className="footer">
-                            <button className="btn work-mode">active work mode</button>
-                        </div>
                     </div>
+
+                    <div className="footer">
+                        <button className="btn work-mode">active work mode</button>
+                    </div>
+
                 </div>
             </div>
         )

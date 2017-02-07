@@ -35,6 +35,7 @@ var UploadController = {
 
     uploadFolderDocument:function(req,res){
 
+        console.log("came to uploadFolderDocument");
         var outPut = {},
             _async = require('async'),
             document = {},
@@ -72,7 +73,6 @@ var UploadController = {
             var nameArr = n.split(extension);
             name = nameArr[0];
         }
-
         _imageFiles[n]['name'] = name;
         _imageFiles[n]['binaryData'] = binaryData;
         _imageFiles[n]['extension'] = extension;
@@ -83,6 +83,7 @@ var UploadController = {
         _async.waterfall([
 
             function uploadOtherFiles(callback) {
+                console.log("came to uploadOtherFiles");
                 x = 1;
                 var fileName = n;
                 if(_imageFiles[fileName]['type'].indexOf("image/") == -1){
@@ -108,6 +109,7 @@ var UploadController = {
                 }
             },
             function uploadImageFiles(fileName, callback){
+                console.log("came to uploadImageFiles");
 
                 //console.log("******uploadImageFiles******* ====>>>>>"+fileName);
 
@@ -120,12 +122,13 @@ var UploadController = {
                             var origFile = n;
                             var origErr = err;
                             //console.log("******uploadOrigFile******* ====>>>>>"+origFile);
-                            fs.writeFile('orig/'+origFile, _imageFiles[origFile]['binaryData']['data'], function(err) {
+                            fs.writeFile('temp/orig/'+origFile, _imageFiles[origFile]['binaryData']['data'], function(err) {
                                 if(!err){
                                     //console.log(origFile+" ==> original file uploaded to orig folder");
                                     origErr = false;
                                     callback(null,origErr,origFile)
                                 } else{
+                                    //console.log(origFile+" ==> original file uploaded failed--");
                                     callback(null,origErr,origFile);
                                 }
                             });
@@ -139,8 +142,8 @@ var UploadController = {
 
                             if(!thumbErr){
                                 im.resize({
-                                    srcPath: 'orig/'+thumbFile,
-                                    dstPath: 'thumb/'+thumbFile,
+                                    srcPath: 'temp/orig/'+thumbFile,
+                                    dstPath: 'temp/thumb/'+thumbFile,
                                     width:196,
                                     height:204,
                                 }, function(err, stdout, stderr){
@@ -163,7 +166,7 @@ var UploadController = {
                             //console.log("******uploadImageFiles to CDN******* ====>>>>>");
                             //console.log(upFile);
                             if(!upErr){
-                                fs.readFile('thumb/'+upFile, function(err, fileBody){
+                                fs.readFile('temp/thumb/'+upFile, function(err, fileBody){
                                     if(!err){
                                         //console.log(upFile+" ==> thumbnail read");
                                         var _data = {
@@ -192,8 +195,6 @@ var UploadController = {
                             }
                         }
                     ],function(err,fileName){
-                        //console.log("=====CALLBACK=====");
-                        //console.log(fileName);
                         callback(null,fileName);
                     });
                 } else{
@@ -201,17 +202,16 @@ var UploadController = {
                 }
             },
             function saveDocumentToDB(fileName, callback){
-                //console.log("saveDocumentToDB");
-                //console.log(fileName);
+                console.log("came to saveDocumentToDB");
                 var n = fileName;
                 if(_imageFiles[n]['type'].indexOf("image/") != -1){
-                    fs.unlink('thumb/'+n, function(err){
+                    fs.unlink('temp/thumb/'+n, function(err){
                         if (err) console.log(err);
-                        console.log('successfully deleted '+'thumb/'+n);
+                        console.log('successfully deleted '+'temp/thumb/'+n);
                     });
-                    fs.unlink('orig/'+n, function(err){
+                    fs.unlink('temp/orig/'+n, function(err){
                         if (err) console.log(err);
-                        console.log('successfully deleted '+'orig/'+n);
+                        console.log('successfully deleted '+'temp/orig/'+n);
                     });
                 }
 
@@ -227,7 +227,6 @@ var UploadController = {
                     document.thumb_path = _imageFiles[n]['thumb_path'];
 
                     FolderDocs.addNewDocument(document, function(res){
-                        //console.log(res);
                         if(res.status == 200){
                             saved_document = {
                                 document_id:res.document._id,
@@ -248,6 +247,7 @@ var UploadController = {
                 }
             },
             function saveDocumentToES(fileName, callback){
+                console.log("came to saveDocumentToES");
                 var n = fileName;
 
                 if(typeof document.file_path != 'undefined' && typeof saved_document.document_id != 'undefined'){
@@ -311,8 +311,12 @@ var UploadController = {
                                     _esDocument.type = _type;
                                     _esDocument.document_user = _documentUser;
 
-                                    FolderDocs.addDocToCache(_esDocument, function(res){callback(null)});
-                                } else{callback(null)}
+                                    FolderDocs.addDocToCache(_esDocument, function(res){
+                                        callback(null)
+                                    });
+                                } else {
+                                    callback(null)
+                                }
 
                             }, function(err){
                                 callback(null,n)
@@ -323,10 +327,17 @@ var UploadController = {
                 } else{
                     callback(null,n);
                 }
+            },
+            function flushData(fileName, callback){
+                if(fileName != 'undefined' && _imageFiles.hasOwnProperty(fileName)) {
+                    console.log("going to delete _imageFiles");
+                    delete _imageFiles[fileName];
+                }
+
+                callback(null);
             }
-        ], function(err, fileName){
-            delete _imageFiles[fileName];
-            console.log("callback");
+        ], function(err){
+
             if(x == 4){
                 outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
                 outPut['upload_index']   = document.upload_index;
