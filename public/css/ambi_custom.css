@@ -566,6 +566,10 @@ a.rc-time-picker-panel-clear-btn {
     box-shadow: none;
 }
 
+.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action{
+  margin-left: 165px;
+}
+
 /* Footer on collapse */
 .body-container.sub-page{
 	padding-bottom: 100px;
@@ -1049,6 +1053,14 @@ footer .notification-alert-holder.slideOut{
     position: relative;
     top: auto;
     left: auto;
+}
+
+.call-center-inner-holder .no-data{
+    padding: 10px;
+    text-align: center;
+    margin: 0;
+    color: #101010;
+    background: #fff;
 }
 
 /* Model overlay is overlaping */

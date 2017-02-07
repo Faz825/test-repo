@@ -502,7 +502,6 @@ export class File extends React.Component{
                                             <image xlinkHref={"images/folder/types/default_icon.svg"} width="24" height="32"/> :
                                             <image xlinkHref={"images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
                                     }
-
                                 </svg>
                             </div>
                         </div>

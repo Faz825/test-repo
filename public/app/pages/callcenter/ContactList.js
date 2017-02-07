@@ -35,7 +35,7 @@ export default class ContactList extends React.Component {
                 )
             });
         }else{
-            usersList = (<h3>No contacts.</h3>);
+            usersList = (<h3 className="no-data">No contacts.</h3>);
         }
 
         return (
