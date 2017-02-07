@@ -25,7 +25,8 @@ GLOBAL.ConnectedType = {
 
 GLOBAL.ConnectionConfig = {
     CACHE_NAME: "connections:",
-    ES_INDEX_NAME: "idx_connections:"
+    ES_INDEX_NAME: "idx_connections:",
+    ES_GROUP_INDEX_NAME: "idx_group_connections:"
 };
 
 var ConnectionSchema = new Schema({

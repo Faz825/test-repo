@@ -7,13 +7,8 @@
 var mongoose = require('mongoose'),
     uuid = require('node-uuid'),
     slug = require('mongoose-slug-generator'),
-
-    Schema = mongoose.Schema;
-mongoose.plugin(slug);
-
-GLOBAL.GroupConfig = {
-    ES_INDEX_NAME: "idx_group"
-};
+    Schema   = mongoose.Schema;
+    mongoose.plugin(slug);
 
 GLOBAL.GroupSharedRequest = {
     REQUEST_PENDING: 1,
@@ -35,76 +30,80 @@ GLOBAL.GroupPermissions = {
     VIEW_FOLDER: 10,
 };
 
+GLOBAL.GroupConfig = {
+    ES_INDEX: "idx_group"
+};
+
 var SharedMemberSchema = new Schema({
-    name: {
-        type: String,
-        default: null
+    name:{
+        type:String,
+        default:null
     },
-    user_id: {
-        type: Schema.ObjectId,
-        ref: 'User',
-        default: null
+    user_id:{
+        type : Schema.ObjectId,
+        ref : 'User',
+        default : null
     },
-    status: {
-        type: Number,
-        default: null /* 1 - pending | 2 - rejected | 3 - accepted*/
+    status:{
+        type : Number,
+        default : null /* 1 - pending | 2 - rejected | 3 - accepted*/
     },
-    permissions: {
-        type: Number,
-        default: null /* 1 - pending | 2 - rejected | 3 - accepted*/
+    permissions:{
+        type : Number,
+        default : null /* 1 - pending | 2 - rejected | 3 - accepted*/
     },
     join_date: {
-        type: Date
+        type:Date
     },
 });
 
 var GroupsSchema = new Schema({
-    type: {
-        type: Number,
-        default: 1 /* 1 - group | 2 - community*/
+    type:{
+        type : Number,
+        default : 1 /* 1 - group | 2 - community*/
     },
-    name: {
-        type: String,
-        default: null
+    name:{
+        type:String,
+        default:null
     },
-    name_prefix: {
+    name_prefix:{
         type: String,
         slug: "name",
         unique: true
     },
-    description: {
-        type: String,
-        default: null
+    description:{
+        type:String,
+        default:null
     },
-    color: {
-        type: String,
-        trim: true
+    color:{
+        type:String,
+        trim:true
     },
-    group_pic_link: {
-        type: String,
-        trim: true,
-        default: null
+    group_pic_link:{
+        type:String,
+        trim:true,
+        default:null
     },
-    created_by: {
+    created_by:{
         type: Schema.ObjectId,
         ref: 'User',
-        default: null
+        default:null
     },
-    members: [SharedMemberSchema],
-    created_at: {
-        type: Date
+    members:[SharedMemberSchema],
+    created_at:{
+        type:Date
     },
-    updated_at: {
-        type: Date
+    updated_at:{
+        type:Date
     }
 
-}, {collection: "groups"});
+},{collection:"groups"});
 
 
-GroupsSchema.pre('save', function (next) {
+GroupsSchema.pre('save', function(next){
     var now = new Date();
     this.updated_at = now;
-    if (!this.created_at) {
+    if ( !this.created_at ) {
         this.created_at = now;
     }
     next();
@@ -115,7 +114,7 @@ GroupsSchema.pre('save', function (next) {
  * @param groupData
  * @param callBack
  */
-GroupsSchema.statics.createGroup = function (groupData, callBack) {
+GroupsSchema.statics.createGroup = function(groupData,callBack){
     var _group = new this();
     _group.name = groupData.name;
     _group.description = groupData.description;
@@ -145,40 +144,40 @@ GroupsSchema.statics.createGroup = function (groupData, callBack) {
  * @param groupData
  * @param callBack
  */
-GroupsSchema.statics.getGroupMembers = function (criteria, callBack) {
+GroupsSchema.statics.getGroupMembers = function(criteria,callBack){
     var _this = this;
 
 
     /* TODO: We can use this aggrigation approch,
-     when we are using new version (3.2) of MongoDB */
+    when we are using new version (3.2) of MongoDB */
     /*_this.aggregate([
-     {
-     "$match": {
-     "_id": groupId
-     }
-     },
-     {
-     "$filter": {
-     "input": "$members",
-     "as": "member",
-     "cond": { "$eq": ["$$member.status", 3] }
-     }
-     },
-     { "$unwind": "$members" },
-     {
-     "$lookup": {
-     "from" : "SharedMember",
-     "localField" : "members.user_id",
-     "foreignField" : "user_id",
-     "as" : "member"
-     }
-     }
-     ]).exec(function(err, results) {
-     if (err) throw err;
-     });*/
+        {
+            "$match": {
+                "_id": groupId
+            }
+        },
+        {
+            "$filter": {
+                "input": "$members",
+                "as": "member",
+                "cond": { "$eq": ["$$member.status", 3] }
+            }
+        },
+        { "$unwind": "$members" },
+        {
+            "$lookup": {
+                "from" : "SharedMember",
+                "localField" : "members.user_id",
+                "foreignField" : "user_id",
+                "as" : "member"
+            }
+        }
+    ]).exec(function(err, results) {
+        if (err) throw err;
+    });*/
 
-    _this.find(criteria).select('created_by members -_id').exec(function (err, resultSet) {
-        if (!err && typeof(resultSet[0]) != 'undefined') {
+    _this.find(criteria).select('created_by members -_id').exec(function(err,resultSet){
+        if(!err && typeof(resultSet[0]) != 'undefined'){
 
             console.log(resultSet);
             var memberObjs = resultSet[0].members;
@@ -187,23 +186,23 @@ GroupsSchema.statics.getGroupMembers = function (criteria, callBack) {
             for (var i = 0; i < memberObjs.length; i++) {
 
                 var member = memberObjs[i];
-                if (member.status == 3) {
+                if(member.status == 3) {
                     tmpArray.push(member.user_id);
                     tmpObjArray.push(member);
                 }
 
-                if (memberObjs.length == i + 1) {
+                if(memberObjs.length == i + 1) {
                     callBack({
-                        owner: resultSet[0].created_by,
-                        members: tmpArray,
-                        members_count: tmpArray.length,
-                        memberObjs: tmpObjArray
+                        owner : resultSet[0].created_by,
+                        members : tmpArray,
+                        members_count : tmpArray.length,
+                        memberObjs : tmpObjArray
                     });
                 }
             }
-        } else {
+        }else{
             console.log("Server Error --------");
-            callBack({status: 400, error: err});
+            callBack({status:400, error:err});
         }
     })
 };
@@ -211,11 +210,11 @@ GroupsSchema.statics.getGroupMembers = function (criteria, callBack) {
 /**
  * Get Groups By a given criteria
  */
-GroupsSchema.statics.getGroup = function (criteria, callBack) {
+GroupsSchema.statics.getGroup = function(criteria,callBack){
 
     var _this = this;
 
-    _this.find(criteria).sort({created_at: 1}).exec(function (err, resultSet) {
+    _this.find(criteria).sort({created_at:1}).exec(function (err, resultSet) {
         if (!err) {
 
             callBack({status: 200, group: resultSet});
@@ -230,7 +229,7 @@ GroupsSchema.statics.getGroup = function (criteria, callBack) {
 /**
  * Get Group By Id
  */
-GroupsSchema.statics.getGroupById = function (id, callBack) {
+GroupsSchema.statics.getGroupById = function(id,callBack){
 
     var _this = this;
 
@@ -253,11 +252,11 @@ GroupsSchema.statics.getGroupById = function (id, callBack) {
 /**
  * Get Group Data
  */
-GroupsSchema.statics.getGroupData = function (criteria, callBack) {
+GroupsSchema.statics.getGroupData = function(criteria,callBack){
 
     var _this = this;
 
-    _this.find(criteria, {'members.$': 1}).exec(function (err, resultSet) {
+    _this.find(criteria , {'members.$': 1}).exec(function (err, resultSet) {
         if (!err) {
             if (resultSet == null) {
                 callBack(null);
@@ -276,11 +275,11 @@ GroupsSchema.statics.getGroupData = function (criteria, callBack) {
 /**
  * Get Group Filtered Data
  */
-GroupsSchema.statics.getGroupDataFiltered = function (criteria, filter, callBack) {
+GroupsSchema.statics.getGroupDataFiltered = function(criteria,filter,callBack){
 
     var _this = this;
 
-    _this.find(criteria, filter).exec(function (err, resultSet) {
+    _this.find(criteria , filter).exec(function (err, resultSet) {
         if (!err) {
             callBack({status: 200, data: resultSet});
         } else {
@@ -297,9 +296,9 @@ GroupsSchema.statics.getGroupDataFiltered = function (criteria, filter, callBack
  * @param data
  * @param callBack
  */
-GroupsSchema.statics.bindNotificationData = function (notificationObj, callBack) {
+GroupsSchema.statics.bindNotificationData = function(notificationObj, callBack){
 
-    this.getGroupById(notificationObj.group_id, function (groupData) {
+    this.getGroupById(notificationObj.group_id,function(groupData){
 
         notificationObj['group_name'] = groupData.name;
 
@@ -314,20 +313,20 @@ GroupsSchema.statics.bindNotificationData = function (notificationObj, callBack)
  * @param value
  * @param callBack
  */
-GroupsSchema.statics.updateGroups = function (filter, value, callBack) {
+GroupsSchema.statics.updateGroups = function(filter, value, callBack){
 
     var _this = this;
     var options = {multi: true};
 
-    this.update(filter, value, options, function (err, update) {
-        if (err) {
+    this.update(filter, value, options, function(err, update) {
+        if(err){
             console.log(err);
             console.log("Error - An Error occured in group updating.");
-            callBack({status: 400, error: err});
+            callBack({status:400,error:err});
         } else {
             console.log(update);
             console.log("Success - The group updating is success.");
-            callBack({status: 200, group: update});
+            callBack({status:200, group:update});
         }
     });
 };
@@ -338,60 +337,111 @@ GroupsSchema.statics.updateGroups = function (filter, value, callBack) {
  * @param userId
  * @param callBack
  */
-GroupsSchema.statics.addConnections = function (groupData, userId, callBack) {
+GroupsSchema.statics.addConnections = function(groupData, userId, callBack){
 
     var Connection = require('mongoose').model('Connection');
     var connectionData = new Connection();
+    var _async = require('async');
     connectionData.connected_with = groupData._id;
     connectionData.connected_with_type = ConnectedType.GROUP_CONNECTION;
     connectionData.action_user_id = userId;
     connectionData.status = ConnectionStatus.REQUEST_ACCEPTED;
 
-    var connections = [];
-    groupData.members.forEach(function (member) {
-
-        // create connection in DB
-        connectionData.user_id = member.user_id;
-        Connection.createConnection(connectionData, function (connectionResult) {
-            console.log("CREATE CONNECTION");
-            connections.push(connectionResult.connection);
-        });
-
-        // get member object from ES
-        var query = {
-            q: "user_id:" + member.user_id,
-            index: 'idx_usr'
-        };
-        ES.search(query, function (esResultSet) {
-            var _group_key = ConnectionConfig.ES_INDEX_NAME + groupData._id;
-            var groupPayLoad = {
-                index: _group_key,
-                id: member.user_id.toString(),
-                type: 'connections',
-                data: esResultSet.result[0],
-                tag_fields: ['content']
+    _async.waterfall([
+        function createIndex(callBack) {
+            // creates the group index
+            var groupKey = GroupConfig.ES_INDEX;
+            var groupPayLoad={
+                index:groupKey,
+                id:groupData._id.toString(),
+                type: 'group',
+                data: groupData
             };
 
             // create ES index with group id
-            ES.createIndex(groupPayLoad, function (resultSet) {
-                console.log("GROUP INDEX IS CREATED " + _group_key);
+            ES.createIndex(groupPayLoad, function(resultSet){
+                console.log("ES INDEX IS CREATED FOR : " + GroupConfig.ES_INDEX);
+                callBack(null, groupData);
             });
-        });
+        },
+        function createGroupIndex(groupData, callBack) {
+            // creates the group index
+            var groupKey = ConnectionConfig.ES_INDEX_NAME+groupData._id;
+            var groupPayLoad={
+                index:groupKey,
+                id:userId.toString(),
+                type: 'connections',
+                data:{
+                    members_list : groupData.members
+                },
+            };
 
-        var _user_key = ConnectionConfig.ES_INDEX_NAME + member.user_id;
-        var userPayLoad = {
-            index: _user_key,
-            document_id: groupData._id.toString(),
-            type: 'connections',
-            data: groupData,
-            tag_fields: ['content']
-        };
-        // create ES index with user id
-        ES.createIndex(userPayLoad, function (resultSet) {
-            console.log("USER INDEX CREATED " + _user_key);
-        });
+            // create ES index with group id
+            ES.createIndex(groupPayLoad, function(resultSet){
+                console.log("ES INDEX IS CREATED FOR : " +ConnectionConfig.ES_INDEX_NAME+groupData._id);
+                callBack(null, groupData);
+            });
+        },
+        function createUserIndexes(groupData, callBack) {
+
+            groupData.members.forEach(function(member) {
+
+                // create connection in DB
+                connectionData.user_id = member.user_id;
+                Connection.createConnection(connectionData, function(connectionResult) {
+                    console.log("CREATE DB CONNECTION FOR "+ member.user_id.toString());
+                });
+
+                var query = {
+                    index : ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id,
+                    type: 'connections',
+                    id: member.user_id.toString()
+                };
+
+                ES.search(query,function(isExists){
+                    if(isExists == null) {
+                        var groupsArr = [];
+                        groupsArr.push(groupData);
+                        var userKey = ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id
+                        var groupPayLoad={
+                            index:userKey,
+                            id:member.user_id.toString(),
+                            type: 'connections',
+                            data:{
+                                group_list : groupsArr
+                            },
+                        };
+                        ES.createIndex(groupPayLoad, function(resultSet){
+                            console.log("ES INDEX IS CREATED FOR : " + ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id);
+                        });
+                    }else{
+                        var oldGroupList = isExists.result[0].group_list;
+                        oldGroupList.push(groupData);
+                        var userKey = ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id
+                        var groupPayLoad={
+                            index:userKey,
+                            id:member.user_id.toString(),
+                            type: 'connections',
+                            data:{
+                                group_list : oldGroupList
+                            },
+                        };
+                        ES.update(groupPayLoad, function(resultSet){
+                            console.log("ES INDEX IS UPDATED FOR : " + ConnectionConfig.ES_GROUP_INDEX_NAME+member.user_id);
+                        });
+                    }
+                    callBack(null, groupData);
+                });
+            });
+        }
+    ], function (err, groupData) {
+        if(err) {
+            console.log(err);
+            callBack({status:400, error:err});
+        } else {
+            callBack({status:200, value:null});
+        }
     });
-    callBack({status: 200, value: null});
 };
 
-mongoose.model('Groups', GroupsSchema);
+mongoose.model('Groups',GroupsSchema);

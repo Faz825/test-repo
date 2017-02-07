@@ -374,7 +374,7 @@ export class CreateStepTwo extends React.Component{
                                         <label for="grpname">Group name</label>
                                         <input type="text" className="form-control" id="grpname" onChange={this.setName}/>
                                     </div>
-                                    <div className="form-group invite-people">
+                                    <div className="form-group invite-people clearfix">
                                         <label>Members</label>
                                         <SearchMembersField
                                             handleSearchUser={this.handleSearchUser}
