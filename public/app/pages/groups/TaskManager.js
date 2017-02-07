@@ -19,7 +19,7 @@ export default class TaskManager extends React.Component{
         var group = this.props.myGroup;
         this.state = {
             user : user,
-            currentGroup : group 
+            currentGroup : group
         };
     }
 
@@ -32,63 +32,7 @@ export default class TaskManager extends React.Component{
                     <div className="section-header">
                         <h3 className="section-title">New tasks (3)</h3>
                     </div>
-                    <div className="new-task-wrapper clearfix">
-                        <div className="task-info col-sm-7">
-                            <div className="pro-pic pull-left">
-                                <img src="/images/user-pro-pic.png" className="img-responsive img-circle" />
-                            </div>
-                            <div className="task-assigned pull-left clearfix">
-                                <p className="task-owner pull-left">Soham Khaitan</p>
-                                <span className="assign-txt pull-left">Assigned:</span>
-                                <p className="task pull-left"> Get all the chapters of the assignment submitted before the final test</p>
-                            </div>
-                        </div>
-                        <div className="task-time col-sm-2">
-                            <p className="time">Wednesday, 10am</p>
-                        </div>
-                        <div className="task-action col-sm-3">
-                            <button className="btn btn-decline">Decline</button>
-                            <button className="btn btn-accept">Accept</button>
-                        </div>
-                    </div>
-                    <div className="new-task-wrapper clearfix">
-                        <div className="task-info col-sm-7">
-                            <div className="pro-pic pull-left">
-                                <img src="/images/user-pro-pic.png" className="img-responsive img-circle" />
-                            </div>
-                            <div className="task-assigned pull-left clearfix">
-                                <p className="task-owner pull-left">Saad El Yamani</p>
-                                <span className="assign-txt pull-left">Assigned:</span>
-                                <p className="task pull-left"> Research for Competitors</p>
-                            </div>
-                        </div>
-                        <div className="task-time col-sm-2">
-                            <p className="time">Wednesday, 10am</p>
-                        </div>
-                        <div className="task-action col-sm-3">
-                            <button className="btn btn-decline">Decline</button>
-                            <button className="btn btn-accept">Accept</button>
-                        </div>
-                    </div>
-                    <div className="new-task-wrapper clearfix">
-                        <div className="task-info col-sm-7">
-                            <div className="pro-pic pull-left">
-                                <img src="/images/user-pro-pic.png" className="img-responsive img-circle" />
-                            </div>
-                            <div className="task-assigned pull-left clearfix">
-                                <p className="task-owner pull-left">Soham Khaitan</p>
-                                <span className="assign-txt pull-left">Assigned:</span>
-                                <p className="task pull-left">Specs for Calendar</p>
-                            </div>
-                        </div>
-                        <div className="task-time col-sm-2">
-                            <p className="time">Friday, 8pm</p>
-                        </div>
-                        <div className="task-action col-sm-3">
-                            <button className="btn btn-decline">Decline</button>
-                            <button className="btn btn-accept">Accept</button>
-                        </div>
-                    </div>
+                    <NewTask />
                 </section>
                 <section className="priority-task-holder">
                     <div className="section-header clearfix">
@@ -100,45 +44,74 @@ export default class TaskManager extends React.Component{
                         </div>
                     </div>
                     <div className="priority-task-list">
-                        <div className="task-wrapper clearfix">
-                            <div className="task-info ticked pull-left">
-                                <p className="task-title">Call with mike on marketing startegy</p>
-                                <p className="task-members clearfix">People on this task:
-                                    <span className="mem-name">Saad El Yamani,</span>
-                                    <span className="mem-name">Soham Khaitan</span>
-                                </p>
-                            </div>
-                            <div className="task-time pull-right">
-                                <p className="time">Wednesday, 10am</p>
-                            </div>
-                        </div>
-                        <div className="task-wrapper clearfix">
-                            <div className="task-info pull-left">
-                                <p className="task-title">Call with mike on marketing startegy</p>
-                                <p className="task-members clearfix">People on this task:
-                                    <span className="mem-name">Saad El Yamani,</span>
-                                    <span className="mem-name">Soham Khaitan</span>
-                                </p>
-                            </div>
-                            <div className="task-time pull-right">
-                                <p className="time">Wednesday, 10am</p>
-                            </div>
-                        </div>
-                        <div className="task-wrapper clearfix">
-                            <div className="task-info pull-left">
-                                <p className="task-title">Call with mike on marketing startegy</p>
-                                <p className="task-members clearfix">People on this task:
-                                    <span className="mem-name">Saad El Yamani,</span>
-                                    <span className="mem-name">Soham Khaitan</span>
-                                </p>
-                            </div>
-                            <div className="task-time pull-right">
-                                <p className="time">Wednesday, 10am</p>
-                            </div>
-                        </div>
+                        <ExistingTask />
                     </div>
                 </section>
             </section>
+        );
+    }
+}
+
+/**
+ * New task element
+ */
+export class NewTask extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    render() {
+        return (
+            <div className="new-task-wrapper clearfix">
+                <div className="task-info col-sm-7">
+                    <div className="pro-pic pull-left">
+                        <img src="/images/user-pro-pic.png" className="img-responsive img-circle" />
+                    </div>
+                    <div className="task-assigned pull-left clearfix">
+                        <p className="task-owner pull-left">Soham Khaitan</p>
+                        <span className="assign-txt pull-left">Assigned:</span>
+                        <p className="task pull-left"> Get all the chapters of the assignment submitted before the final test</p>
+                    </div>
+                </div>
+                <div className="task-time col-sm-2">
+                    <p className="time">Wednesday, 10am</p>
+                </div>
+                <div className="task-action col-sm-3">
+                    <button className="btn btn-decline">Decline</button>
+                    <button className="btn btn-accept">Accept</button>
+                </div>
+            </div>
+        );
+    }
+}
+
+
+/**
+ * Existing task element
+ */
+export class ExistingTask extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    render() {
+        return (
+            <div className="task-wrapper clearfix">
+                <div className="task-info ticked pull-left">
+                    <p className="task-title">Call with mike on marketing startegy</p>
+                    <p className="task-members clearfix">People on this task:
+                        <span className="mem-name">Saad El Yamani,</span>
+                        <span className="mem-name">Soham Khaitan</span>
+                    </p>
+                </div>
+                <div className="task-time pull-right">
+                    <p className="time">Wednesday, 10am</p>
+                </div>
+            </div>
         );
     }
 }
