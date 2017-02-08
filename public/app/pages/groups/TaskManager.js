@@ -19,13 +19,63 @@ export default class TaskManager extends React.Component{
         var group = this.props.myGroup;
         this.state = {
             user : user,
-            currentGroup : group
+            currentGroup : group,
+            defaultPriorityTab : 1, // Priority 1 | Priority 2 | Priority 3
         };
+
+        this.changePriorityTab = this.changePriorityTab.bind(this);
+        this.loadNewTasks = this.loadNewTasks.bind(this);
+    }
+
+    componentWillMount() {
+        this.loadNewTasks();
+    }
+
+    loadNewTasks() {
+        // var data = {
+        //     day : this.currentDate,
+        //     calendar_origin : this.calendarOrigin,
+        //     group_id : this.state.currentGroup._id
+        // };
+        //
+        // $.ajax({
+        //     url : '/calendar/day/all',
+        //     method : "POST",
+        //     data : data,
+        //     dataType : "JSON",
+        //     headers : { "prg-auth-header" : this.state.user.token },
+        //     success : function (data, text) {
+        //         if (data.status.code == 200) {
+        //             console.log(data);
+        //             this.setState({events: data.events});
+        //         }
+        //     }.bind(this),
+        //     error: function (request, status, error) {
+        //         console.log(error);
+        //     }
+        // });
     }
 
     componentWillReceiveProps(nextProps) {}
 
+    changePriorityTab(priority) {
+        console.log("Change priority tab is clicked :: " + priority);
+        this.setState({defaultPriorityTab : priority});
+    }
+
     render() {
+        var priorityList = '';
+        switch (this.state.defaultPriorityTab) {
+            case 3:
+                priorityList = <ExistingTaskList priority="3" />
+                break;
+            case 2:
+                priorityList = <ExistingTaskList priority="2" />
+                break;
+            default:
+                priorityList = <ExistingTaskList priority="1" />
+        }
+
         return (
             <section className="group-tasks-content group-content">
                 <section className="new-task-holder">
@@ -38,14 +88,24 @@ export default class TaskManager extends React.Component{
                     <div className="section-header clearfix">
                         <h3 className="section-title pull-left">Existing task priorites</h3>
                         <div className="tab-holder">
-                            <p className="tab priority-01">Priority 1</p>
-                            <p className="tab priority-02">Priority 2</p>
-                            <p className="tab priority-03 active">Priority 3</p>
+                            <p
+                                className={this.state.defaultPriorityTab == 1 ? "active tab priority-01" : "tab priority-01"}
+                                onClick={() => this.changePriorityTab(1)}>
+                                Priority 1
+                            </p>
+                            <p
+                                className={this.state.defaultPriorityTab == 2 ? "active tab priority-02" : "tab priority-02"}
+                                onClick={() => this.changePriorityTab(2)}>
+                                Priority 2
+                            </p>
+                            <p
+                                className={this.state.defaultPriorityTab == 3 ? "active tab priority-03" : "tab priority-03"}
+                                onClick={() => this.changePriorityTab(3)}>
+                                Priority 3
+                            </p>
                         </div>
                     </div>
-                    <div className="priority-task-list">
-                        <ExistingTask />
-                    </div>
+                    {priorityList}
                 </section>
             </section>
         );
@@ -111,6 +171,62 @@ export class ExistingTask extends React.Component{
                 <div className="task-time pull-right">
                     <p className="time">Wednesday, 10am</p>
                 </div>
+            </div>
+        );
+    }
+}
+
+/**
+ * Existing task list element
+ */
+export class ExistingTaskList extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            tasks : []
+        };
+
+        this.loadEvents = this.loadEvents.bind(this);
+    }
+
+    componentWillMount() {
+        this.loadEvents();
+    }
+
+    loadEvents() {
+        // var data = {
+        //     day : this.currentDate,
+        //     calendar_origin : this.calendarOrigin,
+        //     group_id : this.state.currentGroup._id
+        // };
+        //
+        // $.ajax({
+        //     url : '/calendar/day/all',
+        //     method : "POST",
+        //     data : data,
+        //     dataType : "JSON",
+        //     headers : { "prg-auth-header" : this.state.user.token },
+        //     success : function (data, text) {
+        //         if (data.status.code == 200) {
+        //             console.log(data);
+        //             this.setState({events: data.events});
+        //         }
+        //     }.bind(this),
+        //     error: function (request, status, error) {
+        //         console.log(error);
+        //     }
+        // });
+    }
+
+    render() {
+        return (
+            <div className="priority-task-list">
+                {this.state.tasks.length > 0 ?
+                    <ExistingTask />
+                :
+                    <p>There are no tasks under priority {this.props.priority}</p>
+                }
             </div>
         );
     }

@@ -129,6 +129,16 @@ body{
   margin: 0;
 }
 
+.calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .person:hover,
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .person:hover {
+    color: #ffffff;
+    background-color: #00a6ef;
+}
+
+.calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .close-btn {
+    cursor: pointer;
+}
+
 /* - ReactAutoSuggest Custom Styles*/
 .search-holder .react-autosuggest__suggestions-container{
 	z-index: 1;

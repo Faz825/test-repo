@@ -149,8 +149,7 @@ var CalendarController = {
                     calendar_origin : req.body.calendar_origin,
                     group_id : req.body.group_id
                 };
-                console.log(eventData);
-                console.log("EVENT DATA");
+                
                 CalendarEvent.addNew(eventData, function (event) {
 
                     var sharedUsers = event.event.shared_users;

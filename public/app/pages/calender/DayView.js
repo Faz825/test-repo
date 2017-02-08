@@ -556,7 +556,7 @@ export default class DayView extends Component {
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
                 // return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
-                return <span key={key} className="person selected">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
+                return <span key={key} className="person">{name}<i className="fa fa-times close-btn" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
             });
         // } else {
         //     // shared_with_list = <span className="user-label">Only me</span>

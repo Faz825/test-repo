@@ -64,7 +64,7 @@ var CalendarEventSchema = new Schema({
 
     status : {
         type : Number,
-        default : 1 /* 1 - pending | 2 - completed | 3 - expired, 4 - cancelled */
+        default : 1 /* 0 - new | 1 - pending | 2 - completed | 3 - expired, 4 - cancelled */
     },
 
     priority : {
