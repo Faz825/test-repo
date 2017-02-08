@@ -11606,9 +11606,8 @@ header .notification-holder .profile-header-thumb {
     padding: 2px 0px;
     margin: 0;
     color: #ffffff;
-    font-family: "Work Sans";
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 500;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .view-header .day-wrapper {
     margin-left: 16px;
@@ -11647,7 +11646,7 @@ header .notification-holder .profile-header-thumb {
     letter-spacing: 1px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .input {
-    margin: 30px 31px 15px;
+    margin: 30px 30px 15px;
     overflow: hidden;
     font-size: 0.875em;
     font-weight: 500;
@@ -11682,7 +11681,7 @@ header .notification-holder .profile-header-thumb {
     margin-bottom: 0px;
     float: left;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     outline: none;
     letter-spacing: 1px;
     color: rgba(136, 136, 136, 0.57);
@@ -11716,7 +11715,7 @@ header .notification-holder .profile-header-thumb {
     border: none;
     outline: none;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: 1px;
     color: rgba(136, 136, 136, 0.57);
 }
@@ -11754,7 +11753,7 @@ header .notification-holder .profile-header-thumb {
     margin-bottom: 0px;
     float: left;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     outline: none;
     letter-spacing: 1px;
     color: rgba(136, 136, 136, 0.57);
@@ -11766,7 +11765,7 @@ header .notification-holder .profile-header-thumb {
     border: none;
     outline: none;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: 1px;
     color: #000000;
     max-width: 62px;
@@ -12222,7 +12221,6 @@ header .notification-holder .profile-header-thumb {
     margin: 3px 0 0;
     font-weight: 500;
     font-size: 1em;
-    text-shadow: rgba(6, 6, 6, 0.33) -1px 2px 2px;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header .date {
     position: absolute;
@@ -12248,6 +12246,9 @@ header .notification-holder .profile-header-thumb {
     clear: both;
     display: table;
     content: " ";
+}
+.calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body.weekend {
+    background-color: #f5f5f5;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper {
     overflow: hidden;
@@ -12414,6 +12415,9 @@ header .notification-holder .profile-header-thumb {
     padding: 0;
 }
 
+.calender-year-view .remove-padding {
+    padding: 0px;
+}
 .calender-year-view .view-header {
     overflow: hidden;
     margin-bottom: 12px;
@@ -12445,7 +12449,6 @@ header .notification-holder .profile-header-thumb {
     margin-bottom: 0;
 }
 .calender-year-view .view-header .calender-date p {
-    margin: 0 17px 0 0;
     float: right;
     text-transform: capitalize;
     font-size: 1.625em;
@@ -15294,9 +15297,8 @@ header .notification-holder .profile-header-thumb {
     padding: 2px 0px;
     margin: 0;
     color: #ffffff;
-    font-family: "Work Sans";
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 500;
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .view-header .day-wrapper {
     margin-left: 16px;
@@ -15335,7 +15337,7 @@ header .notification-holder .profile-header-thumb {
     letter-spacing: 1px;
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .input {
-    margin: 30px 31px 15px;
+    margin: 30px 30px 15px;
     overflow: hidden;
     font-size: 0.875em;
     font-weight: 500;
@@ -15370,7 +15372,7 @@ header .notification-holder .profile-header-thumb {
     margin-bottom: 0px;
     float: left;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     outline: none;
     letter-spacing: 1px;
     color: rgba(136, 136, 136, 0.57);
@@ -15404,7 +15406,7 @@ header .notification-holder .profile-header-thumb {
     border: none;
     outline: none;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: 1px;
     color: rgba(136, 136, 136, 0.57);
 }
@@ -15442,7 +15444,7 @@ header .notification-holder .profile-header-thumb {
     margin-bottom: 0px;
     float: left;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     outline: none;
     letter-spacing: 1px;
     color: rgba(136, 136, 136, 0.57);
@@ -15454,7 +15456,7 @@ header .notification-holder .profile-header-thumb {
     border: none;
     outline: none;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: 1px;
     color: #000000;
     max-width: 62px;
@@ -15828,7 +15830,7 @@ header .notification-holder .profile-header-thumb {
     background: #f11379 !important;
 }
 .group-container .group-calendar-container .task-list-area .task-list-area-content {
-    padding: 40px 70px 60px;
+    padding: 20px 30px 0;
     background-color: #ffffff;
 }
 .group-container .group-calendar-container .task-list-area .task-list-area-content .task-list-area-content-title img {
@@ -16500,6 +16502,9 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-calendar-container .calender-header .search-folder .inner-addon input::-webkit-input-placeholder {
     color: #bebfbf;
 }
+.group-container .group-calendar-container .calender-year-view .remove-padding {
+    padding: 0px;
+}
 .group-container .group-calendar-container .calender-year-view .view-header {
     overflow: hidden;
     margin-bottom: 12px;
@@ -16531,7 +16536,6 @@ header .notification-holder .profile-header-thumb {
     margin-bottom: 0;
 }
 .group-container .group-calendar-container .calender-year-view .view-header .calender-date p {
-    margin: 0 17px 0 0;
     float: right;
     text-transform: capitalize;
     font-size: 1.625em;
@@ -19071,7 +19075,7 @@ header .notification-holder .profile-header-thumb {
     margin-bottom: 0px;
     float: left;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     outline: none;
     letter-spacing: 1px;
     color: rgba(136, 136, 136, 0.57);
@@ -19105,25 +19109,25 @@ header .notification-holder .profile-header-thumb {
     border: none;
     outline: none;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: 1px;
     color: rgba(136, 136, 136, 0.57);
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input:-moz-placeholder {
     color: rgba(136, 136, 136, 0.57);
-    font-weight: 500;
+    font-weight: 400;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input::-moz-placeholder {
     color: rgba(136, 136, 136, 0.57);
-    font-weight: 500;
+    font-weight: 400;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input:-ms-input-placeholder {
     color: rgba(136, 136, 136, 0.57);
-    font-weight: 500;
+    font-weight: 400;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input::-webkit-input-placeholder {
     color: rgba(136, 136, 136, 0.57);
-    font-weight: 500;
+    font-weight: 400;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper {
     float: right;
@@ -19143,7 +19147,7 @@ header .notification-holder .profile-header-thumb {
     margin-bottom: 0px;
     float: left;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     outline: none;
     letter-spacing: 1px;
     color: rgba(136, 136, 136, 0.57);
@@ -19155,26 +19159,26 @@ header .notification-holder .profile-header-thumb {
     border: none;
     outline: none;
     font-size: 0.875em;
-    font-weight: 500;
+    font-weight: 400;
     letter-spacing: 1px;
     color: #000000;
     max-width: 62px;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper .time-input:-moz-placeholder {
     color: rgba(136, 136, 136, 0.57);
-    font-weight: 500;
+    font-weight: 400;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper .time-input::-moz-placeholder {
     color: rgba(136, 136, 136, 0.57);
-    font-weight: 500;
+    font-weight: 400;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper .time-input:-ms-input-placeholder {
     color: rgba(136, 136, 136, 0.57);
-    font-weight: 500;
+    font-weight: 400;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper .time-input::-webkit-input-placeholder {
     color: rgba(136, 136, 136, 0.57);
-    font-weight: 500;
+    font-weight: 400;
 }
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .input {
     width: 100%;
@@ -19224,7 +19228,7 @@ header .notification-holder .profile-header-thumb {
     overflow: hidden;
     color: #bcbfbf;
     margin-top: 17px;
-    margin-left: 30px;
+    margin-left: 28px;
     margin-bottom: 17px;
 }
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li {
