@@ -11810,7 +11810,7 @@ header .notification-holder .profile-header-thumb {
     overflow: hidden;
     color: #bcbfbf;
     margin-top: 5px;
-    margin-left: 30px;
+    margin-left: 28px;
     margin-bottom: 4px;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li {
@@ -12156,7 +12156,7 @@ header .notification-holder .profile-header-thumb {
     margin-bottom: 0;
 }
 .calender-week-view .view-header .calender-date p {
-    margin: 0 17px 0 0;
+    margin: 0 0 0 0;
     float: right;
     text-transform: capitalize;
     font-size: 1.625em;
@@ -12374,7 +12374,8 @@ header .notification-holder .profile-header-thumb {
     border-left: 1px solid #bcbfbf;
     border-right: 1px solid #bcbfbf;
     text-align: center;
-    padding: 4px 26px;
+    padding: 4px;
+    width: 111px;
     text-transform: lowercase;
 }
 .calender-month-view .view-header .date-wrapper .date p {
@@ -12440,7 +12441,8 @@ header .notification-holder .profile-header-thumb {
     border-left: 1px solid #bcbfbf;
     border-right: 1px solid #bcbfbf;
     text-align: center;
-    padding: 4px 26px;
+    padding: 4px;
+    width: 111px;
 }
 .calender-year-view .view-header .date-wrapper .date p {
     font-size: 1em;
@@ -12449,6 +12451,7 @@ header .notification-holder .profile-header-thumb {
     margin-bottom: 0;
 }
 .calender-year-view .view-header .calender-date p {
+    margin: 0 0 0 0;
     float: right;
     text-transform: capitalize;
     font-size: 1.625em;
@@ -15501,7 +15504,7 @@ header .notification-holder .profile-header-thumb {
     overflow: hidden;
     color: #bcbfbf;
     margin-top: 5px;
-    margin-left: 30px;
+    margin-left: 28px;
     margin-bottom: 4px;
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li {
@@ -16527,7 +16530,8 @@ header .notification-holder .profile-header-thumb {
     border-left: 1px solid #bcbfbf;
     border-right: 1px solid #bcbfbf;
     text-align: center;
-    padding: 4px 26px;
+    padding: 4px;
+    width: 111px;
 }
 .group-container .group-calendar-container .calender-year-view .view-header .date-wrapper .date p {
     font-size: 1em;
@@ -16536,6 +16540,7 @@ header .notification-holder .profile-header-thumb {
     margin-bottom: 0;
 }
 .group-container .group-calendar-container .calender-year-view .view-header .calender-date p {
+    margin: 0 0 0 0;
     float: right;
     text-transform: capitalize;
     font-size: 1.625em;
@@ -17406,7 +17411,8 @@ header .notification-holder .profile-header-thumb {
     border-left: 1px solid #bcbfbf;
     border-right: 1px solid #bcbfbf;
     text-align: center;
-    padding: 4px 26px;
+    padding: 4px;
+    width: 111px;
     text-transform: lowercase;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper .date p {
@@ -18079,7 +18085,8 @@ header .notification-holder .profile-header-thumb {
     border-left: 1px solid #bcbfbf;
     border-right: 1px solid #bcbfbf;
     text-align: center;
-    padding: 4px 26px;
+    padding: 4px;
+    width: 111px;
     text-transform: lowercase;
 }
 .group-container .group-calendar-container .calender-month-view .view-header .date-wrapper .date p {
