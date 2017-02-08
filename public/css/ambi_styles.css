@@ -16836,10 +16836,6 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-calendar-container .calender-year-view .view-header .date-wrapper .date {
     min-width: 82px;
 }
-.group-container .group-calendar-container .calender-year-view .view-header .date-wrapper .date p {
-    padding: 8px 0px;
-    font-size: 0.575625em;
-}
 .group-container .group-calendar-container .calender-year-view .view-header .date-wrapper .date-nav i {
     padding: 5px 10px;
     font-size: 0.575625em;
@@ -18127,10 +18123,6 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-week-view .view-header .date-wrapper .date {
     min-width: 82px;
-}
-.group-container .group-calendar-container .calender-week-view .view-header .date-wrapper .date p {
-    padding: 8px 0px;
-    font-size: 0.575625em;
 }
 .group-container .group-calendar-container .calender-week-view .view-header .date-wrapper .date-nav i {
     padding: 5px 10px;
