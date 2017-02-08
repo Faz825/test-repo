@@ -16833,10 +16833,6 @@ header .notification-holder .profile-header-thumb {
 .group-container .group-calendar-container .calender-year-view .view-header {
     border-radius: 8px 8px 0px 0px;
 }
-.group-container .group-calendar-container .calender-year-view .view-header .calender-date p {
-    margin-top: 0px;
-    font-size: 1.006875em;
-}
 .group-container .group-calendar-container .calender-year-view .view-header .date-wrapper .date {
     min-width: 82px;
 }
@@ -18128,10 +18124,6 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-week-view .view-header {
     border-radius: 8px 8px 0px 0px;
-}
-.group-container .group-calendar-container .calender-week-view .view-header .calender-date p {
-    margin-top: 0px;
-    font-size: 1.006875em;
 }
 .group-container .group-calendar-container .calender-week-view .view-header .date-wrapper .date {
     min-width: 82px;
