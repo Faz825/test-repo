@@ -859,12 +859,12 @@ export default class DayView extends Component {
                                 <div className="col-sm-12">
                                     <div className={_class + "-list-area-content"}>
                                         <div className={_class + "-list-area-content-title"}>
+                                            <img src="/images/calender/icon-to-do.png" />
                                             {(this.props.calendarOrigin == 2) ?
-                                                <span><img src="/images/calender/icon-to-do.png" />  <span>Tasks</span> </span>
+                                                <span>Tasks</span>
                                             :
-                                                <span><img src="/images/calender/icon-to-do.png" /><span>To-Do	&rsquo;s</span></span>
+                                                <span>To-Do&rsquo;s</span>
                                             }
-
                                         </div>
                                         <div className={_class+ "-list-area-content-title-hr"}></div>
                                         {(this.props.calendarOrigin == 2) ?
