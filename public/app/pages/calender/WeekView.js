@@ -156,7 +156,7 @@ export default class WeekView extends React.Component {
                                         <i className="fa fa-angle-left" aria-hidden="true" onClick={() => this.prevWeek()}></i>
                                     </div>
                                     <div className="date">
-                                        <p>{this.state.currentWeek} {this.state.currentWeek == 1 ? 'st' : this.state.currentWeek == 2 ? 'nd' : this.state.currentWeek == 3 ? 'rd' : 'th'} week</p>
+                                        <p> week {this.state.currentWeek} </p>
                                     </div>
                                     <div className="date-nav">
                                         <i className="fa fa-angle-right" aria-hidden="true" onClick={() => this.nextWeek()}></i>
@@ -164,7 +164,7 @@ export default class WeekView extends React.Component {
                                 </div>
                             </div>
                             <div className="col-sm-6 calender-date  remove-padding">
-                                <p>{moment().format('dddd, MMM D, YYYY')}</p>
+                                <p>{moment().format('MMM D, YYYY')}</p>
                             </div>
                         </div>
 
@@ -239,6 +239,11 @@ export class LoadDayList extends React.Component {
         this.setState({showDailyPopUp: true, cardSelected: true});
     }
 
+    isWeekEnd() {
+        let currDt = moment(this.props.current_date).format('dddd');
+        return (currDt == 'Sunday' || currDt == 'Saturday') ? true : false;
+    }
+
 
     render() {
         let currDt = moment(this.props.current_date);
@@ -246,10 +251,10 @@ export class LoadDayList extends React.Component {
         return(
             <div className={isCurrentToday ? "day-tile selected" : "day-tile"} onDoubleClick={() => this.handleClick()}>
                 <div className="day-tile-header selected">
-                    <h3 className="date">{currDt.format('DD')}</h3>
+                    <h3 className="date">{Number(currDt.format('DD'))}</h3>
                     <h3 className="day">{currDt.format('dddd')}</h3>
                 </div>
-                <div className="day-tile-body">
+                <div className= {this.isWeekEnd() ? "day-tile-body weekend" : "day-tile-body"}>
                     {<DailyEvents daily_events={this.getEventsForTheDay()} isGroupCall={this.props.isGroupCall}/>}
                 </div>
                 {this.state.showDailyPopUp ?
