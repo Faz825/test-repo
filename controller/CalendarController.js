@@ -518,6 +518,18 @@ var CalendarController = {
             criteria['user_id'] = user_id;
         }
 
+        if(req.query.events_type) {
+            criteria['type'] = req.query.events_type;
+        }
+
+        if(req.query.priority) {
+            criteria['priority'] = req.query.priority;
+        }
+
+        if(req.query.status) {
+            criteria['status'] = req.query.status;
+        }
+
         _async.waterfall([
             function getEventsFromDB(callBack) {
                 CalendarEvent.getSortedCalenderItems(criteria, function (err, resultSet) {

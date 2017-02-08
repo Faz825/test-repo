@@ -20,9 +20,12 @@ export default class TaskManager extends React.Component{
         this.state = {
             user : user,
             currentGroup : group,
-            defaultPriorityTab : 1, // Priority 1 | Priority 2 | Priority 3
+            defaultPriorityTab : 1, // Priority 1 | Priority 2 | Priority 3,
+            newTasks : [],
         };
 
+        this.month = moment().startOf("day");
+        this.calendarOrigin = 2; // PERSONAL_CALENDAR || GROUP_CALENDAR
         this.changePriorityTab = this.changePriorityTab.bind(this);
         this.loadNewTasks = this.loadNewTasks.bind(this);
     }
@@ -32,34 +35,41 @@ export default class TaskManager extends React.Component{
     }
 
     loadNewTasks() {
-        // var data = {
-        //     day : this.currentDate,
-        //     calendar_origin : this.calendarOrigin,
-        //     group_id : this.state.currentGroup._id
-        // };
-        //
-        // $.ajax({
-        //     url : '/calendar/day/all',
-        //     method : "POST",
-        //     data : data,
-        //     dataType : "JSON",
-        //     headers : { "prg-auth-header" : this.state.user.token },
-        //     success : function (data, text) {
-        //         if (data.status.code == 200) {
-        //             console.log(data);
-        //             this.setState({events: data.events});
-        //         }
-        //     }.bind(this),
-        //     error: function (request, status, error) {
-        //         console.log(error);
-        //     }
-        // });
+
+        let _month = this.month.format("MM");
+        let _year = this.month.format("YYYY");
+        let postData = {
+            month : _month,
+            year : _year,
+            events_type : 3, // 1 - event | 2 - todo | 3 - task
+            group_id : this.state.currentGroup._id,
+            calendar_origin : this.calendarOrigin,
+            status : 1 // 1 - pending | 2 - completed | 3 - expired | 4 - cancelled | 5 - accepted
+        };
+
+        $.ajax({
+            url : '/calendar/month/all',
+            method : "GET",
+            data : postData,
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
+                if (data.status.code == 200) {
+                    console.log(data);
+                    this.setState({newTasks: data.events});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
+
+
     }
 
     componentWillReceiveProps(nextProps) {}
 
     changePriorityTab(priority) {
-        console.log("Change priority tab is clicked :: " + priority);
         this.setState({defaultPriorityTab : priority});
     }
 
@@ -82,7 +92,13 @@ export default class TaskManager extends React.Component{
                     <div className="section-header">
                         <h3 className="section-title">New tasks (3)</h3>
                     </div>
-                    <NewTask />
+                    { this.state.newTasks.length > 0 ?
+                        this.state.newTasks.map(function(event,key){
+                            return <NewTask key={key} task={event} />
+                        })
+                    :
+                        <div className="new-task-wrapper clearfix"><p>There are no new tasks assigned to you</p></div>
+                    }
                 </section>
                 <section className="priority-task-holder">
                     <div className="section-header clearfix">
@@ -119,7 +135,20 @@ export class NewTask extends React.Component{
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            task : this.props.task
+        };
+
+        this.acceptTask = this.acceptTask.bind(this);
+        this.declineTask = this.declineTask.bind(this);
+    }
+
+    declineTask() {
+        console.log(" Decline a taks");
+    }
+
+    acceptTask() {
+        console.log(" Accept a taks");
     }
 
     render() {
@@ -132,15 +161,15 @@ export class NewTask extends React.Component{
                     <div className="task-assigned pull-left clearfix">
                         <p className="task-owner pull-left">Soham Khaitan</p>
                         <span className="assign-txt pull-left">Assigned:</span>
-                        <p className="task pull-left"> Get all the chapters of the assignment submitted before the final test</p>
+                        <p className="task pull-left">{this.state.task.plain_text}</p>
                     </div>
                 </div>
                 <div className="task-time col-sm-2">
-                    <p className="time">Wednesday, 10am</p>
+                    <p className="time">{moment(this.state.task.start_date_time).format('dddd, h.mma')}</p>
                 </div>
                 <div className="task-action col-sm-3">
-                    <button className="btn btn-decline">Decline</button>
-                    <button className="btn btn-accept">Accept</button>
+                    <button className="btn btn-decline" onClick={() => this.declineTask()}>Decline</button>
+                    <button className="btn btn-accept" onClick={() => this.acceptTask()}>Accept</button>
                 </div>
             </div>
         );
