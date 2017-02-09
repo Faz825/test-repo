@@ -211,6 +211,10 @@ export default class AmbiLayout extends React.Component {
     }
 
     render() {
+        let currPage = "";
+        if(this.props.children){
+            currPage = this.props.children.props.route.name;
+        }
         let dashbrdClass = (this.props.children) ? "sub-page" : "";
         return (
             <div className="app-holder">
@@ -257,7 +261,7 @@ export default class AmbiLayout extends React.Component {
                               onWorkmodeClick={this.onWorkmodeClick.bind(this)}
                               onNotifiTypeClick={this.onNotifiTypeClick.bind(this)}
                               onUpdateNotifiPopupCount={this.updateNotificationPopCount.bind(this)}
-                              currPage={(this.props.children) ? null : "dashboard"}
+                              currPage={currPage}
                               onNavCollapse={this.onNavCollapse.bind(this)}/>
                 <span className={(!this.state.isNavHidden) ? "settings-icon" : "settings-icon slideUp"}></span>
             </div>
