@@ -22,7 +22,7 @@ export default class Recent extends React.Component {
         let _this = this;
         let contact = this.props.contact;
 
-        let mood, call_type, call_status;
+        let mood;
 
         if (contact.mood == UserMode.ONLINE) {
             mood = "online";
@@ -31,21 +31,9 @@ export default class Recent extends React.Component {
         } else {
             mood = "offline";
         }
-        
-        if(contact.callStatus == CallStatus.MISSED){
-            call_status = "missed";
-        }
-
-        if (contact.contactType == ContactType.MULTI) {
-            call_type = "multi";
-        } else if (contact.contactType == ContactType.GROUP) {
-            call_type = "group";
-        } else {
-            call_type = "user";
-        }
 
         return (
-            <div className={"row contact-item " + call_status}>{/* if its a miss call add class:  missed*/}
+            <div className={"row contact-item " + contact.call_status}>{/* if its a miss call add class:  missed*/}
                 <div className="col-sm-6">
                     <div className="image-wrapper">
                         <img src={contact.images.profile_image.http_url}/>
@@ -54,17 +42,18 @@ export default class Recent extends React.Component {
                     <div className="name-wrapper">
                         <div className="name-holder">
                             <p className="name">{contact.first_name + " " + contact.last_name}</p>
-                            {(contact.calls)? 
-                                <span className="num-calls">{"("+contact.calls+")"}</span>
+                            {(contact.calls) ?
+                                <span className="num-calls">{"(" + contact.calls + ")"}</span>
                                 :
-                                null                            
+                                null
                             }
                         </div>
                         <p className="status">{mood}</p>
                     </div>
                     <div className="contact-type">
-                        <span className="call-type-icon video"></span>{/* class are: video || phone */}
-                        <p className="call-time">2:03 AM</p>
+                        <span
+                            className={"call-type-icon " + contact.call_channel}></span>{/* class are: video || phone */}
+                        <p className="call-time">{contact.time}</p>
                     </div>
                 </div>
                 <div className="col-sm-6">

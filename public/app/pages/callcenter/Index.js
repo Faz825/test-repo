@@ -7,7 +7,7 @@ import ReactDom from 'react-dom';
 import {Modal, ButtonToolbar, DropdownButton, MenuItem} from 'react-bootstrap';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import {CallChannel, UserMode} from '../../config/CallcenterStats';
+import {CallChannel, CallType, CallStatus, UserMode} from '../../config/CallcenterStats';
 import ContactList from "./ContactList";
 import RecentList from "./RecentList";
 import StatusList from "./StatusList";
@@ -143,10 +143,34 @@ export default class Index extends React.Component {
             let aRecentCalls = this.state.recentCalls;
 
             for (var i = 0; i < aRecentCalls.length; i++) {
-                let callChannel = CallChannel.AUDIO;
+                let callChannel = null;
+                let callType = null;
+                let callStatus = null;
+                let time = null;
+                let dd = null;
 
-                if (aRecentCalls[i].call_channel == CallChannel.VIDEO) {
-                    callChannel = CallChannel.VIDEO;
+                let date = new Date(aRecentCalls[i].call_started_at);
+                let hh = date.getHours();
+                let m = date.getMinutes();
+                let s = date.getSeconds();
+
+                (hh > 12) ? dd = 'PM' : dd = 'AM';
+                (m < 10) ? m = '0' + m : m = m;
+                (hh < 10) ? hh = '0' + hh : hh = hh;
+
+                time = hh + ':' + m + ' ' + dd;
+
+                (aRecentCalls[i].call_channel == CallChannel.VIDEO) ? callChannel = 'video' : callChannel = 'phone';
+                (aRecentCalls[i].call_type == CallType.INCOMING) ? callType = CallType.INCOMING : callType = CallType.OUTGOING;
+
+                if (aRecentCalls[i].call_status == CallStatus.MISSED) {
+                    callStatus == 'missed';
+                } else if (aRecentCalls[i].call_status == CallStatus.ANSWERED) {
+                    callStatus == 'answered';
+                } else if (aRecentCalls[i].call_status == CallStatus.REJECTED) {
+                    callStatus == 'rejected';
+                } else if (aRecentCalls[i].call_status == CallStatus.CANCELLED) {
+                    callStatus == 'cancelled';
                 }
 
                 callRecords.push({
@@ -154,8 +178,10 @@ export default class Index extends React.Component {
                     first_name: aRecentCalls[i].receivers_list[0].first_name,
                     last_name: aRecentCalls[i].receivers_list[0].last_name,
                     calls: 1,
-                    call_type: callChannel,
-                    contact_type: 1,
+                    time: time,
+                    call_type: callType,
+                    call_channel: callChannel,
+                    call_status: callStatus,
                     images: aRecentCalls[i].receivers_list[0].images
                 });
             }
