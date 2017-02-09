@@ -50,16 +50,16 @@ export default class Index extends React.Component {
         // Get Contacts
         let _this = this;
 
-        CallCenter.getContacts().done(function (data) {
-            if (data.status.code == 200) {
-                _this.setState({userContacts: data.contacts});
-                _this.getCallRecords("recent", "all");
-            }
-        });
-
         CallCenter.getCallRecords().done(function (data) {
             if (data.status.code == 200) {
                 _this.setState({recentCalls: data.call_records});
+                _this.setActiveTabData('recent', 'all');
+            }
+        });
+
+        CallCenter.getContacts().done(function (data) {
+            if (data.status.code == 200) {
+                _this.setState({userContacts: data.contacts});
             }
         });
 
@@ -162,6 +162,8 @@ export default class Index extends React.Component {
 
             this.setState({activeTabData: callRecords});
         }
+
+        this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
     }
 
     loadContactData(cat, subCat) {
@@ -633,7 +635,7 @@ export default class Index extends React.Component {
                             src={(this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image}/>
                         {(!this.state.isStatusVisible) ?
                             <span className={"status user-mode " + this.getUserStatusClass(this.state.userStatus)}
-                                    onClick={this.onUserStatusClick.bind(this)}></span>
+                                  onClick={this.onUserStatusClick.bind(this)}></span>
                             :
                             <section className="cc-online-status-popup">
                                 <div className="status-type" onClick={(event)=> {
@@ -664,35 +666,35 @@ export default class Index extends React.Component {
                         <p className="name">{this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name}</p>
                         <p className="status">{this.getUserStatusClass(this.state.userStatus)}</p>
                         {/*<div className="status-update">
-                            <ButtonToolbar>
-                            <DropdownButton bsSize="small" title={this.state.userStatus}
-                            id="dropdown-size-small">
-                            <MenuItem eventKey="online"
-                            onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
-                            <MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
-                            <MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work
-                            mode</MenuItem>
-                            </DropdownButton>
-                            </ButtonToolbar>
-                            </div>*/}
+                         <ButtonToolbar>
+                         <DropdownButton bsSize="small" title={this.state.userStatus}
+                         id="dropdown-size-small">
+                         <MenuItem eventKey="online"
+                         onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
+                         <MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
+                         <MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work
+                         mode</MenuItem>
+                         </DropdownButton>
+                         </ButtonToolbar>
+                         </div>*/}
                     </div>
                 </div>
                 <div className="col-sm-6 tab-wrapper">
                     <div className="rw-contact-menu main-menu">
                         <div className={(mainCat == "recent") ? "col-sm-4 active" : "col-sm-4" }
-                                onClick={(event)=> {
-                                    this.getCallRecords("recent", "all")
-                                }}>Recent
+                             onClick={(event)=> {
+                                 this.getCallRecords("recent", "all")
+                             }}>Recent
                         </div>
                         <div className={(mainCat == "contact") ? "col-sm-4 active" : "col-sm-4" }
-                                onClick={(event)=> {
-                                    this.getContacts("contact", "all")
-                                }}>Contact
+                             onClick={(event)=> {
+                                 this.getContacts("contact", "all")
+                             }}>Contact
                         </div>
                         <div className={(mainCat == "status") ? "col-sm-4 active" : "col-sm-4" }
-                                onClick={(event)=> {
-                                    this.getContactsByStatus("status", "online")
-                                }}>Status
+                             onClick={(event)=> {
+                                 this.getContactsByStatus("status", "online")
+                             }}>Status
                         </div>
                     </div>
                     {(mainCat == "recent") ? this.headerNavRecent() : null}
@@ -891,7 +893,7 @@ export default class Index extends React.Component {
                         {this.headerNav()}
                         {
                             (mainCat == "recent") ?
-                                <RecentList userContacts={this.state.userContacts}
+                                <RecentList callRecords={this.state.activeTabData}
                                             onUserCall={this.onDialing.bind(this)}/>
                                 :
                                 null
@@ -905,7 +907,7 @@ export default class Index extends React.Component {
                         }
                         {
                             (mainCat == "status") ?
-                                <StatusList userContacts={this.state.userContacts}
+                                <StatusList userContacts={this.state.activeTabData}
                                             onUserCall={this.onDialing.bind(this)}/>
                                 :
                                 null
