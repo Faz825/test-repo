@@ -45,7 +45,7 @@ export default class Recent extends React.Component {
         }
 
         return (
-            <div className={"row contact-item " + call_status}>
+            <div className={"row contact-item " + call_status}>{/* if its a miss call add class:  missed*/}
                 <div className="col-sm-6">
                     <div className="image-wrapper">
                         <img src={contact.images.profile_image.http_url}/>
@@ -63,8 +63,8 @@ export default class Recent extends React.Component {
                         <p className="status">{mood}</p>
                     </div>
                     <div className="contact-type">
-                        <span className={contact.call_type + " call-type-icon"}></span>
-                        <p className="call-time">{contact.call_time}</p>
+                        <span className="call-type-icon video"></span>{/* class are: video || phone */}
+                        <p className="call-time">2:03 AM</p>
                     </div>
                 </div>
                 <div className="col-sm-6">

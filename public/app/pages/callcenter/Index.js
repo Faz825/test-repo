@@ -680,7 +680,7 @@ export default class Index extends React.Component {
                     </div>
                 </div>
                 <div className="col-sm-6 tab-wrapper">
-                    <div className="rw-contact-menu main-menu">
+                    <div className="rw-contact-menu main-menu clearfix">
                         <div className={(mainCat == "recent") ? "col-sm-4 active" : "col-sm-4" }
                              onClick={(event)=> {
                                  this.getCallRecords("recent", "all")
