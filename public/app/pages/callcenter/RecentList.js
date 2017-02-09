@@ -28,7 +28,7 @@ export default class RecentList extends React.Component {
                 )
             });
         } else {
-            recentList = (<h3 className="no-data">No contacts.</h3>);
+            recentList = (<h3 className="no-data">No recent calls.</h3>);
         }
 
         return (
