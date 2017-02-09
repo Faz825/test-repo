@@ -296,7 +296,6 @@ export class DailyEvents extends React.Component {
     render() {
 
         let groupedEvents = GroupArray(this.props.daily_events, 'type');
-        console.log(groupedEvents);
         let _events = null,_todos = null,_tasks = null, _this = this;
 
         if(typeof groupedEvents['1'] != "undefined"){
