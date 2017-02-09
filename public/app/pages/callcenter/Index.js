@@ -652,13 +652,14 @@ export default class Index extends React.Component {
     headerNav() {
         let mainCat = this.state.activeMainCat;
         let subCat = this.state.activeSubCat;
-
+                
         return (
             <div className="inner-header clearfix">
                 <div className="col-sm-6 user-status">
                     <div className="image-wrapper">
                         <img
-                            src={(this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image}/>
+                            src={(this.state.loggedUser.hasOwnProperty('profile_image') && this.state.loggedUser.profile_image) ? 
+                            this.state.loggedUser.profile_image : "/images/default-profile-pic.png"}/>
                         {(!this.state.isStatusVisible) ?
                             <span className={"status user-mode " + this.getUserStatusClass(this.state.userStatus)}
                                   onClick={this.onUserStatusClick.bind(this)}></span>
