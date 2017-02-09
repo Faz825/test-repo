@@ -11496,7 +11496,7 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-container .calender-header .calender-type {
     position: relative;
-    margin: 38px auto 0;
+    margin: 39px auto 0;
     float: left;
     cursor: pointer;
     text-align: center;
@@ -12148,6 +12148,7 @@ header .notification-holder .profile-header-thumb {
     border-right: 1px solid #bcbfbf;
     text-align: center;
     padding: 4px 26px;
+    width: 111px;
 }
 .calender-week-view .view-header .date-wrapper .date p {
     font-size: 1em;
@@ -12178,8 +12179,6 @@ header .notification-holder .profile-header-thumb {
     width: 213px;
     margin: 0 16px 22px 0;
     border-radius: 8px;
-    -webkit-box-shadow: 0px 0px 6px 1px #c4c4c4;
-    box-shadow: 0px 0px 6px 1px #c4c4c4;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile:nth-of-type(4n) {
     margin-right: 0;
@@ -12190,10 +12189,14 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile.selected .day-tile-header .date {
     color: #000f75;
-    padding: 2px 3px 3px;
+    padding: 5px 3px 3px;
     background: #fff;
     font-size: 1.5em;
-    border-radius: 999px;
+    border-radius: 100%;
+    text-align: center;
+    margin-top: -4px;
+    width: 35px;
+    height: 35px;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-header {
     background-color: #00a6ef;
@@ -12252,6 +12255,7 @@ header .notification-holder .profile-header-thumb {
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper {
     overflow: hidden;
+    min-height: 63px;
 }
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper:last-child {
     margin-top: 17px;
@@ -12393,6 +12397,9 @@ header .notification-holder .profile-header-thumb {
     color: #000000;
     font-weight: 300;
     line-height: 0.7;
+}
+.calender-month-view .month-name-wrapper .date-wrapper .date {
+    width: 111px;
 }
 .calender-month-view .view-tile-area .color-1 {
     color: #00a6ef;
@@ -15190,7 +15197,7 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-header .calender-type {
     position: relative;
-    margin: 38px auto 0;
+    margin: 39px auto 0;
     float: left;
     cursor: pointer;
     text-align: center;
@@ -16435,7 +16442,7 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-header .calender-type {
     position: relative;
-    margin: 38px auto 0;
+    margin: 39px auto 0;
     float: left;
     cursor: pointer;
     text-align: center;
@@ -17311,7 +17318,7 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-header .calender-type {
     position: relative;
-    margin: 38px auto 0;
+    margin: 39px auto 0;
     float: left;
     cursor: pointer;
     text-align: center;
@@ -17422,6 +17429,9 @@ header .notification-holder .profile-header-thumb {
     color: #000000;
     font-weight: 300;
     line-height: 0.7;
+}
+.group-container .group-calendar-container .calender-month-view .month-name-wrapper .date-wrapper .date {
+    width: 111px;
 }
 .group-container .group-calendar-container .calender-month-view .view-tile-area .color-1 {
     color: #00a6ef;
@@ -17985,7 +17995,7 @@ header .notification-holder .profile-header-thumb {
 }
 .group-container .group-calendar-container .calender-header .calender-type {
     position: relative;
-    margin: 38px auto 0;
+    margin: 39px auto 0;
     float: left;
     cursor: pointer;
     text-align: center;
@@ -18096,6 +18106,9 @@ header .notification-holder .profile-header-thumb {
     color: #000000;
     font-weight: 300;
     line-height: 0.7;
+}
+.group-container .group-calendar-container .calender-month-view .month-name-wrapper .date-wrapper .date {
+    width: 111px;
 }
 .group-container .group-calendar-container .calender-month-view .view-tile-area .color-1 {
     color: #00a6ef;
@@ -18678,13 +18691,14 @@ header .notification-holder .profile-header-thumb {
     border-radius: 999px;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .content-wrapper h3 {
-    margin-top: 14px;
+    margin-top: 27px;
     margin-left: 2px;
-    font-size: 1em;
+    font-size: 0.875em;
     color: #ffffff;
     font-weight: 400;
     letter-spacing: 0px;
     line-height: 0px;
+    text-transform: capitalize;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .share-notebook {
     position: absolute;
@@ -18859,73 +18873,73 @@ header .notification-holder .profile-header-thumb {
 .notebook-container .notebook-body .notebook.black .col-sm-2 {
     background-image: radial-gradient(circle 210px at 190.71% 174.29%, rgba(0, 0, 0, 0.68) 0%, #000000 100%);
 }
-.notebook-container .notebook-body .notebook.black .upload-file {
+.notebook-container .notebook-body .notebook.black .create-note {
     border-color: #000000 !important;
 }
-.notebook-container .notebook-body .notebook.black .upload-file p, .notebook-container .notebook-body .notebook.black .upload-file i {
+.notebook-container .notebook-body .notebook.black .create-note p, .notebook-container .notebook-body .notebook.black .create-note i {
     color: #000000 !important;
 }
 .notebook-container .notebook-body .notebook.light-blue .col-sm-2 {
     background-color: #00a6ef;
 }
-.notebook-container .notebook-body .notebook.light-blue .upload-file {
+.notebook-container .notebook-body .notebook.light-blue .create-note {
     border-color: #00a6ef !important;
 }
-.notebook-container .notebook-body .notebook.light-blue .upload-file p, .notebook-container .notebook-body .notebook.light-blue .upload-file i {
+.notebook-container .notebook-body .notebook.light-blue .create-note p, .notebook-container .notebook-body .notebook.light-blue .create-note i {
     color: #00a6ef !important;
 }
 .notebook-container .notebook-body .notebook.light-green .col-sm-2 {
     background-color: #a6c74a;
 }
-.notebook-container .notebook-body .notebook.light-green .upload-file {
+.notebook-container .notebook-body .notebook.light-green .create-note {
     border-color: #a6c74a !important;
 }
-.notebook-container .notebook-body .notebook.light-green .upload-file p, .notebook-container .notebook-body .notebook.light-green .upload-file i {
+.notebook-container .notebook-body .notebook.light-green .create-note p, .notebook-container .notebook-body .notebook.light-green .create-note i {
     color: #a6c74a !important;
 }
 .notebook-container .notebook-body .notebook.red .col-sm-2 {
     background-color: #b21e53;
 }
-.notebook-container .notebook-body .notebook.red .upload-file {
+.notebook-container .notebook-body .notebook.red .create-note {
     border-color: #b21e53 !important;
 }
-.notebook-container .notebook-body .notebook.red .upload-file p, .notebook-container .notebook-body .notebook.red .upload-file i {
+.notebook-container .notebook-body .notebook.red .create-note p, .notebook-container .notebook-body .notebook.red .create-note i {
     color: #b21e53 !important;
 }
 .notebook-container .notebook-body .notebook.pink .col-sm-2 {
     background-color: #ed1e7a;
 }
-.notebook-container .notebook-body .notebook.pink .upload-file {
+.notebook-container .notebook-body .notebook.pink .create-note {
     border-color: #ed1e7a !important;
 }
-.notebook-container .notebook-body .notebook.pink .upload-file p, .notebook-container .notebook-body .notebook.pink .upload-file i {
+.notebook-container .notebook-body .notebook.pink .create-note p, .notebook-container .notebook-body .notebook.pink .create-note i {
     color: #ed1e7a !important;
 }
 .notebook-container .notebook-body .notebook.dark-blue .col-sm-2 {
     background-color: #000f75;
 }
-.notebook-container .notebook-body .notebook.dark-blue .upload-file {
+.notebook-container .notebook-body .notebook.dark-blue .create-note {
     border-color: #000f75 !important;
 }
-.notebook-container .notebook-body .notebook.dark-blue .upload-file p, .notebook-container .notebook-body .notebook.dark-blue .upload-file i {
+.notebook-container .notebook-body .notebook.dark-blue .create-note p, .notebook-container .notebook-body .notebook.dark-blue .create-note i {
     color: #000f75 !important;
 }
 .notebook-container .notebook-body .notebook.gray .col-sm-2 {
     background-color: #bfbfbf;
 }
-.notebook-container .notebook-body .notebook.gray .upload-file {
+.notebook-container .notebook-body .notebook.gray .create-note {
     border-color: #bfbfbf !important;
 }
-.notebook-container .notebook-body .notebook.gray .upload-file p, .notebook-container .notebook-body .notebook.gray .upload-file i {
+.notebook-container .notebook-body .notebook.gray .create-note p, .notebook-container .notebook-body .notebook.gray .create-note i {
     color: #bfbfbf !important;
 }
 .notebook-container .notebook-body .notebook.dark-green .col-sm-2 {
     background-color: #038247;
 }
-.notebook-container .notebook-body .notebook.dark-green .upload-file {
+.notebook-container .notebook-body .notebook.dark-green .create-note {
     border-color: #038247 !important;
 }
-.notebook-container .notebook-body .notebook.dark-green .upload-file p, .notebook-container .notebook-body .notebook.dark-green .upload-file i {
+.notebook-container .notebook-body .notebook.dark-green .create-note p, .notebook-container .notebook-body .notebook.dark-green .create-note i {
     color: #038247 !important;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper.drag {
