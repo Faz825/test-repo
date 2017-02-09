@@ -21,7 +21,8 @@ GLOBAL.CalendarStatus = {
     PENDING: 1,
     COMPLETED: 2,
     EXPIRED: 3,
-    CANCELLED: 4
+    CANCELLED: 4,
+    ACCEPTED: 5
 };
 
 GLOBAL.CalendarSharedStatus = {
@@ -64,7 +65,7 @@ var CalendarEventSchema = new Schema({
 
     status : {
         type : Number,
-        default : 1 /* 1 - pending | 2 - completed | 3 - expired, 4 - cancelled */
+        default : 1 /* | 1 - pending | 2 - completed | 3 - expired | 4 - cancelled | 5 - accepted */
     },
 
     priority : {

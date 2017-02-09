@@ -149,8 +149,7 @@ var CalendarController = {
                     calendar_origin : req.body.calendar_origin,
                     group_id : req.body.group_id
                 };
-                console.log(eventData);
-                console.log("EVENT DATA");
+                
                 CalendarEvent.addNew(eventData, function (event) {
 
                     var sharedUsers = event.event.shared_users;
@@ -517,6 +516,18 @@ var CalendarController = {
             criteria['group_id'] = req.query.groupId;
         } else {
             criteria['user_id'] = user_id;
+        }
+
+        if(req.query.events_type) {
+            criteria['type'] = req.query.events_type;
+        }
+
+        if(req.query.priority) {
+            criteria['priority'] = req.query.priority;
+        }
+
+        if(req.query.status) {
+            criteria['status'] = req.query.status;
         }
 
         _async.waterfall([

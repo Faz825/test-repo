@@ -556,7 +556,7 @@ export default class DayView extends Component {
         if(this.state.sharedWithNames.length > 0){
             shared_with_list = this.state.sharedWithNames.map((name,key)=>{
                 // return <span key={key} className="user selected-users">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
-                return <span key={key} className="person selected">{name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
+                return <span key={key} className="person">{name}<i className="fa fa-times close-btn" aria-hidden="true" onClick={(event)=>{this.removeUser(key, name)}}></i></span>
             });
         // } else {
         //     // shared_with_list = <span className="user-label">Only me</span>
@@ -859,12 +859,12 @@ export default class DayView extends Component {
                                 <div className="col-sm-12">
                                     <div className={_class + "-list-area-content"}>
                                         <div className={_class + "-list-area-content-title"}>
+                                            <img src="/images/calender/icon-to-do.png" />
                                             {(this.props.calendarOrigin == 2) ?
-                                                <span><img src="/images/calender/icon-to-do.png" />  <span>Tasks</span> </span>
+                                                <span>Tasks</span>
                                             :
-                                                <span><img src="/images/calender/icon-to-do.png" /><span>To-Do	&rsquo;s</span></span>
+                                                <span>To-Do&rsquo;s</span>
                                             }
-
                                         </div>
                                         <div className={_class+ "-list-area-content-title-hr"}></div>
                                         {(this.props.calendarOrigin == 2) ?

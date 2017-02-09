@@ -103,7 +103,7 @@ export default class Calender extends React.Component {
                                     </div>
                                     <p className="month-name">{this.state.month.format("MMMM")}</p>
                                     <div className="calender-date">
-                                        <p>{this.renderMonthLabel()}</p>
+                                        {this.renderMonthLabel()}
                                     </div>
                                 </div>
                                 <DayNames />
