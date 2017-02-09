@@ -15,27 +15,20 @@ export default class RecentList extends React.Component {
         let _this = this;
 
         let recentList = '';
-        
 
-        if (typeof this.props.userContacts !== 'undefined' && this.props.userContacts.length > 0) {
-            recentList = this.props.userContacts.map(function (oGroupedContacts, key) {
+        if (typeof this.props.callRecords !== 'undefined' && this.props.callRecords.length > 0) {
+            recentList = this.props.callRecords.map(function (oCallRecord, key) {
                 return (
                     <div className="contact-group" key={key}>
-                        <p className="group-name">{oGroupedContacts.letter}</p>
-
                         <div className="list-wrapper">
-                            {oGroupedContacts.users.map(function (oContact) {
-                                return (
-                                    <Recent key={oContact.user_id} contact={oContact} type="recent"
-                                            onCalling={_this.onCalling.bind(_this)}/>
-                                )
-                            })}
+                            <Recent key={oCallRecord._id} contact={oCallRecord} type="recent"
+                                    onCalling={_this.onCalling.bind(_this)}/>
                         </div>
                     </div>
                 )
             });
         } else {
-            usersList = (<h3 className="no-data">No contacts.</h3>);
+            recentList = (<h3 className="no-data">No contacts.</h3>);
         }
 
         return (
