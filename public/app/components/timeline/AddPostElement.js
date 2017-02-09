@@ -488,7 +488,7 @@ export class TextPostElement extends React.Component{
     render(){
 
         let full_name = this.loggedUser.first_name +" "+ this.loggedUser.last_name;
-        let proImg = (this.loggedUser.profile_image != '')? this.loggedUser.profile_image : "/images/default_profile_image.png";
+        let proImg = (this.loggedUser.profile_image != '')? this.loggedUser.profile_image : "/images/default-profile-image.png";
         let opt = {
             style:{display:"block"}};
         let uploaded_files = this.state.uploadedFiles.map((file,key)=>{

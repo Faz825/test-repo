@@ -196,7 +196,7 @@ export default class Index extends React.Component {
                         "images": {
                             "profile_image": {
                                 "id": "DEFAULT",
-                                "file_name": "default_profile_image.png",
+                                "file_name": "default-profile-image.png",
                                 "file_type": ".png",
                                 "http_url": "/images/default-profile-pic.png"
                             }
@@ -240,7 +240,7 @@ export default class Index extends React.Component {
                         "images": {
                             "profile_image": {
                                 "id": "DEFAULT",
-                                "file_name": "default_profile_image.png",
+                                "file_name": "default-profile-image.png",
                                 "file_type": ".png",
                                 "http_url": "/images/default-profile-pic.png"
                             }
@@ -289,7 +289,7 @@ export default class Index extends React.Component {
                         "images": {
                             "profile_image": {
                                 "id": "DEFAULT",
-                                "file_name": "default_profile_image.png",
+                                "file_name": "default-profile-image.png",
                                 "file_type": ".png",
                                 "http_url": "/images/default-profile-pic.png"
                             }
@@ -337,7 +337,7 @@ export default class Index extends React.Component {
                 "images": {
                     "profile_image": {
                         "id": "DEFAULT",
-                        "file_name": "default_profile_image.png",
+                        "file_name": "default-profile-image.png",
                         "file_type": ".png",
                         "http_url": "/images/default-profile-pic.png"
                     }
@@ -380,7 +380,7 @@ export default class Index extends React.Component {
                 "images": {
                     "profile_image": {
                         "id": "DEFAULT",
-                        "file_name": "default_profile_image.png",
+                        "file_name": "default-profile-image.png",
                         "file_type": ".png",
                         "http_url": "/images/default-profile-pic.png"
                     }
