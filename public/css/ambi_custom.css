@@ -894,6 +894,14 @@ footer .notification-alert-holder.slideOut{
     height: 25px;
 }
 
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input {
+    overflow: visible !important;
+}
+
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .input-menu .items-wrapper .input-items-wrapper li.btn-group .btn {
+    z-index: 0;
+}
+
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper {
     width: 343px !important;
     margin-right: 15px;

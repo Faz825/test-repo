@@ -605,7 +605,7 @@ export default class DayView extends Component {
                                     <p>{moment(this.state.currentDay).format('dddd')}</p>
                                 </div>
                             </div>
-                            <div className="row calender-input">
+                            <div className="row calender-input clearfix">
                                 <div className="col-sm-12">
                                     <div className="input">
                                         <EditorField
