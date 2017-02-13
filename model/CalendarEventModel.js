@@ -21,8 +21,7 @@ GLOBAL.CalendarStatus = {
     PENDING: 1,
     COMPLETED: 2,
     EXPIRED: 3,
-    CANCELLED: 4,
-    ACCEPTED: 5
+    CANCELLED: 4
 };
 
 GLOBAL.CalendarSharedStatus = {
@@ -65,7 +64,7 @@ var CalendarEventSchema = new Schema({
 
     status : {
         type : Number,
-        default : 1 /* | 1 - pending | 2 - completed | 3 - expired | 4 - cancelled | 5 - accepted */
+        default : 1 /* | 1 - pending | 2 - completed | 3 - expired | 4 - cancelled */
     },
 
     priority : {
@@ -544,6 +543,80 @@ CalendarEventSchema.statics.deleteEvent = function (criteria, callBack) {
         }
 
     })
+
+};
+
+CalendarEventSchema.statics.updateSharedStatus = function(postData, user_id, callBack) {
+
+    var _async = require('async');
+    var _this = this;
+    _async.waterfall([
+        function updateSharedStatus(callBack) {
+            var shared_status = postData.status == 'REQUEST_REJECTED' ?
+                CalendarSharedStatus.REQUEST_REJECTED : CalendarSharedStatus.REQUEST_ACCEPTED;
+
+            var _udata = {
+                'shared_users.$.shared_status':shared_status
+            };
+            var criteria = {
+                _id:Util.toObjectId(postData.event_id),
+                'shared_users.user_id':user_id
+            };
+
+            _this.updateSharedEvent(criteria, _udata, function(res){
+                callBack(null);
+            });
+        },
+        function updateESSharedStatus(callBack){
+
+            if(postData.status == 'REQUEST_REJECTED'){
+
+                _async.waterfall([
+                    function getSharedEvents(callBack){
+                        var query={
+                            q:"_id:"+user_id
+                        };
+                        _this.ch_getSharedEvents(user_id, query, function (esResultSet){
+                            callBack(null, esResultSet);
+                        });
+
+                    },
+                    function ch_shareEvent(resultSet, callBack) {
+                        if(resultSet != null){
+                            var event_list = resultSet.result[0].events;
+                            var index = event_list.indexOf(postData.event_id.toString());
+                            event_list.splice(index, 1);
+
+                            var query={
+                                    q:"user_id:"+user_id
+                                },
+                                data = {
+                                    user_id: user_id,
+                                    events: event_list
+                                };
+
+                            _this.ch_shareEventUpdateIndex(user_id,data, function(esResultSet){
+                                callBack(null);
+                            });
+                        }else {
+                            callBack(null);
+                        }
+                    }
+                ], function (err, resultSet) {
+                    callBack(null);
+                });
+
+            }else{
+                callBack(null);
+            }
+        }
+    ], function (err, resultSet) {
+        if(err) {
+            callBack({status: 400, error: err});
+        } else {
+            callBack({status: 200, result: null});
+        }
+    });
 
 };
 

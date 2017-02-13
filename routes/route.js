@@ -212,7 +212,10 @@ router.post('/calendar/event/add', CalendarController.addEvent);
 router.post('/calendar/day/all', CalendarController.getEventsForSpecificDay);
 router.post('/calendar/update', CalendarController.updateEvent);
 router.post('/calendar/remove/share_user', CalendarController.removeSharedEventUser);
-router.post('/calendar/update/event_status', CalendarController.updateEventSharedStatus);
+router.post('/calendar/notification/respond', CalendarController.respondToNotification);
+router.post('/calendar/task/respond', CalendarController.respondToTask);
+router.get('/calendar/task/new-list', CalendarController.getNewTasks);
+
 router.post('/calendar/event/completion', CalendarController.updateEventCompletion);
 router.post('/calendar/event/get', CalendarController.getEvent);
 router.post('/calendar/delete', CalendarController.deleteCalendarEvent);

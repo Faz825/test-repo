@@ -149,7 +149,7 @@ var CalendarController = {
                     calendar_origin : req.body.calendar_origin,
                     group_id : req.body.group_id
                 };
-                
+
                 CalendarEvent.addNew(eventData, function (event) {
 
                     var sharedUsers = event.event.shared_users;
@@ -627,6 +627,163 @@ var CalendarController = {
                     callBack(null, _Events);
                 }
             }
+        ], function (err, _Events) {
+
+            var outPut = {};
+            if (err) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDAR_MONTH_EMPTY, Alert.ERROR);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['events'] = _Events;
+                outPut['event_count'] = _Events.length;
+                res.status(200).send(outPut);
+            }
+        });
+    },
+
+    /**
+     * Return all events todos tasks for given month
+     * @param req
+     * @param res
+     * @return Json
+     */
+    getNewTasks: function (req, res) {
+
+        var CurrentSession = Util.getCurrentSession(req);
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
+        var _async = require('async');
+        var moment = require('moment');
+
+        var month = req.query.month;
+        var year = req.query.year;
+        var user_id = Util.toObjectId(CurrentSession.id);
+        var _Events = [];
+
+        // month in moment is 0 based, so 9 is actually october, subtract 1 to compensate
+        // array is 'year', 'month', 'day', etc
+        var startDate = moment([year, Number(month - 1)]).startOf('month').format('YYYY-MM-DD');
+
+        // Clone the value before .endOf()
+        var endDate = moment([year, Number(month - 1)]).endOf('month').add(1, 'day').format('YYYY-MM-DD');
+        var calendar_origin = typeof(req.query.calendarOrigin) != 'undefined' ? req.query.calendarOrigin : 1; // PRESONAL_CALENDAR || GROUP_CALENDAR
+        // var criteria = {start_date_time: {$gte: startDate, $lt: endDate}, status: 1};
+        //
+        // if(calendar_origin == CalendarOrigin.GROUP_CALENDAR) {
+        //     criteria['group_id'] = req.query.groupId;
+        // } else {
+        //     criteria['user_id'] = user_id;
+        // }
+        //
+        // if(req.query.events_type) {
+        //     criteria['type'] = req.query.events_type;
+        // }
+        //
+        // if(req.query.priority) {
+        //     criteria['priority'] = req.query.priority;
+        // }
+        //
+        // if(req.query.status) {
+        //     criteria['status'] = req.query.status;
+        // }
+
+        _async.waterfall([
+            // function getEventsFromDB(callBack) {
+            //     CalendarEvent.getSortedCalenderItems(criteria, function (err, resultSet) {
+            //
+            //         _Events = resultSet.events;
+            //         callBack(null, resultSet.events);
+            //     });
+            // },
+            function getSharedEvents(callBack) {
+
+                if (typeof resultSet != 'undefined' && resultSet) {
+
+                    var user_id = CurrentSession.id;
+
+                    var query = {
+                        q: "_id:" + user_id.toString()
+                    };
+                    CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet) {
+
+                        if(typeof esResultSet != 'undefined' && esResultSet) {
+                            var sharedEvents = esResultSet.result[0].events;
+
+                            _async.each(sharedEvents, function (sharedEvent, callBack) {
+
+                                var condition = {
+                                    start_date_time: {$gte: startDate, $lt: endDate},
+                                    _id: sharedEvent,
+                                };
+
+                                CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+
+                                    if(typeof result != 'undefined' && result) {
+
+                                        if (result.events[0] != null && typeof result.events[0] != 'undefined') {
+                                            var _Shared_users = result.events[0].shared_users;
+
+                                            if(_Shared_users != null && typeof _Shared_users != 'undefined'){
+
+                                                for(var inc = 0; inc < _Shared_users.length; inc++){
+
+                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING)){
+                                                        _Events.push(result.events[0]);
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                    callBack(null);
+
+                                });
+                            }, function (err) {
+                                callBack(null, _Events);
+                            });
+                        } else {
+                            callBack(null, _Events);
+                        }
+
+                    });
+                } else {
+                    callBack(null, _Events);
+                }
+            },
+            // function getMyGroups(resultSet, callBack) {
+            //     var query={
+            //         q:"status:3", // accepted
+            //         index:'idx_connections:'+user_id
+            //     };
+            //
+            //     ES.search(query,function(groupIndexes){
+            //         callBack(null, _Events);
+            //     });
+            // },
+            // function getMyGroupEvents(indexes, callBack) {
+            //
+            //     if(indexes != null && indexes.result_count > 0 && calendar_origin != CalendarOrigin.GROUP_CALENDAR) {
+            //
+            //         var i = 0;
+            //         indexes.result.forEach(function(group) {
+            //             var groupCriteria = {start_date_time: {$gte: startDate, $lt: endDate}, status: 1, group_id:  group._id};
+            //             CalendarEvent.getSortedCalenderItems(groupCriteria, function (err, resultSet) {
+            //                 if(err) {
+            //                     callBack(null, null);
+            //                 } else {
+            //                     Array.prototype.push.apply(_Events, resultSet.events); // this trick is for merging two arrays. Can't use concat becase concat creates a new array
+            //                     i = i+1;
+            //                     if(i == indexes.result_count) {
+            //                         callBack(null, _Events);
+            //                     }
+            //                 }
+            //
+            //             });
+            //         });
+            //     } else {
+            //         callBack(null, _Events);
+            //     }
+            // }
         ], function (err, _Events) {
 
             var outPut = {};
@@ -1886,7 +2043,7 @@ var CalendarController = {
      * @param res
      */
 
-    updateEventSharedStatus: function(req,res){
+    respondToNotification: function(req,res){
 
         var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             Notification = require('mongoose').model('Notification'),
@@ -1895,15 +2052,6 @@ var CalendarController = {
             _data = {read_status:true},
             user_id = Util.getCurrentSession(req).id;
 
-
-        //event_id:5853bed82c52b36207c2d4f1
-        //notification_type:share_calendar
-        //notification_id:5853bed82c52b36207c2d4f2
-        //status:REQUEST_REJECTED
-        //updating_user:57b54c97cf9bf97507f49d3a
-
-
-
         _async.waterfall([
             function updateNotifications(callBack){
                 var _criteria = {notification_id:Util.toObjectId(req.body.notification_id), recipient:Util.toObjectId(user_id)};
@@ -1911,64 +2059,73 @@ var CalendarController = {
                     callBack(null);
                 });
             },
-            function updateSharedStatus(callBack) {
-                var shared_status = req.body.status == 'REQUEST_REJECTED' ?
-                    CalendarSharedStatus.REQUEST_REJECTED : CalendarSharedStatus.REQUEST_ACCEPTED;
-
-                var _udata = {
-                    'shared_users.$.shared_status':shared_status
+            function updateSharedStatus(callBack){
+                var postData = {
+                    status: req.body.status,
+                    event_id:Util.toObjectId(req.body.event_id)
                 };
-                var criteria = {
-                    _id:Util.toObjectId(req.body.event_id),
-                    'shared_users.user_id':user_id
-                };
-
-                CalendarEvent.updateSharedEvent(criteria, _udata, function(res){
+                CalendarEvent.updateSharedStatus(postData, user_id, function(res){
                     callBack(null);
                 });
             },
-            function updateESSharedStatus(callBack){
-                if(req.body.status == 'REQUEST_REJECTED'){
-
-                    _async.waterfall([
-                        function getSharedEvents(callBack){
-                            var query={
-                                q:"_id:"+user_id
-                            };
-                            CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet){
-                                callBack(null, esResultSet);
-                            });
-
-                        },
-                        function ch_shareEvent(resultSet, callBack) {
-                            if(resultSet != null){
-                                var event_list = resultSet.result[0].events;
-                                var index = event_list.indexOf(req.body.event_id.toString());
-                                event_list.splice(index, 1);
-
-                                var query={
-                                        q:"user_id:"+user_id
-                                    },
-                                    data = {
-                                        user_id: user_id,
-                                        events: event_list
-                                    };
-
-                                CalendarEvent.ch_shareEventUpdateIndex(user_id,data, function(esResultSet){
-                                    callBack(null);
-                                });
-                            }else {
-                                callBack(null);
-                            }
-                        }
-                    ], function (err, resultSet) {
-                        callBack(null);
-                    });
-
-                }else{
-                    callBack(null);
-                }
-            },
+            // function updateSharedStatus(callBack) {
+            //     var shared_status = req.body.status == 'REQUEST_REJECTED' ?
+            //         CalendarSharedStatus.REQUEST_REJECTED : CalendarSharedStatus.REQUEST_ACCEPTED;
+            //
+            //     var _udata = {
+            //         'shared_users.$.shared_status':shared_status
+            //     };
+            //     var criteria = {
+            //         _id:Util.toObjectId(req.body.event_id),
+            //         'shared_users.user_id':user_id
+            //     };
+            //
+            //     CalendarEvent.updateSharedEvent(criteria, _udata, function(res){
+            //         callBack(null);
+            //     });
+            // },
+            // function updateESSharedStatus(callBack){
+            //     if(req.body.status == 'REQUEST_REJECTED'){
+            //
+            //         _async.waterfall([
+            //             function getSharedEvents(callBack){
+            //                 var query={
+            //                     q:"_id:"+user_id
+            //                 };
+            //                 CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet){
+            //                     callBack(null, esResultSet);
+            //                 });
+            //
+            //             },
+            //             function ch_shareEvent(resultSet, callBack) {
+            //                 if(resultSet != null){
+            //                     var event_list = resultSet.result[0].events;
+            //                     var index = event_list.indexOf(req.body.event_id.toString());
+            //                     event_list.splice(index, 1);
+            //
+            //                     var query={
+            //                             q:"user_id:"+user_id
+            //                         },
+            //                         data = {
+            //                             user_id: user_id,
+            //                             events: event_list
+            //                         };
+            //
+            //                     CalendarEvent.ch_shareEventUpdateIndex(user_id,data, function(esResultSet){
+            //                         callBack(null);
+            //                     });
+            //                 }else {
+            //                     callBack(null);
+            //                 }
+            //             }
+            //         ], function (err, resultSet) {
+            //             callBack(null);
+            //         });
+            //
+            //     }else{
+            //         callBack(null);
+            //     }
+            // },
             function addNotification(callBack){
 
                 var _data = {
@@ -2010,6 +2167,73 @@ var CalendarController = {
         })
 
 
+    },
+
+    /**
+     * accept shared event by shared user
+     * @param req
+     * @param res
+     */
+
+    respondToTask: function(req,res){
+
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
+            Notification = require('mongoose').model('Notification'),
+            CalendarEvent = require('mongoose').model('CalendarEvent'),
+            _async = require('async'),
+            user_id = Util.getCurrentSession(req).id;
+
+        _async.waterfall([
+            function updateSharedStatus(callBack){
+                var postData = {
+                    status: req.body.status,
+                    event_id:Util.toObjectId(req.body.event_id)
+                };
+                CalendarEvent.updateSharedStatus(postData, user_id, function(res){
+                    console.log(" EVENT IS UPDATED ===== ");
+                    callBack(null);
+                });
+            },
+            //TODO: Integrate required notifications
+            // function addNotification(callBack){
+            //
+            //     var _data = {
+            //         sender:user_id,
+            //         notification_type:Notifications.SHARE_CALENDAR_RESPONSE,
+            //         notified_calendar:req.body.event_id,
+            //         notification_status:req.body.status.toString()
+            //     }
+            //     Notification.saveNotification(_data, function(res){
+            //         if(res.status == 200) {
+            //             callBack(null,res.result._id);
+            //         }
+            //     });
+            //
+            // },
+            // function notifyingUsers(notification_id, callBack){
+            //
+            //     var userList = [req.body.updating_user];
+            //     if(typeof notification_id != 'undefined' && userList.length > 0){
+            //
+            //         var _data = {
+            //             notification_id:notification_id,
+            //             recipients:userList
+            //         };
+            //
+            //         NotificationRecipient.saveRecipients(_data, function(res){
+            //             callBack(null);
+            //         })
+            //
+            //     } else{
+            //         callBack(null);
+            //     }
+            // }
+        ],function(err){
+            var outPut ={
+                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+            };
+            res.status(200).json(outPut);
+        })
     },
 
     /**

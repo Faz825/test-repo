@@ -902,6 +902,13 @@ footer .notification-alert-holder.slideOut{
     z-index: 0;
 }
 
+.group-container .group-tasks-content .new-task-holder .new-task-wrapper .task-info .task {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 250px;
+    overflow: hidden;
+}
+
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper {
     width: 343px !important;
     margin-right: 15px;

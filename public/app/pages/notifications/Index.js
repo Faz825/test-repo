@@ -238,7 +238,7 @@ export default class Index extends React.Component{
 
     redirectToNotification(_notification){
         console.log(_notification);
-        
+
         if(_notification.notification_type != 'Birthday' &&
             _notification.notification_type != "share_notebook" &&
             _notification.notification_type != "share_folder" &&
@@ -479,7 +479,7 @@ export default class Index extends React.Component{
             }
 
             $.ajax({
-                url: '/calendar/update/event_status',
+                url: '/calendar/notification/respond',
                 method: "POST",
                 dataType: "JSON",
                 data:_postData,

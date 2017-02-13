@@ -35,7 +35,7 @@ export default class TaskManager extends React.Component{
     }
 
     loadNewTasks() {
-
+        console.log(" LOAD NEW TASK IS CALLED ");
         let _month = this.month.format("MM");
         let _year = this.month.format("YYYY");
         let postData = {
@@ -48,7 +48,7 @@ export default class TaskManager extends React.Component{
         };
 
         $.ajax({
-            url : '/calendar/month/all',
+            url : '/calendar/task/new-list',
             method : "GET",
             data : postData,
             dataType : "JSON",
@@ -86,6 +86,15 @@ export default class TaskManager extends React.Component{
                 priorityList = <ExistingTaskList priority="1" />
         }
 
+        var _this = this;
+        var newTaskList = this.state.newTasks.map(function(event,key){
+            return <NewTask
+                        key={key}
+                        task={event}
+                        loadNewTasks={() => _this.loadNewTasks()}
+                         />
+        });
+
         return (
             <section className="group-tasks-content group-content">
                 <section className="new-task-holder">
@@ -93,9 +102,7 @@ export default class TaskManager extends React.Component{
                         <h3 className="section-title">New tasks (3)</h3>
                     </div>
                     { this.state.newTasks.length > 0 ?
-                        this.state.newTasks.map(function(event,key){
-                            return <NewTask key={key} task={event} />
-                        })
+                        newTaskList
                     :
                         <div className="new-task-wrapper clearfix"><p>There are no new tasks assigned to you</p></div>
                     }
@@ -135,7 +142,9 @@ export class NewTask extends React.Component{
 
     constructor(props) {
         super(props);
+        let user =  Session.getSession('prg_lg');
         this.state = {
+            user : user,
             task : this.props.task
         };
 
@@ -143,12 +152,53 @@ export class NewTask extends React.Component{
         this.declineTask = this.declineTask.bind(this);
     }
 
-    declineTask() {
-        console.log(" Decline a taks");
+    declineTask(taskId) {
+
+        var postData = {
+            event_id:taskId,
+            status : 'REQUEST_REJECTED', // REQUEST_PENDING: 1, REQUEST_REJECTED: 2, REQUEST_ACCEPTED: 3
+        };
+
+        $.ajax({
+            url : '/calendar/task/respond',
+            method : "POST",
+            data : postData,
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
+                if (data.status.code == 200) {
+                    this.props.loadNewTasks();
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
     }
 
-    acceptTask() {
-        console.log(" Accept a taks");
+    acceptTask(taskId) {
+
+        var postData = {
+            event_id : taskId,
+            status : 'REQUEST_ACCEPTED', // REQUEST_PENDING: 1, REQUEST_REJECTED: 2, REQUEST_ACCEPTED: 3
+        };
+
+        $.ajax({
+            url : '/calendar/task/respond',
+            method : "POST",
+            data : postData,
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
+                if (data.status.code == 200) {
+                    console.log("THE TASK IS ACCEPTED");
+                    this.props.loadNewTasks();
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
     }
 
     render() {
@@ -168,8 +218,8 @@ export class NewTask extends React.Component{
                     <p className="time">{moment(this.state.task.start_date_time).format('dddd, h.mma')}</p>
                 </div>
                 <div className="task-action col-sm-3">
-                    <button className="btn btn-decline" onClick={() => this.declineTask()}>Decline</button>
-                    <button className="btn btn-accept" onClick={() => this.acceptTask()}>Accept</button>
+                    <button className="btn btn-decline" onClick={() => this.declineTask(this.state.task._id)}>Decline</button>
+                    <button className="btn btn-accept" onClick={() => this.acceptTask(this.state.task._id)}>Accept</button>
                 </div>
             </div>
         );
