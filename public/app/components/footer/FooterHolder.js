@@ -73,13 +73,13 @@ export default class FooterHolder extends React.Component {
         let isHidden = this.state.isNavHidden;
 
         if (!this.props.currPage) {
-            console.log("sub");
             this.setState({isNavHidden: !isHidden});
             this.props.onNavCollapse();
         }
     }
 
     render() {
+        let currPage = this.props.currPage;
         let _sesData = Session.getSession('prg_lg');
 
         let _secretary_image = _sesData.secretary_image_url;
@@ -89,7 +89,7 @@ export default class FooterHolder extends React.Component {
         const {
             notificationCount
         }=this.state;
-        let dashboardCSS = (this.props.currPage) ? "dashboard-footer" : " " + footerClass;
+        let dashboardCSS = (currPage) ? "dashboard-footer" : " " + footerClass;
         let workmodeCSS = (this.props.blockBottom) ? " workmode-switched nav-holder clearfix" : "nav-holder clearfix";
         //console.log("=====Footer Holder======"+this.props.blockBottom)
         //TODO::
@@ -173,7 +173,7 @@ export default class FooterHolder extends React.Component {
                     {
                         (!this.state.isNavHidden) ?
                             <section className={workmodeCSS}>
-                                <div className="calendar nav-item">
+                                <div className={(currPage == "calendar")? "calendar nav-item active" : "calendar nav-item"}>
                                     <a href="/calendar">
                                         <div className="icon-holder">
                                             <span className="icon-holder"></span>
@@ -181,7 +181,7 @@ export default class FooterHolder extends React.Component {
                                         <p className="nav-title">Calendar</p>
                                     </a>
                                 </div>
-                                <div className="notebooks nav-item">
+                                <div className={(currPage == "notes")? "notebooks nav-item active" : "notebooks nav-item"}>
                                     <a href="#">
                                         <div className="icon-holder">
                                             <span className="icon-holder"></span>
@@ -189,7 +189,7 @@ export default class FooterHolder extends React.Component {
                                         <p className="nav-title">Notebooks</p>
                                     </a>
                                 </div>
-                                <div className="folders nav-item">
+                                <div className={(currPage == "folders")? "folders nav-item active" : "folders nav-item"}>
                                     <a href="/folders">
                                         <div className="icon-holder">
                                             <span className="icon-holder"></span>
@@ -197,7 +197,7 @@ export default class FooterHolder extends React.Component {
                                         <p className="nav-title">Folders</p>
                                     </a>
                                 </div>
-                                <div className="groups nav-item">
+                                <div className={(currPage == "groups")? "groups nav-item active" : "groups nav-item"}>
                                     <a href="/groups">
                                         <div className="icon-holder">
                                             <span className="icon-holder"></span>
@@ -205,7 +205,7 @@ export default class FooterHolder extends React.Component {
                                         <p className="nav-title">Groups</p>
                                     </a>
                                 </div>
-                                <div className="news nav-item">
+                                <div className={(currPage == "news")? "news nav-item active" : "news nav-item"}>
                                     <a href="#">
                                         <div className="icon-holder">
                                             <span className="icon-holder"></span>
@@ -213,7 +213,7 @@ export default class FooterHolder extends React.Component {
                                         <p className="nav-title">News</p>
                                     </a>
                                 </div>
-                                <div className="interests nav-item">
+                                <div className={(currPage == "interests")? "interests nav-item active" : "interests nav-item"}>
                                     <a href="#">
                                         <div className="icon-holder">
                                             <span className="icon-holder"></span>
@@ -221,7 +221,7 @@ export default class FooterHolder extends React.Component {
                                         <p className="nav-title">Interests</p>
                                     </a>
                                 </div>
-                                <div className="call-center nav-item">
+                                <div className={(currPage == "callcenter")? "call-center nav-item active" : "call-center nav-item"}>
                                     <a href="/callcenter">
                                         <div className="icon-holder">
                                             <span className="icon-holder"></span>

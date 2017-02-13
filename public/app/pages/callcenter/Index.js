@@ -7,7 +7,7 @@ import ReactDom from 'react-dom';
 import {Modal, ButtonToolbar, DropdownButton, MenuItem} from 'react-bootstrap';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import {CallChannel, UserMode} from '../../config/CallcenterStats';
+import {CallChannel, CallType, CallStatus, UserMode} from '../../config/CallcenterStats';
 import ContactList from "./ContactList";
 import RecentList from "./RecentList";
 import StatusList from "./StatusList";
@@ -50,16 +50,16 @@ export default class Index extends React.Component {
         // Get Contacts
         let _this = this;
 
-        CallCenter.getContacts().done(function (data) {
-            if (data.status.code == 200) {
-                _this.setState({userContacts: data.contacts});
-                _this.getCallRecords("recent", "all");
-            }
-        });
-
         CallCenter.getCallRecords().done(function (data) {
             if (data.status.code == 200) {
                 _this.setState({recentCalls: data.call_records});
+                _this.setActiveTabData('recent', 'all');
+            }
+        });
+
+        CallCenter.getContacts().done(function (data) {
+            if (data.status.code == 200) {
+                _this.setState({userContacts: data.contacts});
             }
         });
 
@@ -143,10 +143,34 @@ export default class Index extends React.Component {
             let aRecentCalls = this.state.recentCalls;
 
             for (var i = 0; i < aRecentCalls.length; i++) {
-                let callChannel = CallChannel.AUDIO;
+                let callChannel = null;
+                let callType = null;
+                let callStatus = null;
+                let time = null;
+                let dd = null;
 
-                if (aRecentCalls[i].call_channel == CallChannel.VIDEO) {
-                    callChannel = CallChannel.VIDEO;
+                let date = new Date(aRecentCalls[i].call_started_at);
+                let hh = date.getHours();
+                let m = date.getMinutes();
+                let s = date.getSeconds();
+
+                (hh > 12) ? dd = 'PM' : dd = 'AM';
+                (m < 10) ? m = '0' + m : m = m;
+                (hh < 10) ? hh = '0' + hh : hh = hh;
+
+                time = hh + ':' + m + ' ' + dd;
+
+                (aRecentCalls[i].call_channel == CallChannel.VIDEO) ? callChannel = 'video' : callChannel = 'phone';
+                (aRecentCalls[i].call_type == CallType.INCOMING) ? callType = CallType.INCOMING : callType = CallType.OUTGOING;
+
+                if (aRecentCalls[i].call_status == CallStatus.MISSED) {
+                    callStatus == 'missed';
+                } else if (aRecentCalls[i].call_status == CallStatus.ANSWERED) {
+                    callStatus == 'answered';
+                } else if (aRecentCalls[i].call_status == CallStatus.REJECTED) {
+                    callStatus == 'rejected';
+                } else if (aRecentCalls[i].call_status == CallStatus.CANCELLED) {
+                    callStatus == 'cancelled';
                 }
 
                 callRecords.push({
@@ -154,14 +178,18 @@ export default class Index extends React.Component {
                     first_name: aRecentCalls[i].receivers_list[0].first_name,
                     last_name: aRecentCalls[i].receivers_list[0].last_name,
                     calls: 1,
-                    call_type: callChannel,
-                    contact_type: 1,
+                    time: time,
+                    call_type: callType,
+                    call_channel: callChannel,
+                    call_status: callStatus,
                     images: aRecentCalls[i].receivers_list[0].images
                 });
             }
 
             this.setState({activeTabData: callRecords});
         }
+
+        this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
     }
 
     loadContactData(cat, subCat) {
@@ -194,7 +222,7 @@ export default class Index extends React.Component {
                         "images": {
                             "profile_image": {
                                 "id": "DEFAULT",
-                                "file_name": "default_profile_image.png",
+                                "file_name": "default-profile-image.png",
                                 "file_type": ".png",
                                 "http_url": "/images/default-profile-pic.png"
                             }
@@ -238,7 +266,7 @@ export default class Index extends React.Component {
                         "images": {
                             "profile_image": {
                                 "id": "DEFAULT",
-                                "file_name": "default_profile_image.png",
+                                "file_name": "default-profile-image.png",
                                 "file_type": ".png",
                                 "http_url": "/images/default-profile-pic.png"
                             }
@@ -287,7 +315,7 @@ export default class Index extends React.Component {
                         "images": {
                             "profile_image": {
                                 "id": "DEFAULT",
-                                "file_name": "default_profile_image.png",
+                                "file_name": "default-profile-image.png",
                                 "file_type": ".png",
                                 "http_url": "/images/default-profile-pic.png"
                             }
@@ -335,7 +363,7 @@ export default class Index extends React.Component {
                 "images": {
                     "profile_image": {
                         "id": "DEFAULT",
-                        "file_name": "default_profile_image.png",
+                        "file_name": "default-profile-image.png",
                         "file_type": ".png",
                         "http_url": "/images/default-profile-pic.png"
                     }
@@ -378,7 +406,7 @@ export default class Index extends React.Component {
                 "images": {
                     "profile_image": {
                         "id": "DEFAULT",
-                        "file_name": "default_profile_image.png",
+                        "file_name": "default-profile-image.png",
                         "file_type": ".png",
                         "http_url": "/images/default-profile-pic.png"
                     }
@@ -624,16 +652,17 @@ export default class Index extends React.Component {
     headerNav() {
         let mainCat = this.state.activeMainCat;
         let subCat = this.state.activeSubCat;
-
+                
         return (
             <div className="inner-header clearfix">
                 <div className="col-sm-6 user-status">
                     <div className="image-wrapper">
                         <img
-                            src={(this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image}/>
+                            src={(this.state.loggedUser.hasOwnProperty('profile_image') && this.state.loggedUser.profile_image) ? 
+                            this.state.loggedUser.profile_image : "/images/default-profile-pic.png"}/>
                         {(!this.state.isStatusVisible) ?
                             <span className={"status user-mode " + this.getUserStatusClass(this.state.userStatus)}
-                                    onClick={this.onUserStatusClick.bind(this)}></span>
+                                  onClick={this.onUserStatusClick.bind(this)}></span>
                             :
                             <section className="cc-online-status-popup">
                                 <div className="status-type" onClick={(event)=> {
@@ -664,35 +693,35 @@ export default class Index extends React.Component {
                         <p className="name">{this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name}</p>
                         <p className="status">{this.getUserStatusClass(this.state.userStatus)}</p>
                         {/*<div className="status-update">
-                            <ButtonToolbar>
-                            <DropdownButton bsSize="small" title={this.state.userStatus}
-                            id="dropdown-size-small">
-                            <MenuItem eventKey="online"
-                            onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
-                            <MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
-                            <MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work
-                            mode</MenuItem>
-                            </DropdownButton>
-                            </ButtonToolbar>
-                            </div>*/}
+                         <ButtonToolbar>
+                         <DropdownButton bsSize="small" title={this.state.userStatus}
+                         id="dropdown-size-small">
+                         <MenuItem eventKey="online"
+                         onSelect={this.onUserStateUpdate.bind(this)}>Online</MenuItem>
+                         <MenuItem eventKey="offline" onSelect={this.onUserStateUpdate.bind(this)}>Offline</MenuItem>
+                         <MenuItem eventKey="work-mode" onSelect={this.onUserStateUpdate.bind(this)}>Work
+                         mode</MenuItem>
+                         </DropdownButton>
+                         </ButtonToolbar>
+                         </div>*/}
                     </div>
                 </div>
                 <div className="col-sm-6 tab-wrapper">
-                    <div className="rw-contact-menu main-menu">
+                    <div className="rw-contact-menu main-menu clearfix">
                         <div className={(mainCat == "recent") ? "col-sm-4 active" : "col-sm-4" }
-                                onClick={(event)=> {
-                                    this.getCallRecords("recent", "all")
-                                }}>Recent
+                             onClick={(event)=> {
+                                 this.getCallRecords("recent", "all")
+                             }}>Recent
                         </div>
                         <div className={(mainCat == "contact") ? "col-sm-4 active" : "col-sm-4" }
-                                onClick={(event)=> {
-                                    this.getContacts("contact", "all")
-                                }}>Contact
+                             onClick={(event)=> {
+                                 this.getContacts("contact", "all")
+                             }}>Contact
                         </div>
                         <div className={(mainCat == "status") ? "col-sm-4 active" : "col-sm-4" }
-                                onClick={(event)=> {
-                                    this.getContactsByStatus("status", "online")
-                                }}>Status
+                             onClick={(event)=> {
+                                 this.getContactsByStatus("status", "online")
+                             }}>Status
                         </div>
                     </div>
                     {(mainCat == "recent") ? this.headerNavRecent() : null}
@@ -891,7 +920,7 @@ export default class Index extends React.Component {
                         {this.headerNav()}
                         {
                             (mainCat == "recent") ?
-                                <RecentList userContacts={this.state.userContacts}
+                                <RecentList callRecords={this.state.activeTabData}
                                             onUserCall={this.onDialing.bind(this)}/>
                                 :
                                 null
@@ -905,7 +934,7 @@ export default class Index extends React.Component {
                         }
                         {
                             (mainCat == "status") ?
-                                <StatusList userContacts={this.state.userContacts}
+                                <StatusList userContacts={this.state.activeTabData}
                                             onUserCall={this.onDialing.bind(this)}/>
                                 :
                                 null

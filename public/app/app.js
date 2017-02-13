@@ -108,8 +108,8 @@ let rootRoute =(
         /**
          * Groups
          */
-        <Route path="/groups" component={GroupsIndex} />
-        <Route path="/groups/:name" component={GroupsLayout} />
+        <Route name="groups" path="/groups" component={GroupsIndex} />
+        <Route name="groups" path="/groups/:name" component={GroupsLayout} />
 
         /**
 		 * Workmode
