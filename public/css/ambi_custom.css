@@ -135,6 +135,23 @@ body{
     background-color: #00a6ef;
 }
 
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container #react-autowhatever-1 li {
+    width: 225px;
+}
+
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container #react-autowhatever-1 li .suggestion-item img {
+    width: 18px;
+    margin: 1px 5px 1px 10px;
+}
+
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .react-autosuggest__container {
+    position: relative;
+}
+
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper {
+    overflow: visible !important;
+}
+
 .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .close-btn {
     cursor: pointer;
 }

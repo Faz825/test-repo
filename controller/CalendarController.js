@@ -667,125 +667,160 @@ var CalendarController = {
         // Clone the value before .endOf()
         var endDate = moment([year, Number(month - 1)]).endOf('month').add(1, 'day').format('YYYY-MM-DD');
         var calendar_origin = typeof(req.query.calendarOrigin) != 'undefined' ? req.query.calendarOrigin : 1; // PRESONAL_CALENDAR || GROUP_CALENDAR
-        // var criteria = {start_date_time: {$gte: startDate, $lt: endDate}, status: 1};
-        //
-        // if(calendar_origin == CalendarOrigin.GROUP_CALENDAR) {
-        //     criteria['group_id'] = req.query.groupId;
-        // } else {
-        //     criteria['user_id'] = user_id;
-        // }
-        //
-        // if(req.query.events_type) {
-        //     criteria['type'] = req.query.events_type;
-        // }
-        //
-        // if(req.query.priority) {
-        //     criteria['priority'] = req.query.priority;
-        // }
-        //
-        // if(req.query.status) {
-        //     criteria['status'] = req.query.status;
-        // }
 
         _async.waterfall([
-            // function getEventsFromDB(callBack) {
-            //     CalendarEvent.getSortedCalenderItems(criteria, function (err, resultSet) {
-            //
-            //         _Events = resultSet.events;
-            //         callBack(null, resultSet.events);
-            //     });
-            // },
+
             function getSharedEvents(callBack) {
 
-                if (typeof resultSet != 'undefined' && resultSet) {
+                var user_id = CurrentSession.id;
+                var query = {
+                    q: "_id:" + user_id.toString()
+                };
 
-                    var user_id = CurrentSession.id;
+                CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet) {
 
-                    var query = {
-                        q: "_id:" + user_id.toString()
-                    };
-                    CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet) {
+                    if(typeof esResultSet != 'undefined' && esResultSet) {
+                        var sharedEvents = esResultSet.result[0].events;
+                        _async.each(sharedEvents, function (sharedEvent, callBack) {
 
-                        if(typeof esResultSet != 'undefined' && esResultSet) {
-                            var sharedEvents = esResultSet.result[0].events;
+                            var condition = {
+                                start_date_time: {$gte: startDate, $lt: endDate},
+                                _id: sharedEvent,
+                            };
 
-                            _async.each(sharedEvents, function (sharedEvent, callBack) {
+                            CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
 
-                                var condition = {
-                                    start_date_time: {$gte: startDate, $lt: endDate},
-                                    _id: sharedEvent,
-                                };
+                                if(result && result.events[0] && result.events[0].shared_users) {
+                                    var _Shared_users = result.events[0].shared_users;
 
-                                CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
-
-                                    if(typeof result != 'undefined' && result) {
-
-                                        if (result.events[0] != null && typeof result.events[0] != 'undefined') {
-                                            var _Shared_users = result.events[0].shared_users;
-
-                                            if(_Shared_users != null && typeof _Shared_users != 'undefined'){
-
-                                                for(var inc = 0; inc < _Shared_users.length; inc++){
-
-                                                    if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING)){
-                                                        _Events.push(result.events[0]);
-                                                    }
-                                                }
-                                            }
-
+                                    _async.each(_Shared_users, function (member, callBack) {
+                                        if(member.user_id == user_id && (member.shared_status == CalendarSharedStatus.REQUEST_PENDING)){
+                                            _Events.push(result.events[0]);
                                         }
-                                    }
+                                        callBack(null);
+                                    }, function (err) {
+                                        callBack(null);
+                                    });
+                                } else {
                                     callBack(null);
-
-                                });
-                            }, function (err) {
-                                callBack(null, _Events);
+                                }
                             });
-                        } else {
+                        }, function (err) {
                             callBack(null, _Events);
-                        }
-
-                    });
-                } else {
-                    callBack(null, _Events);
-                }
+                        });
+                    } else {
+                        console.log("no shared events");
+                        callBack(null, _Events);
+                    }
+                });
             },
-            // function getMyGroups(resultSet, callBack) {
-            //     var query={
-            //         q:"status:3", // accepted
-            //         index:'idx_connections:'+user_id
-            //     };
-            //
-            //     ES.search(query,function(groupIndexes){
-            //         callBack(null, _Events);
-            //     });
-            // },
-            // function getMyGroupEvents(indexes, callBack) {
-            //
-            //     if(indexes != null && indexes.result_count > 0 && calendar_origin != CalendarOrigin.GROUP_CALENDAR) {
-            //
-            //         var i = 0;
-            //         indexes.result.forEach(function(group) {
-            //             var groupCriteria = {start_date_time: {$gte: startDate, $lt: endDate}, status: 1, group_id:  group._id};
-            //             CalendarEvent.getSortedCalenderItems(groupCriteria, function (err, resultSet) {
-            //                 if(err) {
-            //                     callBack(null, null);
-            //                 } else {
-            //                     Array.prototype.push.apply(_Events, resultSet.events); // this trick is for merging two arrays. Can't use concat becase concat creates a new array
-            //                     i = i+1;
-            //                     if(i == indexes.result_count) {
-            //                         callBack(null, _Events);
-            //                     }
-            //                 }
-            //
-            //             });
-            //         });
-            //     } else {
-            //         callBack(null, _Events);
-            //     }
-            // }
         ], function (err, _Events) {
 
+            var outPut = {};
+            if (err) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDAR_MONTH_EMPTY, Alert.ERROR);
+                res.status(400).send(outPut);
+            } else {
+                outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['events'] = _Events;
+                outPut['event_count'] = _Events.length;
+                res.status(200).send(outPut);
+            }
+        });
+    },
+
+    getPriorityList: function(req, res) {
+
+        var CurrentSession = Util.getCurrentSession(req);
+        var CalendarEvent = require('mongoose').model('CalendarEvent');
+        var _async = require('async');
+        var moment = require('moment');
+
+        var month = req.query.month;
+        var year = req.query.year;
+        var startDate = moment([year, Number(month - 1)]).startOf('month').format('YYYY-MM-DD');
+        var endDate = moment([year, Number(month - 1)]).endOf('month').add(1, 'day').format('YYYY-MM-DD');
+
+        var calendar_origin = typeof(req.query.calendarOrigin) != 'undefined' ? req.query.calendarOrigin : CalendarOrigin.PERSONAL_CALENDAR; // PRESONAL_CALENDAR , GROUP_CALENDAR
+        var priority = typeof(req.query.priority) != 'undefined' ? req.query.priority : CalenderPriority.HIGH; // LOW: 1, MED: 2, HIGH: 3,
+
+        var user_id = Util.toObjectId(CurrentSession.id);
+        var _Events = [];
+
+        _async.waterfall([
+
+            function getOwnTasks(callBack) {
+                var condition = {
+                    start_date_time : {$gte: startDate, $lt: endDate},
+                    group_id : req.query.group_id,
+                    user_id : user_id,
+                    type : req.query.events_type,
+                    priority : priority
+                };
+
+                CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+
+                    if(typeof result != 'undefined' && result) {
+
+                        _async.each(result.events, function (event, callBack) {
+                            _Events.push(event);
+                            callBack(null);
+                        }, function (err) {
+                            callBack(null);
+                        });
+                    }
+                });
+            },
+            function getSharedTasks(callBack) {
+
+                var user_id = CurrentSession.id;
+                var query = {
+                    q: "_id:" + user_id.toString()
+                };
+
+                // grab user shared tasks.
+                CalendarEvent.ch_getSharedEvents(user_id, query, function (esResultSet) {
+
+                    if(typeof esResultSet != 'undefined' && esResultSet) {
+                        var sharedEvents = esResultSet.result[0].events;
+
+                        _async.each(sharedEvents, function (sharedEvent, callBack) {
+                            var condition = {
+                                start_date_time : {$gte: startDate, $lt: endDate},
+                                _id : sharedEvent,
+                                priority : priority
+                            };
+
+                            CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
+
+                                if(result && result.events[0] && result.events[0].shared_users) {
+                                    var _Shared_users = result.events[0].shared_users;
+
+                                    _async.each(_Shared_users, function (member, callBack) {
+                                        if(member.user_id == user_id && (member.shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
+                                            _Events.push(result.events[0]);
+
+                                        }
+                                        callBack(null);
+                                    }, function (err) {
+
+                                        callBack(null);
+                                    });
+                                } else {
+                                    callBack(null);
+                                }
+
+                            });
+                        }, function (err) {
+                            callBack(null);
+                        });
+                    } else {
+                        console.log("no shared events");
+                        callBack(null);
+                    }
+                });
+            }
+        ], function (err) {
             var outPut = {};
             if (err) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDAR_MONTH_EMPTY, Alert.ERROR);

@@ -215,6 +215,7 @@ router.post('/calendar/remove/share_user', CalendarController.removeSharedEventU
 router.post('/calendar/notification/respond', CalendarController.respondToNotification);
 router.post('/calendar/task/respond', CalendarController.respondToTask);
 router.get('/calendar/task/new-list', CalendarController.getNewTasks);
+router.get('/calendar/task/priority-list', CalendarController.getPriorityList);
 
 router.post('/calendar/event/completion', CalendarController.updateEventCompletion);
 router.post('/calendar/event/get', CalendarController.getEvent);

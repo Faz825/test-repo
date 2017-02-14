@@ -22,6 +22,7 @@ export default class TaskManager extends React.Component{
             currentGroup : group,
             defaultPriorityTab : 1, // Priority 1 | Priority 2 | Priority 3,
             newTasks : [],
+            newTasksCount : 0
         };
 
         this.month = moment().startOf("day");
@@ -35,7 +36,7 @@ export default class TaskManager extends React.Component{
     }
 
     loadNewTasks() {
-        console.log(" LOAD NEW TASK IS CALLED ");
+
         let _month = this.month.format("MM");
         let _year = this.month.format("YYYY");
         let postData = {
@@ -44,7 +45,7 @@ export default class TaskManager extends React.Component{
             events_type : 3, // 1 - event | 2 - todo | 3 - task
             group_id : this.state.currentGroup._id,
             calendar_origin : this.calendarOrigin,
-            status : 1 // 1 - pending | 2 - completed | 3 - expired | 4 - cancelled | 5 - accepted
+            status : 1 // REQUEST_PENDING: 1, REQUEST_REJECTED: 2, REQUEST_ACCEPTED: 3
         };
 
         $.ajax({
@@ -56,15 +57,13 @@ export default class TaskManager extends React.Component{
             success : function (data, text) {
                 if (data.status.code == 200) {
                     console.log(data);
-                    this.setState({newTasks: data.events});
+                    this.setState({newTasks: data.events, newTasksCount : data.event_count});
                 }
             }.bind(this),
             error: function (request, status, error) {
                 console.log(error);
             }
         });
-
-
     }
 
     componentWillReceiveProps(nextProps) {}
@@ -77,13 +76,13 @@ export default class TaskManager extends React.Component{
         var priorityList = '';
         switch (this.state.defaultPriorityTab) {
             case 3:
-                priorityList = <ExistingTaskList priority="3" />
+                priorityList = <PriorityTaskList priority="3" currentGroup={this.state.currentGroup} />
                 break;
             case 2:
-                priorityList = <ExistingTaskList priority="2" />
+                priorityList = <PriorityTaskList priority="2" currentGroup={this.state.currentGroup} />
                 break;
             default:
-                priorityList = <ExistingTaskList priority="1" />
+                priorityList = <PriorityTaskList priority="1" currentGroup={this.state.currentGroup} />
         }
 
         var _this = this;
@@ -99,7 +98,7 @@ export default class TaskManager extends React.Component{
             <section className="group-tasks-content group-content">
                 <section className="new-task-holder">
                     <div className="section-header">
-                        <h3 className="section-title">New tasks (3)</h3>
+                        <h3 className="section-title">New tasks ({this.state.newTasksCount})</h3>
                     </div>
                     { this.state.newTasks.length > 0 ?
                         newTaskList
@@ -230,7 +229,7 @@ export class NewTask extends React.Component{
 /**
  * Existing task element
  */
-export class ExistingTask extends React.Component{
+export class PriorityTask extends React.Component{
 
     constructor(props) {
         super(props);
@@ -258,14 +257,24 @@ export class ExistingTask extends React.Component{
 /**
  * Existing task list element
  */
-export class ExistingTaskList extends React.Component{
+export class PriorityTaskList extends React.Component{
 
     constructor(props) {
+        let user =  Session.getSession('prg_lg');
+        if(user == null){
+            window.location.href = "/";
+        }
         super(props);
         this.state = {
-            tasks : []
+            user : user,
+            tasks : [],
+            tasksCount : 0,
+            currentGroup : this.props.currentGroup,
+            priority : this.props.priority
         };
 
+        this.priority = this.props.priority;
+        this.calendarOrigin = 2; // PERSONAL_CALENDAR || GROUP_CALENDAR
         this.loadEvents = this.loadEvents.bind(this);
     }
 
@@ -273,36 +282,66 @@ export class ExistingTaskList extends React.Component{
         this.loadEvents();
     }
 
+    componentWillReceiveProps(nextProps) {
+
+
+        if(nextProps.currentGroup != this.state.currentGroup) {
+            this.setState({currentGroup : nextProps.currentGroup});
+            this.loadEvents();
+        }
+
+        if(nextProps.priority != this.state.priority) {
+            this.setState({priority : nextProps.priority});
+            this.priority = nextProps.priority;
+            console.log("PRIORITY IS CHANGED");
+            this.loadEvents();
+        }
+    }
+
     loadEvents() {
-        // var data = {
-        //     day : this.currentDate,
-        //     calendar_origin : this.calendarOrigin,
-        //     group_id : this.state.currentGroup._id
-        // };
-        //
-        // $.ajax({
-        //     url : '/calendar/day/all',
-        //     method : "POST",
-        //     data : data,
-        //     dataType : "JSON",
-        //     headers : { "prg-auth-header" : this.state.user.token },
-        //     success : function (data, text) {
-        //         if (data.status.code == 200) {
-        //             console.log(data);
-        //             this.setState({events: data.events});
-        //         }
-        //     }.bind(this),
-        //     error: function (request, status, error) {
-        //         console.log(error);
-        //     }
-        // });
+
+        let _month = moment().startOf("day").format("MM");
+        let _year = moment().startOf("day").format("YYYY");
+        let postData = {
+            month : _month,
+            year : _year,
+            events_type : 3, // 1 - event | 2 - todo | 3 - task
+            group_id : this.state.currentGroup._id,
+            calendar_origin : this.calendarOrigin,
+            priority : this.priority
+        };
+
+        $.ajax({
+            url : '/calendar/task/priority-list',
+            method : "GET",
+            data : postData,
+            dataType : "JSON",
+            headers : { "prg-auth-header" : this.state.user.token },
+            success : function (data, text) {
+                if (data.status.code == 200) {
+                    console.log(data);
+                    this.setState({tasks: data.events, tasksCount: data.event_count});
+                }
+            }.bind(this),
+            error: function (request, status, error) {
+                console.log(error);
+            }
+        });
     }
 
     render() {
+
+        var _this = this;
+        var taskList = this.state.tasks.map(function(task,key){
+            return <PriorityTask />
+        });
+
+
         return (
             <div className="priority-task-list">
+                <p className="text-right">({this.state.tasksCount}) tasks</p>
                 {this.state.tasks.length > 0 ?
-                    <ExistingTask />
+                    taskList
                 :
                     <p>There are no tasks under priority {this.props.priority}</p>
                 }
