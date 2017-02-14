@@ -72,7 +72,7 @@ export default class FooterHolder extends React.Component {
     onNavCollapse() {
         let isHidden = this.state.isNavHidden;
 
-        if (!this.props.currPage) {
+        if (this.props.currPage) {
             this.setState({isNavHidden: !isHidden});
             this.props.onNavCollapse();
         }
@@ -80,6 +80,7 @@ export default class FooterHolder extends React.Component {
 
     render() {
         let currPage = this.props.currPage;
+        console.log(currPage)
         let _sesData = Session.getSession('prg_lg');
 
         let _secretary_image = _sesData.secretary_image_url;

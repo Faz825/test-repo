@@ -2,6 +2,7 @@ import React from 'react';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import SigninHeader from '../../components/header/SigninHeader';
 import FooterHolder from '../../components/footer/FooterHolder';
+import Toast from '../../components/elements/Toast';
 import Session  from '../../middleware/Session';
 import AmbiDashboard  from '../dashboard/AmbiDashboard';
 import CallHandler  from '../callcenter/CallHandler';
@@ -56,7 +57,8 @@ export default class AmbiLayout extends React.Component {
             isShowingWMP: false,
             notifiType: "",
             notificationCount: "",
-            isNavHidden: false
+            isNavHidden: false,
+            toastIsVisible: true
         };
 
         this.quickChatUsers = [];
@@ -64,6 +66,7 @@ export default class AmbiLayout extends React.Component {
         this.handleClose = this.handleClose.bind(this);
         this.doVideoCall = this.doVideoCall.bind(this);
         this.doAudioCall = this.doAudioCall.bind(this);
+        this.onToastClose = this.onToastClose.bind(this);
     }
 
     componentWillMount() {
@@ -210,6 +213,13 @@ export default class AmbiLayout extends React.Component {
         this.setState({isNavHidden: !isVissible});
     }
 
+    onToastClose(){
+        console.log("closing");
+        let isVisible = this.state.toastIsVisible;
+
+        this.setState({toastIsVisible : !isVisible});
+    }
+
     render() {
         let currPage = "";
         if(this.props.children){
@@ -264,6 +274,12 @@ export default class AmbiLayout extends React.Component {
                               currPage={currPage}
                               onNavCollapse={this.onNavCollapse.bind(this)}/>
                 <span className={(!this.state.isNavHidden) ? "settings-icon" : "settings-icon slideUp"}></span>
+                {
+                    (this.state.toastIsVisible)?
+                        <Toast msg="Welcome" type="success" onToastClose={this.onToastClose.bind(this)} />//types: success, warning
+                    :
+                        null
+                }
             </div>
         );
     }
