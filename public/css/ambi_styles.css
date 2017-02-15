@@ -10264,6 +10264,8 @@ h1, h2, h3, h4, h5, h6 {
 header {
   background: #fff;
   padding: 10px 12px 0px;
+  position: relative;
+  z-index: 1;
 }
 header .branding {
   float: left;
@@ -10389,10 +10391,105 @@ header .notification-holder .profile-header-thumb {
   cursor: pointer;
   margin: -1px 0 0 1px;
 }
+header .chat-popover-holder {
+  position: absolute;
+  top: 56px;
+  right: 62px;
+}
+header .chat-popover-holder .inner-wrapper {
+  width: 332px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  background-color: #ffffff;
+  position: relative;
+}
+header .chat-popover-holder .inner-wrapper:before {
+  content: "";
+  width: 25px;
+  height: 13px;
+  position: absolute;
+  top: -13px;
+  right: 71px;
+  background: url(../images/header-icons/popup-arrow.png) no-repeat;
+}
+header .chat-popover-holder .popover-header {
+  padding: 8px 8px 10px;
+  border-bottom: 1px solid #dddddd;
+}
+header .chat-popover-holder .popover-header .top-section {
+  margin-bottom: 12px;
+}
+header .chat-popover-holder .popover-header .top-section .header-text {
+  color: #888888;
+  font-size: 9px;
+  margin: 0 0 0 65px;
+  float: left;
+  line-height: 1;
+  cursor: pointer;
+}
+header .chat-popover-holder .popover-header .top-section .header-text:hover {
+  color: #00a6ef;
+}
+header .chat-popover-holder .popover-header .top-section .inbox-count {
+  margin: 0 0 0 5px;
+}
+header .chat-popover-holder .popover-header .top-section .inbox-count .count {
+  font-size: 12px;
+  margin: -2px 2px 0 0;
+  float: left;
+}
+header .chat-popover-holder .popover-header .bottom-section .form-control {
+  width: 178px;
+  height: 24px;
+  border-radius: 8px;
+  border: 2px solid rgba(0, 166, 239, 0.5);
+  margin: 0 auto;
+}
+header .chat-popover-holder .chat-list-holder {
+  padding-bottom: 26px;
+}
+header .chat-popover-holder .chat-list-holder .chat-item {
+  padding: 3px 5px;
+  overflow: hidden;
+  cursor: pointer;
+  border-bottom: 1px solid #dddddd;
+}
+header .chat-popover-holder .chat-list-holder .chat-item:hover, header .chat-popover-holder .chat-list-holder .chat-item.unread {
+  background-color: rgba(0, 166, 239, 0.13);
+}
+header .chat-popover-holder .chat-list-holder .chat-item .prof-img {
+  width: 42px;
+  height: 46px;
+  border-radius: 999px;
+  float: left;
+}
+header .chat-popover-holder .chat-list-holder .chat-item .chat-preview {
+  float: left;
+  margin-left: 10px;
+}
+header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .prof-name {
+  margin: 0 0 4px;
+  color: #000000;
+  font-size: 0.75em;
+  font-weight: 400;
+  line-height: 1;
+}
+header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-msg {
+  margin: 0 0 7px;
+  color: #666666;
+  font-size: 0.5625em;
+  line-height: 1;
+}
+header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-time {
+  margin: 0;
+  font-size: 0.4375em;
+  color: #888888;
+  line-height: 1;
+}
 
 .dashboard-container {
   position: relative;
-  height: calc(100vh - 82px);
+  height: calc(100vh - 52px);
 }
 .dashboard-container > .container {
   height: 100%;
@@ -13422,32 +13519,34 @@ header .notification-holder .profile-header-thumb {
   float: left;
 }
 .call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status.online {
-  background-color: #63c66c;
-  border: 3px solid #ffffff;
+  background-color: #6abf6d;
+  border: 2px solid #ffffff;
 }
 .call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status.work-mode {
-  background-color: #de2424;
-  border: 3px solid #ffffff;
+  background-color: #dc2726;
+  border: 2px solid #ffffff;
 }
 .call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status.offline {
   background-color: #ffffff;
   border: 2px solid #6ac374;
 }
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .status.addIcon {
+  background: url(../images/call-center/add-status-icon.png) no-repeat center center;
+}
 .call-center-container .call-center-inner-holder .cc-online-status-popup .status-type .type {
-  margin-top: 1px;
-  margin-bottom: 2px;
-  margin-left: 8px;
+  margin: 1px 0 2px 8px;
   float: left;
-  font-size: 0.75em;
+  font-size: 0.6875em;
   color: #464646;
 }
-.call-center-container .call-center-inner-holder .cc-online-status-popup .mood-msg {
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type.mood-msg {
   border-top: 1px solid #dee6eb;
 }
-.call-center-container .call-center-inner-holder .cc-online-status-popup .mood-msg p {
-  margin: 2px 0 6px 10px;
-  font-size: 0.75em;
+.call-center-container .call-center-inner-holder .cc-online-status-popup .status-type.mood-msg p {
+  margin: 1px 0 2px 8px;
+  font-size: 0.625em;
   color: #464646;
+  float: left;
 }
 .call-center-container .call-center-inner-holder .contacts-list .contact-group .group-name {
   margin: 7px 0 7px 20px;
@@ -13506,17 +13605,17 @@ header .notification-holder .profile-header-thumb {
   position: absolute;
   bottom: 0px;
   right: 0px;
-  width: 13px;
-  height: 13px;
+  width: 10px;
+  height: 10px;
   border-radius: 100%;
 }
 .call-center-container .call-center-inner-holder .contact-item .image-wrapper .status.online {
-  background-color: #63c66c;
-  border: 3px solid #ffffff;
+  background-color: #6abf6d;
+  border: 2px solid #ffffff;
 }
 .call-center-container .call-center-inner-holder .contact-item .image-wrapper .status.work-mode {
-  background-color: #de2424;
-  border: 3px solid #ffffff;
+  background-color: #dc2726;
+  border: 2px solid #ffffff;
 }
 .call-center-container .call-center-inner-holder .contact-item .image-wrapper .status.offline {
   background-color: #ffffff;
@@ -18679,15 +18778,21 @@ header .notification-holder .profile-header-thumb {
   z-index: 5;
   border-radius: 999px;
 }
-.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .content-wrapper h3 {
-  margin-top: 27px;
-  margin-left: 2px;
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .content-wrapper .name-wrapper {
+  margin-top: 16px;
+  margin-left: 4px;
+  padding: 10px 20px;
   font-size: 0.875em;
   color: #ffffff;
   font-weight: 400;
   letter-spacing: 0px;
   line-height: 0px;
   text-transform: capitalize;
+  width: 131px;
+  height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-2 .notebook-cover-wrapper .notebook-cover .share-notebook {
   position: absolute;
@@ -18747,35 +18852,36 @@ header .notification-holder .profile-header-thumb {
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item {
   position: relative;
   min-height: 147px;
-  border: 1px solid;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  border: 1px solid transparent;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   background-size: cover;
   cursor: pointer;
-  border-radius: 2px;
+  border-radius: 4px;
 }
-.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.upload-file {
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.create-note {
   background-color: #ffffff;
   text-align: center;
   border: 3px solid;
   border-style: dashed;
   box-shadow: none;
 }
-.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.upload-file i {
-  margin-top: 43px;
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.create-note i {
+  margin-top: 38px;
   font-size: 1.125em;
   color: #838383;
 }
-.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.upload-file p {
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.create-note p {
   font-weight: 500;
-  margin: 15px;
+  margin: 12px 15px;
   color: #000000;
   font-size: 0.625em;
   line-height: 12px;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .time-wrapper {
-  color: #000000;
+  color: rgba(0, 0, 0, 0.87);
   border-bottom: 1px solid #dbdbdb;
   margin: 5px 10px 0px;
+  font-weight: 400;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .time-wrapper p {
   font-size: 0.625em;
@@ -18784,11 +18890,11 @@ header .notification-holder .profile-header-thumb {
   margin-left: 2px;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .time-wrapper p.time-created {
-  margin: -9px 0 4px 2px;
+  margin: -9px 0 11px 2px;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .notebook-title-holder {
   padding: 15px 13px;
-  color: #000000;
+  color: rgba(0, 0, 0, 0.87);
   line-height: 18px;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .notebook-title-holder .notebook-title {
@@ -18797,18 +18903,18 @@ header .notification-holder .profile-header-thumb {
   line-height: 15px;
   word-break: break-all;
 }
-.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .item-type {
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .note-owner {
   position: absolute;
-  bottom: 7px;
-  right: 7px;
-  height: 32px;
-  width: 24px;
+  bottom: -8px;
+  right: 5px;
+  margin-left: 2px;
+  margin-right: 2px;
+  font-size: 0.5625em;
+  opacity: 0;
+  transition: opacity 0.5s ease-out 0s;
 }
-.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.image {
-  border-color: transparent;
-}
-.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.image .time-wrapper, .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item.image .notebook-title-holder {
-  color: #ffffff;
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item:hover .note-owner {
+  opacity: 1;
 }
 .notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .see-all {
   position: absolute;
@@ -18825,12 +18931,17 @@ header .notification-holder .profile-header-thumb {
   font-size: 0.75em;
   color: #000000;
 }
-.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .see-all i {
-  margin-right: 5px;
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .see-all .expand {
+  margin-left: 4px;
+  margin-top: -2px;
+  width: 14px;
+  height: 14px;
   float: right;
-  font-size: 0.8125em;
-  font-weight: 400;
-  color: #00a5ef;
+  background-color: #038247;
+  background-image: url("../images/folder/see-all_sp.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-radius: 100%;
 }
 .notebook-container .notebook-body .notebook.see-all .notebook-wrapper {
   display: -webkit-flex;
