@@ -589,6 +589,45 @@ a.rc-time-picker-panel-clear-btn {
     box-shadow: none;
 }
 
+.note-popup-dialog{
+    box-shadow: none !important;
+    padding: 0px !important;
+    border-radius: 18px !important;
+}
+
+.note-popup-dialog .popup-holder{
+    position: relative;
+    background-color: transparent;
+    border: none;
+}
+
+.note-popup-dialog .popup-holder .close-note{
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    width: 28px;
+    height: 28px;
+    background-image: url("../images/notebook/close-ico.png");
+    cursor: pointer;
+}
+
+.note-popup-dialog .edit-note-popup .ql-editor {
+    min-height: 340px !important;
+    margin-top: 60px;
+}
+
+.note-popup-dialog .edit-note-popup .rich-editor-holder .quill-toolbar{
+    width: 80%;
+}
+
+.create-notebook.modalPopup {
+    box-shadow: none;
+}
+
+.create-notebook .popup-holder {
+    background-color: transparent;
+}
+
 .popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action{
   margin-left: 165px;
 }

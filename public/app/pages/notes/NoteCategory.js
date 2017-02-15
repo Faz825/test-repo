@@ -53,34 +53,12 @@ export default class NoteCategory extends React.Component{
                 </Popover>
             );
             return (
-                <div className="row row-clr pg-notes-page-content-item pg-box-shadow" key={key}>
-                    <div className={notebook.notebook_name == "My Notes" ? "col-xs-2 note-cat-thumb my-notebook" : "col-xs-2 note-cat-thumb"} style={{backgroundColor : notebook.notebook_color}}>
-                        <div className="cat-icon-holder">
-                            <span className="cat-icon"></span>
-                            <h3 className="cat-title">{notebook.notebook_name}</h3>
-                        </div>
-                        {
-                            (notebook.notebook_name != "My Notes")?
-                                <OverlayTrigger rootClose container={this} trigger="click" placement="right" overlay={i}>
-                                    {
-                                        (notebook.is_shared) ?
-                                            <span className="share-icon"><i className="fa fa-users"></i></span> :
-                                            <span className="share-icon"><i className="fa fa-share-alt"></i></span>
-                                    }
-                                </OverlayTrigger>
-                                :
-                                null
-                        }
-                    </div>
-                    <div className="col-xs-10 pg-notes-page-content-item-right-thumbs">
-                        <NoteThumb noteBook={notebook} catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm} showNotePopup={showNotePopup}/>
-                    </div>
-                </div>
+                <NoteList key={notebook.notebook_id} notebook={notebook} showConfirm={showConfirm} showNotePopup={showNotePopup} />
             );
         });
 
         return (
-            <div className="container">
+            <div>
                 {_noteBooks}
             </div>
         );
@@ -584,6 +562,71 @@ export class  SharedUsers extends React.Component {
     }
 }
 
+export class NoteList extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isCollapsed : true
+        };
+    }
+
+    onNotebookExpand(){
+        let isCollapsed = this.state.isCollapsed;
+        this.setState({
+            isCollapsed : !isCollapsed
+        });
+    }
+
+    render (){
+
+        let notebook = this.props.notebook;
+        let showConfirm = this.props.showConfirm;
+        let showNotePopup = this.props.showNotePopup;
+
+        return (
+
+            <div className={(this.state.isCollapsed)? "row notebook" : "row notebook see-all"}>
+                <span className="notebook-overlay"></span>
+                <div className="notebook-wrapper">
+                    <div className={notebook.notebook_name == "My Notes" ? "col-sm-2 my-notebook" : "col-sm-2"} style={{backgroundColor : notebook.notebook_color}}>
+
+                        <div className="notebook-cover-wrapper">
+                            <div className="notebook-cover">
+                                <div className="content-wrapper">
+                                    <div className="logo-wrapper">
+                                        <img src="/images/default-profile-pic.png" className="img-rounded"/>
+                                        <div className="logo-shader"></div>
+                                        <div className="logo-shader"></div>
+                                    </div>
+                                    <h3 className="name-wrapper">{notebook.notebook_name}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-sm-10">
+
+                        <div className="row">
+                            <div className="notebook-content-wrapper">
+
+                                <NoteThumb noteBook={notebook} catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm} showNotePopup={showNotePopup} />
+
+
+                                {(notebook.notes.length > 4) ? <div className="see-all" onClick={this.onNotebookExpand.bind(this)}>
+                                    <span className="expand"></span>
+                                    <p>{this.state.isCollapsed ? "See All" : "See Less"}</p>
+                                </div> : null}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        );
+    }
+}
+
 export class NoteThumb extends React.Component{
 
     constructor(props) {
@@ -591,6 +634,8 @@ export class NoteThumb extends React.Component{
         this.state={
             allNotesAreVisible: false
         }
+
+        this.showMoreNotes.bind(this);
     }
 
     addNewNote(notebook_id){
@@ -626,16 +671,16 @@ export class NoteThumb extends React.Component{
             }
             if(key < 4) {
                 return (
-                    <div className="note-holder" id={note.note_id} key={key}>
-                        <div className="row-clear note" style={{borderColor : note.note_color}}>
+                    <div className="notebook-col" id={note.note_id} key={key}>
+                        <div className="notebook-item" style={{borderColor : note.note_color}}>
                             <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note,_notebook_props)}>
                                 <div className="time-wrapper">
                                     <p className="date-created">{note.updated_at.createdDate}</p>
 
                                     <p className="time-created">{note.updated_at.createdTime}</p>
                                 </div>
-                                <div className="note-title-holder">
-                                    <p className="note-title">{name}</p>
+                                <div className="notebook-title-holder">
+                                    <p className="notebook-title">{name}</p>
                                 </div>
                             </a>
                             <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>
@@ -651,46 +696,40 @@ export class NoteThumb extends React.Component{
             if (name.length > 30) {
                 name = name.substring(0,30)+'...';
             }
-            if(key >= 4) {
-                return (
-                    <div className="note-holder" id={note.note_id} key={key}>
-                        <div className="row-clear note">
-                            <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note,_notebook_props)}>
-                                <div className="time-wrapper">
-                                    <p className="date-created">{note.updated_at.createdDate}</p>
+            return (
+                <div className="notebook-col" id={note.note_id} key={key}>
+                    <div className="notebook-item">
+                        <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note,_notebook_props)}>
+                            <div className="time-wrapper">
+                                <p className="date-created">{note.updated_at.createdDate}</p>
 
-                                    <p className="time-created">{note.updated_at.createdTime}</p>
-                                </div>
-                                <div className="note-title-holder">
-                                    <p className="note-title">{name}</p>
-                                </div>
-                            </a>
-                            <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>
+                                <p className="time-created">{note.updated_at.createdTime}</p>
+                            </div>
+                            <div className="notebook-title-holder">
+                                <p className="notebook-title">{name}</p>
+                            </div>
+                        </a>
+                        <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>
 
-                        </div>
                     </div>
-                )
-            }
+                </div>
+            )
         });
 
         return(
-            <div className="pg-notes-item-main-row">
-                <div className="note-thumb-wrapper">
-                    {
-                        (_notebook_props.shared_privacy == _notes_read_write)? <div className="note-holder">
-                                <div className="row-clear add-new-note note">
-                                    <a href="javascript:void(0)" onClick={()=>_this.addNewNote(_notebook)}><p className="add-note-text">Add new</p></a>
-                                </div>
-                            </div>:null
-                    }
-                    {_firstSetNotes}
-                    {
-                        (this.state.allNotesAreVisible)? _allNotes : null
-                    }
 
-                </div>
-                {(_notes.length > 4) ? <div className="show-more-btn" onClick={this.showMoreNotes.bind(this)}>{this.state.allNotesAreVisible? "Show Less" : "Show More"}</div> : null}
+            <div className="notebook-items-wrapper">
+                {
+                    (_notebook_props.shared_privacy == _notes_read_write)? <div className="notebook-col">
+                            <div className="notebook-item create-note" onClick={()=>_this.addNewNote(_notebook)}>
+                                <i className="fa fa-plus"></i>
+                               <p className="add-note-text">Create a new note</p>
+                            </div>
+                        </div>:null
+                }
+                {_allNotes}
             </div>
+
         )
 
     }

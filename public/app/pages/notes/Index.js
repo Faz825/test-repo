@@ -189,28 +189,71 @@ export default class Index extends React.Component {
             <div onClick={this.handleClick.bind(this)}>
                 {this.state.isShowingModal &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} width="40%" style={{marginTop : "-100px"}}>
-                        <h3>Create a new note category.</h3>
-                        <div className="col-xs-12">
-                            <p>Category Name</p>
-                            <input
-                                type="text"
-                                value={this.state.catNameValue}
-                                name="NoteCategoryName"
-                                onChange={this.handleChange.bind(this)}
-                                className="pgs-sign-inputs"
-                                />
+                    <ModalDialog onClose={this.handleClose.bind(this)} className="create-notebook modalPopup" width="438px">
+                        <div className="popup-holder">
+                            <section className="create-notebook-popup">
+                                <section className="notebook-header">
+                                    <div className="row">
+                                        <div className="col-sm-12">
+                                            <h2>Create New Notebook</h2>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section className="notebook-body clearfix">
+                                    <div className="notebook-name">
+                                        <div className="col-sm-12 input-group name-holder">
+                                            <p>Name your notebook</p>
+                                            <input type="text" className="form-control" placeholder="Type a category name..." value={this.state.catNameValue}
+                                                   name="NoteCategoryName"
+                                                   onChange={this.handleChange.bind(this)}/>
+                                        </div>
+                                    </div>
+                                    <div className="notebook-color">
+                                        <div className="col-sm-12 input-group">
+                                            <p>Choose a colour</p>
+                                            <div className="color-palette">
+                                                <div className={this.isActive('dark-green')} id="#038247" data-name="dark-green" onClick={this.colorPicker.bind(this)}>
+                                                    <i className="fa fa-check" aria-hidden="true"></i>
+                                                </div>
+                                                <div className={this.isActive('dark-blue')} id="#000f75" data-name="dark-blue" onClick={this.colorPicker.bind(this)}>
+                                                    <i className="fa fa-check" aria-hidden="true"></i>
+                                                </div>
+                                                <div className={this.isActive('red')} id="#b21e53" data-name="red" onClick={this.colorPicker.bind(this)}>
+                                                    <i className="fa fa-check" aria-hidden="true"></i>
+                                                </div>
+                                                <div className={this.isActive('black')} id="#000000" data-name="black" onClick={this.colorPicker.bind(this)}>
+                                                    <i className="fa fa-check" aria-hidden="true"></i>
+                                                </div>
+                                                <div className={this.isActive('light-green')} id="#a6c74a" data-name="light-green" onClick={this.colorPicker.bind(this)}>
+                                                    <i className="fa fa-check" aria-hidden="true"></i>
+                                                </div>
+                                                <div className={this.isActive('light-blue')} id="#00a6ef" data-name="light-blue" onClick={this.colorPicker.bind(this)}>
+                                                    <i className="fa fa-check" aria-hidden="true"></i>
+                                                </div>
+                                                <div className={this.isActive('pink')} id="#ed1e7a" data-name="pink" onClick={this.colorPicker.bind(this)}>
+                                                    <i className="fa fa-check" aria-hidden="true"></i>
+                                                </div>
+                                                <div className={this.isActive('gray')} id="#bebfbf" data-name="gray" onClick={this.colorPicker.bind(this)}>
+                                                    <i className="fa fa-check" aria-hidden="true"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="invite-people">
+                                        <div className="col-sm-12 input-group">
+                                            <p>Invite some people</p>
+                                            <input type="text" className="form-control" placeholder="Type a name..."/>
+                                                <div className="user-holder"></div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section className="notebook-footer">
+                                    <div className="action-bar">
+                                        <button className="btn btn-add-notebook" onClick={this.addNoteBook.bind(this)}>create notebook</button>
+                                    </div>
+                                </section>
+                            </section>
                         </div>
-                        <div className="color-picker">
-                            <span className={this.isActive('tone-one')} id="#5EBDAA" data-name="tone-one" onClick={this.colorPicker.bind(this)}></span>
-                            <span className={this.isActive('tone-two')} id="#F1C058" data-name="tone-two" onClick={this.colorPicker.bind(this)}></span>
-                            <span className={this.isActive('tone-three')} id="#F15858" data-name="tone-three" onClick={this.colorPicker.bind(this)}></span>
-                            <span className={this.isActive('tone-four')} id="#202024" data-name="tone-four" onClick={this.colorPicker.bind(this)}></span>
-                            <span className={this.isActive('tone-five')} id="#8758F1" data-name="tone-five" onClick={this.colorPicker.bind(this)}></span>
-                            <span className={this.isActive('tone-six')} id="#8F7C68" data-name="tone-six" onClick={this.colorPicker.bind(this)}></span>
-                        </div>
-                        {this.state.validateAlert ? <p className="form-validation-alert" style={errorStyles} >{this.state.validateAlert}</p> : null}
-                        <p className="add-note-cat btn" onClick={this.addNoteBook.bind(this)}>Add note category</p>
                     </ModalDialog>
                 </ModalContainer>
                 }
@@ -392,31 +435,38 @@ export default class Index extends React.Component {
             <div>
                 {this.state.isShowingNoteModal &&
                 <ModalContainer zIndex={9999} >
-                    <ModalDialog width="40%" className="note-popup" style={{padding : "0", borderRadius : "3px" , transform : "none"}}>
-                        <div className="editor-popup-holder">
-                            <div className="popup-header">
-                                <span className="closeBtn" onClick={this.closeNotePopup.bind(this)}></span>
-                                <div className="title-holder col-sm-8">
-                                    <input type="text" className="note-title" value={this.state.editNoteTitle} onChange={(event)=>{this.onTitleEdit(event)}}/>
-                                </div>
-                                <div className="extra-func col-sm-4">
-                                    <input type="text" placeholder="Search" name="search" className="form-control" />
-                                    <div className="extra-func-btns">
-                                        <span className="export-btn"></span>
-                                        <span className="email-btn"></span>
+                    <ModalDialog width="642px" className="note-popup-dialog" style={{transform : "none"}}>
+
+                        <div className="popup-holder">
+                            <section className="edit-note-popup clearfix">
+                                <section className="inner-header clearfix">
+                                    <div className="info-wrapper">
+                                        <img className="user-image img-circle" src="images/default-profile-pic.png" alt="User"/>
+                                            <p className="note-owner">by Tim Cook</p>
+                                            <p className="time-wrapper">Sunday, December 11, 2016</p>
                                     </div>
-                                </div>
-                            </div>
-                            <Scrollbars style={{ height: 420 }}>
-                                <RichTextEditor note={this.state.editNote} noteText={this.getNoteData} />
-                            </Scrollbars>
-                            {
-                                (this.state.notebookObj == null) ?
-                                    <button className="btn btn-default" onClick={this.closeNotePopup.bind(this)}>Save note</button> :
-                                (this.state.notebookObj.shared_privacy == _notes_read_write) ?
-                                    <button className="btn btn-default" onClick={this.closeNotePopup.bind(this)}>Save note</button> :
-                                    <button className="btn btn-read-only" onClick={this.closeNotePopup.bind(this)}>Read Only Access</button>
-                            }
+                                    <div className="options-wrapper">
+                                        <span className="delete-note"></span>
+                                        <span className="note-info"></span>
+                                        <div className="search-wrapper">
+                                            <input type="text" className="form-control search-note" placeholder="Search"/>
+                                            <span className="search-ico"></span>
+                                        </div>
+                                        <span className="maximize"></span>
+                                    </div>
+                                </section>
+                                <section className="note-body clearfix">
+                                    <Scrollbars style={{ height: 628 }}>
+                                        <RichTextEditor note={this.state.editNote} noteText={this.getNoteData} />
+                                    </Scrollbars>
+                                    {
+                                        (this.state.notebookObj != null && this.state.notebookObj.shared_privacy == _notes_read_write) ?
+                                            <span className="save-note" onClick={this.closeNotePopup.bind(this)}></span> :
+                                            <span className="save-note read-only" onClick={this.closeNotePopup.bind(this)}></span>
+                                    }
+                                </section>
+                            </section>
+                            <span className="close-note" onClick={this.closeNotePopup.bind(this)}></span>
                         </div>
                     </ModalDialog>
                 </ModalContainer>
@@ -427,29 +477,54 @@ export default class Index extends React.Component {
 
     render() {
         return (
-            <div className="notesCatHolder">
-                <div className="row row-clr pg-notes-page-content">
-                    <div className="row row-clr pg-notes-page-header">
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-xs-6">
-                                    <h2 className="pg-connections-page-header-title">Notes</h2>
+            <section className="notebook-container">
+                <div className="container">
+
+
+                    <section className="notebook-header">
+                        <div className="row">
+                            <div className="col-sm-3">
+                                <h2>Notebooks</h2>
+                            </div>
+                            <div className="col-sm-5 menu-bar">
+                                <div className="notebook-type active">
+                                    <h4>my notebooks</h4>
+                                    <div className="highlighter"></div>
                                 </div>
-                                <div className="col-xs-6">
-                                    <p className="add-category-btn" onClick={this.handleClick.bind(this)}>Create Notebook</p>
+                                <div className="notebook-type">
+                                    <h4>group notebooks</h4>
+                                    <div className="highlighter"></div>
+                                </div>
+                            </div>
+                            <div className="col-sm-4 menu-buttons">
+                                <div className="search-notebook">
+                                    <div className="inner-addon">
+                                        <i className="fa fa-search"></i>
+                                        <input type="text" className="form-control" placeholder="Search"/>
+                                    </div>
+                                </div>
+                                <div className="crt-notebook">
+                                    <button className="btn btn-crt-notebook" onClick={this.handleClick.bind(this)}>
+                                        <i className="fa fa-plus"></i> New notebook
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    {
-                        (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} showConfirm={this.showConfirm.bind(this)} showNotePopup={this.showNotePopup.bind(this)}
-                            onLoadNotes={this.loadNotes.bind(this)}/>:null
-                    }
-                    {this.getPopup()}
-                    {this.getConfirmationPopup()}
-                    {this.getNotePopup()}
+                    </section>
+
+                    <section className="notebook-body">
+                        {
+                            (this.state.notes.length>0)?<NoteCategory notebooks={this.state.notes} showConfirm={this.showConfirm.bind(this)} showNotePopup={this.showNotePopup.bind(this)}
+                                                                      onLoadNotes={this.loadNotes.bind(this)}/>:null
+                        }
+                        {this.getPopup()}
+                        {this.getConfirmationPopup()}
+                        {this.getNotePopup()}
+                    </section>
+
+
                 </div>
-            </div>
+            </section>
         );
     }
 }
