@@ -58,7 +58,11 @@ export default class AmbiLayout extends React.Component {
             notifiType: "",
             notificationCount: "",
             isNavHidden: false,
-            toastIsVisible: true
+            toastMessage: {
+                visible: false,
+                message:'',
+                type:''
+            }
         };
 
         this.quickChatUsers = [];
@@ -202,8 +206,6 @@ export default class AmbiLayout extends React.Component {
     }
 
     updateNotificationPopCount(c) {
-        console.log("going to update count - 02");
-        console.log(c);
         this.setState({notificationCount: c});
     }
 
@@ -214,10 +216,21 @@ export default class AmbiLayout extends React.Component {
     }
 
     onToastClose(){
-        console.log("closing");
-        let isVisible = this.state.toastIsVisible;
+        let _toastMessage = {
+            visible: false,
+            message:'',
+            type:''
+        };
 
-        this.setState({toastIsVisible : !isVisible});
+        this.setState({toastMessage : _toastMessage});
+    }
+
+    onToastOpen(_toast){
+        this.setState({toastMessage : _toast});
+    }
+
+    loadDummyQuickChat(id) {
+        console.log("came to load dummy chat >>", id );
     }
 
     render() {
@@ -228,7 +241,7 @@ export default class AmbiLayout extends React.Component {
         let dashbrdClass = (this.props.children) ? "sub-page" : "";
         return (
             <div className="app-holder">
-                <SigninHeader quickChat={this.loadQuickChat.bind(this)}/>
+                <SigninHeader quickChat={this.loadQuickChat.bind(this)} dummyQuickChat={this.loadDummyQuickChat.bind(this)}/>
                 <section
                     className={(!this.state.isNavHidden) ? "body-container " + dashbrdClass : "body-container nav-hidden"}>
                     {this.props.children || <AmbiDashboard />}
@@ -251,7 +264,7 @@ export default class AmbiLayout extends React.Component {
                     <ModalContainer zIndex={9999}>
                         <ModalDialog className="workmode-popup-holder">
                             <div className="workmode-popup-wrapper">
-                                <WorkModePopup />
+                                <WorkModePopup closePopUp={this.handleClose.bind(this)} showMessage={this.onToastOpen.bind(this)}/>
                                 <i className="fa fa-times close-icon" aria-hidden="true"
                                    onClick={this.handleClose.bind(this)}></i>
                             </div>
@@ -275,8 +288,8 @@ export default class AmbiLayout extends React.Component {
                               onNavCollapse={this.onNavCollapse.bind(this)}/>
                 <span className={(!this.state.isNavHidden) ? "settings-icon" : "settings-icon slideUp"}></span>
                 {
-                    (this.state.toastIsVisible)?
-                        <Toast msg="Welcome" type="success" onToastClose={this.onToastClose.bind(this)} />//types: success, warning
+                    (this.state.toastMessage.visible)?
+                        <Toast msg={this.state.toastMessage.message} type={this.state.toastMessage.type} onToastClose={this.onToastClose.bind(this)} />//types: success, warning
                     :
                         null
                 }

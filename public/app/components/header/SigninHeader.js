@@ -12,6 +12,7 @@ import Session from '../../middleware/Session';
 import Chat from '../../middleware/Chat';
 import Lib from '../../middleware/Lib';
 import CallCenter from '../../middleware/CallCenter';
+import DummyConversationList from './DummyConversationList'
 
 export default class Header extends React.Component {
 
@@ -55,6 +56,10 @@ export default class Header extends React.Component {
         this.props.quickChat(conv);
     }
 
+    initiateDummyQuickChat(id) {
+        this.props.dummyQuickChat(id);
+    }
+
     render(){
         return(
             <header>
@@ -72,7 +77,8 @@ export default class Header extends React.Component {
                                 <div id="chat_notification_wrapper" className="chat-notification-wrapper">
                                     <img className="drop_downarrow" src="/images/drop_arrow.png" alt="" />
                                     <Scrollbars style={{ height: 260 }}>
-                                        <ConversationList connections={this.state.my_connections} loadQuickChat={this.initiateQuickChat.bind(this)}/>
+                                        {/*<ConversationList connections={this.state.my_connections} loadQuickChat={this.initiateQuickChat.bind(this)}/>*/}
+                                        <DummyConversationList onMessaging={this.initiateDummyQuickChat.bind(this)}/>
                                         <div className="chat-dropdown-link-holder">
                                             <a href="/chat">See All</a>
                                         </div>
