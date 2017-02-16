@@ -20,7 +20,8 @@ export default class Header extends React.Component {
         super(props);
         this.state={
             headerChatUnreadCount:0,
-            my_connections:[]
+            my_connections:[],
+            showChatNotification: false
 
         }
         this.quickChatUsers = [];
@@ -31,12 +32,12 @@ export default class Header extends React.Component {
     }
 
     showChatList(){
-        $("#chat_notification_wrapper").toggle();
-        if($("#chat_notification_wrapper").is(':visible')){
-            $("#chat_notification_a").addClass('chat-notification-wrapper-opened');
-        } else{
-            $("#chat_notification_a").removeClass('chat-notification-wrapper-opened')
-        }
+        $("#chat_notification_wrappersss").toggle();
+        //if($("#chat_notification_wrapper").is(':visible')){
+        //    $("#chat_notification_a").addClass('chat-notification-wrapper-opened');
+        //} else{
+        //    $("#chat_notification_a").removeClass('chat-notification-wrapper-opened')
+        //}
     }
 
     loadMyConnections(token){
@@ -60,6 +61,11 @@ export default class Header extends React.Component {
         this.props.dummyQuickChat(id);
     }
 
+    toggleChatNotifications() {
+        let _ct = this.state.showChatNotification;
+        this.setState({showChatNotification: !_ct});
+    }
+
     render(){
         return(
             <header>
@@ -71,19 +77,21 @@ export default class Header extends React.Component {
                             <div className="news-feed opt-holder">
                                 <div className="icon-holder"></div>
                             </div>
-                            <div onClick={()=>this.showChatList()} className="chat-icon opt-holder chat-dropdown-holder dropDown-holder" id="chat_notification_a">
+                            <div onClick={this.toggleChatNotifications.bind(this)} className="chat-icon opt-holder chat-dropdown-holder dropDown-holder" id="chat_notification_a">
                                 <div className="icon-holder"></div>
                                 <div id="unread_chat_count_header" className="notifi-num notifi-alert-holder"></div>
-                                <div id="chat_notification_wrapper" className="chat-notification-wrapper">
+                                {
+                                    /*<div id="chat_notification_wrapper" className="chat-notification-wrapper">
                                     <img className="drop_downarrow" src="/images/drop_arrow.png" alt="" />
-                                    <Scrollbars style={{ height: 260 }}>
-                                        {/*<ConversationList connections={this.state.my_connections} loadQuickChat={this.initiateQuickChat.bind(this)}/>*/}
-                                        <DummyConversationList onMessaging={this.initiateDummyQuickChat.bind(this)}/>
-                                        <div className="chat-dropdown-link-holder">
-                                            <a href="/chat">See All</a>
-                                        </div>
-                                    </Scrollbars>
-                                </div>
+                                        <Scrollbars style={{ height: 260 }}>
+                                            {/!*<ConversationList connections={this.state.my_connections} loadQuickChat={this.initiateQuickChat.bind(this)}/>*!/}
+                                            <DummyConversationList onMessaging={this.initiateDummyQuickChat.bind(this)}/>
+                                            <div className="chat-dropdown-link-holder">
+                                                <a href="/chat">See All</a>
+                                            </div>
+                                        </Scrollbars>
+                                    </div>*/
+                                }
                             </div>
                             <div className="friends-icon opt-holder">
                                 <div className="icon-holder"></div>
@@ -94,6 +102,9 @@ export default class Header extends React.Component {
                             <ProfileImg />
                         </div>
                     </div>
+
+                    {this.state.showChatNotification ? <DummyConversationList onMessaging={this.initiateDummyQuickChat.bind(this)}/> : null}
+
                 </div>
             </header>
 

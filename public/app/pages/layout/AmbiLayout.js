@@ -12,6 +12,7 @@ import WorkModePopup from '../workmode/WorkModePopup';
 import NotificationPop from '../notifications/NotificationPop';
 import PubSub from 'pubsub-js';
 import Chat from '../../middleware/Chat';
+import QuickChatDummy from '../chat/QuickChatDummy'
 
 export default class AmbiLayout extends React.Component {
     constructor(props) {
@@ -62,7 +63,8 @@ export default class AmbiLayout extends React.Component {
                 visible: false,
                 message:'',
                 type:''
-            }
+            },
+            dummyChatArray:[]
         };
 
         this.quickChatUsers = [];
@@ -229,8 +231,23 @@ export default class AmbiLayout extends React.Component {
         this.setState({toastMessage : _toast});
     }
 
-    loadDummyQuickChat(id) {
-        console.log("came to load dummy chat >>", id );
+    loadDummyQuickChat(_id) {
+        console.log("came to load dummy chat >>", _id );
+        let _chat = this.state.dummyChatArray;
+        if(_chat.indexOf(_id) == -1) {
+            _chat.push(_id);
+            this.setState({dummyChatArray: _chat});
+        }
+    }
+
+    closeDummyQuickChat(_id) {
+        console.log("came to load dummy chat >>", _id );
+        let _chat = this.state.dummyChatArray;
+        let _index = _chat.indexOf(_id)
+        if(_chat.indexOf(_id) != -1) {
+            _chat.splice(_index, 1);
+            this.setState({dummyChatArray: _chat});
+        }
     }
 
     render() {
@@ -279,6 +296,7 @@ export default class AmbiLayout extends React.Component {
                         null
                 }
                 <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)}/>
+                <QuickChatDummy dummyChatList={this.state.dummyChatArray} closeQuickChat={this.closeDummyQuickChat.bind(this)} isNavHidden={this.state.isNavHidden}/>
                 <FooterHolder blockBottom={this.state.rightBottom}
                               blockSocialNotification={this.state.socialNotifications}
                               onWorkmodeClick={this.onWorkmodeClick.bind(this)}
