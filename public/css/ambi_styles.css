@@ -21300,11 +21300,16 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-tim
   bottom: 73px;
   left: 0;
   width: 100%;
+  height: 20px;
+  transition: bottom ease 0.5s;
+}
+.chat-bubble-holder.menu-hidden {
+  bottom: 0;
 }
 .chat-bubble-holder .chat-bubble {
   width: 200px;
   float: left;
-  margin-left: 27px;
+  margin: -266px 0 0 27px;
 }
 .chat-bubble-holder .chat-bubble.active .bubble-header {
   border-bottom: 1px solid #00a6ef;
@@ -21475,6 +21480,84 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-tim
   border: none;
   cursor: pointer;
   background: url(../images/call-center/chat-submit-bg.png) #00a6ef no-repeat center center;
+}
+.chat-bubble-holder .chat-bubble .footer-opt-bar {
+  padding: 6px 10px 4px;
+  background: #fff;
+  overflow: hidden;
+}
+.chat-bubble-holder .chat-bubble .footer-opt-bar .opt-icon {
+  margin-right: 19px;
+  float: left;
+  display: block;
+  cursor: pointer;
+}
+.chat-bubble-holder .chat-bubble .footer-opt-bar .opt-icon:last-child {
+  margin: 0;
+}
+.chat-bubble-holder .chat-bubble .footer-opt-bar .opt-icon.text-format {
+  background: url(../images/call-center/opt-text-format-icon.png) no-repeat center center;
+  width: 12px;
+  height: 8px;
+}
+.chat-bubble-holder .chat-bubble .footer-opt-bar .opt-icon.video {
+  background: url(../images/call-center/opt-video-icon.png) no-repeat center center;
+  width: 10px;
+  height: 10px;
+}
+.chat-bubble-holder .chat-bubble .footer-opt-bar .opt-icon.emotican {
+  background: url(../images/call-center/opt-emotican-icon.png) no-repeat center center;
+  width: 10px;
+  height: 10px;
+}
+.chat-bubble-holder .chat-bubble .footer-opt-bar .opt-icon.image {
+  background: url(../images/call-center/opt-image-icon.png) no-repeat center center;
+  width: 12px;
+  height: 9px;
+}
+.chat-bubble-holder .chat-bubble .footer-opt-bar .opt-icon.voice {
+  background: url(../images/call-center/opt-voice-icon.png) no-repeat center center;
+  width: 6px;
+  height: 11px;
+}
+.chat-bubble-holder .chat-bubble .footer-opt-bar .opt-icon.location {
+  background: url(../images/call-center/opt-location-icon.png) no-repeat center center;
+  width: 7px;
+  height: 10px;
+}
+.chat-bubble-holder .chat-bubble .footer-opt-bar .opt-icon.search {
+  background: url(../images/call-center/opt-search-icon.png) no-repeat center center;
+  width: 9px;
+  height: 9px;
+}
+.chat-bubble-holder .chat-bubble.minimized {
+  margin-top: 0;
+}
+.chat-bubble-holder .chat-bubble.minimized .bubble-header {
+  width: 120px;
+  cursor: pointer;
+  margin: 0 auto;
+  padding-top: 5px;
+  border-radius: 7px 7px 0 0;
+  background-color: #eeeeee;
+}
+.chat-bubble-holder .chat-bubble.minimized .bubble-header .pro-pic {
+  display: none;
+}
+.chat-bubble-holder .chat-bubble.minimized .bubble-header .username-holder {
+  width: auto;
+  float: none;
+  text-align: center;
+}
+.chat-bubble-holder .chat-bubble.minimized .bubble-header .username-holder .name {
+  color: #666666;
+  font-size: 11px;
+}
+.chat-bubble-holder .chat-bubble.minimized .bubble-header .username-holder .all-media-btn {
+  display: none;
+}
+.chat-bubble-holder .chat-bubble.minimized .bubble-header .opt-icons {
+  display: none;
 }
 
 footer {
