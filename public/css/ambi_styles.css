@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,6 +1418,7 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3118,6 +3119,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3670,6 +3672,7 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10246,13 +10249,13 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/*
+/* 
 	Method to use:
 	@include @border {
 		border ($style,  $sides, $emptySides){
 	}
 */
-/*
+/* 
 	Method to use:
 	@include @mixin {
 		content
@@ -21290,6 +21293,188 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-tim
   width: 39px;
   height: 39px;
   cursor: pointer;
+}
+
+.chat-bubble-holder {
+  position: fixed;
+  bottom: 73px;
+  left: 0;
+  width: 100%;
+}
+.chat-bubble-holder .chat-bubble {
+  width: 200px;
+  float: left;
+  margin-left: 27px;
+}
+.chat-bubble-holder .chat-bubble.active .bubble-header {
+  border-bottom: 1px solid #00a6ef;
+  background-color: #00a6ef;
+}
+.chat-bubble-holder .chat-bubble.active .username-holder .name {
+  color: #fff;
+}
+.chat-bubble-holder .chat-bubble.active .username-holder .all-media-btn {
+  color: #fff;
+  border: 1px solid #fff;
+}
+.chat-bubble-holder .chat-bubble.active .opt-icons .icon.phn-icon {
+  background: url(../images/call-center/bubble-call-icon-active.png) no-repeat 0 0;
+}
+.chat-bubble-holder .chat-bubble.active .opt-icons .icon.video-icon {
+  background: url(../images/call-center/bubble-video-icon-active.png) no-repeat 0 0;
+}
+.chat-bubble-holder .chat-bubble.active .opt-icons .icon.close-icon {
+  background: url(../images/call-center/bubble-close-icon-active.png) no-repeat 0 0;
+}
+.chat-bubble-holder .chat-bubble:nth-child(1) {
+  margin-left: 129px;
+}
+.chat-bubble-holder .chat-bubble .bubble-header {
+  background-color: #fff;
+  padding: 3px;
+  border-radius: 7px 7px 0 0;
+  border-bottom: 1px solid #dddddd;
+}
+.chat-bubble-holder .chat-bubble .bubble-header .pro-pic {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  float: left;
+}
+.chat-bubble-holder .chat-bubble .bubble-header .username-holder {
+  float: left;
+  text-align: center;
+  width: 128px;
+}
+.chat-bubble-holder .chat-bubble .bubble-header .username-holder .name {
+  text-transform: capitalize;
+  color: #333;
+  font-size: 0.6875em;
+  margin: 0;
+  line-height: 1;
+  font-weight: 400;
+  width: 100%;
+}
+.chat-bubble-holder .chat-bubble .bubble-header .username-holder .all-media-btn {
+  font-size: 0.4375em;
+  color: #00a6ef;
+  padding: 2px 8px;
+  border: 1px solid #00a6ef;
+  border-radius: 2px;
+  display: inline-block;
+  cursor: pointer;
+}
+.chat-bubble-holder .chat-bubble .bubble-header .opt-icons {
+  float: right;
+  margin: 0 2px 0 0;
+}
+.chat-bubble-holder .chat-bubble .bubble-header .opt-icons .icon {
+  float: left;
+  display: block;
+  cursor: pointer;
+  margin: 3px 4px 0 0;
+}
+.chat-bubble-holder .chat-bubble .bubble-header .opt-icons .icon:last-child {
+  margin-right: 0;
+}
+.chat-bubble-holder .chat-bubble .bubble-header .opt-icons .icon.phn-icon {
+  background: url(../images/call-center/bubble-call-icon.png) no-repeat 0 0;
+  width: 11px;
+  height: 10px;
+  margin-top: 1px;
+}
+.chat-bubble-holder .chat-bubble .bubble-header .opt-icons .icon.video-icon {
+  background: url(../images/call-center/bubble-video-icon.png) no-repeat 0 0;
+  width: 11px;
+  height: 6px;
+}
+.chat-bubble-holder .chat-bubble .bubble-header .opt-icons .icon.close-icon {
+  background: url(../images/call-center/bubble-close-icon.png) no-repeat 0 0;
+  width: 6px;
+  height: 6px;
+}
+.chat-bubble-holder .chat-bubble .conv-holder {
+  background: #fff;
+  padding: 0 7px;
+  overflow-y: auto;
+  height: 203px;
+  border-bottom: 1px solid #dddddd;
+}
+.chat-bubble-holder .chat-bubble .conv-holder .chat-msg {
+  overflow: hidden;
+  margin-bottom: 12px;
+  width: 100%;
+  position: relative;
+}
+.chat-bubble-holder .chat-bubble .conv-holder .chat-msg .pro-img {
+  position: absolute;
+  bottom: 0;
+  border-radius: 999px;
+}
+.chat-bubble-holder .chat-bubble .conv-holder .chat-msg.received {
+  overflow: hidden;
+}
+.chat-bubble-holder .chat-bubble .conv-holder .chat-msg.received .pro-img {
+  width: 20px;
+  height: 20px;
+  left: 0;
+}
+.chat-bubble-holder .chat-bubble .conv-holder .chat-msg.received .msg {
+  float: left;
+  width: auto;
+  max-width: 128px;
+  background-color: #f1f1f1;
+  color: #333333;
+  font-size: 7px;
+  line-height: 11px;
+  border-radius: 4px;
+  padding: 8px 5px;
+  margin: 0 0 0 23px;
+}
+.chat-bubble-holder .chat-bubble .conv-holder .chat-msg.sent .pro-img {
+  width: 14px;
+  height: 14px;
+  right: 0;
+}
+.chat-bubble-holder .chat-bubble .conv-holder .chat-msg.sent .msg {
+  float: right;
+  width: auto;
+  max-width: 128px;
+  background-color: #00a6ef;
+  color: #fff;
+  font-size: 7px;
+  line-height: 11px;
+  border-radius: 4px;
+  padding: 8px 5px;
+  margin: 0 17px 0 0;
+}
+.chat-bubble-holder .chat-bubble .compose-msg {
+  position: relative;
+  background: #fff;
+  padding: 2px 0 3px 0;
+  border-bottom: 1px solid #dddddd;
+}
+.chat-bubble-holder .chat-bubble .compose-msg .form-control {
+  border: none;
+  box-shadow: none;
+  height: 14px;
+  padding: 5px 40px 5px 8px;
+  font-size: 8px;
+  border-radius: 0;
+}
+.chat-bubble-holder .chat-bubble .compose-msg .form-control:focus {
+  box-shadow: none;
+}
+.chat-bubble-holder .chat-bubble .compose-msg .submit-btn {
+  position: absolute;
+  top: 2px;
+  right: 8px;
+  width: 26px;
+  height: 15px;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+  background: url(../images/call-center/chat-submit-bg.png) #00a6ef no-repeat center center;
 }
 
 footer {
