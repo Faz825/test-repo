@@ -21328,6 +21328,9 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-tim
 .chat-bubble-holder .chat-bubble.active .opt-icons .icon.video-icon {
   background: url(../images/call-center/bubble-video-icon-active.png) no-repeat 0 0;
 }
+.chat-bubble-holder .chat-bubble.active .opt-icons .icon.minimize-icon {
+  background: url(../images/call-center/bubble-minimize-icon-active.png) no-repeat 0 0;
+}
 .chat-bubble-holder .chat-bubble.active .opt-icons .icon.close-icon {
   background: url(../images/call-center/bubble-close-icon-active.png) no-repeat 0 0;
 }
@@ -21349,7 +21352,7 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-tim
 .chat-bubble-holder .chat-bubble .bubble-header .username-holder {
   float: left;
   text-align: center;
-  width: 128px;
+  width: 118px;
 }
 .chat-bubble-holder .chat-bubble .bubble-header .username-holder .name {
   text-transform: capitalize;
@@ -21392,6 +21395,12 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-tim
   background: url(../images/call-center/bubble-video-icon.png) no-repeat 0 0;
   width: 11px;
   height: 6px;
+}
+.chat-bubble-holder .chat-bubble .bubble-header .opt-icons .icon.minimize-icon {
+  background: url(../images/call-center/bubble-minimize-icon.png) no-repeat 0 0;
+  width: 6px;
+  height: 1px;
+  margin-top: 7px;
 }
 .chat-bubble-holder .chat-bubble .bubble-header .opt-icons .icon.close-icon {
   background: url(../images/call-center/bubble-close-icon.png) no-repeat 0 0;
