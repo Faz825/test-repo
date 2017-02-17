@@ -143,6 +143,10 @@ export default class Index extends React.Component {
 
     addDefaultNoteBook(){
 
+        if(this.state.catNameValue == ""){
+            return;
+        }
+
         let _noteBook = {
             notebookName:this.state.catNameValue,
             notebookColor:this.state.catColor,

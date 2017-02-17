@@ -183,7 +183,7 @@ export default class FooterHolder extends React.Component {
                                     </a>
                                 </div>
                                 <div className={(currPage == "notes")? "notebooks nav-item active" : "notebooks nav-item"}>
-                                    <a href="#">
+                                    <a href="/notes">
                                         <div className="icon-holder">
                                             <span className="icon-holder"></span>
                                         </div>
