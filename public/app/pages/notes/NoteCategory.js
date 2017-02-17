@@ -438,10 +438,15 @@ export class SharePopupNewUsr extends React.Component{
             if(suggestions.length <= 0){
                 return <div/>
             }
+
+            let profileImg = (suggestion.images.hasOwnProperty('profile_image') && suggestion.images.profile_image != 'undefined') ?
+                (suggestion.images.profile_image.http_url == "") ? "/images/default-profile-pic.png" : suggestion.images.profile_image.http_url
+                : "/images/default-profile-pic.png";
+
             return(
 
                 <div className="suggestion" key={key}>
-                    <img className="user-image img-circle" src={suggestion.images.profile_image.http_url} alt="User"/>
+                    <img className="user-image img-circle" src={profileImg} alt="User"/>
                         <div className="name-wrapper">
                             <p className="name">{suggestion.first_name} {suggestion.last_name}</p>
                         </div>
