@@ -157,7 +157,7 @@ export default class EditorField extends Component {
                     onChange={this.onChange}
                     plugins={plugins}
                     ref={(element) => { this.editor = element; }}
-                    placeholder="Enter an event description"
+                    placeholder="enter an event description"
                 />
                 <EmojiSuggestions />
                 <MentionSuggestions
