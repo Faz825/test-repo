@@ -89,7 +89,7 @@ export default class DayEventsList extends React.Component {
         });
 
         return(
-            <ul className="list-unstyled events-list-area-content-list">
+            <ul className="list-unstyled events-list-area-content-list list-area-content-list">
                 {items}
             </ul>
         )

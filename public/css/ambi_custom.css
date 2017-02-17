@@ -476,6 +476,10 @@ a.rc-time-picker-panel-clear-btn {
 	overflow: hidden;
 }
 
+.calender-body .col-sm-9 .calender-view .list-area .list-area-content .list-area-content-list li div.event-description {
+    font-size: 11px;
+}
+
 
 /* Folder */
 .folder-item .upload-anime{

@@ -103,7 +103,7 @@ export default class DayTodosList extends React.Component {
 		});
 
 		return(
-			<ul className="list-unstyled to-do-list-area-content-list">
+			<ul className="list-unstyled to-do-list-area-content-list list-area-content-list">
 				{items}
 			</ul>
 		);

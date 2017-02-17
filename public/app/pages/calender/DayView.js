@@ -838,9 +838,9 @@ export default class DayView extends Component {
                                     </div>
                                 </div>
                             </div>*/}
-                            <div className="row events-list-area">
+                            <div className="list-area row events-list-area">
                                 <div className="col-sm-12">
-                                    <div className="events-list-area-content">
+                                    <div className="list-area-content events-list-area-content">
                                         <div className="events-list-area-content-title">
                                             <img src="/images/calender/icon-events.png" />
                                             <span>events</span>
@@ -855,9 +855,9 @@ export default class DayView extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className={"row " + _class + "-list-area"}>
+                            <div className={"list-area row " + _class + "-list-area"}>
                                 <div className="col-sm-12">
-                                    <div className={_class + "-list-area-content"}>
+                                    <div className={_class + "-list-area-content list-area-content"}>
                                         <div className={_class + "-list-area-content-title"}>
                                             <img src="/images/calender/icon-to-do.png" />
                                             {(this.props.calendarOrigin == 2) ?
