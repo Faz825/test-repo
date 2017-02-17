@@ -995,9 +995,32 @@ footer .notification-alert-holder.slideOut{
     z-index: 0;
 }
 
+.calender-body .col-sm-9 .calender-view .calender-input .calender-input-type.todo p,
+.popup-holder .calendar-week-popup-wrapper .model-header .model-title-wrapper .model-title-inner-wrapper h4.todo {
+    color: #038247;
+}
+
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .calender-input-type.task p,
+.popup-holder .calendar-week-popup-wrapper .model-header .model-title-wrapper .model-title-inner-wrapper h4.task {
+    color: #ff0000;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-header .model-title-wrapper .model-title-inner-wrapper h4 {
+    color: #00a6ef;
+}
+
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input,
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper .people-container .people-input {
     letter-spacing: 0.5px;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li.btn-group .btn.task {
+    color: #ff0000;
+}
+
+.popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li.btn-group .btn.task.active {
+    color: #ffffff;
+    background: #ff0000;
 }
 
 #react-autowhatever-1 {

@@ -646,7 +646,7 @@ export default class DayView extends Component {
                                             }
                                         </div>
                                     </div>
-                                    <div className="calender-input-type">
+                                    <div className={this.state.defaultType + " calender-input-type"}>
                                         <p>{this.state.defaultType}</p>
                                     </div>
                                 </div>

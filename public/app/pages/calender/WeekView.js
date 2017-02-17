@@ -168,7 +168,14 @@ export default class WeekView extends React.Component {
                             </div>
                         </div>
 
-                        <WeekDays week_startDt={this.state.weekStartDate} events={this.state.events} loadData={this.processDataCall.bind(this)} isGroupCall={this.state.groupCall.isGroupCall} />
+                        <WeekDays
+                            week_startDt={this.state.weekStartDate}
+                            events={this.state.events}
+                            loadData={this.processDataCall.bind(this)}
+                            isGroupCall={this.state.groupCall.isGroupCall}
+                            calendarOrigin={this.props.calendarOrigin}
+                            groupId={(this.props.calendarOrigin == 2) ? this.props.groupId : null} // Only group calendar have group id
+                            />
 
                     </div>
                 </div>
@@ -194,7 +201,15 @@ export class WeekDays extends React.Component {
             if(i > 0) {
                 dateObj = moment(this.props.week_startDt).add(i,"days");
             }
-            days.push(<LoadDayList current_date={dateObj} weekly_events={this.props.events} loadData={this.props.loadData} week_startDt={this.props.week_startDt} key={i} isGroupCall={this.props.isGroupCall} />);
+            days.push(<LoadDayList
+                current_date={dateObj}
+                weekly_events={this.props.events}
+                loadData={this.props.loadData}
+                week_startDt={this.props.week_startDt}
+                key={i} isGroupCall={this.props.isGroupCall}
+                calendarOrigin={this.props.calendarOrigin}
+                groupId={(this.props.calendarOrigin == 2) ? this.props.groupId : null} // Only group calendar have group id
+                />);
 
         }
 
@@ -264,6 +279,8 @@ export class LoadDayList extends React.Component {
                         curr_date={currDt}
                         week_startDt={this.props.week_startDt}
                         isGroupCall={this.props.isGroupCall}
+                        calendarOrigin={this.props.calendarOrigin}
+                        groupId={(this.props.calendarOrigin == 2) ? this.props.groupId : null} // Only group calendar have group id
                     />
                     : null
                 }

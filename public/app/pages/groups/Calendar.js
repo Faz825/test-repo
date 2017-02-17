@@ -83,6 +83,7 @@ export default class Index extends React.Component {
         switch (this.state.current) {
             case 'week':
                 return (<WeekView
+                    groupId={this.state.group._id}
                     calendarOrigin={this.calendarOrigin}
                     isGroupCall={true}
                     groupCall={groupCall}/>);
@@ -93,10 +94,18 @@ export default class Index extends React.Component {
                     dayDate={this.state.dayViewDate}
                     selectedEvent={null}/>);
             case 'month':
-                return (<MonthView isGroupCall={true} ref="MonthViewComponent" selected={this.state.monthViewDate}
-                                   setDayView={true.loadDayView}/>);
+                return (<MonthView
+                    groupId={this.state.group._id}
+                    calendarOrigin={this.calendarOrigin}
+                    isGroupCall={true}
+                    ref="MonthViewComponent"
+                    selected={this.state.monthViewDate}
+                    setDayView={true.loadDayView}/>);
             case 'year':
-                return (<YearView isGroupCall={true} setMonthView={this.loadMonthView.bind(this)}/>);
+                return (<YearView
+                    calendarOrigin={this.calendarOrigin}
+                    isGroupCall={true}
+                    setMonthView={this.loadMonthView.bind(this)}/>);
             default:
                 return (<DayView calendarOrigin={this.calendarOrigin} isGroupCall={true} viewType={"group_calendar"} dayDate={this.state.dayViewDate} user={user}/>);
         }

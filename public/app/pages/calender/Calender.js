@@ -110,7 +110,15 @@ export default class Calender extends React.Component {
                                 {this.renderWeeks()}
                             </div>
                             {this.state.showDailyPopUp ?
-                                <WeekDayEventPopUp handleClose={this.handleClose.bind(this)} loadData={this.loadData.bind(this)} curr_date={currDt} week_startDt={currDt} isGroupCall={false}/>
+                                <WeekDayEventPopUp
+                                    handleClose={this.handleClose.bind(this)}
+                                    loadData={this.loadData.bind(this)}
+                                    curr_date={currDt}
+                                    week_startDt={currDt}
+                                    isGroupCall={this.props.calendarOrigin == 1 ? false : true}
+                                    calendarOrigin={this.props.calendarOrigin}
+                                    groupId={this.props.groupId}
+                                    />
                                 : null
                             }
                         </div>

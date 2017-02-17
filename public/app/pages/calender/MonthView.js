@@ -17,7 +17,11 @@ export default class MonthView extends React.Component {
         var selected = this.props.selected;
         return (
             <div>
-                <Calender selected={selected} changeView={this.props.setDayView}/>
+                <Calender
+                    selected={selected}
+                    calendarOrigin={this.props.calendarOrigin}
+                    groupId={(this.props.calendarOrigin == 2) ? this.props.groupId : null} // Only group calendar have group id
+                    changeView={this.props.setDayView}/>
             </div>
         );
     }

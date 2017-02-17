@@ -74,9 +74,9 @@ export default class Index extends React.Component{
             case 'day':
                 return  (<DayView calendarOrigin={this.calendarOrigin} dayDate={this.state.dayViewDate} selectedEvent={this.props.params.name} />);
             case 'month':
-                return  (<MonthView ref="MonthViewComponent" selected={this.state.monthViewDate} setDayView={this.loadDayView}/>);
+                return  (<MonthView calendarOrigin={this.calendarOrigin} selected={this.state.monthViewDate} setDayView={this.loadDayView} ref="MonthViewComponent" />);
             case 'year':
-                return  (<YearView setMonthView={this.loadMonthView.bind(this)}/>);
+                return  (<YearView calendarOrigin={this.calendarOrigin} setMonthView={this.loadMonthView.bind(this)}/>);
             default:
                 return (<DayView calendarOrigin={this.calendarOrigin} dayDate={this.state.dayViewDate}/>);
         }

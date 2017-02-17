@@ -189,9 +189,19 @@ export default class WeekDayEventPopUp extends React.Component {
             return;
         }
 
+        var priority = 3;
+        if(contentState.hasText()) {
+            priority = (plainText.includes("!2")) ? 2 : priority;
+            priority = (plainText.includes("!1")) ? 1 : priority;
+        }
+
         // get shared users from SharedUsers field
         const sharedUsers = this.state.sharedWithIds;
         // const sharedUsers = this.refs.SharedUserField.sharedWithIds;
+
+        console.log(this.props.calendarOrigin);
+        console.log(this.props.groupId);
+        console.log("-------------------");
         const postData = {
             description : editorContentRaw,
             plain_text : plainText,
@@ -200,6 +210,9 @@ export default class WeekDayEventPopUp extends React.Component {
             event_time : strTime,
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
+            priority : priority,
+            calendar_origin : this.props.calendarOrigin,
+            group_id : (this.props.calendarOrigin == 2) ? this.props.groupId : null // Only group calendar have group id
         };
 
         // the button dissabled untill the response comes
@@ -300,7 +313,7 @@ export default class WeekDayEventPopUp extends React.Component {
                             <div className="model-header">
                                 <div className="model-title-wrapper">
                                     <div className="model-title-inner-wrapper week-popup">
-                                        <h4 className="modal-title">{this.state.eventType == 'todo' ? 'to-do' : this.state.eventType }</h4>
+                                        <h4 className={this.state.eventType + " modal-title"}>{this.state.eventType == 'todo' ? 'to-do' : this.state.eventType }</h4>
                                         <span className="calender-popup-closeBtn" onClick={this.props.handleClose}></span>
                                     </div>
                                 </div>
