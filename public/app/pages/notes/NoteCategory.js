@@ -23,7 +23,8 @@ export default class NoteCategory extends React.Component{
 
         this.state = {
             show: false ,
-            sharedStatus: false
+            sharedStatus: false,
+            seeAllSharedUsers: false
         };
 
         this.userAdded = this.userAdded.bind(this);
@@ -47,11 +48,6 @@ export default class NoteCategory extends React.Component{
         let i = 0;
 
         let _noteBooks = notebooks.map(function(notebook,key){
-            let i = (
-                <Popover id="popover-contained"  positionTop="150px" className="popup-holder share-popover">
-                    <SharePopup notebook={notebook} onUserAdd={_this.userAdded} onLoadNotes={_this.props.onLoadNotes}/>
-                </Popover>
-            );
             return (
                 <NoteList key={notebook.notebook_id} notebook={notebook} showConfirm={showConfirm} showNotePopup={showNotePopup} />
             );
@@ -98,7 +94,10 @@ export class SharePopup extends React.Component{
     }
 
     allSharedUsers(){
-        this.setState({seeAllSharedUsers : true}, function (){
+
+        let seeAllSharedUsers = this.state.seeAllSharedUsers;
+
+        this.setState({seeAllSharedUsers : !seeAllSharedUsers}, function (){
             this.handleScroll();
         });
     }
@@ -219,78 +218,91 @@ export class SharePopup extends React.Component{
     render(){
 
         let _notebook = this.props.notebook;
-
+            console.log(this.state.loggedUser);
         let i = (
-            <Popover id="popover-contained"  positionTop="150px" className="popup-holder add-new">
+            <Popover id="popover-contained"  positionTop="150px" className="share-notebook-new">
                 <SharePopupNewUsr notebook={_notebook} onShareuser={this.props.onUserAdd} onLoadNotes={this.props.onLoadNotes}/>
             </Popover>
         );
 
         return(
-            <div className="share-popup-holder">
-                <div className="header-holder clearfix">
-                    <h3 className="title">People on this note book</h3>
-                    <div className="form-group">
-                        <input type="text" className="form-control" placeholder="Search.." id="search" onChange={(event)=>this.filterSharedUsers(_notebook.notebook_id, event)}/>
-                    </div>
-                </div>
-                <div className="popup-body-holder">
 
-                    {
-                        (_notebook.owned_by == 'me')?
-                            <div className="user-block clearfix">
-                                <div className="img-holder">
-                                    <img src={this.state.loggedUser.profile_image} alt="User"/>
+            <section className="share-notebook-popup">
+                <section className="notebook-header">
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <div className="header-wrapper">
+                                <h3 className="popup-title">People in this notebook</h3>
+                                <input type="text" className="form-control search-people" placeholder="Search" onChange={(event)=>this.filterSharedUsers(_notebook.notebook_id, event)} />
+                                    <span className="search-ico"></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section className="notebook-body">
+                    <div className="shared-user-wrapper">
+
+                        {
+                            (_notebook.owned_by == 'me')?
+
+                            <div className="shared-user">
+                                <img className="user-image img-circle" src={this.state.loggedUser.profile_image} alt="User"/>
+                                <div className="name-wrapper">
+                                    <p className="name">{this.state.loggedUser.first_name} {this.state.loggedUser.last_name}</p>
+                                    <p className="name-title">
+                                        {
+                                            (this.state.loggedUser.company_name != null) ? this.state.loggedUser.company_name :
+                                                (this.state.loggedUser.school != null) ? this.state.loggedUser.school : ""
+                                        }
+                                    </p>
                                 </div>
-                                <div className="user-details">
-                                    <h3 className="user-name">{this.state.loggedUser.first_name} {this.state.loggedUser.last_name}</h3>
-                                </div>
-                                <div className="permission owner">
-                                    <p>(Owner)</p>
+                                <div className="shared-privacy">
+                                    <p className="owner">(Owner)</p>
                                 </div>
                             </div> :
-                            <div className="user-block clearfix">
-                                <div className="img-holder">
-                                    <img src={_notebook.notebook_user.profile_image} alt="User"/>
+
+                            <div className="shared-user">
+                                <img className="user-image img-circle" src={_notebook.notebook_user.profile_image} alt="User"/>
+                                <div className="name-wrapper">
+                                    <p className="name">{_notebook.notebook_user.user_name}</p>
+                                    <p className="name-title">{_notebook.notebook_user.user_title}</p>
                                 </div>
-                                <div className="user-details">
-                                    <h3 className="user-name">{_notebook.notebook_user.user_name}</h3>
-                                </div>
-                                <div className="permission owner">
-                                    <p>(Owner)</p>
+                                <div className="shared-privacy">
+                                    <p className="owner">(Owner)</p>
                                 </div>
                             </div>
-                    }
-
-                    {/*<Scrollbars style={{ height: 75 }}>*/}
-                    <SharedUsers notebook={_notebook}
-                                 sharedUserList={this.state.sharedUsers}
-                                 changePermissions={this.onPermissionChanged.bind(this)}
-                                 removeSharedUser={this.getPopupRemoveUser.bind(this)}
-                                 handleClick={this.handleClick.bind(this)}
-                                 scrollProp={this.state.scrollProp}/>
-                    {/*</Scrollbars>*/}
-
-
-                </div>
-                <div className="footer-holder clearfix">
-                    {
-                        (_notebook.owned_by == 'me')?
-                            <div className="add-new">
-                                <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
-                                    <button className="btn-link">+ Add New</button>
-                                </OverlayTrigger>
-                            </div> : null
-                    }
-                    <div className="see-all">
-                        {
-                            (this.state.sharedUsers.length > 2) ?
-                                <button className="btn-link" onClick={this.allSharedUsers.bind(this)}>See
-                                    All</button> : null
                         }
+
+                        <SharedUsers notebook={_notebook}
+                                     sharedUserList={this.state.sharedUsers}
+                                     changePermissions={this.onPermissionChanged.bind(this)}
+                                     removeSharedUser={this.getPopupRemoveUser.bind(this)}
+                                     handleClick={this.handleClick.bind(this)}
+                                     scrollProp={this.state.scrollProp}/>
+
+
                     </div>
-                </div>
-            </div>
+                </section>
+                {
+                    (_notebook.owned_by == 'me' || this.state.sharedUsers.length > 2) ?
+                        <section className="notebook-footer">
+                            <div className="footer-action-wrapper">
+                                {
+                                    (_notebook.owned_by == 'me') ?
+                                        <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
+                                            <p className={(this.state.sharedUsers.length > 2) ? "add-people" : "add-people c"}>+ Add New</p>
+                                        </OverlayTrigger> : null
+                                }
+                                {
+                                    (this.state.sharedUsers.length > 2) ?
+                                        <p className={(_notebook.owned_by == 'me') ? "see-all" : "see-all c"} onClick={this.allSharedUsers.bind(this)}>{(this.state.seeAllSharedUsers) ? "See Less" : "See All"}</p> : null
+                                }
+
+                            </div>
+                        </section> : null
+                }
+
+            </section>
         )
     }
 }
@@ -427,36 +439,30 @@ export class SharePopupNewUsr extends React.Component{
                 return <div/>
             }
             return(
-                <div className="user-block clearfix" key={key}>
-                    <div className="img-holder">
-                        <img src={suggestion.images.profile_image.http_url} alt="User"/>
-                    </div>
-                    <div className="user-details">
-                        <h3 className="user-name">{suggestion.first_name} {suggestion.last_name}</h3>
-                    </div>
-                    <div className="action">
-                        <button className="btn-add" onClick={()=>_this.shareNote(suggestion)}>
-                            <i className="fa fa-plus" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div className="separator"></div>
+
+                <div className="suggestion" key={key}>
+                    <img className="user-image img-circle" src={suggestion.images.profile_image.http_url} alt="User"/>
+                        <div className="name-wrapper">
+                            <p className="name">{suggestion.first_name} {suggestion.last_name}</p>
+                        </div>
+                        <div className="action">
+                            <span className="add-people" onClick={()=>_this.shareNote(suggestion)}></span>
+                        </div>
                 </div>
             );
         });
 
         return (
             <div>
-                <div className="share-popup-holder">
-                    <div className="header-holder clearfix">
-                        <div className="form-group">
+                <div className="popup-holder">
+                    <section className="share-notebook-add-people-popup">
+                        <div className="input-wrapper">
                             <input type="text" className="form-control" placeholder="Type Name to Add" id="type-to-add" onChange={this._handleAddNewUser}/>
                         </div>
-                    </div>
-
-                    <div className="popup-body-holder add-new">
-                        {_suggestions}
-                    </div>
-
+                        <div className="suggestions-wrapper">
+                            {_suggestions}
+                        </div>
+                    </section>
                 </div>
 
                 {this.getPopupAddUser()}
@@ -484,70 +490,75 @@ export class  SharedUsers extends React.Component {
         let _allUsers = this.props.sharedUserList.map(function(user,key){
 
             return (
-                <div>
+                <div className="user-row">
                     {
                         (user.shared_status == 3) ?
-                            <div className="user-block shared clearfix" key={key}>
-                                <div className="separator"></div>
-                                <div className="img-holder">
-                                    <img src={user.profile_image} alt="User"/>
-                                </div>
-                                <div className="user-details">
-                                    <h3 className="user-name shared">{user.user_name}</h3>
-
+                            <div className="shared-user" key={key}>
+                                <img className="user-image img-circle" src={user.profile_image} alt="User"/>
+                                <div className="name-wrapper">
+                                    <p className="name">{user.user_name}</p>
                                     {
                                         (typeof user.school != 'undefined') ?
-                                            <p className="more-info shared">{user.school}</p>
+                                            <p className="name-title">{user.school}</p>
                                             :
-                                            <p className="more-info shared">{user.company_name}</p>
+                                            <p className="name-title">{user.company_name}</p>
                                     }
-
                                 </div>
                                 {
-                                    (_notebook.owned_by == 'me')?
-                                        <div>
-                                            <div className="action add-new">
-                                                <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
-                                                    <i className="fa fa-minus" aria-hidden="true"></i>
-                                                </button>
-                                            </div>
-                                            <div className="permission">
-                                                <select className="pg-custom-input"
+                                    (_notebook.owned_by == 'me') ?
+
+                                        <div className="share-opt-holder clearfix">
+                                            <div className="shared-privacy">
+                                                <select className="privacy-selector"
                                                         onChange={(event)=>_this.props.changePermissions(event, user)}
                                                         value={user.shared_type}>
                                                     <option value="1">Read Only</option>
                                                     <option value="2">Read/Write</option>
                                                 </select>
                                             </div>
+                                            <div className="action">
+                                                <span className="remove-people"
+                                                      onClick={()=>_this.props.handleClick(user)}></span>
+                                            </div>
+                                            {_this.props.removeSharedUser()}
+                                        </div> :
+
+                                        <div className="share-opt-holder clearfix">
+                                            <div className="shared-privacy">
+                                                <p className="request-pending">{(user.shared_type == "1") ? "Read Only" : "Read/Write"}</p>
+                                            </div>
                                             {_this.props.removeSharedUser()}
                                         </div>
-                                        : null
                                 }
-                            </div> :
-                            <div className="user-block shared clearfix" key={key}>
-                                <div className="separator"></div>
-                                <div className="img-holder">
-                                    <img src={user.profile_image} alt="User"/>
-                                </div>
-                                <div className="user-details">
-                                    <h3 className="user-name shared">{user.user_name}</h3>
 
+                            </div> :
+
+                            <div className="shared-user" key={key}>
+                                <img className="user-image img-circle" src={user.profile_image} alt="User"/>
+                                <div className="name-wrapper">
+                                    <p className="name">{user.user_name}</p>
                                     {
                                         (typeof user.school != 'undefined') ?
-                                            <p className="more-info shared">{user.school}</p>
+                                            <p className="name-title">{user.school}</p>
                                             :
-                                            <p className="more-info shared">{user.company_name}</p>
+                                            <p className="name-title">{user.company_name}</p>
                                     }
+                                </div>
 
+                                <div className="share-opt-holder clearfix">
+                                    <div className="shared-privacy">
+                                        <p className="request-pending">Request Pending</p>
+                                    </div>
+                                    {
+                                        (_notebook.owned_by == 'me') ?
+                                        <div className="action">
+                                        <span className="remove-people"
+                                              onClick={()=>_this.props.handleClick(user)}></span>
+                                        </div> : null
+                                    }
+                                    {_this.props.removeSharedUser()}
                                 </div>
-                                <div className="action add-new">
-                                    <button className="btn-remove" onClick={()=>_this.props.handleClick(user)}>
-                                        <i className="fa fa-minus" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div className="permission">
-                                    <p className="req-pending">Request Pending</p>
-                                </div>
+
                             </div>
                     }
                 </div>
@@ -555,7 +566,7 @@ export class  SharedUsers extends React.Component {
         });
 
         return (
-            <div className="shared-users-container" style={{overflowY: this.props.scrollProp}}>
+            <div className="notebook-alluser-wrapper" style={{overflowY: this.props.scrollProp, border: "none", boxShadow: "none", maxHeight: "136px"}}>
                 {_allUsers}
             </div>
         )
@@ -568,8 +579,12 @@ export class NoteList extends React.Component {
         super(props);
 
         this.state = {
-            isCollapsed : true
+            isCollapsed : true,
+            show: false ,
+            sharedStatus: false
         };
+
+        this.userAdded = this.userAdded.bind(this);
     }
 
     onNotebookExpand(){
@@ -579,11 +594,54 @@ export class NoteList extends React.Component {
         });
     }
 
+    userAdded(){
+        this.setState({
+            sharedStatus: true
+        });
+    }
+
     render (){
 
         let notebook = this.props.notebook;
         let showConfirm = this.props.showConfirm;
         let showNotePopup = this.props.showNotePopup;
+        let _this = this;
+
+        let notebookClr = notebook.notebook_color;
+        let borderClr= "#828182";
+
+        let i = (
+            <Popover id="popover-contained" className={(notebook.owned_by == 'me') ? "popup-holder share-notebook" : "popup-holder share-notebook other"} style={{width: "438px", marginLeft: "24px"}}>
+                <SharePopup notebook={notebook} onUserAdd={this.userAdded} onLoadNotes={this.props.onLoadNotes}/>
+            </Popover>
+        );
+
+        switch(notebookClr) {
+            case "#ed1e7a":
+                borderClr = "#f57fb4";
+                break;
+            case "#00a6ef":
+                borderClr = "#b3e4fa";
+                break;
+            case "#a6c74a":
+                borderClr = "#e6efcc";
+                break;
+            case "#bebfbf":
+                borderClr = "#dedfdf";
+                break;
+            case "#000000":
+                borderClr = "#828182";
+                break;
+            case "#038247":
+                borderClr = "#D2E3A4";
+                break;
+            case "#000f75":
+                borderClr = "#7fd2f7";
+                break;
+            case "#b21e53":
+                borderClr = "#b21e53";
+                break;
+        }
 
         return (
 
@@ -601,6 +659,21 @@ export class NoteList extends React.Component {
                                         <div className="logo-shader"></div>
                                     </div>
                                     <h3 className="name-wrapper">{notebook.notebook_name}</h3>
+                                    {
+                                        (notebook.notebook_name != "My Notes")?
+                                        <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                            <div className="share-notebook">
+                                            {
+                                                (notebook.is_shared) ?
+                                                    <span className="sharedIcon"></span>
+                                                    :
+                                                    <span className="notebook-share-icon"></span>
+                                            }
+                                            </div>
+                                        </OverlayTrigger>
+                                        :
+                                        null
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -610,7 +683,8 @@ export class NoteList extends React.Component {
                         <div className="row">
                             <div className="notebook-content-wrapper">
 
-                                <NoteThumb noteBook={notebook} catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm} showNotePopup={showNotePopup} />
+                                <NoteThumb noteBook={notebook} catData={notebook.notes} catID={notebook.notebook_id} showConfirm={showConfirm}
+                                           showNotePopup={showNotePopup} borderClr={borderClr} notebookColor={notebook.notebook_color}/>
 
 
                                 {(notebook.notes.length > 4) ? <div className="see-all" onClick={this.onNotebookExpand.bind(this)}>
@@ -698,7 +772,7 @@ export class NoteThumb extends React.Component{
             }
             return (
                 <div className="notebook-col" id={note.note_id} key={key}>
-                    <div className="notebook-item">
+                    <div className="notebook-item"  style={{boxShadow : "0 1px 3px " + note.note_color}}>
                         <a href="javascript:void(0)" onClick={()=>_this.editNote(_notebook,note,_notebook_props)}>
                             <div className="time-wrapper">
                                 <p className="date-created">{note.updated_at.createdDate}</p>
@@ -710,7 +784,7 @@ export class NoteThumb extends React.Component{
                             </div>
                         </a>
                         <span className="note-delete-btn" onClick={()=>_this.showConfirm(note.note_id)}></span>
-
+                        <p className="note-owner" style={{color : note.note_color}}>{note.note_owner}</p>
                     </div>
                 </div>
             )
@@ -721,9 +795,9 @@ export class NoteThumb extends React.Component{
             <div className="notebook-items-wrapper">
                 {
                     (_notebook_props.shared_privacy == _notes_read_write)? <div className="notebook-col">
-                            <div className="notebook-item create-note" onClick={()=>_this.addNewNote(_notebook)}>
-                                <i className="fa fa-plus"></i>
-                               <p className="add-note-text">Create a new note</p>
+                            <div className="notebook-item create-note" style={{borderColor: this.props.notebookColor}} onClick={()=>_this.addNewNote(_notebook)}>
+                                <i className="fa fa-plus" style={{color: this.props.notebookColor}}></i>
+                               <p className="add-note-text" style={{color: this.props.notebookColor}}>Create a new note</p>
                             </div>
                         </div>:null
                 }

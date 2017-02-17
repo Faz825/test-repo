@@ -628,8 +628,70 @@ a.rc-time-picker-panel-clear-btn {
     background-color: transparent;
 }
 
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action{
-  margin-left: 165px;
+.share-notebook .sharedIcon{
+    margin-top: 3px;
+    width: 23px;
+    height: 18px;
+    display: block;
+    opacity: 0.8;
+    background: url(../images/friends-icon.png) no-repeat 0 0;
+}
+
+.popup-holder.share-notebook {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    max-width: 438px;
+}
+.popup-holder.share-notebook.other .arrow{
+    top: 88px !important;
+}
+.popup-holder.share-notebook .arrow{
+    top: 106px !important;
+    z-index: 1;
+}
+.popup-holder.share-notebook .arrow{
+
+}
+.popup-holder.share-notebook .popover-content {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+.popup-holder.share-notebook .popover-content .notebook-alluser-wrapper{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    vertical-align: baseline;
+    background: transparent;
+    width: 100%;
+}
+
+.popup-holder.share-notebook .popover-content .notebook-alluser-wrapper .user-row {
+    width: 98%;
+}
+
+.popover.share-notebook-new {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    max-width: 331px;
+    width: 331px;
+    margin-top: 40px;
+}
+.popover.share-notebook-new .arrow{
+    top: -10px !important;
+    z-index: 1;
+}
+.popover.share-notebook-new .arrow:after{
+    border-right-color: transparent;
+}
+.popover.share-notebook-new .popover-content {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0px;
 }
 
 /* Footer on collapse */

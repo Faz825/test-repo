@@ -112,12 +112,12 @@ var NotesController ={
 
                         },
                         function prepareNoteBook(callBack){
-                            var _acceptedSharedUsers = 0
-                            for(var inc = 0; inc < notebook.shared_users.length; inc++){
-                                if(notebook.shared_users[inc].status == NoteBookSharedRequest.REQUEST_ACCEPTED){
-                                    _acceptedSharedUsers++;
-                                }
-                            }
+                            // var _acceptedSharedUsers = 0
+                            // for(var inc = 0; inc < notebook.shared_users.length; inc++){
+                            //     if(notebook.shared_users[inc].status == NoteBookSharedRequest.REQUEST_ACCEPTED){
+                            //         _acceptedSharedUsers++;
+                            //     }
+                            // }
 
                             var _notebook = {
                                 notebook_id:notebook._id,
@@ -126,7 +126,7 @@ var NotesController ={
                                 notebook_user:notebook.user_id,
                                 notebook_shared_users:notebook.shared_users,
                                 notebook_updated_at:notebook.updated_at,
-                                is_shared: (_acceptedSharedUsers > 0)? true:false,
+                                is_shared: (notebook.shared_users.length > 0)? true:false,
                                 shared_privacy: NoteBookSharedMode.READ_WRITE,
                                 owned_by: 'me',
                                 notes:[]
@@ -158,7 +158,7 @@ var NotesController ={
                                         },
                                         function finalizeNoteSet(note_owner, callBack) {
                                             var c_index = grep(_shared_users, function(e){ return e.user_id == __note.user_id; }),
-                                                _hexColor = '#e3e7ea';
+                                                _hexColor = 'rgba(0, 0, 0, 0.5)';
 
                                             if(c_index.length > 0 && (__note.user_id == c_index[0].user_id)){
                                                 _hexColor = c_index[0].user_note_color;
@@ -309,7 +309,8 @@ var NotesController ={
                                     var usrObj = {
                                         user_id:resultSet.user_id,
                                         user_name:csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
-                                        profile_image:csResultSet.result[0]['images']['profile_image']['http_url']
+                                        profile_image:csResultSet.result[0]['images']['profile_image']['http_url'],
+                                        user_title: (csResultSet.result[0]['cur_designation'] != null) ? csResultSet.result[0]['cur_designation'] : "" + " " + (csResultSet.result[0]['cur_designation'] !=null) ? csResultSet.result[0]['cur_designation'] : ""
                                     };
                                     callBack(null, {
                                         notebook: resultSet,
@@ -390,7 +391,7 @@ var NotesController ={
                                                 },
                                                 function finalizeNoteSet(note_owner, callBack) {
                                                     var c_index = grep(_shared_users, function(e){ return e.user_id == __note.user_id; }),
-                                                        _hexColor = '#e3e7ea';
+                                                        _hexColor = 'rgba(0, 0, 0, 0.5)';
 
                                                     if(c_index.length > 0 && (__note.user_id == c_index[0].user_id)){
                                                         _hexColor = c_index[0].user_note_color;
@@ -605,7 +606,7 @@ var NotesController ={
                     },
                     function saveInDB(callBack){
                         var randColor = _randColor.randomColor({
-                            luminosity: 'light',
+                            luminosity: 'dark',
                             hue: 'random'
                         });
                         var _sharingUser = {
@@ -723,7 +724,7 @@ var NotesController ={
 
                                 //Find User from Elastic search
                                 ES.search(query,function(csResultSet){
-                                    if(csResultSet.result.length >0 && csResultSet.results != null){
+                                    if(csResultSet.result.length >0 && csResultSet.result != null){
                                         usrObj.user_name = csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'];
                                         usrObj.profile_image = csResultSet.result[0]['images']['profile_image']['http_url'];
                                     }
@@ -978,7 +979,7 @@ var NotesController ={
                     _async.eachSeries(_notebook_shared_users, function(user,callBack){
 
                         var randColor = _randColor.randomColor({
-                            luminosity: 'bright',
+                            luminosity: 'dark',
                             hue: 'random'
                         });
 

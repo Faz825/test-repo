@@ -2146,7 +2146,7 @@ var UserControler = {
                                         });
                                         if (_user.length == 1) {
                                             var index = my_connections.indexOfProperty('user_id', _user[0].user_id);
-                                            if (_notebookSharedUsers[inc].status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
+                                            // if (_notebookSharedUsers[inc].status == NoteBookSharedRequest.REQUEST_ACCEPTED) {
                                                 var usrObj = {
                                                     user_id: my_connections[index].user_id,
                                                     notebook_id: notebookId,
@@ -2156,7 +2156,7 @@ var UserControler = {
                                                     profile_image: my_connections[index].images.profile_image.http_url
                                                 };
                                                 shared_users.push(usrObj);
-                                            }
+                                            // }
                                         }
                                     }
                                 }
