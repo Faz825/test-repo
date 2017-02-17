@@ -322,7 +322,7 @@ export default class Index extends React.Component {
 
             this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1,
                 editNoteTitle : "Note Title", editNote : "", notebookObj:notebook_obj, isAutoTitled:true,
-                noteOwnerProfileImage: this.state.loggedUser.profile_image,
+                noteOwnerProfileImage: (this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image,
                 noteOwner: this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name,
                 noteCreatedTime: Lib.timeAgo(now)
             });
