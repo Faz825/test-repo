@@ -246,7 +246,7 @@ export class SharePopup extends React.Component{
                             (_notebook.owned_by == 'me')?
 
                             <div className="shared-user">
-                                <img className="user-image img-circle" src={this.state.loggedUser.profile_image} alt="User"/>
+                                <img className="user-image img-circle" src={(this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image} alt="User"/>
                                 <div className="name-wrapper">
                                     <p className="name">{this.state.loggedUser.first_name} {this.state.loggedUser.last_name}</p>
                                     <p className="name-title">

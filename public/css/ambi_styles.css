@@ -10262,7 +10262,7 @@ header {
     background: #fff;
     padding: 10px 12px 0px;
     position: relative;
-    z-index: 1;
+    z-index: 6;
 }
 header .branding {
     float: left;
@@ -21280,7 +21280,7 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-tim
     width: 100%;
     height: 20px;
     transition: bottom ease 0.5s;
-    z-index: 99;
+    z-index: 5;
 }
 .chat-bubble-holder.menu-hidden {
     bottom: 0;
