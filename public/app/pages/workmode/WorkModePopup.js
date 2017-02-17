@@ -262,7 +262,6 @@ export default class WorkModePopup extends React.Component {
     }
 
     onWorkModeSet(e) {
-        this.props.closePopUp();
 
         this.onTimeSet();
 
@@ -326,6 +325,9 @@ export default class WorkModePopup extends React.Component {
             }
 
         }
+
+        this.props.closePopUp();
+        return false;
 
         var _wm = {
             rightBottom: (data.mode.indexOf("bars") != -1 || data.mode.indexOf("all") != -1) ? true : false,
