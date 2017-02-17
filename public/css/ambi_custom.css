@@ -1325,6 +1325,14 @@ body .modal-backdrop{
     left: 0px;
 }
 
+.workmode-popup-wrapper .wm-error{
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: "Work Sans";
+    font-size: 14px;
+    color: #9E2252;
+}
+
 .group-dashboard-container .group-content .list-holder .list-wrapper .list-item .list-item-title {
     width: 70px;
     word-wrap: break-word;
