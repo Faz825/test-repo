@@ -297,6 +297,13 @@ export default class AmbiLayout extends React.Component {
                 }
                 <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)}/>
                 <QuickChatDummy dummyChatList={this.state.dummyChatArray} closeQuickChat={this.closeDummyQuickChat.bind(this)} isNavHidden={this.state.isNavHidden}/>
+                <section className="video-chat-wrapper">
+                    <div className="inner-container clearfix">
+                        <span className="open-chat-window"></span>
+                        <div className="active-chat-holder clearfix">
+                        </div>
+                    </div>
+                </section>
                 <FooterHolder blockBottom={this.state.rightBottom}
                               blockSocialNotification={this.state.socialNotifications}
                               onWorkmodeClick={this.onWorkmodeClick.bind(this)}
