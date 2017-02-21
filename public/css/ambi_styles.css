@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,6 +1418,7 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3118,6 +3119,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3670,6 +3672,7 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -21248,6 +21251,14 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-tim
   font-weight: 400;
   line-height: 20px;
 }
+.popup-holder .work-mode-popup-wrapper .wm-error {
+  padding: 5px 0;
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+  background: #9E2252;
+}
 .popup-holder .work-mode-popup-wrapper .footer {
   overflow: hidden;
 }
@@ -21264,6 +21275,9 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-tim
   padding-top: 15px;
   padding-bottom: 15px;
   letter-spacing: 2px;
+}
+.popup-holder .work-mode-popup-wrapper .footer .work-mode:hover {
+  background: #D7186B;
 }
 
 .settings-icon {
