@@ -621,7 +621,8 @@ a.rc-time-picker-panel-clear-btn {
 }
 
 .note-popup-dialog .edit-note-popup .rich-editor-holder .quill-toolbar{
-    width: 80%;
+    width: 91.5%;
+    border-bottom: 1px solid #979797;
 }
 
 .create-notebook.modalPopup {

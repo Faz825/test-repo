@@ -467,7 +467,7 @@ export default class Index extends React.Component{
         const { value, suggestions, suggestionsList } = this.state;
 
         const inputProps = {
-            placeholder: 'Type a name...',
+            placeholder: 'type a name...',
             value,
             onChange: this.onChange,
             className: 'form-control'
@@ -498,7 +498,7 @@ export default class Index extends React.Component{
                                     <div className="folder-name">
                                         <div className="col-sm-12 input-group">
                                             <p>Name your folder</p>
-                                            <input type="text" className="form-control" value={this.state.CFName} onChange={this.handleNameChange.bind(this)} placeholder="Type a category name..." />
+                                            <input type="text" className="form-control" value={this.state.CFName} onChange={this.handleNameChange.bind(this)} placeholder="type a category name..." />
                                             {
                                                 (this.state.isFolderNameEmpty)?
                                                     <span className="errorMsg">Please add a Folder name</span>

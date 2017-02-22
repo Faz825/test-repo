@@ -232,7 +232,7 @@ export class SharePopup extends React.Component{
                     <div className="row">
                         <div className="col-sm-12">
                             <div className="header-wrapper">
-                                <h3 className="popup-title">People in this notebook</h3>
+                                <h3 className="popup-title">people in this notebook</h3>
                                 <input type="text" className="form-control search-people" placeholder="Search" onChange={(event)=>this.filterSharedUsers(_notebook.notebook_id, event)} />
                                     <span className="search-ico"></span>
                             </div>
@@ -462,7 +462,7 @@ export class SharePopupNewUsr extends React.Component{
                 <div className="popup-holder">
                     <section className="share-notebook-add-people-popup">
                         <div className="input-wrapper">
-                            <input type="text" className="form-control" placeholder="Type Name to Add" id="type-to-add" onChange={this._handleAddNewUser}/>
+                            <input type="text" className="form-control" placeholder="type Name to Add" id="type-to-add" onChange={this._handleAddNewUser}/>
                         </div>
                         <div className="suggestions-wrapper">
                             {_suggestions}

@@ -77,7 +77,7 @@ export default class Index extends React.Component {
             if(data.status.code == 200){
                 if(data.notes.length == 0 || data.notes[0] == null){
                     this.setState({catNameValue: "My Notes"});
-                    this.setState({catColor: "#0272ae"});
+                    this.setState({catColor: "#038247"});
                     this.setState({isDefault: 1});
                     this.addDefaultNoteBook();
                 } else{
@@ -211,7 +211,7 @@ export default class Index extends React.Component {
                                     <div className="notebook-name">
                                         <div className="col-sm-12 input-group name-holder">
                                             <p>Name your notebook</p>
-                                            <input type="text" className="form-control" placeholder="Type a category name..." value={this.state.catNameValue}
+                                            <input type="text" className="form-control" placeholder="type a category name..." value={this.state.catNameValue}
                                                    name="NoteCategoryName"
                                                    onChange={this.handleChange.bind(this)}/>
                                         </div>
@@ -250,7 +250,7 @@ export default class Index extends React.Component {
                                     <div className="invite-people">
                                         <div className="col-sm-12 input-group">
                                             <p>Invite some people</p>
-                                            <input type="text" className="form-control" placeholder="Type a name..."/>
+                                            <input type="text" className="form-control" placeholder="type a name..."/>
                                                 <div className="user-holder"></div>
                                         </div>
                                     </div>
@@ -480,7 +480,7 @@ export default class Index extends React.Component {
                                     </div>
                                 </section>
                                 <section className="note-body clearfix">
-                                    <Scrollbars style={{ height: 628 }}>
+                                    <Scrollbars style={{ height: 570 }}>
                                         <RichTextEditor note={this.state.editNote} noteText={this.getNoteData} />
                                     </Scrollbars>
                                     {

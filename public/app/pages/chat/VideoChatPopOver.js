@@ -29,16 +29,28 @@ export default class VideoChatPopOver extends React.Component {
                                 <span className="maximize-chat"></span>
                             </div>
                             <div className="participants-container">
-                                <div className="participant active">
-                                    <img src="images/call-center/participants-1.png" className="user-image" />
+                                <div className="participant active" style={{backgroundImage: "url(images/video-chat/user_1.png)"}}>
                                     <div className="action-bar">
                                         <span className="video-control"></span>
                                         <span className="voice-control"></span>
                                         <span className="call-control"></span>
                                     </div>
                                 </div>
-                                <div className="participant">
-                                    <img src="images/call-center/participants-1.png" className="user-image" />
+                                <div className="participant" style={{backgroundImage: "url(images/video-chat/user_2.png)"}}>
+                                    <div className="action-bar">
+                                        <span className="video-control"></span>
+                                        <span className="voice-control"></span>
+                                        <span className="call-control"></span>
+                                    </div>
+                                </div>
+                                <div className="participant" style={{backgroundImage: "url(images/video-chat/user_3.png)"}}>
+                                    <div className="action-bar">
+                                        <span className="video-control"></span>
+                                        <span className="voice-control"></span>
+                                        <span className="call-control"></span>
+                                    </div>
+                                </div>
+                                <div className="participant" style={{backgroundImage: "url(images/video-chat/user_4.png)"}}>
                                     <div className="action-bar">
                                         <span className="video-control"></span>
                                         <span className="voice-control"></span>
