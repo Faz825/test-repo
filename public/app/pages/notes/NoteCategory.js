@@ -225,6 +225,15 @@ export class SharePopup extends React.Component{
             </Popover>
         );
 
+        let profileImg = (_notebook.owned_by == "me") ?
+            (this.state.loggedUser.hasOwnProperty('profile_image') && this.state.loggedUser.profile_image != 'undefined') ?
+                (this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image
+                : "/images/default-profile-pic.png"
+            :
+            (_notebook.notebook_user.hasOwnProperty('profile_image') && _notebook.notebook_user.profile_image != 'undefined') ?
+                (_notebook.notebook_user.profile_image == "") ? "/images/default-profile-pic.png" : _notebook.notebook_user.profile_image
+                : "/images/default-profile-pic.png";
+
         return(
 
             <section className="share-notebook-popup">
@@ -246,7 +255,7 @@ export class SharePopup extends React.Component{
                             (_notebook.owned_by == 'me')?
 
                             <div className="shared-user">
-                                <img className="user-image img-circle" src={(this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image} alt="User"/>
+                                <img className="user-image img-circle" src={profileImg} alt="User"/>
                                 <div className="name-wrapper">
                                     <p className="name">{this.state.loggedUser.first_name} {this.state.loggedUser.last_name}</p>
                                     <p className="name-title">
@@ -262,7 +271,7 @@ export class SharePopup extends React.Component{
                             </div> :
 
                             <div className="shared-user">
-                                <img className="user-image img-circle" src={_notebook.notebook_user.profile_image} alt="User"/>
+                                <img className="user-image img-circle" src={profileImg} alt="User"/>
                                 <div className="name-wrapper">
                                     <p className="name">{_notebook.notebook_user.user_name}</p>
                                     <p className="name-title">{_notebook.notebook_user.user_title}</p>
@@ -439,7 +448,8 @@ export class SharePopupNewUsr extends React.Component{
                 return <div/>
             }
 
-            let profileImg = (suggestion.images.hasOwnProperty('profile_image') && suggestion.images.profile_image != 'undefined') ?
+            let profileImg = (suggestion.images.hasOwnProperty('profile_image') && suggestion.images.profile_image != 'undefined'
+            &&  suggestion.images.profile_image.hasOwnProperty('http_url') && suggestion.images.profile_image.http_url != 'undefined') ?
                 (suggestion.images.profile_image.http_url == "") ? "/images/default-profile-pic.png" : suggestion.images.profile_image.http_url
                 : "/images/default-profile-pic.png";
 
@@ -584,6 +594,7 @@ export class NoteList extends React.Component {
         super(props);
 
         this.state = {
+            loggedUser:Session.getSession('prg_lg'),
             isCollapsed : true,
             show: false ,
             sharedStatus: false
@@ -614,6 +625,15 @@ export class NoteList extends React.Component {
 
         let notebookClr = notebook.notebook_color;
         let borderClr= "#828182";
+
+        let profileImg = (notebook.owned_by == "me") ?
+            (this.state.loggedUser.hasOwnProperty('profile_image') && this.state.loggedUser.profile_image != 'undefined') ?
+                (this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image
+                : "/images/default-profile-pic.png"
+            :
+            (notebook.notebook_user.hasOwnProperty('profile_image') && notebook.notebook_user.profile_image != 'undefined') ?
+                (notebook.notebook_user.profile_image == "") ? "/images/default-profile-pic.png" : notebook.notebook_user.profile_image
+                : "/images/default-profile-pic.png";
 
         let i = (
             <Popover id="popover-contained" className={(notebook.owned_by == 'me') ? "popup-holder share-notebook" : "popup-holder share-notebook other"} style={{width: "438px", marginLeft: "24px"}}>
@@ -659,7 +679,7 @@ export class NoteList extends React.Component {
                             <div className="notebook-cover">
                                 <div className="content-wrapper">
                                     <div className="logo-wrapper">
-                                        <img src="/images/default-profile-pic.png" className="img-rounded"/>
+                                        <img src={profileImg} className="img-rounded"/>
                                         <div className="logo-shader"></div>
                                         <div className="logo-shader"></div>
                                     </div>
