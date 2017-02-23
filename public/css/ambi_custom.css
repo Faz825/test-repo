@@ -962,6 +962,11 @@ footer .notification-alert-holder.slideOut{
           transform: scale(0);
 }
 
+/* Priority */
+.draftJsPriorityTagPlugin__prioritytag__3miws {
+    color: #ff0000;
+}
+
 .time-wrapper .rc-time-picker-input {
     margin-top: 0px;
     margin-left: 3px;

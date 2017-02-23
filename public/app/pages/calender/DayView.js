@@ -62,6 +62,7 @@ export default class DayView extends Component {
         this.selectedEvent = this.props.selectedEvent;
         this.currentDay = this.state.currentDay;
         this.loggedUser = user;
+
         this.addEvent = this.addEvent.bind(this);
         this.updateEvent = this.updateEvent.bind(this);
         this.nextDay = this.nextDay.bind(this);
@@ -174,6 +175,14 @@ export default class DayView extends Component {
             return;
         }
 
+        var priority = 3;
+        if(contentState.hasText()) {
+            priority = (plainText.includes("!2")) ? 2 : priority;
+            priority = (plainText.includes("!1")) ? 1 : priority;
+        }
+
+        console.log(priority);
+
         // get shared users from SharedUsers field
         const sharedUsers = this.sharedWithIds;
         const postData = {
@@ -185,7 +194,8 @@ export default class DayView extends Component {
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
             calendar_origin : this.props.calendarOrigin,
-            group_id : (this.props.calendarOrigin == 2) ? this.props.groupId : null // Only group calendar have group id
+            group_id : (this.props.calendarOrigin == 2) ? this.props.groupId : null, // Only group calendar have group id,
+            priority : priority
         };
 
         // the button dissabled untill the response comes

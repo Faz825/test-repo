@@ -7,7 +7,7 @@
 var  mongoose = require('mongoose'),
      Schema   = mongoose.Schema;
 
-GLOBAL.CalendarEventsConfig={
+GLOBAL.CalendarEventsConfig = {
     CACHE_PREFIX :"shared_events:"
 };
 
@@ -27,7 +27,8 @@ GLOBAL.CalendarStatus = {
 GLOBAL.CalendarSharedStatus = {
     REQUEST_PENDING: 1,
     REQUEST_REJECTED: 2,
-    REQUEST_ACCEPTED: 3
+    REQUEST_ACCEPTED: 3,
+    EVENT_COMPLETED : 4
 };
 
 GLOBAL.CalenderPriority = {
@@ -40,6 +41,18 @@ GLOBAL.CalendarOrigin = {
     PERSONAL_CALENDAR: 1,
     GROUP_CALENDAR: 2
 };
+
+var SharedUsersListSchema = new Schema({
+    user_id: {
+        type: Schema.ObjectId,
+        ref: 'User',
+        default: null
+    },
+    shared_status: {
+        type : Number,
+        default : CalendarSharedStatus.REQUEST_PENDING
+    }
+});
 
 /**
  * CalenderEvent Basic information
@@ -101,12 +114,7 @@ var CalendarEventSchema = new Schema({
         type : String,
         default : null
     },
-
-    shared_users: {
-        type: Array,
-        default: []
-    },
-
+    shared_users: [SharedUsersListSchema],
     moved_nextday: {
         type : Boolean,
         default : false

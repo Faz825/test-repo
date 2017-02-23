@@ -199,9 +199,6 @@ export default class WeekDayEventPopUp extends React.Component {
         const sharedUsers = this.state.sharedWithIds;
         // const sharedUsers = this.refs.SharedUserField.sharedWithIds;
 
-        console.log(this.props.calendarOrigin);
-        console.log(this.props.groupId);
-        console.log("-------------------");
         const postData = {
             description : editorContentRaw,
             plain_text : plainText,

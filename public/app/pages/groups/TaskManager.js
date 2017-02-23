@@ -69,6 +69,7 @@ export default class TaskManager extends React.Component{
     componentWillReceiveProps(nextProps) {}
 
     changePriorityTab(priority) {
+
         this.setState({defaultPriorityTab : priority});
     }
 
@@ -91,7 +92,7 @@ export default class TaskManager extends React.Component{
                         key={key}
                         task={event}
                         loadNewTasks={() => _this.loadNewTasks()}
-                         />
+                        loadPriorityTask={_this.changePriorityTab}/>
         });
 
         return (
@@ -175,7 +176,7 @@ export class NewTask extends React.Component{
         });
     }
 
-    acceptTask(taskId) {
+    acceptTask(taskId, taskPriority) {
 
         var postData = {
             event_id : taskId,
@@ -190,8 +191,9 @@ export class NewTask extends React.Component{
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
                 if (data.status.code == 200) {
-                    console.log("THE TASK IS ACCEPTED");
+
                     this.props.loadNewTasks();
+                    this.props.loadPriorityTask(taskPriority);
                 }
             }.bind(this),
             error: function (request, status, error) {
@@ -218,36 +220,7 @@ export class NewTask extends React.Component{
                 </div>
                 <div className="task-action col-sm-3">
                     <button className="btn btn-decline" onClick={() => this.declineTask(this.state.task._id)}>Decline</button>
-                    <button className="btn btn-accept" onClick={() => this.acceptTask(this.state.task._id)}>Accept</button>
-                </div>
-            </div>
-        );
-    }
-}
-
-
-/**
- * Existing task element
- */
-export class PriorityTask extends React.Component{
-
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-
-    render() {
-        return (
-            <div className="task-wrapper clearfix">
-                <div className="task-info ticked pull-left">
-                    <p className="task-title">Call with mike on marketing startegy</p>
-                    <p className="task-members clearfix">People on this task:
-                        <span className="mem-name">Saad El Yamani,</span>
-                        <span className="mem-name">Soham Khaitan</span>
-                    </p>
-                </div>
-                <div className="task-time pull-right">
-                    <p className="time">Wednesday, 10am</p>
+                    <button className="btn btn-accept" onClick={() => this.acceptTask(this.state.task._id, this.state.task.priority)}>Accept</button>
                 </div>
             </div>
         );
@@ -255,7 +228,7 @@ export class PriorityTask extends React.Component{
 }
 
 /**
- * Existing task list element
+ * Priority tasks list element
  */
 export class PriorityTaskList extends React.Component{
 
@@ -284,7 +257,6 @@ export class PriorityTaskList extends React.Component{
 
     componentWillReceiveProps(nextProps) {
 
-
         if(nextProps.currentGroup != this.state.currentGroup) {
             this.setState({currentGroup : nextProps.currentGroup});
             this.loadEvents();
@@ -293,7 +265,6 @@ export class PriorityTaskList extends React.Component{
         if(nextProps.priority != this.state.priority) {
             this.setState({priority : nextProps.priority});
             this.priority = nextProps.priority;
-            console.log("PRIORITY IS CHANGED");
             this.loadEvents();
         }
     }
@@ -319,7 +290,6 @@ export class PriorityTaskList extends React.Component{
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
                 if (data.status.code == 200) {
-                    console.log(data);
                     this.setState({tasks: data.events, tasksCount: data.event_count});
                 }
             }.bind(this),
@@ -333,7 +303,7 @@ export class PriorityTaskList extends React.Component{
 
         var _this = this;
         var taskList = this.state.tasks.map(function(task,key){
-            return <PriorityTask />
+            return <PriorityTask task={task} />
         });
 
 
@@ -345,6 +315,62 @@ export class PriorityTaskList extends React.Component{
                 :
                     <p>There are no tasks under priority {this.props.priority}</p>
                 }
+            </div>
+        );
+    }
+}
+
+
+/**
+ * Priority task element
+ */
+export class PriorityTask extends React.Component{
+
+    constructor(props) {
+        let user =  Session.getSession('prg_lg');
+        super(props);
+        this.state = {
+            task : this.props.task,
+            user : user
+        };
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+        if(nextProps.task != this.state.task) {
+            this.setState({task : nextProps.task});
+        }
+    }
+
+    render() {
+        console.log(this.state.task.shared_users);
+        console.log(this.state.task.plain_text);
+        console.log("===========================");
+        var _this = this;
+        var memberList = <span>Only me</span>;
+        if(this.state.task.shared_users.length > 0) {
+            var indexOfCurrentUser = -1;
+            memberList = this.state.task.shared_users.map(function(member,key){
+                return <span className="mem-name">{member.name}</span>
+            });
+
+            indexOfCurrentUser = this.state.task.shared_users.map(function(member,key){
+
+                if (member.user_id == _this.state.user.id) {
+                    indexOfCurrentUser = key;
+                }
+                return indexOfCurrentUser;
+            });
+        }
+        return (
+            <div className="task-wrapper clearfix">
+                <div className="task-info ticked pull-left">
+                    <p className="task-title">{this.state.task.plain_text}</p>
+                    <p className="task-members clearfix">People on this task : {memberList}</p>
+                </div>
+                <div className="task-time pull-right">
+                    <p className="time">{moment(this.state.task.start_date_time).format('dddd, h.mma')}</p>
+                </div>
             </div>
         );
     }
