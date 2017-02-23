@@ -142,19 +142,21 @@ var NotesController ={
 
                                     _async.waterfall([
                                         function getUser(callBack) {
-                                            var _search_param = {
-                                                    _id:__note.user_id
-                                                },
-                                                showOptions ={
-                                                    w_exp:false,
-                                                    edu:false
-                                                };
 
-                                            User.getUser(_search_param,showOptions,function(resultSet){
-                                                if(resultSet.status ==200 ){
-                                                    callBack(null,resultSet.user)
-                                                }
+                                            var query={
+                                                q:"user_id:"+__note.user_id.toString(),
+                                                index:'idx_usr'
+                                            };
+                                            ES.search(query,function(csResultSet){
+                                                var usrObj = {
+                                                    user_id:resultSet.user_id,
+                                                    user_name:csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
+                                                    profile_image:csResultSet.result[0]['images']['profile_image']['http_url'],
+                                                    user_title: (csResultSet.result[0]['cur_designation'] != null) ? csResultSet.result[0]['cur_designation'] : "" + " " + (csResultSet.result[0]['cur_designation'] !=null) ? csResultSet.result[0]['cur_designation'] : ""
+                                                };
+                                                callBack(null,usrObj);
                                             });
+
                                         },
                                         function finalizeNoteSet(note_owner, callBack) {
                                             var c_index = grep(_shared_users, function(e){ return e.user_id == __note.user_id; }),
@@ -168,7 +170,8 @@ var NotesController ={
                                                 note_id: __note._id,
                                                 note_name: __note.name,
                                                 note_content: __note.content,
-                                                note_owner: note_owner.first_name + ' ' + note_owner.last_name,
+                                                note_owner: note_owner.user_name,
+                                                note_owner_profile_image: note_owner.profile_image,
                                                 note_color: _hexColor,
                                                 updated_at: DateTime.noteCreatedDate(__note.updated_at)
                                             };
@@ -375,18 +378,20 @@ var NotesController ={
 
                                             _async.waterfall([
                                                 function getUser(callBack) {
-                                                    var _search_param = {
-                                                            _id:__note.user_id
-                                                        },
-                                                        showOptions ={
-                                                            w_exp:false,
-                                                            edu:false
-                                                        };
 
-                                                    User.getUser(_search_param,showOptions,function(resultSet){
-                                                        if(resultSet.status ==200 ){
-                                                            callBack(null,resultSet.user)
-                                                        }
+                                                    var query={
+                                                        q:"user_id:"+__note.user_id.toString(),
+                                                        index:'idx_usr'
+                                                    };
+
+                                                    ES.search(query,function(csResultSet){
+                                                        var usrObj = {
+                                                            user_id:resultSet.user_id,
+                                                            user_name:csResultSet.result[0]['first_name']+" "+csResultSet.result[0]['last_name'],
+                                                            profile_image:csResultSet.result[0]['images']['profile_image']['http_url'],
+                                                            user_title: (csResultSet.result[0]['cur_designation'] != null) ? csResultSet.result[0]['cur_designation'] : "" + " " + (csResultSet.result[0]['cur_designation'] !=null) ? csResultSet.result[0]['cur_designation'] : ""
+                                                        };
+                                                        callBack(null,usrObj);
                                                     });
                                                 },
                                                 function finalizeNoteSet(note_owner, callBack) {
@@ -401,7 +406,8 @@ var NotesController ={
                                                         note_id: __note._id,
                                                         note_name: __note.name,
                                                         note_content: __note.content,
-                                                        note_owner: note_owner.first_name + ' ' + note_owner.last_name,
+                                                        note_owner: note_owner.user_name,
+                                                        note_owner_profile_image: note_owner.profile_image,
                                                         note_color: _hexColor,
                                                         updated_at: DateTime.noteCreatedDate(__note.updated_at)
                                                     };

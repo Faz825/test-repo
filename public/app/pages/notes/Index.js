@@ -46,7 +46,11 @@ export default class Index extends React.Component {
             staticNoteTitle:"",
             staticNote:"",
             noteAddEdit:0, // 1 - add, 2 - edit
-            notebookObj: null
+            notebookObj: null,
+            loggedUser:Session.getSession('prg_lg'),
+            noteOwnerProfileImage: null,
+            noteOwner: null,
+            noteCreatedTime: null
         };
         this.saveInterval = null;
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
@@ -73,7 +77,7 @@ export default class Index extends React.Component {
             if(data.status.code == 200){
                 if(data.notes.length == 0 || data.notes[0] == null){
                     this.setState({catNameValue: "My Notes"});
-                    this.setState({catColor: "#0272ae"});
+                    this.setState({catColor: "#038247"});
                     this.setState({isDefault: 1});
                     this.addDefaultNoteBook();
                 } else{
@@ -143,6 +147,10 @@ export default class Index extends React.Component {
 
     addDefaultNoteBook(){
 
+        if(this.state.catNameValue == ""){
+            return;
+        }
+
         let _noteBook = {
             notebookName:this.state.catNameValue,
             notebookColor:this.state.catColor,
@@ -203,7 +211,7 @@ export default class Index extends React.Component {
                                     <div className="notebook-name">
                                         <div className="col-sm-12 input-group name-holder">
                                             <p>Name your notebook</p>
-                                            <input type="text" className="form-control" placeholder="Type a category name..." value={this.state.catNameValue}
+                                            <input type="text" className="form-control" placeholder="type a category name..." value={this.state.catNameValue}
                                                    name="NoteCategoryName"
                                                    onChange={this.handleChange.bind(this)}/>
                                         </div>
@@ -242,7 +250,7 @@ export default class Index extends React.Component {
                                     <div className="invite-people">
                                         <div className="col-sm-12 input-group">
                                             <p>Invite some people</p>
-                                            <input type="text" className="form-control" placeholder="Type a name..."/>
+                                            <input type="text" className="form-control" placeholder="type a name..."/>
                                                 <div className="user-holder"></div>
                                         </div>
                                     </div>
@@ -306,15 +314,31 @@ export default class Index extends React.Component {
     showNotePopup(notebook_id, note, notebook_obj){
 
         let _this = this;
+        console.log(this.state.loggedUser);
 
         if(note == null){
-            this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1, editNoteTitle : "Note Title", editNote : "", notebookObj:notebook_obj, isAutoTitled:true});
+
+            let now = new Date();
+
+            this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1,
+                editNoteTitle : "Note Title", editNote : "", notebookObj:notebook_obj, isAutoTitled:true,
+                noteOwnerProfileImage: (this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image,
+                noteOwner: this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name,
+                noteCreatedTime: Lib.timeAgo(now)
+            });
             this.saveInterval = setInterval(function(){_this.saveNote()}, 1000);
         } else{
+            console.log(note);
             let editNoteId = note.note_id;
             let editNoteTitle = note.note_name;
             let editNote = note.note_content;
-            this.setState({isShowingNoteModal:true, noteAddEdit:2, editNoteId:editNoteId, editNoteTitle:editNoteTitle, editNote:editNote, staticNoteTitle:editNoteTitle, staticNote:editNote, notebookObj:notebook_obj});
+            this.setState({isShowingNoteModal:true, noteAddEdit:2, editNoteId:editNoteId, editNoteTitle:editNoteTitle,
+                editNote:editNote, staticNoteTitle:editNoteTitle, staticNote:editNote, notebookObj:notebook_obj,
+                noteOwnerProfileImage: note.note_owner_profile_image
+                ,
+                noteOwner: note.note_owner,
+                noteCreatedTime: note.updated_at.createdDate
+            });
             this.saveInterval = setInterval(function(){_this.saveNote()}, 1000);
         }
 
@@ -441,9 +465,9 @@ export default class Index extends React.Component {
                             <section className="edit-note-popup clearfix">
                                 <section className="inner-header clearfix">
                                     <div className="info-wrapper">
-                                        <img className="user-image img-circle" src="images/default-profile-pic.png" alt="User"/>
-                                            <p className="note-owner">by Tim Cook</p>
-                                            <p className="time-wrapper">Sunday, December 11, 2016</p>
+                                        <img className="user-image img-circle" src={this.state.noteOwnerProfileImage} alt="User"/>
+                                            <p className="note-owner">by {this.state.noteOwner}</p>
+                                            <p className="time-wrapper">{this.state.noteCreatedTime}</p>
                                     </div>
                                     <div className="options-wrapper">
                                         <span className="delete-note"></span>
@@ -456,7 +480,7 @@ export default class Index extends React.Component {
                                     </div>
                                 </section>
                                 <section className="note-body clearfix">
-                                    <Scrollbars style={{ height: 628 }}>
+                                    <Scrollbars style={{ height: 570 }}>
                                         <RichTextEditor note={this.state.editNote} noteText={this.getNoteData} />
                                     </Scrollbars>
                                     {

@@ -90,6 +90,9 @@ export default class AmbiDashboard extends React.Component {
 		        <div className="wallpaper-holder" style={wallpaper}>
 					<span className="overlay"></span>
 				</div>
+				<span className="left-top-shadow"></span>
+				<span className="left-btm-shadow"></span>
+				<span className="right-top-shadow"></span>
 	        </section>
 		);
 	}

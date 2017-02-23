@@ -612,12 +612,13 @@ export default class WorkModePopup extends React.Component {
                                 </div>
                             </div>
 
-                            {this.state.errorMessage  && this.state.errorMessage != '' ? <div className="time-selector-wrapper">{this.state.errorMessage}</div> : null}
 
 
                         </div>
 
                     </div>
+
+                    {this.state.errorMessage  && this.state.errorMessage != '' ? <div className="wm-error clearfix">{this.state.errorMessage}</div> : null}
 
                     <div className="footer">
                         {this.state.timeBlockIsVisible ?

@@ -246,7 +246,7 @@ export default class SharePopup extends React.Component{
                         <div className="row">
                             <div className="col-sm-12">
                                 <div className="header-wrapper">
-                                    <h3 className="popup-title">People in this folder</h3>
+                                    <h3 className="popup-title">people in this folder</h3>
                                 </div>
                             </div>
                         </div>
@@ -454,7 +454,7 @@ export class SharePopupNewUsr extends React.Component{
                 <section className="share-folder-add-people-popup">
                     <div className="input-wrapper">
                         <span className="input-ico"></span>
-                        <input type="text" className="form-control" placeholder="Type name" onChange={this._handleAddNewUser}/>
+                        <input type="text" className="form-control" placeholder="type name" onChange={this._handleAddNewUser}/>
                     </div>
                     <div className="suggestions-wrapper">
                         {_newUserList}

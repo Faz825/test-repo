@@ -176,57 +176,43 @@ export default class FooterHolder extends React.Component {
                             <section className={workmodeCSS}>
                                 <div className={(currPage == "calendar")? "calendar nav-item active" : "calendar nav-item"}>
                                     <a href="/calendar">
-                                        <div className="icon-holder">
-                                            <span className="icon-holder"></span>
-                                        </div>
+                                        <span className="icon-holder"></span>
                                         <p className="nav-title">Calendar</p>
                                     </a>
                                 </div>
                                 <div className={(currPage == "notes")? "notebooks nav-item active" : "notebooks nav-item"}>
-                                    <a href="#">
-                                        <div className="icon-holder">
-                                            <span className="icon-holder"></span>
-                                        </div>
+                                    <a href="/notes">
+                                        <span className="icon-holder"></span>
                                         <p className="nav-title">Notebooks</p>
                                     </a>
                                 </div>
                                 <div className={(currPage == "folders")? "folders nav-item active" : "folders nav-item"}>
                                     <a href="/folders">
-                                        <div className="icon-holder">
-                                            <span className="icon-holder"></span>
-                                        </div>
+                                        <span className="icon-holder"></span>
                                         <p className="nav-title">Folders</p>
                                     </a>
                                 </div>
                                 <div className={(currPage == "groups")? "groups nav-item active" : "groups nav-item"}>
                                     <a href="/groups">
-                                        <div className="icon-holder">
-                                            <span className="icon-holder"></span>
-                                        </div>
+                                        <span className="icon-holder"></span>
                                         <p className="nav-title">Groups</p>
                                     </a>
                                 </div>
                                 <div className={(currPage == "news")? "news nav-item active" : "news nav-item"}>
                                     <a href="#">
-                                        <div className="icon-holder">
-                                            <span className="icon-holder"></span>
-                                        </div>
+                                        <span className="icon-holder"></span>
                                         <p className="nav-title">News</p>
                                     </a>
                                 </div>
                                 <div className={(currPage == "interests")? "interests nav-item active" : "interests nav-item"}>
                                     <a href="#">
-                                        <div className="icon-holder">
-                                            <span className="icon-holder"></span>
-                                        </div>
+                                        <span className="icon-holder"></span>
                                         <p className="nav-title">Interests</p>
                                     </a>
                                 </div>
                                 <div className={(currPage == "callcenter")? "call-center nav-item active" : "call-center nav-item"}>
                                     <a href="/callcenter">
-                                        <div className="icon-holder">
-                                            <span className="icon-holder"></span>
-                                        </div>
+                                        <span className="icon-holder"></span>
                                         <p className="nav-title">Call Center</p>
                                     </a>
                                 </div>
