@@ -20511,6 +20511,22 @@ header .friends-popover-holder .popover-footer .see-all {
   position: relative;
   padding: 8px 25px;
 }
+.popup-holder .edit-note-popup .note-body .title-wrapper {
+  position: absolute;
+  z-index: 1;
+  width: calc(100% - 124px);
+  top: 67px;
+  left: 62px;
+}
+.popup-holder .edit-note-popup .note-body .title-wrapper .note-title {
+  border: none;
+  outline: none;
+  color: #038247;
+  font-size: 1.5em;
+  font-weight: 400;
+  font-family: "Work Sans";
+  width: 100%;
+}
 .popup-holder .edit-note-popup .note-body .save-note {
   position: absolute;
   bottom: 37px;

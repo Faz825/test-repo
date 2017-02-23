@@ -40,7 +40,7 @@ export default class Index extends React.Component {
             isShowingNoteModal:false,
             notebookId:0,
             editNoteId:0,
-            editNoteTitle:"Note Title",
+            editNoteTitle:"Title your note",
             editNote:"",
             isAutoTitled: false,
             staticNoteTitle:"",
@@ -473,13 +473,16 @@ export default class Index extends React.Component {
                                         <span className="delete-note"></span>
                                         <span className="note-info"></span>
                                         <div className="search-wrapper">
-                                            <input type="text" className="form-control search-note" placeholder="Search"/>
+                                            <input type="text" className="form-control search-note" placeholder="search"/>
                                             <span className="search-ico"></span>
                                         </div>
                                         <span className="maximize"></span>
                                     </div>
                                 </section>
                                 <section className="note-body clearfix">
+                                    <div className="title-wrapper">
+                                        <input type="text" className="note-title" value={this.state.editNoteTitle} onChange={(event)=>{this.onTitleEdit(event)}}/>
+                                    </div>
                                     <Scrollbars style={{ height: 570 }}>
                                         <RichTextEditor note={this.state.editNote} noteText={this.getNoteData} />
                                     </Scrollbars>
@@ -491,6 +494,14 @@ export default class Index extends React.Component {
                                 </section>
                             </section>
                             <span className="close-note" onClick={this.closeNotePopup.bind(this)}></span>
+                            <div className="note-words-count">
+                                <span className="count">70</span> <span className="def">words</span></div>
+                            <div className="note-brightness-holder">
+                                <img src="images/notebook/brightness.png" className="img-responsive"/>
+                                <div className="controller">
+                                    <span className="adjuster"></span>
+                                </div>
+                            </div>
                         </div>
                     </ModalDialog>
                 </ModalContainer>
@@ -524,7 +535,7 @@ export default class Index extends React.Component {
                                 <div className="search-notebook">
                                     <div className="inner-addon">
                                         <i className="fa fa-search"></i>
-                                        <input type="text" className="form-control" placeholder="Search"/>
+                                        <input type="text" className="form-control" placeholder="search"/>
                                     </div>
                                 </div>
                                 <div className="crt-notebook">

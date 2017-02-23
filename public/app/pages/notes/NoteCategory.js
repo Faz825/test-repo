@@ -472,7 +472,7 @@ export class SharePopupNewUsr extends React.Component{
                 <div className="popup-holder">
                     <section className="share-notebook-add-people-popup">
                         <div className="input-wrapper">
-                            <input type="text" className="form-control" placeholder="type Name to Add" id="type-to-add" onChange={this._handleAddNewUser}/>
+                            <input type="text" className="form-control" placeholder="type name to add" id="type-to-add" onChange={this._handleAddNewUser}/>
                         </div>
                         <div className="suggestions-wrapper">
                             {_suggestions}
