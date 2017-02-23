@@ -242,7 +242,7 @@ export class SharePopup extends React.Component{
                         <div className="col-sm-12">
                             <div className="header-wrapper">
                                 <h3 className="popup-title">people in this notebook</h3>
-                                <input type="text" className="form-control search-people" placeholder="Search" onChange={(event)=>this.filterSharedUsers(_notebook.notebook_id, event)} />
+                                <input type="text" className="form-control search-people" placeholder="search" onChange={(event)=>this.filterSharedUsers(_notebook.notebook_id, event)} />
                                     <span className="search-ico"></span>
                             </div>
                         </div>
