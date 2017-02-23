@@ -13,6 +13,7 @@ import Chat from '../../middleware/Chat';
 import Lib from '../../middleware/Lib';
 import CallCenter from '../../middleware/CallCenter';
 import DummyConversationList from './DummyConversationList'
+import FriendRequestList from './FriendRequestList'
 
 export default class Header extends React.Component {
 
@@ -21,7 +22,8 @@ export default class Header extends React.Component {
         this.state={
             headerChatUnreadCount:0,
             my_connections:[],
-            showChatNotification: false
+            showChatNotification: false,
+            showFriendRequestNotification: false
 
         }
         this.quickChatUsers = [];
@@ -63,7 +65,18 @@ export default class Header extends React.Component {
 
     toggleChatNotifications() {
         let _ct = this.state.showChatNotification;
-        this.setState({showChatNotification: !_ct});
+        this.setState({
+            showFriendRequestNotification: false,
+            showChatNotification: !_ct
+        });
+    }
+
+    toggleFriendRequestNotifications() {
+        let _frl = this.state.showFriendRequestNotification;
+        this.setState({
+            showFriendRequestNotification: !_frl,
+            showChatNotification: false
+        });
     }
 
     render(){
@@ -93,7 +106,7 @@ export default class Header extends React.Component {
                                     </div>*/
                                 }
                             </div>
-                            <div className="friends-icon opt-holder">
+                            <div onClick={this.toggleFriendRequestNotifications.bind(this)} className="friends-icon opt-holder">
                                 <div className="icon-holder"></div>
                                 <div className="notifi-alert-holder">
                                     <span className="notifi-num">2</span>
@@ -104,6 +117,7 @@ export default class Header extends React.Component {
                     </div>
 
                     {this.state.showChatNotification ? <DummyConversationList onMessaging={this.initiateDummyQuickChat.bind(this)}/> : null}
+                    {this.state.showFriendRequestNotification ? <FriendRequestList /> : null}
 
                 </div>
             </header>

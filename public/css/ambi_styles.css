@@ -10484,6 +10484,152 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-tim
   color: #888888;
   line-height: 1;
 }
+header .friends-popover-holder {
+  position: absolute;
+  top: 56px;
+  right: 8px;
+}
+header .friends-popover-holder .inner-wrapper {
+  width: 392px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  background-color: #ffffff;
+  position: relative;
+}
+header .friends-popover-holder .inner-wrapper:before {
+  content: "";
+  width: 25px;
+  height: 13px;
+  position: absolute;
+  top: -13px;
+  right: 71px;
+  background: url(../images/header-icons/popup-arrow.png) no-repeat;
+}
+header .friends-popover-holder .popover-header {
+  padding: 10px 13px 22px;
+  border-bottom: 1px solid #dddddd;
+}
+header .friends-popover-holder .popover-header .friend-requests {
+  margin: 0;
+  float: left;
+  font-size: 0.75em;
+  font-weight: 500;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  color: #333333;
+}
+header .friends-popover-holder .popover-header .find-friends {
+  margin: 0;
+  float: right;
+  font-size: 0.6875em;
+  font-weight: 400;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: center;
+  color: #00a6ef;
+  cursor: pointer;
+}
+header .friends-popover-holder .friends-list-holder {
+  max-height: 370px;
+  overflow: hidden;
+}
+header .friends-popover-holder .friends-list-holder.see-all {
+  overflow-y: scroll;
+}
+header .friends-popover-holder .friends-list-holder .friends-item {
+  padding: 3px 15px;
+  overflow: hidden;
+  cursor: pointer;
+  border-bottom: 1px solid #dddddd;
+}
+header .friends-popover-holder .friends-list-holder .friends-item:last-child {
+  border-bottom: none;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .prof-img {
+  width: 50px;
+  height: 46px;
+  border-radius: 999px;
+  float: left;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .friends-preview {
+  float: left;
+  margin-left: 10px;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .friends-preview .prof-name {
+  margin: 0 0 4px;
+  color: #000000;
+  font-size: 0.75em;
+  font-weight: 400;
+  line-height: 1;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .friends-preview .sub-title {
+  margin: 0 0 7px;
+  color: #666666;
+  font-size: 0.5625em;
+  line-height: 1;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .friends-preview .requested-time {
+  margin: 0;
+  font-size: 0.4375em;
+  color: #888888;
+  line-height: 1;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .controls {
+  float: right;
+  margin-top: 7px;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .controls .btn {
+  width: 70px;
+  height: 24px;
+  border-radius: 6px;
+  font-size: 0.5625em;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  outline: none;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .controls .btn.btn-decline {
+  border: solid 1px #bebfbf;
+  color: #bebfbf;
+  background-color: #ffffff;
+  margin-right: 6px;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .controls .btn.btn-decline:hover {
+  background-color: #bebfbf;
+  border: solid 1px #bebfbf;
+  color: #ffffff;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .controls .btn.btn-accept {
+  border: solid 1px #00a6ef;
+  color: #ffffff;
+  background-color: #00a6ef;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .controls .btn.btn-accept:hover {
+  background-color: #0092db;
+  border: solid 1px #0092db;
+}
+header .friends-popover-holder .popover-footer {
+  text-align: center;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.99);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 0 0 6px 6px;
+  border-top: 1px solid #dddddd;
+}
+header .friends-popover-holder .popover-footer .see-all {
+  margin: 0;
+  font-size: 0.75em;
+  font-weight: 500;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: center;
+  color: #1293eb;
+  cursor: pointer;
+}
 
 .dashboard-container {
   position: relative;
