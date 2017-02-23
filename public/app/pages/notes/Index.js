@@ -351,7 +351,7 @@ export default class Index extends React.Component {
             if (noteContent.length > 1) {
                 noteText = noteContent.slice(0,30);
             }else{
-                noteText = "Note Title";
+                noteText = "Title your note";
             }
         }
         this.setState({editNoteTitle : noteText, isAutoTitled: false});
@@ -373,19 +373,19 @@ export default class Index extends React.Component {
         let _this = this;
         let _notes_read_write = 2;
         let noteTitle = this.state.editNoteTitle;
-        if(noteTitle == "Note Title"){
+        if(noteTitle == "Title your note"){
             let noteContent = this.state.editNote.replace(/(<([^>]+)>)/ig,"");
             if (noteContent.length > 1) {
                 noteTitle = noteContent.slice(0,12);
             }else{
-                noteTitle = "Note Title";
+                noteTitle = "Title your note";
             }
         }else if(this.state.isAutoTitled){
             let noteContent = this.state.editNote.replace(/(<([^>]+)>)/ig,"");
             if (noteContent.length > 1) {
                 noteTitle = noteContent.slice(0,12);
             }else{
-                noteTitle = "Note Title";
+                noteTitle = "Title your note";
             }
         }
         this.setState({editNoteTitle : noteTitle});
