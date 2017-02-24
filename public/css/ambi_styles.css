@@ -10371,15 +10371,19 @@ header .notification-holder .opt-holder.friends-icon .notifi-alert-holder .notif
 }
 header .notification-holder .opt-holder .notifi-alert-holder {
   position: absolute;
-  top: -11px;
-  right: 1px;
+  top: -2px;
+  right: 0px;
+  text-align: center;
 }
 header .notification-holder .opt-holder .notifi-alert-holder .notifi-num {
   color: #fff;
   background: #f11379;
   border-radius: 999px;
   padding: 2px 4px;
-  line-height: 1;
+  line-height: 1.3;
+  width: 13px;
+  height: 13px;
+  display: block;
   font-size: 0.4875em;
   font-weight: 500;
 }
@@ -10445,8 +10449,8 @@ header .chat-popover-holder .popover-header .top-section .inbox-count {
 }
 header .chat-popover-holder .popover-header .top-section .inbox-count .count {
   font-size: 12px;
-  margin: -2px 2px 0 0;
-  float: left;
+  margin: -2px 0 0 3px;
+  float: right;
 }
 header .chat-popover-holder .popover-header .bottom-section {
   position: relative;
@@ -10493,6 +10497,7 @@ header .chat-popover-holder .chat-list-holder .chat-item .prof-img {
   border-radius: 999px;
   float: left;
   margin-left: 3px;
+  overflow: hidden;
 }
 header .chat-popover-holder .chat-list-holder .chat-item .chat-preview {
   float: left;
@@ -10502,14 +10507,14 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview {
 }
 header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-preview-header {
   width: 100%;
-  margin-bottom: 7px;
+  margin: 2px 0 7px;
 }
 header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-preview-header .prof-name {
   margin: 0;
   color: #000000;
   font-size: 0.75em;
   font-weight: 400;
-  line-height: 0.8;
+  line-height: 1;
   float: left;
   text-transform: capitalize;
 }
@@ -10525,6 +10530,7 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-msg
   color: #666666;
   font-size: 0.75em;
   line-height: 1;
+  width: 80%;
 }
 header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .mark-read {
   display: block;
@@ -10756,19 +10762,24 @@ header .friends-popover-holder .popover-footer .see-all {
 .dashboard-container .main-task-holder .inner-wrapper .section-title {
   font-family: Pantra-Bold;
   font-size: 1.25em;
-  margin: 0 0 12px;
+  margin: 0 0 29px;
   letter-spacing: 1px;
   text-shadow: 0px 3px 160px #000;
+}
+.dashboard-container .main-task-holder .inner-wrapper .section-title .larger {
+  font-size: 1.375em;
 }
 .dashboard-container .main-task-holder .inner-wrapper .task-field {
   border-radius: 0;
   background: none;
   text-align: center;
-  padding: 0 10px 21px;
+  padding: 0 10px 11px;
   color: #fff;
-  height: 67px;
+  height: 47px;
   font-weight: 300;
   letter-spacing: 2px;
+  border-bottom: 1px solid #e2e2e2;
+  text-shadow: 0px 0px 10px #000;
   font-size: 2.25em;
   border-bottom: 1px solid #e2e2e2;
   border-top: 0;
@@ -21482,14 +21493,14 @@ header .friends-popover-holder .popover-footer .see-all {
   text-transform: lowercase;
   line-height: 32px;
   width: 100%;
-  border-radius: 0px 0px 12px 12px;
+  border-radius: 0px 0px 8px 8px;
   outline: none;
   padding-top: 15px;
   padding-bottom: 15px;
   letter-spacing: 2px;
 }
 .popup-holder .work-mode-popup-wrapper .footer .work-mode:hover {
-  background: #D7186B;
+  background: #AAABAB;
 }
 
 .settings-icon {
@@ -21572,13 +21583,14 @@ header .friends-popover-holder .popover-footer .see-all {
   background-color: #fff;
   padding: 9px 8px 7px;
   border-radius: 7px 7px 0 0;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 0px 10px 0 rgba(0, 0, 0, 0.5);
 }
 .chat-bubble-holder .chat-bubble .bubble-header .pro-pic {
   width: 28px;
   height: 28px;
   border-radius: 999px;
   float: left;
+  overflow: hidden;
 }
 .chat-bubble-holder .chat-bubble .bubble-header .username-holder {
   float: left;
@@ -21647,7 +21659,6 @@ header .friends-popover-holder .popover-footer .see-all {
 }
 .chat-bubble-holder .chat-bubble .conv-holder {
   background: #fff;
-  padding: 0 8px;
   overflow-y: auto;
   height: 250px;
   border-bottom: 1px solid #dddddd;
@@ -21659,11 +21670,13 @@ header .friends-popover-holder .popover-footer .see-all {
   margin-bottom: 12px;
   width: 100%;
   position: relative;
+  padding: 0 12px 0 8px;
 }
 .chat-bubble-holder .chat-bubble .conv-holder .chat-msg .pro-img {
   position: absolute;
   bottom: 0;
   border-radius: 999px;
+  overflow: hidden;
 }
 .chat-bubble-holder .chat-bubble .conv-holder .chat-msg .msg {
   font-size: 11px;
@@ -21679,7 +21692,8 @@ header .friends-popover-holder .popover-footer .see-all {
 .chat-bubble-holder .chat-bubble .conv-holder .chat-msg.received .pro-img {
   width: 20px;
   height: 20px;
-  left: 0;
+  left: 8px;
+  overflow: hidden;
 }
 .chat-bubble-holder .chat-bubble .conv-holder .chat-msg.received .msg {
   float: left;
@@ -21690,14 +21704,15 @@ header .friends-popover-holder .popover-footer .see-all {
 .chat-bubble-holder .chat-bubble .conv-holder .chat-msg.sent .pro-img {
   width: 17px;
   height: 17px;
-  right: 0;
+  right: 12px;
+  overflow: hidden;
 }
 .chat-bubble-holder .chat-bubble .conv-holder .chat-msg.sent .msg {
   float: right;
   width: auto;
   background-color: #00a6ef;
   color: #fff;
-  margin: 0 20px 0 0;
+  margin: 0 22px 0 0;
 }
 .chat-bubble-holder .chat-bubble .compose-msg {
   position: relative;
@@ -21713,6 +21728,8 @@ header .friends-popover-holder .popover-footer .see-all {
   font-size: 8px;
   border-radius: 0;
   font-size: 12px;
+  resize: none;
+  overflow: hidden;
 }
 .chat-bubble-holder .chat-bubble .compose-msg .form-control:focus {
   box-shadow: none;
@@ -21778,13 +21795,13 @@ header .friends-popover-holder .popover-footer .see-all {
   height: 9px;
 }
 .chat-bubble-holder .chat-bubble.minimized {
-  margin-top: -4px;
+  margin-top: -14px;
 }
 .chat-bubble-holder .chat-bubble.minimized .bubble-header {
-  width: 120px;
+  width: 155px;
   cursor: pointer;
   margin: 0 auto;
-  padding-top: 5px;
+  padding: 10px 8px 9px;
   border-radius: 7px 7px 0 0;
   background-color: #eeeeee;
   box-shadow: none;
@@ -21793,18 +21810,24 @@ header .friends-popover-holder .popover-footer .see-all {
   display: none;
 }
 .chat-bubble-holder .chat-bubble.minimized .bubble-header .username-holder {
-  width: auto;
-  float: none;
-  text-align: center;
+  float: left;
+  margin-left: 3px;
 }
 .chat-bubble-holder .chat-bubble.minimized .bubble-header .username-holder .name {
-  color: #666666;
-  font-size: 11px;
+  color: #000;
+  font-size: 14px;
 }
 .chat-bubble-holder .chat-bubble.minimized .bubble-header .username-holder .all-media-btn {
   display: none;
 }
-.chat-bubble-holder .chat-bubble.minimized .bubble-header .opt-icons {
+.chat-bubble-holder .chat-bubble.minimized .bubble-header .opt-icons .icon {
+  display: none;
+}
+.chat-bubble-holder .chat-bubble.minimized .bubble-header .opt-icons .icon.close-icon {
+  display: block;
+  margin-top: 0;
+}
+.chat-bubble-holder .chat-bubble.minimized .bubble-header .online-status {
   display: none;
 }
 

@@ -48,7 +48,7 @@ export default class AmbiDashboard extends React.Component {
 			greating = 'Good Evening';
 		}
 
-		let imgUrl = "images/bodyBg.png";
+		let imgUrl = "images/bodyBg.jpg";
 		const wallpaper = {
 				backgroundImage: 'url(' + imgUrl + ')'
 			};
