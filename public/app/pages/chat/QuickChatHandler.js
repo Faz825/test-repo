@@ -18,7 +18,8 @@ export default class QuickChatHandler extends React.Component{
             conversations:[],
             messages:[],
             uri:'usr:proglobe'+this.getUrl(),
-            bubbleList : this.props.chatList
+            bubbleList : this.props.chatList,
+            isNavHidden: this.props.isNavHidden
         };
 
         this.b6 = CallCenter.b6;
@@ -37,7 +38,7 @@ export default class QuickChatHandler extends React.Component{
     };
 
     componentWillReceiveProps(nextProps) {
-        this.setState({bubbleList: nextProps.chatList});
+        this.setState({bubbleList: nextProps.chatList, isNavHidden: nextProps.isNavHidden});
     }
 
     componentDidMount() {
@@ -292,7 +293,8 @@ export default class QuickChatHandler extends React.Component{
 
         if(this.msgDivIds.indexOf(divId) == -1){
             this.msgDivIds.push(divId);
-            let cssClass = m.incoming() ? 'receiver chat-block' : 'sender chat-block';
+            //let cssClass = m.incoming() ? 'receiver chat-block' : 'sender chat-block';
+            let cssClass = m.incoming() ? 'receiver' : 'sender';
 
             if (typeof this.props.chatList != 'undefined' && this.props.chatList.length > 0) {
                 for (let my_con in this.props.chatList) {
@@ -407,8 +409,9 @@ export default class QuickChatHandler extends React.Component{
 
     sendChat(msgObj){
         let user = Session.getSession('prg_lg');
-        Chat.b6.session.displayName = user.first_name + " " + user.last_name;
-        Chat.b6.compose(msgObj.uri).text(msgObj.message).send(function(err) {
+        let _b6 = CallCenter.b6;
+        _b6.session.displayName = user.first_name + " " + user.last_name;
+        _b6.compose(msgObj.uri).text(msgObj.message).send(function(err) {
             if (err) {
                 console.log('error', err);
             }
@@ -464,6 +467,7 @@ export default class QuickChatHandler extends React.Component{
                     sendMyMessage={_this.sendChat.bind(this)}
                     doAudioCall = {_this.doAudioCall.bind(this)}
                     doVideoCall = {_this.doVideoCall.bind(this)}
+                    isNavHidden={_this.state.isNavHidden}
                     />
             );
         });
