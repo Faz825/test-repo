@@ -1517,3 +1517,13 @@ header .chat-popover-holder .inner-wrapper .see-all{
     padding-top: 0;
     margin-top: -3px;
 }
+
+.chat-bubble #chatMsg{
+    position: relative;
+}
+
+.chat-bubble #chatMsg .form-validation-alert{
+    position: absolute;
+    top: -22px;
+    left: 8px;
+}
