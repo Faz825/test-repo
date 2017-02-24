@@ -38,13 +38,8 @@ export default class ConversationList extends React.Component{
         });
     }
 
-    componentDidMount(){
-        console.log("ConversationList componentDidMount")
-        console.log(this.props.connections)
-    }
-
     componentWillReceiveProps(nextProps) {
-        console.log("ConversationList componentWillReceiveProps")
+        //console.log("ConversationList componentWillReceiveProps")
         this.setState({connections: nextProps.connections, conversations: nextProps.conversations, showChatNotification: nextProps.showChatNotification});
     }
 
@@ -73,7 +68,6 @@ export default class ConversationList extends React.Component{
 
     // Update Conversation View
     onConversationChange(c, op, b6) {
-        console.log("starting onConversationChange method ----- ");
         let conv = {};
         let cons = [];
 
@@ -87,26 +81,17 @@ export default class ConversationList extends React.Component{
         var proglobe_title_array = proglobe_title.split('proglobe');
         var title = proglobe_title_array[1];
 
-        console.log("title >> ", title);
-
         let _blockMessages = this.checkWorkMode();
         let oUser = Session.getSession('prg_lg');
 
-        console.log("title 111 >> ", op);
-
         // New conversation
         if (op > 0) {
-            console.log("title 2222 >> ");
             if (c.deleted) {
                 return;
             }
-            console.log("title 3333 >> ");
             if(title != 'undefined' && typeof this.convUsers[title] == 'undefined'){
-                console.log("title 4444 >> ");
                 for(let my_con in this.state.connections){
-                    console.log("user_name >> ", this.state.connections[my_con].user_name);
                     if(title === this.state.connections[my_con].user_name){
-                        console.log("found >> ", title);
                         this.convUsers[title] = this.state.connections[my_con];
 
                         conv = {
@@ -177,9 +162,7 @@ export default class ConversationList extends React.Component{
                         if(c.unread > 0 && _blockMessages && this.notifiedUsers.indexOf(c.id) == -1){
 
                             let _startTime = Session.getSession('prg_wm').startTimer;
-                            console.log("_startTime",_startTime);
                             let _lastMsgTime = c.updated;
-                            console.log("_lastMsgTime",_lastMsgTime);
                             //let _now = new Date().getTime();
                             //let _1minsb4 = _now - (60*1000);
 
@@ -215,7 +198,6 @@ export default class ConversationList extends React.Component{
             var stamp = Lib.getRelativeTime(c.updated);
             var latestText = '';
             var lastMsg = c.getLastMessage();
-            console.log("lastMsg >> ", lastMsg);
             if (lastMsg) {
                 // Show the text from the latest conversation
                 if (lastMsg.content)
@@ -225,13 +207,11 @@ export default class ConversationList extends React.Component{
                     latestText = lastMsg.data.type;
                 }
             }
-            console.log("latestText >> ", latestText);
             var cur_conv = 0;
             var updated = false;
 
             cons = this.state.conversations;
 
-            console.log("cons >> ", cons);
 
             for(let con in cons){
                 if(cons[con].title == title){
@@ -241,18 +221,13 @@ export default class ConversationList extends React.Component{
                     updated = true;
                 }
             }
-            console.log("updated >> ", updated);
             if(updated) {
                 this.setState({conversations:cons});
 
             } else {
-                console.log("title 5555 >> ");
                 if(title != 'undefined' && typeof this.convUsers[title] == 'undefined'){
-                    console.log("title 6666 >> ");
                     for(let my_con in this.state.connections){
-                        console.log("user_name >> ", this.state.connections[my_con].user_name);
                         if(title === this.state.connections[my_con].user_name) {
-                            console.log("found >> ", title);
                             this.convUsers[title] = this.state.connections[my_con];
 
                             conv = {
@@ -309,28 +284,20 @@ export default class ConversationList extends React.Component{
     }
 
     onLoadQuickChat(conv, _unreads) {
-        console.log("onLoadQuickChat > ");
-        console.log("this.unreadCount > ", this.unreadCount);
-        console.log("_unreads > ", _unreads);
+        //console.log("onLoadQuickChat > ");
         this.props.loadQuickChat(conv);
         let _blockMessages = this.checkWorkMode();
 
         let convId = "usr:" + conv.proglobeTitle;
         let index = this.getUnreadIndex(convId);
-        console.log("convId > ", convId);
-        console.log("index > ", index);
 
         if(this.unreadCount > 0){
-
 
             if(index > -1) {
 
                 let c = this.b6.getConversation(convId);
 
-                console.log("111111 > ", c);
-
                 if (this.b6.markConversationAsRead(c) > 0) {
-                    console.log("222222")
                     this.unreadConversationCount.splice(index,1);
                     this.unreadCount--;
                     if(this.unreadCount <= 0 || _blockMessages){
@@ -380,7 +347,7 @@ export default class ConversationList extends React.Component{
 
          )*/
 
-        console.log('this.state.conversations >>', this.state.conversations);
+        //console.log('this.state.conversations >>', this.state.conversations);
 
         let _count = this.state.conversations.length;
 

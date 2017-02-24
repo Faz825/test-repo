@@ -35,7 +35,9 @@ export default class QuickChatBubble extends React.Component{
             uri:'usr:proglobe'+this.props.chatData.title,
             isMinimized : false,
             isNavHidden: this.props.isNavHidden,
-            chatData: this.props.chatData
+            chatData: this.props.chatData,
+            isActiveBubble: this.props.isActiveBubble,
+
         };
 
         this.messages = [];
@@ -60,7 +62,7 @@ export default class QuickChatBubble extends React.Component{
             }
         }
         this.setState({messages:{}});
-        this.setState({messages:this.messages, isNavHidden: nextProps.isNavHidden, chatData: nextProps.chatData});
+        this.setState({messages:this.messages, isNavHidden: nextProps.isNavHidden, chatData: nextProps.chatData, isActiveBubble: nextProps.isActiveBubble});
     }
 
     //shouldComponentUpdate(nextProps, nextState) {
@@ -144,7 +146,8 @@ export default class QuickChatBubble extends React.Component{
                     minimizeChat = {this.state.isMinimized}
 
                     sendChat={this.sendMsg.bind(this)}
-
+                    setActiveBubbleId= {this.props.setActiveBubbleId}
+                    isActiveBubble= {this.state.isActiveBubble}
 
                 />
             </div>
@@ -194,7 +197,8 @@ export class ChatHeader extends React.Component{
             minimized: this.props.minimizeChat,
             conversations: this.props.conv,
             userLoggedIn: Session.getSession('prg_lg'),
-            messages: this.props.messages
+            messages: this.props.messages,
+            isActiveBubble: this.props.isActiveBubble,
         };
 
         this.onMinimiseClick = this.onMinimiseClick.bind(this);
@@ -202,17 +206,21 @@ export class ChatHeader extends React.Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({minimized:nextProps.minimizeChat, conversations: nextProps.conv, messages: nextProps.messages});
+        this.setState({minimized:nextProps.minimizeChat, conversations: nextProps.conv, messages: nextProps.messages, isActiveBubble: nextProps.isActiveBubble});
     }
 
-    onCloseClick(){
+    onCloseClick(e){
         this.props.bubbleClose(this.props.conv);
     }
 
-    onMinimiseClick(){
-        console.log("onMinimiseClick ..");
+    onMinimiseClick(e){
         this.isMinimized = !this.state.minimized;
         this.props.onMinimize(this.isMinimized);
+    }
+
+    onHeaderClick(e) {
+        let convId = "usr:" + this.state.conversations.proglobeTitle;
+        this.props.setActiveBubbleId(convId);
     }
 
     render() {
@@ -229,8 +237,6 @@ export class ChatHeader extends React.Component{
             } = this.state;
 
         let user = conversations.user;
-
-        console.log("minimized >> ", minimized);
 
         return (
             (minimized)?
@@ -249,15 +255,13 @@ export class ChatHeader extends React.Component{
                             }
                         </div>
                         <div className="opt-icons clearfix">
-                            <span className="icon phn-icon" onClick={this.props.doAudioCall}></span>
-                            <span className="icon video-icon" onClick={this.props.doVideoCall}></span>
                             <span className="icon close-icon" onClick={this.onCloseClick.bind(this)}></span>
                         </div>
                     </div>
                 </div>
                 :
-                <div className="chat-bubble">
-                    <div className="bubble-header clearfix">
+                <div className={this.state.isActiveBubble ? "chat-bubble active" : "chat-bubble"}>
+                    <div className="bubble-header clearfix" id="hdr_btn" onClick={this.onHeaderClick.bind(this)}>
                         <div className="pro-pic">
                             <img src={user.images.profile_image.http_url} alt={user.first_name + " " + user.last_name} onClick={this.props.onLoadProfile} className="img-responsive" />
                         </div>
@@ -271,10 +275,10 @@ export class ChatHeader extends React.Component{
                             }
                         </div>
                         <div className="opt-icons clearfix">
-                            <span className="icon phn-icon" onClick={this.props.doAudioCall}></span>
-                            <span className="icon video-icon" onClick={this.props.doVideoCall}></span>
-                            <span className="icon minimize-icon" onClick={this.onMinimiseClick.bind(this)}></span>
-                            <span className="icon close-icon" onClick={this.onCloseClick.bind(this)}></span>
+                            <span className="icon phn-icon"  id="aud_btn" onClick={this.props.doAudioCall}></span>
+                            <span className="icon video-icon"  id="vid_btn" onClick={this.props.doVideoCall}></span>
+                            <span className="icon minimize-icon"  id="min_btn" onClick={this.onMinimiseClick.bind(this)}></span>
+                            <span className="icon close-icon"  id="cls_btn" onClick={this.onCloseClick.bind(this)}></span>
                         </div>
                     </div>
                     <MessageList
@@ -282,11 +286,13 @@ export class ChatHeader extends React.Component{
                         loggedUser = {userLoggedIn}
                         messages = {messages}
                         minimizeChat = {minimized}
+                        setActiveBubbleId= {this.props.setActiveBubbleId}
                     />
                     <ComposeMessage
                         sendChat={this.props.sendChat}
                         conv={conversations}
                         minimizeChat = {minimized}
+                        setActiveBubbleId= {this.props.setActiveBubbleId}
                     />
                 </div>
         );
@@ -344,6 +350,11 @@ export class MessageList extends React.Component{
         }
     }
 
+    setAsActiveBubble() {
+        let convId = "usr:" + this.props.conv.proglobeTitle;
+        this.props.setActiveBubbleId(convId);
+    }
+
     render() {
         let _this = this;
         //let cssClass = m.incoming() ? 'receiver chat-block' : 'sender chat-block';
@@ -375,29 +386,24 @@ export class MessageList extends React.Component{
             </div>
         )*/
 
-        let _convs = this.props.messages.map(function(conv,key){
-
-            let _profile_image = "images/default-profile-pic.png";
-
-            try {
-                _profile_image = conv.user.images.profile_image.http_url;
-            } catch(e) {}
-
+        let _messages = this.props.messages.map(function(msg, key){
+            let receiver_image = _this.props.conv.user.images.profile_image.http_url;
+            let sender_image = _this.props.loggedUser.profile_image;
             return (
-                <div className={conv.cssClass == "receiver" ? "chat-msg received" : "chat-msg sent"} key={key}>
+                <div className={msg.cssClass == "receiver" ? "chat-msg received" : "chat-msg sent"} key={key}>
                     <div className="pro-img">
-                        <img src={_profile_image} className="img-responsive" />
+                        <img src={msg.cssClass == "receiver" ? receiver_image : sender_image} className="img-responsive" />
                     </div>
-                    <p className="msg">{conv.text}</p>
+                    <p className="msg">{msg.text}</p>
                 </div>
             );
         });
 
         return (
 
-            <div className="conv-holder">
+            <div className="conv-holder" onClick={this.setAsActiveBubble.bind(this)}>
                 <Scrollbars ref="msgScrollBar" autoHide={true} autoHideTimeout={1000} autoHideDuration={200} >
-                    {_convs}
+                    {_messages}
                 </Scrollbars>
             </div>
         );
@@ -447,6 +453,11 @@ export class ComposeMessage extends React.Component{
         }
     }
 
+    setAsActiveBubble() {
+        let convId = "usr:" + this.props.conv.proglobeTitle;
+        this.props.setActiveBubbleId(convId);
+    }
+
     render(){
         /*return(
             <div>
@@ -477,7 +488,7 @@ export class ComposeMessage extends React.Component{
         return (
             (!this.props.minimizeChat) ?
                 <form onSubmit={this.sendMessage.bind(this)} id="chatMsg">
-                    <div className="compose-msg">
+                    <div className="compose-msg" onClick={this.setAsActiveBubble.bind(this)}>
                         <textarea className="form-control" placeholder="Type your message here" name="msg" value={this.state.msgText}
                                   onChange={(event)=>{ this.elementChangeHandler(event)}}
                                   onKeyDown={(event)=>{this.onEnter(event)}}

@@ -104,7 +104,7 @@ export default class Header extends React.Component {
                             <div onClick={this.toggleChatNotifications.bind(this)} className="chat-icon opt-holder chat-dropdown-holder dropDown-holder" id="chat_notification_a">
                                 <div className="icon-holder"></div>
                                 <div id="unread_chat_count_header" className="notifi-num notifi-alert-holder">
-                                    {this.state.unreadChatCount > 0 ? <span className="total notifi-num">{this.state.unreadChatCount}</span> : null}
+                                    {this.state.unreadChatCount > 0 ? <span className="notifi-num">{this.state.unreadChatCount}</span> : null}
                                 </div>
                                 {
                                     /*<div id="chat_notification_wrapper" className="chat-notification-wrapper">

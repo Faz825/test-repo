@@ -19,7 +19,8 @@ export default class QuickChatHandler extends React.Component{
             messages:[],
             uri:'usr:proglobe'+this.getUrl(),
             bubbleList : this.props.chatList,
-            isNavHidden: this.props.isNavHidden
+            isNavHidden: this.props.isNavHidden,
+            activeBubbleId:0
         };
 
         this.b6 = CallCenter.b6;
@@ -34,11 +35,12 @@ export default class QuickChatHandler extends React.Component{
         this.loadMyConnections();
 
         this.onBubbleClose = this.onBubbleClose.bind(this);
+        this.setActiveBubbleId = this.setActiveBubbleId.bind(this);
 
     };
 
     componentWillReceiveProps(nextProps) {
-        this.setState({bubbleList: nextProps.chatList, isNavHidden: nextProps.isNavHidden});
+        this.setState({bubbleList: nextProps.chatList, isNavHidden: nextProps.isNavHidden, activeBubbleId: nextProps.loadedChatBubbleId});
     }
 
     componentDidMount() {
@@ -450,6 +452,12 @@ export default class QuickChatHandler extends React.Component{
         this.props.bubClose(title);
     };
 
+    setActiveBubbleId(_bubbleId) {
+        if(this.state.activeBubbleId !=_bubbleId) {
+            this.setState({activeBubbleId: _bubbleId});
+        }
+    }
+
 
     render() {
 
@@ -460,6 +468,9 @@ export default class QuickChatHandler extends React.Component{
         }
 
         let chats = this.props.chatList.map(function(conv, key){
+
+            let convId = "usr:" + conv.proglobeTitle;
+            let _isActive = _this.state.activeBubbleId == convId;
             return (
                 <QuickChatBubble
                     key={key}
@@ -470,6 +481,8 @@ export default class QuickChatHandler extends React.Component{
                     doAudioCall = {_this.doAudioCall.bind(this)}
                     doVideoCall = {_this.doVideoCall.bind(this)}
                     isNavHidden={_this.state.isNavHidden}
+                    setActiveBubbleId= {_this.setActiveBubbleId.bind(this)}
+                    isActiveBubble={_isActive}
                     />
             );
         });
