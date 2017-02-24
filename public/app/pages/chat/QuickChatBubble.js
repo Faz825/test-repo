@@ -379,12 +379,11 @@ export class MessageList extends React.Component{
 
         let _convs = this.props.messages.map(function(conv,key){
 
-            //let _profile_image = "images/default-profile-pic.png";
-            let _profile_image = conv.user.images.profile_image.http_url;
+            let _profile_image = "images/default-profile-pic.png";
 
-            //try {
-            //    _profile_image = conv.user.images.profile_image.http_url;
-            //} catch(e) {}
+            try {
+                _profile_image = conv.user.images.profile_image.http_url;
+            } catch(e) {}
 
             return (
                 <div className={conv.cssClass == "receiver" ? "chat-msg received" : "chat-msg sent"} key={key}>
