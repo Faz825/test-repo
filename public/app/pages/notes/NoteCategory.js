@@ -299,7 +299,7 @@ export class SharePopup extends React.Component{
                                 {
                                     (_notebook.owned_by == 'me') ?
                                         <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
-                                            <p className={(this.state.sharedUsers.length > 2) ? "add-people" : "add-people c"}>+ Add New</p>
+                                            <p className={(this.state.sharedUsers.length > 2) ? "add-people" : "add-people c"}>+ Add member</p>
                                         </OverlayTrigger> : null
                                 }
                                 {
