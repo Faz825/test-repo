@@ -297,7 +297,7 @@ export default class AmbiLayout extends React.Component {
                         null
                 }
                 <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)} isNavHidden={this.state.isNavHidden}/>
-                <QuickChatDummy dummyChatList={this.state.dummyChatArray} closeQuickChat={this.closeDummyQuickChat.bind(this)} isNavHidden={this.state.isNavHidden}/>
+                {/*<QuickChatDummy dummyChatList={this.state.dummyChatArray} closeQuickChat={this.closeDummyQuickChat.bind(this)} isNavHidden={this.state.isNavHidden}/>*/}
                 <VideoChatPopOver />
                 <FooterHolder blockBottom={this.state.rightBottom}
                               blockSocialNotification={this.state.socialNotifications}

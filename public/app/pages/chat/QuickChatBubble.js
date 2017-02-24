@@ -130,26 +130,24 @@ export default class QuickChatBubble extends React.Component{
 
         return (
 
-            <section className={this.state.isNavHidden == true ? "chat-bubble-holder menu-hidden" : "chat-bubble-holder"}>
-                <div className="container clearfix">
-                    <ChatHeader
-                        conv={this.state.chatData}
-                        bubbleClose={this.onbubbleClosed.bind(this)}
-                        doAudioCall = {this.doAudioCall.bind(this)}
-                        doVideoCall = {this.doVideoCall.bind(this)}
-                        onLoadProfile = {this.onLoadProfile.bind(this)}
-                        onMinimize = {this.onChatMinimize.bind(this)}
+            <div>
+                <ChatHeader
+                    conv={this.state.chatData}
+                    bubbleClose={this.onbubbleClosed.bind(this)}
+                    doAudioCall = {this.doAudioCall.bind(this)}
+                    doVideoCall = {this.doVideoCall.bind(this)}
+                    onLoadProfile = {this.onLoadProfile.bind(this)}
+                    onMinimize = {this.onChatMinimize.bind(this)}
 
-                        loggedUser = {userLoggedIn}
-                        messages = {messages}
-                        minimizeChat = {this.state.isMinimized}
+                    loggedUser = {userLoggedIn}
+                    messages = {messages}
+                    minimizeChat = {this.state.isMinimized}
 
-                        sendChat={this.sendMsg.bind(this)}
+                    sendChat={this.sendMsg.bind(this)}
 
 
-                    />
-                </div>
-            </section>
+                />
+            </div>
 
         );
 

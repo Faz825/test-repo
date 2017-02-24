@@ -423,11 +423,13 @@ export default class QuickChatHandler extends React.Component{
     };
 
     doVideoCall(callObj){
-        Chat.startOutgoingCall(callObj.uri, true);
+        //TODO Call has to be integrated after callcenter is completed
+        //Chat.startOutgoingCall(callObj.uri, true);
     };
 
     doAudioCall(callObj){
-        Chat.startOutgoingCall(callObj.uri, false);
+        //TODO Call has to be integrated after callcenter is completed
+        //Chat.startOutgoingCall(callObj.uri, false);
     };
 
     makeConversationRead(uri){
@@ -454,7 +456,7 @@ export default class QuickChatHandler extends React.Component{
         let _this =  this;
 
         if(typeof this.props.chatList == 'undefined' || this.props.chatList.length == 0 ){
-            return (<div />)
+            return null
         }
 
         let chats = this.props.chatList.map(function(conv, key){
@@ -474,7 +476,11 @@ export default class QuickChatHandler extends React.Component{
 
         return (
             <div className="bubble-holder">
-                {chats}
+                <section className={this.state.isNavHidden == true ? "chat-bubble-holder menu-hidden" : "chat-bubble-holder"}>
+                    <div className="container clearfix">
+                        {chats}
+                    </div>
+                </section>
             </div>
         );
 
