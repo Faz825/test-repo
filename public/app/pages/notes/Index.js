@@ -218,7 +218,7 @@ export default class Index extends React.Component {
                                     </div>
                                     <div className="notebook-color">
                                         <div className="col-sm-12 input-group">
-                                            <p>Choose a colour</p>
+                                            <p>Choose a color</p>
                                             <div className="color-palette">
                                                 <div className={this.isActive('dark-green')} id="#038247" data-name="dark-green" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>

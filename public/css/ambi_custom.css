@@ -1527,3 +1527,10 @@ header .chat-popover-holder .inner-wrapper .see-all{
     top: -22px;
     left: 8px;
 }
+
+.chat-bubble-holder .chat-bubble .bubble-header .username-holder .name{
+    width: 118px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -396,6 +396,7 @@ export default class ConversationList extends React.Component{
                                 {_convs}
                             </Scrollbars>
                         </div>
+                        <p className="see-all">see all</p>
                     </div>
                 </section>
                 :

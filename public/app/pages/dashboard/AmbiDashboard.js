@@ -69,13 +69,13 @@ export default class AmbiDashboard extends React.Component {
 	                    </section>
 	                    <section className="main-task-holder">
 	                        <div className="inner-wrapper">
-	                            <h3 className="section-title">What is your main focus for today?</h3>
+	                            <h3 className="section-title">what do you want to <span class="larger">get done</span> today?</h3>
 	                            <input type="text" className="form-control task-field" />
 	                        </div>
 	                    </section>
 	                    <section className="quote-holder">
-	                        <p className="quote-text">“ The cure to boredom is curiosity. There is no cure for curiosity ”</p>
-	                        <p className="quote-author">Dorothy Parker</p>
+	                        <p className="quote-text">“ the way to get started is to quit talking and begin doing ”</p>
+                    		<p className="quote-author">Walt Disney</p>
 	                    </section>
 	                </div>
 	            </div>
