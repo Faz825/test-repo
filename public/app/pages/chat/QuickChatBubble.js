@@ -396,7 +396,7 @@ export class MessageList extends React.Component{
         return (
 
             <div className="conv-holder">
-                <Scrollbars autoHide={true} autoHideTimeout={1000} autoHideDuration={200} >
+                <Scrollbars ref="msgScrollBar" autoHide={true} autoHideTimeout={1000} autoHideDuration={200} >
                     {_convs}
                 </Scrollbars>
             </div>
