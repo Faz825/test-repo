@@ -23,56 +23,56 @@ export default class FriendRequestList extends React.Component {
         let _dummyRequests = [
             {
                 profileImg: "images/header-icons/dropdown/pic1.png",
-                profName: "Name Here",
+                profName: "Science Group",
                 subTitle: "8 mutual Friends",
                 requestedTime: "2 hours ago",
 
             },
             {
                 profileImg: "images/header-icons/dropdown/pic2.png",
-                profName: "Name Here",
+                profName: "Tamia Bello",
                 subTitle: "20 mutual Friends",
                 requestedTime: "yesterday",
 
             },
             {
                 profileImg: "images/header-icons/dropdown/pic3.png",
-                profName: "Name Here",
+                profName: "Jayden Rye",
                 subTitle: "20 mutual Friends",
                 requestedTime: "last friday",
 
             },
             {
                 profileImg: "images/header-icons/dropdown/pic4.png",
-                profName: "Name Here",
+                profName: "Leah Amber",
                 subTitle: "8 mutual Friends",
                 requestedTime: "last thursday",
 
             },
             {
                 profileImg: "images/header-icons/dropdown/pic5.png",
-                profName: "Name Here",
+                profName: "Helena Hernanez",
                 subTitle: "20 mutual Friends",
                 requestedTime: "about a week ago",
 
             },
             {
                 profileImg: "images/header-icons/dropdown/pic6.png",
-                profName: "Name Here",
+                profName: "Tony Pham",
                 subTitle: "in Science Group",
                 requestedTime: "about a week ago",
 
             },
             {
                 profileImg: "images/header-icons/dropdown/pic7.png",
-                profName: "Name Here",
+                profName: "Sarah Serif",
                 subTitle: "in History 101",
                 requestedTime: "about a month ago",
 
             },
             {
                 profileImg: "images/header-icons/dropdown/pic6.png",
-                profName: "Name Here",
+                profName: "Tony Pham",
                 subTitle: "in Science Group",
                 requestedTime: "about a month ago",
 
