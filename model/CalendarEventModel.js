@@ -326,7 +326,7 @@ CalendarEventSchema.statics.getSortedCalenderItems = function(criteria,callBack)
 
     var _this = this;
 
-    _this.find(criteria).or([{status: 1}, {status: 2}]).sort({event_time: 1}).exec(function(err,resultSet){
+    _this.find(criteria).or([{status: 1}, {status: 2}]).sort({event_time: 1}).lean().exec(function(err,resultSet){
 
         if(!err){
             callBack(null, {

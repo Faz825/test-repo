@@ -343,23 +343,12 @@ export class PriorityTask extends React.Component{
     }
 
     render() {
-        console.log(this.state.task.shared_users);
-        console.log(this.state.task.plain_text);
-        console.log("===========================");
+
         var _this = this;
         var memberList = <span>Only me</span>;
         if(this.state.task.shared_users.length > 0) {
-            var indexOfCurrentUser = -1;
             memberList = this.state.task.shared_users.map(function(member,key){
-                return <span className="mem-name">{member.name}</span>
-            });
-
-            indexOfCurrentUser = this.state.task.shared_users.map(function(member,key){
-
-                if (member.user_id == _this.state.user.id) {
-                    indexOfCurrentUser = key;
-                }
-                return indexOfCurrentUser;
+                return <span className="mem-name">{this.state.task.shared_users.length > key+ ? member.name+',' : member.name}</span>
             });
         }
         return (
