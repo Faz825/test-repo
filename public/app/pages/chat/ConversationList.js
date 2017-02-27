@@ -392,7 +392,7 @@ export default class ConversationList extends React.Component{
                             </div>
                         </div>
                         <div className="chat-list-holder">
-                            <Scrollbars style={{ height: 260 }}>
+                            <Scrollbars style={{ height: 355 }}>
                                 {_convs}
                             </Scrollbars>
                         </div>

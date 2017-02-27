@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,6 +1418,7 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3118,6 +3119,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3670,6 +3672,7 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10247,16 +10250,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* 
-  Method to use:
-  @include @border {
-    border ($style,  $sides, $emptySides){
-  }
+	Method to use:
+	@include @border {
+		border ($style,  $sides, $emptySides){
+	}
 */
 /* 
-  Method to use:
-  @include @mixin {
-    content
-  }
+	Method to use:
+	@include @mixin {
+		content
+	}
 */
 header {
   background: #fff;
@@ -10395,8 +10398,8 @@ header .notification-holder .profile-header-thumb {
 }
 header .chat-popover-holder {
   position: absolute;
-  top: 56px;
-  right: 62px;
+  top: 47px;
+  right: 48px;
 }
 header .chat-popover-holder .inner-wrapper {
   width: 396px;
@@ -10407,11 +10410,11 @@ header .chat-popover-holder .inner-wrapper {
 }
 header .chat-popover-holder .inner-wrapper:before {
   content: "";
-  width: 25px;
-  height: 13px;
+  width: 33px;
+  height: 14px;
   position: absolute;
   top: -13px;
-  right: 71px;
+  right: 78px;
   background: url(../images/header-icons/popup-arrow.png) no-repeat;
 }
 header .chat-popover-holder .inner-wrapper .see-all {
@@ -10424,22 +10427,25 @@ header .chat-popover-holder .inner-wrapper .see-all {
   padding: 7px 0 10px;
 }
 header .chat-popover-holder .popover-header {
-  padding: 8px 9px 10px;
+  padding: 11px 10px 10px;
   border-bottom: 1px solid #dddddd;
 }
 header .chat-popover-holder .popover-header .top-section {
-  margin-bottom: 12px;
+  margin-bottom: 17px;
 }
 header .chat-popover-holder .popover-header .top-section .header-text {
   color: #888888;
   font-size: 9px;
-  margin: 0 0 0 97px;
+  margin: 0 0 0 77px;
   float: left;
   line-height: 1;
   cursor: pointer;
 }
 header .chat-popover-holder .popover-header .top-section .header-text:hover {
   color: #00a6ef;
+}
+header .chat-popover-holder .popover-header .top-section .header-text.mark-all {
+  margin: 0 0 0 117px;
 }
 header .chat-popover-holder .popover-header .top-section .inbox-count {
   margin: 0;
@@ -10458,6 +10464,7 @@ header .chat-popover-holder .popover-header .bottom-section .form-control {
   border: solid 1px rgba(0, 166, 239, 0.5);
   margin: 0 auto;
   text-align: center;
+  width: 96%;
   font-size: 0.6875em;
 }
 header .chat-popover-holder .popover-header .bottom-section .fa {
@@ -10493,24 +10500,24 @@ header .chat-popover-holder .chat-list-holder .chat-item .prof-img {
   height: 32px;
   border-radius: 999px;
   float: left;
-  margin-left: 3px;
+  margin-left: 11px;
   overflow: hidden;
 }
 header .chat-popover-holder .chat-list-holder .chat-item .chat-preview {
   float: left;
   margin-left: 13px;
-  width: 87%;
+  width: 85%;
   position: relative;
 }
 header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-preview-header {
   width: 100%;
-  margin: 2px 0 7px;
+  margin: 0 0 5px;
 }
 header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-preview-header .prof-name {
   margin: 0;
   color: #000000;
-  font-size: 0.75em;
-  font-weight: 400;
+  font-size: 0.875em;
+  font-weight: 500;
   line-height: 1;
   float: left;
   text-transform: capitalize;
@@ -10525,9 +10532,9 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-pre
 header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .chat-msg {
   margin: 0;
   color: #666666;
-  font-size: 0.75em;
+  font-size: 12px;
   line-height: 1;
-  width: 80%;
+  width: 84%;
 }
 header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .mark-read {
   display: block;
@@ -10779,7 +10786,6 @@ header .friends-popover-holder .popover-footer .see-all {
   font-size: 1.25em;
   margin: 0 0 29px;
   letter-spacing: 1px;
-  text-shadow: 0px 3px 160px #000;
 }
 .dashboard-container .main-task-holder .inner-wrapper .section-title .larger {
   font-size: 1.375em;
@@ -10791,10 +10797,9 @@ header .friends-popover-holder .popover-footer .see-all {
   padding: 0 10px 11px;
   color: #fff;
   height: 47px;
-  font-weight: 300;
+  font-weight: 500;
   letter-spacing: 2px;
-  border-bottom: 1px solid #e2e2e2;
-  text-shadow: 0px 0px 10px #000;
+  box-shadow: none;
   font-size: 2.25em;
   border-bottom: 1px solid #e2e2e2;
   border-top: 0;
@@ -10863,7 +10868,7 @@ header .friends-popover-holder .popover-footer .see-all {
   letter-spacing: 1px;
 }
 .dashboard-container .wallpaper-holder {
-  z-index: -1;
+  z-index: -2;
   width: 100%;
   height: 100vh;
   top: 0;
@@ -10900,6 +10905,18 @@ header .friends-popover-holder .popover-footer .see-all {
   width: 165px;
   height: 255px;
   z-index: 1;
+}
+.dashboard-container .middle-shadow {
+  display: block;
+  background: url(../images/task-bg.png) no-repeat 0 0;
+  position: fixed;
+  top: 45vh;
+  right: 0;
+  left: 0;
+  margin: auto;
+  width: 590px;
+  height: 246px;
+  z-index: -1;
 }
 
 .folder-container {
@@ -21685,7 +21702,7 @@ header .friends-popover-holder .popover-footer .see-all {
   margin-bottom: 12px;
   width: 100%;
   position: relative;
-  padding: 0 12px 0 8px;
+  padding: 0 4px 0 8px;
 }
 .chat-bubble-holder .chat-bubble .conv-holder .chat-msg .pro-img {
   position: absolute;
@@ -21727,7 +21744,7 @@ header .friends-popover-holder .popover-footer .see-all {
   width: auto;
   background-color: #00a6ef;
   color: #fff;
-  margin: 0 22px 0 0;
+  margin: 0;
 }
 .chat-bubble-holder .chat-bubble .compose-msg {
   position: relative;
@@ -21831,6 +21848,10 @@ header .friends-popover-holder .popover-footer .see-all {
 .chat-bubble-holder .chat-bubble.minimized .bubble-header .username-holder .name {
   color: #000;
   font-size: 14px;
+  width: 118px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .chat-bubble-holder .chat-bubble.minimized .bubble-header .username-holder .all-media-btn {
   display: none;

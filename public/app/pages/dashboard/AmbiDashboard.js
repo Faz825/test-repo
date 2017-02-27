@@ -93,6 +93,7 @@ export default class AmbiDashboard extends React.Component {
 				<span className="left-top-shadow"></span>
 				<span className="left-btm-shadow"></span>
 				<span className="right-top-shadow"></span>
+				<span className="middle-shadow"></span>
 	        </section>
 		);
 	}

@@ -391,9 +391,14 @@ export class MessageList extends React.Component{
             let sender_image = _this.props.loggedUser.profile_image;
             return (
                 <div className={msg.cssClass == "receiver" ? "chat-msg received" : "chat-msg sent"} key={key}>
-                    <div className="pro-img">
-                        <img src={msg.cssClass == "receiver" ? receiver_image : sender_image} className="img-responsive" />
-                    </div>
+                    {
+                        (msg.cssClass == "receiver")?
+                        <div className="pro-img">
+                            <img src={receiver_image} className="img-responsive" />
+                        </div>
+                        :
+                        null
+                    }
                     <p className="msg">{msg.text}</p>
                 </div>
             );
