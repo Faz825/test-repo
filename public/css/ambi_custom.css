@@ -615,9 +615,76 @@ a.rc-time-picker-panel-clear-btn {
     cursor: pointer;
 }
 
+.note-popup-dialog .popup-holder .note-words-count{
+    position: absolute;
+    padding-top: 3px;
+    width: 124px;
+    height: 30px;
+    bottom: 16px;
+    left: -27%;
+    box-shadow: 2px 5px 15px 2px rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    background-color: #ffffff;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.note-popup-dialog .popup-holder .note-words-count .count{
+    color: rgba(0, 0, 0, 0.57);
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.note-popup-dialog .popup-holder .note-words-count .def{
+    color: rgba(0, 0, 0, 0.37);
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.note-popup-dialog .popup-holder .note-brightness-holder{
+    position: absolute;
+    padding-top: 3px;
+    width: 44px;
+    height: 44px;
+    top: 22px;
+    left: -27%;
+    box-shadow: 1px 5px 15px 5px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.note-popup-dialog .popup-holder .note-brightness-holder img{
+    width: 17px;
+    height: 16px;
+    margin: 7px auto;
+}
+
+
+.note-popup-dialog .popup-holder .note-brightness-holder .controller{
+    position: relative;
+    margin: auto;
+    width: 30px;
+    height: 1px;
+    border-radius: 100px;
+    background-color: #000000;
+}
+
+.note-popup-dialog .popup-holder .note-brightness-holder .controller .adjuster{
+    position: absolute;
+    width: 1px;
+    height: 5px;
+    border-radius: 100px;
+    background-color: #000000;
+    top: -2px;
+    left: 50%;
+    cursor: pointer;
+}
+
 .note-popup-dialog .edit-note-popup .ql-editor {
+    padding: 0 25px;
     min-height: 340px !important;
-    margin-top: 60px;
+    margin-top: 90px;
 }
 
 .note-popup-dialog .edit-note-popup .rich-editor-holder .quill-toolbar{
@@ -1449,4 +1516,26 @@ body .modal-backdrop{
   top: 3px;
   right: 5px;
   font-size: 12px;
+}
+
+header .chat-popover-holder .inner-wrapper .see-all{
+    padding-top: 0;
+    margin-top: -3px;
+}
+
+.chat-bubble #chatMsg{
+    position: relative;
+}
+
+.chat-bubble #chatMsg .form-validation-alert{
+    position: absolute;
+    top: -22px;
+    left: 8px;
+}
+
+.chat-bubble-holder .chat-bubble .bubble-header .username-holder .name{
+    width: 118px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

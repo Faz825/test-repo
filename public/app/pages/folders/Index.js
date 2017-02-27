@@ -599,7 +599,7 @@ export default class Index extends React.Component{
         });
 
         const inputProps = {
-            placeholder: 'Search',
+            placeholder: 'search',
             value,
             onChange: this.onFolderChange,
             className: 'form-control'

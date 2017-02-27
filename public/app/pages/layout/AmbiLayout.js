@@ -65,7 +65,8 @@ export default class AmbiLayout extends React.Component {
                 message:'',
                 type:''
             },
-            dummyChatArray:[]
+            dummyChatArray:[],
+            loadedChatBubbleId:0
         };
 
         this.quickChatUsers = [];
@@ -159,7 +160,8 @@ export default class AmbiLayout extends React.Component {
 
         if (!chatExists) {
             this.quickChatUsers.push(conv);
-            this.setState({chatBubble: this.quickChatUsers});
+            let convId = "usr:" + conv.proglobeTitle;
+            this.setState({chatBubble: this.quickChatUsers, loadedChatBubbleId: convId});
         }
     }
 
@@ -296,8 +298,8 @@ export default class AmbiLayout extends React.Component {
                         :
                         null
                 }
-                <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)}/>
-                <QuickChatDummy dummyChatList={this.state.dummyChatArray} closeQuickChat={this.closeDummyQuickChat.bind(this)} isNavHidden={this.state.isNavHidden}/>
+                <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)} isNavHidden={this.state.isNavHidden} loadedChatBubbleId={this.state.loadedChatBubbleId}/>
+                {/*<QuickChatDummy dummyChatList={this.state.dummyChatArray} closeQuickChat={this.closeDummyQuickChat.bind(this)} isNavHidden={this.state.isNavHidden}/>*/}
                 <VideoChatPopOver />
                 <FooterHolder blockBottom={this.state.rightBottom}
                               blockSocialNotification={this.state.socialNotifications}

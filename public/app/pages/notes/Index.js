@@ -40,7 +40,7 @@ export default class Index extends React.Component {
             isShowingNoteModal:false,
             notebookId:0,
             editNoteId:0,
-            editNoteTitle:"Note Title",
+            editNoteTitle:"Title your note",
             editNote:"",
             isAutoTitled: false,
             staticNoteTitle:"",
@@ -218,7 +218,7 @@ export default class Index extends React.Component {
                                     </div>
                                     <div className="notebook-color">
                                         <div className="col-sm-12 input-group">
-                                            <p>Choose a colour</p>
+                                            <p>Choose a color</p>
                                             <div className="color-palette">
                                                 <div className={this.isActive('dark-green')} id="#038247" data-name="dark-green" onClick={this.colorPicker.bind(this)}>
                                                     <i className="fa fa-check" aria-hidden="true"></i>
@@ -321,7 +321,7 @@ export default class Index extends React.Component {
             let now = new Date();
 
             this.setState({isShowingNoteModal:true, notebookId:notebook_id, noteAddEdit:1,
-                editNoteTitle : "Note Title", editNote : "", notebookObj:notebook_obj, isAutoTitled:true,
+                editNoteTitle : "Title your note", editNote : "", notebookObj:notebook_obj, isAutoTitled:true,
                 noteOwnerProfileImage: (this.state.loggedUser.profile_image == "") ? "/images/default-profile-pic.png" : this.state.loggedUser.profile_image,
                 noteOwner: this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name,
                 noteCreatedTime: Lib.timeAgo(now)
@@ -351,7 +351,7 @@ export default class Index extends React.Component {
             if (noteContent.length > 1) {
                 noteText = noteContent.slice(0,30);
             }else{
-                noteText = "Note Title";
+                noteText = "Title your note";
             }
         }
         this.setState({editNoteTitle : noteText, isAutoTitled: false});
@@ -373,19 +373,19 @@ export default class Index extends React.Component {
         let _this = this;
         let _notes_read_write = 2;
         let noteTitle = this.state.editNoteTitle;
-        if(noteTitle == "Note Title"){
+        if(noteTitle == "Title your note"){
             let noteContent = this.state.editNote.replace(/(<([^>]+)>)/ig,"");
             if (noteContent.length > 1) {
                 noteTitle = noteContent.slice(0,12);
             }else{
-                noteTitle = "Note Title";
+                noteTitle = "Title your note";
             }
         }else if(this.state.isAutoTitled){
             let noteContent = this.state.editNote.replace(/(<([^>]+)>)/ig,"");
             if (noteContent.length > 1) {
                 noteTitle = noteContent.slice(0,12);
             }else{
-                noteTitle = "Note Title";
+                noteTitle = "Title your note";
             }
         }
         this.setState({editNoteTitle : noteTitle});
@@ -473,13 +473,16 @@ export default class Index extends React.Component {
                                         <span className="delete-note"></span>
                                         <span className="note-info"></span>
                                         <div className="search-wrapper">
-                                            <input type="text" className="form-control search-note" placeholder="Search"/>
+                                            <input type="text" className="form-control search-note" placeholder="search"/>
                                             <span className="search-ico"></span>
                                         </div>
                                         <span className="maximize"></span>
                                     </div>
                                 </section>
                                 <section className="note-body clearfix">
+                                    <div className="title-wrapper">
+                                        <input type="text" className="note-title" value={this.state.editNoteTitle} onChange={(event)=>{this.onTitleEdit(event)}}/>
+                                    </div>
                                     <Scrollbars style={{ height: 570 }}>
                                         <RichTextEditor note={this.state.editNote} noteText={this.getNoteData} />
                                     </Scrollbars>
@@ -491,6 +494,14 @@ export default class Index extends React.Component {
                                 </section>
                             </section>
                             <span className="close-note" onClick={this.closeNotePopup.bind(this)}></span>
+                            <div className="note-words-count">
+                                <span className="count">70</span> <span className="def">words</span></div>
+                            <div className="note-brightness-holder">
+                                <img src="images/notebook/brightness.png" className="img-responsive"/>
+                                <div className="controller">
+                                    <span className="adjuster"></span>
+                                </div>
+                            </div>
                         </div>
                     </ModalDialog>
                 </ModalContainer>
@@ -524,7 +535,7 @@ export default class Index extends React.Component {
                                 <div className="search-notebook">
                                     <div className="inner-addon">
                                         <i className="fa fa-search"></i>
-                                        <input type="text" className="form-control" placeholder="Search"/>
+                                        <input type="text" className="form-control" placeholder="search"/>
                                     </div>
                                 </div>
                                 <div className="crt-notebook">

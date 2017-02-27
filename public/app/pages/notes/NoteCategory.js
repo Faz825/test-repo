@@ -242,7 +242,7 @@ export class SharePopup extends React.Component{
                         <div className="col-sm-12">
                             <div className="header-wrapper">
                                 <h3 className="popup-title">people in this notebook</h3>
-                                <input type="text" className="form-control search-people" placeholder="Search" onChange={(event)=>this.filterSharedUsers(_notebook.notebook_id, event)} />
+                                <input type="text" className="form-control search-people" placeholder="search" onChange={(event)=>this.filterSharedUsers(_notebook.notebook_id, event)} />
                                     <span className="search-ico"></span>
                             </div>
                         </div>
@@ -299,7 +299,7 @@ export class SharePopup extends React.Component{
                                 {
                                     (_notebook.owned_by == 'me') ?
                                         <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
-                                            <p className={(this.state.sharedUsers.length > 2) ? "add-people" : "add-people c"}>+ Add New</p>
+                                            <p className={(this.state.sharedUsers.length > 2) ? "add-people" : "add-people c"}>+ Add member</p>
                                         </OverlayTrigger> : null
                                 }
                                 {
@@ -472,7 +472,7 @@ export class SharePopupNewUsr extends React.Component{
                 <div className="popup-holder">
                     <section className="share-notebook-add-people-popup">
                         <div className="input-wrapper">
-                            <input type="text" className="form-control" placeholder="type Name to Add" id="type-to-add" onChange={this._handleAddNewUser}/>
+                            <input type="text" className="form-control" placeholder="type name to add" id="type-to-add" onChange={this._handleAddNewUser}/>
                         </div>
                         <div className="suggestions-wrapper">
                             {_suggestions}

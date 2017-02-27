@@ -18,7 +18,9 @@ export default class QuickChatHandler extends React.Component{
             conversations:[],
             messages:[],
             uri:'usr:proglobe'+this.getUrl(),
-            bubbleList : this.props.chatList
+            bubbleList : this.props.chatList,
+            isNavHidden: this.props.isNavHidden,
+            activeBubbleId:0
         };
 
         this.b6 = CallCenter.b6;
@@ -33,11 +35,12 @@ export default class QuickChatHandler extends React.Component{
         this.loadMyConnections();
 
         this.onBubbleClose = this.onBubbleClose.bind(this);
+        this.setActiveBubbleId = this.setActiveBubbleId.bind(this);
 
     };
 
     componentWillReceiveProps(nextProps) {
-        this.setState({bubbleList: nextProps.chatList});
+        this.setState({bubbleList: nextProps.chatList, isNavHidden: nextProps.isNavHidden, activeBubbleId: nextProps.loadedChatBubbleId});
     }
 
     componentDidMount() {
@@ -292,7 +295,8 @@ export default class QuickChatHandler extends React.Component{
 
         if(this.msgDivIds.indexOf(divId) == -1){
             this.msgDivIds.push(divId);
-            let cssClass = m.incoming() ? 'receiver chat-block' : 'sender chat-block';
+            //let cssClass = m.incoming() ? 'receiver chat-block' : 'sender chat-block';
+            let cssClass = m.incoming() ? 'receiver' : 'sender';
 
             if (typeof this.props.chatList != 'undefined' && this.props.chatList.length > 0) {
                 for (let my_con in this.props.chatList) {
@@ -407,8 +411,9 @@ export default class QuickChatHandler extends React.Component{
 
     sendChat(msgObj){
         let user = Session.getSession('prg_lg');
-        Chat.b6.session.displayName = user.first_name + " " + user.last_name;
-        Chat.b6.compose(msgObj.uri).text(msgObj.message).send(function(err) {
+        let _b6 = CallCenter.b6;
+        _b6.session.displayName = user.first_name + " " + user.last_name;
+        _b6.compose(msgObj.uri).text(msgObj.message).send(function(err) {
             if (err) {
                 console.log('error', err);
             }
@@ -420,11 +425,13 @@ export default class QuickChatHandler extends React.Component{
     };
 
     doVideoCall(callObj){
-        Chat.startOutgoingCall(callObj.uri, true);
+        //TODO Call has to be integrated after callcenter is completed
+        //Chat.startOutgoingCall(callObj.uri, true);
     };
 
     doAudioCall(callObj){
-        Chat.startOutgoingCall(callObj.uri, false);
+        //TODO Call has to be integrated after callcenter is completed
+        //Chat.startOutgoingCall(callObj.uri, false);
     };
 
     makeConversationRead(uri){
@@ -445,16 +452,25 @@ export default class QuickChatHandler extends React.Component{
         this.props.bubClose(title);
     };
 
+    setActiveBubbleId(_bubbleId) {
+        if(this.state.activeBubbleId !=_bubbleId) {
+            this.setState({activeBubbleId: _bubbleId});
+        }
+    }
+
 
     render() {
 
         let _this =  this;
 
         if(typeof this.props.chatList == 'undefined' || this.props.chatList.length == 0 ){
-            return (<div />)
+            return null
         }
 
         let chats = this.props.chatList.map(function(conv, key){
+
+            let convId = "usr:" + conv.proglobeTitle;
+            let _isActive = _this.state.activeBubbleId == convId;
             return (
                 <QuickChatBubble
                     key={key}
@@ -464,13 +480,20 @@ export default class QuickChatHandler extends React.Component{
                     sendMyMessage={_this.sendChat.bind(this)}
                     doAudioCall = {_this.doAudioCall.bind(this)}
                     doVideoCall = {_this.doVideoCall.bind(this)}
+                    isNavHidden={_this.state.isNavHidden}
+                    setActiveBubbleId= {_this.setActiveBubbleId.bind(this)}
+                    isActiveBubble={_isActive}
                     />
             );
         });
 
         return (
             <div className="bubble-holder">
-                {chats}
+                <section className={this.state.isNavHidden == true ? "chat-bubble-holder menu-hidden" : "chat-bubble-holder"}>
+                    <div className="container clearfix">
+                        {chats}
+                    </div>
+                </section>
             </div>
         );
 

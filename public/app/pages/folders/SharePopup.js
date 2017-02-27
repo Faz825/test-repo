@@ -239,7 +239,7 @@ export default class SharePopup extends React.Component{
                             <div className="col-sm-12">
                                 <div className="search-people-wrapper">
                                     <span className="input-ico"></span>
-                                    <input className="form-control search-people" type="text" placeholder="Search" onChange={(event)=>this.filterSharedUsers(_folderData.folder_id, event)}/>
+                                    <input className="form-control search-people" type="text" placeholder="search" onChange={(event)=>this.filterSharedUsers(_folderData.folder_id, event)}/>
                                 </div>
                             </div>
                         </div>
