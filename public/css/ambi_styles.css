@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.6 (http://getbootstrap.com)
- * Copyright 2011-2015 Twitter, Inc.
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,7 +1418,6 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3119,7 +3118,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3672,7 +3670,6 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10250,16 +10247,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* 
-	Method to use:
-	@include @border {
-		border ($style,  $sides, $emptySides){
-	}
+  Method to use:
+  @include @border {
+    border ($style,  $sides, $emptySides){
+  }
 */
 /* 
-	Method to use:
-	@include @mixin {
-		content
-	}
+  Method to use:
+  @include @mixin {
+    content
+  }
 */
 header {
   background: #fff;
@@ -10565,7 +10562,7 @@ header .friends-popover-holder .inner-wrapper:before {
   background: url(../images/header-icons/popup-arrow.png) no-repeat;
 }
 header .friends-popover-holder .popover-header {
-  padding: 10px 13px 22px;
+  padding: 10px 13px 18px;
   border-bottom: 1px solid #dddddd;
 }
 header .friends-popover-holder .popover-header .friend-requests {
@@ -10598,7 +10595,7 @@ header .friends-popover-holder .friends-list-holder.see-all {
   overflow-y: scroll;
 }
 header .friends-popover-holder .friends-list-holder .friends-item {
-  padding: 3px 15px;
+  padding: 3px 6px 3px 15px;
   overflow: hidden;
   cursor: pointer;
   border-bottom: 1px solid #dddddd;
@@ -10617,7 +10614,7 @@ header .friends-popover-holder .friends-list-holder .friends-item .friends-previ
   margin-left: 10px;
 }
 header .friends-popover-holder .friends-list-holder .friends-item .friends-preview .prof-name {
-  margin: 0 0 4px;
+  margin: 4px 0 4px;
   color: #000000;
   font-size: 0.75em;
   font-weight: 400;
@@ -10656,15 +10653,33 @@ header .friends-popover-holder .friends-list-holder .friends-item .controls .btn
   background-color: #ffffff;
   margin-right: 6px;
 }
+header .friends-popover-holder .friends-list-holder .friends-item .controls .btn.btn-decline .ico {
+  float: left;
+  margin-top: 1px;
+  width: 6px;
+  height: 8px;
+  background-image: url("../images/header-icons/friend_request_dropdown/decline-icon.png");
+}
 header .friends-popover-holder .friends-list-holder .friends-item .controls .btn.btn-decline:hover {
   background-color: #bebfbf;
   border: solid 1px #bebfbf;
   color: #ffffff;
 }
+header .friends-popover-holder .friends-list-holder .friends-item .controls .btn.btn-decline:hover .ico {
+  background-image: url("../images/header-icons/friend_request_dropdown/decline-icon-active.png");
+}
 header .friends-popover-holder .friends-list-holder .friends-item .controls .btn.btn-accept {
   border: solid 1px #00a6ef;
   color: #ffffff;
   background-color: #00a6ef;
+}
+header .friends-popover-holder .friends-list-holder .friends-item .controls .btn.btn-accept .ico {
+  margin-top: -1px;
+  margin-right: 4px;
+  float: left;
+  width: 12px;
+  height: 12px;
+  background-image: url("../images/header-icons/friend_request_dropdown/accept-icon.png");
 }
 header .friends-popover-holder .friends-list-holder .friends-item .controls .btn.btn-accept:hover {
   background-color: #0092db;
