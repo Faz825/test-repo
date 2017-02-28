@@ -31,7 +31,7 @@ export default class Index extends React.Component {
             inProgressCall: false,
             callMode: CallChannel.AUDIO,
             userContacts: [],
-            recentCalls: [],
+            callRecords: {all: [], missed: [], individual: [], groups: [], multi: []},
             userStatus: "online",
             activeMainCat: "",
             activeSubCat: "",
@@ -52,7 +52,7 @@ export default class Index extends React.Component {
 
         CallCenter.getCallRecords().done(function (data) {
             if (data.status.code == 200) {
-                _this.setState({recentCalls: data.call_records});
+                _this.setState({recentCalls: _this.processCallRecords(data.call_records)});
                 _this.setActiveTabData('recent', 'all');
             }
         });
@@ -139,57 +139,62 @@ export default class Index extends React.Component {
 
             this.setState({activeTabData: dataSet});
         } else if (cat == "recent" && subCat == "all") {
-            let callRecords = [];
-            let aRecentCalls = this.state.recentCalls;
+            this.setState({activeTabData: this.state.recentCalls});
+        } else if (cat == "recent" && subCat == "missed") {
 
-            for (var i = 0; i < aRecentCalls.length; i++) {
-                let callChannel = null;
-                let callType = null;
-                let callStatus = null;
-                let time = null;
-                let dd = null;
-
-                let date = new Date(aRecentCalls[i].call_started_at);
-                let hh = date.getHours();
-                let m = date.getMinutes();
-                let s = date.getSeconds();
-
-                (hh > 12) ? dd = 'PM' : dd = 'AM';
-                (m < 10) ? m = '0' + m : m = m;
-                (hh < 10) ? hh = '0' + hh : hh = hh;
-
-                time = hh + ':' + m + ' ' + dd;
-
-                (aRecentCalls[i].call_channel == CallChannel.VIDEO) ? callChannel = 'video' : callChannel = 'phone';
-                (aRecentCalls[i].call_type == CallType.INCOMING) ? callType = CallType.INCOMING : callType = CallType.OUTGOING;
-
-                if (aRecentCalls[i].call_status == CallStatus.MISSED) {
-                    callStatus == 'missed';
-                } else if (aRecentCalls[i].call_status == CallStatus.ANSWERED) {
-                    callStatus == 'answered';
-                } else if (aRecentCalls[i].call_status == CallStatus.REJECTED) {
-                    callStatus == 'rejected';
-                } else if (aRecentCalls[i].call_status == CallStatus.CANCELLED) {
-                    callStatus == 'cancelled';
-                }
-
-                callRecords.push({
-                    user_id: aRecentCalls[i].receivers_list[0].user_id,
-                    first_name: aRecentCalls[i].receivers_list[0].first_name,
-                    last_name: aRecentCalls[i].receivers_list[0].last_name,
-                    calls: 1,
-                    time: time,
-                    call_type: callType,
-                    call_channel: callChannel,
-                    call_status: callStatus,
-                    images: aRecentCalls[i].receivers_list[0].images
-                });
-            }
-
-            this.setState({activeTabData: callRecords});
         }
 
         this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
+    }
+
+    processCallRecords(aCallRecords) {
+        let callRecords = [];
+
+        for (var i = 0; i < aCallRecords.length; i++) {
+            let callChannel = null;
+            let callType = null;
+            let callStatus = null;
+            let time = null;
+            let dd = null;
+
+            let date = new Date(aCallRecords[i].call_started_at);
+            let hh = date.getHours();
+            let m = date.getMinutes();
+            let s = date.getSeconds();
+
+            (hh > 12) ? dd = 'PM' : dd = 'AM';
+            (m < 10) ? m = '0' + m : m = m;
+            (hh < 10) ? hh = '0' + hh : hh = hh;
+
+            time = hh + ':' + m + ' ' + dd;
+
+            (aCallRecords[i].call_channel == CallChannel.VIDEO) ? callChannel = 'video' : callChannel = 'phone';
+            (aCallRecords[i].call_type == CallType.INCOMING) ? callType = CallType.INCOMING : callType = CallType.OUTGOING;
+
+            if (aCallRecords[i].call_status == CallStatus.MISSED) {
+                callStatus == 'missed';
+            } else if (aCallRecords[i].call_status == CallStatus.ANSWERED) {
+                callStatus == 'answered';
+            } else if (aCallRecords[i].call_status == CallStatus.REJECTED) {
+                callStatus == 'rejected';
+            } else if (aCallRecords[i].call_status == CallStatus.CANCELLED) {
+                callStatus == 'cancelled';
+            }
+
+            callRecords.push({
+                user_id: aCallRecords[i].receivers_list[0].user_id,
+                first_name: aCallRecords[i].receivers_list[0].first_name,
+                last_name: aCallRecords[i].receivers_list[0].last_name,
+                calls: 1,
+                time: time,
+                call_type: callType,
+                call_channel: callChannel,
+                call_status: callStatus,
+                images: aCallRecords[i].receivers_list[0].images
+            });
+        }
+
+        return callRecords;
     }
 
     loadContactData(cat, subCat) {
@@ -574,7 +579,7 @@ export default class Index extends React.Component {
         return (
             <div className="rw-contact-menu sub-menu">
                 <div className={(subCat == "all") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
-                    this.loadContactData("recent", "all")
+                    this.getCallRecords("recent", "all")
                 }}>All <span className="selector"></span></div>
                 <div className={(subCat == "missed") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
                     this.loadContactData("recent", "missed")
@@ -652,14 +657,14 @@ export default class Index extends React.Component {
     headerNav() {
         let mainCat = this.state.activeMainCat;
         let subCat = this.state.activeSubCat;
-                
+
         return (
             <div className="inner-header clearfix">
                 <div className="col-sm-6 user-status">
                     <div className="image-wrapper">
                         <img
-                            src={(this.state.loggedUser.hasOwnProperty('profile_image') && this.state.loggedUser.profile_image) ? 
-                            this.state.loggedUser.profile_image : "/images/default-profile-pic.png"}/>
+                            src={(this.state.loggedUser.hasOwnProperty('profile_image') && this.state.loggedUser.profile_image) ?
+                                this.state.loggedUser.profile_image : "/images/default-profile-pic.png"}/>
                         {(!this.state.isStatusVisible) ?
                             <span className={"status user-mode " + this.getUserStatusClass(this.state.userStatus)}
                                   onClick={this.onUserStatusClick.bind(this)}></span>

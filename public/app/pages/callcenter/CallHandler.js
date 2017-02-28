@@ -34,8 +34,6 @@ export default class CallHandler extends React.Component {
 
         let _this = this;
 
-        //  console.log(getContacts);
-
         getContacts.done(function (data) {
             _this.setState({contacts: data.contacts});
         });
@@ -61,7 +59,6 @@ export default class CallHandler extends React.Component {
     onVideoCall(v, d, op) {
         console.log("====== video call ======");
 
-        // TODO Please change the container name for popup container
         var vc = $('#webcamStage');
         if (op < 0) {
             vc[0].removeChild(v);
@@ -83,18 +80,10 @@ export default class CallHandler extends React.Component {
 
         if (!_blockCall) {
             console.log("Incoming call");
-            console.log(c);
 
             let _callType = CallCenter.getCallType(c);
 
             let targetUser = this.getContactBySlug(c.other);
-
-            console.log(targetUser);
-
-            // Get caller details
-            // let cf = b6.getNameFromIdentity(c.other);
-            // let title_array = cf.split('proglobe');
-            // let title = title_array[1];
 
             this.setState({inComingCall: true, callMode: _callType, targetUser: targetUser, bit6Call: c});
 
@@ -132,20 +121,6 @@ export default class CallHandler extends React.Component {
             video: isVideoCall
         };
         this.answerCall(c, opts);
-    }
-
-
-    loadCallerProfile(title) {
-        $.ajax({
-            url: '/get-profile/' + title,
-            method: "GET",
-            dataType: "JSON",
-            headers: {'prg-auth-header': this.state.loggedUser.token}
-        }).done(function (data) {
-            if (data.status.code == 200 && data.profile_data != null) {
-                this.callerProfile = data.profile_data;
-            }
-        }.bind(this));
     }
 
     checkWorkMode() {
@@ -188,20 +163,6 @@ export default class CallHandler extends React.Component {
         c.on('end', function () {
             // TODO show call end details in popup
         });
-    }
-
-    loadMyConnections() {
-        $.ajax({
-            url: '/connection/me',
-            method: "GET",
-            dataType: "JSON",
-            headers: {'prg-auth-header': this.state.loggedUser.token}
-        }).done(function (data) {
-            if (data.status.code == 200) {
-                this.my_connections = data.my_con;
-                this.setState({my_connections: this.my_connections});
-            }
-        }.bind(this));
     }
 
     notificationDomIdForConversation(c) {
