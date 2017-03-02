@@ -483,8 +483,8 @@ export default class Index extends React.Component{
         return(
             <div>
                 {this.state.isShowingModal &&
-                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} className="create-folder modalPopup" width="438px">
+                <ModalContainer zIndex={9999}>
+                    <ModalDialog className="create-folder modalPopup" width="438px">
                         <div className="popup-holder">
                             <section className="create-folder-popup">
                                 <section className="folder-header">
@@ -567,6 +567,15 @@ export default class Index extends React.Component{
                                     </div>
                                 </section>
                             </section>
+                            <a className="closeButton--jss-0-1" onClick={(e) => this.props.closePopup(e)}>
+                                <svg width="40" height="40">
+                                    <circle cx="20" cy="20" r="20" fill="black"></circle>
+                                    <g transform="rotate(45 20 20)">
+                                        <rect x="8" y="19.25" width="24" height="1.5" fill="white"></rect>
+                                        <rect y="8" x="19.25" height="24" width="1.5" fill="white"></rect>
+                                    </g>
+                                </svg>
+                            </a>
                         </div>
                     </ModalDialog>
                 </ModalContainer>
