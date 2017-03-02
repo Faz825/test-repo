@@ -22099,6 +22099,14 @@ header .friends-popover-holder .popover-footer .see-all {
 .notification-popup-wrapper .notification-popup-holder .header-wrapper.work .notify-num {
   background-color: #a6c74a;
 }
+.notification-popup-wrapper .notification-popup-holder .header-wrapper.events .icon {
+  background: url(../images/notification-popup/events-header-icon.png) no-repeat 0 0;
+  width: 15px;
+  height: 16px;
+}
+.notification-popup-wrapper .notification-popup-holder .header-wrapper.events .notify-num {
+  background-color: #ed1e7a;
+}
 .notification-popup-wrapper .notification-popup-holder .header-wrapper .icon {
   margin: 2px 8px 0 13px;
   display: block;
@@ -22138,6 +22146,9 @@ header .friends-popover-holder .popover-footer .see-all {
   background: url(../images/notification-popup/header-right-arrow.png) no-repeat 0 0;
   right: 22px;
 }
+.notification-popup-wrapper .notification-popup-holder.events .notification-body .notification-item .content-body {
+  margin-left: 22px;
+}
 .notification-popup-wrapper .notification-popup-holder .notification-body {
   height: 335px;
   overflow-y: scroll;
@@ -22154,6 +22165,37 @@ header .friends-popover-holder .popover-footer .see-all {
   border-radius: 100%;
   overflow: hidden;
   float: left;
+}
+.notification-popup-wrapper .notification-popup-holder .notification-body .notification-item.checked .task-icon .task {
+  background: url(../images/notification-popup/task-checked.png) no-repeat 0 0;
+}
+.notification-popup-wrapper .notification-popup-holder .notification-body .notification-item.checked .content-body .content {
+  color: #aaaaaa;
+}
+.notification-popup-wrapper .notification-popup-holder .notification-body .notification-item.checked .content-body .time {
+  color: #aaaaaa;
+}
+.notification-popup-wrapper .notification-popup-holder .notification-body .notification-item .task-icon {
+  width: 26px;
+  height: 26px;
+  float: left;
+  margin: 0 0 0 10px;
+}
+.notification-popup-wrapper .notification-popup-holder .notification-body .notification-item .task-icon .event {
+  display: block;
+  width: 13px;
+  margin: 7px auto 0;
+  height: 13px;
+  background-color: #00a6ef;
+  border-radius: 100%;
+}
+.notification-popup-wrapper .notification-popup-holder .notification-body .notification-item .task-icon .task {
+  display: block;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  margin: 4px 0 0 0;
+  background: url(../images/notification-popup/task-checkbox.png) no-repeat 0 0;
 }
 .notification-popup-wrapper .notification-popup-holder .notification-body .notification-item.invitation .content-body .time {
   margin-top: 0;
@@ -22212,8 +22254,8 @@ header .friends-popover-holder .popover-footer .see-all {
   height: 12px;
   background: url(../images/notification-popup/notify-popup-arrow.png) no-repeat 0 0;
   position: absolute;
-  bottom: -11px;
-  left: 55px;
+  bottom: -10px;
+  left: 52px;
 }
 .notification-popup-wrapper .notification-popup-holder .see-all-holder .see-all {
   text-transform: lowercase;
