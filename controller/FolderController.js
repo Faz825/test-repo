@@ -272,6 +272,7 @@ var FolderController = {
                                             document_user: doc.user_id,
                                             document_path: doc.file_path,
                                             document_thumb_path: doc.thumb_path,
+                                            updated_at: doc.updated_at,
                                             document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
                                         };
                                         _documents.push(_doc);
@@ -393,6 +394,7 @@ var FolderController = {
                                                 document_user: doc.user_id,
                                                 document_path: doc.file_path,
                                                 document_thumb_path: doc.thumb_path,
+                                                updated_at: doc.updated_at,
                                                 document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
                                             };
                                             _documents.push(_doc);
@@ -1385,6 +1387,7 @@ var FolderController = {
                                 document_user: doc.user_id,
                                 document_path: doc.file_path,
                                 document_thumb_path: doc.thumb_path,
+                                updated_at: doc.updated_at,
                                 document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
                             };
 

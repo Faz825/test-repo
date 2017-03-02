@@ -6,6 +6,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import SharePopup from './SharePopup';
+import moment from 'moment-timezone';
 
 export default class FolderList extends React.Component{
     constructor(props){
@@ -461,9 +462,20 @@ export class File extends React.Component{
         this.props.viewFile(data);
     }
 
+    getDateTimeByZone(_data) {
+        let _zone = moment.tz.guess();
+        //let _dateStr = _data.document_updated_at.createdDate + " " + _data.document_updated_at.createdTime;
+        let _dateByZone = moment(_data.updated_at).tz(_zone).format('YYYY-MM-DD HH:mm:ss');
+        let dateObj = {
+            createdDate:moment(_dateByZone).format('MMM D, YYYY'),
+            createdTime:moment(_dateByZone).format('h:mm a')
+        }
+        return dateObj;
+    }
+
     render(){
         let data = this.props.fileData;
-
+        let _documentUpdatedDate = this.getDateTimeByZone(data);
         let thumbIMg = {},
             imgClass = "",
             isSelected = "";
@@ -489,8 +501,8 @@ export class File extends React.Component{
                     <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
                         <div className={(imgClass)? "img-wrapper" : "inner-wrapper"}>
                             <div className="time-wrapper">
-                                <p className="date-created">{data.document_updated_at.createdDate}</p>
-                                <p className="time-created">{data.document_updated_at.createdTime}</p>
+                                <p className="date-created">{_documentUpdatedDate.createdDate}</p>
+                                <p className="time-created">{_documentUpdatedDate.createdTime}</p>
                             </div>
                             <div className="folder-title-holder">
                                 <p className="folder-title">{data.document_name}</p>
