@@ -338,8 +338,8 @@ body{
 	color: #dddddd;
 }
 
-.calender-container .calender-box > div.week > span.day .event-area > ul li {
-	width: 11em;
+.calender-container .calender-box > div.week > span.day .event-area > ul li p{
+	width: 98px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -490,10 +490,6 @@ a.rc-time-picker-panel-clear-btn {
 	white-space: nowrap;
 	width: 150px;
 	overflow: hidden;
-}
-
-.calender-body .col-sm-9 .calender-view .list-area .list-area-content .list-area-content-list li div.event-description {
-    font-size: 11px;
 }
 
 .calender-container .mini-calender-box > div.week > span.day.today{

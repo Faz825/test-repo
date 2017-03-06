@@ -18,6 +18,12 @@ export default class DayEventsList extends React.Component {
         };
     }
 
+    createMarkup(htmlScript) {
+        return (
+            {__html: htmlScript}
+        );
+    }
+
     render() {
         let _this = this;
         let  items = this.props.events.map(function(event,key){
@@ -70,7 +76,8 @@ export default class DayEventsList extends React.Component {
                 <li key={key} className={event._id == _this.props.selectedEvent ? 'bg-success' : ''}>
                     <i className="fa fa-circle" aria-hidden="true"></i>
                     <div className="description-holder">
-                        <div className={acceptedClass} >{event.plain_text}</div>
+                        {/*<div className={acceptedClass} >{event.plain_text}</div>*/}
+                        <div className={acceptedClass} dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></div>
                         <div className="people-list-wrapper">
                             <span className="people-list">People on this event : </span>
                             {ownerString}{usersString}

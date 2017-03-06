@@ -7,6 +7,9 @@ import moment from 'moment-timezone';
 import Socket  from '../../middleware/Socket';
 import WeekDayEventPopUp from './WeekDayEventPopUp';
 
+import {convertFromRaw, convertToRaw} from 'draft-js';
+import {stateToHTML} from 'draft-js-export-html';
+
 import SharedUsers from './SharedUsers';
 import GroupArray from 'group-array';
 
@@ -310,6 +313,12 @@ export class DailyEvents extends React.Component {
         return false;
     }
 
+    createMarkup(htmlScript) {
+        return (
+        {__html: htmlScript}
+        );
+    }
+
     render() {
 
         let groupedEvents = GroupArray(this.props.daily_events, 'type');
@@ -317,20 +326,44 @@ export class DailyEvents extends React.Component {
 
         if(typeof groupedEvents['1'] != "undefined"){
             _events = groupedEvents['1'].map(function(event, key){
+
+                let rawDescription = event.description;
+
+                if(rawDescription.hasOwnProperty("entityMap") == false){
+                    rawDescription.entityMap = [];
+                }
+
+                let contentState = convertFromRaw(event.description);
+                let htmlC = stateToHTML(contentState);
+
                 let _text = event.description.blocks[0].text;
                 return(
                     <li className={_this.isPending(event) == false ? "events clearfix" : "events pending"} key={key}>
-                        {_this.isPending(event) == false ? <p className="item">{_text}</p> : <p className="item pending">{_text}</p>}
+                        {_this.isPending(event) == false ?
+                            <p className="item" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p>
+                            :
+                            <p className="item pending" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p>
+                        }
                     </li>
                 );
             });
         }
         if(typeof groupedEvents['2'] != "undefined"){
             _todos = groupedEvents['2'].map(function(event, key){
+
+                let rawDescription = event.description;
+
+                if(rawDescription.hasOwnProperty("entityMap") == false){
+                    rawDescription.entityMap = [];
+                }
+
+                let contentState = convertFromRaw(event.description);
+                let htmlC = stateToHTML(contentState);
+
                 let _text = event.description.blocks[0].text;
                 return(
                     <li className={_this.isPending(event) == false ? "events clearfix" : "events pending"} key={key}>
-                        {_this.isPending(event) == false ? <p className="item">{_text}</p> : <p className="item pending">{_text}</p>}
+                        {_this.isPending(event) == false ? <p className="item" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p> : <p className="item pending" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p>}
                     </li>
                 );
             });
@@ -338,9 +371,19 @@ export class DailyEvents extends React.Component {
         if(typeof groupedEvents['3'] != "undefined"){
             _tasks = groupedEvents['3'].map(function(event, key){
                 let _text = event.description.blocks[0].text;
+
+                let rawDescription = event.description;
+
+                if(rawDescription.hasOwnProperty("entityMap") == false){
+                    rawDescription.entityMap = [];
+                }
+
+                let contentState = convertFromRaw(event.description);
+                let htmlC = stateToHTML(contentState);
+
                 return(
                     <li className={_this.isPending(event) == false ? "events clearfix" : "events pending"} key={key}>
-                        {_this.isPending(event) == false ? <p className="item">{_text}</p> : <p className="item pending">{_text}</p>}
+                        {_this.isPending(event) == false ? <p className="item" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p> : <p className="item pending" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p>}
                     </li>
                 );
             });
