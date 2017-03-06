@@ -306,7 +306,8 @@ var FolderController = {
                         var _index = FolderConfig.ES_INDEX_SHARED_FOLDER + user_id.toString()
 
                         Folders.getSharedFolders(_index, function (resultSet) {
-                            //console.log(resultSet);
+                            // console.log("=== Shared Folder Results ===");
+                            // console.log(resultSet);
                             callBack(null, resultSet.folders);
                         });
                     },

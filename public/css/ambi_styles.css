@@ -10247,16 +10247,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* 
-  Method to use:
-  @include @border {
-    border ($style,  $sides, $emptySides){
-  }
+	Method to use:
+	@include @border {
+		border ($style,  $sides, $emptySides){
+	}
 */
-/* 
-  Method to use:
-  @include @mixin {
-    content
-  }
+/*
+	Method to use:
+	@include @mixin {
+		content
+	}
 */
 header {
   background: #fff;
@@ -10797,6 +10797,7 @@ header .friends-popover-holder .popover-footer .see-all {
   font-weight: 500;
   letter-spacing: 2px;
   box-shadow: none;
+  border: none;
   border-bottom: 1px solid #e2e2e2;
   text-shadow: 0px 0px 10px #000;
   font-size: 2.25em;
@@ -22541,9 +22542,21 @@ header .friends-popover-holder .popover-footer .see-all {
 .chat-bubble-holder .chat-bubble.new .conv-holder {
   height: 328px;
 }
-.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .input {
-  background-color: #f2f2f5;
+.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user {
+  position: relative;
+}
+.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .receiver {
+  position: absolute;
+  top: 4px;
+  left: 12px;
   color: #535353;
+  font-size: 0.75em;
+  font-weight: 400;
+}
+.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .input {
+  padding-left: 30px;
+  background-color: #f2f2f5;
+  color: #333333;
   font-size: 0.75em;
   font-weight: 400;
   border: none;
@@ -22571,6 +22584,21 @@ header .friends-popover-holder .popover-footer .see-all {
 .chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup .user:hover {
   background-color: #535353;
   color: #ffffff;
+}
+.chat-bubble-holder .chat-bubble.new.active .bubble-header {
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  border-radius: 7px 7px 0 0;
+  background-color: #00a6ef;
+  padding: 6px 1px 7px;
+}
+.chat-bubble-holder .chat-bubble.new.active .bubble-header .opt-icons.close-icon {
+  background: url(../images/call-center/bubble-close-icon-active.png) no-repeat 0 0;
+}
+.chat-bubble-holder .chat-bubble.new.active .conv-holder {
+  height: 275px;
+}
+.chat-bubble-holder .chat-bubble.new.active .compose-msg .msg-input {
+  font-size: 0.6875em;
 }
 .chat-bubble-holder .chat-bubble:nth-child(1) {
   margin-left: 34px;
