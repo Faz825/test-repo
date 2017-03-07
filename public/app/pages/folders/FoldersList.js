@@ -391,7 +391,8 @@ export default class FolderList extends React.Component{
                                                     <div className="share-folder">
                                                         {
                                                             (folderData.is_shared) ?
-                                                                <i className="fa fa-users" aria-hidden="true"></i> :
+                                                                <span className="sharedIcon"></span>
+                                                                :
                                                                 <span className="folder-share-icon"></span>
                                                         }
                                                     </div>

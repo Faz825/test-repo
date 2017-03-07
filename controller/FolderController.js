@@ -805,6 +805,8 @@ var FolderController = {
 
         var Folder = require('mongoose').model('Folders');
         var FolderDoc = require('mongoose').model('FolderDocs');
+        var Notification = require('mongoose').model('Notification');
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient');
         var folder_id = req.body.folder_id,
             shared_user_id = [req.body.user_id],
             _async = require('async');
@@ -816,8 +818,16 @@ var FolderController = {
             shared_users: {user_id: {$in: shared_user_id}}
         };
 
+        var folderObj = {};
+
         _async.waterfall([
 
+            function getFolderDetails (callBack){
+                Folder.getFolderById(folder_id, function(r){
+                    folderObj = r;
+                    callBack(null);
+                });
+            },
             function removeSharedUserFromDB(callback) {
                 //console.log("removeSharedUserFromDB")
                 Folder.removeSharedUser(folder_id, _sharedUsers, function (result) {
@@ -868,6 +878,114 @@ var FolderController = {
                     } else {
                         callback(null);
                     }
+                });
+            },
+            function removeNotification (callBack){
+                _async.waterfall([
+                    function getNotificaionRequests (callBack){
+
+                        var criteria = {
+                            notified_folder: folderObj._id,
+                            notification_type: Notifications.SHARE_FOLDER,
+                            sender: folderObj.user_id
+                        };
+
+                        var filteredObject = {}
+
+                        Notification.getNotifications(criteria, function(r){
+                            _async.eachSeries(r.result, function (notifObj, sCallBack) {
+
+                                var innerCriteria = {
+                                    notification_id: notifObj._id,
+                                    recipient: shared_user_id
+                                };
+
+                                NotificationRecipient.getAllRecipientNotification(innerCriteria, function(nrResults){
+                                    if (typeof nrResults.result != 'undefined' && nrResults.result.length > 0
+                                        && nrResults.result[0].recipient.toString() == shared_user_id.toString()){
+                                        filteredObject['notificationId'] = notifObj._id;
+                                        filteredObject['notificationRecipientId'] = nrResults.result[0]._id;
+                                    }
+
+                                    sCallBack(null);
+                                });
+
+                            }, function (err) {
+                                callBack(null, filteredObject);
+                            });
+                        });
+                    },
+                    function removeNotificationRecipient(filteredObject , callBack){
+
+                        var criteria = {
+                            _id: filteredObject.notificationRecipientId
+                        };
+
+                        NotificationRecipient.deleteNotificationRecipients(criteria, function (r){
+                            callBack(null, filteredObject);
+                        });
+
+                    },
+                    function removeNotificationRequest(filteredObject , callBack){
+
+                        var criteria = {
+                            _id: filteredObject.notificationId
+                        };
+
+                        Notification.deleteNotification(criteria, function (r){
+                            callBack(null);
+                        });
+
+                    },
+                    function getNotificationResponses (callBack){
+
+                        var criteria = {
+                            notified_folder: folderObj._id,
+                            notification_type: Notifications.SHARE_FOLDER_RESPONSE,
+                            sender: shared_user_id
+                        };
+
+                        Notification.getNotifications(criteria, function(r){
+                            if (typeof r.result != 'undefined' && r.result.length > 0){
+                                callBack(null, r.result[0]._id);
+                            }else {
+                                callBack(null, null);
+                            }
+                        });
+                    },
+                    function removeNotificationRecipient(notificationId , callBack){
+
+                        if(notificationId !=null) {
+                            var criteria = {
+                                notification_id: notificationId,
+                                recipient: folderObj.user_id
+                            };
+
+                            NotificationRecipient.deleteNotificationRecipients(criteria, function (r) {
+                                callBack(null, notificationId);
+                            });
+                        } else {
+                            callBack(null, null);
+                        }
+
+                    },
+                    function removeNotificationRequest(notificationId , callBack){
+
+                        if(notificationId !=null) {
+                            var criteria = {
+                                _id: notificationId
+                            };
+
+                            Notification.deleteNotification(criteria, function (r){
+                                callBack(null);
+                            });
+                        } else {
+                            callBack(null);
+                        }
+
+                    },
+                ], function (err) {
+                    callBack(null);
                 });
             }
 
