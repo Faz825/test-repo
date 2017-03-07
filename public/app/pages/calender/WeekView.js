@@ -21,7 +21,8 @@ export default class WeekView extends React.Component {
             events:[],
             weekStartDate:'',
             weekEndDate:'',
-            groupCall:this.props.groupCall
+            groupCall:this.props.groupCall,
+
         }
         this.loggedUser =  Session.getSession('prg_lg');
         this.currentWeek = 0;
@@ -167,7 +168,7 @@ export default class WeekView extends React.Component {
                                 </div>
                             </div>
                             <div className="col-sm-6 calender-date  remove-padding">
-                                <p>{moment().format('MMM D, YYYY')}</p>
+                                <p>{moment(this.state.weekStartDate).format('MMM, YYYY')}</p>
                             </div>
                         </div>
 
