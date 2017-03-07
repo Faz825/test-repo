@@ -21,8 +21,7 @@ export default class WeekView extends React.Component {
             events:[],
             weekStartDate:'',
             weekEndDate:'',
-            groupCall:this.props.groupCall,
-
+            groupCall:this.props.groupCall
         }
         this.loggedUser =  Session.getSession('prg_lg');
         this.currentWeek = 0;
