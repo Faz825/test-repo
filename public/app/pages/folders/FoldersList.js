@@ -154,7 +154,20 @@ export default class FolderList extends React.Component{
     }
     
     deleteFolder(){
-        console.log(this.state.deleteFolderId)
+        console.log(this.state.deleteFolderId);
+
+        $.ajax({
+            url: '/folder/remove',
+            method: "POST",
+            dataType: "JSON",
+            data:{folder_id: this.state.deleteFolderId},
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200) {
+                this.props.onLoadFolders();
+            }
+        }.bind(this));
+
         this.setState({showFolderConfirm:false});
     }
 
@@ -251,10 +264,6 @@ export default class FolderList extends React.Component{
             </div>
         );
 
-    }
-    
-    onShowConfirm(id){
-        this.props.showConfirm(id);
     }
     
     onShowFolderConfirm(folder_id){
