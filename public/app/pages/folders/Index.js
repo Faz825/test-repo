@@ -121,7 +121,6 @@ export default class Index extends React.Component{
         }).done( function (data, text){
             if(data.status.code == 200 && this.loadFolderRequest){
                 let folders = data.folders;
-                console.log(folders);
                 this.setState({folders: folders});
             }
         }.bind(this));
@@ -589,21 +588,20 @@ export default class Index extends React.Component{
     }
 
     render(){
-
         const value = this.state.folderValue;
-
         const { folderSuggestions, folderSuggestionsList } = this.state;
         let _this = this;
+        let x = 1;
         let _folders = (this.state.selectedFileFolder.length > 0)?this.state.selectedFileFolder:this.state.folders;
         let folderList = _folders.map(function(folder,key){
             return (
-                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} />
+                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} tabType={_this.state.f_type} folderCount={x++}  />
             )
         });
 
         let groupFolderList = this.state.group_folders.map(function(folder,key){
             return (
-                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadGroupFolders.bind(this)} />
+                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadGroupFolders.bind(this)} tabType={_this.state.f_type} folderCount={x++} />
             )
         });
 

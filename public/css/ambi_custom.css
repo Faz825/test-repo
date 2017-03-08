@@ -622,6 +622,27 @@ a.rc-time-picker-panel-clear-btn {
     box-shadow: none;
 }
 
+.folder-wrapper .fldr-delete-btn{
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+    border-radius: 100%;
+    background: #fff;
+    color: #B1105D;
+    font-size: 0.6em;
+    line-height: 1.7;
+    z-index: 10;
+    text-align: center;
+    display: none;
+}
+
+.folder-wrapper:hover .fldr-delete-btn{
+    display: block;
+}
+
 .note-popup-dialog{
     box-shadow: none !important;
     padding: 0px !important;
