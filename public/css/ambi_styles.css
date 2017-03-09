@@ -10247,16 +10247,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* 
-	Method to use:
-	@include @border {
-		border ($style,  $sides, $emptySides){
-	}
+  Method to use:
+  @include @border {
+    border ($style,  $sides, $emptySides){
+  }
 */
-/*
-	Method to use:
-	@include @mixin {
-		content
-	}
+/* 
+  Method to use:
+  @include @mixin {
+    content
+  }
 */
 header {
   background: #fff;
@@ -22535,6 +22535,10 @@ header .friends-popover-holder .popover-footer .see-all {
   font-size: 0.875em;
   font-weight: 500;
   text-transform: lowercase;
+  overflow: visible;
+}
+.chat-bubble-holder .chat-bubble.new .bubble-header .opt-icons {
+  margin: 4px 2px 0 0;
 }
 .chat-bubble-holder .chat-bubble.new .bubble-header .opt-icons .icon {
   margin: 0 7px 0 0 !important;
@@ -22545,45 +22549,58 @@ header .friends-popover-holder .popover-footer .see-all {
 .chat-bubble-holder .chat-bubble.new .conv-holder .pick-user {
   position: relative;
 }
-.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .receiver {
+.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup {
+  position: relative;
+  margin: 0 10px 0 20px;
+  border-top: none;
+  border-radius: 0 0 7px 7px;
+}
+.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup .receiver {
   position: absolute;
-  top: 4px;
-  left: 12px;
+  top: 5px;
+  left: -8px;
   color: #535353;
   font-size: 0.75em;
   font-weight: 400;
 }
-.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .input {
-  padding-left: 30px;
+.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup input {
+  margin-left: -20px;
+  padding-left: 12px;
+  width: 259px;
   background-color: #f2f2f5;
   color: #333333;
   font-size: 0.75em;
   font-weight: 400;
+  font-family: "Work Sans";
   border: none;
   outline: none;
   box-shadow: none;
   height: 25px;
 }
-.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup {
+.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup ul {
+  margin-top: -4px !important;
   overflow: hidden;
-  margin: 0 10px 0 20px;
   border: 1px solid #cccccc;
   border-top: none;
   border-radius: 0 0 7px 7px;
 }
-.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup .user {
+.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup ul li {
+  padding: inherit !important;
+  border: none !important;
+}
+.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup ul li .user {
   border-bottom: 1px solid #cccccc;
   font-size: 0.75em;
   font-weight: 400;
   padding: 2px 5px;
   cursor: pointer;
 }
-.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup .user:last-child {
-  border-bottom: none;
-}
-.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup .user:hover {
+.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup ul li .user:hover {
   background-color: #535353;
   color: #ffffff;
+}
+.chat-bubble-holder .chat-bubble.new .conv-holder .pick-user .users-popup ul li:last-child .user {
+  border-bottom: none;
 }
 .chat-bubble-holder .chat-bubble.new.active .bubble-header {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
@@ -22593,12 +22610,6 @@ header .friends-popover-holder .popover-footer .see-all {
 }
 .chat-bubble-holder .chat-bubble.new.active .bubble-header .opt-icons.close-icon {
   background: url(../images/call-center/bubble-close-icon-active.png) no-repeat 0 0;
-}
-.chat-bubble-holder .chat-bubble.new.active .conv-holder {
-  height: 275px;
-}
-.chat-bubble-holder .chat-bubble.new.active .compose-msg .msg-input {
-  font-size: 0.6875em;
 }
 .chat-bubble-holder .chat-bubble:nth-child(1) {
   margin-left: 34px;

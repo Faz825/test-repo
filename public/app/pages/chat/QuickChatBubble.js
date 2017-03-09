@@ -300,7 +300,7 @@ export class NewChatMessage extends React.Component{
         let user = conversations.user;
 
         const inputProps = {
-            placeholder: 'To',
+            placeholder: 'to:',
             value,
             onChange: this.onChange
         };
