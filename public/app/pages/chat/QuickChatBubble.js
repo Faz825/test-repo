@@ -36,7 +36,7 @@ export default class QuickChatBubble extends React.Component{
             isMinimized : false,
             isNavHidden: this.props.isNavHidden,
             chatData: this.props.chatData,
-            isActiveBubble: this.props.isActiveBubble,
+            isActiveBubble: this.props.isActiveBubble
 
         };
 
@@ -115,8 +115,6 @@ export default class QuickChatBubble extends React.Component{
     }
 
     onChatMinimize(state){
-        console.log('onChatMinimize >> ', state);
-        console.log('onChatMinimize >> ', this.state.isMinimized);
         if(state){
             this.setState({isMinimized: true});
         }else{
@@ -130,29 +128,61 @@ export default class QuickChatBubble extends React.Component{
             messages
             }=this.state;
 
-        return (
+        if(this.state.chatData.id == "NEW_CHAT_MESSAGE") {
 
-            <div>
-                <ChatHeader
-                    conv={this.state.chatData}
-                    bubbleClose={this.onbubbleClosed.bind(this)}
-                    doAudioCall = {this.doAudioCall.bind(this)}
-                    doVideoCall = {this.doVideoCall.bind(this)}
-                    onLoadProfile = {this.onLoadProfile.bind(this)}
-                    onMinimize = {this.onChatMinimize.bind(this)}
+            return (
 
-                    loggedUser = {userLoggedIn}
-                    messages = {messages}
-                    minimizeChat = {this.state.isMinimized}
+                <div>
+                    <NewChatMessage
+                        conv={this.state.chatData}
+                        bubbleClose={this.onbubbleClosed.bind(this)}
+                        doAudioCall = {this.doAudioCall.bind(this)}
+                        doVideoCall = {this.doVideoCall.bind(this)}
+                        onLoadProfile = {this.onLoadProfile.bind(this)}
+                        onMinimize = {this.onChatMinimize.bind(this)}
 
-                    sendChat={this.sendMsg.bind(this)}
-                    setActiveBubbleId= {this.props.setActiveBubbleId}
-                    isActiveBubble= {this.state.isActiveBubble}
+                        loggedUser = {userLoggedIn}
+                        messages = {messages}
+                        minimizeChat = {this.state.isMinimized}
 
-                />
-            </div>
+                        sendChat={this.sendMsg.bind(this)}
+                        setActiveBubbleId= {this.props.setActiveBubbleId}
+                        isActiveBubble= {this.state.isActiveBubble}
+                        my_connections={this.props.my_connections}
+                        setNewChatToList= {this.props.setNewChatToList}
+                    />
+                </div>
 
-        );
+            );
+
+        } else {
+            return (
+
+                <div>
+                    <ChatHeader
+                        conv={this.state.chatData}
+                        bubbleClose={this.onbubbleClosed.bind(this)}
+                        doAudioCall = {this.doAudioCall.bind(this)}
+                        doVideoCall = {this.doVideoCall.bind(this)}
+                        onLoadProfile = {this.onLoadProfile.bind(this)}
+                        onMinimize = {this.onChatMinimize.bind(this)}
+
+                        loggedUser = {userLoggedIn}
+                        messages = {messages}
+                        minimizeChat = {this.state.isMinimized}
+
+                        sendChat={this.sendMsg.bind(this)}
+                        setActiveBubbleId= {this.props.setActiveBubbleId}
+                        isActiveBubble= {this.state.isActiveBubble}
+                        my_connections={this.props.my_connections}
+                        setNewChatToList= {this.props.setNewChatToList}
+                    />
+                </div>
+
+            );
+        }
+
+
 
         /*return (
 
@@ -186,6 +216,119 @@ export default class QuickChatBubble extends React.Component{
 
         );*/
 
+    }
+}
+
+export class NewChatMessage extends React.Component{
+    constructor(props){
+        super(props)
+        this.state ={
+            minimized: this.props.minimizeChat,
+            conversations: this.props.conv,
+            userLoggedIn: Session.getSession('prg_lg'),
+            messages: this.props.messages,
+            isActiveBubble: this.props.isActiveBubble,
+            suggestions: [],
+            suggestionsList: [],
+            value: ''
+        };
+
+        this.onMinimiseClick = this.onMinimiseClick.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
+        this.getSuggestionValue = this.getSuggestionValue.bind(this);
+        this.isMinimized = false;
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({minimized:nextProps.minimizeChat, conversations: nextProps.conv, messages: nextProps.messages, isActiveBubble: nextProps.isActiveBubble});
+    }
+
+    onCloseClick(e){
+        this.props.bubbleClose(this.props.conv);
+    }
+
+    onMinimiseClick(e){
+        this.isMinimized = !this.state.minimized;
+        this.props.onMinimize(this.isMinimized);
+    }
+
+    onHeaderClick(e) {
+        let convId = "usr:" + this.state.conversations.proglobeTitle;
+        this.props.setActiveBubbleId(convId);
+    }
+
+    getSuggestions(value, data) {
+        const escapedValue = Lib.escapeRegexCharacters(value.trim());
+        if (escapedValue === '') {
+            return [];
+        }
+        const regex = new RegExp('^' + escapedValue, 'i');
+        return data.filter(data => regex.test(data.first_name+" "+data.last_name));
+    }
+
+    getSuggestionValue(suggestion) {
+        this.props.setNewChatToList(this.props.conv, suggestion.user_name);
+        return suggestion.first_name + " " + suggestion.last_name;
+    }
+
+    renderSuggestion(suggestion) {
+        return (
+            <div id={suggestion.user_id} className="user">{suggestion.first_name+" "+suggestion.last_name}</div>
+        );
+    }
+
+    onChange(event, { newValue }) {
+        this.setState({ value: newValue });
+    }
+
+    onSuggestionsUpdateRequested({ value }) {
+        this.setState({
+            suggestions: this.getSuggestions(value, this.props.my_connections),
+            suggestionsList : this.getSuggestions(value, this.props.my_connections)
+        });
+    }
+
+    render() {
+
+        const {
+            conversations,
+            value,
+            suggestions
+            } = this.state;
+
+        let user = conversations.user;
+
+        const inputProps = {
+            placeholder: 'To',
+            value,
+            onChange: this.onChange
+        };
+
+        return (
+            <div className={this.state.isActiveBubble ? "chat-bubble new active" : "chat-bubble new"}>
+                <div className="bubble-header clearfix" id="hdr_btn" onClick={this.onHeaderClick.bind(this)}>
+                    <div className="username-holder">
+                        <h3 className="name">new message</h3>
+                    </div>
+                    <div className="opt-icons clearfix">
+                        <span className="icon close-icon"  id="cls_btn" onClick={this.onCloseClick.bind(this)}></span>
+                    </div>
+                </div>
+                <div className="conv-holder">
+                    <div className="pick-user">
+                        <div className="users-popup">
+
+                        <Autosuggest suggestions={suggestions}
+                                     onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                                     getSuggestionValue={this.getSuggestionValue}
+                                     renderSuggestion={this.renderSuggestion}
+                                     inputProps={inputProps} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 }
 
@@ -224,10 +367,6 @@ export class ChatHeader extends React.Component{
     }
 
     render() {
-        //let conv = this.props.conv;
-
-        //let userLoggedIn = this.state.userLoggedIn;
-        //let _messages = this.props.messages;
 
         const {
             conversations,
@@ -388,7 +527,7 @@ export class MessageList extends React.Component{
 
         let _messages = this.props.messages.map(function(msg, key){
             let receiver_image = _this.props.conv.user.images.profile_image.http_url;
-            let sender_image = _this.props.loggedUser.profile_image;
+            //let sender_image = _this.props.loggedUser.profile_image;
             return (
                 <div className={msg.cssClass == "receiver" ? "chat-msg received" : "chat-msg sent"} key={key}>
                     {

@@ -69,7 +69,7 @@ export default class AmbiDashboard extends React.Component {
 	                    </section>
 	                    <section className="main-task-holder">
 	                        <div className="inner-wrapper">
-	                            <h3 className="section-title">what do you want to <span class="larger">get done</span> today?</h3>
+	                            <h3 className="section-title">what do you want to <span className="larger">get done</span> today?</h3>
 	                            <input type="text" className="form-control task-field" />
 	                        </div>
 	                    </section>

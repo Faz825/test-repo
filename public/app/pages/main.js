@@ -20,7 +20,6 @@ class Main extends React.Component {
 
     componentWillMount() {
         if (this.loggedUser) {
-            console.log('/verify/me calling');
             $.ajax({
                 url: '/verify/me',
                 method: "GET",
