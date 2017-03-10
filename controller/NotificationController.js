@@ -1060,40 +1060,49 @@ var NotificationController ={
                         if(relatedSenders != null) {
                             User.getSenderDetails(relatedSenders, function (usersObj) {
                                 // trim same sender pending...
-                                console.log(usersObj.length);
+                                var _senderArray = [];
+                                var _formattedUsers = [];
+
+                                for (var i=0; i < usersObj.length; i++){
+                                    if(_senderArray.indexOf(usersObj[i].sender_id.toString()) == -1){
+                                        _senderArray.push(usersObj[i].sender_id.toString());
+                                        _formattedUsers.push(usersObj[i]);
+                                    }
+                                }
+
 
                                 var senderObj = {
-                                    sender_count: usersObj.length
+                                    sender_count: _formattedUsers.length
                                 };
 
                                 switch (true) {
-                                    case (usersObj.length == 1):
-                                        senderObj['sender_id'] = usersObj[0].sender_id;
-                                        senderObj['sender_name'] = usersObj[0].sender_name;
-                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
-                                        senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                    case (_formattedUsers.length == 1):
+                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                        senderObj['sender_name'] = _formattedUsers[0].sender_name;
+                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                        senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
                                         senderObj['sender_count'] = 0;
                                         break;
-                                    case (usersObj.length == 2):
-                                        senderObj['sender_id'] = usersObj[0].sender_id;
-                                        senderObj['sender_name'] = usersObj[0].sender_name + " and " + usersObj[1].sender_name;
-                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
-                                        senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                    case (_formattedUsers.length == 2):
+                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                        senderObj['sender_name'] = _formattedUsers[0].sender_name + " and " + _formattedUsers[1].sender_name;
+                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                        senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
                                         senderObj['sender_count'] = 0;
                                         break;
-                                    case (usersObj.length == 3):
-                                        senderObj['sender_id'] = usersObj[0].sender_id;
-                                        senderObj['sender_name'] = usersObj[0].sender_name + ", " + usersObj[1].sender_name;
-                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
-                                        senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                    case (_formattedUsers.length == 3):
+                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                        senderObj['sender_name'] = _formattedUsers[0].sender_name + ", " + _formattedUsers[1].sender_name;
+                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                        senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
                                         senderObj['sender_count'] = 1;
                                         break;
-                                    case (usersObj.length > 3):
-                                        senderObj['sender_id'] = usersObj[0].sender_id;
-                                        senderObj['sender_name'] = usersObj[0].sender_name + ", " + usersObj[1].sender_name;
-                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
-                                        senderObj[''] = usersObj[0].sender_user_name;
-                                        senderObj['sender_count'] = (usersObj.length - 2);
+                                    case (_formattedUsers.length > 3):
+                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                        senderObj['sender_name'] = _formattedUsers[0].sender_name + ", " + _formattedUsers[1].sender_name;
+                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                        senderObj[''] = _formattedUsers[0].sender_user_name;
+                                        senderObj['sender_count'] = (_formattedUsers.length - 2);
                                         break;
                                 }
 
