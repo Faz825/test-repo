@@ -889,6 +889,7 @@ var NotificationController ={
         var days = req.query.days; console.log("Days = "+days);
         var pg = req.query.pg;console.log("pg = "+pg);
         var cat = req.query.cat;
+        var reduct_opt = null;
 
         var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             Post = require('mongoose').model('Post'),
@@ -906,10 +907,12 @@ var NotificationController ={
             _formattedNotificationData = {}, outPut = {};
 
         if(typeof cat != "undefined"){
-            criteria['notification_category'] = cat;
+            reduct_opt = cat;
         }
 
-        NotificationRecipient.getRecipientNotificationsLimit(criteria,skip,15,function(resultSet){
+        console.log(criteria);
+
+        NotificationRecipient.getRecipientNotificationsLimit(criteria,reduct_opt,skip,15,function(resultSet){
             var notifications = resultSet.notifications;
             var resultNotifications= [];
             _async.eachSeries(notifications, function(notification, callBack){
@@ -1111,6 +1114,7 @@ var NotificationController ={
                         var notificationObj = {
                             notification_id:notification['notification_id'],
                             notification_type:notification['notification_type'],
+                            notification_category:notification['notification_cat'],
                             read_status: notification['read_status'],
                             created_at: DateTime.explainDate(notification['created_at']),
 

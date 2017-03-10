@@ -183,6 +183,7 @@ router.post('/notes/delete-note', NotesController.deleteNote);
 // Notification
 // router.get('/notifications/get-notifications',NotificationController.getNotifications);
 router.get('/notifications/get-notifications', NotificationController.getNotificationsList);
+router.get('/notifications/get-notifications/category', NotificationController.getNotificationsList);
 router.post('/notifications/update-notifications', NotificationController.updateNotifications);
 router.post('/notifications/notebook-update', NotificationController.updateNotebookNotifications);
 router.post('/notifications/set-notification-sms', NotificationSMSController.setNotificationSMS);
