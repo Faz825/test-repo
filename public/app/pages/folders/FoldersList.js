@@ -3,9 +3,10 @@ import React from 'react';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { Popover, OverlayTrigger } from 'react-bootstrap';
+import { Popover, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import SharePopup from './SharePopup';
+import moment from 'moment-timezone';
 
 export default class FolderList extends React.Component{
     constructor(props){
@@ -18,8 +19,10 @@ export default class FolderList extends React.Component{
             isProgressBarActive : false,
             files: [],
             showConfirm:false,
+            showFolderConfirm:false,
             isShowingModal : false,
             deleteFileId:0,
+            deleteFolderId:0,
             notAccepted: false,
             showViewFile:false,
             selectedFile:[]
@@ -149,6 +152,24 @@ export default class FolderList extends React.Component{
             }
         }.bind(this));
     }
+    
+    deleteFolder(){
+        console.log(this.state.deleteFolderId);
+
+        $.ajax({
+            url: '/folder/remove',
+            method: "POST",
+            dataType: "JSON",
+            data:{folder_id: this.state.deleteFolderId},
+            headers: { 'prg-auth-header':this.state.loggedUser.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200) {
+                this.props.onLoadFolders();
+            }
+        }.bind(this));
+
+        this.setState({showFolderConfirm:false});
+    }
 
     onShowConfirm(file_id){
         this.setState({showConfirm:true, deleteFileId:file_id});
@@ -159,13 +180,13 @@ export default class FolderList extends React.Component{
     }
 
     closeConfirmPopup(){
-        this.setState({showConfirm:false, deleteFileId:0});
+        this.setState({showConfirm:false, deleteFileId:0, showFolderConfirm:false});
     }
 
     handleClose(){
         console.log("handleClose");
         this.setState({showViewFile:false, selectedFile:[]});
-    }
+    } 
 
     getConfirmationPopup(){
         return(
@@ -177,6 +198,24 @@ export default class FolderList extends React.Component{
                             <p className="confirmation_p">Are you sure to delete this file?</p>
                         </div>
                         <p className="add-note-cat btn" onClick={this.deleteFile.bind(this)}>Yes</p>
+                        <p className="add-note-cat confirm-no btn" onClick={this.closeConfirmPopup.bind(this)}>No</p>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        );
+    }
+    
+    getConfirmationFolderPopup(){
+        return(
+            <div>
+                {this.state.showFolderConfirm &&
+                <ModalContainer zIndex={9999}>
+                    <ModalDialog width="30%" style={{marginTop : "-100px"}}>
+                        <div className="col-xs-12">
+                            <p className="confirmation_p">Are you sure to delete this folder?</p>
+                        </div>
+                        <p className="add-note-cat btn" onClick={this.deleteFolder.bind(this)}>Yes</p>
                         <p className="add-note-cat confirm-no btn" onClick={this.closeConfirmPopup.bind(this)}>No</p>
                     </ModalDialog>
                 </ModalContainer>
@@ -225,6 +264,10 @@ export default class FolderList extends React.Component{
             </div>
         );
 
+    }
+    
+    onShowFolderConfirm(folder_id){
+        this.setState({showFolderConfirm:true, deleteFolderId:folder_id});
     }
 
     render(){
@@ -326,6 +369,13 @@ export default class FolderList extends React.Component{
                                         }
                                     </div>
                                 </div>
+                                {
+                                    (this.state.loggedUser.id == folderData.folder_user && this.props.tabType == "MY_FOLDER") ?
+                                        (this.props.folderCount == 1 && folderData.folder_name == "My Folder")?
+                                            null :
+                                            <i className="fa fa-minus fldr-delete-btn" aria-hidden="true" onClick={()=>this.onShowFolderConfirm(folderData.folder_id)}></i>
+                                        : null
+                                }
                             </div>
                             <div className="col-sm-10">
                                 <div className="row">
@@ -390,7 +440,8 @@ export default class FolderList extends React.Component{
                                                     <div className="share-folder">
                                                         {
                                                             (folderData.is_shared) ?
-                                                                <i className="fa fa-users" aria-hidden="true"></i> :
+                                                                <span className="sharedIcon"></span>
+                                                                :
                                                                 <span className="folder-share-icon"></span>
                                                         }
                                                     </div>
@@ -437,6 +488,7 @@ export default class FolderList extends React.Component{
                 }
                 {this.getConfirmationPopup()}
                 {this.viewFilePopup()}
+                {this.getConfirmationFolderPopup()}
             </div>
         );
     }
@@ -461,9 +513,20 @@ export class File extends React.Component{
         this.props.viewFile(data);
     }
 
+    getDateTimeByZone(_data) {
+        let _zone = moment.tz.guess();
+        //let _dateStr = _data.document_updated_at.createdDate + " " + _data.document_updated_at.createdTime;
+        let _dateByZone = moment(_data.updated_at).tz(_zone).format('YYYY-MM-DD HH:mm:ss');
+        let dateObj = {
+            createdDate:moment(_dateByZone).format('MMM D, YYYY'),
+            createdTime:moment(_dateByZone).format('h:mm a')
+        }
+        return dateObj;
+    }
+
     render(){
         let data = this.props.fileData;
-
+        let _documentUpdatedDate = this.getDateTimeByZone(data);
         let thumbIMg = {},
             imgClass = "",
             isSelected = "";
@@ -483,35 +546,41 @@ export class File extends React.Component{
             }
         }
 
+        let tooltip = (
+            <Tooltip id="tooltip">{data.document_name}</Tooltip>
+        );
+
         return(
             <div className="folder-col">
                 <div className="clearfix" onClick={()=>this.viewFile(data)}>
-                    <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
-                        <div className={(imgClass)? "img-wrapper" : "inner-wrapper"}>
-                            <div className="time-wrapper">
-                                <p className="date-created">{data.document_updated_at.createdDate}</p>
-                                <p className="time-created">{data.document_updated_at.createdTime}</p>
+                    <OverlayTrigger placement="top" overlay={tooltip}>
+                        <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
+                            <div className={(imgClass)? "img-wrapper" : "inner-wrapper"}>
+                                <div className="time-wrapper">
+                                    <p className="date-created">{_documentUpdatedDate.createdDate}</p>
+                                    <p className="time-created">{_documentUpdatedDate.createdTime}</p>
+                                </div>
+                                <div className="folder-title-holder">
+                                    <p className="folder-title">{data.document_name}</p>
+                                </div>
+                                <div className="item-type">
+                                    <svg width="24" height="32">
+                                        {
+                                            (folder_icons.indexOf(data.document_type) == -1) ?
+                                                <image xlinkHref={"images/folder/types/default_icon.svg"} width="24" height="32"/> :
+                                                <image xlinkHref={"images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
+                                        }
+                                    </svg>
+                                </div>
                             </div>
-                            <div className="folder-title-holder">
-                                <p className="folder-title">{data.document_name}</p>
-                            </div>
-                            <div className="item-type">
-                                <svg width="24" height="32">
-                                    {
-                                        (folder_icons.indexOf(data.document_type) == -1) ?
-                                            <image xlinkHref={"images/folder/types/default_icon.svg"} width="24" height="32"/> :
-                                            <image xlinkHref={"images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
-                                    }
-                                </svg>
-                            </div>
+                            {
+                                (data.document_thumb_path)?
+                                    <span className="img-overlay"></span>
+                                    :
+                                    null
+                            }
                         </div>
-                        {
-                            (data.document_thumb_path)?
-                                <span className="img-overlay"></span>
-                                :
-                                null
-                        }
-                    </div>
+                    </OverlayTrigger>
                 </div>
                 {
                     (this.state.loggedUser.id == data.document_user) ?
@@ -523,7 +592,6 @@ export class File extends React.Component{
         );
     }
 }
-
 
 export class FilePreview extends React.Component{
     constructor(props){

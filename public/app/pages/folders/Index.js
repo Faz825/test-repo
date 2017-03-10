@@ -121,7 +121,6 @@ export default class Index extends React.Component{
         }).done( function (data, text){
             if(data.status.code == 200 && this.loadFolderRequest){
                 let folders = data.folders;
-                console.log(folders);
                 this.setState({folders: folders});
             }
         }.bind(this));
@@ -483,8 +482,8 @@ export default class Index extends React.Component{
         return(
             <div>
                 {this.state.isShowingModal &&
-                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} className="create-folder modalPopup" width="438px">
+                <ModalContainer zIndex={9999}>
+                    <ModalDialog className="create-folder modalPopup" width="438px">
                         <div className="popup-holder">
                             <section className="create-folder-popup">
                                 <section className="folder-header">
@@ -567,6 +566,15 @@ export default class Index extends React.Component{
                                     </div>
                                 </section>
                             </section>
+                            <a className="closeButton--jss-0-1" onClick={(e) => this.props.closePopup(e)}>
+                                <svg width="40" height="40">
+                                    <circle cx="20" cy="20" r="20" fill="black"></circle>
+                                    <g transform="rotate(45 20 20)">
+                                        <rect x="8" y="19.25" width="24" height="1.5" fill="white"></rect>
+                                        <rect y="8" x="19.25" height="24" width="1.5" fill="white"></rect>
+                                    </g>
+                                </svg>
+                            </a>
                         </div>
                     </ModalDialog>
                 </ModalContainer>
@@ -580,21 +588,20 @@ export default class Index extends React.Component{
     }
 
     render(){
-
         const value = this.state.folderValue;
-
         const { folderSuggestions, folderSuggestionsList } = this.state;
         let _this = this;
+        let x = 1;
         let _folders = (this.state.selectedFileFolder.length > 0)?this.state.selectedFileFolder:this.state.folders;
         let folderList = _folders.map(function(folder,key){
             return (
-                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} />
+                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} tabType={_this.state.f_type} folderCount={x++}  />
             )
         });
 
         let groupFolderList = this.state.group_folders.map(function(folder,key){
             return (
-                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadGroupFolders.bind(this)} />
+                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadGroupFolders.bind(this)} tabType={_this.state.f_type} folderCount={x++} />
             )
         });
 

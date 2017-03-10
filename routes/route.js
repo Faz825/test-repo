@@ -189,6 +189,7 @@ router.post('/notifications/set-notification-sms', NotificationSMSController.set
 router.get('/notifications/get-details', NotificationController.getDetails);
 router.get('/notifications/get-notification-count', NotificationController.getNotificationCount);
 router.post('/notifications/folder-update', NotificationController.updateFolderNotifications);
+router.post('/notifications/update/existing-cat', NotificationController.updateExistingNotificationCat);
 
 // Folder
 router.get('/folders/get-count', FolderController.getCount);
@@ -197,6 +198,7 @@ router.get('/folders/get-all', FolderController.getFolders);
 router.post('/folders/shared-users', FolderController.getSharedUsers);
 router.post('/folders/share-folder', FolderController.shareFolder);
 router.post('/folder/shared-user/remove', FolderController.removeSharedFolderUser);
+router.post('/folder/remove', FolderController.deleteFolder);
 router.post('/folder/shared-permission/change', FolderController.updateFolderSharedPermission);
 router.post('/document/remove', FolderController.deleteDocument);
 router.get('/folder/search/:q', FolderController.searchFolder);

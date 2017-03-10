@@ -60,6 +60,25 @@ NotificationRecipientSchema.statics.saveRecipients = function(data,callBack){
     });
 };
 
+NotificationRecipientSchema.statics.getAllRecipientNotification = function (criteria, callBack) {
+
+    this.find(criteria).exec(function (err, resultSet) {
+
+        if (!err) {
+            callBack({
+                status: 200,
+                result: resultSet
+            });
+        } else {
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status: 400, error: err});
+        }
+
+    })
+
+};
+
 /**
  * Get notifications based on criteria
  * @param criteria

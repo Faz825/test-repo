@@ -137,6 +137,7 @@ export default class Header extends React.Component {
                                           unreadChatCount={this.setUnreadChatCount.bind(this)}
                                           conversations={this.state.chat_conversations}
                                           showChatNotification={this.state.showChatNotification}
+                                          loadNewChat={this.props.loadNewChat}
                         />
                     }
                     {this.state.showFriendRequestNotification ? <FriendRequestList /> : null}

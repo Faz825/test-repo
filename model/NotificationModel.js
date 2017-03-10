@@ -20,6 +20,11 @@ var NotificationSchema = new Schema({
         trim: true,
         default: null
     },
+    notification_category: { // notification category ->> todos[calendar events & todos] / productivity[folder & notebook] / social[post like share comment + group]
+        type: String,
+        trim: true,
+        default: null
+    },
     notified_post: { // the post that origin user comment / share / like ...
         type: Schema.ObjectId,
         ref: 'Post',
@@ -83,32 +88,42 @@ NotificationSchema.statics.saveNotification = function (new_notification, callBa
         new_notification.notification_type == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY) {
         notification.notified_calendar = Util.toObjectId(new_notification.notified_calendar);
         notification.notification_status = new_notification.notification_status;
+        notification.notification_category = NotificationCategory.TODOS;
 
     } else if (new_notification.notification_type == Notifications.SHARE_NOTEBOOK
         || new_notification.notification_type == Notifications.SHARE_NOTEBOOK_RESPONSE) {
         notification.notified_notebook = Util.toObjectId(new_notification.notified_notebook);
         notification.notification_status = new_notification.notification_status;
+        notification.notification_category = NotificationCategory.PRODUCTIVITY;
 
     } else if(new_notification.notification_type == Notifications.SHARE_FOLDER  || new_notification.notification_type == Notifications.SHARE_FOLDER_RESPONSE) {
         notification.notified_folder = Util.toObjectId(new_notification.notified_folder);
         notification.notification_status = new_notification.notification_status;
+        notification.notification_category = NotificationCategory.PRODUCTIVITY;
 
     } else if(new_notification.notification_type == Notifications.SHARE_GROUP  || new_notification.notification_type == Notifications.SHARE_GROUP_RESPONSE) {
         notification.notified_group = Util.toObjectId(new_notification.notified_group);
         notification.notification_status = new_notification.notification_status;
+        notification.notification_category = NotificationCategory.PRODUCTIVITY;
 
     } else if(new_notification.notification_type == Notifications.SHARE_GROUP_NOTEBOOK) {
         notification.notified_notebook = Util.toObjectId(new_notification.notified_notebook);
         notification.notified_group = Util.toObjectId(new_notification.notified_group);
         notification.notification_status = new_notification.notification_status;
+        notification.notification_category = NotificationCategory.PRODUCTIVITY;
+
     } else if(new_notification.notification_type == Notifications.ADD_GROUP_POST) {
         notification.notified_post = Util.toObjectId(new_notification.notified_post);
         notification.notified_group = Util.toObjectId(new_notification.notified_group);
+        notification.notification_category = NotificationCategory.SOCIAL;
+
     } else {
         notification.notified_post = Util.toObjectId(new_notification.notified_post);
         notification.notification_status = "";
+        notification.notification_category = NotificationCategory.SOCIAL;
 
     }
+
     notification.save(function (err, result) {
         if (!err) {
             callBack({
@@ -146,6 +161,26 @@ NotificationSchema.statics.getNotifications = function (criteria, callBack) {
         }
 
     })
+
+};
+/**
+ * Update notifications based on criteria
+ * @param criteria
+ * @param callBack
+ */
+NotificationSchema.statics.updateNotifications = function (criteria, updateData, callBack) {
+
+    var _this = this;
+    _this.update(criteria,{$set: updateData},function(err,resultSet){
+            if(!err){
+                callBack({
+                    status:200
+                });
+            }else{
+                console.log("Server Error --------")
+                callBack({status:400,error:err});
+            }
+        });
 
 };
 

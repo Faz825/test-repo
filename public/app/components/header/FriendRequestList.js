@@ -131,8 +131,10 @@ export class RequestItem extends React.Component {
                     <p className="requested-time">{requestedTime}</p>
                 </div>
                 <div className="controls">
-                    <button className="btn btn-decline">decline</button>
-                    <button className="btn btn-accept">accept</button>
+                    <button className="btn btn-decline">
+                        <span className="ico"></span> decline</button>
+                    <button className="btn btn-accept">
+                        <span className="ico"></span> accept</button>
                 </div>
             </div>
         );

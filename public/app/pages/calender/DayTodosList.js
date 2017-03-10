@@ -18,6 +18,12 @@ export default class DayTodosList extends React.Component {
 		};
 	}
 
+	createMarkup(htmlScript) {
+		return (
+		{__html: htmlScript}
+		);
+	}
+
 	render() {
 
 		let _this = this;
@@ -86,7 +92,8 @@ export default class DayTodosList extends React.Component {
 							}
 							className={event.user_id == _this.state.user.id ? "description-holder" : "description-holder disabled" }
 						>
-							<div className={acceptedClass} >{event.plain_text}</div>
+							{/*<div className={acceptedClass} >{event.plain_text}</div>*/}
+							<div className={acceptedClass} dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></div>
 							<p>People in the To-do : {ownerString}{usersString}</p>
 						</label>
 						<div className="time-wrapper pull-right">{event.event_time}</div>

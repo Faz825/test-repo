@@ -66,7 +66,8 @@ export default class AmbiLayout extends React.Component {
                 type:''
             },
             dummyChatArray:[],
-            loadedChatBubbleId:0
+            loadedChatBubbleId:0,
+            isNewChatLoaded: false
         };
 
         this.quickChatUsers = [];
@@ -165,17 +166,30 @@ export default class AmbiLayout extends React.Component {
         }
     }
 
+    loadNewChat(conv) {
+
+        if(!this.state.isNewChatLoaded && this.quickChatUsers.length < 3) {
+            this.quickChatUsers.push(conv);
+            let convId = "usr:" + conv.proglobeTitle;
+            this.setState({isNewChatLoaded: true, chatBubble: this.quickChatUsers, loadedChatBubbleId: convId});
+        }
+    }
+
     closeChatBubble(title) {
 
         let bbList = this.state.chatBubble;
         if (typeof bbList != 'undefined' && bbList.length > 0) {
             let index = this.getBubbleIndex(title);
+            let isNewChatLoaded = this.state.isNewChatLoaded;
             if (index > -1) {
                 bbList.splice(index, 1);
             }
             this.quickChatUsers = [];
             this.quickChatUsers = bbList;
-            this.setState({chatBubble: this.quickChatUsers});
+            if(title == "NEW_CHAT_MESSAGE") {
+                isNewChatLoaded = !isNewChatLoaded;
+            }
+            this.setState({chatBubble: this.quickChatUsers, isNewChatLoaded: isNewChatLoaded});
         }
     }
 
@@ -253,6 +267,13 @@ export default class AmbiLayout extends React.Component {
         }
     }
 
+    setNewChatToList(_conv, convObj) {
+        this.closeChatBubble(_conv.title)
+        this.quickChatUsers.push(convObj);
+        let convId = "usr:" + convObj.proglobeTitle;
+        this.setState({chatBubble: this.quickChatUsers, loadedChatBubbleId: convId});
+    }
+
     render() {
         let currPage = "";
         if(this.props.children){
@@ -261,7 +282,7 @@ export default class AmbiLayout extends React.Component {
         let dashbrdClass = (this.props.children) ? "sub-page" : "";
         return (
             <div className="app-holder">
-                <SigninHeader quickChat={this.loadQuickChat.bind(this)} dummyQuickChat={this.loadDummyQuickChat.bind(this)}/>
+                <SigninHeader quickChat={this.loadQuickChat.bind(this)} dummyQuickChat={this.loadDummyQuickChat.bind(this)} loadNewChat={this.loadNewChat.bind(this)}/>
                 <section
                     className={(!this.state.isNavHidden) ? "body-container " + dashbrdClass : "body-container nav-hidden"}>
                     {this.props.children || <AmbiDashboard />}
@@ -298,7 +319,11 @@ export default class AmbiLayout extends React.Component {
                         :
                         null
                 }
-                <QuickChatHandler chatList={this.state.chatBubble} bubClose={this.closeChatBubble.bind(this)} isNavHidden={this.state.isNavHidden} loadedChatBubbleId={this.state.loadedChatBubbleId}/>
+                <QuickChatHandler chatList={this.state.chatBubble}
+                                  bubClose={this.closeChatBubble.bind(this)}
+                                  isNavHidden={this.state.isNavHidden}
+                                  loadedChatBubbleId={this.state.loadedChatBubbleId}
+                                  setNewChatToList={this.setNewChatToList.bind(this)}/>
                 {/*<QuickChatDummy dummyChatList={this.state.dummyChatArray} closeQuickChat={this.closeDummyQuickChat.bind(this)} isNavHidden={this.state.isNavHidden}/>*/}
                 <VideoChatPopOver />
                 <FooterHolder blockBottom={this.state.rightBottom}

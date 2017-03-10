@@ -338,11 +338,24 @@ body{
 	color: #dddddd;
 }
 
-.calender-container .calender-box > div.week > span.day .event-area > ul li {
-	width: 11em;
+.calender-container .calender-box > div.week > span.day .event-area > ul li p{
+	width: 98px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.calender-container .calender-box > div.week > span.day .event-area > ul li.color-1,
+.calender-container .calender-box > div.week > span.day .event-area > ul li.color-3 {
+    color: #000;
+}
+
+.calender-container .calender-box > div.week > span.day .event-area > ul .color-1:before{
+    color: #00a6ef;
+}
+
+.calender-container .calender-box > div.week > span.day .event-area > ul .color-3:before{
+    color: #a6c649;
 }
 
 /* calender pop-over */
@@ -464,9 +477,12 @@ a.rc-time-picker-panel-clear-btn {
 		color: #bebfbf;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description.accepted,
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label div.event-description.accepted p {
 		color: #00a6ef;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description.accepted{
+    color: #000;
 }
 
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li .item {
@@ -476,8 +492,21 @@ a.rc-time-picker-panel-clear-btn {
 	overflow: hidden;
 }
 
-.calender-body .col-sm-9 .calender-view .list-area .list-area-content .list-area-content-list li div.event-description {
-    font-size: 11px;
+.calender-container .mini-calender-box > div.week > span.day.today{
+    background: none;
+}
+
+.calender-container .mini-calender-box .week > span.day.today .squre{
+    border-radius: 50%;
+    width: 20px !important;
+    height: 20px !important;
+    padding: 0 !important;
+    background: #E3F2FF;
+    margin: 0 auto;
+}
+
+.calender-container .mini-calender-box .week > span.day.today.selected .squre{
+    background: #00a6ef;
 }
 
 
@@ -591,6 +620,27 @@ a.rc-time-picker-panel-clear-btn {
 
 .create-folder.modalPopup {
     box-shadow: none;
+}
+
+.folder-wrapper .fldr-delete-btn{
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+    border-radius: 100%;
+    background: #fff;
+    color: #B1105D;
+    font-size: 0.6em;
+    line-height: 1.7;
+    z-index: 10;
+    text-align: center;
+    display: none;
+}
+
+.folder-wrapper:hover .fldr-delete-btn{
+    display: block;
 }
 
 .note-popup-dialog{
@@ -1207,9 +1257,9 @@ footer .notification-alert-holder.slideOut{
     border: 1px solid #989ba0;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label .event-description.accepted {
+/*.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label .event-description.accepted {
     color: #a6c649;
-}
+}*/
 
 .calender-year-view .view-tile-area .month-tiles .month-tile {
   min-height: 233px;

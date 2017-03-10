@@ -4,6 +4,7 @@ import Session  from '../../middleware/Session';
 import QuickChatBubble from '../chat/QuickChatBubble'
 import Chat from '../../middleware/Chat';
 import CallCenter from '../../middleware/CallCenter';
+import Lib from '../../middleware/Lib';
 
 export default class QuickChatHandler extends React.Component{
     constructor(props) {
@@ -20,27 +21,30 @@ export default class QuickChatHandler extends React.Component{
             uri:'usr:proglobe'+this.getUrl(),
             bubbleList : this.props.chatList,
             isNavHidden: this.props.isNavHidden,
-            activeBubbleId:0
+            activeBubbleId:0,
+            loadedNewChatTitle:''
         };
 
         this.b6 = CallCenter.b6;
         //CallCenter.initBit6();
+        this.initChat(this.b6);
         this.convUsers = [];
         this.conversations = [];
         this.unreadConversations = [];
         this.msgDivIds = [];
         this.messages = [];
         this.checkChatWith = this.getUrl();
-        this.initChat(this.b6);
         this.loadMyConnections();
 
         this.onBubbleClose = this.onBubbleClose.bind(this);
         this.setActiveBubbleId = this.setActiveBubbleId.bind(this);
+        this.setNewChatToBubbleList = this.setNewChatToBubbleList.bind(this);
 
     };
 
     componentWillReceiveProps(nextProps) {
         this.setState({bubbleList: nextProps.chatList, isNavHidden: nextProps.isNavHidden, activeBubbleId: nextProps.loadedChatBubbleId});
+        this.initChat(this.b6);
     }
 
     componentDidMount() {
@@ -54,12 +58,10 @@ export default class QuickChatHandler extends React.Component{
     initChat(b6){
         let _this = this;
 
-
-
         // A conversation has changed
         b6.on('conversation', function(c, op) {
             if(_this.state.bubbleList != 'undefined' || _this.state.bubbleList != null) {
-                _this.onConversationChange(c, op, b6);
+                //_this.onConversationChange(c, op, b6);
             }
         });
 
@@ -120,7 +122,6 @@ export default class QuickChatHandler extends React.Component{
         let proglobe_title_array = proglobe_title.split('proglobe');
         let title = proglobe_title_array[1];
 
-        //console.log("conversation chaged to > " + title);
 
         // New conversation
         if (op > 0) {
@@ -130,8 +131,8 @@ export default class QuickChatHandler extends React.Component{
             }
 
             if(title != 'undefined' && title != 'new' && this.isQuickChatUser(title)){
-
                 if(typeof this.convUsers[title] == 'undefined'){
+
                     for(let my_con in this.state.my_connections){
                         if(title === this.state.my_connections[my_con].user_name){
                             this.convUsers[title] = this.state.my_connections[my_con];
@@ -196,9 +197,8 @@ export default class QuickChatHandler extends React.Component{
                                 title:title,
                                 messages:[]
                             };
-
                             this.messages.push(message);
-                            this.setState({messages:this.messages});
+                            this.setState({conversations: this.conversations, messages:this.messages});
                         }
                     }
                 }
@@ -259,8 +259,6 @@ export default class QuickChatHandler extends React.Component{
             }
 
             if(typeof this.checkChatWith != 'undefined' && this.checkChatWith != 'new' && "usr:"+proglobe_title == this.state.uri){
-
-                //var conversation = b6.getConversation(this.state.uri);
 
                 if (b6.markConversationAsRead(c) > 0) {
                     // Some messages have been marked as read
@@ -458,6 +456,87 @@ export default class QuickChatHandler extends React.Component{
         }
     }
 
+    setNewChatToBubbleList(_conv, title) {
+        this.props.bubClose(_conv.title);
+
+        let uri = 'usr:proglobe'+title;
+        let c = this.b6.getConversation(uri);
+        let conv='';
+
+        if(c != null) {
+            let notificationId = this.notificationDomIdForConversation(c),
+                proglobe_title = this.b6.getNameFromIdentity(c.id),
+                notificationTagId = notificationId.substring(1);
+
+            if(title != 'undefined' ){
+                for(let my_con in this.state.my_connections){
+                    if(title === this.state.my_connections[my_con].user_name) {
+                        let connections = this.state.my_connections[my_con];
+
+                        conv = {
+                            id: notificationTagId,
+                            tabId: notificationId,
+                            proglobeTitle: proglobe_title,
+                            title: title,
+                            user: connections,
+                            connection_status: connections.connection_status
+                        };
+
+                        var stamp = Lib.getRelativeTime(c.updated);
+                        var latestText = '';
+                        var mId = '';
+                        var lastMsg = c.getLastMessage();
+                        if (lastMsg) {
+                            // Show the text from the latest conversation
+
+                            if (lastMsg.content)
+                                latestText = lastMsg.content;
+                            // If no text, but has an attachment, show the mime type
+                            else if (lastMsg.data && lastMsg.data.type) {
+                                latestText = lastMsg.data.type;
+                            }
+                            if(lastMsg.data && lastMsg.data.id) {
+                                mId = lastMsg.data.id;
+                            }
+                        }
+
+                        conv.date = stamp;
+                        conv.latestMsg = latestText;
+                        conv.message_id = "msg__m" + mId;
+
+                    }
+                }
+            }
+        } else {
+            for(let my_con in this.state.my_connections) {
+                if (title === this.state.my_connections[my_con].user_name) {
+                    let connections = this.state.my_connections[my_con];
+                    conv = {
+                        id: '',
+                        tabId: '',
+                        proglobeTitle: '',
+                        title: title,
+                        user: connections,
+                        connection_status: connections.connection_status,
+                        date: '',
+                        latestText: '',
+                        mId: ''
+                    };
+                }
+            }
+
+        }
+
+        this.props.setNewChatToList(_conv, conv);
+    }
+
+    notificationDomIdForConversation(c){
+        if(c == null) {
+            return '';
+        }
+        return '#notification__' + c.domId();
+    }
+
 
     render() {
 
@@ -476,6 +555,7 @@ export default class QuickChatHandler extends React.Component{
                     key={key}
                     chatData={conv}
                     messages={_this.state.messages}
+                    my_connections={_this.state.my_connections}
                     bubbleClosed={_this.onBubbleClose.bind(this)}
                     sendMyMessage={_this.sendChat.bind(this)}
                     doAudioCall = {_this.doAudioCall.bind(this)}
@@ -483,6 +563,7 @@ export default class QuickChatHandler extends React.Component{
                     isNavHidden={_this.state.isNavHidden}
                     setActiveBubbleId= {_this.setActiveBubbleId.bind(this)}
                     isActiveBubble={_isActive}
+                    setNewChatToList={_this.setNewChatToBubbleList.bind(this)}
                     />
             );
         });
