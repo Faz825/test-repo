@@ -40,6 +40,10 @@ var GroupsController = {
                     group_pic_id: req.body._group_pic_id,
                     members: req.body._members,
                     created_by: Util.getCurrentSession(req).id,
+
+                    /*TODO@Eranga : Define group-connection type in elasticsearch also.
+                     This type must reflect connections model in database. */
+
                     type: (typeof req.body._type != 'undefined' ? req.body._type : 1)
                 };
                 Groups.createGroup(_group, function (resultSet) {
@@ -485,14 +489,14 @@ var GroupsController = {
             function getGroups(callBack) {
                 var userId = Util.getCurrentSession(req).id.toString();
                 var query = {
-                    index : ConnectionConfig.ES_GROUP_INDEX_NAME+userId,
+                    index: ConnectionConfig.ES_GROUP_INDEX_NAME + userId,
                     type: 'connections',
                     id: userId
                 };
-                console.log(" THE INDEX IS : " + ConnectionConfig.ES_GROUP_INDEX_NAME+userId);
-                ES.search(query,function(groupsResult){
+                console.log(" THE INDEX IS : " + ConnectionConfig.ES_GROUP_INDEX_NAME + userId);
+                ES.search(query, function (groupsResult) {
                     var groups = [];
-                    if(groupsResult) {
+                    if (groupsResult) {
                         groups = groupsResult.result;
                     }
                     callBack(null, groups);

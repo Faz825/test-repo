@@ -479,6 +479,7 @@ ConnectionSchema.statics.getMyConnection = function (criteria, callBack) {
                         q: "user_id:" + result.user_id,
                         index: 'idx_usr'
                     };
+
                     ES.search(query, function (sesResultSet) {
                         if (result.user_id != criteria.user_id) {
                             if (result.connected_at) {
@@ -501,6 +502,79 @@ ConnectionSchema.statics.getMyConnection = function (criteria, callBack) {
 }
 
 /**
+ * Get User Connections - Users, Groups
+ * @param criteria {Object} include search params needed for elastic search
+ * @param callBack {Object} return elastic search result
+ * **/
+ConnectionSchema.statics.getConnections = function (criteria, getConnCallback) {
+    var _async = require('async');
+
+    _async.waterfall([
+        function getUserConnections(callback) {
+            var _cache_key = ConnectionConfig.ES_INDEX_NAME + criteria.user_id.toString();
+            var query = {
+                q: criteria.q,
+                index: _cache_key
+            };
+
+            ES.search(query, function (esResultSet) {
+                callback(null, esResultSet.result);
+            });
+        },
+        function getEachUser(aConnections, callback) {
+            var formatted_users = [];
+
+            _async.each(aConnections, function (oResult, userCallback) {
+                var query = {
+                    q: "user_id:" + oResult.user_id,
+                    index: "idx_usr"
+                };
+
+                ES.search(query, function (sesResultSet) {
+                    if (oResult.user_id != criteria.user_id) {
+                        if (oResult.connected_at) {
+                            sesResultSet.result[0]['connected_at'] = oResult.connected_at;
+                        }
+                        formatted_users.push(sesResultSet.result[0]);
+                    }
+                    userCallback();
+                });
+            }, function (error) {
+                error ? callback(error) : callback(null, formatted_users);
+            });
+        },
+        function getGroupConnections(aIndividualUsers, callback) {
+            var _cache_key = ConnectionConfig.ES_GROUP_INDEX_NAME + criteria.user_id.toString();
+            var query = {
+                q: criteria.q,
+                index: _cache_key
+            };
+
+            ES.search(query, function (sesResultSet) {
+                callback(null, aIndividualUsers, sesResultSet.result);
+            });
+        }, function getEachGroup(aUsers, aGroups, callback) {
+            var formatted_groups = [];
+
+            _async.each(aGroups, function (oGroup, groupCallback) {
+                var query = {
+                    q: '_id:' + oGroup._id,
+                    index: 'idx_group'
+                };
+
+                ES.search(query, function (sesResultSet) {
+                    sesResultSet.result[0]
+                });
+            }, function (error) {
+                error ? callback(error) : callback(null, formatted_groups);
+            });
+        }
+    ], function (error, aConnections) {
+        error ? getConnCallback({status: 400, error: error}) : getConnCallback({status: 200, data: aConnections});
+    });
+};
+
+/**
  * Get My Connection with Unfriend Users
  * @param criteria
  * @param callBack
@@ -517,7 +591,7 @@ ConnectionSchema.statics.getMyConnectionsBindUnfriendConnections = function (cri
             var query = {
                 q: criteria.q,
                 index: _cache_key
-            }
+            };
 
             ES.search(query, function (esResultSet) {
 

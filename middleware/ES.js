@@ -43,11 +43,9 @@ var ES = {
         this.esClient.index(_esData, function (error, response) {
             if (error)
                 console.log('===============================================');
-                console.log(error);
+            console.log(error);
 
             callBack(response);
-
-
         });
     },
     /**
@@ -95,6 +93,10 @@ var ES = {
 
         if (typeof payLoad.index != "undefined") {
             search_param['index'] = payLoad.index
+        }
+
+        if (typeof payLoad.sort != "undefined") {
+            search_param['sort'] = payLoad.sort
         }
 
         this.esClient.search(search_param).then(function (resp) {
