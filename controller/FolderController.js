@@ -270,13 +270,35 @@ var FolderController = {
                                             document_name: doc.name,
                                             document_type: doc.content_type,
                                             document_user: doc.user_id,
+                                            document_user_name: "",
+                                            document_user_pic: "",
                                             document_path: doc.file_path,
                                             document_thumb_path: doc.thumb_path,
                                             updated_at: doc.updated_at,
                                             document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
                                         };
-                                        _documents.push(_doc);
-                                        callBackDocument(null);
+
+                                        var query = {
+                                            q: doc.user_id.toString(),
+                                            index: 'idx_usr'
+                                        };
+                                        ES.search(query, function (esResultSet) {
+                                            if (typeof esResultSet.result[0] == "undefined") {
+                                                _documents.push(_doc);
+                                                callBackDocument(null);
+                                            } else {
+                                                //console.log(esResultSet.result[0]);
+                                                if (typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].first_name != 'undefined') {
+                                                    _doc.document_user_name = esResultSet.result[0].first_name + " " + esResultSet.result[0].last_name;
+                                                }
+                                                if (typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].images != 'undefined'
+                                                    && typeof esResultSet.result[0].images.profile_image != 'undefined' && typeof esResultSet.result[0].images.profile_image.http_url != 'undefined') {
+                                                    _doc.document_user_pic = esResultSet.result[0].images.profile_image.http_url;
+                                                }
+                                                _documents.push(_doc);
+                                                callBackDocument(null);
+                                            }
+                                        });
                                     }, function (err) {
                                         _folder.documents = _documents;
                                         if (_folder.folder_name == "My Folder") {
@@ -393,13 +415,36 @@ var FolderController = {
                                                 document_name: doc.name,
                                                 document_type: doc.content_type,
                                                 document_user: doc.user_id,
+                                                document_user_name: "",
+                                                document_user_pic: "",
                                                 document_path: doc.file_path,
                                                 document_thumb_path: doc.thumb_path,
                                                 updated_at: doc.updated_at,
                                                 document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
                                             };
-                                            _documents.push(_doc);
-                                            callBackDocument(null);
+
+                                            var query = {
+                                                q: doc.user_id.toString(),
+                                                index: 'idx_usr'
+                                            };
+                                            ES.search(query, function (esResultSet) {
+                                                if (typeof esResultSet.result[0] == "undefined") {
+                                                    _documents.push(_doc);
+                                                    callBackDocument(null);
+                                                } else {
+                                                    //console.log(esResultSet.result[0]);
+                                                    if (typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].first_name != 'undefined') {
+                                                        _doc.document_user_name = esResultSet.result[0].first_name + " " + esResultSet.result[0].last_name;
+                                                    }
+                                                    if (typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].images != 'undefined'
+                                                        && typeof esResultSet.result[0].images.profile_image != 'undefined' && typeof esResultSet.result[0].images.profile_image.http_url != 'undefined') {
+                                                        _doc.document_user_pic = esResultSet.result[0].images.profile_image.http_url;
+                                                    }
+                                                    _documents.push(_doc);
+                                                    callBackDocument(null);
+                                                }
+                                            });
+
                                         }, function (err) {
                                             _folder.documents = _documents;
                                             callback(null)

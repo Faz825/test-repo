@@ -547,7 +547,7 @@ export class File extends React.Component{
         }
 
         let tooltip = (
-            <Tooltip id="tooltip">{data.document_name}</Tooltip>
+            <Tooltip id="tooltip">{data.document_user_name}</Tooltip>
         );
 
         return(
