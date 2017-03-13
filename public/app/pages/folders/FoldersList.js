@@ -553,34 +553,33 @@ export class File extends React.Component{
         return(
             <div className="folder-col">
                 <div className="clearfix" onClick={()=>this.viewFile(data)}>
-                    <OverlayTrigger placement="top" overlay={tooltip}>
-                        <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
-                            <div className={(imgClass)? "img-wrapper" : "inner-wrapper"}>
-                                <div className="time-wrapper">
-                                    <p className="date-created">{_documentUpdatedDate.createdDate}</p>
-                                    <p className="time-created">{_documentUpdatedDate.createdTime}</p>
-                                </div>
-                                <div className="folder-title-holder">
-                                    <p className="folder-title">{data.document_name}</p>
-                                </div>
-                                <div className="item-type">
-                                    <svg width="24" height="32">
-                                        {
-                                            (folder_icons.indexOf(data.document_type) == -1) ?
-                                                <image xlinkHref={"images/folder/types/default_icon.svg"} width="24" height="32"/> :
-                                                <image xlinkHref={"images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
-                                        }
-                                    </svg>
-                                </div>
+                    <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
+                        <div className={(imgClass)? "img-wrapper" : "inner-wrapper"}>
+                            <div className="time-wrapper">
+                                <p className="date-created">{_documentUpdatedDate.createdDate}</p>
+                                <p className="time-created">{_documentUpdatedDate.createdTime}</p>
                             </div>
-                            {
-                                (data.document_thumb_path)?
-                                    <span className="img-overlay"></span>
-                                    :
-                                    null
-                            }
+                            <div className="folder-title-holder">
+                                <p className="folder-title">{data.document_name}</p>
+                            </div>
+                            <p className="file-owner">{data.document_user_name}</p>
+                            <div className="item-type">
+                                <svg width="24" height="32">
+                                    {
+                                        (folder_icons.indexOf(data.document_type) == -1) ?
+                                            <image xlinkHref={"images/folder/types/default_icon.svg"} width="24" height="32"/> :
+                                            <image xlinkHref={"images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
+                                    }
+                                </svg>
+                            </div>
                         </div>
-                    </OverlayTrigger>
+                        {
+                            (data.document_thumb_path)?
+                                <span className="img-overlay"></span>
+                                :
+                                null
+                        }
+                    </div>
                 </div>
                 {
                     (this.state.loggedUser.id == data.document_user) ?
