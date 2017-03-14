@@ -18,3 +18,9 @@ GLOBAL.Notifications = {
     ADD_GROUP_POST:"add_group_post"
 
 };
+
+GLOBAL.NotificationCategory = {
+    TODOS: "todos",
+    SOCIAL: "social",
+    PRODUCTIVITY: "productivity"
+};

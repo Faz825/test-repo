@@ -667,6 +667,8 @@ var CalendarController = {
         // Clone the value before .endOf()
         var endDate = moment([year, Number(month - 1)]).endOf('month').add(1, 'day').format('YYYY-MM-DD');
         var calendar_origin = typeof(req.query.calendarOrigin) != 'undefined' ? req.query.calendarOrigin : 1; // PRESONAL_CALENDAR || GROUP_CALENDAR
+        var groupId = typeof(req.query.group_id) != 'undefined' ? req.query.group_id : ""; // PRESONAL_CALENDAR || GROUP_CALENDAR
+        var eventType = typeof(req.query.events_type) != 'undefined' ? req.query.events_type : 3;
 
         _async.waterfall([
 
@@ -686,6 +688,8 @@ var CalendarController = {
                             var condition = {
                                 start_date_time: {$gte: startDate, $lt: endDate},
                                 _id: sharedEvent,
+                                group_id : groupId,
+                                type : eventType, // 3 - Task
                             };
 
                             CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
@@ -695,6 +699,9 @@ var CalendarController = {
 
                                     _async.each(_Shared_users, function (member, callBack) {
                                         if(member.user_id == user_id && (member.shared_status == CalendarSharedStatus.REQUEST_PENDING)){
+                                            console.log(member.user_id);
+                                            console.log(user_id);
+                                            console.log(member.shared_status);
                                             _Events.push(result.events[0]);
                                         }
                                         callBack(null);
@@ -730,7 +737,7 @@ var CalendarController = {
     },
 
     getPriorityList: function(req, res) {
-
+        console.log(" GET PRIORITY  CANCELLED " + req.query.priority);
         var CurrentSession = Util.getCurrentSession(req);
         var CalendarEvent = require('mongoose').model('CalendarEvent');
         var _async = require('async');
@@ -744,7 +751,7 @@ var CalendarController = {
         var calendar_origin = typeof(req.query.calendarOrigin) != 'undefined' ? req.query.calendarOrigin : CalendarOrigin.PERSONAL_CALENDAR; // PRESONAL_CALENDAR , GROUP_CALENDAR
         var priority = typeof(req.query.priority) != 'undefined' ? req.query.priority : CalenderPriority.HIGH; // LOW: 1, MED: 2, HIGH: 3,
 
-        var user_id = Util.toObjectId(CurrentSession.id);
+        var currentUserId = Util.toObjectId(CurrentSession.id);
         var _Events = [];
 
         _async.waterfall([
@@ -753,7 +760,7 @@ var CalendarController = {
                 var condition = {
                     start_date_time : {$gte: startDate, $lt: endDate},
                     group_id : req.query.group_id,
-                    user_id : user_id,
+                    user_id : currentUserId,
                     type : req.query.events_type,
                     priority : priority
                 };
@@ -772,7 +779,6 @@ var CalendarController = {
                 });
             },
             function getSharedTasks(callBack) {
-
                 var user_id = CurrentSession.id;
                 var query = {
                     q: "_id:" + user_id.toString()
@@ -788,20 +794,23 @@ var CalendarController = {
                             var condition = {
                                 start_date_time : {$gte: startDate, $lt: endDate},
                                 _id : sharedEvent,
+                                group_id : req.query.group_id,
+                                type : req.query.events_type,
                                 priority : priority
                             };
 
                             CalendarEvent.getSortedCalenderItems(condition, function (err, result) {
 
                                 if(result && result.events[0] && result.events[0].shared_users) {
-                                    var _Shared_users = result.events[0].shared_users;
+                                    var shared_users = result.events[0].shared_users;
 
-                                    _async.each(_Shared_users, function (member, callBack) {
-                                        if(member.user_id == user_id && (member.shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
+                                    _async.each(shared_users, function (member, callBack) {
+                                        if(member.user_id == user_id && (member.shared_status == CalendarSharedStatus.REQUEST_ACCEPTED || member.shared_status == CalendarSharedStatus.EVENT_COMPLETED)){
                                             _Events.push(result.events[0]);
-
+                                            callBack(null);
+                                        } else {
+                                            callBack(null);
                                         }
-                                        callBack(null);
                                     }, function (err) {
 
                                         callBack(null);
@@ -812,22 +821,93 @@ var CalendarController = {
 
                             });
                         }, function (err) {
-                            callBack(null);
+                            callBack(null, _Events);
                         });
                     } else {
                         console.log("no shared events");
-                        callBack(null);
+                        callBack(null, _Events);
                     }
                 });
+            },
+            function getUsers(events, callBack) {
+
+                var criteria = {
+                    user_id: currentUserId,
+                    status: 3
+                };
+                var User = require('mongoose').model('User');
+                User.getConnectionUsers(criteria, function (result) {
+                    var friends = result.friends;
+                    callBack(null, events, friends);
+                });
+            },
+
+            function composeUsers(events, users, callBack) {
+
+                if (events.length == 0) {
+                    callBack(null, []);
+                }
+
+                for (var e = 0; e < events.length; e++) {
+
+                    var event = events[e];
+
+                    var sharedUsers = (event.shared_users) ? event.shared_users : [];
+                    if (sharedUsers.length == 0) {
+                        if (e + 1 == (events.length)) {
+                            callBack(null, events)
+                        }
+                    }
+                    var ownerId = event.user_id;
+                    var owner = {
+                        'shared_status': CalendarSharedStatus.REQUEST_ACCEPTED,
+                        'id': ownerId,
+                        'name': 'Owner'
+                    };
+                    var ownerObj = users.filter(function (e) {
+                        return e.user_id == ownerId;
+                    });
+                    if (ownerId.toString() == currentUserId.toString()) {
+                        owner.name = 'me';
+                    } else if (ownerObj) {
+                        owner.name = ownerObj[0].first_name + " " + ownerObj[0].last_name;
+                    }
+
+                    var arrUsers = [];
+                    for (var u = 0; u < sharedUsers.length; u++) {
+                        var userId = sharedUsers[u].user_id;
+                        var filterObj = users.filter(function (e) {
+                            return e.user_id == userId;
+                        });
+                        var user = {
+                            'shared_status': sharedUsers[u].shared_status,
+                            'id': userId,
+                            'name': 'Unknown'
+                        };
+
+                        if (currentUserId.toString() == userId.toString()) {
+                            user.name = 'me';
+                        } else if (filterObj) {
+                            user.name = filterObj[0].first_name + " " + filterObj[0].last_name;
+                        }
+
+                        arrUsers.push(user);
+                        if (u + 1 == sharedUsers.length && e + 1 == events.length) {
+                            arrUsers.push(owner);
+                            events[e].shared_users = arrUsers;
+                            callBack(null, events);
+                        }
+                    }
+                }
             }
-        ], function (err) {
+        ], function (err, events) {
             var outPut = {};
             if (err) {
                 outPut['status'] = ApiHelper.getMessage(400, Alert.CALENDAR_MONTH_EMPTY, Alert.ERROR);
                 res.status(400).send(outPut);
             } else {
                 outPut['status'] = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-                outPut['events'] = _Events;
+                outPut['events'] = events;
                 outPut['event_count'] = _Events.length;
                 res.status(200).send(outPut);
             }
@@ -1307,7 +1387,7 @@ var CalendarController = {
                                                     for(var inc = 0; inc < _Shared_users.length; inc++){
 
                                                         if(_Shared_users[inc].user_id == user_id && (_Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_PENDING || _Shared_users[inc].shared_status == CalendarSharedStatus.REQUEST_ACCEPTED)){
-
+                                                            // _Events.push(result);
                                                             _async.waterfall([
                                                                 function getSharedOwner(callBack) {
                                                                     console.log("came to get shared event owner----");
@@ -1326,9 +1406,9 @@ var CalendarController = {
                                                                     });
                                                                 },
                                                                 function setSharedOwner(_name, callBack) {
-                                                                    var _event_op = result.toObject();
-                                                                    _event_op['owner_name'] = _name;
-                                                                    _Events.push(_event_op);
+                                                                    // var _event_op = result.toObject();
+                                                                    result['owner_name'] = _name;
+                                                                    _Events.push(result);
                                                                     callBack(null);
                                                                 }
 
@@ -2225,7 +2305,6 @@ var CalendarController = {
                     event_id:Util.toObjectId(req.body.event_id)
                 };
                 CalendarEvent.updateSharedStatus(postData, user_id, function(res){
-                    console.log(" EVENT IS UPDATED ===== ");
                     callBack(null);
                 });
             },

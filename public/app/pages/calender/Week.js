@@ -4,12 +4,20 @@
 import React from 'react';
 import moment from 'moment';
 import Session from '../../middleware/Session';
+import {convertFromRaw, convertToRaw} from 'draft-js';
+import {stateToHTML} from 'draft-js-export-html';
 
 export default class Week extends React.Component {
 
     constructor(props) {
         super(props);
         this.state ={};
+    }
+
+    createMarkup(htmlScript) {
+        return (
+        {__html: htmlScript}
+        );
     }
     
     render() {
@@ -96,9 +104,23 @@ export class DailyEvents extends React.Component {
         return false;
     }
 
+    createMarkup(htmlScript) {
+        return (
+        {__html: htmlScript}
+        );
+    }
+
     renderSelectedDate() {
         let count = 0, _this = this;
         let _events = this.props.daily_events.map(function(event,key){
+            let rawDescription = event.description;
+
+            if(rawDescription.hasOwnProperty("entityMap") == false){
+                rawDescription.entityMap = [];
+            }
+
+            let contentState = convertFromRaw(event.description);
+            let htmlC = stateToHTML(contentState);
             let _text = event.description.blocks[0].text;
             count++;
             if(count > 3) {
@@ -106,8 +128,7 @@ export class DailyEvents extends React.Component {
             }
             return(
                 <li className={_this.isPending(event) == false ? event.type == 1 ? "color-1" : "color-3" : "pending"}
-                    key={key}>{_text}
-                </li>
+                    key={key} dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></li>
             );
         });
 

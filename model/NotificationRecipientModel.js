@@ -60,6 +60,25 @@ NotificationRecipientSchema.statics.saveRecipients = function(data,callBack){
     });
 };
 
+NotificationRecipientSchema.statics.getAllRecipientNotification = function (criteria, callBack) {
+
+    this.find(criteria).exec(function (err, resultSet) {
+
+        if (!err) {
+            callBack({
+                status: 200,
+                result: resultSet
+            });
+        } else {
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status: 400, error: err});
+        }
+
+    })
+
+};
+
 /**
  * Get notifications based on criteria
  * @param criteria
@@ -129,15 +148,13 @@ NotificationRecipientSchema.statics.getRecipientNotifications = function(criteri
  * @param criteria
  * @param callBack
  */
-NotificationRecipientSchema.statics.getRecipientNotificationsLimit = function(criteria,skip,limit,callBack){
+NotificationRecipientSchema.statics.getRecipientNotificationsLimit = function(criteria,reduct_opt,skip,limit,callBack){
 
     console.log("getRecipientNotificationsLimit")
 
     var _this = this;
 
-    console.log(criteria)
-
-    _this.aggregate([
+    var criteria_arr = [
         { $match:criteria},
         {
             $lookup:{
@@ -167,6 +184,7 @@ NotificationRecipientSchema.statics.getRecipientNotificationsLimit = function(cr
                 read_status:1,
                 created_at:"$notificationData.created_at",
                 notification_type:"$notificationData.notification_type",
+                notification_cat:"$notificationData.notification_category",
                 sender_id:"$notificationData.sender",
                 post_id:"$notificationData.notified_post",
                 notebook_id:"$notificationData.notified_notebook",
@@ -179,8 +197,27 @@ NotificationRecipientSchema.statics.getRecipientNotificationsLimit = function(cr
         },
         { $sort:{ "created_at":-1}},
         { $skip:skip},
-        { $limit:limit},
+        { $limit:limit}
+    ];
 
+    if(reduct_opt != null){
+        var reduct_criteria = {
+            $redact: {
+                $cond: {
+                    "if": {
+                        $eq: [ "$notification_cat", reduct_opt ]
+                    },
+                    "then": "$$KEEP",
+                    "else": "$$PRUNE"
+                }
+            }
+        };
+
+        criteria_arr.push(reduct_criteria);
+    }
+
+    _this.aggregate([
+        criteria_arr
     ], function(err, resultSet){
         if(!err){
 

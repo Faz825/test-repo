@@ -5,20 +5,38 @@ var CalendarEventHandler = {
         var schedule = require('node-schedule');
         var moment = require('moment');
 
-        var rule = new schedule.RecurrenceRule();
-        rule.hour = 23;
-        rule.minute = 50;
+        var cron = require('node-cron');
 
-        // 0 0 0/8 * * ? - run on every 8 hours
-
-        var j = schedule.scheduleJob(rule, function () {
-
+        cron.schedule('0 * * * *', function(){
+            //console.log('running a task every hour 111 @ ' + moment().format('YYYY-MM-DD HH:mm:ss'));
             console.log("***************************************************");
             console.log("------------ START SCHEDULE ---- @ " + moment().format('YYYY-MM-DD HH:mm:ss'));
             console.log("***************************************************");
 
             CalendarEventHandler.calendarEventMovingProcess();
         });
+
+        /*var rule = new schedule.RecurrenceRule();
+        rule.hour = 23;
+        rule.minute = 50;
+
+        // 0 0 0/8 * * ? - run on every 8 hours
+
+        var k = schedule.scheduleJob("@hourly", function () {
+            "use strict";
+            console.log('running a task every hour 222 @ ' + moment().format('YYYY-MM-DD HH:mm:ss'));
+        });
+
+        var j = schedule.scheduleJob("0 0 * * * *", function () {
+
+            console.log('running a task every hour 333 @ ' + moment().format('YYYY-MM-DD HH:mm:ss'));
+
+            //console.log("***************************************************");
+            //console.log("------------ START SCHEDULE ---- @ " + moment().format('YYYY-MM-DD HH:mm:ss'));
+            //console.log("***************************************************");
+            //
+            //CalendarEventHandler.calendarEventMovingProcess();
+        });*/
 
     },
 

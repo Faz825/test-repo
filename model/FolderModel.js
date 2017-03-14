@@ -315,6 +315,28 @@ FolderSchema.statics.removeSharedUser = function(folderId,sharedCriteria,callBac
         });
 
 };
+/**
+ * Remove Folder
+ */
+FolderSchema.statics.removeFolder = function(criteria,callBack){
+
+    var _this = this;
+
+    this.remove(criteria).exec(function (err, resultSet) {
+
+        if (!err) {
+            callBack({
+                status: 200
+            });
+        } else {
+            console.log("Server Error --------")
+            console.log(err)
+            callBack({status: 400, error: err});
+        }
+
+    });
+
+};
 
 /**
  * Update Shared folder

@@ -319,6 +319,22 @@ export default class ConversationList extends React.Component{
         return index;
     }
 
+    openNewChat() {
+
+        let conv = {
+            id:"NEW_CHAT_MESSAGE",
+            tabId:"",
+            proglobeTitle:'NEW_CHAT_MESSAGE',
+            title:'NEW_CHAT_MESSAGE',
+            user:"",
+            connection_status:"",
+            date:"",
+            latestMsg:"",
+            message_id:""
+        };
+        this.props.loadNewChat(conv);
+    }
+
     render() {
         /*let _this = this;
          let convs = this.state.conversations.map(function(conv,key){
@@ -385,7 +401,7 @@ export default class ConversationList extends React.Component{
                                     <span className="count">({_count})</span>inbox
                                 </p>
                                 <p className="mark-all header-text">mark all as read</p>
-                                <p className="new-msg header-text">new message</p>
+                                <p className="new-msg header-text" onClick={this.openNewChat.bind(this)}>new message</p>
                             </div>
                             <div className="bottom-section">
                                 <input type="text" className="form-control" />

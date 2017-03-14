@@ -889,6 +889,7 @@ var NotificationController ={
         var days = req.query.days; console.log("Days = "+days);
         var pg = req.query.pg;console.log("pg = "+pg);
         var cat = req.query.cat;
+        var reduct_opt = null;
 
         var NotificationRecipient = require('mongoose').model('NotificationRecipient'),
             Post = require('mongoose').model('Post'),
@@ -906,10 +907,12 @@ var NotificationController ={
             _formattedNotificationData = {}, outPut = {};
 
         if(typeof cat != "undefined"){
-            criteria['notification_category'] = cat;
+            reduct_opt = cat;
         }
 
-        NotificationRecipient.getRecipientNotificationsLimit(criteria,skip,15,function(resultSet){
+        console.log(criteria);
+
+        NotificationRecipient.getRecipientNotificationsLimit(criteria,reduct_opt,skip,15,function(resultSet){
             var notifications = resultSet.notifications;
             var resultNotifications= [];
             _async.eachSeries(notifications, function(notification, callBack){
@@ -920,7 +923,7 @@ var NotificationController ={
 
                     function trimNotificationsGetSenders(callBack){
 
-                        if(_notificationType == 'like' || _notificationType == 'comment' || _notificationType == 'share') {
+                        if(_notificationType == Notifications.LIKE || _notificationType == Notifications.COMMENT || _notificationType == Notifications.SHARE) {
 
                             var currentPostId = notification.post_id.toString();
 
@@ -941,7 +944,7 @@ var NotificationController ={
                             }
 
                             callBack(null, related_senders);
-                        }else if(_notificationType == 'share_notebook' || _notificationType == 'share_notebook_response'){
+                        }else if(_notificationType == Notifications.SHARE_NOTEBOOK || _notificationType == Notifications.SHARE_NOTEBOOK_RESPONSE){
 
                                 var currentNotebookId = notification.notebook_id.toString();
 
@@ -963,7 +966,7 @@ var NotificationController ={
 
                                 callBack(null, related_senders);
 
-                        }else if(_notificationType == 'share_folder' || _notificationType == 'share_folder_response'){
+                        }else if(_notificationType == Notifications.SHARE_FOLDER || _notificationType == Notifications.SHARE_FOLDER_RESPONSE){
 
                             var currentFolderId = notification.folder_id.toString();
 
@@ -984,7 +987,8 @@ var NotificationController ={
                             }
 
                             callBack(null, related_senders);
-                        }else if(_notificationType == 'share_calendar' || _notificationType == 'share_calendar_response'|| _notificationType == 'calendar_schedule_updated' || _notificationType == 'calendar_schedule_time_changed' || _notificationType == 'calendar_schedule_carried_next_day'){
+                        }else if(_notificationType == Notifications.SHARE_CALENDAR || _notificationType == Notifications.SHARE_CALENDAR_RESPONSE || _notificationType == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+                            _notificationType == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED || _notificationType == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY){
 
                             var currentCalendarId = notification.calendar_id.toString();
 
@@ -1006,7 +1010,7 @@ var NotificationController ={
 
                             callBack(null, related_senders);
 
-                        }else if(_notificationType == 'share_group' || _notificationType == 'share_group_response') {
+                        }else if(_notificationType == Notifications.SHARE_GROUP || _notificationType == Notifications.SHARE_GROUP_RESPONSE) {
 
                             var currentGroupId = notification.group_id.toString();
 
@@ -1028,7 +1032,7 @@ var NotificationController ={
 
                             callBack(null, related_senders);
 
-                        }else if(_notificationType == Notifications.SHARE_GROUP_NOTEBOOK){
+                        } else if(_notificationType == Notifications.SHARE_GROUP_NOTEBOOK){
                             var currentNotebookId = notification.notebook_id.toString();
 
                             //- Group notebook objects with same _id and notification_type
@@ -1057,40 +1061,49 @@ var NotificationController ={
                         if(relatedSenders != null) {
                             User.getSenderDetails(relatedSenders, function (usersObj) {
                                 // trim same sender pending...
-                                console.log(usersObj.length);
+                                var _senderArray = [];
+                                var _formattedUsers = [];
+
+                                for (var i=0; i < usersObj.length; i++){
+                                    if(_senderArray.indexOf(usersObj[i].sender_id.toString()) == -1){
+                                        _senderArray.push(usersObj[i].sender_id.toString());
+                                        _formattedUsers.push(usersObj[i]);
+                                    }
+                                }
+
 
                                 var senderObj = {
-                                    sender_count: usersObj.length
+                                    sender_count: _formattedUsers.length
                                 };
 
                                 switch (true) {
-                                    case (usersObj.length == 1):
-                                        senderObj['sender_id'] = usersObj[0].sender_id;
-                                        senderObj['sender_name'] = usersObj[0].sender_name;
-                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
-                                        senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                    case (_formattedUsers.length == 1):
+                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                        senderObj['sender_name'] = _formattedUsers[0].sender_name;
+                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                        senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
                                         senderObj['sender_count'] = 0;
                                         break;
-                                    case (usersObj.length == 2):
-                                        senderObj['sender_id'] = usersObj[0].sender_id;
-                                        senderObj['sender_name'] = usersObj[0].sender_name + " and " + usersObj[1].sender_name;
-                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
-                                        senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                    case (_formattedUsers.length == 2):
+                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                        senderObj['sender_name'] = _formattedUsers[0].sender_name + " and " + _formattedUsers[1].sender_name;
+                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                        senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
                                         senderObj['sender_count'] = 0;
                                         break;
-                                    case (usersObj.length == 3):
-                                        senderObj['sender_id'] = usersObj[0].sender_id;
-                                        senderObj['sender_name'] = usersObj[0].sender_name + ", " + usersObj[1].sender_name;
-                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
-                                        senderObj['sender_user_name'] = usersObj[0].sender_user_name;
+                                    case (_formattedUsers.length == 3):
+                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                        senderObj['sender_name'] = _formattedUsers[0].sender_name + ", " + _formattedUsers[1].sender_name;
+                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                        senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
                                         senderObj['sender_count'] = 1;
                                         break;
-                                    case (usersObj.length > 3):
-                                        senderObj['sender_id'] = usersObj[0].sender_id;
-                                        senderObj['sender_name'] = usersObj[0].sender_name + ", " + usersObj[1].sender_name;
-                                        senderObj['sender_profile_picture'] = usersObj[0].profile_image;
-                                        senderObj[''] = usersObj[0].sender_user_name;
-                                        senderObj['sender_count'] = (usersObj.length - 2);
+                                    case (_formattedUsers.length > 3):
+                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                        senderObj['sender_name'] = _formattedUsers[0].sender_name + ", " + _formattedUsers[1].sender_name;
+                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                        senderObj[''] = _formattedUsers[0].sender_user_name;
+                                        senderObj['sender_count'] = (_formattedUsers.length - 2);
                                         break;
                                 }
 
@@ -1111,6 +1124,7 @@ var NotificationController ={
                         var notificationObj = {
                             notification_id:notification['notification_id'],
                             notification_type:notification['notification_type'],
+                            notification_category:notification['notification_cat'],
                             read_status: notification['read_status'],
                             created_at: DateTime.explainDate(notification['created_at']),
 
@@ -1140,42 +1154,34 @@ var NotificationController ={
                             notification_status: ((notification['notification_status'] == "REQUEST_ACCEPTED") ? "accepted" : "declined")
                         };
 
-                        if(notification['notification_type'] == 'like' || notification['notification_type'] == 'comment' || notification['notification_type'] == 'share') {
+                        if(notification['notification_type'] == Notifications.LIKE || notification['notification_type'] == Notifications.COMMENT || notification['notification_type'] == Notifications.SHARE) {
                             Post.bindNotificationData(notificationObj, user_id, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
-                        }
-
-                        if(notification['notification_type'] == 'share_notebook' || notification['notification_type'] == 'share_notebook_response'){
+                        } else if(notification['notification_type'] == Notifications.SHARE_NOTEBOOK || notification['notification_type'] == Notifications.SHARE_NOTEBOOK_RESPONSE){
                             NoteBook.bindNotificationData(notificationObj, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
-                        }
-
-                        if(notification['notification_type'] == 'share_folder' || notification['notification_type'] == 'share_folder_response'){
+                        } else if(notification['notification_type'] == Notifications.SHARE_FOLDER || notification['notification_type'] == Notifications.SHARE_FOLDER_RESPONSE){
                             Folder.bindNotificationData(notificationObj, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
-                        }
-
-                        if(notification['notification_type'] == 'share_calendar' || notification['notification_type'] == 'share_calendar_response' || notification['notification_type'] == 'calendar_schedule_updated' || notification['notification_type'] == 'calendar_schedule_time_changed' || notification['notification_type'] == 'calendar_schedule_carried_next_day'){
+                        } else if(notification['notification_type'] == Notifications.SHARE_CALENDAR || notification['notification_type'] == Notifications.SHARE_CALENDAR_RESPONSE ||
+                            notification['notification_type'] == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+                            notification['notification_type'] == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED || notification['notification_type'] == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY){
                             Calendar.bindNotificationData(notificationObj, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
-                        }
-
-                        if(notification['notification_type'] == 'share_group' || notification['notification_type'] == 'share_group_response'){
+                        } else if(notification['notification_type'] == Notifications.SHARE_GROUP || notification['notification_type'] == Notifications.SHARE_GROUP_RESPONSE){
                             Groups.bindNotificationData(notificationObj, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
-                        }
-
-                        if(notification['notification_type'] == Notifications.SHARE_GROUP_NOTEBOOK){
+                        } else if(notification['notification_type'] == Notifications.SHARE_GROUP_NOTEBOOK){
 
                             _async.waterfall([
                                 function getNotebookData(callBack) {
@@ -1193,6 +1199,13 @@ var NotificationController ={
                             ],function(err){
                                 callBack(null);
                             });
+                        }else  if(notification['notification_type'] == Notifications.ADD_GROUP_POST){
+                            /**
+                             * TODO :: bind add group post data to notificationObj & push it to resultNotifications
+                             */
+                            callBack(null);
+                        }else {
+                            callBack(null);
                         }
 
                     }

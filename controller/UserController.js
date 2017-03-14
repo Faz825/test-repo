@@ -2049,8 +2049,8 @@ var UserControler = {
                         }
                         console.log(criteria)
                         Connection.getMyConnectionData(criteria, function (resultSet) {
-                            console.log("=======================Connections==============")
-                            console.log(resultSet)
+                            //console.log("=======================Connections==============")
+                            //console.log(resultSet)
                             my_connections = resultSet.results;
                             callback(null);
                         });

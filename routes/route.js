@@ -183,6 +183,7 @@ router.post('/notes/delete-note', NotesController.deleteNote);
 // Notification
 // router.get('/notifications/get-notifications',NotificationController.getNotifications);
 router.get('/notifications/get-notifications', NotificationController.getNotificationsList);
+router.get('/notifications/get-notifications/category', NotificationController.getNotificationsList);
 router.post('/notifications/update-notifications', NotificationController.updateNotifications);
 router.post('/notifications/notebook-update', NotificationController.updateNotebookNotifications);
 router.post('/notifications/set-notification-sms', NotificationSMSController.setNotificationSMS);
@@ -197,6 +198,7 @@ router.get('/folders/get-all', FolderController.getFolders);
 router.post('/folders/shared-users', FolderController.getSharedUsers);
 router.post('/folders/share-folder', FolderController.shareFolder);
 router.post('/folder/shared-user/remove', FolderController.removeSharedFolderUser);
+router.post('/folder/remove', FolderController.deleteFolder);
 router.post('/folder/shared-permission/change', FolderController.updateFolderSharedPermission);
 router.post('/document/remove', FolderController.deleteDocument);
 router.get('/folder/search/:q', FolderController.searchFolder);

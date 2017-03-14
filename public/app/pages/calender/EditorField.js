@@ -10,6 +10,8 @@ import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // 
 import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin'; // eslint-disable-line import/no-unresolved
 import createEmojiPlugin from 'draft-js-emoji-plugin';
 
+//import createHashtagPlugin from 'draft-js-priority-plugin';
+
 import {convertFromRaw, convertToRaw} from 'draft-js';
 import { fromJS } from 'immutable';
 import timeSuggestions from './timeSuggestions';
@@ -37,8 +39,12 @@ const MentionSuggestions = mentionPlugin.MentionSuggestions;
 const MentionSuggestions2 = mentionPlugin2.MentionSuggestions;
 
 const emojiPlugin = createEmojiPlugin();
+//const hashtagPlugin = createHashtagPlugin();
 const { EmojiSuggestions } = emojiPlugin;
+//const plugins = [mentionPlugin, emojiPlugin, mentionPlugin2, hashtagPlugin];
 const plugins = [mentionPlugin, emojiPlugin, mentionPlugin2];
+
+
 
 export default class EditorField extends Component {
 

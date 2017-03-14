@@ -270,12 +270,35 @@ var FolderController = {
                                             document_name: doc.name,
                                             document_type: doc.content_type,
                                             document_user: doc.user_id,
+                                            document_user_name: "",
+                                            document_user_pic: "",
                                             document_path: doc.file_path,
                                             document_thumb_path: doc.thumb_path,
+                                            updated_at: doc.updated_at,
                                             document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
                                         };
-                                        _documents.push(_doc);
-                                        callBackDocument(null);
+
+                                        var query = {
+                                            q: doc.user_id.toString(),
+                                            index: 'idx_usr'
+                                        };
+                                        ES.search(query, function (esResultSet) {
+                                            if (typeof esResultSet.result[0] == "undefined") {
+                                                _documents.push(_doc);
+                                                callBackDocument(null);
+                                            } else {
+                                                //console.log(esResultSet.result[0]);
+                                                if (typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].first_name != 'undefined') {
+                                                    _doc.document_user_name = esResultSet.result[0].first_name + " " + esResultSet.result[0].last_name;
+                                                }
+                                                if (typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].images != 'undefined'
+                                                    && typeof esResultSet.result[0].images.profile_image != 'undefined' && typeof esResultSet.result[0].images.profile_image.http_url != 'undefined') {
+                                                    _doc.document_user_pic = esResultSet.result[0].images.profile_image.http_url;
+                                                }
+                                                _documents.push(_doc);
+                                                callBackDocument(null);
+                                            }
+                                        });
                                     }, function (err) {
                                         _folder.documents = _documents;
                                         if (_folder.folder_name == "My Folder") {
@@ -305,7 +328,8 @@ var FolderController = {
                         var _index = FolderConfig.ES_INDEX_SHARED_FOLDER + user_id.toString()
 
                         Folders.getSharedFolders(_index, function (resultSet) {
-                            //console.log(resultSet);
+                            // console.log("=== Shared Folder Results ===");
+                            // console.log(resultSet);
                             callBack(null, resultSet.folders);
                         });
                     },
@@ -391,12 +415,36 @@ var FolderController = {
                                                 document_name: doc.name,
                                                 document_type: doc.content_type,
                                                 document_user: doc.user_id,
+                                                document_user_name: "",
+                                                document_user_pic: "",
                                                 document_path: doc.file_path,
                                                 document_thumb_path: doc.thumb_path,
+                                                updated_at: doc.updated_at,
                                                 document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
                                             };
-                                            _documents.push(_doc);
-                                            callBackDocument(null);
+
+                                            var query = {
+                                                q: doc.user_id.toString(),
+                                                index: 'idx_usr'
+                                            };
+                                            ES.search(query, function (esResultSet) {
+                                                if (typeof esResultSet.result[0] == "undefined") {
+                                                    _documents.push(_doc);
+                                                    callBackDocument(null);
+                                                } else {
+                                                    //console.log(esResultSet.result[0]);
+                                                    if (typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].first_name != 'undefined') {
+                                                        _doc.document_user_name = esResultSet.result[0].first_name + " " + esResultSet.result[0].last_name;
+                                                    }
+                                                    if (typeof esResultSet.result[0] != 'undefined' && typeof esResultSet.result[0].images != 'undefined'
+                                                        && typeof esResultSet.result[0].images.profile_image != 'undefined' && typeof esResultSet.result[0].images.profile_image.http_url != 'undefined') {
+                                                        _doc.document_user_pic = esResultSet.result[0].images.profile_image.http_url;
+                                                    }
+                                                    _documents.push(_doc);
+                                                    callBackDocument(null);
+                                                }
+                                            });
+
                                         }, function (err) {
                                             _folder.documents = _documents;
                                             callback(null)
@@ -791,6 +839,424 @@ var FolderController = {
 
     },
 
+    deleteFolder: function (req, res){
+        var Folder = require('mongoose').model('Folders');
+        var FolderDoc = require('mongoose').model('FolderDocs');
+        var Notification = require('mongoose').model('Notification');
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient');
+        var folder_id = req.body.folder_id,
+            _async = require('async');
+
+        _async.waterfall([
+
+            function getFolderDetails (callBack){
+                Folder.getFolderById(folder_id, function(r){
+                    callBack(null, r);
+                });
+            },
+            function removeNotificationsAndSharedUsers(folderObj,callBack){
+
+                var folder_id = folderObj._id;
+                var sharedUsers = folderObj.shared_users;
+
+                if(sharedUsers.length > 0) {
+
+                    _async.eachSeries(sharedUsers, function (_shared_user, suCallBack) {
+
+                        var shared_user_id = _shared_user.user_id;
+
+                        var _sharedUsers = {
+                            shared_users: {user_id: {$in: [shared_user_id]}}
+                        };
+
+                        var sharedStatus = _shared_user.status;
+
+                        _async.waterfall([
+
+                            function getNotificaionRequests(callBack) {
+
+                                var criteria = {
+                                    notified_folder: folderObj._id,
+                                    notification_type: Notifications.SHARE_FOLDER,
+                                    sender: folderObj.user_id
+                                };
+
+                                var filteredObject = {}
+
+                                Notification.getNotifications(criteria, function (r) {
+                                    _async.eachSeries(r.result, function (notifObj, sCallBack) {
+
+                                        var innerCriteria = {
+                                            notification_id: notifObj._id,
+                                            recipient: shared_user_id
+                                        };
+
+                                        NotificationRecipient.getAllRecipientNotification(innerCriteria, function (nrResults) {
+                                            if (typeof nrResults.result != 'undefined' && nrResults.result.length > 0
+                                                && nrResults.result[0].recipient.toString() == shared_user_id.toString()) {
+                                                filteredObject['notificationId'] = notifObj._id;
+                                                filteredObject['notificationRecipientId'] = nrResults.result[0]._id;
+                                            }
+
+                                            sCallBack(null);
+                                        });
+
+                                    }, function (err) {
+                                        callBack(null, filteredObject);
+                                    });
+                                });
+                            },
+                            function removeNotificationRecipient(filteredObject, callBack) {
+
+                                console.log("removeNotificationRecipient");
+
+                                var criteria = {
+                                    _id: filteredObject.notificationRecipientId
+                                };
+
+                                NotificationRecipient.deleteNotificationRecipients(criteria, function (r) {
+                                    callBack(null, filteredObject);
+                                });
+
+                            },
+                            function removeNotificationRequest(filteredObject, callBack) {
+
+                                console.log("removeNotificationRequest");
+
+                                var criteria = {
+                                    _id: filteredObject.notificationId
+                                };
+
+                                Notification.deleteNotification(criteria, function (r) {
+                                    callBack(null);
+                                });
+
+                            },
+                            function getNotificationResponses(callBack) {
+
+                                var criteria = {
+                                    notified_folder: folderObj._id,
+                                    notification_type: Notifications.SHARE_FOLDER_RESPONSE,
+                                    sender: shared_user_id
+                                };
+
+                                Notification.getNotifications(criteria, function (r) {
+                                    if (typeof r.result != 'undefined' && r.result.length > 0) {
+                                        callBack(null, r.result[0]._id);
+                                    } else {
+                                        callBack(null, null);
+                                    }
+                                });
+                            },
+                            function removeNotificationRecipient(notificationId, callBack) {
+
+                                console.log("removeNotificationRecipient");
+
+                                if (notificationId != null) {
+                                    var criteria = {
+                                        notification_id: notificationId,
+                                        recipient: folderObj.user_id
+                                    };
+
+                                    NotificationRecipient.deleteNotificationRecipients(criteria, function (r) {
+                                        callBack(null, notificationId);
+                                    });
+                                } else {
+                                    callBack(null, null);
+                                }
+
+                            },
+                            function removeNotificationRequest(notificationId, callBack) {
+
+                                console.log("removeNotificationRequest");
+
+                                if (notificationId != null) {
+                                    var criteria = {
+                                        _id: notificationId
+                                    };
+
+                                    Notification.deleteNotification(criteria, function (r) {
+                                        callBack(null);
+                                    });
+                                } else {
+                                    callBack(null);
+                                }
+
+                            },
+                            function removeSharedUserFromDB(callback) {
+                                console.log("removeSharedUserFromDB");
+
+                                console.log(_sharedUsers);
+                                Folder.removeSharedUser(folder_id, _sharedUsers, function (result) {
+                                    callback(null);
+                                });
+                            },
+                            function removeFolderFromES(callback) {
+                                console.log("removeFolderFromES")
+                                if(sharedStatus != FolderSharedRequest.REQUEST_PENDING) {
+                                    var _payload = {
+                                        id: folder_id.toString(),
+                                        type: "shared_folder",
+                                        cache_key: FolderConfig.ES_INDEX_SHARED_FOLDER + shared_user_id.toString()
+
+                                    };
+                                    Folder.deleteFolderFromCache(_payload, function (err) {
+                                        callback(null);
+                                    });
+                                }else{
+                                    callback(null);
+                                }
+
+                            },
+                            function removeFilesFromES(callback) {
+                                console.log("removeFilesFromES")
+                                if(sharedStatus != FolderSharedRequest.REQUEST_PENDING) {
+
+                                    var _criteria = {folder_id: Util.toObjectId(folder_id)}
+
+                                    FolderDoc.getFolderDocument(_criteria, function (result) {
+                                        if (result.status == 200) {
+                                            var _docs = result.document;
+
+                                            _async.eachSeries(_docs, function (doc, callback) {
+
+                                                //console.log("=====================")
+                                                //console.log(doc);
+
+                                                var _payload = {
+                                                    id: doc._id.toString(),
+                                                    type: "shared_document",
+                                                    cache_key: FolderDocsConfig.ES_INDEX_SHARED_DOC + shared_user_id.toString()
+
+                                                };
+                                                FolderDoc.deleteDocumentFromCache(_payload, function (err) {
+                                                    callback(null);
+                                                });
+
+                                            }, function (err) {
+                                                callback(null);
+                                            });
+
+                                        } else {
+                                            callback(null);
+                                        }
+                                    });
+                                }else {
+                                    callback(null);
+                                }
+                            }
+                        ], function (err) {
+                            suCallBack(null);
+                        });
+
+                    }, function (err) {
+                        callBack(null, folderObj);
+                    });
+
+                }else {
+                    callBack(null, folderObj);
+                }
+
+            },
+            function getFolderDocuments(folderObj, callBack){
+                var docCriteria = {folder_id: folderObj._id}
+
+                FolderDoc.getFolderDocument(docCriteria, function (resultDoc) {
+                    callBack(null, {
+                        folderObj: folderObj,
+                        docs: resultDoc.document
+                    });
+                });
+            },
+            function removeDocuments(results, callBack){
+
+                _async.eachSeries(results.docs, function (doc, docsCallBack) {
+
+                    var file_id = doc._id,
+                        theFolder = results.folderObj,
+                        theDocument = doc;
+
+                    _async.waterfall([
+
+                        function deleteFilesFromCDN(callback) {
+                            console.log("deleteFilesFromCDN");
+                            console.log("The Document ==>");
+                            console.log(JSON.stringify(theDocument));
+                            console.log("The Folder ==>");
+                            console.log(JSON.stringify(theFolder));
+
+                            _async.parallel([
+                                function (callback) {
+                                    console.log("=====file path=====");
+                                    if (typeof theDocument.file_path != 'undefined' && theDocument.file_path != null) {
+                                        var _filePath = theDocument.file_path;
+                                        var _filePathArray = _filePath.split(theDocument.folder_id.toString() + '/');
+                                        var _fileName = _filePathArray[1];
+                                        var _file = {
+                                            entity_id: theDocument.folder_id.toString(),
+                                            file_name: _fileName
+                                        };
+                                        console.log(_file);
+                                        ContentUploader.deleteFromCDN(_file, function (result) {
+                                            callback(null);
+                                        })
+                                    } else {
+                                        callback(null);
+                                    }
+                                },
+                                function (callback) {
+                                    console.log("=====thumb path=====");
+                                    if (typeof theDocument.thumb_path != 'undefined' && theDocument.thumb_path != null) {
+                                        var _filePath = theDocument.thumb_path;
+                                        var _filePathArray = _filePath.split(theDocument.folder_id.toString() + '/');
+                                        var _fileName = _filePathArray[1];
+                                        var _file = {
+                                            entity_id: theDocument.folder_id.toString(),
+                                            file_name: _fileName
+                                        };
+                                        console.log(_file);
+                                        ContentUploader.deleteFromCDN(_file, function (result) {
+                                            callback(null);
+                                        })
+                                    } else {
+                                        callback(null);
+                                    }
+                                }
+                            ], function (err) {
+                                callback(null);
+                            });
+                        },
+
+                        function deleteFromDB(callback) {
+                            console.log("deleteFromDB");
+                            var docCriteria = {_id: Util.toObjectId(file_id)};
+                            FolderDoc.deleteDocument(docCriteria, function (resultDoc) {
+                                callback(null);
+                            });
+                        },
+
+                        function deleteFromES(callback) {
+                            console.log("deleteFromES");
+
+                            _async.parallel([
+                                function (callback) {
+
+                                    var _folderOwner = theFolder.user_id;
+
+                                    var _index = "";
+                                    var _type = "";
+
+                                    console.log("_folderOwner == " + typeof _folderOwner);
+                                    console.log("theDocument.user_id == " + typeof theDocument.user_id)
+
+                                    if (_folderOwner.toString() == theDocument.user_id.toString()) {
+                                        _index = FolderDocsConfig.ES_INDEX_OWN_DOC;
+                                        _type = "own_document";
+                                    } else {
+                                        _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
+                                        _type = "shared_document";
+                                    }
+                                    console.log(_index);
+
+                                    var _payload = {
+                                        id: theDocument._id.toString(),
+                                        type: _type,
+                                        cache_key: _index + _folderOwner.toString()
+                                    };
+                                    console.log("=====================")
+                                    console.log(_payload)
+                                    FolderDoc.deleteDocumentFromCache(_payload, function (err) {
+                                        callback(null);
+                                    });
+
+                                },
+                                function (callback) {
+
+                                    var _sharedUsers = theFolder.shared_users;
+                                    _async.eachSeries(_sharedUsers, function (_sharedUser, callback) {
+
+                                        if (_sharedUser.status == FolderSharedRequest.REQUEST_ACCEPTED) {
+                                            var _documentUser = _sharedUser.user_id;
+
+                                            var _index = "";
+                                            var _type = "";
+
+                                            console.log("_documentUser == " + typeof _documentUser);
+                                            console.log("theDocument.user_id == " + typeof theDocument.user_id)
+
+                                            if (_documentUser == theDocument.user_id.toString()) {
+                                                _index = FolderDocsConfig.ES_INDEX_OWN_DOC;
+                                                _type = "own_document";
+                                            } else {
+                                                _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
+                                                _type = "shared_document";
+                                            }
+                                            console.log(_index);
+                                            var _payload = {
+                                                id: theDocument._id.toString(),
+                                                type: _type,
+                                                cache_key: _index + _documentUser.toString()
+                                            };
+                                            console.log("=====================")
+                                            console.log(_payload)
+                                            FolderDoc.deleteDocumentFromCache(_payload, function (err) {
+                                                callback(null);
+                                            });
+
+                                        } else {
+                                            callback(null);
+                                        }
+
+                                    }, function (err) {
+                                        callback(null)
+                                    });
+
+                                }
+                            ], function (err) {
+                                callback(null);
+                            });
+                        }
+                    ], function (err) {
+
+                        console.log("Deleted: " + doc.name);
+
+                        docsCallBack(null);
+                    });
+
+                }, function (err) {
+                    callBack(null, results);
+                });
+
+            },
+            function removeFolder(results, callBack){
+                var folder_id = results.folderObj._id;
+
+                var criteria = {
+                    _id: folder_id
+                }
+
+                Folder.removeFolder(criteria, function (r){
+                    callBack(null);
+                });
+            }
+
+        ], function (err) {
+
+            if (!err) {
+                var outPut = {
+                    status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+                };
+                res.status(200).json(outPut);
+            } else {
+                var outPut = {
+                    status: ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
+                };
+                res.status(400).json(outPut);
+            }
+
+        });
+    },
+
     /**
      * folder owner can remove shared users from db and ES
      * @param req
@@ -802,6 +1268,8 @@ var FolderController = {
 
         var Folder = require('mongoose').model('Folders');
         var FolderDoc = require('mongoose').model('FolderDocs');
+        var Notification = require('mongoose').model('Notification');
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient');
         var folder_id = req.body.folder_id,
             shared_user_id = [req.body.user_id],
             _async = require('async');
@@ -813,8 +1281,131 @@ var FolderController = {
             shared_users: {user_id: {$in: shared_user_id}}
         };
 
+        var folderObj = {};
+
+        var sharedStatus = '';
+
         _async.waterfall([
 
+            function getFolderDetails (callBack){
+                Folder.getFolderById(folder_id, function(r){
+
+                    folderObj = r;
+                    sharedStatus = r.shared_users[0].status;
+
+                    console.log(folderObj);
+
+                    callBack(null, r);
+                });
+            },
+            function removeNotification (folderObj, callBack){
+                _async.waterfall([
+                    function getNotificaionRequests (callBack){
+
+                        var criteria = {
+                            notified_folder: folderObj._id,
+                            notification_type: Notifications.SHARE_FOLDER,
+                            sender: folderObj.user_id
+                        };
+
+                        var filteredObject = {}
+
+                        Notification.getNotifications(criteria, function(r){
+                            _async.eachSeries(r.result, function (notifObj, sCallBack) {
+
+                                var innerCriteria = {
+                                    notification_id: notifObj._id,
+                                    recipient: shared_user_id
+                                };
+
+                                NotificationRecipient.getAllRecipientNotification(innerCriteria, function(nrResults){
+                                    if (typeof nrResults.result != 'undefined' && nrResults.result.length > 0
+                                        && nrResults.result[0].recipient.toString() == shared_user_id.toString()){
+                                        filteredObject['notificationId'] = notifObj._id;
+                                        filteredObject['notificationRecipientId'] = nrResults.result[0]._id;
+                                    }
+
+                                    sCallBack(null);
+                                });
+
+                            }, function (err) {
+                                callBack(null, filteredObject);
+                            });
+                        });
+                    },
+                    function removeNotificationRecipient(filteredObject , callBack){
+
+                        var criteria = {
+                            _id: filteredObject.notificationRecipientId
+                        };
+
+                        NotificationRecipient.deleteNotificationRecipients(criteria, function (r){
+                            callBack(null, filteredObject);
+                        });
+
+                    },
+                    function removeNotificationRequest(filteredObject , callBack){
+
+                        var criteria = {
+                            _id: filteredObject.notificationId
+                        };
+
+                        Notification.deleteNotification(criteria, function (r){
+                            callBack(null);
+                        });
+
+                    },
+                    function getNotificationResponses (callBack){
+
+                        var criteria = {
+                            notified_folder: folderObj._id,
+                            notification_type: Notifications.SHARE_FOLDER_RESPONSE,
+                            sender: shared_user_id
+                        };
+
+                        Notification.getNotifications(criteria, function(r){
+                            if (typeof r.result != 'undefined' && r.result.length > 0){
+                                callBack(null, r.result[0]._id);
+                            }else {
+                                callBack(null, null);
+                            }
+                        });
+                    },
+                    function removeNotificationRecipient(notificationId , callBack){
+
+                        if(notificationId !=null) {
+                            var criteria = {
+                                notification_id: notificationId,
+                                recipient: folderObj.user_id
+                            };
+
+                            NotificationRecipient.deleteNotificationRecipients(criteria, function (r) {
+                                callBack(null, notificationId);
+                            });
+                        } else {
+                            callBack(null, null);
+                        }
+
+                    },
+                    function removeNotificationRequest(notificationId , callBack){
+
+                        if(notificationId !=null) {
+                            var criteria = {
+                                _id: notificationId
+                            };
+
+                            Notification.deleteNotification(criteria, function (r){
+                                callBack(null);
+                            });
+                        } else {
+                            callBack(null);
+                        }
+
+                    },
+                ], function (err) {
+                    callBack(null);
+                });
+            },
             function removeSharedUserFromDB(callback) {
                 //console.log("removeSharedUserFromDB")
                 Folder.removeSharedUser(folder_id, _sharedUsers, function (result) {
@@ -822,50 +1413,58 @@ var FolderController = {
                 });
             },
             function removeFolderFromES(callback) {
-                //console.log("removeFolderFromES")
-                var _payload = {
-                    id: folder_id.toString(),
-                    type: "shared_folder",
-                    cache_key: FolderConfig.ES_INDEX_SHARED_FOLDER + shared_user_id.toString()
+                // console.log("removeFolderFromES")
+                if(sharedStatus != FolderSharedRequest.REQUEST_PENDING) {
+                    var _payload = {
+                        id: folder_id.toString(),
+                        type: "shared_folder",
+                        cache_key: FolderConfig.ES_INDEX_SHARED_FOLDER + shared_user_id.toString()
 
-                };
-                Folder.deleteFolderFromCache(_payload, function (err) {
+                    };
+                    Folder.deleteFolderFromCache(_payload, function (err) {
+                        callback(null);
+                    });
+                }else{
                     callback(null);
-                });
+                }
 
             },
             function removeFilesFromES(callback) {
-                //console.log("removeFilesFromES")
+                // console.log("removeFilesFromES")
+                if(sharedStatus != FolderSharedRequest.REQUEST_PENDING) {
 
-                var _criteria = {folder_id: Util.toObjectId(folder_id)}
+                    var _criteria = {folder_id: Util.toObjectId(folder_id)}
 
-                FolderDoc.getFolderDocument(_criteria, function (result) {
-                    if (result.status == 200) {
-                        var _docs = result.document;
+                    FolderDoc.getFolderDocument(_criteria, function (result) {
+                        if (result.status == 200) {
+                            var _docs = result.document;
 
-                        _async.eachSeries(_docs, function (doc, callback) {
+                            _async.eachSeries(_docs, function (doc, callback) {
 
-                            //console.log("=====================")
-                            //console.log(doc);
+                                //console.log("=====================")
+                                //console.log(doc);
 
-                            var _payload = {
-                                id: doc._id.toString(),
-                                type: "shared_document",
-                                cache_key: FolderDocsConfig.ES_INDEX_SHARED_DOC + shared_user_id.toString()
+                                var _payload = {
+                                    id: doc._id.toString(),
+                                    type: "shared_document",
+                                    cache_key: FolderDocsConfig.ES_INDEX_SHARED_DOC + shared_user_id.toString()
 
-                            };
-                            FolderDoc.deleteDocumentFromCache(_payload, function (err) {
+                                };
+                                FolderDoc.deleteDocumentFromCache(_payload, function (err) {
+                                    callback(null);
+                                });
+
+                            }, function (err) {
                                 callback(null);
                             });
 
-                        }, function (err) {
+                        } else {
                             callback(null);
-                        });
-
-                    } else {
-                        callback(null);
-                    }
-                });
+                        }
+                    });
+                }else {
+                    callback(null);
+                }
             }
 
         ], function (err) {
@@ -1385,6 +1984,7 @@ var FolderController = {
                                 document_user: doc.user_id,
                                 document_path: doc.file_path,
                                 document_thumb_path: doc.thumb_path,
+                                updated_at: doc.updated_at,
                                 document_updated_at: DateTime.noteCreatedDate(doc.updated_at)
                             };
 

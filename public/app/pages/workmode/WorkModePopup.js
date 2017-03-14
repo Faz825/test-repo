@@ -6,8 +6,6 @@ import DatePicker from 'react-datepicker';
 import Moment from 'moment';
 import Session  from '../../middleware/Session';
 
-//require('react-datepicker/dist/react-datepicker.css');
-
 export default class WorkModePopup extends React.Component {
 
     constructor(props) {
@@ -17,9 +15,9 @@ export default class WorkModePopup extends React.Component {
             window.location.href = "/";
         }
 
-        this.tPeriod = Moment().format("A");
-        this.cH = Moment().format("hh");
-        this.cM = Moment().format("mm");
+        //this.tPeriod = Moment().format("A");
+        //this.cH = Moment().format("hh");
+        //this.cM = Moment().format("mm");
         let _sesData = Session.getSession('prg_wm');
         let _startTime = new Date().getTime();
         let _sesStartTime;
@@ -50,13 +48,13 @@ export default class WorkModePopup extends React.Component {
 
         this.state = {
             startDate: Moment(),
-            customHours: this.cH,
-            customMins: this.cM,
+            customHours: Moment().format("hh"),
+            customMins: Moment().format("mm"),
             selectedTime: 0,
             selectedTimeOption: '',
             blockedMode: "",
             timeBlockIsVisible: isVisible,
-            timePeriod: this.tPeriod,
+            timePeriod: Moment().format("A"),
             remainingTime: timeLeft,
             remainingTimeIn: timeIn,
             sesStartTime: _sesStartTime,
@@ -73,47 +71,59 @@ export default class WorkModePopup extends React.Component {
     }
 
     componentDidMount() {
-        console.log("componentDidMount");
-        console.log("is session availabe >>", Session.getSession('prg_wm'));
-        console.log("timeBlockIsVisible 1 >>", this.state.timeBlockIsVisible);
         if (Session.getSession('prg_wm') != null) {
 
-            if (Session.getSession('prg_wm').rightBottom) {
+            if(this.state.timeBlockIsVisible == false) {
+                this.selectedList = [];
+                Session.createSession("prg_wm", '');
+                this.setState({sesStartTime: undefined, sesHowLong: undefined, sesEndTime: undefined, timeBlockIsVisible: false, selectedTimeOption: ''})
+                return false;
+            }
+
+            let _prg_wm = Session.getSession('prg_wm');
+
+            if (_prg_wm.rightBottom) {
                 this.selectedList.push("bars")
             }
-            if (Session.getSession('prg_wm').newsFeed) {
+            if (_prg_wm.newsFeed) {
                 this.selectedList.push("newsfeed")
             }
-            if (Session.getSession('prg_wm').calls) {
+            if (_prg_wm.calls) {
                 this.selectedList.push("calls")
             }
-            if (Session.getSession('prg_wm').messages) {
+            if (_prg_wm.messages) {
                 this.selectedList.push("msg")
             }
-            if (Session.getSession('prg_wm').socialNotifications) {
+            if (_prg_wm.socialNotifications) {
                 this.selectedList.push("social_notifications")
             }
-            if (Session.getSession('prg_wm').allNotifications) {
+            if (_prg_wm.allNotifications) {
                 this.selectedList.push("all_notifications")
             }
             if (this.selectedList.length == 6) {
                 this.selectedList.push("all")
             }
-            if (Session.getSession('prg_wm').selectedTimeOption) {
-                this.setState({selectedTimeOption: Session.getSession('prg_wm').selectedTimeOption});
+            if (_prg_wm.selectedTimeOption) {
+                let _option = _prg_wm.selectedTimeOption;
+                if(_option == 'custom') {
+                    let _customHours = _prg_wm.customHours;
+                    let _customMins = _prg_wm.customMins;
+
+                    this.setState({selectedTimeOption: _option, customHours: _customHours, customMins: _customMins});
+                } else {
+                    this.setState({selectedTimeOption: _option});
+                }
             }
         }
         //this.loadInterval = setInterval(this.loadSearches, this.props.pollInterval);
     }
 
     componentWillUnmount() {
-        console.log("componentWillUnmount");
         clearInterval(this.checkRemainingTimeInterval);
         this.checkRemainingTimeInterval = null;
     }
 
     checkRemainingTime() {
-        console.log("checkRemainingTime");
 
         let _sesData = Session.getSession('prg_wm');
         let _startTime = new Date().getTime();
@@ -130,40 +140,44 @@ export default class WorkModePopup extends React.Component {
                 timeLeft = Moment.utc(timeLeft).format("HH mm ss");
                 timeIn = "sec";
             } else {
-                this.setState({timeBlockIsVisible: true})
-                console.log("timeBlockIsVisible 2 >>", this.state.timeBlockIsVisible);
                 timeLeft = undefined;
                 clearInterval(this.checkRemainingTimeInterval);
                 this.checkRemainingTimeInterval = null;
+                this.setState({timeBlockIsVisible: true, errorMessage: "Work Mode time out"})
                 //alert("Work Mode time out");
-                //location.reload();
                 this.showTimeOutMessage();
+                //location.reload();
+
                 return false;
             }
             this.setState({remainingTime: timeLeft, remainingTimeIn: timeIn});
         } else {
-            this.setState({timeBlockIsVisible: true})
-            console.log("timeBlockIsVisible 3 >>", this.state.timeBlockIsVisible);
             console.log("NO session data");
             clearInterval(this.checkRemainingTimeInterval);
             this.checkRemainingTimeInterval = null;
+            this.setState({timeBlockIsVisible: true, errorMessage: "Work Mode time out"})
             //alert("Work Mode time out");
-            //location.reload();
             this.showTimeOutMessage();
-            return false;
+
+            //location.reload();
+
+            //return false;
         }
 
     }
 
     showTimeOutMessage() {
+        Session.createSession("prg_wm", '');
+        this.selectedList = [];
+        this.setState({sesStartTime: undefined, sesHowLong: undefined, sesEndTime: undefined, timeBlockIsVisible: false, selectedTimeOption: ''})
 
-        let _toastMessage = {
-            visible: false,
-            message:'Work Mode time out',
-            type:'success'
-        };
-
-        this.props.showMessage(_toastMessage);
+        //let _toastMessage = {
+        //    visible: true,
+        //    message:'Work Mode time out',
+        //    type:'success'
+        //};
+        //
+        //this.props.showMessage(_toastMessage);
     }
 
     onTimeChange(e) {
@@ -202,7 +216,7 @@ export default class WorkModePopup extends React.Component {
 
     onTimeOptionSelected(e) {
         let checkbox = e.target.value;
-        let timeErrorDetected = this.state.errorMessage == "Please Select Time" ? '' : this.state.errorMessage;
+        let timeErrorDetected = (this.state.errorMessage == "Please Select Time" || this.state.errorMessage == "Work Mode time out") ? '' : this.state.errorMessage;
         let _time = 0;
         if (checkbox == "30") {
             _time = 30;
@@ -241,7 +255,7 @@ export default class WorkModePopup extends React.Component {
         }
 
         console.log(this.selectedList);
-        let workModeErrorDetected = this.state.errorMessage == "Please Select Work Mode" ? '' : this.state.errorMessage;
+        let workModeErrorDetected = (this.state.errorMessage == "Please Select Work Mode" || this.state.errorMessage == "Work Mode time out") ? '' : this.state.errorMessage;
         this.setState({blockedMode: this.selectedList, errorMessage: workModeErrorDetected});
     }
 
@@ -254,10 +268,8 @@ export default class WorkModePopup extends React.Component {
     }
 
     onCancelTimeClick() {
-        console.log("onCancelTimeClick")
         clearInterval(this.checkRemainingTimeInterval);
         this.checkRemainingTimeInterval = null;
-        console.log("timeBlockIsVisible 4 >>", this.state.timeBlockIsVisible);
         this.setState({sesStartTime: undefined, sesHowLong: undefined, sesEndTime: undefined, timeBlockIsVisible: true})
     }
 
@@ -294,24 +306,15 @@ export default class WorkModePopup extends React.Component {
         let howLong = (this.state.sesHowLong) ? this.state.sesHowLong : 0;
         let _endTime = (this.state.sesEndTime) ? this.state.sesEndTime : _startTime + howLong;
 
-        console.log("_startTime >>", _startTime);
-        console.log("howLong >>", howLong);
-        console.log("_endTime >>", _endTime);
-
         if (howLong == 0) {
-            console.log("1111111 ===");
             if (data.time != 0) {
                 howLong = data.time * 60 * 1000;
                 _endTime = _startTime + howLong;
             } else {
-                console.log("time not selected");
-
                 let now = Moment().format('YYYY-MM-DD HH:mm a');
                 let toFormat = Moment(data.date.day + ' ' + data.date.hh + ':' + data.date.mm + ' ' + data.date.period, "YYYY-MM-DD HH:mm a");
 
-                console.log("toFormat >>", toFormat);
                 howLong = toFormat.diff(now);
-                console.log("howLong >>", howLong);
 
                 if (howLong <= 0) {
                     e.preventDefault();
@@ -321,13 +324,9 @@ export default class WorkModePopup extends React.Component {
                 }
                 //console.log(howLong);
                 _endTime = _startTime + howLong;
-                console.log("_endTime >>", _endTime);
             }
 
         }
-
-        this.props.closePopUp();
-        return false;
 
         var _wm = {
             rightBottom: (data.mode.indexOf("bars") != -1 || data.mode.indexOf("all") != -1) ? true : false,
@@ -339,13 +338,14 @@ export default class WorkModePopup extends React.Component {
             selectedTimeOption: this.state.selectedTimeOption,
             startTimer: _startTime,
             howLong: howLong,
-            endTime: _endTime
+            endTime: _endTime,
+            customHours: this.state.customHours,
+            customMins: this.state.customMins
         };
-        console.log(_wm);
 
         Session.createSession("prg_wm", _wm);
 
-        this.setState({sesStartTime: _startTime, sesHowLong: howLong, sesEndTime: _endTime, timeBlockIsVisible: true, selectedTimeOption: ''})
+        this.setState({sesStartTime: _startTime, sesHowLong: howLong, sesEndTime: _endTime, timeBlockIsVisible: true, selectedTimeOption: _wm.selectedTimeOption})
 
         //it must be at the end. because to create session form must get posted
         e.preventDefault(); //can uncomment if we find a way to hide footer & right bar without refresh.
@@ -364,7 +364,6 @@ export default class WorkModePopup extends React.Component {
     }
 
     onTimeSummeryClick() {
-        console.log("timeBlockIsVisible 5 >>", this.state.timeBlockIsVisible);
         this.setState({timeBlockIsVisible: true});
     }
 
@@ -432,8 +431,6 @@ export default class WorkModePopup extends React.Component {
             }
 
         }
-
-        console.log("is timeBlockIsVisible :: ", this.state.timeBlockIsVisible);
 
         return (
             <div className="popup-holder">
