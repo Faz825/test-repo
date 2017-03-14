@@ -348,7 +348,7 @@ export class PriorityTask extends React.Component{
         var memberList = <span>Only me</span>;
         if(this.state.task.shared_users.length > 0) {
             memberList = this.state.task.shared_users.map(function(member,key){
-                return <span className="mem-name">{this.state.task.shared_users.length > key+ ? member.name+',' : member.name}</span>
+                return <span className="mem-name">{this.state.task.shared_users.length > key ? member.name+',' : member.name}</span>
             });
         }
         return (
