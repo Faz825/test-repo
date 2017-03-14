@@ -40,16 +40,29 @@ export default class Contact extends React.Component {
             call_type = "user";
         }
 
+        let profilePic = null;
+
+        if (contact.type == 1 && contact.images.profile_image.http_url) {
+            profilePic = contact.images.profile_image.http_url;
+        } else if (contact.type == 1 && !contact.images.profile_image.http_url) {
+            profilePic = "images/default-profile-pic.png";
+        } else if (contact.type == 2 && contact.group_pic_link) {
+            profilePic = contact.group_pic_link;
+        } else {
+            profilePic = "images/group/dashboard/grp-icon.png";
+        }
+
         return (
             <div className="contact-item">
                 <div className="col-sm-6">
                     <div className="image-wrapper">
-                        <img src={contact.images.profile_image.http_url}/>
+                        <img
+                            src={profilePic}/>
                         <span className={"status " + mood}></span>
                     </div>
                     <div className="name-wrapper">
                         <div className="name-holder">
-                            <p className="name">{contact.first_name + " " + contact.last_name}</p>
+                            <p className="name">{(contact.type == 1) ? contact.first_name + " " + contact.last_name : contact.name_prefix}</p>
                         </div>
                         <p className="status">{mood}</p>
                     </div>

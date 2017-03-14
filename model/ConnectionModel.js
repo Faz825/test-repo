@@ -534,6 +534,8 @@ ConnectionSchema.statics.getConnections = function (criteria, getConnCallback) {
                     if (oResult.user_id != criteria.user_id) {
                         if (oResult.connected_at) {
                             sesResultSet.result[0]['connected_at'] = oResult.connected_at;
+                            sesResultSet.result[0]['type'] = 1;
+                            sesResultSet.result[0]['contact_name'] = sesResultSet.result[0].first_name;
                         }
                         formatted_users.push(sesResultSet.result[0]);
                     }
@@ -563,10 +565,14 @@ ConnectionSchema.statics.getConnections = function (criteria, getConnCallback) {
                 };
 
                 ES.search(query, function (sesResultSet) {
-                    sesResultSet.result[0]
+                    sesResultSet.result[0]['type'] = 2;
+                    sesResultSet.result[0]['contact_name'] = sesResultSet.result[0].name_prefix;
+                    delete sesResultSet.result[0]['members'];
+                    formatted_groups.push(sesResultSet.result[0]);
+                    groupCallback();
                 });
             }, function (error) {
-                error ? callback(error) : callback(null, formatted_groups);
+                error ? callback(error) : callback(null, aUsers.concat(formatted_groups));
             });
         }
     ], function (error, aConnections) {

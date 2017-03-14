@@ -58,18 +58,20 @@ var CallCenterController = {
                         callback(null, resultSet.data);
                     });
                 },
-                /*function (aConns, callback) {
-                   /!* if (typeof aConns != 'undefined' && aConns.length > 0) {
+                function (aConns, callback) {
+                    if (typeof aConns != 'undefined' && aConns.length > 0) {
                         var aAlphabet = [];
 
                         aConns.sort(function (a, b) {
-                            var textA = a.first_name.toUpperCase();
-                            var textB = b.first_name.toUpperCase();
+                            var textA = a.contact_name.toUpperCase();
+                            var textB = b.contact_name.toUpperCase();
                             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                         });
 
-                        for (var i = 0; i < aConns.length; i++) {
-                            var first_letter = aConns[i].first_name[0].toUpperCase();
+                        var aConnsLength = aConns.length;
+
+                        for (var i = 0; i < aConnsLength; i++) {
+                            var first_letter = aConns[i].contact_name[0].toUpperCase();
 
                             if (aAlphabet.indexOf(first_letter) == -1) {
                                 aAlphabet.push(first_letter);
@@ -80,24 +82,25 @@ var CallCenterController = {
 
                         var aContacts = [];
 
-                        for (var i = 0; i < aAlphabet.length; i++) {
+                        var aAlphabetLength = aAlphabet.length;
+
+                        for (var i = 0; i < aAlphabetLength; i++) {
                             aContacts.push({
                                 letter: aAlphabet[i],
                                 users: []
                             });
                         }
 
-                        for (var i = 0; i < aConns.length; i++) {
-                            var first_letter = aConns[i].first_name[0].toUpperCase();
+                        for (var i = 0; i < aConnsLength; i++) {
+                            var first_letter = aConns[i].contact_name[0].toUpperCase();
 
                             var contactsLength = aContacts.length;
 
                             for (var x = 0; x < contactsLength; x++) {
                                 if (aContacts[x].letter == first_letter) {
+                                    delete aContacts[x]['contact_name'];
                                     // online status must be coming from Elastic Search.
                                     aConns[i].onlineStatus = 1;
-                                    // contactType must be coming from Elastic Search.
-                                    aConns[i].contactType = 1;
                                     aContacts[x].users.push(aConns[i]);
                                 }
                             }
@@ -106,8 +109,8 @@ var CallCenterController = {
                         callback(null, aContacts);
                     } else {
                         callback(null, []);
-                    }*!/
-                }*/
+                    }
+                }
             ], function (error, aContacts) {
                 var outPut = {};
 

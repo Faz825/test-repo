@@ -95,6 +95,7 @@ export default class Index extends React.Component {
         if (cat == "contact" && subCat == "all") {
             this.setState({activeTabData: this.state.userContacts});
         } else if (cat == "contact" && subCat == "individual") {
+            console.log(cat + '' + subCat);
             let dataSet = [],
                 usersSet = [],
                 letter = "";
@@ -104,7 +105,7 @@ export default class Index extends React.Component {
             for (var key in aContacts) {
                 letter = aContacts[key].letter;
                 for (var subKey in aContacts[key].users) {
-                    let type = aContacts[key].users[subKey].contactType;
+                    let type = aContacts[key].users[subKey].type;
                     if (type == 1) {
                         usersSet.push(aContacts[key].users[subKey]);
                     }
@@ -126,7 +127,7 @@ export default class Index extends React.Component {
             for (var key in aContacts) {
                 letter = aContacts[key].letter;
                 for (var subKey in aContacts[key].users) {
-                    let type = aContacts[key].users[subKey].contactType;
+                    let type = aContacts[key].users[subKey].type;
                     if (type == 2) {
                         usersSet.push(aContacts[key].users[subKey]);
                     }
@@ -464,7 +465,7 @@ export default class Index extends React.Component {
                     for (var key in data.contacts) {
                         letter = data.contacts[key].letter;
                         for (var subKey in data.contacts[key].users) {
-                            let type = data.contacts[key].users[subKey].contactType;
+                            let type = data.contacts[key].users[subKey].type;
                             if (type == 2) {
                                 usersSet.push(data.contacts[key].users[subKey]);
                             }
@@ -479,6 +480,7 @@ export default class Index extends React.Component {
 
                 }
                 else if (cat == "contact" && subCat == "individual") {
+                    console.log(cat + '' + subCat);
                     let dataSet = [],
                         usersSet = [],
                         letter = "";
@@ -486,7 +488,7 @@ export default class Index extends React.Component {
                     for (var key in data.contacts) {
                         letter = data.contacts[key].letter;
                         for (var subKey in data.contacts[key].users) {
-                            let type = data.contacts[key].users[subKey].contactType;
+                            let type = data.contacts[key].users[subKey].type;
                             if (type == 1) {
                                 usersSet.push(data.contacts[key].users[subKey]);
                             }
