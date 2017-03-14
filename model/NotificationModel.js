@@ -171,13 +171,14 @@ NotificationSchema.statics.getNotifications = function (criteria, callBack) {
 NotificationSchema.statics.updateNotifications = function (criteria, updateData, callBack) {
 
     var _this = this;
-    _this.update(criteria,{$set: updateData},function(err,resultSet){
+    _this.update(criteria, updateData,{ upsert: true, multi: true },function(err,resultSet){
             if(!err){
                 callBack({
                     status:200
                 });
             }else{
-                console.log("Server Error --------")
+                console.log("Server Error --------");
+                console.log(err);
                 callBack({status:400,error:err});
             }
         });
