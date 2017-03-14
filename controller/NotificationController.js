@@ -923,7 +923,7 @@ var NotificationController ={
 
                     function trimNotificationsGetSenders(callBack){
 
-                        if(_notificationType == 'like' || _notificationType == 'comment' || _notificationType == 'share') {
+                        if(_notificationType == Notifications.LIKE || _notificationType == Notifications.COMMENT || _notificationType == Notifications.SHARE) {
 
                             var currentPostId = notification.post_id.toString();
 
@@ -944,7 +944,7 @@ var NotificationController ={
                             }
 
                             callBack(null, related_senders);
-                        }else if(_notificationType == 'share_notebook' || _notificationType == 'share_notebook_response'){
+                        }else if(_notificationType == Notifications.SHARE_NOTEBOOK || _notificationType == Notifications.SHARE_NOTEBOOK_RESPONSE){
 
                                 var currentNotebookId = notification.notebook_id.toString();
 
@@ -966,7 +966,7 @@ var NotificationController ={
 
                                 callBack(null, related_senders);
 
-                        }else if(_notificationType == 'share_folder' || _notificationType == 'share_folder_response'){
+                        }else if(_notificationType == Notifications.SHARE_FOLDER || _notificationType == Notifications.SHARE_FOLDER_RESPONSE){
 
                             var currentFolderId = notification.folder_id.toString();
 
@@ -987,7 +987,8 @@ var NotificationController ={
                             }
 
                             callBack(null, related_senders);
-                        }else if(_notificationType == 'share_calendar' || _notificationType == 'share_calendar_response'|| _notificationType == 'calendar_schedule_updated' || _notificationType == 'calendar_schedule_time_changed' || _notificationType == 'calendar_schedule_carried_next_day'){
+                        }else if(_notificationType == Notifications.SHARE_CALENDAR || _notificationType == Notifications.SHARE_CALENDAR_RESPONSE || _notificationType == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+                            _notificationType == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED || _notificationType == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY){
 
                             var currentCalendarId = notification.calendar_id.toString();
 
@@ -1009,7 +1010,7 @@ var NotificationController ={
 
                             callBack(null, related_senders);
 
-                        }else if(_notificationType == 'share_group' || _notificationType == 'share_group_response') {
+                        }else if(_notificationType == Notifications.SHARE_GROUP || _notificationType == Notifications.SHARE_GROUP_RESPONSE) {
 
                             var currentGroupId = notification.group_id.toString();
 
@@ -1031,7 +1032,7 @@ var NotificationController ={
 
                             callBack(null, related_senders);
 
-                        }else if(_notificationType == Notifications.SHARE_GROUP_NOTEBOOK){
+                        } else if(_notificationType == Notifications.SHARE_GROUP_NOTEBOOK){
                             var currentNotebookId = notification.notebook_id.toString();
 
                             //- Group notebook objects with same _id and notification_type
@@ -1153,42 +1154,34 @@ var NotificationController ={
                             notification_status: ((notification['notification_status'] == "REQUEST_ACCEPTED") ? "accepted" : "declined")
                         };
 
-                        if(notification['notification_type'] == 'like' || notification['notification_type'] == 'comment' || notification['notification_type'] == 'share') {
+                        if(notification['notification_type'] == Notifications.LIKE || notification['notification_type'] == Notifications.COMMENT || notification['notification_type'] == Notifications.SHARE) {
                             Post.bindNotificationData(notificationObj, user_id, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
-                        }
-
-                        if(notification['notification_type'] == 'share_notebook' || notification['notification_type'] == 'share_notebook_response'){
+                        } else if(notification['notification_type'] == Notifications.SHARE_NOTEBOOK || notification['notification_type'] == Notifications.SHARE_NOTEBOOK_RESPONSE){
                             NoteBook.bindNotificationData(notificationObj, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
-                        }
-
-                        if(notification['notification_type'] == 'share_folder' || notification['notification_type'] == 'share_folder_response'){
+                        } else if(notification['notification_type'] == Notifications.SHARE_FOLDER || notification['notification_type'] == Notifications.SHARE_FOLDER_RESPONSE){
                             Folder.bindNotificationData(notificationObj, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
-                        }
-
-                        if(notification['notification_type'] == 'share_calendar' || notification['notification_type'] == 'share_calendar_response' || notification['notification_type'] == 'calendar_schedule_updated' || notification['notification_type'] == 'calendar_schedule_time_changed' || notification['notification_type'] == 'calendar_schedule_carried_next_day'){
+                        } else if(notification['notification_type'] == Notifications.SHARE_CALENDAR || notification['notification_type'] == Notifications.SHARE_CALENDAR_RESPONSE ||
+                            notification['notification_type'] == Notifications.CALENDAR_SCHEDULE_UPDATED ||
+                            notification['notification_type'] == Notifications.CALENDAR_SCHEDULE_TIME_CHANGED || notification['notification_type'] == Notifications.CALENDAR_SCHEDULE_CARRIED_NEXT_DAY){
                             Calendar.bindNotificationData(notificationObj, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
-                        }
-
-                        if(notification['notification_type'] == 'share_group' || notification['notification_type'] == 'share_group_response'){
+                        } else if(notification['notification_type'] == Notifications.SHARE_GROUP || notification['notification_type'] == Notifications.SHARE_GROUP_RESPONSE){
                             Groups.bindNotificationData(notificationObj, function (r) {
                                 resultNotifications.push(r);
                                 callBack(null);
                             });
-                        }
-
-                        if(notification['notification_type'] == Notifications.SHARE_GROUP_NOTEBOOK){
+                        } else if(notification['notification_type'] == Notifications.SHARE_GROUP_NOTEBOOK){
 
                             _async.waterfall([
                                 function getNotebookData(callBack) {
@@ -1206,6 +1199,13 @@ var NotificationController ={
                             ],function(err){
                                 callBack(null);
                             });
+                        }else  if(notification['notification_type'] == Notifications.ADD_GROUP_POST){
+                            /**
+                             * TODO :: bind add group post data to notificationObj & push it to resultNotifications
+                             */
+                            callBack(null);
+                        }else {
+                            callBack(null);
                         }
 
                     }
