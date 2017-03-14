@@ -100,4 +100,8 @@ app.use(function(err, req, res, next) {
 GLOBAL.ESUpdateHandler = require('./middleware/ESUpdateHandler');
 ESUpdateHandler.init();
 
+//Update notification category
+GLOBAL.NotificationCategoryUpdateHandler = require('./middleware/NotificationCategoryUpdateHandler');
+NotificationCategoryUpdateHandler.init();
+
 module.exports = app;
