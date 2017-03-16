@@ -566,7 +566,7 @@ export default class Index extends React.Component{
                                     </div>
                                 </section>
                             </section>
-                            <a className="closeButton--jss-0-1" onClick={(e) => this.props.closePopup(e)}>
+                            <a className="closeButton--jss-0-1" onClick={(e) => this.handleClose(e)}>
                                 <svg width="40" height="40">
                                     <circle cx="20" cy="20" r="20" fill="black"></circle>
                                     <g transform="rotate(45 20 20)">
