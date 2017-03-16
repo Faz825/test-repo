@@ -10,6 +10,7 @@ import GroupHeader from './GroupHeader';
 import SearchMembersField  from './elements/SearchMembersField';
 import AddPostElement from '../../components/timeline/AddPostElement';
 import ListPostsElement from '../../components/timeline/ListPostsElement';
+import Toast from '../../components/elements/Toast';
 
 import RichTextEditor from '../../components/elements/RichTextEditor';
 import Lib    from '../../middleware/Lib';
@@ -33,7 +34,10 @@ export default class Discussion extends React.Component{
             members : this.props.members,
             posts:[],
             currentDescription : group.description,
-            showSave : false
+            showSave : false,
+            descriptionMsg : "",
+            descriptionMsgStatus : "warning",
+            showDesToast : false  
         };
 
         this.postType = 2; // [ PERSONAL_POST:1, GROUP_POST:2 ]
@@ -130,10 +134,27 @@ export default class Discussion extends React.Component{
             headers : { "prg-auth-header" : this.state.user.token },
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
+            console.log(data);
             if(data.status.code == 200){
-                this.setState({showSave : false});
+                this.setState({
+                    showSave : false, 
+                    showDesToast: true,
+                    descriptionMsg : "Saved the description successfully",
+                    descriptionMsgStatus : 'success'
+                });
+            } else {
+                this.setState({
+                    showSave : false, 
+                    showDesToast: true,
+                    descriptionMsg : "Error in saving the description",
+                    descriptionMsgStatus : 'warning'
+                });
             }
         }.bind(this));
+    }
+
+    onToastClose() {
+        this.setState({showDesToast: false});
     }
 
     handleDescription(event) {
@@ -159,6 +180,13 @@ export default class Discussion extends React.Component{
                         </div>
                         {this.state.showSave ?
                             <span className="save-btn" onInput={()=>{this.saveDescription()}}>save</span>
+                        : ''}
+                        {this.state.showDesToast ? 
+                            <Toast 
+                                msg={this.state.descriptionMsg} 
+                                onToastClose={this.onToastClose.bind(this)} 
+                                type={this.state.descriptionMsgStatus}
+                            />
                         : ''}
                     </div>
                     <MembersWidget
