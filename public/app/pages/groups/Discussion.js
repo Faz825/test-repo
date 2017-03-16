@@ -117,40 +117,45 @@ export default class Discussion extends React.Component{
     }
 
     enableSaveDescription() {
+        this.oldText = this.state.currentDescription;
         this.setState({showSave : true});
     }
 
     saveDescription() {
-        var data = {
-            __groupId: this.state.currentGroup._id,
-            __description: this.state.currentDescription
-        };
+        if(this.oldText == this.state.currentDescription) {
+            this.setState({showSave : false});
+            return false;
+        } else {
+            var data = {
+                __groupId: this.state.currentGroup._id,
+                __description: this.state.currentDescription
+            };
 
-        $.ajax({
-            url: '/groups/update-description',
-            method: "POST",
-            dataType: "JSON",
-            data: JSON.stringify(data),
-            headers : { "prg-auth-header" : this.state.user.token },
-            contentType: "application/json; charset=utf-8",
-        }).done(function (data, text) {
-            console.log(data);
-            if(data.status.code == 200){
-                this.setState({
-                    showSave : false, 
-                    showDesToast: true,
-                    descriptionMsg : "Saved the description successfully",
-                    descriptionMsgStatus : 'success'
-                });
-            } else {
-                this.setState({
-                    showSave : false, 
-                    showDesToast: true,
-                    descriptionMsg : "Error in saving the description",
-                    descriptionMsgStatus : 'warning'
-                });
-            }
-        }.bind(this));
+            $.ajax({
+                url: '/groups/update-description',
+                method: "POST",
+                dataType: "JSON",
+                data: JSON.stringify(data),
+                headers : { "prg-auth-header" : this.state.user.token },
+                contentType: "application/json; charset=utf-8",
+            }).done(function (data, text) {
+                if(data.status.code == 200){
+                    this.setState({
+                        showSave : false, 
+                        showDesToast: true,
+                        descriptionMsg : "Saved the description successfully",
+                        descriptionMsgStatus : 'success'
+                    });
+                } else {
+                    this.setState({
+                        showSave : false, 
+                        showDesToast: true,
+                        descriptionMsg : "Error in saving the description",
+                        descriptionMsgStatus : 'warning'
+                    });
+                }
+            }.bind(this));
+        }
     }
 
     onToastClose() {
