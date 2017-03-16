@@ -33,20 +33,22 @@ export default class Header extends Component {
         let isOnFriendsProfile = (this.state.loggedUser.id != this.props.user.user_id && this.props.connectionStatus == 0) ? true : false;
 
         return (
-            <div className="row row-clr" id="pg-profile-banner-area">
-                <CoverImage dt={this.props.user} readOnly={read_only} onFriendsProfile={isOnFriendsProfile} onUpdateProfileImages = {this.props.onUpdateProfileImages}/>
-                {
-                    (isOnFriendsProfile)?
-                        <MutualConnectionIndicator mutualCount={this.props.user.mutual_connection_count}
-                                                   onLoadMutualFriends  = {this.props.onLoadMutualFriends}/>
-                    :
-                        <ConnectionIndicator dt ={this.props.user}  readOnly={read_only}/>
-                }
-                <ConnectionStatus connectionStatus={this.props.connectionStatus} onAddFriend = {this.props.onAddFriend}
-                                  onAcceptFriendRequest = {this.props.onAcceptFriendRequest}
-                                  onUnfriendUser = {this.props.onUnfriendUser}
-                                  usrId={this.props.usrId}
-                                  loggedUser={this.props.loggedUser}/>
+            <div className="cover-container">
+                <div className="cover-image-wrapper">
+                    <CoverImage 
+                        dt={this.props.user} 
+                        readOnly={read_only} 
+                        onFriendsProfile={isOnFriendsProfile} 
+                        onUpdateProfileImages = {this.props.onUpdateProfileImages}
+                        connectionStatus={this.props.connectionStatus} 
+                        onAddFriend = {this.props.onAddFriend}
+                        onAcceptFriendRequest = {this.props.onAcceptFriendRequest}
+                        onUnfriendUser = {this.props.onUnfriendUser}
+                        usrId={this.props.usrId}
+                        loggedUser={this.props.loggedUser}
+                        onLoadMutualFriends  = {this.props.onLoadMutualFriends}
+                    />
+                </div>
                 <ProfileInfo dt={this.props.user} readOnly={read_only} loadExperiences={this.props.loadExperiences} uname={this.props.uname} loadProfileData={this.props.loadProfileData} onUpdateProfileImages = {this.props.onUpdateProfileImages}/>
             </div>
         )
@@ -180,20 +182,42 @@ export class CoverImage extends React.Component{
     }
 
     render() {
+        let bgImg = {
+            "backgroundImage" : this.state.coverimgSrc
+        }
+
+        let full_name =  this.props.dt.first_name + " " +  this.props.dt.last_name;
         return (
-            <div className="cover-image-wrapper">
-                <img src={this.state.coverimgSrc} alt="" className="img-responsive pg-profile-cover-banner" />
+            <div className="cover-image" styles={bgImg}>
                 {(this.props.readOnly)? null : <CoverImageUploader imgUpdated={this.coverImgUpdate} /> }
+                <h1 className="profile-name">{full_name}</h1>
                 {(this.props.onFriendsProfile) ?
-                    <div className="action-btn-holder">
-                        <button className="btn btn-default" onClick={()=>this.onLoadQuickChatMessage()}><i className="fa fa-comments" aria-hidden="true"></i> Message</button>
-                        <button className="btn btn-default" onClick={()=>this.onLoadVideoCall('CALL')}><i className="fa fa-phone" aria-hidden="true"></i> Call</button>
-                        <button className="btn btn-default" onClick={()=>this.onLoadVideoCall('VIDEO')}><i className="fa fa-video-camera" aria-hidden="true"></i> Video</button>
+                    <div>
+                        <div className="actions-wrapper">
+                            <ConnectionStatus 
+                                connectionStatus={this.props.connectionStatus} 
+                                onAddFriend = {this.props.onAddFriend}
+                                onAcceptFriendRequest = {this.props.onAcceptFriendRequest}
+                                onUnfriendUser = {this.props.onUnfriendUser}
+                                usrId={this.props.usrId}
+                                loggedUser={this.props.loggedUser}/>
+                            <div className="action-event message" onClick={()=>this.onLoadQuickChatMessage()}>
+                                <span className="icon"></span><span className="text">message</span>
+                            </div>
+                            <div className="action-event call" onClick={()=>this.onLoadVideoCall('CALL')}>
+                                <span className="icon"></span><span className="text">call</span>
+                            </div>
+                            <div className="action-event video" onClick={()=>this.onLoadVideoCall('VIDEO')}>
+                                <span className="icon"></span><span className="text">video</span>
+                            </div>
+                        </div>
+                        <MutualConnectionIndicator 
+                            mutualCount={this.props.dt.mutual_connection_count}
+                            onLoadMutualFriends  = {this.props.onLoadMutualFriends}/>
                     </div>
                     :
-                    null
+                    <ConnectionIndicator dt ={this.props.dt} readOnly={this.props.readOnly}/>
                 }
-
             </div>
         );
     }
@@ -203,26 +227,26 @@ export class CoverImage extends React.Component{
  * Show Connection count
  */
 const ConnectionIndicator =(props)=> {
-    let _style ={
-        "width": "102px",
-        "textTransform": "uppercase"
-    }
-
     return (
-        <div id="pg-pro-share-btn" style={_style}>
-            <img src="/images/Share-copy.png" alt="" />
-                {
-                    (props.readOnly)?
-                        <p>
-                            <span className="pg-pro-share-btn-txt">{props.dt.connection_count}</span>
-                            Connections
-                        </p>
-                    :
-                        <a href="/connections">
-                            <span className="pg-pro-share-btn-txt">{props.dt.connection_count}</span>
-                            Connections
-                        </a>
-                }
+        <div className="mutual-connections">
+            {
+                (props.readOnly)?
+                    <div>
+                        <span className="icon"></span>
+                        <div className="mutual-count">
+                            <span className="count">{props.mutualCount}</span>
+                            <span className="des">connections</span>
+                        </div>
+                    </div>
+                :
+                    <a href="/connections">
+                        <span className="icon"></span>
+                        <div className="mutual-count">
+                            <span className="count">{props.dt.connection_count}</span>
+                            <span className="des">connections</span>
+                        </div>
+                    </a>
+            }
         </div>
     );
 };
@@ -231,17 +255,28 @@ const ConnectionIndicator =(props)=> {
  * Show Mutual Friends count
  */
 const MutualConnectionIndicator =(props)=> {
-    let _style ={
-        "width": "102px",
-        "textTransform": "uppercase"
-    }
-
     return (
-        <div id="pg-pro-share-btn" className="mutual-friends-holder clearfix" style={_style} onClick={props.onLoadMutualFriends}>
-            <p>
-                <span className="pg-pro-share-btn-txt">{props.mutualCount}</span>
-                Mutual Connections
-            </p>
+        <div>
+            {
+                (props.mutualCount != 0)?
+                <div className="mutual-connections" onClick={props.onLoadMutualFriends}>
+                    <span className="icon"></span>
+                    <div className="mutual-count">
+                        <span className="count">{props.mutualCount}</span>
+                        <span className="text">mutual</span>
+                        <span className="des">connections</span>
+                    </div>
+                </div>
+                :
+                <div className="mutual-connections">
+                    <span className="icon"></span>
+                    <div className="mutual-count">
+                        <span className="count">{props.mutualCount}</span>
+                        <span className="text">mutual</span>
+                        <span className="des">connections</span>
+                    </div>
+                </div>
+            }
         </div>
     );
 };
@@ -259,16 +294,27 @@ export class ConnectionStatus extends React.Component{
             return(
                 (this.props.connectionStatus == 0)?
                     (this.props.usrId != null)?
-                        <a href="javascript:void(0)"
-                           onClick={ () => this.props.onUnfriendUser(this.props.usrId) }
-                           className="pg-fr-bot-btn action-btn">Unfriend</a> : null :
-                    (this.props.connectionStatus == 1) ? <a className="action-btn">Request Pending</a> :
-                        (this.props.connectionStatus == 2) ? <a href="javascript:void(0)"
-                                                                onClick={ () => this.props.onAcceptFriendRequest(this.props.usrId) }
-                                                                className="pg-fr-bot-btn action-btn">Accept</a> :
-                            (this.props.connectionStatus == 3) ? <a href="javascript:void(0)"
-                                                                    onClick={ () => this.props.onAddFriend(this.props.usrId) }
-                                                                    className="pg-fr-bot-btn action-btn"><i className="fa fa-plus" aria-hidden="true"></i>Add as a Connection</a> : null
+                        <div className="action-event unfriend" onClick={ () => this.props.onUnfriendUser(this.props.usrId) }>
+                            <span className="icon"></span><span className="text">unfriend</span>
+                        </div>
+                    : 
+                    null :
+                    (this.props.connectionStatus == 1) ? 
+                        <div className="action-event">
+                            <span className="text">Request Pending</span>
+                        </div>
+                    :
+                    (this.props.connectionStatus == 2) ?
+                        <div className="action-event" onClick={ () => this.props.onAcceptFriendRequest(this.props.usrId) }>
+                            <span className="text">Accept</span>
+                        </div>
+                    :
+                    (this.props.connectionStatus == 3) ?
+                        <div className="action-event" onClick={ () => this.props.onAddFriend(this.props.usrId) }>
+                            <span className="text">Add as a Connection</span>
+                        </div>
+                    : 
+                    null
             )
         }
     }
@@ -417,48 +463,41 @@ export class ProfileInfo extends React.Component{
         let full_name =  this.props.dt.first_name + " " +   this.props.dt.last_name;
 
         return (
-            <div className="row row-clr row-rel">
-                <div id="pg-profile-pic-detail-wrapper">
-                    <div className="col-xs-10 col-xs-offset-1">
-                        <div className="row block-wrapper">
-                            <div className="col-xs-5 pg-profile-detail-work">
-                                {
-                                    (this.state.jobPostition || this.state.office)?
-                                            <div className="curr-job-holder">
-                                                <p className={(!this.state.saveEdit)? "designation-text" : "designation-text editable"} >{this.state.jobPostition}</p>
-                                                <input type="text" name="designation" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.desigFieldSize} value={this.props.dt.cur_designation} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
-                                                <span className="combine-text">at</span>
-                                                <p className={(!this.state.saveEdit)? "office-text" : "office-text editable"} >{this.state.office}</p>
-                                                <input type="text" name="workplace" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.officeFieldSize} value={this.props.dt.cur_working_at} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
-                                                {
-                                                    (!this.props.readOnly)?
-                                                        (!this.state.saveEdit)?
-                                                        <span className="fa fa-pencil-square-o" onClick={this.editOccupation.bind(this)}></span>
-                                                        :
-                                                        <span className="fa fa-floppy-o" onClick={this.saveOccupation.bind(this)}></span>
-                                                    :
-                                                    null
-                                                }
-                                            </div>
-                                    :
-                                    null
-                                }
-                            </div>
-                            <div className="col-xs-2 profile-img-holder">
-                                <div className="row pg-profile-mid-wrapper">
-                                    <h1 className="pg-profile-detail-name text-center">{full_name}</h1>
-                                    <div className="proImgHolder">
-                                        <img src={this.state.profileImgSrc}
-                                            alt={full_name}
-                                            className="img-responsive center-block pg-profile-detail-img"/>
-                                        {(this.props.readOnly)? null : <ProfileImageUploader profileImgSrc={this.state.profileImgSrc} imgUpdated={this.profileImgUpdated} /> }
-                                    </div>
-                                    </div>
-                            </div>
-                            <div className="col-xs-5 pg-profile-detail-live">
-                                <h3 className="text-center">Lives in {this.props.dt.city_details}</h3>
+            <div className="info-container">
+                <div className="row">
+                    {
+                        (this.state.jobPostition || this.state.office)?
+                                <div className="col-sm-5 left-col curr-job-holder">
+                                    <p className={(!this.state.saveEdit)? "designation-text" : "designation-text editable"} >{this.state.jobPostition}</p>
+                                    <input type="text" name="designation" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.desigFieldSize} value={this.props.dt.cur_designation} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
+                                    <span className="combine-text">at</span>
+                                    <p className={(!this.state.saveEdit)? "office-text" : "office-text editable"} >{this.state.office}</p>
+                                    <input type="text" name="workplace" className={(!this.state.saveEdit)? "job-data" : "job-data editable"} size={this.state.officeFieldSize} value={this.props.dt.cur_working_at} onChange={this.positonChange.bind(this)} readOnly={!this.state.saveEdit}/>
+                                    {
+                                        (!this.props.readOnly)?
+                                            (!this.state.saveEdit)?
+                                            <span className="fa fa-pencil-square-o" onClick={this.editOccupation.bind(this)}></span>
+                                            :
+                                            <span className="fa fa-floppy-o" onClick={this.saveOccupation.bind(this)}></span>
+                                        :
+                                        null
+                                    }
+                                </div>
+                        :
+                        <div className="col-sm-5 left-col"></div>
+                    }
+                    <div className="col-sm-2 mid-col">
+                        <div className="profile-mid-wrapper">
+                            <div className="img-holder proImgHolder">
+                                <img src={this.state.profileImgSrc}
+                                    alt={full_name}
+                                    className="img-responsive"/>
+                                {(this.props.readOnly)? null : <ProfileImageUploader profileImgSrc={this.state.profileImgSrc} imgUpdated={this.profileImgUpdated} /> }
                             </div>
                         </div>
+                    </div>
+                    <div className="col-sm-5 right-col">
+                        <h3 className="lives-in">Lives in {this.props.dt.city_details}</h3>
                     </div>
                 </div>
             </div>

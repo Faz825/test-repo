@@ -1603,3 +1603,28 @@ header .chat-popover-holder .inner-wrapper .see-all{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.feed-container .outer-wrapper .new-post .input-wrapper .input-options label{
+    cursor: pointer;
+    float: left;
+    margin-right: 13px;
+}
+
+.feed-container .outer-wrapper .new-post .input-wrapper .input-options label.image{
+    width: 17px;
+    height: 15px;
+    background-image: url(../images/profile/new-post/icon-image.png);
+}
+
+.feed-container .outer-wrapper .new-post .input-wrapper .input-options #imgUpload{
+    display: none;
+}
+
+.feed-container .outer-wrapper .new-post .input-wrapper .input-options{
+    padding: 12px 5px 0;
+}
+
+.feed-container .outer-wrapper .input-options .options-wrapper{
+    float: left;
+    margin: 7px 0 0;
+}

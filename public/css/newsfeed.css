@@ -21,6 +21,9 @@
 .pg-box-shadow{
     box-shadow: 0 0 10px -3px #000;
 }
+.post-list-wrapper{
+    float: left;
+}
 .pg-top-round-border{
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
@@ -163,8 +166,7 @@
     float:left;
 }
 #pg-newsfeed-post-active-footer{
-    border-top: 2px solid #d9d9d9;
-    padding: 13px 0;
+    padding: 0 0 13px 0;
     display: none;
 }
 #pg-newsfeed-post-active-footer i {
@@ -330,27 +332,27 @@
     color: #a8bfcd;
 }
 
-.comment-holder{
+.input-wrapper{
     position: relative;
 }
 
-.comment-holder #cmntImgUpload{
+.input-wrapper #cmntImgUpload{
     display: none;
 }
 
-.comment-holder label.img-comment{
+.input-wrapper label.img-comment{
     position: absolute;
-    right: 22px;
-    top: 3px;
+    right: 52px;
+    top: 5px;
     cursor: pointer;
     opacity: 0.6;
 }
 
-.comment-holder label.img-comment:hover{
+.input-wrapper label.img-comment:hover{
     opacity: 1;
 }
 
-.comment-holder .comment-img-holder{
+.input-wrapper .comment-img-holder{
     margin: 10px 0 5px;
     width: 100%;
     padding: 5px;
@@ -358,7 +360,7 @@
     position: relative;
 }
 
-.comment-holder .comment-img-holder .close-icon{
+.input-wrapper .comment-img-holder .close-icon{
     position: absolute;
     top: 5px;
     right: 5px;
@@ -494,8 +496,14 @@
     box-shadow: 1px 1px 1px 0 lightgray inset;
     padding: 2px 25px 2px 3px;
 }
+.feed-container .post-list-wrapper .wall-post .post-footer .comments-container .input-comment .input-wrapper .emoji{
+    right: 77px;
+}
 .pg-newsfeed-new-comment-icon-wrapper{
     padding: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 .pg-newsfeed-new-comment-icon-wrapper a{
     color: #fff;
@@ -505,8 +513,9 @@
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     border-radius: 2px;
-    padding: 4px 0px;
+    padding: 11px 9px;
     display: block;
+    line-height: 1;
     text-transform: uppercase;
     text-decoration: none;
 }
@@ -554,13 +563,13 @@
     z-index: 0;
 }
 
-.editerHolder .statusIniText{
+.input-content .statusIniText{
     color: #9197a3;
     position: absolute;
     top: 3px;
     left: 5px;
 }
-.editerHolder .statusIniText.onFocus{
+.input-content .statusIniText.onFocus{
     color: #bdc1c9;
 }
 
@@ -579,12 +588,15 @@
 }
 
 .pg-newsfeed-post-upload-image{
-    float: left;
     width: 23.5%;
     margin: 0 5px 5px 0;
     padding: 0;
     position: relative;
     overflow: hidden;
+}
+
+.feed-container .wall-post .post-footer .comments-container .comments-list .comment{
+    position: relative;
 }
 
 .pg-newsfeed-post-upload-image.profile-update{

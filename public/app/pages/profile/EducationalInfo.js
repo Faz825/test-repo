@@ -68,7 +68,7 @@ export default class EducationalInfo extends React.Component{
         }
 
         return (
-            <div>
+            <div className="inner-section classes">
                 <Education readOnly={read_only} data={this.state.data}  updateEducationInfo = {this.updateEducationInfo} />
             </div>
         );
@@ -114,39 +114,40 @@ class Education extends React.Component{
         }
 
         return (
-            <div id="background-education-container" className="pg-section-container">
-                <div className="pg-section">
-                     <div className="pg-header">
-                        <h3>Education</h3>
-                        {
-                            (!readOnly)?
-                            <div className="pg-edit-tools">
-                                <button className="pg-edit-btn"  onClick={this.editForm}>
-                                    <i className="fa fa-plus edit-add"></i> Add education
-                                </button>
-                            </div>
-                            : null
-                        }
-                     </div>
-                    <div className="form-holder">
-                        {
-                            (this.state.editFormVisible)?
-                            <EducationForm data={this.state.formData} onSubmit={this.formUpdate} onCancel={this.editForm} />
-                            : null
-                        }
-
+            <div className="pg-section">
+                <div className="inner-header pg-header">
+                    <div className="header-wrapper">
+                        <span className="header-icon classes"></span>
+                        <span className="header-text">classes</span>
                     </div>
-                        {this.props.data.education_details.map(function(data,id){
-                            return(
-                                <University readOnly={readOnly}
-                                            onEdit={_this.editForm}
-                                            data={data}
-                                            key={id}
-                                            user_id={_this.props.data.user_id}/>
-                            )
-                        })}
+                    {
+                        (!readOnly)?
+                        <div className="pg-edit-tools">
+                            <button className="pg-edit-btn"  onClick={this.editForm}>
+                                <i className="fa fa-plus edit-add"></i> Add education
+                            </button>
+                        </div>
+                        : null
+                    }
+                </div>
+                <div className="form-holder">
+                    {
+                        (this.state.editFormVisible)?
+                        <EducationForm data={this.state.formData} onSubmit={this.formUpdate} onCancel={this.editForm} />
+                        : null
+                    }
 
-
+                </div>
+                <div className="inner-container">
+                    {this.props.data.education_details.map(function(data,id){
+                        return(
+                            <University readOnly={readOnly}
+                                        onEdit={_this.editForm}
+                                        data={data}
+                                        key={id}
+                                        user_id={_this.props.data.user_id}/>
+                        )
+                    })}
                 </div>
             </div>
         );
@@ -191,48 +192,64 @@ export class University extends React.Component{
             _date_attended_to   =this.getDate(data.date_attended_to) ;
 
         return (
-            <div className="pg-body-item">
-                <div>
-                    <h4 className="pg-entity-control-field">
-                        <div className="pg-main-header-field  pg-field" title="Click to edit this education">
-                            <span className="pg-field-text">{data.school}</span>
+            <div className="title-wrapper">
+                <div className="clearfix">
+                    <span className="title">{data.degree}</span>
+                    {
+                        (!readOnly)?
+                        <button className="pg-edit-field pg-edit-field-button" onClick={this.editForm.bind(this)}>
+                            <i className="fa fa-pencil"></i>
+                        </button>
+                        : null
+
+                    }
+                 </div>
+                    {
+                        (data.degree)?
+                        <p className="title-text">{data.school} <span className="time">{_date_attended_to.year}</span></p>     
+                        :
+                        null               
+                    }               
+                {/*<h4 className="pg-entity-control-field">
+                    <div className="pg-main-header-field  pg-field" title="Click to edit this education">
+                        <span className="pg-field-text">{data.school}</span>
+                        {
+                            (!readOnly)?
+                            <button className="pg-edit-field pg-edit-field-button" onClick={this.editForm.bind(this)}>
+                                <i className="fa fa-pencil"></i>
+                            </button>
+                            : null
+
+                        }
+                    </div>
+                </h4>*/}
+                { /*
+                    (data.degree)?
+                    <h5 className="pg-entity-control-field">
+                        <div className="pg-sub-header-field  pg-field" title="Click to edit this education">
+                            <span className="pg-field-text">
+                                <span className="degree">{data.degree}</span>
+                                <span className="grade">{data.grade}</span>
+                            </span>
                             {
                                 (!readOnly)?
-                                <button className="pg-edit-field pg-edit-field-button" onClick={this.editForm.bind(this)}>
+                                <button className="pg-edit-field pg-edit-field-button" onClick={this.editForm.bind(this)} >
                                     <i className="fa fa-pencil"></i>
                                 </button>
                                 : null
 
                             }
                         </div>
-                    </h4>
-                    {
-                        (data.degree)?
-                        <h5 className="pg-entity-control-field">
-                            <div className="pg-sub-header-field  pg-field" title="Click to edit this education">
-                                <span className="pg-field-text">
-                                    <span className="degree">{data.degree}</span>
-                                    <span className="grade">{data.grade}</span>
-                                </span>
-                                {
-                                    (!readOnly)?
-                                    <button className="pg-edit-field pg-edit-field-button" onClick={this.editForm.bind(this)} >
-                                        <i className="fa fa-pencil"></i>
-                                    </button>
-                                    : null
-
-                                }
-                            </div>
-                        </h5>
-                        : (!readOnly)? <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Degree</button> :null
-                    }
-                </div>
+                    </h5>
+                    : (!readOnly)? <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Degree</button> :null
+                    */
+                }
                 <div className="pg-empty-fields-area">
                     {
-                        (data.date_attended_to)?
+                        /*(data.date_attended_to)?
                         <div className="pg-date-area pg-field">
                             <span className="pg-field-text">
-                                {/*<time>{_date_attended_from.year} - {_date_attended_to.year} </time>*/}
+                                {/*<time>{_date_attended_from.year} - {_date_attended_to.year} </time>}
                                 <time>{_date_attended_to.year} </time>
                             </span>
                             {
@@ -244,7 +261,7 @@ export class University extends React.Component{
 
                             }
                         </div>
-                        : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Duration</button>:null
+                        : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Duration</button>:null*/
                     }
 
                     {
@@ -253,18 +270,8 @@ export class University extends React.Component{
                              <span className="pg-field-text">
                                 {data.description}
                              </span>
-                             {
-                                 (!readOnly)?
-                                 <button className="pg-edit-field pg-edit-field-button" onClick={this.editForm.bind(this)} >
-                                     <i className="fa fa-pencil"></i>
-                                 </button>
-                                 : null
-
-                             }
                         </p>
-                        : (!readOnly)?
-                            <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Description</button>
-                            :null
+                        : null
                     }
 
                     {
@@ -275,18 +282,9 @@ export class University extends React.Component{
                                  <span className="pg-field-text">
                                     {data.activities_societies}
                                  </span>
-                                {
-                                    (!readOnly)?
-                                    <button className="pg-edit-field pg-edit-field-button" onClick={this.editForm.bind(this)} >
-                                        <i className="fa fa-pencil"></i>
-                                    </button>
-                                    : null
-                                }
                             </span>
                         </p>
-                        : (!readOnly)?
-                            <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Activities</button>
-                            :null
+                        : null
                     }
 
 
