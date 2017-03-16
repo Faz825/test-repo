@@ -1057,55 +1057,64 @@ var NotificationController ={
                         }
                     },
                     function getSenders(relatedSenders, callBack){
-
                         if(relatedSenders != null) {
                             User.getSenderDetails(relatedSenders, function (usersObj) {
                                 // trim same sender pending...
                                 var _senderArray = [];
                                 var _formattedUsers = [];
 
-                                for (var i=0; i < usersObj.length; i++){
-                                    if(_senderArray.indexOf(usersObj[i].sender_id.toString()) == -1){
-                                        _senderArray.push(usersObj[i].sender_id.toString());
-                                        _formattedUsers.push(usersObj[i]);
+                                if(usersObj.status == 200) {
+                                    var userList = usersObj.users_list;
+                                    if(userList != "undefined" && userList.length > 0) {
+                                        for (var i=0; i < userList.length; i++){
+                                            if(_senderArray.indexOf(userList[i].sender_id.toString()) == -1){
+                                                _senderArray.push(userList[i].sender_id.toString());
+                                                _formattedUsers.push(userList[i]);
+                                            }
+                                        }
                                     }
                                 }
 
-
                                 var senderObj = {
-                                    sender_count: _formattedUsers.length
+                                    sender_count: 0,
+                                    sender_id: "",
+                                    sender_name: "",
+                                    sender_profile_picture: "",
+                                    sender_user_name: "",
                                 };
-
-                                switch (true) {
-                                    case (_formattedUsers.length == 1):
-                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
-                                        senderObj['sender_name'] = _formattedUsers[0].sender_name;
-                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
-                                        senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
-                                        senderObj['sender_count'] = 0;
-                                        break;
-                                    case (_formattedUsers.length == 2):
-                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
-                                        senderObj['sender_name'] = _formattedUsers[0].sender_name + " and " + _formattedUsers[1].sender_name;
-                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
-                                        senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
-                                        senderObj['sender_count'] = 0;
-                                        break;
-                                    case (_formattedUsers.length == 3):
-                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
-                                        senderObj['sender_name'] = _formattedUsers[0].sender_name + ", " + _formattedUsers[1].sender_name;
-                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
-                                        senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
-                                        senderObj['sender_count'] = 1;
-                                        break;
-                                    case (_formattedUsers.length > 3):
-                                        senderObj['sender_id'] = _formattedUsers[0].sender_id;
-                                        senderObj['sender_name'] = _formattedUsers[0].sender_name + ", " + _formattedUsers[1].sender_name;
-                                        senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
-                                        senderObj[''] = _formattedUsers[0].sender_user_name;
-                                        senderObj['sender_count'] = (_formattedUsers.length - 2);
-                                        break;
+                                if(_formattedUsers != undefined && _formattedUsers.length > 0) {
+                                    switch (_formattedUsers.length) {
+                                        case 1:
+                                            senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                            senderObj['sender_name'] = _formattedUsers[0].sender_name;
+                                            senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                            senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
+                                            senderObj['sender_count'] = 0;
+                                            break;
+                                        case 2:
+                                            senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                            senderObj['sender_name'] = _formattedUsers[0].sender_name + " and " + _formattedUsers[1].sender_name;
+                                            senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                            senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
+                                            senderObj['sender_count'] = 0;
+                                            break;
+                                        case 3:
+                                            senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                            senderObj['sender_name'] = _formattedUsers[0].sender_name + ", " + _formattedUsers[1].sender_name;
+                                            senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                            senderObj['sender_user_name'] = _formattedUsers[0].sender_user_name;
+                                            senderObj['sender_count'] = 1;
+                                            break;
+                                        default:
+                                            senderObj['sender_id'] = _formattedUsers[0].sender_id;
+                                            senderObj['sender_name'] = _formattedUsers[0].sender_name + ", " + _formattedUsers[1].sender_name;
+                                            senderObj['sender_profile_picture'] = _formattedUsers[0].profile_image;
+                                            senderObj[''] = _formattedUsers[0].sender_user_name;
+                                            senderObj['sender_count'] = (_formattedUsers.length - 2);
+                                            break;
+                                    }
                                 }
+
 
                                 callBack(null, senderObj);
                             });
@@ -1120,7 +1129,6 @@ var NotificationController ={
                         }
                     },
                     function createNotificationObj(senderData, callBack) {
-
                         var notificationObj = {
                             notification_id:notification['notification_id'],
                             notification_type:notification['notification_type'],

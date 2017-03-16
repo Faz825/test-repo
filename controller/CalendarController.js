@@ -261,8 +261,11 @@ var CalendarController = {
                 var _usernames = [];
                 if (typeof notifyUsers != 'undefined' && notifyUsers.length > 0) {
                     User.getSenderDetails(notifyUsers, function (_shared_users) {
-                        for(var i = 0; i < _shared_users.length; i++){
-                            _usernames.push(_shared_users[i].sender_user_name);
+                        if(_shared_users.status == 200) {
+                            var userList = _shared_users.users_list;
+                            for(var i = 0; i < userList.length; i++){
+                                _usernames.push(userList[i].sender_user_name);
+                            }
                         }
 
                         callBack(null, {users: _usernames, e: calEvent});
@@ -1856,8 +1859,11 @@ var CalendarController = {
                 var _usernames = [];
                 if (typeof notifyUsers != 'undefined' && notifyUsers.length > 0) {
                     User.getSenderDetails(notifyUsers, function (_shared_users) {
-                        for(var i = 0; i < _shared_users.length; i++){
-                            _usernames.push(_shared_users[i].sender_user_name);
+                        if(_shared_users.status == 200) {
+                            var userList = _shared_users.users_list;
+                            for(var i = 0; i < userList.length; i++){
+                                _usernames.push(userList[i].sender_user_name);
+                            }
                         }
 
                         callBack(null, _usernames);
