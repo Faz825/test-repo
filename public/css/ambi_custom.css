@@ -874,6 +874,24 @@ footer .notification-alert-holder.slideOut{
   bottom: 0;
 }
 
+.notification-popup-wrapper .notification-popup-holder .notification-body .notification-item .task-icon .task-dot{
+    display: block;
+    width: 13px;
+    margin: 7px auto 0;
+    height: 13px;
+    background-color: #a6c74a;
+    border-radius: 100%;
+}
+
+.notification-popup-wrapper .notification-popup-holder .notification-body .notification-item .task-icon .todo-dot{
+    display: block;
+    width: 13px;
+    margin: 7px auto 0;
+    height: 13px;
+    background-color: #ed1e7a;
+    border-radius: 100%;
+}
+
 
 @media (max-width: 1024px) {
 	.body-container.nav-hidden{
