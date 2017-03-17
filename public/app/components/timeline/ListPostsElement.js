@@ -847,11 +847,14 @@ const PostOwner = ({post,profile,onLoadProfile}) => {
 
 const PostProfilePic = ({post,profile,onLoadProfile}) => {
     if(post.post_owned_by != undefined){
+        let _images = post.created_by.images;
+        let profileImg = _images.hasOwnProperty('profile_image') ? _images.profile_image.hasOwnProperty('http_url') ? _images.profile_image.http_url : "/images/default-profile-pic.png" : "/images/default-profile-pic.png";
+        profileImg = (profileImg != undefined && profileImg) ? profileImg : "/images/default-profile-pic.png";
         return (
             (post.created_by.user_id == post.post_owned_by.user_id)?
-                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive img-circle"/>
+                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={profileImg} alt={profile.first_name + " " + profile.last_name} className="img-responsive img-circle"/>
                 :
-                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={post.post_owned_by.images.profile_image.http_url} alt={post.post_owned_by.first_name + " " + post.post_owned_by.last_name} className="img-responsive img-circle"/>
+                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={profileImg} alt={post.post_owned_by.first_name + " " + post.post_owned_by.last_name} className="img-responsive img-circle"/>
         );
     }else{
         return(

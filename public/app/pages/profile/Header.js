@@ -326,7 +326,10 @@ export class ConnectionStatus extends React.Component{
 export class ProfileInfo extends React.Component{
     constructor(props){
         super(props);
-        let profileImg = (typeof  this.props.dt.images.profile_image.http_url != 'undefined')? this.props.dt.images.profile_image.http_url : this.props.dt.images.profile_image.file_name;
+        let _images = this.props.dt.images;
+        let profileImg = _images.hasOwnProperty('profile_image') ? _images.profile_image.hasOwnProperty('http_url') ? _images.profile_image.http_url : "/images/default-profile-pic.png" : "/images/default-profile-pic.png";
+        profileImg = (profileImg != undefined && profileImg) ? profileImg : "/images/default-profile-pic.png";
+        //let profileImg = (typeof  this.props.dt.images.profile_image.http_url != 'undefined')? this.props.dt.images.profile_image.http_url : this.props.dt.images.profile_image.file_name;
         let working_at = (this.props.dt.cur_working_at)? this.props.dt.cur_working_at:"";
         let designation = (this.props.dt.cur_designation)? this.props.dt.cur_designation:"";
         let exp_id = (this.props.dt.cur_exp_id)? this.props.dt.cur_exp_id:null;

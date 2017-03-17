@@ -1117,37 +1117,39 @@ UserSchema.statics.formatSkills = function (userObject, callBack) {
             'day_to_day_comforts': [],
             'experienced': []
         };
-    _async.each(userObject.skills,
-        function (skill, callBack) {
 
+    if(userObject.skills != undefined && userObject.skills) {
+        _async.each(userObject.skills,
+            function (skill, callBack) {
 
-            Skill.getSkillById(Util.toObjectId(skill.skill_id), function (resultSet) {
+                Skill.getSkillById(Util.toObjectId(skill.skill_id), function (resultSet) {
 
+                    if (skill.is_day_to_day_comfort === 1) {
+                        _tmp_out['day_to_day_comforts'].push({
+                            id: resultSet.skill.id,
+                            name: resultSet.skill.name
+                        });
+                        callBack();
 
-                if (skill.is_day_to_day_comfort === 1) {
-                    _tmp_out['day_to_day_comforts'].push({
-                        id: resultSet.skill.id,
-                        name: resultSet.skill.name
-                    });
-                    callBack();
+                    } else {
+                        //if(skill.is_day_to_day_comfort === 0){
+                        _tmp_out['experienced'].push({
+                            id: resultSet.skill.id,
+                            name: resultSet.skill.name
+                        });
+                        callBack();
+                    }
 
-                } else {
-                    //if(skill.is_day_to_day_comfort === 0){
-                    _tmp_out['experienced'].push({
-                        id: resultSet.skill.id,
-                        name: resultSet.skill.name
-                    });
-                    callBack();
-                }
+                });
 
+            },
+            function (err) {
+
+                callBack(_tmp_out);
             });
-
-        },
-        function (err) {
-
-            callBack(_tmp_out);
-        });
-
+    } else {
+        callBack(_tmp_out);
+    }
 
 }
 /**
