@@ -278,7 +278,7 @@ class SinglePost extends React.Component{
 
         const _post = this.props.postItem;
         let post_content = "";
-        let img_div_class = "pg-newsfeed-post-upload-image";
+        let img_div_class = "image-col-wrapper pg-newsfeed-post-upload-image";
         if (_post.post_mode == "NP" ){
             post_content = _post.content;
         }else if(_post.post_mode == "LE"){
@@ -311,7 +311,7 @@ class SinglePost extends React.Component{
                 }
                 return (
                     <div className={img_div_class} key={key}>
-                        <img src = {_url}/>{
+                        <img src = {_url} className="img-responsive post-img" />{
                         (upload.file_type == "mp4")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true"></i>:null
                     }
                         {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
@@ -350,8 +350,10 @@ class SinglePost extends React.Component{
                                     <p className="pg-newsfeed-post-description">{post_content}</p>
                                 </div>
 
-                                <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
-                                    {uploaded_files}
+                                <div id="image_display" className="image-container">
+                                    <div className="row">
+                                        {uploaded_files}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -458,7 +460,7 @@ class SinglePost extends React.Component{
         this.imgList = [];
 
         const _post = this.props.postItem;
-        let img_div_class = "pg-newsfeed-post-upload-image";
+        let img_div_class = "image-col-wrapper pg-newsfeed-post-upload-image";
         if(_post.post_mode == "PP"){//profile update post
             img_div_class += " profile-update";
         }
@@ -490,7 +492,7 @@ class SinglePost extends React.Component{
                             href={_url}
                             key={key}
                             onClick={(e) => this.openLightbox(key, e)}
-                        ><img src = {_url}/></a>{
+                        ><img src = {_url} className="img-responsive post-img" /></a>{
                         (upload.file_type == "mp4")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true" onClick = {(event)=>{this.onVideoPlay(upload)}}></i>:null
                     }
                         {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
@@ -534,8 +536,10 @@ class SinglePost extends React.Component{
 
                     </div>
 
-                    <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
-                        {uploaded_files}
+                    <div id="image_display" className="image-container">
+                        <div className="row">
+                            {uploaded_files}
+                        </div>
                     </div>
 
                     <SharedPostBody  post={_post}

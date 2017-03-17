@@ -23,6 +23,7 @@
 }
 .post-list-wrapper{
     float: left;
+    width: 100%;
 }
 .pg-top-round-border{
     border-top-left-radius: 5px;
@@ -588,8 +589,9 @@
 }
 
 .pg-newsfeed-post-upload-image{
+    float: left;
     width: 23.5%;
-    margin: 0 5px 5px 0;
+    margin: 0 0px 5px 10px;
     padding: 0;
     position: relative;
     overflow: hidden;
