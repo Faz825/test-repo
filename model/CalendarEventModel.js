@@ -458,6 +458,7 @@ CalendarEventSchema.statics.bindNotificationData = function(notificationObj, cal
     this.getEventById(notificationObj.calendar_id,function(calendarData){
 
         notificationObj['calendar_text'] = calendarData.event.plain_text;
+        notificationObj['calendar_type'] = calendarData.event.type;
 
         callBack(notificationObj);
     });

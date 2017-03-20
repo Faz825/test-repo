@@ -57,6 +57,7 @@ export default class AmbiLayout extends React.Component {
             socialNotifications: _socialNotifications,
             isShowingModal: false,
             isShowingWMP: false,
+            showNotificationsPopup:false,
             notifiType: "",
             notificationCount: "",
             isNavHidden: false,
@@ -217,11 +218,11 @@ export default class AmbiLayout extends React.Component {
     }
 
     onNotifiTypeClick(type, count) {
-        this.setState({notifiType: type, notificationCount: count});
+        this.setState({showNotificationsPopup: true, notifiType: type, notificationCount: count});
     }
 
     onNotifiClose() {
-        this.setState({notifiType: ""});
+        this.setState({showNotificationsPopup: false, notifiType: ""});
     }
 
     updateNotificationPopCount(c) {
@@ -313,7 +314,7 @@ export default class AmbiLayout extends React.Component {
                     </ModalContainer>
                 }
                 {
-                    (this.state.notifiType) ?
+                    (this.state.showNotificationsPopup) ?
                         <NotificationPop notifiType={this.state.notifiType} notifyCount={this.state.notificationCount}
                                          onNotifiClose={this.onNotifiClose.bind(this)}/>
                         :

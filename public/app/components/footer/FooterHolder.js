@@ -153,19 +153,19 @@ export default class FooterHolder extends React.Component {
                             <img src="/images/brand-icon.png" alt="Ambi Icon"/>
                         </div>
                         <div className="notifi-icon-holder">
-                            <div className="todo-notifi notifi-icons" id="todos"
+                            <div className="todo-notifi notifi-icons" id="events"
                                  onClick={(event) => this.onNotifiClick(event)}>
-                                <a href="/notifications"><span className="icon"></span></a>
+                                <span className="icon" id="events"></span>
                                 {notificationCount > 0 ? <span className="has-notifi"></span> : null}
                             </div>
                             <div className="social-notifi notifi-icons" id="social"
                                  onClick={(event) => this.onNotifiClick(event)}>
-                                <span className="icon"></span>
+                                <span className="icon" id="social"></span>
                                 {notificationCount > 0 ? <span className="has-notifi"></span> : null}
                             </div>
-                            <div className="productivity-notifi notifi-icons" id="productivity"
+                            <div className="productivity-notifi notifi-icons" id="work"
                                  onClick={(event) => this.onNotifiClick(event)}>
-                                <span className="icon"></span>
+                                <span className="icon" id="work"></span>
                                 {notificationCount > 0 ? <span className="has-notifi"></span> : null}
                             </div>
                         </div>
