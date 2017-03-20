@@ -386,7 +386,7 @@ class SinglePost extends React.Component{
                 {this.state.isShowingImgModal &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
                     <ModalDialog onClose={this.handleClose.bind(this)} className="imgPop-holder">
-                        <div className="share-popup-holder">
+                        <div className="share-popup-holder feed-container">
                             <div className="img-holder">
                                 <img src={this.imgList[this.state.currentImage]} className="img-responsive"/>
                             </div>
@@ -403,37 +403,42 @@ class SinglePost extends React.Component{
                                     :
                                     null
                             }
-                            <PostActionBar comment_count={_post.comment_count}
-                                           post_index = {_postIndex}
-                                           onLikeClick = {this.onLikeClick.bind(this)}
-                                           onShareClick = {event=>this.onShareClick()}
-                                           onCommentClick = {event=>this.onCommentClick()}
-                                           OnLikeHover = {event=>this.loadLikedUsers()}
-                                           is_i_liked = {_is_i_liked}
-                                           liked_users = {_post.liked_user}
-                                           show_share_button ={true}/>
+                            <div className="wall-post">
+                                <div className="post-footer">
+                                    <PostActionBar comment_count={_post.comment_count}
+                                                   post_index = {_postIndex}
+                                                   onLikeClick = {this.onLikeClick.bind(this)}
+                                                   onShareClick = {event=>this.onShareClick()}
+                                                   onCommentClick = {event=>this.onCommentClick()}
+                                                   OnLikeHover = {event=>this.loadLikedUsers()}
+                                                   is_i_liked = {_is_i_liked}
+                                                   liked_users = {_post.liked_user}
+                                                   show_share_button ={true}/>
 
-                            {
-                                (typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
-                                    <LikeSummery
-                                        visibility={true}
-                                        likes ={_post.liked_user}/>
-                                    :null
-                            }
 
-                            {
-                                (this.state.showCommentPane) ?
-                                    <div className="comment-inner-wrapper">
-                                        <CommentElement
-                                        visibility = {this.state.showCommentPane}
-                                        postId = {_post.post_id}
-                                        comments = {this.state.comments}
-                                        unformattedComments = {this.state.unformattedComments}
-                                        onCommentAddSuccess = {this.onCommentAddSuccess.bind(this)}
-                                        onCommentDeleteSuccess = {this.onCommentDeleteSuccess.bind(this)}/>
-                                    </div>
-                                    : ""
-                            }
+                                {/*
+                                    (typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
+                                        <LikeSummery
+                                            visibility={true}
+                                            likes ={_post.liked_user}/>
+                                        :null
+                                */}
+
+                                {
+                                    (this.state.showCommentPane) ?
+                                        <div className="comment-inner-wrapper">
+                                            <CommentElement
+                                            visibility = {this.state.showCommentPane}
+                                            postId = {_post.post_id}
+                                            comments = {this.state.comments}
+                                            unformattedComments = {this.state.unformattedComments}
+                                            onCommentAddSuccess = {this.onCommentAddSuccess.bind(this)}
+                                            onCommentDeleteSuccess = {this.onCommentDeleteSuccess.bind(this)}/>
+                                        </div>
+                                        : ""
+                                }
+                                </div>
+                            </div>
                         </div>
                     </ModalDialog>
                 </ModalContainer>

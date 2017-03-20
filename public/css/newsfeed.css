@@ -589,7 +589,6 @@
 }
 
 .pg-newsfeed-post-upload-image{
-    float: left;
     width: 23.5%;
     margin: 0 0px 5px 10px;
     padding: 0;
@@ -702,10 +701,24 @@
     max-width: 80%;
 }
 
+
 .imgPop-holder .share-popup-holder .pg-status-post-btn{
-    position: relative;
-    bottom: auto;
-    right: auto;
+    /*position: relative;*/
+    /*bottom: auto;*/
+    /*right: auto;*/
+}
+
+.imgPop-holder .share-popup-holder .pg-newsfeed-new-comment-icon-wrapper{
+    top: auto;
+    bottom: 0;
+}
+
+.imgPop-holder .share-popup-holder .input-wrapper label.img-comment{
+    right: 82px;
+}
+
+.feed-container.share-popup-holder .wall-post .post-footer .comments-container .input-comment .input-wrapper .emoji{
+    right: 56px;
 }
 
 .imgPop-holder .share-popup-holder{
@@ -953,7 +966,7 @@
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     border-radius: 2px;
-    padding: 6px 12px;
+    padding: 11px 12px;
     position: absolute;
     bottom: 0;
     right: 0;
