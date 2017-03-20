@@ -202,7 +202,7 @@ export default class Discussion extends React.Component{
                     <CalendarWidget currentGroup={this.state.currentGroup} />
                 </div>
                 <div className="post-panel col-sm-8">
-                    <div className="post-holder">
+                    <div className="outer-wrapper clearfix">
                         <AddPostElement
                             workModeStyles={workmodeClass}
                             onPostSubmitSuccess={this.onPostSubmitSuccess.bind(this)}

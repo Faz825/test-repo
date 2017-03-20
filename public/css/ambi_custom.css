@@ -1624,27 +1624,32 @@ header .chat-popover-holder .inner-wrapper .see-all{
     text-overflow: ellipsis;
 }
 
-.feed-container .outer-wrapper .new-post .input-wrapper .input-options label{
+.feed-container .outer-wrapper .new-post .input-wrapper .input-options label,
+.group-container .outer-wrapper .new-post .input-wrapper .input-options label{
     cursor: pointer;
     float: left;
     margin-right: 13px;
 }
 
-.feed-container .outer-wrapper .new-post .input-wrapper .input-options label.image{
+.feed-container .outer-wrapper .new-post .input-wrapper .input-options label.image,
+.group-container .outer-wrapper .new-post .input-wrapper .input-options label.image{
     width: 17px;
     height: 15px;
     background-image: url(../images/profile/new-post/icon-image.png);
 }
 
-.feed-container .outer-wrapper .new-post .input-wrapper .input-options #imgUpload{
+.feed-container .outer-wrapper .new-post .input-wrapper .input-options #imgUpload,
+.group-container .outer-wrapper .new-post .input-wrapper .input-options #imgUpload{
     display: none;
 }
 
-.feed-container .outer-wrapper .new-post .input-wrapper .input-options{
+.feed-container .outer-wrapper .new-post .input-wrapper .input-options,
+.group-container .outer-wrapper .new-post .input-wrapper .input-options{
     padding: 12px 5px 0;
 }
 
-.feed-container .outer-wrapper .input-options .options-wrapper{
+.feed-container .outer-wrapper .input-options .options-wrapper,
+.group-container .outer-wrapper .input-options .options-wrapper{
     float: left;
     margin: 7px 0 0;
 }
