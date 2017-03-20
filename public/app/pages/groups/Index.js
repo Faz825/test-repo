@@ -344,6 +344,15 @@ export class CreateStepTwo extends React.Component{
         });
     }
 
+    colorPicker(e){
+        let colorCls = e.target.getAttribute('data-color');
+        this.setState({groupColor : colorCls, isFolderClrEmpty: false});
+    }
+
+    isActive(value){
+        return ((value===this.state.groupColor) ? 'palette active': 'palette');
+    }
+
     render() {
         const { value, suggestions } = this.state;
         const inputProps = {
@@ -388,25 +397,25 @@ export class CreateStepTwo extends React.Component{
                                     <div className="form-group">
                                         <p className="label">Choose a colour</p>
                                         <div className="color-palette">
-                                            <div className={this.state.groupColor == 'pink' ? 'active pink' : 'pink'} onClick={(color)=>{this.setColor('pink')}}>
+                                            <div  className={this.state.groupColor == '#ed0677' ? 'active pink' : 'pink'} onClick={(color)=>{this.setColor('#ed0677')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
-                                            <div className={this.state.groupColor == 'light-blue' ? 'active light-blue' : 'light-blue'} onClick={(color)=>{this.setColor('light-blue')}}>
+                                            <div className={this.state.groupColor == '#1b9ed9' ? 'active light-blue' : 'light-blue'} onClick={(color)=>{this.setColor('#1b9ed9')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
-                                            <div className={this.state.groupColor == 'light-green' ? 'active light-green' : 'light-green'} onClick={(color)=>{this.setColor('light-green')}}>
+                                            <div className={this.state.groupColor == '#a2c73e' ? 'active light-green' : 'light-green'} onClick={(color)=>{this.setColor('#a2c73e')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
-                                            <div className={this.state.groupColor == 'red' ? 'active red' : 'red'} onClick={(color)=>{this.setColor('red')}}>
+                                            <div className={this.state.groupColor == '#b01d5a' ? 'active red' : 'red'} onClick={(color)=>{this.setColor('#b01d5a')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
-                                            <div className={this.state.groupColor == 'dark-blue' ? 'active dark-blue' : 'dark-blue'} onClick={(color)=>{this.setColor('dark-blue')}}>
+                                            <div className={this.state.groupColor == '#091652' ? 'active dark-blue' : 'dark-blue'} onClick={(color)=>{this.setColor('#091652')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
-                                            <div className={this.state.groupColor == 'gray' ? 'active gray' : 'gray'} onClick={(color)=>{this.setColor('gray')}}>
+                                            <div className={this.state.groupColor == '#bbbdbe' ? 'active gray' : 'gray'} onClick={(color)=>{this.setColor('#bbbdbe')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
-                                            <div className={this.state.groupColor == 'dark-green' ? 'active dark-green' : 'dark-green'} onClick={(color)=>{this.setColor('dark-green')}}>
+                                            <div className={this.state.groupColor == '#067d41' ? 'active dark-green' : 'dark-green'} onClick={(color)=>{this.setColor('#067d41')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
                                         </div>

@@ -247,7 +247,6 @@ router.post('/group/remove-member', GroupsController.removeMember);
 router.post('/group-folders/add-new', GroupFolderController.addNewFolder);
 router.get('/group-folders/get-all/:group_id', GroupFolderController.getFolders);
 router.get('/group-folders/count/:group_id', GroupFolderController.getGroupFolderCount);
-router.post('/group-folders/add', GroupFolderController.addNewFolder);
 router.get('/group-folders/all', GroupFolderController.getAllGroupFolders);
 
 module.exports = router;

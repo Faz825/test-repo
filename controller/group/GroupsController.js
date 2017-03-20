@@ -63,25 +63,65 @@ var GroupsController = {
                     callBack(null, groupData);
                 }
             },
-            // function createDefaultFolder(groupData, callBack) {
-            //
-            //     if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {
-            //
-            //         var _folderData = {
-            //             name: groupData.name,
-            //             color: groupData.color,
-            //             isGrouped: 1,
-            //             user_id: userId,
-            //             group_id: groupData._id
-            //         };
-            //         Folders.addNewFolder(_folderData, function (resultSet) {
-            //
-            //             callBack(null, groupData);
-            //         });
-            //     } else {
-            //         callBack(null, groupData);
-            //     }
-            // },
+            function createDefaultFolder(groupData, callBack) {
+
+                if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {
+
+                    var _shared_users = [];
+
+                    for(var i = 0; i < groupData.members.length; i++){
+                        if(groupData.members[i].user_id != userId){
+                            _shared_users.push(
+                                {
+                                    user_id : groupData.members[i].user_id,
+                                    shared_type : FolderSharedMode.VIEW_ONLY,
+                                    status : FolderSharedRequest.REQUEST_ACCEPTED
+                                }
+                            );
+                        }
+                    }
+
+                    var _folderData = {
+                        name: groupData.name,
+                        color: groupData.color,
+                        user_id: userId,
+                        group_id: groupData._id,
+                        shared_users: _shared_users,
+                        isDefault: 1,
+                        folder_type: FolderType.GROUP_FOLDER
+                    };
+
+                    Folders.addNewFolder(_folderData, function (resultSet) {
+
+                        _async.eachSeries(_shared_users, function (member, membersCallBack) {
+
+                            var memberData = {
+                                folder_id: resultSet.folder._id,
+                                folder_name: resultSet.folder.name,
+                                folder_color: resultSet.folder.color,
+                                folder_owner: resultSet.folder.user_id,
+                                folder_updated_at: resultSet.folder.updated_at,
+                                folder_shared_mode: FolderSharedMode.VIEW_ONLY,
+                                folder_user: userId,
+                                folder_type: FolderType.GROUP_FOLDER,
+                                group_id: resultSet.folder.group_id.toString(),
+                                cache_key: FolderConfig.ES_INDEX_SHARED_GROUP_FOLDER+member.user_id.toString()
+                            }
+
+                            Folders.addFolderToCache(memberData, function(r){
+                                membersCallBack(null);
+                            });
+
+                        }, function (err) {
+                            callBack(null, groupData);
+                        });
+
+                    });
+
+                } else {
+                    callBack(null, groupData);
+                }
+            },
             function createDefaultNoteBook(groupData, callBack) {
 
                 if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {

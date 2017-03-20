@@ -10,7 +10,9 @@ var mongoose = require('mongoose'),
 
 GLOBAL.FolderConfig = {
     ES_INDEX_SHARED_FOLDER :"shared_folders:",
-    ES_INDEX_OWN_FOLDER : "own_folders:"
+    ES_INDEX_SHARED_GROUP_FOLDER :"shared_group_folders:",
+    ES_INDEX_OWN_FOLDER : "own_folders:",
+    ES_INDEX_OWN_GROUP_FOLDER : "own_group_folders:"
 };
 GLOBAL.FolderSharedMode = {
     VIEW_ONLY: 1,
@@ -118,8 +120,17 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
 
         if(!err){
 
+            var _cacheKey = (_data.group_id ?
+            FolderConfig.ES_INDEX_OWN_GROUP_FOLDER+resultSet.user_id.toString(): FolderConfig.ES_INDEX_OWN_FOLDER+resultSet.user_id.toString());
+
+            console.log("== cache key ==");
+            console.log(_cacheKey);
+
+            console.log(resultSet.group_id);
+
+
             var _esFolder = {
-                cache_key:FolderConfig.ES_INDEX_OWN_FOLDER+resultSet.user_id.toString(),
+                cache_key:_cacheKey,
                 folder_id:resultSet._id,
                 folder_name:resultSet.name,
                 folder_color:resultSet.color,
@@ -127,7 +138,8 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
                 folder_user:resultSet.user_id,
                 folder_updated_at:resultSet.updated_at,
                 folder_type:resultSet.type,
-                folder_group_id:resultSet.group_id
+                group_id:(resultSet.group_id ? resultSet.group_id.toString() : null),
+                folder_shared_mode: FolderSharedMode.VIEW_UPLOAD
             };
 
             _this.addFolderToCache(_esFolder, function(err){
@@ -153,14 +165,17 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
  */
 FolderSchema.statics.addFolderToCache = function(data, callBack){
 
+    console.log(data.folder_name + " adding to cache: " + data.folder_user + " @ " + data.folder_type);
+
     var _esFolder = {
         folder_id:data.folder_id,
         folder_name:data.folder_name,
         folder_color:data.folder_color,
         folder_owner:data.folder_owner,
+        folder_user:data.folder_user,
         folder_updated_at:data.folder_updated_at,
         folder_shared_mode:data.folder_shared_mode,
-        folder_type:data.type,
+        folder_type:data.folder_type,
         folder_group_id:data.group_id
     };
     var _type = "";
@@ -209,10 +224,11 @@ FolderSchema.statics.getFolders = function(criteria,callBack){
 /**
  * Get Folders
  */
-FolderSchema.statics.getSharedFolders = function(index,callBack){
+FolderSchema.statics.getSharedFolders = function(criteria,callBack){
 
     var query={
-        index:index
+        index:criteria._index,
+        q: criteria.q
     };
     ES.search(query,function(esResultSet){
         //console.log(esResultSet)
