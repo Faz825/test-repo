@@ -303,7 +303,9 @@ var GroupsController = {
         var outPut = {};
         var currentSession = Util.getCurrentSession(req);
         var async = require('async');
+        var randColor = require('randomcolor');
         var groups = require('mongoose').model('Groups');
+        var folder = require('mongoose').model('Folders');
         var groupId = (typeof req.body.__groupId != 'undefined') ? req.body.__groupId : null;
         var newMembers = (typeof req.body.__members != 'undefined') ? req.body.__members : [];
 
@@ -347,6 +349,87 @@ var GroupsController = {
                     callBack(null, groupData);
                 } else {
                     callBack(null, groupData);
+                }
+            },
+            function getGroupFolders(groupData, callBack) {
+                console.log(' ==== 1 ');
+                if (newMembers.length > 0) {
+                    folder.getFoldersByGroupId(groupId, function (result) {
+                        console.log(' ==== 2 ');
+                        console.log(result);
+                        if (result.status == 200) {
+                            var arrFolders = result.data;
+                            callBack(null, arrFolders);
+                        } else {
+                            callBack(null, []);
+                        }
+                    });
+                } else {
+                    console.log(' ==== 3 ');
+                    callBack(null, []);
+                }
+            },
+            function updateGroupFolders(arrFolders, callBack) {
+                console.log('Processing file ==== 1 ');
+                if (arrFolders.length > 0) {
+                    console.log('Processing file ==== 2 ');
+
+                    async.each(arrFolders, function(folder, callBack) {
+                        // Perform operation on file here.
+                        console.log('Processing file ');
+                        console.log(folder);
+
+                        console.log("-----------------------------");
+                        console.log(newMembers);
+
+                        var arrMembers = folder.shared_users;
+
+                        async.each(newMembers, function(member, callBack) {
+
+                            var color = randColor.randomColor({
+                                luminosity: 'light',
+                                hue: 'random'
+                            });
+
+                            var sharingMember = {
+                                user_id: member.user_id,
+                                user_note_color: color,
+                                shared_type: FolderSharedMode.VIEW_ONLY,
+                                status: FolderSharedRequest.REQUEST_PENDING
+                            };
+
+                            arrMembers.push(sharingMember);
+
+                        }, function(err) {
+                            // if any of the file processing produced an error, err would equal that error
+                            if( err ) {
+                                callBack(null, folder);
+                                // One of the iterations produced an error.
+                                // All processing will now stop.
+                                console.log('A file failed to process');
+                            } else {
+                                callBack(null, folder);
+                                console.log('All files have been processed successfully');
+                            }
+                        });
+
+                        callBack(null, folder);
+                        
+                    }, function(err) {
+                        // if any of the file processing produced an error, err would equal that error
+                        if( err ) {
+                            callBack(null, folder);
+                            // One of the iterations produced an error.
+                            // All processing will now stop.
+                            console.log('A file failed to process');
+                        } else {
+                            callBack(null, folder);
+                            console.log('All files have been processed successfully');
+                        }
+                    });
+                        
+                } else {
+                    callBack(null, []);
                 }
             }
         ], function (err) {

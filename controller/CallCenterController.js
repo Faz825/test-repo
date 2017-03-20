@@ -67,13 +67,13 @@ var CallCenterController = {
                                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                             });
 
-                            for (var i = 0; i < aConns.length; i++) {
-                                var first_letter = aConns[i].first_name[0].toUpperCase();
+                            // for (var i = 0; i < aConns.length; i++) {
+                            //     var first_letter = aConns[i].first_name[0].toUpperCase();
 
-                                if (aAlphabet.indexOf(first_letter) == -1) {
-                                    aAlphabet.push(first_letter);
-                                }
-                            }
+                            //     if (aAlphabet.indexOf(first_letter) == -1) {
+                            //         aAlphabet.push(first_letter);
+                            //     }
+                            // }
 
                             aAlphabet.sort();
 
@@ -86,19 +86,19 @@ var CallCenterController = {
                                 });
                             }
 
-                            for (var i = 0; i < aConns.length; i++) {
-                                var first_letter = aConns[i].first_name[0].toUpperCase();
+                            // for (var i = 0; i < aConns.length; i++) {
+                            //     var first_letter = aConns[i].first_name[0].toUpperCase();
 
-                                for (var x = 0; x < aContacts.length; x++) {
-                                    if (aContacts[x].letter == first_letter) {
-                                        // online status must be coming from Elastic Search.
-                                        aConns[i].onlineStatus = 1;
-                                        // contactType must be coming from Elastic Search.
-                                        aConns[i].contactType = 1;
-                                        aContacts[x].users.push(aConns[i]);
-                                    }
-                                }
-                            }
+                            //     for (var x = 0; x < aContacts.length; x++) {
+                            //         if (aContacts[x].letter == first_letter) {
+                            //             // online status must be coming from Elastic Search.
+                            //             aConns[i].onlineStatus = 1;
+                            //             // contactType must be coming from Elastic Search.
+                            //             aConns[i].contactType = 1;
+                            //             aContacts[x].users.push(aConns[i]);
+                            //         }
+                            //     }
+                            // }
 
                             callback(null, aContacts);
                         } else {
