@@ -122,13 +122,6 @@ FolderSchema.statics.addNewFolder = function(_data,callBack){
 
             var _cacheKey = (_data.group_id ?
             FolderConfig.ES_INDEX_OWN_GROUP_FOLDER+resultSet.user_id.toString(): FolderConfig.ES_INDEX_OWN_FOLDER+resultSet.user_id.toString());
-
-            console.log("== cache key ==");
-            console.log(_cacheKey);
-
-            console.log(resultSet.group_id);
-
-
             var _esFolder = {
                 cache_key:_cacheKey,
                 folder_id:resultSet._id,
@@ -195,8 +188,7 @@ FolderSchema.statics.addFolderToCache = function(data, callBack){
     }
 
     ES.createIndex(payLoad,function(resultSet){
-        callBack(resultSet)
-        return 0;
+        callBack(resultSet);
     });
 }
 

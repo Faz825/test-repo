@@ -110,6 +110,9 @@ export default class Index extends React.Component{
     }
 
     onFolderCreate(){
+
+        let _this = this;
+
         if(this.state.CFName == ""){
             this.setState({isFolderNameEmpty: true});
         }else{
@@ -134,7 +137,7 @@ export default class Index extends React.Component{
                 data:{folder_name:this.state.CFName, folder_color:this.state.CFColor, group_id: this.state.group._id},
                 success: function (data, text) {
                     if (data.status.code == 200) {
-                        this.loadFolders();
+                        setTimeout(function(){ _this.loadFolders(); }, 2000);
                         this.setState({isShowingModal: false, CFName : "", CFColor : ""});
                     }
                 }.bind(this),

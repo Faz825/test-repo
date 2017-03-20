@@ -77,22 +77,31 @@ var GroupFolderController ={
                         });
 
                     }, function (err) {
+                        console.log("sared with members");
                         callBack(null);
                     });
 
                 });
             }
-        ],function(err, _folder){
+        ],function(err){
+            if(!err){
+                console.log("response");
+                var outPut ={
+                    status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
+                };
+                res.status(200).json(outPut);
+            }else {
+                var outPut ={
+                    status:ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR)
+                };
+                res.status(400).json(outPut);
+            }
 
-            var outPut ={
-                status:ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS)
-            };
-            res.status(200).json(outPut);
         })
 
     },
 
-    /**
+/**
      * Get all group folders
      * @param req
      * @param res
