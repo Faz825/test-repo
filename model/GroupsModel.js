@@ -301,6 +301,7 @@ GroupsSchema.statics.bindNotificationData = function(notificationObj, callBack){
     this.getGroupById(notificationObj.group_id,function(groupData){
 
         notificationObj['group_name'] = groupData.name;
+        notificationObj['name_prefix'] = groupData.name_prefix;
 
         callBack(notificationObj);
     });

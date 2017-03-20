@@ -243,10 +243,10 @@ export default class Index extends React.Component{
             _notification.notification_type != "share_notebook" &&
             _notification.notification_type != "share_folder" &&
             _notification.notification_type != 'share_calendar' &&
-            _notification.notification_type != 'calendar_schedule_time_changed',
-            _notification.notification_type != 'share_group',
-            _notification.notification_type != 'share_group_response',
-            _notification.notification_type != 'share_group_notebook',
+            _notification.notification_type != 'calendar_schedule_time_changed' &&
+            _notification.notification_type != 'share_group' &&
+            _notification.notification_type != 'share_group_response' &&
+            _notification.notification_type != 'share_group_notebook' &&
             _notification.notification_type != 'add_group_post') {
             if(!_notification.read_status) {
                 $.ajax({
@@ -285,6 +285,8 @@ export default class Index extends React.Component{
                 }
             }
 
+        } else if(_notification.notification_type == 'share_group'){
+            window.location.href = '/groups/'+_notification.name_prefix;
         }
 
     }
@@ -715,7 +717,7 @@ export class Notification extends React.Component{
                                 {notification.notification_type == 'share_calendar_response' ? notification.sender_name + " has " + notification.notification_status + " your invitation to calendar event - " + notification.calendar_text :null}
                                 {notification.notification_type == 'calendar_schedule_carried_next_day' ?  " calendar event moved to next day - " + notification.calendar_text :null}
                                 {notification.notification_type == 'share_group_notebook' ? notification.sender_name +" has shared you to collaborate on " + notification.notebook_name + " on " + notification.group_name  :null}
-                                {notification.notification_type == 'share_group' ? " added you to a group" + notification.group_name :null}
+                                {notification.notification_type == 'share_group' ? " added you to a group " + notification.group_name :null}
                             </p>
                             <p className="chat-date">{notification.created_at.time_a_go}</p>
 
