@@ -245,12 +245,12 @@ export default class Index extends React.Component{
         if(typeof popupData.article_image != 'undefined'){
             _articalImage = popupData.article_image;
         }
-
+        console.log(popupData)
         return(
             <div>
                 {this.state.isShowingModal &&
-                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999} >
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="840" className="news-popup-holder">
                         <div className="modal-body pg-modal-body">
                             <div className="popup-img-holder">
                                 <img className="img-responsive pg-main-pop-img" alt src={_articalImage} />

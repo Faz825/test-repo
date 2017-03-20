@@ -894,6 +894,11 @@ footer .notification-alert-holder.slideOut{
     border-radius: 100%;
 }
 
+.notification-popup-wrapper .notification-popup-holder .notification-body-wrapper{
+    min-height: 335px;
+    background: #fff;
+}
+
 
 @media (max-width: 1024px) {
 	.body-container.nav-hidden{
@@ -1652,4 +1657,15 @@ header .chat-popover-holder .inner-wrapper .see-all{
 .group-container .outer-wrapper .input-options .options-wrapper{
     float: left;
     margin: 7px 0 0;
+}
+
+/* News feed */
+.news-popup-holder .closeButton--jss-0-1{
+    left: auto;
+    top: -20px;
+    right: -20px;
+}
+
+.news-popup-holder .closeButton--jss-0-1 circle{
+    fill: #668396;
 }

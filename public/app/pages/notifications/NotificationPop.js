@@ -376,12 +376,14 @@ export default class NotificationPop extends React.Component{
                                 <span className="arrow right" onClick={this.loadNextType.bind(this)}></span>
                             </div>
                             {/*this.getNotificationsList()*/}
-                            <Notifications notifications = {_result}
-                                           updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)}
-                                           notifiType = {this.state.notifiType}
-                                           clickNotification = {this.redirectToNotification.bind(this)}
-                                           updateFolder = {this.onUpdateSharedFolder.bind(this)}
-                                           updateCalendar = {this.onUpdateSharedCalendar.bind(this)}/>
+                            <div className="notification-body-wrapper">
+                                <Notifications notifications = {_result}
+                                            updateNoteBook = {this.onUpdateSharedNoteBook.bind(this)}
+                                            notifiType = {this.state.notifiType}
+                                            clickNotification = {this.redirectToNotification.bind(this)}
+                                            updateFolder = {this.onUpdateSharedFolder.bind(this)}
+                                            updateCalendar = {this.onUpdateSharedCalendar.bind(this)}/>
+                            </div>
                             <div className="see-all-holder">
                                 <a href="/notifications" className="see-all">see all</a>
                             </div>
