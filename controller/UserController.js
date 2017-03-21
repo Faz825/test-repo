@@ -19,7 +19,7 @@ var UserControler = {
             password: req.body.password,
             status: req.body.status,
             secretary: req.body.secretary,
-        }
+        };
 
 
         User.findByEmail(user.email, function (ResultSet) {
@@ -1776,7 +1776,6 @@ var UserControler = {
             outPut['status'] = ApiHelper.getMessage(400, Alert.ERROR, Alert.ERROR);
             res.status(400).json(outPut);
             return 0;
-
         }
 
     },
