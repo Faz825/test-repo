@@ -5,6 +5,7 @@
 import React from "react";
 import {Popover, OverlayTrigger} from 'react-bootstrap';
 import {CallType, CallChannel} from '../../config/CallcenterStats';
+import InputField from '../../components/elements/InputField';
 
 export default class CallModel extends React.Component {
     constructor(props) {
@@ -44,7 +45,6 @@ export default class CallModel extends React.Component {
     }
 
     switchUser(oUser) {
-        console.log(oUser);
         this.setState({selectedUser: oUser});
     }
 
@@ -59,13 +59,24 @@ export default class CallModel extends React.Component {
             </Popover>
         );
 
-        console.log(this.props.callMode);
-
         return (
             <div className="popup-holder">
                 <div className="row">
                     <div className="col-sm-12">
-                        <div className="active-call-container">
+                        <div className="group-members-container col-sm-3">
+                            <div>
+                                <InputField />
+                            </div>
+                            <div>
+                                <ul>
+                                    <li>Member 1</li>
+                                    <li>Member 2</li>
+                                    <li>Member 3</li>
+                                    <li>Member 4</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="active-call-container col-sm-9">
                             <div className="top-nav">
                                 <span className="close-ico" onClick={(e) => this.props.closePopup(e)}></span>
                                 <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>

@@ -7,7 +7,7 @@ import ReactDom from 'react-dom';
 import {Modal, ButtonToolbar, DropdownButton, MenuItem} from 'react-bootstrap';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import {CallChannel, CallType, CallStatus, UserMode} from '../../config/CallcenterStats';
+import {CallChannel, CallType, CallStatus, UserMode, ContactType} from '../../config/CallcenterStats';
 import ContactList from "./ContactList";
 import RecentList from "./RecentList";
 import StatusList from "./StatusList";
@@ -108,7 +108,7 @@ export default class Index extends React.Component {
                 letter = aContacts[key].letter;
                 for (var subKey in aContacts[key].users) {
                     let type = aContacts[key].users[subKey].type;
-                    if (type == 1) {
+                    if (type == ContactType.INDIVIDUAL) {
                         usersSet.push(aContacts[key].users[subKey]);
                     }
                 }
@@ -130,7 +130,7 @@ export default class Index extends React.Component {
                 letter = aContacts[key].letter;
                 for (var subKey in aContacts[key].users) {
                     let type = aContacts[key].users[subKey].type;
-                    if (type == 2) {
+                    if (type == ContactType.GROUP) {
                         usersSet.push(aContacts[key].users[subKey]);
                     }
                 }
@@ -161,8 +161,8 @@ export default class Index extends React.Component {
             for (var key in aContacts) {
                 letter = aContacts[key].letter;
                 for (var subKey in aContacts[key].users) {
-                    let type = aContacts[key].users[subKey].type;
-                    if (type == 2) {
+                    let onlineStatus = aContacts[key].users[subKey].online_mode;
+                    if (onlineStatus == UserMode.ONLINE.VALUE) {
                         usersSet.push(aContacts[key].users[subKey]);
                     }
                 }
@@ -174,7 +174,27 @@ export default class Index extends React.Component {
 
             this.setState({activeTabData: dataSet});
         } else if (cat == "status" && subCat == "work_mode") {
+            let dataSet = [],
+                usersSet = [],
+                letter = "";
 
+            let aContacts = this.state.userContacts;
+
+            for (var key in aContacts) {
+                letter = aContacts[key].letter;
+                for (var subKey in aContacts[key].users) {
+                    let onlineStatus = aContacts[key].users[subKey].online_mode;
+                    if (onlineStatus == UserMode.WORK_MODE.VALUE) {
+                        usersSet.push(aContacts[key].users[subKey]);
+                    }
+                }
+                if (usersSet.length >= 1) {
+                    dataSet.push({"letter": letter, "users": usersSet});
+                    usersSet = [];
+                }
+            }
+
+            this.setState({activeTabData: dataSet});
         }
 
         this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
@@ -658,10 +678,10 @@ export default class Index extends React.Component {
         return (
             <div className="rw-contact-menu sub-menu">
                 <div className={(subCat == "online") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
-                    this.loadContactData("status", "online")
+                    this.getContactsByStatus("status", "online")
                 }}>Online <span className="selector"></span></div>
                 <div className={(subCat == "busy") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
-                    this.loadContactData("status", "work_mode")
+                    this.getContactsByStatus("status", "work_mode")
                 }}>Work-Mode <span className="selector"></span></div>
             </div>
         )
