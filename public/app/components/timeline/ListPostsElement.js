@@ -11,16 +11,24 @@ import CommentElement from './CommentElement';
 import ProgressBar from '../elements/ProgressBar';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Scroll from 'react-scroll';
-const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,onLikeSuccess,onLoadProfile})=>{
+const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,onLikeSuccess,onLoadProfile,postType})=>{
 
+        var postsType = (postsType ? postsType : 1); // PERSONAL_POST :1, GROUP_POST:2s
+        console.log(" POSTS TYPE : " + postsType);
         if(posts.length <= 0){
             return (<div />)
         }
 
         let _postElement = posts.map((post,key)=>{
 
-            return (<SinglePost postItem = {post} key={key} postIndex={key} onPostSubmitSuccess ={(post)=>onPostSubmitSuccess(post)}
-                                onPostDeleteSuccess = {onPostDeleteSuccess} onLikeSuccess = {onLikeSuccess} onLoadProfile = {onLoadProfile}/>)
+            return (<SinglePost
+                        postItem = {post}
+                        key={key} postIndex={key}
+                        onPostSubmitSuccess ={(post)=>onPostSubmitSuccess(post)}
+                        onPostDeleteSuccess = {onPostDeleteSuccess}
+                        onLikeSuccess = {onLikeSuccess}
+                        onLoadProfile = {onLoadProfile}
+                        postsType={postsType}/>)
         });
 
         return (
@@ -159,11 +167,12 @@ class SinglePost extends React.Component{
 
     }
     onSharedPost(event){
-
+        
         let post_data ={
             __content :this.state.text,
             __pid:this.props.postItem.post_id,
-            __own:this.props.postItem.created_by.user_id
+            __own:this.props.postItem.created_by.user_id,
+            __posts_type:this.props.postsType
         }
 
         let _this = this;
@@ -477,7 +486,7 @@ class SinglePost extends React.Component{
         let postImgLength = _post.upload.length;
         let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
             _profile.images.profile_image.http_url:"";
-            
+
         let loggedUserProPic = (this.loggedUser.profile_image)? this.loggedUser.profile_image : "/images/default-profile-image.png";
 
         var uploaded_files = _post.upload.map((upload,key)=>{
@@ -562,7 +571,7 @@ class SinglePost extends React.Component{
                                         liked_users = {_post.liked_user}
                                         share_count ={_post.share_count}
                                         show_share_button ={true}
-                                        userProPic = {loggedUserProPic} 
+                                        userProPic = {loggedUserProPic}
                         />
 
                         {
@@ -621,7 +630,7 @@ const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onComme
                                 : null
                             : null
                         }
-                        {   
+                        {
                             (liked_users)?
                                 (liked_users.length == 1)?
                                     <span>
@@ -635,7 +644,7 @@ const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onComme
                                 :
                                     null
                             :null
-                        }                    
+                        }
                         {
                             (liked_users)?
                             (liked_users.length == 2)?
@@ -653,7 +662,7 @@ const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onComme
                             :
                                 null
                             :null
-                        }                    
+                        }
                         {
                             (liked_users)?
                                 (liked_users.length == 3)?
@@ -674,7 +683,7 @@ const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onComme
                                 :
                                     null
                             :null
-                        }                    
+                        }
                         {
                             (liked_users)?
                                 (liked_users.length > 3)?
@@ -695,16 +704,16 @@ const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onComme
                                 :
                                     null
                             :null
-                        }                    
+                        }
                     </div>
                 </div>
                 <div className="pull-right">
                     <div className="action-event comment" onClick ={(event)=>{onCommentClick(event)}}>
-                        <span className="icon"></span> 
+                        <span className="icon"></span>
                         <span className="text">{comment_count}</span>
                     </div>
                     <div className={shareActiveClass}>
-                        <span className="icon"></span> 
+                        <span className="icon"></span>
                         <span className="text">{share_count}</span>
                     </div>
                 </div>
@@ -795,7 +804,7 @@ const SharedPostTitle = ({loggedUser,post,onLoadProfile}) =>{
         return (
             (post.created_by.user_id == post.shared_post.created_by.user_id)?
                 <span className="own-post-share">shared own post</span>
-                :   
+                :
                 <div className="user-title-wrapper">
                     <span className="shared-text">shared</span>
                     <div className="user-name-container post-owner">

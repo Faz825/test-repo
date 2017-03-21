@@ -38,7 +38,7 @@ export default class Discussion extends React.Component{
             showSave : false,
             descriptionMsg : "",
             descriptionMsgStatus : "warning",
-            showDesToast : false  
+            showDesToast : false
         };
 
         this.postType = 2; // [ PERSONAL_POST:1, GROUP_POST:2 ]
@@ -103,8 +103,12 @@ export default class Discussion extends React.Component{
         });
     }
 
-    onPostSubmitSuccess() {
-        console.log("onPostSubmitSuccess");
+
+
+    onPostSubmitSuccess(data){
+        let _posts = this.state.posts;
+        _posts.unshift(data);
+        this.setState({posts:_posts});
     }
 
     onPostDeleteSuccess() {
@@ -142,14 +146,14 @@ export default class Discussion extends React.Component{
             }).done(function (data, text) {
                 if(data.status.code == 200){
                     this.setState({
-                        showSave : false, 
+                        showSave : false,
                         showDesToast: true,
                         descriptionMsg : "Saved the description successfully",
                         descriptionMsgStatus : 'success'
                     });
                 } else {
                     this.setState({
-                        showSave : false, 
+                        showSave : false,
                         showDesToast: true,
                         descriptionMsg : "Error in saving the description",
                         descriptionMsgStatus : 'warning'
@@ -187,10 +191,10 @@ export default class Discussion extends React.Component{
                         {this.state.showSave ?
                             <span className="save-btn" onInput={()=>{this.saveDescription()}}>save</span>
                         : ''}
-                        {this.state.showDesToast ? 
-                            <Toast 
-                                msg={this.state.descriptionMsg} 
-                                onToastClose={this.onToastClose.bind(this)} 
+                        {this.state.showDesToast ?
+                            <Toast
+                                msg={this.state.descriptionMsg}
+                                onToastClose={this.onToastClose.bind(this)}
                                 type={this.state.descriptionMsgStatus}
                             />
                         : ''}
@@ -223,6 +227,7 @@ export default class Discussion extends React.Component{
                             onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
                             onLikeSuccess = {this.onLikeSuccess.bind(this)}
                             onLoadProfile = {this.onLoadProfile.bind(this)}
+                            postType={this.postType}
                         />
                     </div>
                 </div>

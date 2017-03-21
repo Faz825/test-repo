@@ -393,7 +393,7 @@ var TimeLinePostHandler ={
                 var _pay_load = {
                     q:"post_id:"+_post.shared_post_id,
                 }
-                Post.ch_getPost(_post.post_owner,_pay_load,function(csResultSet){
+                Post.ch_getPost(_post.post_owner,_pay_load,_post.posts_type, function(csResultSet){
                     if(csResultSet.length >0){
                         var selected_post = csResultSet[0];
                         delete selected_post.date;
