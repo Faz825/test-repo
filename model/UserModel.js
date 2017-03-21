@@ -1285,7 +1285,8 @@ UserSchema.statics.authenticate = function (data, callback) {
                             user_name: resultSet.user_name,
                             country: resultSet.country,
                             dob: resultSet.dob,
-                            secretary_id: resultSet.secretary
+                            secretary_id: resultSet.secretary,
+                            online_mode:resultSet.onlineMode
                         };
 
                         for (var i = 0; i < resultSet.working_experiences.length; i++) {
@@ -1301,7 +1302,6 @@ UserSchema.statics.authenticate = function (data, callback) {
                         }
 
                         callBack(null, _profileData);
-
                     },
                     function getSecretary(profileData, callBack) {
 

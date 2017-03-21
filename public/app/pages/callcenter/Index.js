@@ -18,7 +18,9 @@ export default class Index extends React.Component {
     constructor(props) {
         super(props);
 
-        if (Session.getSession('prg_lg') == null) {
+        var loggedUser = Session.getSession('prg_lg');
+
+        if (loggedUser == null) {
             window.location.href = "/";
         } else {
             this.b6 = CallCenter.b6;
@@ -26,13 +28,13 @@ export default class Index extends React.Component {
         }
 
         this.state = {
-            loggedUser: Session.getSession('prg_lg'),
+            loggedUser: loggedUser,
             targetUser: null,
             inProgressCall: false,
             callMode: CallChannel.AUDIO,
             userContacts: [],
             callRecords: {all: [], missed: [], individual: [], groups: [], multi: []},
-            userStatus: "online",
+            userStatus: loggedUser.online_mode,
             activeMainCat: "",
             activeSubCat: "",
             showModal: false,
@@ -88,14 +90,14 @@ export default class Index extends React.Component {
     }
 
     getContactsByStatus(cat, subCat) {
-
+        this.setActiveTabData(cat, subCat);
+        this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
     }
 
     setActiveTabData(cat, subCat) {
         if (cat == "contact" && subCat == "all") {
             this.setState({activeTabData: this.state.userContacts});
         } else if (cat == "contact" && subCat == "individual") {
-            console.log(cat + '' + subCat);
             let dataSet = [],
                 usersSet = [],
                 letter = "";
@@ -142,6 +144,36 @@ export default class Index extends React.Component {
         } else if (cat == "recent" && subCat == "all") {
             this.setState({activeTabData: this.state.recentCalls});
         } else if (cat == "recent" && subCat == "missed") {
+
+        } else if (cat == "recent" && subCat == "individual") {
+
+        } else if (cat == "recent" && subCat == "groups") {
+
+        } else if (cat == "recent" && subCat == "multi") {
+
+        } else if (cat == "status" && subCat == "online") {
+            let dataSet = [],
+                usersSet = [],
+                letter = "";
+
+            let aContacts = this.state.userContacts;
+
+            for (var key in aContacts) {
+                letter = aContacts[key].letter;
+                for (var subKey in aContacts[key].users) {
+                    let type = aContacts[key].users[subKey].type;
+                    if (type == 2) {
+                        usersSet.push(aContacts[key].users[subKey]);
+                    }
+                }
+                if (usersSet.length >= 1) {
+                    dataSet.push({"letter": letter, "users": usersSet});
+                    usersSet = [];
+                }
+            }
+
+            this.setState({activeTabData: dataSet});
+        } else if (cat == "status" && subCat == "work_mode") {
 
         }
 
@@ -191,6 +223,7 @@ export default class Index extends React.Component {
                 call_type: callType,
                 call_channel: callChannel,
                 call_status: callStatus,
+                online_mode: aCallRecords[i].receivers_list[0].online_mode,
                 images: aCallRecords[i].receivers_list[0].images
             });
         }
@@ -628,8 +661,8 @@ export default class Index extends React.Component {
                     this.loadContactData("status", "online")
                 }}>Online <span className="selector"></span></div>
                 <div className={(subCat == "busy") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
-                    this.loadContactData("status", "busy")
-                }}>Busy <span className="selector"></span></div>
+                    this.loadContactData("status", "work_mode")
+                }}>Work-Mode <span className="selector"></span></div>
             </div>
         )
     }
@@ -638,7 +671,10 @@ export default class Index extends React.Component {
         this.setState({userStatus: mode, isStatusVisible: false});
 
         CallCenter.updateUserMode(mode).done(function (data) {
-            CallCenter.changeUserMode(mode);
+            if (data.status.code == 200) {
+                Session.updateSession('prg_lg', 'online_mode', data.onlineMode);
+                CallCenter.changeUserMode(data.onlineMode);
+            }
         });
     }
 

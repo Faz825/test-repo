@@ -3,6 +3,7 @@
 var async = require('async');
 
 var ES = require('../middleware/ES');
+var ESUpdateHandler = require('../middleware/ESUpdateHandler');
 var Connection = require('mongoose').model('Connection');
 var mUser = require('mongoose').model('User');
 var mCall = require('mongoose').model('Call');
@@ -10,29 +11,48 @@ var mCall = require('mongoose').model('Call');
 var CallCenterController = {
     me: {
         updateMode: function (req, res, next) {
-            var CurrentSession = Util.getCurrentSession(req);
+            var _async = require('async');
 
-            var onlineMode = null;
+            _async.waterfall([
+                function updateDatabase(callback) {
+                    var CurrentSession = Util.getCurrentSession(req);
 
-            if (req.body.userMode == mUser.modes.ONLINE) {
-                onlineMode = mUser.modes.ONLINE;
-            } else if (req.body.userMode == mUser.modes.OFFLINE) {
-                onlineMode = mUser.modes.OFFLINE;
-            } else if (req.body.userMode == mUser.modes.WORK_MODE) {
-                onlineMode = mUser.modes.WORK_MODE;
-            } else {
-                onlineMode = mUser.modes.OFFLINE;
-            }
+                    var onlineMode = null;
 
-            mUser.saveUpdates(CurrentSession.id, {"onlineMode": onlineMode}, function (r) {
+                    if (req.body.userMode == mUser.modes.ONLINE) {
+                        onlineMode = mUser.modes.ONLINE;
+                    } else if (req.body.userMode == mUser.modes.OFFLINE) {
+                        onlineMode = mUser.modes.OFFLINE;
+                    } else if (req.body.userMode == mUser.modes.WORK_MODE) {
+                        onlineMode = mUser.modes.WORK_MODE;
+                    } else {
+                        onlineMode = mUser.modes.OFFLINE;
+                    }
+
+                    mUser.saveUpdates(CurrentSession.id, {"onlineMode": onlineMode}, function (r) {
+                        (r.status == 200) ? callback(null, CurrentSession.id, onlineMode) : callback(error);
+                    });
+                }, function updateES(userId, onlineMode, callback) {
+                    var payLoad = {
+                        index: 'idx_usr',
+                        id: userId,
+                        type: 'user',
+                        data: {online_mode: onlineMode}
+                    };
+
+                    ESUpdateHandler.updateUserOnlineMode(payLoad, function (resultSet) {
+                        callback(null, onlineMode)
+                    });
+                }
+            ], function (error, onlineMode) {
                 var outPut = {};
 
-                if (r.status == 200) {
-                    outPut = {status: ApiHelper.getMessage(200, Alert.SUCCESS)};
-                    return res.status(200).json(outPut);
-                } else {
+                if (error) {
                     outPut = {status: ApiHelper.getMessage(400, Alert.ERROR)};
                     return res.status(400).json(outPut);
+                } else {
+                    outPut = {onlineMode: onlineMode, status: ApiHelper.getMessage(200, Alert.SUCCESS)};
+                    return res.status(200).json(outPut);
                 }
             });
         }
@@ -54,7 +74,6 @@ var CallCenterController = {
             async.waterfall([
                 function (callback) {
                     Connection.getConnections(criteria, function (resultSet) {
-                        console.log('===== contacts ==========');
                         callback(null, resultSet.data);
                     });
                 },

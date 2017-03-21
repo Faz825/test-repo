@@ -24,10 +24,10 @@ export default class Contact extends React.Component {
 
         let mood, call_type;
 
-        if (contact.mood == UserMode.ONLINE) {
+        if (contact.online_mode == UserMode.ONLINE.VALUE) {
             mood = "online";
-        } else if (contact.mood == UserMode.WORK_MODE) {
-            mood = "busy";
+        } else if (contact.online_mode == UserMode.WORK_MODE.VALUE) {
+            mood = "work-mode";
         } else {
             mood = "offline";
         }
@@ -56,15 +56,14 @@ export default class Contact extends React.Component {
             <div className="contact-item">
                 <div className="col-sm-6">
                     <div className="image-wrapper">
-                        <img
-                            src={profilePic}/>
-                        <span className={"status " + mood}></span>
+                        <img src={profilePic}/>
+                        {(contact.type == 1) ? <span className={"status " + mood}></span> : null}
                     </div>
                     <div className="name-wrapper">
                         <div className="name-holder">
                             <p className="name">{(contact.type == 1) ? contact.first_name + " " + contact.last_name : contact.name_prefix}</p>
                         </div>
-                        <p className="status">{mood}</p>
+                        <p className="status">{(contact.type == 1) ? mood : null}</p>
                     </div>
                     <div className={"type-icon contact-type " + call_type}>
                         <span></span>
@@ -82,7 +81,5 @@ export default class Contact extends React.Component {
                 </div>
             </div>
         );
-
-
     }
 }

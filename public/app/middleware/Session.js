@@ -16,19 +16,21 @@ class Session {
     }
 
     isSessionSet(key) {
-
         if (this.getSession(key) != null) {
-
             return true
         } else {
             return false
         }
     }
 
+    updateSession(cookie, key, value) {
+        var oSession = this.getSession(cookie);
+        oSession[key] = value;
+        this.createSession(cookie, oSession);
+    }
+
     createSession(key, value) {
-        console.log("createSession")
         value = JSON.stringify(value);
-        console.log(value);
         var expires;
 
         if (this.exdays) {
