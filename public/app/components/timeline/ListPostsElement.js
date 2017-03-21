@@ -24,7 +24,7 @@ const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,
         });
 
         return (
-                <div>
+                <div className="post-list-wrapper" >
                     {
                         _postElement
                     }
@@ -278,7 +278,7 @@ class SinglePost extends React.Component{
 
         const _post = this.props.postItem;
         let post_content = "";
-        let img_div_class = "pg-newsfeed-post-upload-image";
+        let img_div_class = "image-col-wrapper pg-newsfeed-post-upload-image";
         if (_post.post_mode == "NP" ){
             post_content = _post.content;
         }else if(_post.post_mode == "LE"){
@@ -311,7 +311,7 @@ class SinglePost extends React.Component{
                 }
                 return (
                     <div className={img_div_class} key={key}>
-                        <img src = {_url}/>{
+                        <img src = {_url} className="img-responsive post-img" />{
                         (upload.file_type == "mp4")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true"></i>:null
                     }
                         {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
@@ -350,8 +350,10 @@ class SinglePost extends React.Component{
                                     <p className="pg-newsfeed-post-description">{post_content}</p>
                                 </div>
 
-                                <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
-                                    {uploaded_files}
+                                <div id="image_display" className="image-container">
+                                    <div className="row">
+                                        {uploaded_files}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -384,7 +386,7 @@ class SinglePost extends React.Component{
                 {this.state.isShowingImgModal &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
                     <ModalDialog onClose={this.handleClose.bind(this)} className="imgPop-holder">
-                        <div className="share-popup-holder">
+                        <div className="share-popup-holder feed-container">
                             <div className="img-holder">
                                 <img src={this.imgList[this.state.currentImage]} className="img-responsive"/>
                             </div>
@@ -401,37 +403,42 @@ class SinglePost extends React.Component{
                                     :
                                     null
                             }
-                            <PostActionBar comment_count={_post.comment_count}
-                                           post_index = {_postIndex}
-                                           onLikeClick = {this.onLikeClick.bind(this)}
-                                           onShareClick = {event=>this.onShareClick()}
-                                           onCommentClick = {event=>this.onCommentClick()}
-                                           OnLikeHover = {event=>this.loadLikedUsers()}
-                                           is_i_liked = {_is_i_liked}
-                                           liked_users = {_post.liked_user}
-                                           show_share_button ={true}/>
+                            <div className="wall-post">
+                                <div className="post-footer">
+                                    <PostActionBar comment_count={_post.comment_count}
+                                                   post_index = {_postIndex}
+                                                   onLikeClick = {this.onLikeClick.bind(this)}
+                                                   onShareClick = {event=>this.onShareClick()}
+                                                   onCommentClick = {event=>this.onCommentClick()}
+                                                   OnLikeHover = {event=>this.loadLikedUsers()}
+                                                   is_i_liked = {_is_i_liked}
+                                                   liked_users = {_post.liked_user}
+                                                   show_share_button ={true}/>
 
-                            {
-                                (typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
-                                    <LikeSummery
-                                        visibility={true}
-                                        likes ={_post.liked_user}/>
-                                    :null
-                            }
 
-                            {
-                                (this.state.showCommentPane) ?
-                                    <div className="comment-inner-wrapper">
-                                        <CommentElement
-                                        visibility = {this.state.showCommentPane}
-                                        postId = {_post.post_id}
-                                        comments = {this.state.comments}
-                                        unformattedComments = {this.state.unformattedComments}
-                                        onCommentAddSuccess = {this.onCommentAddSuccess.bind(this)}
-                                        onCommentDeleteSuccess = {this.onCommentDeleteSuccess.bind(this)}/>
-                                    </div>
-                                    : ""
-                            }
+                                {/*
+                                    (typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
+                                        <LikeSummery
+                                            visibility={true}
+                                            likes ={_post.liked_user}/>
+                                        :null
+                                */}
+
+                                {
+                                    (this.state.showCommentPane) ?
+                                        <div className="comment-inner-wrapper">
+                                            <CommentElement
+                                            visibility = {this.state.showCommentPane}
+                                            postId = {_post.post_id}
+                                            comments = {this.state.comments}
+                                            unformattedComments = {this.state.unformattedComments}
+                                            onCommentAddSuccess = {this.onCommentAddSuccess.bind(this)}
+                                            onCommentDeleteSuccess = {this.onCommentDeleteSuccess.bind(this)}/>
+                                        </div>
+                                        : ""
+                                }
+                                </div>
+                            </div>
                         </div>
                     </ModalDialog>
                 </ModalContainer>
@@ -458,7 +465,7 @@ class SinglePost extends React.Component{
         this.imgList = [];
 
         const _post = this.props.postItem;
-        let img_div_class = "pg-newsfeed-post-upload-image";
+        let img_div_class = "image-col-wrapper pg-newsfeed-post-upload-image";
         if(_post.post_mode == "PP"){//profile update post
             img_div_class += " profile-update";
         }
@@ -470,6 +477,8 @@ class SinglePost extends React.Component{
         let postImgLength = _post.upload.length;
         let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
             _profile.images.profile_image.http_url:"";
+
+        let loggedUserProPic = (this.loggedUser.profile_image)? this.loggedUser.profile_image : "/images/default-profile-image.png";
 
         var uploaded_files = _post.upload.map((upload,key)=>{
             if(key <= 3){
@@ -488,7 +497,7 @@ class SinglePost extends React.Component{
                             href={_url}
                             key={key}
                             onClick={(e) => this.openLightbox(key, e)}
-                        ><img src = {_url}/></a>{
+                        ><img src = {_url} className="img-responsive post-img" /></a>{
                         (upload.file_type == "mp4")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true" onClick = {(event)=>{this.onVideoPlay(upload)}}></i>:null
                     }
                         {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
@@ -496,70 +505,71 @@ class SinglePost extends React.Component{
                 )
             }
         });
-
         return (
-            <div className="pg-timeline-white-box pg-top-round-border pg-add-margin-top" id={_post.post_id}>
-                <div className="row row-clr pg-newsfeed-section-common-content-inner pg-rm-padding-bottom">
-                    {this.loggedUser.id == _profile.user_id?<i className="fa fa-times pg-status-delete-icon" onClick={(event)=>{this.onPostDelete(_post,_postIndex)}}/>:null}
-                    <div className="row row-clr pg-newsfeed-section-common-content-post-info">
-                        <div className="pg-user-pro-pic">
-                            <PostProfilePic post={_post}
+            <div className="pg-timeline-white-box wall-post" id={_post.post_id}>
+                {this.loggedUser.id == _profile.user_id?<i className="fa fa-times pg-status-delete-icon" onClick={(event)=>{this.onPostDelete(_post,_postIndex)}}/>:null}
+                <div className="pg-newsfeed-section-common-content-post-info">
+                    <div className="post-header">
+                        <div className="user-title-wrapper">
+                            <div className="user-image-holder">
+                                <PostProfilePic post={_post}
+                                                profile={_profile}
+                                                onLoadProfile = {this.props.onLoadProfile}/>
+                            </div>
+                            <div className="user-name-container">
+                                <PostOwner post={_post}
                                             profile={_profile}
                                             onLoadProfile = {this.props.onLoadProfile}/>
-                        </div>
-                        <div className="pg-user-pro-info">
-                            <h5 className="pg-newsfeed-profile-name">
-
-                                <PostOwner post={_post}
-                                           profile={_profile}
-                                           onLoadProfile = {this.props.onLoadProfile}/>
 
                                 <SharedPostTitle post={_post}
-                                                 loggedUser={this.loggedUser}
-                                                 onLoadProfile = {this.props.onLoadProfile}/>
+                                                    loggedUser={this.loggedUser}
+                                                    onLoadProfile = {this.props.onLoadProfile}/>
 
                                 <UpdatedProPic post={_post}
-                                              loggedUser={this.loggedUser}/>
-
-                            </h5>
-                            <p className="pg-newsfeed-post-time">{_post.date.time_a_go}</p>
-
-                                <LocationPostTitle post={_post}
-                                                   loggedUser={this.loggedUser}/>
-
+                                                loggedUser={this.loggedUser}/>
+                                <span className="posted-time">{_post.date.time_a_go}</span>
+                            </div>
                         </div>
+                        <LocationPostTitle post={_post}
+                                            loggedUser={this.loggedUser}/>
+                        <span className="post-options"></span>
+                    </div>
 
-                        <div className="row row-clr pg-newsfeed-common-content-post-content">
-                            <PostContentBody post={_post}
-                                             loggedUser={this.loggedUser}/>
+                    <div className="pg-newsfeed-common-content-post-content post-body">
+                        <PostContentBody post={_post}
+                                            loggedUser={this.loggedUser}/>
 
-                        </div>
+                    </div>
 
-                        <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
+                    <div id="image_display" className="image-container">
+                        <div className="row">
                             {uploaded_files}
                         </div>
+                    </div>
 
-                        <SharedPostBody  post={_post}
-                                     loggedUser={this.loggedUser}
-                                     onLoadProfile = {this.props.onLoadProfile}/>
+                    <SharedPostBody  post={_post}
+                                    loggedUser={this.loggedUser}
+                                    onLoadProfile = {this.props.onLoadProfile}/>
 
-
+                    <div className="post-footer">
                         <PostActionBar comment_count={_post.comment_count}
-                                       post_index = {_postIndex}
-                                       onLikeClick = {this.onLikeClick.bind(this)}
-                                       onShareClick = {event=>this.onShareClick()}
-                                       onCommentClick = {event=>this.onCommentClick()}
-                                       OnLikeHover = {event=>this.loadLikedUsers()}
-                                       is_i_liked = {_is_i_liked}
-                                       liked_users = {_post.liked_user}
-                                       show_share_button ={true}/>
+                                        post_index = {_postIndex}
+                                        onLikeClick = {this.onLikeClick.bind(this)}
+                                        onShareClick = {event=>this.onShareClick()}
+                                        onCommentClick = {event=>this.onCommentClick()}
+                                        OnLikeHover = {event=>this.loadLikedUsers()}
+                                        is_i_liked = {_is_i_liked}
+                                        liked_users = {_post.liked_user}
+                                        show_share_button ={true}
+                                        userProPic = {loggedUserProPic} 
+                        />
 
                         {
-                            (typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
+                            /*(typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
                                 <LikeSummery
                                     visibility={true}
                                     likes ={_post.liked_user}/>
-                                :null
+                                :null*/
                         }
 
                         {
@@ -572,11 +582,11 @@ class SinglePost extends React.Component{
                                 onCommentDeleteSuccess = {this.onCommentDeleteSuccess.bind(this)}/>
                             : ""
                         }
-
-                        {this.getPopup()}
-                        {this.getVideoPopup()}
-                        {this.getImgPopup()}
                     </div>
+
+                    {this.getPopup()}
+                    {this.getVideoPopup()}
+                    {this.getImgPopup()}
                 </div>
             </div>
         );
@@ -592,31 +602,125 @@ class SinglePost extends React.Component{
  * @param onComment
  * @constructor
  */
-const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onCommentClick,liked_users,is_i_liked,show_share_button})=>{
+const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onCommentClick,liked_users,is_i_liked,show_share_button,userProPic})=>{
     let __opt ={};
     if(is_i_liked){
         __opt['style'] = {color:"#61b3de", "pointerEvents": "none",cursor: "default"}
     }
-
     return (
-        <div className="row pg-newsfeed-common-content-post-status">
-            <div className="pg-newsfeed-status-left-section">
-                <a href="javascript:void(0)"
-                   onClick ={(event)=>{onLikeClick(post_index)}}
-                   className="pg-newsfeed-status-left-section-icon" {...__opt}><i className="fa fa-heart"></i> Like</a>
-                <a href="javascript:void(0)"
-                   onClick ={(event)=>{onCommentClick(event)}}
-                   className="pg-newsfeed-status-left-section-icon"><i className="fa fa-comment"></i> Comment</a>
+        <div>
+            <div className="display-container clearfix">
+                <div className="pull-left">
+                    <div className="action-event like active">
+                        {
+                            (liked_users)?
+                                (liked_users.length > 0)?
+                                <span className="icon"></span>
+                                : null
+                            : null
+                        }
+                        {   
+                            (liked_users)?
+                                (liked_users.length == 1)?
+                                    <span>
+                                        <span className="img-container">
+                                            <span className="user-image">
+                                                <img src={(liked_users[0].profile_image == "you")? userProPic : liked_users[0].profile_image} className="img-responsive img-circle" />
+                                            </span>
+                                        </span>
+                                        <span className="text">{liked_users[0].name.split(" ")[0]}</span>
+                                    </span>
+                                :
+                                    null
+                            :null
+                        }                    
+                        {
+                            (liked_users)?
+                            (liked_users.length == 2)?
+                                <span>
+                                    <span className="img-container">
+                                        <span className="user-image">
+                                            <img src={(liked_users[0].profile_image == "you")? userProPic : liked_users[0].profile_image} className="img-responsive img-circle" />
+                                        </span>
+                                        <span className="user-image">
+                                            <img src={(liked_users[1].profile_image == "you")? userProPic : liked_users[1].profile_image} className="img-responsive img-circle" />
+                                        </span>
+                                    </span>
+                                    <span className="text">{liked_users[0].name.split(" ")[0] + " and " + liked_users[1].name.split(" ")[0]}</span>
+                                </span>
+                            :
+                                null
+                            :null
+                        }                    
+                        {
+                            (liked_users)?
+                                (liked_users.length == 3)?
+                                    <span>
+                                        <span className="img-container">
+                                            <span className="user-image">
+                                                <img src={(liked_users[0].profile_image == "you")? userProPic : liked_users[0].profile_image} className="img-responsive img-circle" />
+                                            </span>
+                                            <span className="user-image">
+                                                <img src={(liked_users[1].profile_image == "you")? userProPic : liked_users[1].profile_image} className="img-responsive img-circle" />
+                                            </span>
+                                            <span className="user-image">
+                                                <img src={(liked_users[2].profile_image == "you")? userProPic : liked_users[2].profile_image} className="img-responsive img-circle" />
+                                            </span>
+                                        </span>
+                                        <span className="text">{liked_users[0].name.split(" ")[0] + ", " + liked_users[1].name.split(" ")[0] + " and " + liked_users[2].name.split(" ")[0]}</span>
+                                    </span>
+                                :
+                                    null
+                            :null
+                        }                    
+                        {
+                            (liked_users)?
+                                (liked_users.length > 3)?
+                                    <span>
+                                        <span className="img-container">
+                                            <span className="user-image">
+                                                <img src={(liked_users[0].profile_image == "you")? userProPic : liked_users[0].profile_image} className="img-responsive img-circle" />
+                                            </span>
+                                            <span className="user-image">
+                                                <img src={(liked_users[1].profile_image == "you")? userProPic : liked_users[1].profile_image} className="img-responsive img-circle" />
+                                            </span>
+                                            <span className="user-image">
+                                                <img src={(liked_users[2].profile_image == "you")? userProPic : liked_users[2].profile_image} className="img-responsive img-circle" />
+                                            </span>
+                                        </span>
+                                        <span className="text">{liked_users[0].name.split(" ")[0] + ", " + liked_users[1].name.split(" ")[0] + ", " + liked_users[2].name.split(" ")[0] + " and " + (liked_users.length - 3) + " other's"}</span>
+                                    </span>
+                                :
+                                    null
+                            :null
+                        }                    
+                    </div>
+                </div>
+                <div className="pull-right">
+                    <div className="action-event comment" onClick ={(event)=>{onCommentClick(event)}}>
+                        <span className="icon"></span> 
+                        <span className="text">{comment_count}</span>
+                    </div>
+                    <div className="action-event share active">
+                        <span className="icon"></span> 
+                        <span className="text">0</span>
+                    </div>
+                </div>
+            </div>
+            <div className="actions-container clearfix">
+                <div className="action-event like" onClick ={(event)=>{onLikeClick(post_index)}}>
+                    <span className="icon"></span> <span className="text">Like</span>
+                </div>
+                <div className="action-event comment" onClick ={(event)=>{onCommentClick(event)}}>
+                    <span className="icon"></span> <span className="text">Comment</span>
+                </div>
                 {
                     (show_share_button)?
-                        <a href="javascript:void(0)"
-                           onClick ={(event)=>{onShareClick(event)}}
-                           className="pg-newsfeed-status-left-section-icon"><i className="fa fa-share-alt"></i> Share</a>
-                        :null
+                    <div className="action-event share" onClick ={(event)=>{onShareClick(event)}}>
+                        <span className="icon"></span> <span className="text">Share</span>
+                    </div>
+                    : null
                 }
-            </div>
-            <div className="pg-newsfeed-status-right-section">
-                <a href="#" className="pg-newsfeed-status-right-section-view-comment">{comment_count}</a>
             </div>
         </div>
     );
@@ -637,7 +741,7 @@ const LikeSummery=({likes,visibility}) =>{
     }
 
     return (
-        <div className="row pg-newsfeed-common-content-like-status" {...opt}>
+        <div className="pg-newsfeed-common-content-like-status" {...opt}>
             <div className="comment-wrapper-section">
                 <p className="pg-newsfeed-common-content-like-status-paragraph">
                     <a href="javascript:void(0)" className="pg-newsfeed-common-content-like-status-profile-links">{likes[0].name}</a>
@@ -689,12 +793,14 @@ const SharedPostTitle = ({loggedUser,post,onLoadProfile}) =>{
         return (
             (post.created_by.user_id == post.shared_post.created_by.user_id)?
                 <span className="own-post-share">shared own post</span>
-                :   <span className="post-owner-name">
-                        <span className="shared-text">shared</span>
-                        <span className="pro-name" onClick={()=>onLoadProfile(post.shared_post.created_by.user_name)}>
-                            {" "+post.shared_post.created_by.first_name + " " + post.shared_post.created_by.last_name}
-                        </span>'s post
-                    </span>
+                :   
+                <div className="user-title-wrapper">
+                    <span className="shared-text">shared</span>
+                    <div className="user-name-container post-owner">
+                        <span className="name" onClick={()=>onLoadProfile(post.shared_post.created_by.user_name)}>{" "+post.shared_post.created_by.first_name + " " + post.shared_post.created_by.last_name + "'s"}</span>
+                        <span className="shared-text">post</span>
+                    </div>
+                </div>
         )
     }
     return (<span />);
@@ -713,30 +819,36 @@ const PostContentBody = ({loggedUser,post})=>{
             </div>
         )
     }
-    return <p className="pg-newsfeed-post-description">{post.content}</p>;
+    return <p className="post-description">{post.content}</p>;
 
 };
 
 const PostOwner = ({post,profile,onLoadProfile}) => {
-
     if(post.post_owned_by != undefined){
         return (
             (post.created_by.user_id == post.post_owned_by.user_id)?
-                <span className="pro-name" onClick={()=>onLoadProfile(profile.user_name)} >{profile.first_name + " " + profile.last_name + " "} </span>
+                <span className="name" onClick={()=>onLoadProfile(profile.user_name)} >{profile.first_name + " " + profile.last_name + " "} </span>
                 :
-                <span className="post-owner-name">
-                    <span className="pro-name" onClick={()=>onLoadProfile(post.post_owned_by.user_name)}>
-                  {post.post_owned_by.first_name + " " + post.post_owned_by.last_name + " "}
-                    </span>
-                    <i className="fa fa-caret-right"></i>
-                    <span className="pro-name" onClick={()=>onLoadProfile(post.created_by.user_name)}>
-                        {" " + post.created_by.first_name + " " + post.created_by.last_name}
-                    </span>
+                <span className="user-title-wrapper">
+                    <div className="user-name-container">
+                        <span className="name" onClick={()=>onLoadProfile(post.post_owned_by.user_name)}>
+                    {post.post_owned_by.first_name + " " + post.post_owned_by.last_name + " "}
+                        </span>
+                    </div>
+                    <span className="posted-on"></span>
+                    <div className="user-image-holder">
+                        <img src={post.created_by.images.profile_image.http_url} className="img-responsive img-circle"/>
+                    </div>
+                    <div className="user-name-container">
+                        <span className="name" onClick={()=>onLoadProfile(post.created_by.user_name)}>
+                            {" " + post.created_by.first_name + " " + post.created_by.last_name}
+                        </span>
+                    </div>
                 </span>
         );
     }else{
         return(
-            <span className="pro-name" onClick={()=>onLoadProfile(profile.user_name)}>{profile.first_name + " " + profile.last_name + " "} </span>
+            <span className="name" onClick={()=>onLoadProfile(profile.user_name)}>{profile.first_name + " " + profile.last_name + " "} </span>
         );
     }
 
@@ -744,15 +856,18 @@ const PostOwner = ({post,profile,onLoadProfile}) => {
 
 const PostProfilePic = ({post,profile,onLoadProfile}) => {
     if(post.post_owned_by != undefined){
+        let _images = post.created_by.images;
+        let profileImg = _images.hasOwnProperty('profile_image') ? _images.profile_image.hasOwnProperty('http_url') ? _images.profile_image.http_url : "/images/default-profile-pic.png" : "/images/default-profile-pic.png";
+        profileImg = (profileImg != undefined && profileImg) ? profileImg : "/images/default-profile-pic.png";
         return (
             (post.created_by.user_id == post.post_owned_by.user_id)?
-                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
+                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={profileImg} alt={profile.first_name + " " + profile.last_name} className="img-responsive img-circle"/>
                 :
-                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={post.post_owned_by.images.profile_image.http_url} alt={post.post_owned_by.first_name + " " + post.post_owned_by.last_name} className="img-responsive"/>
+                <img onClick={()=>onLoadProfile(post.post_owned_by.user_name)} src={profileImg} alt={post.post_owned_by.first_name + " " + post.post_owned_by.last_name} className="img-responsive img-circle"/>
         );
     }else{
         return(
-            <img onClick={()=>onLoadProfile(post.created_by.user_name)} src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive"/>
+            <img onClick={()=>onLoadProfile(post.created_by.user_name)} src={post.created_by.images.profile_image.http_url} alt={profile.first_name + " " + profile.last_name} className="img-responsive img-circle"/>
         );
     }
 

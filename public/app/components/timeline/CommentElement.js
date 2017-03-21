@@ -108,10 +108,9 @@ export default class CommentElement extends React.Component{
         });
 
         return (
-            <div {...opt}>
-                <div className="row pg-newsfeed-common-content-post-comments">
+            <div className="comments-container clearfix" {...opt}>
+                <div className="comments-list">
                     {comments}
-
                 </div>
                 <PostCommentAction
                     onCommentAdd = {this.onCommentAdd.bind(this)}
@@ -132,14 +131,15 @@ export default class CommentElement extends React.Component{
 const CommentItem =({comment,unformattedComment,loggedUser,onCommentDelete}) =>{
 
     let _loggedUser = loggedUser;
-    let _profile = comment.commented_by
+    let _profile = comment.commented_by;
+    console.log(_profile)
+    console.log(comment)
     let _profile_image = (typeof _profile.images.profile_image != 'undefined')?_profile.images.profile_image.http_url:"";
     let commented_by = _profile.first_name +" "+ _profile.last_name;
     return(
-        <div className="row-clr pg-comment-row clearfix">
+        <div className="comment">
             {_loggedUser.id == _profile.user_id?<i className="fa fa-times pg-comment-delete-icon" onClick={(event)=>{onCommentDelete(unformattedComment)}}/>:null}
-            <div className="col-xs-12 pg-comment-row-inner">
-                <div className="pg-comment-user-pro-pic">
+                {/*<div className="pg-comment-user-pro-pic">
                     <img src={_profile_image} alt={commented_by} className="img-responsive"/>
                     </div>
                     <div className="pg-comment-info">
@@ -161,6 +161,30 @@ const CommentItem =({comment,unformattedComment,loggedUser,onCommentDelete}) =>{
                                 null
                         }
 
+                    </div>
+                </div>*/}
+                <div className="user-title-wrapper">
+                    <div className="user-image-holder">
+                        <img src={_profile_image} alt={commented_by} className="img-responsive img-circle"/>
+                    </div>
+                    <div className="user-name-container">
+                        <span className="name">{commented_by}</span>
+                        <span className="posted-time">{comment.date.time_a_go}</span>
+                    </div>
+                </div>
+                <div className="comment-inner-wrapper">
+                    <p className="comment-text">{comment.comment}</p>
+                    {
+                        (comment.attachment)?
+                            <div className="pg-newsfeed-post-upload-image">
+                                <img src = {comment.attachment.http_url}/>
+                            </div>
+                            :
+                            null
+                    }
+                    <div className="controls">
+                        <span className="control like">Like</span>
+                        <span className="control reply">Reply</span>
                     </div>
                 </div>
             </div>
@@ -215,16 +239,16 @@ export class  PostCommentAction extends React.Component{
     }
 
     render(){
-
-        let profile_image = (typeof this.loggedUser.profile_image != 'undefined')?this.loggedUser.profile_image:"";
+        console.log(this.loggedUser)
+        let profile_image = (this.loggedUser.profile_image)? this.loggedUser.profile_image : "/images/default-profile-image.png";
         return(
-            <div className="row pg-newsfeed-common-content-post-new-comment pg-bottom-round-border">
-                <div className="col-xs-10">
-                    <div className="row clearfix">
+            <div className="input-comment">
+                {/*<div className="col-xs-10">
+                    <div className="clearfix">
                         <div className="col-xs-2 cmt-pro-img">
                             <img src={profile_image} alt={this.loggedUser.first_name +" "+ this.loggedUser.last_name} className="img-responsive"/>
                         </div>
-                        <div className="col-xs-10 pg-newsfeed-common-content-post-new-comment-input-area comment-holder">
+                        <div className="pg-newsfeed-common-content-post-new-comment">
                             <div id="comment_input" contentEditable={true}
                                  className="comment-containable-div"
                                  onInput={this.onContentAdd.bind(this)}></div>
@@ -246,6 +270,34 @@ export class  PostCommentAction extends React.Component{
                 </div>
                 <div className="col-xs-2 pg-newsfeed-new-comment-icon-wrapper">
                     <div className="addBtnHolder">
+                        <a href="javascript:void(0)"
+                           onClick={this.onCommentEnter.bind(this)}
+                           className="pg-status-post-btn">Add</a>
+                    </div>
+                </div>*/}
+                <div className="user-image-holder">
+                    <img src={profile_image} alt={this.loggedUser.first_name +" "+ this.loggedUser.last_name} className="img-responsive img-circle"/>
+                </div>
+                <div className="input-wrapper">
+                    <div id="comment_input" contentEditable={true}
+                            className="form-control input-comment"
+                            onInput={this.onContentAdd.bind(this)}
+                            placeholder="write a comment..."></div>
+                    <label htmlFor="cmntImgUpload" className="img-comment">
+                        <i className="fa fa-camera"></i>
+                    </label>
+                    <input type='file' id="cmntImgUpload" onChange={(event)=>{this.selectImage(event)}} />
+                    {
+                        (this.state.imgComment)?
+                            <div className="comment-img-holder">
+                                <img src={this.state.imgComment} className="img-responsive" />
+                                <i className="fa fa-times close-icon" onClick={this.removeImage.bind(this)}></i>
+                            </div>
+                        :
+                        null
+                    }
+                    <span className="emoji"></span>
+                    <div className="pg-newsfeed-new-comment-icon-wrapper">
                         <a href="javascript:void(0)"
                            onClick={this.onCommentEnter.bind(this)}
                            className="pg-status-post-btn">Add</a>

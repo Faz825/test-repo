@@ -245,12 +245,12 @@ export default class Index extends React.Component{
         if(typeof popupData.article_image != 'undefined'){
             _articalImage = popupData.article_image;
         }
-
+        console.log(popupData)
         return(
             <div>
                 {this.state.isShowingModal &&
-                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999} >
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="840" className="news-popup-holder">
                         <div className="modal-body pg-modal-body">
                             <div className="popup-img-holder">
                                 <img className="img-responsive pg-main-pop-img" alt src={_articalImage} />
@@ -309,65 +309,125 @@ export default class Index extends React.Component{
         let workmodeClass = (this.state.blockNewsFeed)?"workmode-switched":"";
 
         return(
-            <div id="pg-newsfeed-page" className="pg-page">
-                <div className="row row-clr">
-                    <div className="container" id="middle-content-wrapper">
+            <section className="news-feed-container">
+                {/*<div id="pg-newsfeed-page" className="pg-page">
+                    <div className="row row-clr">
+                        <div className="container" id="middle-content-wrapper">
+                            <div className="row">
+                                <div className="col-xs-4" id="news-middle-container-left-col">
+                                    <div id="pg-news-middle-container-left-col-details">
+                                        <h2 className="pg-newsfeed-left-title-section-txt">NEWS</h2>
+                                        <NewsArtical display_news_articles = {display_news_articles} selected = {_this.selectedArtical} saveArtical={_this.onSaveArticleIconClick}/>
+                                        {this.getPopup()}
+                                    </div>
+                                </div>
+                                <div className="col-xs-8" id="newsfeed-middle-container-right-col">
+                                    <div className="row pg-newsfeed-right-title-section">
+                                        <div className="col-xs-5">
+                                            <h2 className="pg-newsfeed-right-title-section-txt">Updates</h2>
+                                        </div>
+                                        <div className="col-xs-7">
+                                            <h3 className="pg-newsfeed-right-title-section-date">{this.current_date}</h3>
+                                        </div>
+                                    </div>
+                                    <AddPostElement
+                                        workModeStyles={workmodeClass}
+                                        onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                        uname = {uname}
+                                        profileUsr={user}
+                                        connectionStatus={this.state.connectionStatus}
+                                        postType={this.postType}
+                                        postVisibleMode={this.postVisibleMode}
+                                    />
+                                    <ListPostsElement posts={this.state.posts}
+                                                    uname = {uname}
+                                                    onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}
+                                                    onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
+                                                    onLikeSuccess = {this.onLikeSuccess.bind(this)}
+                                                    onLoadProfile = {this.onLoadProfile.bind(this)}
+                                    />
+                                </div>
+                                <div className="col-xs-6"></div>
+                            </div>
+                        </div>
+                        {
+                            (this.state.blockNewsFeed)?
+                            <div className="workmode-overlay-holder">
+                                <div className="row">
+                                    <div className="container">
+                                        <div className="secretary-holder">
+                                            <img src={_secretary_image} alt="Secretary" className="img-responsive"/>
+                                        </div>
+                                        <div className="msg-holder">
+                                            <h3>{user.first_name + " " + user.last_name}, Don't get distracted, get back to
+                                                work!</h3>
+                                            <img className="arrow" src="images/workmode_msg_arrow.png"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> : null
+                        }
+                    </div>
+                </div>*/}
+                <div className="container">
+                    <div className="feed-container">
                         <div className="row">
-                            <div className="col-xs-4" id="news-middle-container-left-col">
-                                <div id="pg-news-middle-container-left-col-details">
-                                    <h2 className="pg-newsfeed-left-title-section-txt">NEWS</h2>
+                            <div className="col-sm-4">
+                                <div className="news-feed-header-block">
+                                    <div className="left-col pull-left">
+                                        <p className="title">news</p>
+                                        <div className="sub-title">
+                                            <span className="option active">latest</span>
+                                            <span className="slash">/</span>
+                                            <span className="option">trending</span>
+                                        </div>
+                                    </div>
+                                    <div className="right-col pull-right">
+                                        <span className="options-button"></span>
+                                    </div>
+                                </div>
+                                <div className="news-channels-section">
                                     <NewsArtical display_news_articles = {display_news_articles} selected = {_this.selectedArtical} saveArtical={_this.onSaveArticleIconClick}/>
                                     {this.getPopup()}
                                 </div>
                             </div>
-                            <div className="col-xs-8" id="newsfeed-middle-container-right-col">
-                                <div className="row pg-newsfeed-right-title-section">
-                                    <div className="col-xs-5">
-                                        <h2 className="pg-newsfeed-right-title-section-txt">Updates</h2>
+                            <div className="col-sm-8">
+                                <div className="news-feed-header-block">
+                                    <div className="left-col pull-left">
+                                        <p className="title">updates</p>
+                                        <div className="sub-title">
+                                            <span className="option active">friends</span>
+                                            <span className="slash">/</span>
+                                            <span className="option">interests</span>
+                                        </div>
                                     </div>
-                                    <div className="col-xs-7">
-                                        <h3 className="pg-newsfeed-right-title-section-date">{this.current_date}</h3>
+                                    <div className="right-col pull-right">
+                                        <span className="settings-button"></span>
                                     </div>
                                 </div>
-                                <AddPostElement
-                                    workModeStyles={workmodeClass}
-                                    onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
-                                    uname = {uname}
-                                    profileUsr={user}
-                                    connectionStatus={this.state.connectionStatus}
-                                    postType={this.postType}
-                                    postVisibleMode={this.postVisibleMode}
-                                />
-                                <ListPostsElement posts={this.state.posts}
-                                                uname = {uname}
-                                                onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}
-                                                onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
-                                                onLikeSuccess = {this.onLikeSuccess.bind(this)}
-                                                onLoadProfile = {this.onLoadProfile.bind(this)}
-                                />
+                                <div className="outer-wrapper clearfix">
+                                    <AddPostElement
+                                            workModeStyles={workmodeClass}
+                                            onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                            uname = {uname}
+                                            profileUsr={user}
+                                            connectionStatus={this.state.connectionStatus}
+                                            postType={this.postType}
+                                            postVisibleMode={this.postVisibleMode}
+                                        />
+                                    <ListPostsElement posts={this.state.posts}
+                                                        uname = {uname}
+                                                        onPostSubmitSuccess= {this.onPostSubmitSuccess.bind(this)}
+                                                        onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
+                                                        onLikeSuccess = {this.onLikeSuccess.bind(this)}
+                                                        onLoadProfile = {this.onLoadProfile.bind(this)}
+                                        />
+                                </div>
                             </div>
-                            <div className="col-xs-6"></div>
                         </div>
                     </div>
-                    {
-                        (this.state.blockNewsFeed)?
-                        <div className="workmode-overlay-holder">
-                            <div className="row">
-                                <div className="container">
-                                    <div className="secretary-holder">
-                                        <img src={_secretary_image} alt="Secretary" className="img-responsive"/>
-                                    </div>
-                                    <div className="msg-holder">
-                                        <h3>{user.first_name + " " + user.last_name}, Don't get distracted, get back to
-                                            work!</h3>
-                                        <img className="arrow" src="images/workmode_msg_arrow.png"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> : null
-                    }
                 </div>
-            </div>
+            </section>
         )
     }
 
@@ -401,18 +461,24 @@ export class NewsArtical extends React.Component{
         }
 
         let _news_item = this.props.display_news_articles.map(function(newsItem,key){
-            let news_logo= "/images/news/"+newsItem.channel.toLowerCase()+".png";
+            let news_logo= 'url(/images/news/'+newsItem.channel.toLowerCase()+'.png)';
             let _articalImage = '/images/image_not_found.png';
             if(typeof newsItem.article_image != 'undefined'){
                 _articalImage = newsItem.article_image;
             }
 
-            let _className = "fa fa-bookmark";
+            let _className = "bookmark";
             if(newsItem.isSaved){
-                _className += " blue_i";
+                _className += " active";
+            }
+
+            let desc;
+            if (newsItem.content.length > 59) {
+                desc = newsItem.content.substring(0, 59) + "...";
             }
             return(
-                <div className="row row-clr pg-newsfeed-left-post-item" onClick={event=>_this.onArticalSelect(newsItem)} key={key}>
+                <div className="news-block" onClick={event=>_this.onArticalSelect(newsItem)} key={key}>
+                {/*<div className="row row-clr pg-newsfeed-left-post-item" onClick={event=>_this.onArticalSelect(newsItem)} key={key}>
                     <div className="row row-clr pg-newsfeed-left-post-item-main-img-wrapper">
                         <img src={_articalImage} className="img-responsive  pg-newsfeed-left-post-item-main-img"/>
                         <div className="pg-newsfeed-left-post-item-logo-wrapper">
@@ -431,12 +497,24 @@ export class NewsArtical extends React.Component{
                             <a href="#" className="pg-newsfeed-left-post-item-status-section-right-links" onClick={event=>_this.saveArticle(newsItem)}><i className={_className}></i> Save</a>
                         </div>
                     </div>
+                </div>*/}
+                    <div className="news-thumb">
+                        <img src={_articalImage} width="284" height="187"/>
+                        <span className="channel-logo" style={{backgroundImage: news_logo, backgroundSize: "cover"}}></span>
+                    </div>
+                    <div className="news-body">
+                        <p className="news-title">{newsItem.heading}</p>
+                        <div className="news-description" dangerouslySetInnerHTML={{__html: desc}} />
+                        <div className="news-block-footer">
+                            <span className="date">{newsItem.article_date}</span>
+                            <span className={_className} onClick={event=>_this.saveArticle(newsItem)}></span>
+                        </div>
+                    </div>
                 </div>
-
             );
         });
         return(
-            <div className="row row-clr pg-newsfeed-left-post-container">
+            <div className="news-block-holder">
                 {_news_item}
             </div>
         );

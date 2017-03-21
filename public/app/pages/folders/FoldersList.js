@@ -334,6 +334,9 @@ export default class FolderList extends React.Component{
 
         let _folderName = folderData.folder_name == 'undefined' ? folderData.folder_name : folderData.folder_name.length <= 12 ? folderData.folder_name : folderData.folder_name.slice(0,14) + '...';
 
+        console.log("this.props.tabType");
+        console.log(folderData.folder_name + " " +this.props.tabType);
+
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
                 {
@@ -353,7 +356,7 @@ export default class FolderList extends React.Component{
                                             <h3 title={folderData.folder_name}>{_folderName}</h3>
                                         </div>
                                         {
-                                            (this.props.folderCount != 0)?
+                                            (this.props.folderCount != 0 && folderData.folder_name != "My Folder" && this.props.tabType == "MY_FOLDER")?
                                                 <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
                                                     <div className="share-folder">
                                                         {
@@ -435,7 +438,7 @@ export default class FolderList extends React.Component{
                                             <h3 title={folderData.folder_name}>{_folderName}</h3>
                                         </div>
                                         {
-                                            (this.props.folderCount != 0)?
+                                            (this.props.folderCount != 0 && folderData.folder_name != "My Folder" && this.props.tabType == "MY_FOLDER")?
                                                 <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
                                                     <div className="share-folder">
                                                         {
@@ -567,8 +570,8 @@ export class File extends React.Component{
                                 <svg width="24" height="32">
                                     {
                                         (folder_icons.indexOf(data.document_type) == -1) ?
-                                            <image xlinkHref={"images/folder/types/default_icon.svg"} width="24" height="32"/> :
-                                            <image xlinkHref={"images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
+                                            <image xlinkHref={"/images/folder/types/default_icon.svg"} width="24" height="32"/> :
+                                            <image xlinkHref={"/images/folder/types/"+data.document_type +".svg"} width="24" height="32"/>
                                     }
                                 </svg>
                             </div>

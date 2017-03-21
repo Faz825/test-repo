@@ -269,83 +269,140 @@ export default class Index extends React.Component{
         }
 
         return (
-            <div id="pg-profile-page" className="loggedUserView pg-page">
-                <Header
-                    uname={this.state.uname}
-                    user={this.state.user}
-                    loadExperiences={this.loadExperiences}
-                    loadProfileData={this.loadProfileData}
-                    connectionStatus={this.state.connectionStatus}
-                    onAddFriend = {this.onAddFriend}
-                    onAcceptFriendRequest = {this.onAcceptFriendRequest}
-                    onUnfriendUser = {this.onUnfriendUser}
-                    usrId={this.state.usrId}
-                    onLoadMutualFriends = {this.onLoadMutualFriends}
-                    onUpdateProfileImages = {this.onUpdateProfileImages}
-                />
-                <div className="row row-clr">
-                    <div className="container">
-                        <div className="profile-content-container" id="middle-content-wrapper">
-                            <div className="col-xs-6" id="profile-middle-container-left-col">
-                                <div id="pg-profile-middle-container-left-col-details">
-                                    <div className="row row-clr pg-profile-content">
-                                        <div className="row row-clr pg-profile-heading">
-                                            <h1>{profileName + "'s"} Resume</h1>
+            <section className="profile-container">
+                <div className="container">
+                    <Header
+                        uname={this.state.uname}
+                        user={this.state.user}
+                        loadExperiences={this.loadExperiences}
+                        loadProfileData={this.loadProfileData}
+                        connectionStatus={this.state.connectionStatus}
+                        onAddFriend = {this.onAddFriend}
+                        onAcceptFriendRequest = {this.onAcceptFriendRequest}
+                        onUnfriendUser = {this.onUnfriendUser}
+                        usrId={this.state.usrId}
+                        onLoadMutualFriends = {this.onLoadMutualFriends}
+                        onUpdateProfileImages = {this.onUpdateProfileImages}
+                    />
+                    {/*<div className="row row-clr">
+                        <div className="container">
+                            <div className="profile-content-container" id="middle-content-wrapper">
+                                <div className="col-xs-6" id="profile-middle-container-left-col">
+                                    <div id="pg-profile-middle-container-left-col-details">
+                                        <div className="row row-clr pg-profile-content">
+                                            <div className="row row-clr pg-profile-heading">
+                                                <h1>{profileName + "'s"} Resume</h1>
+                                            </div>
+                                            {
+                                                (this.state.connectionStatus == 3)?
+                                                    <div className="locked-screen-holder">
+                                                        <h3 className="locked-title"><i className="fa fa-lock" aria-hidden="true"></i>Resume is locked.</h3>
+                                                        <p className="locked-msg">{profileName} is not a friends of yours yet. Send him a friend request by clicking "Add as a Connection" button.</p>
+                                                    </div>
+                                                :
+                                                    <div>
+                                                        <Intro uname={this.state.uname} user={this.state.user} loadProfileData={this.loadProfileData}/>
+                                                        <EducationalInfo uname={this.state.uname} />
+                                                        <WorkExperience uname={this.state.uname} data={this.state.data} loadExperiences={this.loadExperiences} loadProfileData={this.loadProfileData}/>
+                                                        <SkillsAndInterests uname={this.state.uname} />
+                                                    </div>
+                                            }
                                         </div>
-                                        {
-                                            (this.state.connectionStatus == 3)?
-                                                <div className="locked-screen-holder">
-                                                    <h3 className="locked-title"><i className="fa fa-lock" aria-hidden="true"></i>Resume is locked.</h3>
-                                                    <p className="locked-msg">{profileName} is not a friends of yours yet. Send him a friend request by clicking "Add as a Connection" button.</p>
-                                                </div>
-                                            :
-                                                <div>
-                                                    <Intro uname={this.state.uname} user={this.state.user} loadProfileData={this.loadProfileData}/>
-                                                    <EducationalInfo uname={this.state.uname} />
-                                                    <WorkExperience uname={this.state.uname} data={this.state.data} loadExperiences={this.loadExperiences} loadProfileData={this.loadProfileData}/>
-                                                    <SkillsAndInterests uname={this.state.uname} />
-                                                </div>
-                                        }
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="col-xs-6" id="newsfeed-middle-container-right-col">
-                                {
-                                    (this.state.connectionStatus == 3)?
-                                        <div className="row row-clr pg-locked-profile-content">
-                                            <div className="row row-clr pg-profile-heading">
-                                                <h1>{profileName + "'s"} Personal Feed</h1>
+                                <div className="col-xs-6" id="newsfeed-middle-container-right-col">
+                                    {
+                                        (this.state.connectionStatus == 3)?
+                                            <div className="row row-clr pg-locked-profile-content">
+                                                <div className="row row-clr pg-profile-heading">
+                                                    <h1>{profileName + "'s"} Personal Feed</h1>
+                                                </div>
+                                                <div className="locked-screen-holder">
+                                                    <h3 className="locked-title"><i className="fa fa-lock" aria-hidden="true"></i>Personal Feed is locked.</h3>
+                                                    <p className="locked-msg">{profileName} is not a friends of yours yet. Send him a friend request by clicking "Add as a Connection" button.</p>
+                                                </div>
                                             </div>
+                                        :
+                                            <div>
+                                                <AddPostElement
+                                                    onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                                    uname = {this.state.uname}
+                                                    profileUsr={this.state.user}
+                                                    connectionStatus={this.state.connectionStatus}
+                                                    postType={this.postType}
+                                                    postVisibleMode={this.postVisibleMode}
+                                                />
+                                                <ListPostsElement posts={this.state.posts}
+                                                    uname = {this.state.uname}
+                                                    onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                                    onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
+                                                    onLikeSuccess = {this.onLikeSuccess.bind(this)}
+                                                />
+                                            </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>*/}
+                    <div className="feed-container">
+                        <div className="row">
+                            <div className="col-sm-4">
+                                <div className="about-me-section">
+                                    <p className="info-header">{profileName + "'s"} resume</p>
+                                    {
+                                        (this.state.connectionStatus == 3)?
                                             <div className="locked-screen-holder">
-                                                <h3 className="locked-title"><i className="fa fa-lock" aria-hidden="true"></i>Personal Feed is locked.</h3>
+                                                <h3 className="locked-title"><i className="fa fa-lock" aria-hidden="true"></i>Resume is locked.</h3>
                                                 <p className="locked-msg">{profileName} is not a friends of yours yet. Send him a friend request by clicking "Add as a Connection" button.</p>
                                             </div>
-                                        </div>
-                                    :
-                                        <div>
-                                            <AddPostElement
-                                                onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
-                                                uname = {this.state.uname}
-                                                profileUsr={this.state.user}
-                                                connectionStatus={this.state.connectionStatus}
-                                                postType={this.postType}
-                                                postVisibleMode={this.postVisibleMode}
-                                            />
-                                            <ListPostsElement posts={this.state.posts}
-                                                uname = {this.state.uname}
-                                                onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
-                                                onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
-                                                onLikeSuccess = {this.onLikeSuccess.bind(this)}
-                                            />
-                                        </div>
-                                }
+                                        :
+                                            <div>
+                                                <Intro uname={this.state.uname} user={this.state.user} loadProfileData={this.loadProfileData}/>
+                                                <EducationalInfo uname={this.state.uname} />
+                                                <SkillsAndInterests uname={this.state.uname} />
+                                                <WorkExperience uname={this.state.uname} data={this.state.data} loadExperiences={this.loadExperiences} loadProfileData={this.loadProfileData}/>
+                                            </div>
+                                    }
+                                </div>
                             </div>
-                            <div className="col-xs-6"></div>
+                            <div className="col-sm-8">
+                                <div className="outer-wrapper clearfix">
+                                    {
+                                        (this.state.connectionStatus == 3)?
+                                            <div className="row row-clr pg-locked-profile-content">
+                                                <div className="row row-clr pg-profile-heading">
+                                                    <h1>{profileName + "'s"} Personal Feed</h1>
+                                                </div>
+                                                <div className="locked-screen-holder">
+                                                    <h3 className="locked-title"><i className="fa fa-lock" aria-hidden="true"></i>Personal Feed is locked.</h3>
+                                                    <p className="locked-msg">{profileName} is not a friends of yours yet. Send him a friend request by clicking "Add as a Connection" button.</p>
+                                                </div>
+                                            </div>
+                                        :
+                                            <div>
+                                                <AddPostElement
+                                                    onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                                    uname = {this.state.uname}
+                                                    profileUsr={this.state.user}
+                                                    connectionStatus={this.state.connectionStatus}
+                                                    postType={this.postType}
+                                                    postVisibleMode={this.postVisibleMode}
+                                                />
+                                                <ListPostsElement posts={this.state.posts}
+                                                    uname = {this.state.uname}
+                                                    onPostSubmitSuccess ={this.onPostSubmitSuccess.bind(this)}
+                                                    onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
+                                                    onLikeSuccess = {this.onLikeSuccess.bind(this)}
+                                                />
+                                            </div>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         )
     }
 

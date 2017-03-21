@@ -80,20 +80,36 @@ export default class AddPostElement extends React.Component{
         if(this.props.uname != logged_user.user_name && this.props.connectionStatus != 0){
             return (<div />)
         }
+        let full_name = logged_user.first_name +" "+ logged_user.last_name;
+        let proImg = (logged_user.profile_image != '')? logged_user.profile_image : "/images/default-profile-image.png";
         return (
-            <div className="pg-timeline-white-box pg-round-border pg-box-shadow">
-                <div className="row row-clr pg-newsfeed-section" id="pg-newsfeed-post-section">
+            <div className="new-post">
+                {/*<div className="pg-timeline-white-box pg-round-border pg-box-shadow">
+                    <div className="row row-clr pg-newsfeed-section" id="pg-newsfeed-post-section">
 
-                    <TextPostElement afterPostSubmit = {this.afterPostSubmit.bind(this)}
-                                      uuid={this.state.uuid}
-                                      profileUsr = {this.props.profileUsr}
-                                      workModeStyles = {this.props.workModeStyles}
-                                      postType = {this.state.postType}
-                                      postVisibleMode = {this.state.postVisibleMode}
-                                      members = {this.state.members}
-                                      group = {this.state.group}
-                    />
+                        <TextPostElement afterPostSubmit = {this.afterPostSubmit.bind(this)}
+                                        uuid={this.state.uuid}
+                                        profileUsr = {this.props.profileUsr}
+                                        workModeStyles = {this.props.workModeStyles}
+                                        postType = {this.state.postType}
+                                        postVisibleMode = {this.state.postVisibleMode}
+                                        members = {this.state.members}
+                                        group = {this.state.group}
+                        />
+                    </div>
+                </div>*/}
+                <div className="user-image-holder">
+                    <img src={proImg} attr={full_name} className="img-responsive img-circle"/>
                 </div>
+                <TextPostElement afterPostSubmit = {this.afterPostSubmit.bind(this)}
+                                    uuid={this.state.uuid}
+                                    profileUsr = {this.props.profileUsr}
+                                    workModeStyles = {this.props.workModeStyles}
+                                    postType = {this.state.postType}
+                                    postVisibleMode = {this.state.postVisibleMode}
+                                    members = {this.state.members}
+                                    group = {this.state.group}
+                />
             </div>
         )
     }
@@ -237,7 +253,7 @@ export class TextPostElement extends React.Component{
                 iniTextisVisible: true,
                 isLocationPanelOpen: false,
                 isLifeEventPanelOpen:false,
-                btnEnabled:true
+                btnEnabled:false
 
             });
 
@@ -257,7 +273,7 @@ export class TextPostElement extends React.Component{
     onContentAdd(event){
         let _text  = Lib.sanitize(event.target.innerHTML);
         let visibilityStat = (_text)? false : true;
-        this.setState({text:_text, iniTextisVisible: visibilityStat, emptyPostWarningIsVisible : false});
+        this.setState({text:_text, iniTextisVisible: visibilityStat, emptyPostWarningIsVisible : false, btnEnabled : !visibilityStat});
 
     }
     onTabSelect(tabId){
@@ -285,8 +301,6 @@ export class TextPostElement extends React.Component{
                 break;
         }
     }
-
-
 
     selectImage(e){
 
@@ -486,11 +500,9 @@ export class TextPostElement extends React.Component{
 
     }
     render(){
-
         let full_name = this.loggedUser.first_name +" "+ this.loggedUser.last_name;
         let proImg = (this.loggedUser.profile_image != '')? this.loggedUser.profile_image : "/images/default-profile-image.png";
-        let opt = {
-            style:{display:"block"}};
+        let opt = {style:{display:"block"}};
         let uploaded_files = this.state.uploadedFiles.map((file,key)=>{
 
             return (
@@ -508,36 +520,26 @@ export class TextPostElement extends React.Component{
             )
         })
         return (
-            <div>
-                <PostOptionMenu
-                    onTabClick ={tabId => this.onTabSelect(tabId)}
-                    selectImage={event => this.selectImage(event)}
-                    />
-                <div id="pg_content_1" className="row row_clr pg-newsfeed-post-content tab_info clearfix">
-                    <div className="pg-user-pro-pic">
-                        <img src={proImg} alt={full_name} className="img-responsive" />
-                    </div>
+            <div className="input-wrapper">
+                {
+                    (this.state.isLifeEventPanelOpen) ?
+                        <LifeEventSelector onLifeEventSelect={this.onLifeEventSelect.bind(this)}/>
+                        :
 
-                    {
-                        (this.state.isLifeEventPanelOpen) ?
-                            <LifeEventSelector onLifeEventSelect={this.onLifeEventSelect.bind(this)}/>
-                            :
-
-                            <div className="editerHolder">
-                                <div id="input" contentEditable={true}
-                                     onFocus={this.showPostFooterPanel.bind(this)}
-                                     onBlur={this.hidePostFooterPanel.bind(this)}
-                                     className={"containable-div "+this.props.workModeStyles}
-                                     onInput={(event)=>{this.onContentAdd(event)}}></div>
-                                {
-                                    (this.state.iniTextisVisible) ?
-                                        <span
-                                            className={(this.state.focusedOnInitialText)? "statusIniText onFocus" : "statusIniText"}>What’s on your mind?</span>
-                                        : null
-                                }
-                            </div>
-                    }
-                </div>
+                        <div className="input-content">
+                            <div id="input" contentEditable={true}
+                                    onFocus={this.showPostFooterPanel.bind(this)}
+                                    onBlur={this.hidePostFooterPanel.bind(this)}
+                                    className={"containable-div "+this.props.workModeStyles}
+                                    onInput={(event)=>{this.onContentAdd(event)}}></div>
+                            {
+                                (this.state.iniTextisVisible) ?
+                                    <span
+                                        className={(this.state.focusedOnInitialText)? "statusIniText onFocus" : "statusIniText"}>write something interesting...</span>
+                                    : null
+                            }
+                        </div>
+                }
                 <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
                     {uploaded_files}
                     <p className="form-validation-alert" style={errorStyles}>{this.state.video_err}</p>
@@ -547,8 +549,8 @@ export class TextPostElement extends React.Component{
                     <p className="emptyPost">{Alert.EMPTY_STATUS_UPDATE}</p>
                     : null
                 }
-                <div className="row" id="pg-newsfeed-post-active-footer" {...opt}>
-                    <div className="col-xs-8 locationSuggestHolder">
+                <div id="pg-newsfeed-post-active-footer" {...opt}>
+                    <div className="locationSuggestHolder">
                         {
                             (this.state.isLocationPanelOpen)?
                                 <div>
@@ -561,13 +563,16 @@ export class TextPostElement extends React.Component{
                                 :null
                         }
                     </div>
-                    <div className="col-xs-4">
+                    <div className="input-options">
+                        <PostOptionMenu
+                            onTabClick ={tabId => this.onTabSelect(tabId)}
+                            selectImage={event => this.selectImage(event)}
+                        />
                         {
                             (this.state.btnEnabled)?
                                 <a href="javascript:void(0)" onClick={(event)=>this.submitPost(event)} className="pg-status-post-btn">post</a>
                                 : <a href="javascript:void(0)"  className="pg-status-post-btn disabledPost">post</a>
                         }
-
                     </div>
                 </div>
             </div>
@@ -578,17 +583,23 @@ export class TextPostElement extends React.Component{
 
 const PostOptionMenu = ({onTabClick,selectImage})=>{
     return (
-        <div className="row row-clr" id="pg-newsfeed-post-section-header">
-            <ul>
-                <li className="tabmenu selected-tab">
+        <div className="options-wrapper clearfix">
+            <span className="status-update" onClick={(event)=>{onTabClick("bla1")}}></span>
+            <label className="image" htmlFor="imgUpload">
+                <input type='file' id="imgUpload" onChange={(event)=>{selectImage(event)}} multiple="multiple" />
+            </label>
+            <span className="life-event" onClick={(event)=>{onTabClick("bla3")}}></span>
+            <span className="location" onClick={(event)=>{onTabClick("bla4")}}></span>
+            {/*<ul>
+                <li className="status-update">
                     <a href="javascript:void(0);" className="tabmenu" id="pg_tb_1"
-                       onClick={(event)=>{onTabClick("bla1")}}>
+                       avo>
                         <img src="/images/pg-newsfeed-share-default.png" alt="" className="pg-default-status-icon"/>
                         <img src="/images/pg-newsfeed-share-active.png" alt="" className="pg-hover-status-icon"/>
                         Share Update
                     </a>
                 </li>
-                <li>
+                <li className="image">
                     <label htmlFor="imgUpload" className="tabmenu" id="pg_tb_2">
                         <img src="/images/pg-newsfeed-image-default.png" alt="" className="pg-default-status-icon"/>
                         <img src="/images/pg-newsfeed-image-active.png" alt="" className="pg-hover-status-icon"/>
@@ -596,7 +607,7 @@ const PostOptionMenu = ({onTabClick,selectImage})=>{
                     </label>
                     <input type='file' id="imgUpload" onChange={(event)=>{selectImage(event)}} multiple="multiple" />
                 </li>
-                <li>
+                <li className="life-event">
                     <a href="javascript:void(0);" className="tabmenu" id="pg_tb_3"
                        onClick={(event)=>{onTabClick("bla3")}}>
                         <img src="/images/pg-newsfeed-life-event-default.png" alt="" className="pg-default-status-icon"/>
@@ -604,7 +615,7 @@ const PostOptionMenu = ({onTabClick,selectImage})=>{
                         Life Event
                     </a>
                 </li>
-                <li>
+                <li className="location">
                     <a href="javascript:void(0);"  className="tabmenu" id="pg_tb_4"
                        onClick={(event)=>{onTabClick("bla4")}}>
                         <img src="/images/pg-newsfeed-location-default.png" alt="" className="pg-default-status-icon"/>
@@ -612,7 +623,7 @@ const PostOptionMenu = ({onTabClick,selectImage})=>{
                         Current Location
                     </a>
                 </li>
-            </ul>
+            </ul>*/}
         </div>
     );
 };

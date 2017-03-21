@@ -27,6 +27,7 @@ export default class GroupsLayout extends React.Component {
             members: []
         };
 
+        this.loadMembers = this.loadMembers.bind(this);
         this.setGroupLayout = this.setGroupLayout.bind(this);
 
     }
@@ -90,6 +91,7 @@ export default class GroupsLayout extends React.Component {
                 return (
                     <Discussion
                         myGroup={this.state.group}
+                        onLoadMembers={this.loadMembers}
                         randomMembers={this.state.randomMembers}
                         membersCount={this.state.membersCount}
                         members={this.state.members}

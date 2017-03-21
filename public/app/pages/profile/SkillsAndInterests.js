@@ -71,35 +71,34 @@ export default class SkillsAndInterests extends React.Component{
             return (<div> Loading </div>);
         }
         return (
-            <div id="background-skills-container" className="pg-section-container">
-                <div className="pg-section" id="skill-interest">
-                    <div className="pg-header">
-                        <h3 className="pg-header-main-title">SKILLS AND INTERESTS</h3>
-                        {
-                            (!read_only)?
-                            <div className="pg-edit-tools">
-                                <button className="pg-edit-btn" onClick={this.editForm}>
-                                    <i className="fa fa-plus edit-add" /> Add Skill
-                                    </button>
-                                </div>
-                            : null
-                        }
+            <div className="inner-section skills pg-section">
+                <div className="inner-header">
+                    <div className="header-wrapper">
+                        <span className="header-icon classes"></span>
+                        <span className="header-text">skills and interests</span>
                     </div>
-                    {this.state.editFormVisible?
-                        <SkillsForm  data={this.state.data.skills}
-                                     onFormSave={this.editForm}
-                                     onFormClose={this.closeForm} /> : null}
-                    <div className="pg-body-item pg-entity">
-                        <div className="pg-edit-action-area">
-                            <div className="row-clr col-xs-6 row-clr-pad">
-                                <h3 className="pg-header-sub-title">Day-to-day comforts</h3>
-                                <SkillTagList skills={this.state.data.skills.day_to_day_comforts} editable=""/>
+                    {
+                        (!read_only)?
+                        <div className="pg-edit-tools">
+                            <button className="pg-edit-btn" onClick={this.editForm}>
+                                <i className="fa fa-plus edit-add" /> Add Skill
+                                </button>
                             </div>
-                            <div className="row-clr col-xs-6">
-                                <h3 className="pg-header-sub-title">Experience with</h3>
-                                <SkillTagList skills={this.state.data.skills.experienced} editable=""/>
-                            </div>
-                        </div>
+                        : null
+                    }
+                </div>
+                {this.state.editFormVisible?
+                    <SkillsForm  data={this.state.data.skills}
+                                    onFormSave={this.editForm}
+                                    onFormClose={this.closeForm} /> : null}
+                <div className="inner-container">
+                    <div className="title-wrapper">
+                        <span className="title">day-to-day comforts</span>
+                        <SkillTagList skills={this.state.data.skills.day_to_day_comforts} editable=""/>
+                    </div>
+                    <div className="title-wrapper">
+                        <span className="title">experience with</span>
+                        <SkillTagList skills={this.state.data.skills.experienced} editable=""/>
                     </div>
                 </div>
             </div>
@@ -305,18 +304,31 @@ export class SkillsForm extends React.Component{
 const SkillTagList = ({skills,editable,type,removeSkill}) => {
     let _this = this;
     let _skills =(typeof  skills != 'undefined')?skills:[];
-    return (
-        <ul className="skills-edit-section">
-            {
-                _skills.map(function(skill,index){
+    
+    if(editable){
+        return (
+            <ul className="skills-edit-section">
+                {
+                    _skills.map(function(skill,index){
+                        return(
+                            <li className="pg-endrose-item" key={index}>
+                                <span className="pg-endorse-item-name" data-skillid={skill.id} >{skill.name}</span>
+                                {(editable)? <i className="fa fa-times pg-skill-delete-icon" onClick={(event)=>removeSkill(skill.name, skill.id, type)}/> : null}
+                            </li>
+                        )
+                    })
+                }
+            </ul>
+        );
+    }else{
+        return (
+            <div>
+               { _skills.map(function(skill,index){
                     return(
-                        <li className="pg-endrose-item" key={index}>
-                            <span className="pg-endorse-item-name" data-skillid={skill.id} >{skill.name}</span>
-                            {(editable)? <i className="fa fa-times pg-skill-delete-icon" onClick={(event)=>removeSkill(skill.name, skill.id, type)}/> : null}
-                        </li>
+                        <p className="skill-block" data-skillid={skill.id}>{skill.name}</p>
                     )
-                })
-            }
-        </ul>
-    );
+                })}
+            </div>
+        );
+    }
 }

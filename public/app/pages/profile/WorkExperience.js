@@ -60,27 +60,30 @@ export default class WorkExperience extends React.Component{
             return (<div> Loading ....</div>);
         }
         return (
-            <div id="background-experience-container" className="pg-section-container">
-                <div className="pg-section">
-                    <div className="pg-header">
-                        <h3 className="pg-header-main-title">WORK EXPERIENCE</h3>
-                            {
-                                (!read_only)?
-                                <div className="pg-edit-tools">
-                                    <button className="pg-edit-btn"  onClick={this.editForm}>
-                                        <i className="fa fa-plus edit-add"></i> Add Position
-                                    </button>
-                                </div>
-                                : null
-                            }
+            <div className="inner-section work-exp">
+                <div className="inner-header pg-section">
+                    <div className="header-wrapper">
+                        <span className="header-icon classes"></span>
+                        <span className="header-text">work experience</span>
                     </div>
-                    <div className="exp-form-holder">
-                        {
-                            (this.state.editFormVisible)?
-                            <WorkPlaceForm data={this.state.formData} onSubmit={this.updateWorkExperience} onCancel={this.editForm} />
-                            : null
-                        }
-                    </div>
+                    {
+                        (!read_only)?
+                        <div className="pg-edit-tools">
+                            <button className="pg-edit-btn"  onClick={this.editForm}>
+                                <i className="fa fa-plus edit-add"></i> Add Position
+                            </button>
+                        </div>
+                        : null
+                    }
+                </div>
+                <div className="exp-form-holder">
+                    {
+                        (this.state.editFormVisible)?
+                        <WorkPlaceForm data={this.state.formData} onSubmit={this.updateWorkExperience} onCancel={this.editForm} />
+                        : null
+                    }
+                </div>
+                <div className="inner-container">
                     {
                         this.props.data.working_experiences.map(function(data,index){
                             return <WorkPlaces readOnly={read_only} data={data} key={index} onEdit={_this.editForm} />
@@ -141,60 +144,29 @@ export class WorkPlaces extends React.Component{
         let data = this.props.data;
         let _time_period = this.getTimePeriod(data.start_date,data.left_date,data.is_current_work_place);
         return (
-            <div className="pg-body-item">
-                <div>
+            <div className="title-wrapper">
                     {
                         (data.title)?
-                        <h4 className="pg-entity-control-field">
-                            <div className="pg-main-header-field  pg-field" title="Click to edit this experience">
-                                <span className="pg-field-text">{data.title}</span>
-                                {
-                                    (!readOnly)?
-                                    <button className="pg-edit-field pg-edit-field-button" onClick={this.editForm}>
-                                        <i className="fa fa-pencil"></i>
-                                    </button>
-                                    : null
-                                }
-                            </div>
-                        </h4>
+                       <div className="clearfix">
+                            <span className="title">{data.title}</span>
+                            {
+                                (!readOnly)?
+                                <button className="pg-edit-field pg-edit-field-button" onClick={this.editForm}>
+                                    <i className="fa fa-pencil"></i>
+                                </button>
+                                : null
+                            }
+                        </div>
                         : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Title</button>:null
                     }
                     {
                         (data.company_name)?
-                        <h5 className="pg-entity-control-field">
-                            <div className="pg-sub-header-field  pg-field" title="Click to edit this experience">
-                                 <span className="pg-field-text">
-                                     <span className="company">{data.company_name + ", "} </span>
-                                     <span className="period">{_time_period} </span>
-                                     <span className="location"> {data.location}</span>
-                                 </span>
-                                 {
-                                     (!readOnly)?
-                                     <button className="pg-edit-field pg-edit-field-button" onClick={this.editForm}>
-                                         <i className="fa fa-pencil"></i>
-                                     </button>
-                                     : null
-                                 }
-                            </div>
-                        </h5>
+                        <p className="title-text">{data.company_name + ", " + data.location} <span class="time">{_time_period}</span></p>
                         : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Company Details</button>:null
                     }
-
-                </div>
                 {
                     (data.description)?
-                    <p className="pg-description pg-field">
-                         <span className="pg-field-text">
-                            {data.description}
-                         </span>
-                         {
-                             (!readOnly)?
-                             <button className="pg-edit-field pg-edit-field-button" onClick={this.editForm}>
-                                 <i className="fa fa-pencil"></i>
-                             </button>
-                             : null
-                         }
-                    </p>
+                    <p className="description">{data.description}</p>
                     : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Title Description</button>:null
                 }
             </div>

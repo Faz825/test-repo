@@ -72,36 +72,37 @@ export default class Intro extends React.Component{
         let loggedUser = Session.getSession('prg_lg');
         let read_only = (loggedUser.id == this.props.user.user_id)?false:true;
         return (
-            <div className="ps-section">
-                <div className="pg-section-container">
-                    <div className="pg-header">
-                        <h3>Intro</h3>
+            <div className="inner-section intro">
+                <div className="inner-header">
+                    <div className="header-wrapper">
+                        <span className="header-icon"></span>
+                        <span className="header-text">intro</span>
                     </div>
-                    <div className="intro-wrapper">
-                        {
-                            (!read_only && !(this.state.isFormVisible || this.props.user.introduction))?
-                            <div className="add-intro clearfix">
-                                <p className="add-intro-text" onClick={this.openForm.bind(this)}><i className="fa fa-plus"></i>Describe who you are</p>
-                            </div>
-                            :
-                            null
-                        }
-                        {
-                            (this.props.user.introduction && !this.state.isFormVisible)?
-                            <div className="intro-holder">
-                                <p>{this.props.user.introduction}
-                                    {(!read_only)?<i className="fa fa-pencil-square-o" onClick={this.openForm.bind(this)}></i>:null}</p>
-                            </div>
-                            :
-                            null
-                        }
-                        {
-                            (!read_only && this.state.isFormVisible)?
-                            <IntroForm introText={this.props.user.introduction} onFormClose={this.onFormCancel.bind(this)} formSave={this.onFormSave.bind(this)} />
-                            :
-                            null
-                        }
-                    </div>
+                </div>
+                <div className="inner-container">
+                    {
+                        (!read_only && !(this.state.isFormVisible || this.props.user.introduction))?
+                        <div className="add-intro clearfix">
+                            <p className="add-intro-text" onClick={this.openForm.bind(this)}><i className="fa fa-plus"></i>Describe who you are</p>
+                        </div>
+                        :
+                        null
+                    }
+                    {
+                        (this.props.user.introduction && !this.state.isFormVisible)?
+                        <div className="intro-holder">
+                            <p className="description">{this.props.user.introduction}
+                                {(!read_only)?<i className="fa fa-pencil-square-o" onClick={this.openForm.bind(this)}></i>:null}</p>
+                        </div>
+                        :
+                        null
+                    }
+                    {
+                        (!read_only && this.state.isFormVisible)?
+                        <IntroForm introText={this.props.user.introduction} onFormClose={this.onFormCancel.bind(this)} formSave={this.onFormSave.bind(this)} />
+                        :
+                        null
+                    }
                 </div>
             </div>
         )

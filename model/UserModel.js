@@ -1117,37 +1117,39 @@ UserSchema.statics.formatSkills = function (userObject, callBack) {
             'day_to_day_comforts': [],
             'experienced': []
         };
-    _async.each(userObject.skills,
-        function (skill, callBack) {
 
+    if(userObject.skills != undefined && userObject.skills) {
+        _async.each(userObject.skills,
+            function (skill, callBack) {
 
-            Skill.getSkillById(Util.toObjectId(skill.skill_id), function (resultSet) {
+                Skill.getSkillById(Util.toObjectId(skill.skill_id), function (resultSet) {
 
+                    if (skill.is_day_to_day_comfort === 1) {
+                        _tmp_out['day_to_day_comforts'].push({
+                            id: resultSet.skill.id,
+                            name: resultSet.skill.name
+                        });
+                        callBack();
 
-                if (skill.is_day_to_day_comfort === 1) {
-                    _tmp_out['day_to_day_comforts'].push({
-                        id: resultSet.skill.id,
-                        name: resultSet.skill.name
-                    });
-                    callBack();
+                    } else {
+                        //if(skill.is_day_to_day_comfort === 0){
+                        _tmp_out['experienced'].push({
+                            id: resultSet.skill.id,
+                            name: resultSet.skill.name
+                        });
+                        callBack();
+                    }
 
-                } else {
-                    //if(skill.is_day_to_day_comfort === 0){
-                    _tmp_out['experienced'].push({
-                        id: resultSet.skill.id,
-                        name: resultSet.skill.name
-                    });
-                    callBack();
-                }
+                });
 
+            },
+            function (err) {
+
+                callBack(_tmp_out);
             });
-
-        },
-        function (err) {
-
-            callBack(_tmp_out);
-        });
-
+    } else {
+        callBack(_tmp_out);
+    }
 
 }
 /**
@@ -1382,7 +1384,7 @@ UserSchema.statics.getSenderDetails = function (related_senders, callBack) {
 
     var users = [];
     _async.waterfall([
-        function getUserDetails() {
+        function getUserDetails(callBack) {
             _async.eachSeries(related_senders, function (user, callBack) {
                 var query = {
                     q: "user_id:" + user.toString(),
@@ -1390,23 +1392,34 @@ UserSchema.statics.getSenderDetails = function (related_senders, callBack) {
                 };
                 //Find User from Elastic search
                 ES.search(query, function (csResultSet) {
-                    users.push(
-                        {
-                            sender_id: user,
-                            sender_name: csResultSet.result[0]['first_name'] + " " + csResultSet.result[0]['last_name'],
-                            sender_user_name: csResultSet.result[0]['user_name'],
-                            profile_image: csResultSet.result[0]['images']['profile_image']['http_url']
-                        }
-                    );
+                    if(csResultSet != undefined) {
+                        var _result = csResultSet.result[0];
+                        var _images = _result['images'];
+                        var _pic = _images.hasOwnProperty('http_url') ? _images['http_url'] : _images.hasOwnProperty('profile_image') ? _images['profile_image']['http_url'] : "images/default-profile-pic.png";
+                        _pic = _pic == undefined ? "images/default-profile-pic.png" : _pic;
+                        users.push(
+                            {
+                                sender_id: user,
+                                sender_name: _result['first_name'] + " " + _result['last_name'],
+                                sender_user_name: _result['user_name'],
+                                profile_image: _pic
+                            }
+                        );
+                    }
+
                     callBack(null);
                 });
 
             }, function (err) {
-                callBack(users);
+                callBack(null);
             });
         }
     ], function (err) {
-
+        if (!err) {
+            callBack({status: 200, users_list: users});
+        } else {
+            callBack({status: 400, error: err});
+        }
     });
 
 };

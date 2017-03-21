@@ -379,7 +379,6 @@ a:focus{
 }
 
 .cover-image-wrapper{
-	height: 299px;
 	position: relative;
 }
 
@@ -1347,9 +1346,6 @@ input[type=number]::-webkit-outer-spin-button {
 	color: #ffffff;
 	font-size: 30px;
 }
-.curr-job-holder{
-	margin-top: 10px;
-}
 .curr-job-holder .job-data{
 	display: none;
 }
@@ -1360,22 +1356,24 @@ input[type=number]::-webkit-outer-spin-button {
 	background: none;
 	border-radius: 0;
 	border: none;
+	border-bottom: 1px solid #000;
 	max-width: 100%;
 	width: auto;
 	text-transform: capitalize;
-	color: #fff;
-	font: 18px 'montserratregular', sans-serif;
+	color: #000;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	font-size: 0.75em;
+    font-weight: 400;
 }
 .curr-job-holder .designation-text,
 .curr-job-holder .office-text{
-	text-transform: capitalize;
-	color: #fff;
-	font: 18px 'montserratregular', sans-serif;
 	display: inline-block;
-	margin: 0 5px 5px 0;
+    margin-top: 8px;
+    color: #000000;
+    font-size: 0.75em;
+    font-weight: 400;
 }
 .curr-job-holder .designation-text.editable,
 .curr-job-holder .office-text.editable{
@@ -1385,10 +1383,11 @@ input[type=number]::-webkit-outer-spin-button {
 	border-bottom: 1px solid #fff;
 }
 .curr-job-holder .combine-text{
-	color: #fff;
-	font: 18px 'montserratregular', sans-serif;
 	display: inline-block;
-	margin: 0 8px 0 2px;
+    margin: 8px 3px 0 2px;
+    color: #000000;
+    font-size: 0.75em;
+    font-weight: 400;
 }
 .curr-job-holder .fa{
 	color: #fff;
@@ -1402,6 +1401,9 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .curr-job-holder:hover .fa{
 	display: inline-block;
+}
+.cover-container .info-container .left-col{
+	text-align: right;
 }
 .proImgHolder{
 	margin: 0 auto;
@@ -1612,17 +1614,33 @@ input[type=number]::-webkit-outer-spin-button {
 	color: #a8bfcd;
 	margin: 0px;
 }
+.feed-container .about-me-section .inner-section.classes .inner-container .title-wrapper .title,
+.feed-container .about-me-section .inner-section.work-exp .inner-container .title-wrapper .title{
+	width: auto;
+}
+.feed-container .about-me-section .inner-section.classes .inner-container .title-wrapper .title-text{
+	float: none;
+}
+.feed-container .about-me-section .inner-section.work-exp .inner-container .title-wrapper .description{
+	margin-top: 28px;
+}
+.title-wrapper:hover .pg-edit-field-button{
+	opacity: 1;
+}
 .pg-edit-field-button{
+	margin-top: 2px;
+	font-size: 0.6em;
 	padding-left: 0px;
-	padding-right: 0px;
-	margin-left: 8px;
-	height: 16px;
-	width: 19px;
-	line-height: 15px;
-	border: 0;
-	color: #505e69;
-	background: transparent;
-	opacity: 0;
+    padding-right: 0px;
+    margin-left: 8px;
+    height: 9px;
+    width: 19px;
+    line-height: 1;
+    border: 0;
+    float: left;
+    color: #505e69;
+    background: transparent;
+    opacity: 0;
 	-webkit-transition: opacity 0.2s;
 	-moz-transition: opacity 0.2s;
 	-o-transition: opacity 0.2s;
@@ -1757,20 +1775,16 @@ textarea{
 	font: 13px 'montserratregular', sans-serif;
 }
 
-.intro-wrapper{
-	margin-bottom: 10px;
-}
-
-.intro-wrapper .add-intro:hover{
+.intro .inner-container .add-intro:hover{
 	color: #61b3de;
 }
 
-.intro-wrapper .add-intro .add-intro-text{
+.intro .inner-container .add-intro .add-intro-text{
 	float: left;
 	cursor: pointer;
 }
 
-.intro-wrapper .add-intro .add-intro-text i{
+.intro .inner-container .add-intro .add-intro-text i{
 	margin-right: 10px;
 }
 
@@ -1812,16 +1826,17 @@ textarea{
 	display: block;
 }
 
-.intro-wrapper .intro-holder p{
-	word-wrap: break-word;
+.form-bottom-holder .char-length-holder .error{
+	color: #EF5350;
+	margin-left: 5px;
 }
 
-.intro-wrapper .intro-holder i{
+.intro .inner-container .intro-holder i{
 	margin-left: 10px;
 	cursor: pointer;
 }
 
-.intro-wrapper .intro-holder i:hover{
+.intro .inner-container .intro-holder i:hover{
 	color: #61b3de;
 }
 
@@ -5239,7 +5254,7 @@ textarea{
 .pg-comment-delete-icon{
 	color:#ccc;
 	position: absolute;
-    top: 0px;
+    top: 10px;
     cursor: pointer;
     right: 5px;
     z-index: 1;

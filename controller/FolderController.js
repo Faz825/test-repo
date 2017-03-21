@@ -17,7 +17,10 @@ var FolderController = {
         var Folders = require('mongoose').model('Folders'),
             CurrentSession = Util.getCurrentSession(req);
         var user_id = CurrentSession.id;
-        var criteria = {user_id: Util.toObjectId(user_id)};
+        var criteria = {
+            user_id: Util.toObjectId(user_id),
+            type: FolderType.PERSONAL_FOLDER
+        };
 
         Folders.getCount(criteria, function (resultSet) {
             if (resultSet.status == 200) {
@@ -219,7 +222,10 @@ var FolderController = {
             FolderDocs = require('mongoose').model('FolderDocs');
 
         var user_id = CurrentSession.id;
-        var criteria = {user_id: Util.toObjectId(user_id)};
+        var criteria = {
+            user_id: Util.toObjectId(user_id),
+            type: FolderType.PERSONAL_FOLDER
+        };
         var myFolder = [],
             ownFolders = [],
             sharedFolders = [];
@@ -325,9 +331,12 @@ var FolderController = {
                 _async.waterfall([
                     function getFolders(callBack) {
                         //console.log("getSharedFolders - getFolders");
-                        var _index = FolderConfig.ES_INDEX_SHARED_FOLDER + user_id.toString()
+                        var es_criteria= {
+                            _index: FolderConfig.ES_INDEX_SHARED_FOLDER + user_id.toString(),
+                            q: 'folder_name:' + FolderType.PERSONAL_FOLDER
+                        };
 
-                        Folders.getSharedFolders(_index, function (resultSet) {
+                        Folders.getSharedFolders(es_criteria, function (resultSet) {
                             // console.log("=== Shared Folder Results ===");
                             // console.log(resultSet);
                             callBack(null, resultSet.folders);
