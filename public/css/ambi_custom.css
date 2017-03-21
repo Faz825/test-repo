@@ -1669,3 +1669,14 @@ header .chat-popover-holder .inner-wrapper .see-all{
 .news-popup-holder .closeButton--jss-0-1 circle{
     fill: #668396;
 }
+
+.popover.remove-member-popup {
+    border: none !important;
+    box-shadow: none!important;
+    background-color: transparent!important;
+    -webkit-box-shadow: none !important;
+}
+
+.popover.remove-member-popup .popover-content{
+  padding: 0;
+}

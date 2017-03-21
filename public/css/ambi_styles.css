@@ -10659,7 +10659,7 @@ header .friends-popover-holder .friends-list-holder .friends-item .controls .btn
 }
 header .friends-popover-holder .friends-list-holder .friends-item .controls .btn.btn-decline .ico {
   float: left;
-  margin-top: 1px;
+  margin-top: 2px;
   width: 6px;
   height: 8px;
   background-image: url("../images/header-icons/friend_request_dropdown/decline-icon.png");
@@ -22723,6 +22723,120 @@ header .friends-popover-holder .popover-footer .see-all {
 }
 .popup-holder .work-mode-popup-wrapper .footer .work-mode:hover {
   background: #AAABAB;
+}
+.popup-holder .group-members-popover-holder {
+  position: relative;
+}
+.popup-holder .group-members-popover-holder .inner-wrapper {
+  width: 340px;
+  box-shadow: 0px 1px 8px 2px rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  background-color: #ffffff;
+  position: relative;
+}
+.popup-holder .group-members-popover-holder .popover-header {
+  padding: 10px 13px 18px;
+  border-bottom: 1px solid #dddddd;
+}
+.popup-holder .group-members-popover-holder .popover-header .group-members {
+  margin: 0;
+  float: left;
+  font-size: 0.75em;
+  font-weight: 500;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  color: #333333;
+}
+.popup-holder .group-members-popover-holder .popover-header .find-member {
+  margin: 0;
+  float: right;
+  font-size: 0.6875em;
+  font-weight: 400;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: center;
+  color: #00a6ef;
+  cursor: pointer;
+}
+.popup-holder .group-members-popover-holder .members-list-holder {
+  max-height: 263px;
+  overflow: hidden;
+}
+.popup-holder .group-members-popover-holder .members-list-holder.see-all {
+  overflow-y: scroll;
+}
+.popup-holder .group-members-popover-holder .members-list-holder .member-item {
+  padding: 3px 6px 3px 15px;
+  overflow: hidden;
+  cursor: pointer;
+  border-bottom: 1px solid #dddddd;
+}
+.popup-holder .group-members-popover-holder .members-list-holder .member-item:last-child {
+  border-bottom: none;
+}
+.popup-holder .group-members-popover-holder .members-list-holder .member-item .prof-img {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  float: left;
+}
+.popup-holder .group-members-popover-holder .members-list-holder .member-item .members-preview {
+  float: left;
+  margin-left: 10px;
+}
+.popup-holder .group-members-popover-holder .members-list-holder .member-item .members-preview .prof-name {
+  margin: 17px 0 4px;
+  color: #000000;
+  font-size: 0.75em;
+  font-weight: 400;
+  line-height: 1;
+}
+.popup-holder .group-members-popover-holder .members-list-holder .member-item .controls {
+  float: right;
+  margin-top: 12px;
+}
+.popup-holder .group-members-popover-holder .members-list-holder .member-item .controls .btn {
+  width: 70px;
+  height: 24px;
+  border-radius: 6px;
+  font-size: 0.5625em;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  outline: none;
+}
+.popup-holder .group-members-popover-holder .members-list-holder .member-item .controls .btn.btn-decline {
+  border: solid 1px #ed1e7a;
+  color: #ed1e7a;
+  background-color: #ffffff;
+  margin-right: 6px;
+}
+.popup-holder .group-members-popover-holder .members-list-holder .member-item .controls .btn.btn-decline:hover {
+  background-color: #ed1e7a;
+  border: solid 1px #ed1e7a;
+  color: #ffffff;
+}
+.popup-holder .group-members-popover-holder .popover-footer {
+  text-align: center;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.99);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 0 0 6px 6px;
+  border-top: 1px solid #dddddd;
+}
+.popup-holder .group-members-popover-holder .popover-footer .see-all {
+  margin: 0;
+  font-size: 0.75em;
+  font-weight: 500;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: center;
+  color: #1293eb;
+  cursor: pointer;
 }
 
 .settings-icon {

@@ -14,6 +14,7 @@ import Toast from '../../components/elements/Toast';
 
 import RichTextEditor from '../../components/elements/RichTextEditor';
 import Lib    from '../../middleware/Lib';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 
 export default class Discussion extends React.Component{
 
@@ -198,6 +199,7 @@ export default class Discussion extends React.Component{
                         randomMembers={this.state.randomMembers}
                         membersCount={this.state.membersCount}
                         currentGroup={this.state.currentGroup}
+                        onLoadMembers={this.props.onLoadMembers}
                     />
                     <CalendarWidget currentGroup={this.state.currentGroup} />
                 </div>
@@ -301,6 +303,12 @@ export class MembersWidget extends React.Component{
         var overflowCountStr = '+'+overflowCount.toString();
         var _this = this;
 
+        let i = (
+            <Popover id="popover-contained"  positionTop="150px" className="remove-member-popup">
+                <RemoveMemberPopup groupData={this.state.group} groupMembers={this.state.randomMembers} onLoadMembers={this.props.onLoadMembers} />
+            </Popover>
+        );
+
         if(this.state.randomMembers.length > 0 ) {
             userBlocks = this.state.randomMembers.map(function(member,userKey){
 
@@ -321,7 +329,9 @@ export class MembersWidget extends React.Component{
         return (
             <div className="grp-members panel">
                 <div className="panel-header clearfix">
-                    <h3 className="panel-title">Group Members</h3>
+                    <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                        <h3 className="panel-title" style={{cursor: 'pointer'}}>Group Members</h3>
+                    </OverlayTrigger>
                     <span className="mem-count">{this.state.membersCount} Members</span>
                 </div>
                 <div className="add-member invite-people clearfix">
@@ -465,6 +475,89 @@ export class CalendarWidget extends React.Component{
                         </ul>
                     </div>
                 </div>
+            </div>
+        );
+    }
+}
+
+export class RemoveMemberPopup extends React.Component{
+    constructor(props) {
+        super(props);
+
+        this.state={
+            user: Session.getSession('prg_lg')
+        }
+    }
+
+    toggleRequestList(){
+        let _rql = this.state.seeAll;
+        this.setState({
+            seeAll: !_rql
+        });
+    }
+
+    onRemoveMember(userId){
+
+        console.log(userId);
+
+        // $.ajax({
+        //     url: '/folder/remove',
+        //     method: "POST",
+        //     dataType: "JSON",
+        //     data:{folder_id: this.state.deleteFolderId},
+        //     headers: { 'prg-auth-header':this.state.loggedUser.token }
+        // }).done( function (data, text) {
+        //     if(data.status.code == 200) {
+        console.log(this.props.groupData.name_prefix);
+                this.props.onLoadMembers(
+                    {
+                        name_prefix: this.props.groupData.name_prefix,
+                        user: this.state.user
+                    }
+                );
+        //     }
+        // }.bind(this));
+    }
+
+    render(){
+
+        let _this = this;
+        let _members = this.props.groupMembers.map(function(member,key){
+            return (
+                <div className="member-item" key={key}>
+                    <div className="prof-img">
+                        <img src={member.profile_image} className="img-responsive img-circle" />
+                    </div>
+                    <div className="members-preview">
+                        <h3 className="prof-name">{member.name}</h3>
+                    </div>
+                    <div className="controls">
+                        <button className="btn btn-decline" onClick={()=>_this.onRemoveMember(member.user_id)}>remove</button>
+                    </div>
+                </div>
+            );
+        });
+
+        return (
+            <div className="popup-holder">
+                <section className="group-members-popover-holder">
+                    <div className="inner-wrapper">
+                        <div className="popover-header">
+                            <p className="group-members">group members</p>
+                            <p className="find-member">find member</p>
+                        </div>
+                        <div className={(this.state.seeAll) ? "members-list-holder see-all" : "members-list-holder"}>
+                            {_members}
+                        </div>
+
+                        {
+                            (_members.length > 4) ?
+                                <div className="popover-footer">
+                                    <p className="see-all" onClick={this.toggleRequestList.bind(this)}>{(this.state.seeAll)?"see less":"see all"}</p>
+                                </div> : null
+                        }
+                    </div>
+                </section>
             </div>
         );
     }
