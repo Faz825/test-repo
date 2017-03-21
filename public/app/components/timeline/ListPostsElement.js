@@ -335,7 +335,7 @@ class SinglePost extends React.Component{
 
                             <div className="row row-clr pg-newsfeed-section-common-content-post-info share-popup-post-view">
                                 <div className="pg-user-pro-pic">
-                                    <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
+                                    <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive img-circle"/>
                                 </div>
                                 <div className="pg-user-pro-info">
                                     <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}</h5>
@@ -477,7 +477,7 @@ class SinglePost extends React.Component{
         let postImgLength = _post.upload.length;
         let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
             _profile.images.profile_image.http_url:"";
-
+            
         let loggedUserProPic = (this.loggedUser.profile_image)? this.loggedUser.profile_image : "/images/default-profile-image.png";
 
         var uploaded_files = _post.upload.map((upload,key)=>{
@@ -560,6 +560,7 @@ class SinglePost extends React.Component{
                                         OnLikeHover = {event=>this.loadLikedUsers()}
                                         is_i_liked = {_is_i_liked}
                                         liked_users = {_post.liked_user}
+                                        share_count ={_post.share_count}
                                         show_share_button ={true}
                                         userProPic = {loggedUserProPic} 
                         />
@@ -602,11 +603,12 @@ class SinglePost extends React.Component{
  * @param onComment
  * @constructor
  */
-const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onCommentClick,liked_users,is_i_liked,show_share_button,userProPic})=>{
+const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onCommentClick,liked_users,is_i_liked,show_share_button,userProPic,share_count})=>{
     let __opt ={};
     if(is_i_liked){
         __opt['style'] = {color:"#61b3de", "pointerEvents": "none",cursor: "default"}
     }
+    let shareActiveClass = (share_count > 0)? "action-event share active" : "action-event share";
     return (
         <div>
             <div className="display-container clearfix">
@@ -701,9 +703,9 @@ const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onComme
                         <span className="icon"></span> 
                         <span className="text">{comment_count}</span>
                     </div>
-                    <div className="action-event share active">
+                    <div className={shareActiveClass}>
                         <span className="icon"></span> 
-                        <span className="text">0</span>
+                        <span className="text">{share_count}</span>
                     </div>
                 </div>
             </div>
@@ -763,13 +765,13 @@ const LikeSummery=({likes,visibility}) =>{
 
 
 const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost,btnEnabled})=>{
-    let full_name = loggedUser.first_name + " " +loggedUser.last_name;
+    let full_name = loggedUser.first_name + " " +loggedUser.last_name,
+        proImg = (loggedUser.profile_image)? loggedUser.profile_image : "/images/default-profile-image.png";
     return (
         <div id="pg_content_1" className="row row_clr pg-newsfeed-post-content tab_info clearfix">
             <div className="pg-user-pro-pic">
-                <img src={loggedUser.profile_image} alt={full_name} className="img-responsive" />
+                <img src={proImg} alt={full_name} className="img-responsive img-circle" />
             </div>
-
 
             <div className="editerHolder">
                 <div id="input" contentEditable={true}

@@ -1680,3 +1680,16 @@ header .chat-popover-holder .inner-wrapper .see-all{
 .popover.remove-member-popup .popover-content{
   padding: 0;
 }
+
+.news-popup-holder .pg-modal-body{
+   width: 500px;
+   margin: 0 auto;
+}
+
+.news-popup-holder .pg-modal-body .chanel-logo{
+    position: absolute;
+    top: -8px;
+    width: 70px;
+    left: -158px;
+    height: auto;
+}
