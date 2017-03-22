@@ -166,8 +166,8 @@ PostSchema.statics.addNew = function(post,callBack){
  */
 PostSchema.statics.addToCache=function(users,data,callBack){
 
-
     if(data.post_type == PostType.GROUP_POST) {
+
         // creating the index using group id.
         var _cache_key = "idx_post:"+PostConfig.GROUP_PREFIX+data.group_id;
         var payLoad={
@@ -184,7 +184,6 @@ PostSchema.statics.addToCache=function(users,data,callBack){
     }
 
     for(var i=0;i<users.length;i++){
-
         var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+users[i];
         var payLoad={
             index:_cache_key,
@@ -212,11 +211,11 @@ PostSchema.statics.addToCache=function(users,data,callBack){
  */
 PostSchema.statics.ch_getPost= function(id,payload,type,callBack){
     var _this = this;
+
     var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+id;
     if(type == PostType.GROUP_POST) {
         _cache_key = "idx_post:"+PostConfig.GROUP_PREFIX+id;
     }
-
     var query={
         q:payload.q,
         index:_cache_key
@@ -432,7 +431,6 @@ PostSchema.statics.postList=function(userId,posts,callBack){
 
     _async.each(posts,
         function(post,callBack){
-            //console.log(post);
             var _post = _this.formatPost(post),
             _created_date = _post.date.time_stamp;
 

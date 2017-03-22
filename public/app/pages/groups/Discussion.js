@@ -80,7 +80,7 @@ export default class Discussion extends React.Component{
 
         var data = {
             __group_id: this.currentGroup._id,
-            __posts_type: this.postType,
+            __post_type: this.postType,
             __pg: page,
             uname: this.state.uname,
             __own: "me"
@@ -228,6 +228,7 @@ export default class Discussion extends React.Component{
                             onLikeSuccess = {this.onLikeSuccess.bind(this)}
                             onLoadProfile = {this.onLoadProfile.bind(this)}
                             postType={this.postType}
+                            groupId={this.state.currentGroup._id}
                         />
                     </div>
                 </div>

@@ -11,10 +11,10 @@ import CommentElement from './CommentElement';
 import ProgressBar from '../elements/ProgressBar';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import Scroll from 'react-scroll';
-const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,onLikeSuccess,onLoadProfile,postType})=>{
+const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,onLikeSuccess,onLoadProfile,postType, groupId})=>{
 
-        var postsType = (postsType ? postsType : 1); // PERSONAL_POST :1, GROUP_POST:2s
-        console.log(" POSTS TYPE : " + postsType);
+        var postType = (postType ? postType : 1); // PERSONAL_POST :1, GROUP_POST:2
+        var groupId = (groupId ? groupId : null);
         if(posts.length <= 0){
             return (<div />)
         }
@@ -28,7 +28,9 @@ const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,
                         onPostDeleteSuccess = {onPostDeleteSuccess}
                         onLikeSuccess = {onLikeSuccess}
                         onLoadProfile = {onLoadProfile}
-                        postsType={postsType}/>)
+                        postType={postType}
+                        groupId={groupId}/>)
+
         });
 
         return (
@@ -167,16 +169,15 @@ class SinglePost extends React.Component{
 
     }
     onSharedPost(event){
-        
+
         let post_data ={
             __content :this.state.text,
             __pid:this.props.postItem.post_id,
             __own:this.props.postItem.created_by.user_id,
-            __posts_type:this.props.postsType
+            __post_type:this.props.postType,
+            __group_id: this.props.groupId
         }
-
         let _this = this;
-
         this.setState({shareBtnEnabled:false});
         $.ajax({
             url: '/post/share',
@@ -805,13 +806,13 @@ const SharedPostTitle = ({loggedUser,post,onLoadProfile}) =>{
             (post.created_by.user_id == post.shared_post.created_by.user_id)?
                 <span className="own-post-share">shared own post</span>
                 :
-                <div className="user-title-wrapper">
+                <span className="user-title-wrapper">
                     <span className="shared-text">shared</span>
-                    <div className="user-name-container post-owner">
+                    <span className="user-name-container post-owner">
                         <span className="name" onClick={()=>onLoadProfile(post.shared_post.created_by.user_name)}>{" "+post.shared_post.created_by.first_name + " " + post.shared_post.created_by.last_name + "'s"}</span>
                         <span className="shared-text">post</span>
-                    </div>
-                </div>
+                    </span>
+                </span>
         )
     }
     return (<span />);
