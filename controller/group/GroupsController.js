@@ -126,24 +126,24 @@ var GroupsController = {
                     callBack(null, groupData);
                 }
             },
-            function createDefaultNoteBook(groupData, callBack) {
-
-                if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {
-
-                    var _notebook = {
-                        name: groupData.name,
-                        color: groupData.color,
-                        type: NoteBookType.GROUP_NOTEBOOK,
-                        user_id: userId,
-                        group_id: groupData._id
-                    };
-                    NoteBook.addNewNoteBook(_notebook, function (resultSet) {
-                        callBack(null, groupData);
-                    });
-                } else {
-                    callBack(null, groupData);
-                }
-            },
+            // function createDefaultNoteBook(groupData, callBack) {
+            //
+            //     if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {
+            //
+            //         var _notebook = {
+            //             name: groupData.name,
+            //             color: groupData.color,
+            //             type: NoteBookType.GROUP_NOTEBOOK,
+            //             user_id: userId,
+            //             group_id: groupData._id
+            //         };
+            //         NoteBook.addNewNoteBook(_notebook, function (resultSet) {
+            //             callBack(null, groupData);
+            //         });
+            //     } else {
+            //         callBack(null, groupData);
+            //     }
+            // },
             function addNotification(groupData, callBack) {
 
                 if (notifyUsers.length > 0 && Object.keys(groupData).length > 0) {
@@ -401,6 +401,9 @@ var GroupsController = {
 
     removeMember: function (req, res) {
         var Groups = require('mongoose').model('Groups'),
+            Folders = require('mongoose').model('Folders'),
+            FolderDocs = require('mongoose').model('FolderDocs'),
+            User = require('mongoose').model('User'),
             _async = require('async'),
             _arrIndex = require('array-index-of-property');
 
@@ -410,16 +413,56 @@ var GroupsController = {
         _async.waterfall([
 
             function removeUserFromGroup(callBack) {
-                var criteria = {
-                    '_id': Util.toObjectId(group_id),
-                    'members.user_id': Util.toObjectId(member_id)
-                };
+                // var criteria = {
+                //     '_id': Util.toObjectId(group_id),
+                //     'members.user_id': Util.toObjectId(member_id)
+                // };
+                //
+                // var _status = {
+                //     'members.$.status': GroupSharedRequest.MEMBER_REMOVED
+                // };
 
-                var _status = {
-                    'members.$.status': GroupSharedRequest.MEMBER_REMOVED
-                };
+                // Groups.updateGroups(criteria, _status, function (r) {
+                    callBack(null);
+                // });
+            },
+            function removeMemberFolders(callBack){
 
-                Groups.updateGroups(criteria, _status, function (r) {
+                _async.waterfall([
+                    function getOwnFoldersToGroup(rCallBack) {
+                        var es_criteria= {
+                            _index: FolderConfig.ES_INDEX_OWN_GROUP_FOLDER + member_id.toString(),
+                            q: 'folder_type:' + FolderType.GROUP_FOLDER + ' AND folder_group_id:' + group_id.toString()
+                        };
+
+                        Folders.getSharedFolders(es_criteria, function (resultSet) {
+                            rCallBack(null, resultSet.folders);
+                        });
+                    },
+                    function getOwnFolderDocs(ownFolders, rCallBack){
+                        rCallBack(null, ownFolders);
+                    },
+                    function removeOwnFolders(ownFolders, rCallBack) {
+                        console.log('ownFolders');
+                        console.log(ownFolders);
+                        rCallBack(null);
+                    },
+                    function getSharedFoldersToGroup(rCallBack) {
+                        var es_criteria= {
+                            _index: FolderConfig.ES_INDEX_SHARED_GROUP_FOLDER + member_id.toString(),
+                            q: 'folder_type:' + FolderType.GROUP_FOLDER + ' AND folder_group_id:' + group_id.toString()
+                        };
+
+                        Folders.getSharedFolders(es_criteria, function (resultSet) {
+                            rCallBack(null, resultSet.folders);
+                        });
+                    },
+                    function removeSharedFolders(sharedFolders, rCallBack) {
+                        console.log('sharedFolders');
+                        console.log(sharedFolders);
+                        rCallBack(null);
+                    }
+                ], function (err) {
                     callBack(null);
                 });
             },

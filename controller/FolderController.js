@@ -62,7 +62,10 @@ var FolderController = {
             function checkIfDefaultExist(callBack) {
 
                 if (typeof req.body.isDefault != 'undefined' && req.body.isDefault == 1) { //default folder
-                    var criteria = {user_id: Util.toObjectId(Util.getCurrentSession(req).id)};
+                    var criteria = {
+                        user_id: Util.toObjectId(Util.getCurrentSession(req).id),
+                        type: FolderType.PERSONAL_FOLDER
+                    };
                     Folders.getFolders(criteria, function (resultSet) {
                         if (resultSet.folders.length > 0) { //but default folder already exist, don't need to go further
                             canAdd = false;
@@ -332,8 +335,7 @@ var FolderController = {
                     function getFolders(callBack) {
                         //console.log("getSharedFolders - getFolders");
                         var es_criteria= {
-                            _index: FolderConfig.ES_INDEX_SHARED_FOLDER + user_id.toString(),
-                            q: 'folder_name:' + FolderType.PERSONAL_FOLDER
+                            _index: FolderConfig.ES_INDEX_SHARED_FOLDER + user_id.toString()
                         };
 
                         Folders.getSharedFolders(es_criteria, function (resultSet) {

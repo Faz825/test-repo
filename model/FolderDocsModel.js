@@ -10,6 +10,8 @@ var mongoose = require('mongoose'),
 
 GLOBAL.FolderDocsConfig = {
     ES_INDEX_SHARED_DOC :"shared_docs:",
+    ES_INDEX_SHARED_GROUP_DOC :"shared_group_docs:",
+    ES_INDEX_OWN_GROUP_DOC : "own_group_docs:",
     ES_INDEX_OWN_DOC : "own_docs:"
 };
 

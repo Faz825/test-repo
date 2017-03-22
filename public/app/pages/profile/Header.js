@@ -191,7 +191,6 @@ export class CoverImage extends React.Component{
             <div className="cover-image" styles={bgImg}>
                 {(this.props.readOnly)? null : <CoverImageUploader imgUpdated={this.coverImgUpdate} /> }
                 <h1 className="profile-name">{full_name}</h1>
-                {(this.props.onFriendsProfile) ?
                     <div>
                         <div className="actions-wrapper">
                             <ConnectionStatus 
@@ -201,23 +200,29 @@ export class CoverImage extends React.Component{
                                 onUnfriendUser = {this.props.onUnfriendUser}
                                 usrId={this.props.usrId}
                                 loggedUser={this.props.loggedUser}/>
-                            <div className="action-event message" onClick={()=>this.onLoadQuickChatMessage()}>
-                                <span className="icon"></span><span className="text">message</span>
-                            </div>
-                            <div className="action-event call" onClick={()=>this.onLoadVideoCall('CALL')}>
-                                <span className="icon"></span><span className="text">call</span>
-                            </div>
-                            <div className="action-event video" onClick={()=>this.onLoadVideoCall('VIDEO')}>
-                                <span className="icon"></span><span className="text">video</span>
-                            </div>
+                            {(this.props.onFriendsProfile) ?
+                                <div>
+                                    <div className="action-event message" onClick={()=>this.onLoadQuickChatMessage()}>
+                                        <span className="icon"></span><span className="text">message</span>
+                                    </div>
+                                    < div className = "action-event call" onClick={()=>this.onLoadVideoCall('CALL')}>
+                                        <span className="icon"></span><span className="text">call</span>
+                                        </div>
+                                        <div className="action-event video" onClick={()=>this.onLoadVideoCall('VIDEO')}>
+                                        <span className="icon"></span><span className="text">video</span>
+                                    </div>
+                                </div> : null
+                            }
                         </div>
-                        <MutualConnectionIndicator 
-                            mutualCount={this.props.dt.mutual_connection_count}
-                            onLoadMutualFriends  = {this.props.onLoadMutualFriends}/>
+                        {(this.props.onFriendsProfile) ?
+                            <ConnectionIndicator dt ={this.props.dt} readOnly={this.props.readOnly}/>
+                            :
+                            <MutualConnectionIndicator
+                                mutualCount={this.props.dt.mutual_connection_count}
+                                onLoadMutualFriends  = {this.props.onLoadMutualFriends}/>
+                        }
                     </div>
-                    :
-                    <ConnectionIndicator dt ={this.props.dt} readOnly={this.props.readOnly}/>
-                }
+
             </div>
         );
     }

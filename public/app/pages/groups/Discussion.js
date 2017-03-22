@@ -182,11 +182,11 @@ export default class Discussion extends React.Component{
                     <div className="grp-desc panel">
                         <h3 className="panel-title">Description</h3>
                         <div className="desc"
-                            contentEditable={true}
-                            dangerouslySetInnerHTML={{__html: this.state.currentDescription}}
-                            onFocus={this.enableSaveDescription}
-                            onBlur={this.saveDescription}
-                            onInput={(event)=>{this.handleDescription(event)}}>
+                             contentEditable={true}
+                             dangerouslySetInnerHTML={{__html: this.state.currentDescription}}
+                             onFocus={this.enableSaveDescription}
+                             onBlur={this.saveDescription}
+                             onInput={(event)=>{this.handleDescription(event)}}>
                         </div>
                         {this.state.showSave ?
                             <span className="save-btn" onInput={()=>{this.saveDescription()}}>save</span>
@@ -197,9 +197,10 @@ export default class Discussion extends React.Component{
                                 onToastClose={this.onToastClose.bind(this)}
                                 type={this.state.descriptionMsgStatus}
                             />
-                        : ''}
+                            : ''}
                     </div>
                     <MembersWidget
+                        members={this.state.members}
                         randomMembers={this.state.randomMembers}
                         membersCount={this.state.membersCount}
                         currentGroup={this.state.currentGroup}
@@ -253,7 +254,7 @@ export class MembersWidget extends React.Component{
             user : user,
             randomMembers : this.props.randomMembers,
             membersCount : this.props.membersCount,
-            members : [],
+            members : this.props.members,
             group : group
         };
 
@@ -271,6 +272,10 @@ export class MembersWidget extends React.Component{
 
         if (nextProps.membersCount !== this.state.membersCount) {
             this.setState({ membersCount: nextProps.membersCount });
+        }
+
+        if (nextProps.members !== this.state.members) {
+            this.setState({ members: nextProps.members });
         }
 
         if (nextProps.currentGroup !== this.state.group) {
@@ -311,7 +316,8 @@ export class MembersWidget extends React.Component{
 
         let i = (
             <Popover id="popover-contained"  positionTop="150px" className="remove-member-popup">
-                <RemoveMemberPopup groupData={this.state.group} groupMembers={this.state.randomMembers} onLoadMembers={this.props.onLoadMembers} />
+                <RemoveMemberPopup groupData={this.state.group} members={this.state.members}
+                                   randomMembers={this.state.randomMembers} onLoadMembers={this.props.onLoadMembers} />
             </Popover>
         );
 
@@ -335,9 +341,11 @@ export class MembersWidget extends React.Component{
         return (
             <div className="grp-members panel">
                 <div className="panel-header clearfix">
-                    <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
-                        <h3 className="panel-title" style={{cursor: 'pointer'}}>Group Members</h3>
-                    </OverlayTrigger>
+                    {(this.state.user.id == this.state.members.owner) ?
+                            <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                <h3 className="panel-title" style={{cursor: 'pointer'}}>Group Members</h3>
+                            </OverlayTrigger> :
+                            <h3 className="panel-title">Group Members</h3>}
                     <span className="mem-count">{this.state.membersCount} Members</span>
                 </div>
                 <div className="add-member invite-people clearfix">
@@ -491,11 +499,33 @@ export class RemoveMemberPopup extends React.Component{
         super(props);
 
         this.state={
-            user: Session.getSession('prg_lg')
+            user: Session.getSession('prg_lg'),
+            seeAll: false,
+            randomMembers: this.props.randomMembers,
+            members: this.props.members,
+            groupData: this.props.groupData
         }
     }
 
-    toggleRequestList(){
+    componentWillReceiveProps(nextProps) {
+
+        // Basically, whenever you assign parent's props to a child's state
+        // the render method isn't always called on prop update
+        if (nextProps.randomMembers !== this.state.randomMembers) {
+            this.setState({ randomMembers: nextProps.randomMembers });
+        }
+
+        if (nextProps.members !== this.state.members) {
+            this.setState({ members: nextProps.members });
+        }
+
+        if (nextProps.groupData !== this.state.groupData) {
+            this.setState({ groupData: nextProps.groupData });
+        }
+
+    }
+
+    toggleMemberList(){
         let _rql = this.state.seeAll;
         this.setState({
             seeAll: !_rql
@@ -504,42 +534,42 @@ export class RemoveMemberPopup extends React.Component{
 
     onRemoveMember(userId){
 
-        console.log(userId);
+        let params = {
+            _group_id: this.state.groupData._id,
+            _member_id: userId
+        }
 
-        // $.ajax({
-        //     url: '/folder/remove',
-        //     method: "POST",
-        //     dataType: "JSON",
-        //     data:{folder_id: this.state.deleteFolderId},
-        //     headers: { 'prg-auth-header':this.state.loggedUser.token }
-        // }).done( function (data, text) {
-        //     if(data.status.code == 200) {
-        console.log(this.props.groupData.name_prefix);
-                this.props.onLoadMembers(
-                    {
-                        name_prefix: this.props.groupData.name_prefix,
-                        user: this.state.user
-                    }
-                );
-        //     }
-        // }.bind(this));
+        $.ajax({
+            url: '/group/remove-member',
+            method: "POST",
+            dataType: "JSON",
+            data: params,
+            headers: { 'prg-auth-header':this.state.user.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200) {
+                this.props.onLoadMembers();
+            }
+        }.bind(this));
     }
 
     render(){
 
         let _this = this;
-        let _members = this.props.groupMembers.map(function(member,key){
+        let _members = this.state.randomMembers.map(function(member,key){
             return (
                 <div className="member-item" key={key}>
                     <div className="prof-img">
-                        <img src={member.profile_image} className="img-responsive img-circle" />
+                        <img src={member.profile_image} className="img-responsive img-circle"/>
                     </div>
                     <div className="members-preview">
                         <h3 className="prof-name">{member.name}</h3>
                     </div>
-                    <div className="controls">
-                        <button className="btn btn-decline" onClick={()=>_this.onRemoveMember(member.user_id)}>remove</button>
-                    </div>
+                    {(_this.state.members.owner == member.user_id) ? null :
+                        <div className="controls">
+                            <button className="btn btn-decline" onClick={()=>_this.onRemoveMember(member.user_id)}>
+                                remove</button>
+                        </div>
+                    }
                 </div>
             );
         });
@@ -559,7 +589,7 @@ export class RemoveMemberPopup extends React.Component{
                         {
                             (_members.length > 4) ?
                                 <div className="popover-footer">
-                                    <p className="see-all" onClick={this.toggleRequestList.bind(this)}>{(this.state.seeAll)?"see less":"see all"}</p>
+                                    <p className="see-all" onClick={this.toggleMemberList.bind(this)}>{(this.state.seeAll)?"see less":"see all"}</p>
                                 </div> : null
                         }
                     </div>
