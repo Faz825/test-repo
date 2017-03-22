@@ -258,5 +258,18 @@ FolderDocsSchema.statics.searchFolderDocument = function(payload,callBack){
 
 };
 
+FolderDocsSchema.statics.getDocumentsFromCache = function(criteria,callBack){
+
+    ES.search(criteria,function(esResultSet){
+        //console.log(esResultSet)
+        if(esResultSet == null || typeof esResultSet.result == "undefined"){
+            callBack({status:400,folderDocs:[]});
+        }else{
+            callBack({status:200, folderDocs:esResultSet.result});
+        }
+    });
+
+};
+
 
 mongoose.model('FolderDocs',FolderDocsSchema);

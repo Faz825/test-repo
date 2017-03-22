@@ -66,7 +66,7 @@ var GroupFolderController ={
                             folder_owner: resultSet.folder.user_id,
                             folder_updated_at: resultSet.folder.updated_at,
                             folder_shared_mode: FolderSharedMode.VIEW_UPLOAD,
-                            folder_user: userId,
+                            folder_user: member.user_id.toString(),
                             folder_type: FolderType.GROUP_FOLDER,
                             group_id: resultSet.folder.group_id.toString(),
                             cache_key: FolderConfig.ES_INDEX_SHARED_GROUP_FOLDER+member.user_id.toString()
@@ -77,7 +77,6 @@ var GroupFolderController ={
                         });
 
                     }, function (err) {
-                        console.log("sared with members");
                         callBack(null);
                     });
 
@@ -117,8 +116,6 @@ var GroupFolderController ={
 
         var user_id = CurrentSession.id;
         var group_id = req.params.group_id;
-
-        console.log(user_id);
 
         var allFolders = [];
 
@@ -359,8 +356,6 @@ var GroupFolderController ={
             },
             function getFolderAndDocuments(folders, callBack) {
                 _async.eachSeries(folders, function (folder, callBackFolder) {
-
-                    console.log(folder);
 
                     var _folder = {
                         folder_id: folder.folder_id,

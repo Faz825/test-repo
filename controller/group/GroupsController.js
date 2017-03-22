@@ -106,7 +106,7 @@ var GroupsController = {
                                 folder_owner: resultSet.folder.user_id,
                                 folder_updated_at: resultSet.folder.updated_at,
                                 folder_shared_mode: FolderSharedMode.VIEW_ONLY,
-                                folder_user: userId,
+                                folder_user: member.user_id.toString(),
                                 folder_type: FolderType.GROUP_FOLDER,
                                 group_id: resultSet.folder.group_id.toString(),
                                 cache_key: FolderConfig.ES_INDEX_SHARED_GROUP_FOLDER+member.user_id.toString()
@@ -413,54 +413,140 @@ var GroupsController = {
         _async.waterfall([
 
             function removeUserFromGroup(callBack) {
-                // var criteria = {
-                //     '_id': Util.toObjectId(group_id),
-                //     'members.user_id': Util.toObjectId(member_id)
-                // };
-                //
-                // var _status = {
-                //     'members.$.status': GroupSharedRequest.MEMBER_REMOVED
-                // };
+                var criteria = {
+                    '_id': Util.toObjectId(group_id),
+                    'members.user_id': Util.toObjectId(member_id)
+                };
 
-                // Groups.updateGroups(criteria, _status, function (r) {
+                var _status = {
+                    'members.$.status': GroupSharedRequest.MEMBER_REMOVED
+                };
+
+                Groups.updateGroups(criteria, _status, function (r) {
                     callBack(null);
-                // });
+                });
             },
             function removeMemberFolders(callBack){
 
                 _async.waterfall([
-                    function getOwnFoldersToGroup(rCallBack) {
+                    function updateMemberStatus(rfCallBack){
+
+                        var _udata = {
+                            'shared_users.$.status': FolderSharedRequest.MEMBER_REMOVED
+                        };
+                        var criteria = {
+                            type: FolderType.GROUP_FOLDER,
+                            group_id: Util.toObjectId(group_id),
+                            'shared_users.user_id': Util.toObjectId(member_id)
+                        };
+
+                        Folders.updateFolder(criteria, _udata, function(res){
+                            rfCallBack(null);
+                        });
+                    },
+                    function getOwnFoldersToGroup(rfCallBack) {
                         var es_criteria= {
                             _index: FolderConfig.ES_INDEX_OWN_GROUP_FOLDER + member_id.toString(),
                             q: 'folder_type:' + FolderType.GROUP_FOLDER + ' AND folder_group_id:' + group_id.toString()
                         };
 
-                        Folders.getSharedFolders(es_criteria, function (resultSet) {
-                            rCallBack(null, resultSet.folders);
+                        Folders.getSharedFolders(es_criteria, function (r) {
+                            rfCallBack(null, r.folders);
                         });
                     },
-                    function getOwnFolderDocs(ownFolders, rCallBack){
-                        rCallBack(null, ownFolders);
-                    },
-                    function removeOwnFolders(ownFolders, rCallBack) {
-                        console.log('ownFolders');
-                        console.log(ownFolders);
-                        rCallBack(null);
-                    },
-                    function getSharedFoldersToGroup(rCallBack) {
+                    function getSharedFoldersToGroup(ownFolders, rfCallBack) {
                         var es_criteria= {
                             _index: FolderConfig.ES_INDEX_SHARED_GROUP_FOLDER + member_id.toString(),
                             q: 'folder_type:' + FolderType.GROUP_FOLDER + ' AND folder_group_id:' + group_id.toString()
                         };
 
-                        Folders.getSharedFolders(es_criteria, function (resultSet) {
-                            rCallBack(null, resultSet.folders);
+                        Folders.getSharedFolders(es_criteria, function (r) {
+                            var allFolders = ownFolders.concat(r.folders);
+                            rfCallBack(null, allFolders);
                         });
                     },
-                    function removeSharedFolders(sharedFolders, rCallBack) {
-                        console.log('sharedFolders');
-                        console.log(sharedFolders);
-                        rCallBack(null);
+                    function removeFolderDocs(allFolders, rfCallBack){
+
+                        if(typeof allFolders != "undefined" && allFolders.length >0){
+                            _async.eachSeries(allFolders, function (folder, folderCallBack) {
+
+                                _async.waterfall([
+                                    function getFolderDocs(innerCallBack){
+                                        var docs_criteria = {
+                                            folder_id: Util.toObjectId(folder.folder_id)
+                                        }
+
+                                        FolderDocs.getDocuments(docs_criteria, function(docsResult){
+                                            innerCallBack(null, docsResult.documents);
+                                        });
+                                    },
+                                    function removeFromES(docs,innerCallBack){
+
+                                        if(typeof docs != "undefined" && docs.length > 0){
+                                            _async.eachSeries(docs, function (doc, docsCallBack) {
+                                                var _index = "";
+                                                var _type = "";
+
+                                                if (member_id.toString() == doc.user_id.toString()) {
+                                                    _index = FolderDocsConfig.ES_INDEX_OWN_GROUP_DOC;
+                                                    _type = "own_group_document";
+                                                }else {
+                                                    _index = FolderDocsConfig.ES_INDEX_SHARED_GROUP_DOC;
+                                                    _type = "shared_group_document";
+                                                }
+
+                                                var _payload = {
+                                                    id: doc._id.toString(),
+                                                    type: _type,
+                                                    cache_key: _index + member_id.toString()
+                                                };
+
+                                                // FolderDocs.deleteDocumentFromCache(_payload, function(r) {
+                                                    docsCallBack(null);
+                                                // });
+
+                                            }, function (err) {
+                                                innerCallBack(null);
+                                            });
+
+                                        }else {
+                                            innerCallBack(null);
+                                        }
+                                    },
+                                    function removeFolderFromES(innerCallBack){
+
+                                        var _index = "";
+                                        var _type = "";
+
+                                        if (member_id.toString() == folder.folder_owner.toString()) {
+                                            _index = FolderConfig.ES_INDEX_OWN_GROUP_FOLDER;
+                                            _type = "own_folder";
+                                        }else {
+                                            _index = FolderConfig.ES_INDEX_SHARED_GROUP_FOLDER;
+                                            _type = "shared_folder";
+                                        }
+
+                                        var _payload = {
+                                            id: folder.folder_id.toString(),
+                                            type: _type,
+                                            cache_key: _index + member_id.toString()
+                                        };
+
+                                        Folders.deleteFolderFromCache(_payload, function(r) {
+                                            innerCallBack(null);
+                                        });
+
+                                    }
+                                ], function (err) {
+                                    folderCallBack(null);
+                                });
+                            }, function (err) {
+                                rfCallBack(null);
+                            });
+                        }else {
+                            rfCallBack(null);
+                        }
+
                     }
                 ], function (err) {
                     callBack(null);
