@@ -118,7 +118,7 @@ class Education extends React.Component{
                 <div className="inner-header pg-header">
                     <div className="header-wrapper">
                         <span className="header-icon classes"></span>
-                        <span className="header-text">classes</span>
+                        <span className="header-text">education</span>
                     </div>
                     {
                         (!readOnly)?

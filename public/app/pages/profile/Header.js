@@ -62,7 +62,7 @@ export default class Header extends Component {
 export class CoverImage extends React.Component{
     constructor(props){
         super(props);
-        let coverImg = (props.dt.images.cover_image)? props.dt.images.cover_image.http_url : "/images/cover_images/default_cover_1.jpg";
+        let coverImg = (this.props.dt.images.cover_image)? this.props.dt.images.cover_image.http_url : "https://s3.amazonaws.com/proglobe/dev/58a6cb3d0820…0b320-0e14-11e7-aac2-737f9562b64b_cover_image.png";
         this.state = {
             coverimgSrc : coverImg
         }
@@ -182,13 +182,14 @@ export class CoverImage extends React.Component{
     }
 
     render() {
+        console.log(this.props.dt)
         let bgImg = {
             "backgroundImage" : this.state.coverimgSrc
         }
 
         let full_name =  this.props.dt.first_name + " " +  this.props.dt.last_name;
         return (
-            <div className="cover-image" styles={bgImg}>
+            <div className="cover-image" style={bgImg}>
                 {(this.props.readOnly)? null : <CoverImageUploader imgUpdated={this.coverImgUpdate} /> }
                 <h1 className="profile-name">{full_name}</h1>
                     <div>

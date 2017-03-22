@@ -4,7 +4,7 @@
 
 import React from 'react';
 import ReactDom from 'react-dom';
-import {Modal, ButtonToolbar, DropdownButton, MenuItem} from 'react-bootstrap';
+import {Modal, ButtonToolbar, DropdownButton, MenuItem, Popover, OverlayTrigger} from 'react-bootstrap';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {CallChannel, CallType, CallStatus, UserMode, ContactType} from '../../config/CallcenterStats';
@@ -688,6 +688,7 @@ export default class Index extends React.Component {
     }
 
     onUserStateUpdate(mode) {
+        this.refs.overlay.hide();
         this.setState({userStatus: mode, isStatusVisible: false});
 
         CallCenter.updateUserMode(mode).done(function (data) {
@@ -716,6 +717,35 @@ export default class Index extends React.Component {
         let mainCat = this.state.activeMainCat;
         let subCat = this.state.activeSubCat;
 
+        const popoverClickRootClose = (
+        <Popover id="popover-trigger-click-root-close" className="user-status-popover">
+            <section className="cc-online-status-popup">
+                <div className="status-type" onClick={(event)=> {
+                    this.onUserStateUpdate(UserMode.ONLINE.VALUE)
+                }}>
+                    <span className="status online"></span>
+                    <p className="type">{UserMode.ONLINE.TITLE}</p>
+                </div>
+                <div className="status-type" onClick={(event)=> {
+                    this.onUserStateUpdate(UserMode.WORK_MODE.VALUE)
+                }}>
+                    <span className="status work-mode"></span>
+                    <p className="type">{UserMode.WORK_MODE.TITLE}</p>
+                </div>
+                <div className="status-type" onClick={(event)=> {
+                    this.onUserStateUpdate(UserMode.OFFLINE.VALUE)
+                }}>
+                    <span className="status offline"></span>
+                    <p className="type">{UserMode.OFFLINE.TITLE}</p>
+                </div>
+                <div className="mood-msg status-type">
+                    <span className="status addIcon"></span>
+                    <p>Edit Mood Message</p>
+                </div>
+            </section>
+        </Popover>
+        );
+
         return (
             <div className="inner-header clearfix">
                 <div className="col-sm-6 user-status">
@@ -723,34 +753,10 @@ export default class Index extends React.Component {
                         <img
                             src={(this.state.loggedUser.hasOwnProperty('profile_image') && this.state.loggedUser.profile_image) ?
                                 this.state.loggedUser.profile_image : "/images/default-profile-pic.png"}/>
-                        {(!this.state.isStatusVisible) ?
+                        <OverlayTrigger ref="overlay" trigger="click" rootClose placement="right" overlay={popoverClickRootClose}>
                             <span className={"status user-mode " + this.getUserStatusClass(this.state.userStatus)}
                                   onClick={this.onUserStatusClick.bind(this)}></span>
-                            :
-                            <section className="cc-online-status-popup">
-                                <div className="status-type" onClick={(event)=> {
-                                    this.onUserStateUpdate(UserMode.ONLINE.VALUE)
-                                }}>
-                                    <span className="status online"></span>
-                                    <p className="type">{UserMode.ONLINE.TITLE}</p>
-                                </div>
-                                <div className="status-type" onClick={(event)=> {
-                                    this.onUserStateUpdate(UserMode.WORK_MODE.VALUE)
-                                }}>
-                                    <span className="status work-mode"></span>
-                                    <p className="type">{UserMode.WORK_MODE.TITLE}</p>
-                                </div>
-                                <div className="status-type" onClick={(event)=> {
-                                    this.onUserStateUpdate(UserMode.OFFLINE.VALUE)
-                                }}>
-                                    <span className="status offline"></span>
-                                    <p className="type">{UserMode.OFFLINE.TITLE}</p>
-                                </div>
-                                <div className="mood-msg">
-                                    <p>Edit Mood Message</p>
-                                </div>
-                            </section>
-                        }
+                        </OverlayTrigger>
                     </div>
                     <div className="name-wrapper">
                         <p className="name">{this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name}</p>

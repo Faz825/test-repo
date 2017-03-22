@@ -1412,6 +1412,7 @@ input[type=number]::-webkit-outer-spin-button {
 	width: 150px;
 	height: 150px;
 	position: relative;
+	background: #fff;
 }
 .proImgHolder .imageSelector{
 	position: absolute;

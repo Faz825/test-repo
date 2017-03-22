@@ -1146,6 +1146,7 @@ footer .notification-alert-holder.slideOut{
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
     float: left !important;
     height: 25px;
+    overflow: visible;
 }
 
 .calendar-input-area .react-autosuggest__suggestion,
@@ -1171,6 +1172,7 @@ footer .notification-alert-holder.slideOut{
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper {
     float: left !important;
     height: 25px;
+    overflow: visible;
 }
 
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
@@ -1692,4 +1694,143 @@ header .chat-popover-holder .inner-wrapper .see-all{
     width: 70px;
     left: -158px;
     height: auto;
+}
+
+.user-status-popover .popover-content{
+    padding: 0;
+}
+
+.user-status-popover .cc-online-status-popup{
+    width: 135px;
+    overflow: hidden;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px 2px #ebeff1;
+}
+
+.user-status-popover .cc-online-status-popup .status-type{
+    margin-top: 1px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.user-status-popover .cc-online-status-popup .status-type:first-child{
+    margin-top: 9px;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .status{
+    margin-top: 3px;
+    margin-left: 11px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    float: left;
+    border: 2px solid #ffffff;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .status.online{
+    background-color: #6abf6d;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .status.work-mode{
+    background-color: #dc2726;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .status.offline{
+    background-color: #ffffff;
+    border: 2px solid #6ac374;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .type{
+    margin: 1px 0 2px 8px;
+    float: left;
+    font-size: 11px;
+    color: #464646;
+}
+
+.user-status-popover .cc-online-status-popup .status-type:hover {
+    background-color: #00a5ef;
+}
+
+.user-status-popover .cc-online-status-popup .status-type:hover p{
+    color: #fff;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .status.addIcon{
+    margin-top: 2px;
+    margin-left: 11px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    float: left;
+    border: none;
+    background: url(../images/call-center/add-status-icon.png) no-repeat center center;
+}
+
+.user-status-popover .cc-online-status-popup .mood-msg p{
+    margin: 1px 0 2px 8px;
+    font-size: 11px;
+    color: #464646;
+    float: left;
+}
+
+.user-status-popover{
+    margin: 30px 0 0 -20px !important;
+}
+
+.user-status-popover .arrow{
+    display: none;
+}
+
+.user-status-popover .cc-online-status-popup .status-type.mood-msg {
+    border-top: 1px solid #dee6eb;
+}
+
+.profile-container .feed-container .outer-wrapper .new-post .input-wrapper{
+    width: 517px;
+}
+
+.tag-wrapper .time-wrapper .rdt {
+    float: right;
+    width: 100px;
+}
+
+.model-body .tag-wrapper .time-wrapper .rdt {
+    width: 77px;
+}
+
+.tag-wrapper .time-wrapper .rdt .form-control{
+    padding: 6px 10px;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+    box-shadow: none;
+    height: 30px;
+    color: rgba(136, 136, 136, 0.57);
+}
+
+.tag-wrapper .time-wrapper .rdt .rdtPicker{
+    width: 110px;
+    padding: 0;
+    left: -6px;
+}
+
+.tag-wrapper .time-wrapper .rdt .rdtPicker .rdtCounter{
+    height: auto;
+    width: 30px;
+}
+
+.tag-wrapper .time-wrapper .rdt .rdtPicker .rdtCounterSeparator{
+    line-height: 85px;
+}
+
+.tag-wrapper .time-wrapper .rdt .rdtPicker .rdtCounter .rdtBtn{
+    height: 30%;
+    line-height: 32px;
+    color: #00a6ef;
+}
+
+.tag-wrapper .time-wrapper .rdt .rdtPicker .rdtCounter .rdtCount {
+    font-size: 0.9em;
 }
