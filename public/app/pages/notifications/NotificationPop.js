@@ -371,7 +371,7 @@ export default class NotificationPop extends React.Component{
                             <div className={wrapper_class}>
                                 <span className="icon"></span>
                                 <h3 className="title">{notifiTypeTitle}</h3>
-                                <span className="notify-num">{currentTypeNumber}</span>
+                                <span className="notify-num">{_result.length}</span>
                                 <span className="arrow left" onClick={this.loadPrevType.bind(this)}></span>
                                 <span className="arrow right" onClick={this.loadNextType.bind(this)}></span>
                             </div>
