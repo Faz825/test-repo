@@ -11,22 +11,107 @@ var ConnectionController = {
      * @param res
      */
     getRequestedConnections: function (req, res) {
-        var Connection = require('mongoose').model('Connection'), CurrentSession = Util.getCurrentSession(req);
+        var Connection = require('mongoose').model('Connection'), CurrentSession = Util.getCurrentSession(req),
+            _async = require('async'),
+            _page_count = (req.body.page_count != undefined &&  req.body.page_count != 0) ? req.body.page_count : 3;
 
-        var criteria = {
-            user_id: CurrentSession.id,
-            result_per_page: 3
+        _async.waterfall([
+            function getFriendRequests(callBack) {
+                console.log("came to getFriendRequests fucntion");
+                var criteria = {
+                    user_id: CurrentSession.id,
+                    result_per_page: _page_count
 
-        }
-        Connection.getConnectionRequests(criteria, function (resultSet) {
-            var outPut = {
-                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
-                req_cons: resultSet.requested_connections
+                }
+                Connection.getConnectionRequests(criteria, function (resultSet) {
+                    callBack(null, resultSet.requested_connections);
+                });
+            },
+            function getMyConnections(_results, callBack) {
+                console.log("came to getMyConnections fucntion");
+
+                var criteria = {
+                    user_id: CurrentSession.id,
+                    //q:req.query['q']
+                };
+
+                Connection.getMyConnection(criteria, function (resultSet) {
+                    callBack(null, _results, resultSet.results);
+                })
+            },
+            function getMutualConnections(newRequests, _myConns, callBack) {
+                console.log("came to getMutualConnections fucntion");
+                "use strict";
+
+                var requestsList = [], _grep = require('grep-from-array');
+
+                _async.each(newRequests, function (newRequest, callBack) {
+                    _async.waterfall([
+                        function getNewUserFriends(callBack) {
+                            console.log("came to getNewUserFriends fucntion");
+                            var criteria = {
+                                    user_id: newRequest.user_id,
+                                    //q:req.query['q']
+                                };
+
+                            Connection.getMyConnection(criteria, function (resultSet) {
+                                callBack(null, resultSet.results);
+                            });
+                        },
+                        function getNewUserUpdatedTime(newUserConns, callBack) {
+                            console.log("came to getNewUserUpdatedTime fucntion");
+
+                            Connection.checkRequestSentReceived(newRequest.user_id, CurrentSession.id, function (resultSet) {
+                                callBack(null, newUserConns, resultSet);
+                            });
+                        },
+                        function updateNewUserFriends(newUserConns, connData, callBack) {
+                            console.log("came to updateNewUserFriends fucntion");
+
+                            var _mutual_cons = [], userId= CurrentSession.id;
+
+                            for (var inc = 0; inc < _myConns.length; inc++) {
+                                var user_id = _myConns[inc].user_id;
+                                if (user_id != userId) {
+
+                                    var mutual_con = _grep(newUserConns, function (e) {
+                                        return e.user_id == user_id;
+                                    });
+                                    if (mutual_con[0] != null) {
+                                        _mutual_cons.push(mutual_con[0]);
+                                    }
+                                }
+                            }
+
+                            newRequest['mutual_connections'] = _mutual_cons;
+                            newRequest['mutual_connection_count'] = _mutual_cons.length;
+                            newRequest['created_time'] = connData[0].created_at;
+
+                            requestsList.push(newRequest);
+
+                            callBack(null);
+                        }
+
+                    ], function(err) {
+                        callBack(null);
+                    })
+
+                }, function (err) {
+                    callBack(null, requestsList);
+                })
+
             }
+        ], function(err, resultSet) {
+                "use strict";
+                var outPut = {
+                    status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                    req_cons: resultSet
+                }
 
-            res.status(200).send(outPut);
-            return 0
+                res.status(200).send(outPut);
+
         });
+
     },
 
     /**
@@ -148,6 +233,26 @@ var ConnectionController = {
             user_id: CurrentSession.id
         }
         Connection.acceptConnectionRequest(criteria, function (resultSet) {
+            var outPut = {
+                status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+            }
+            res.status(200).send(outPut);
+            return 0
+        });
+    },
+
+    /**
+     * Decline Friend request
+     * @param req
+     * @param res
+     */
+    declineFriendRequest: function (req, res) {
+        var Connection = require('mongoose').model('Connection'), CurrentSession = Util.getCurrentSession(req);
+        var criteria = {
+            sender_id: req.body.sender_id,
+            user_id: CurrentSession.id
+        }
+        Connection.declineConnectionRequest(criteria, function (resultSet) {
             var outPut = {
                 status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
             }

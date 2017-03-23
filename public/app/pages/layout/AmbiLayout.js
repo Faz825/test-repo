@@ -53,6 +53,7 @@ export default class AmbiLayout extends React.Component {
 
         this.state = {
             chatBubble: [],
+            userLoggedIn : Session.getSession('prg_lg'),
             rightBottom: _rightBottom,
             socialNotifications: _socialNotifications,
             isShowingModal: false,
@@ -68,7 +69,8 @@ export default class AmbiLayout extends React.Component {
             },
             dummyChatArray:[],
             loadedChatBubbleId:0,
-            isNewChatLoaded: false
+            isNewChatLoaded: false,
+            my_connections:[]
         };
 
         this.quickChatUsers = [];
@@ -275,6 +277,23 @@ export default class AmbiLayout extends React.Component {
         this.setState({chatBubble: this.quickChatUsers, loadedChatBubbleId: convId});
     }
 
+    loadMyConnections(){
+        $.ajax({
+            url: '/connection/me/unfriend',
+            method: "GET",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.userLoggedIn.token }
+        }).done(function(data){
+            if(data.status.code == 200){
+                this.setState({my_connections:data.my_con});
+            }
+        }.bind(this));
+    }
+
+    resetConnections() {
+        this.loadMyConnections();
+    }
+
     render() {
         let currPage = "";
         if(this.props.children){
@@ -283,14 +302,19 @@ export default class AmbiLayout extends React.Component {
         let dashbrdClass = (this.props.children) ? "sub-page" : "";
         return (
             <div className="app-holder">
-                <SigninHeader quickChat={this.loadQuickChat.bind(this)} dummyQuickChat={this.loadDummyQuickChat.bind(this)} loadNewChat={this.loadNewChat.bind(this)}/>
+                <SigninHeader quickChat={this.loadQuickChat.bind(this)}
+                              dummyQuickChat={this.loadDummyQuickChat.bind(this)}
+                              loadNewChat={this.loadNewChat.bind(this)}
+                              resetConnections={this.resetConnections.bind(this)}
+                              my_connections={this.state.my_connections}
+                />
                 <section
                     className={(!this.state.isNavHidden) ? "body-container " + dashbrdClass : "body-container nav-hidden"}>
                     {this.props.children || <AmbiDashboard />}
                 </section>
                 <CallHandler/>
                 {
-                    this.state.isShowingModal &&
+                    /*this.state.isShowingModal &&
                     <ModalContainer zIndex={9999}>
                         <ModalDialog width="65%" className="workmode-popup-holder">
                             <div className="workmode-popup-wrapper">
@@ -299,7 +323,7 @@ export default class AmbiLayout extends React.Component {
                                    onClick={this.handleClose.bind(this)}></i>
                             </div>
                         </ModalDialog>
-                    </ModalContainer>
+                    </ModalContainer>*/
                 }
                 {
                     this.state.isShowingWMP &&
@@ -324,7 +348,9 @@ export default class AmbiLayout extends React.Component {
                                   bubClose={this.closeChatBubble.bind(this)}
                                   isNavHidden={this.state.isNavHidden}
                                   loadedChatBubbleId={this.state.loadedChatBubbleId}
-                                  setNewChatToList={this.setNewChatToList.bind(this)}/>
+                                  my_connections={this.state.my_connections}
+                                  setNewChatToList={this.setNewChatToList.bind(this)}
+                />
                 {/*<QuickChatDummy dummyChatList={this.state.dummyChatArray} closeQuickChat={this.closeDummyQuickChat.bind(this)} isNavHidden={this.state.isNavHidden}/>*/}
                 <VideoChatPopOver />
                 <FooterHolder blockBottom={this.state.rightBottom}
