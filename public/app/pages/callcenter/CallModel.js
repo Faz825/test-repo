@@ -4,21 +4,26 @@
 
 import React from "react";
 import {Popover, OverlayTrigger} from 'react-bootstrap';
-import {CallType, CallChannel} from '../../config/CallcenterStats';
+import {CallType, CallChannel, ContactType} from '../../config/CallcenterStats';
 import InputField from '../../components/elements/InputField';
 
 export default class CallModel extends React.Component {
     constructor(props) {
         super(props);
-
+        console.log(props)
         this.state = {
             isCallBtnEnabled: true,
             isVideoBtnEnabled: true,
             isValoumeBtnEnabled: true,
-            selectedUser: null
+            selectedUser: null,
+            contactList: [],
+            callerList: []
         };
 
         this.userList = null;
+        this.contactList = this.props.allContacts;
+        this.userNameChange = this.userNameChange.bind(this);
+        this.addRemoveUser = this.addRemoveUser.bind(this);
     }
 
     onCallBtnClick() {
@@ -48,7 +53,44 @@ export default class CallModel extends React.Component {
         this.setState({selectedUser: oUser});
     }
 
+    userNameChange(e){
+        let contactList = [];
+        
+        if(e.target.value.length >= 1){
+            for (var key in this.contactList) {
+                let uName = this.contactList[key].contact_name;
+                if (uName.toLowerCase().indexOf(e.target.value) >= 0) {
+                    contactList.push(this.contactList[key]);
+                }
+            }
+        }else{
+            contactList = [];
+        }
+
+        this.setState({userName : e.target.value, contactList : contactList});
+    }
+
+    addRemoveUser(action, contact, key){
+        console.log(action);
+        console.log(contact);
+        let callerList = this.state.callerList;
+        let i;
+
+        if(action == "add"){
+            callerList.push(contact);
+            this.setState({addStatus : key});
+        }else{
+            for(i=callerList.length-1; i>=0; i--) {
+                if( callerList[i].user_id == contact.user_id) callerList.splice(i,1);
+            }
+            this.setState({addStatus : false});
+        }
+
+        this.setState({callerList : callerList});
+    }
+
     render() {
+        let _this = this;
         let i = (
             <Popover id="popover-contained" className="share-popover-contained callpopup popup-holder"
                      style={{maxWidth: "265px", zIndex: 9999, marginLeft: "18px"}}>
@@ -59,37 +101,65 @@ export default class CallModel extends React.Component {
             </Popover>
         );
 
+        let _listContacts = this.state.contactList.map(function(contact,key){
+            return(
+                <li className="user-block">
+                    <p className="user-name">{contact.contact_name}</p>
+                    <div className="icon-holder">
+                        <i className={(_this.state.addStatus == key)? "fa fa-plus active" : "fa fa-plus"} onClick={(e) => _this.addRemoveUser("add", contact, key)}></i>
+                        <i className="fa fa-minus" onClick={(e) => _this.addRemoveUser("remove", contact)}></i>
+                    </div>
+                </li>
+            );
+        });
+
+        console.log(this.state.callerList)
+
         return (
             <div className="popup-holder">
                 <div className="row">
                     <div className="col-sm-12">
-                        <div className="group-members-container col-sm-3">
-                            <div>
-                                <InputField />
-                            </div>
-                            <div>
-                                <ul>
-                                    <li>Member 1</li>
-                                    <li>Member 2</li>
-                                    <li>Member 3</li>
-                                    <li>Member 4</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div className="active-call-container col-sm-9">
+                        {
+                            (this.props.targetUser.type == ContactType.GROUP)?
+                                <div className="group-members-container col-sm-3">
+                                    <div className="form-group">
+                                        <input type="text" className="form-control" placeholder="Type name" value={this.state.userName} onChange={(e) => this.userNameChange(e)}/>
+                                    </div>
+                                    <ul className="user-block-holder">
+                                        {_listContacts}
+                                    </ul>
+                                </div>
+                            :
+                            null
+
+                        }
+                        <div className={(this.props.targetUser.type == ContactType.GROUP)? "active-call-container col-sm-9" : "active-call-container"}>
                             <div className="top-nav">
                                 <span className="close-ico" onClick={(e) => this.props.closePopup(e)}></span>
-                                <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
-                                    <span className="add-new-ico"></span>
-                                </OverlayTrigger>
+                                {
+                                    (this.props.targetUser.type == ContactType.INDIVIDUAL)?
+                                    <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                        <span className="add-new-ico"></span>
+                                    </OverlayTrigger>
+                                    :
+                                    null
+                                }
                                 <span className="minus-ico" onClick={(e) => this.props.minimizePopup(e)}></span>
                                 <span className="expand-ico"></span>
                             </div>
                             <div className="active-user-block">
                                 <div id="webcamStage">
                                     {   (this.props.callMode == CallChannel.AUDIO) ?
-                                        <img src={this.props.targetUser.images.profile_image.http_url}/>
-                                        : null }
+                                            (this.props.targetUser.type == ContactType.GROUP)?
+                                                <img src={(this.props.targetUser.group_pic_link)? this.props.targetUser.group_pic_link : "images/group/dashboard/grp-icon.png"}/>
+                                                :
+                                                <img src={this.props.targetUser.images.profile_image.http_url}/>
+                                        : 
+                                            (this.props.targetUser.type == ContactType.GROUP)?
+                                                <img src={(this.props.targetUser.group_pic_link)? this.props.targetUser.group_pic_link : "images/group/dashboard/grp-icon.png"}/>
+                                                :
+                                                null 
+                                    }
                                 </div>
                                 <div className="active-call-nav">
                                     <span className={(this.state.isVideoBtnEnabled) ? "video active" : "video"}
@@ -103,8 +173,11 @@ export default class CallModel extends React.Component {
                                 <p className="call-receiver-status">Dialling....</p>
                             </div>
                             {
+                                (this.props.targetUser.type == ContactType.INDIVIDUAL)?
                                 <UserBlock switchUser={this.switchUser.bind(this)} targetUser={this.props.targetUser}
                                            loggedUser={this.props.loggedUser}/>
+                                :
+                                null
                             }
                             <div className="call-timer">
                                 <p className="call-status">On Call -</p>

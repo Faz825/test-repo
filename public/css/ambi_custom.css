@@ -1834,3 +1834,41 @@ header .chat-popover-holder .inner-wrapper .see-all{
 .tag-wrapper .time-wrapper .rdt .rdtPicker .rdtCounter .rdtCount {
     font-size: 0.9em;
 }
+
+.group-members-container{
+    margin: 15px 0 0;
+}
+
+.user-block-holder .user-block{
+    overflow: hidden;
+}
+
+.user-block-holder .user-block .user-name{
+    float: left;
+}
+
+.user-block-holder .user-block .icon-holder{
+    float: right;
+}
+
+.user-block-holder .user-block .fa{
+    cursor: pointer;
+    border-radius: 100%;
+    background: rgba(0, 166, 239, 0.6);
+    color: #fff;
+    font-size: 0.5em;
+    margin-right: 5px;
+    padding: 5px 6px;
+}
+
+.user-block-holder .user-block .fa.active{
+    color: #a6c74a;
+}
+
+.user-block-holder .user-block .fa:last-child{
+    margin: 0;
+}
+
+.workmode-popup-wrapper .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.selected .type-content .type-title{
+    backgroud: #a6c74a;
+}
