@@ -167,7 +167,7 @@ ConnectionSchema.statics.getFriends = function (userId, status, callBack) {
 
     _async.waterfall([
         function getMyRequestAcceptedUsers(callBack) {
-            _this.find({user_id: userId, status: _status})
+            _this.find({user_id: userId, status: _status, connected_with_type: ConnectedType.PERSONAL_CONNECTION})
                 .exec(function (err, resultSet) {
                     if (!err) {
                         for (var a = 0; a < resultSet.length; a++) {
@@ -187,7 +187,7 @@ ConnectionSchema.statics.getFriends = function (userId, status, callBack) {
                 });
         },
         function getIAcceptedRequest(callBack) {
-            _this.find({connected_with: userId, status: _status})
+            _this.find({connected_with: userId, status: _status, connected_with_type: ConnectedType.PERSONAL_CONNECTION})
                 .exec(function (err, resultSet) {
                     if (!err) {
                         for (var a = 0; a < resultSet.length; a++) {
@@ -253,7 +253,7 @@ ConnectionSchema.statics.getFriendsCount = function (userId, callBack) {
 
     _async.waterfall([
         function getMyRequestAcceptedUsers(callBack) {
-            _this.count({user_id: userId, status: ConnectionStatus.REQUEST_ACCEPTED})
+            _this.count({user_id: userId, status: ConnectionStatus.REQUEST_ACCEPTED, connected_with_type: ConnectedType.PERSONAL_CONNECTION})
                 .exec(function (err, resultCount) {
                     if (!err) {
                         friendsCount = resultCount
@@ -266,7 +266,7 @@ ConnectionSchema.statics.getFriendsCount = function (userId, callBack) {
                 });
         },
         function getIAcceptedRequest(callBack) {
-            _this.count({connected_with: userId, status: ConnectionStatus.REQUEST_ACCEPTED})
+            _this.count({connected_with: userId, status: ConnectionStatus.REQUEST_ACCEPTED, connected_with_type: ConnectedType.PERSONAL_CONNECTION})
                 .exec(function (err, resultCount) {
                     if (!err) {
                         friendsCount = friendsCount + resultCount;
@@ -309,7 +309,8 @@ ConnectionSchema.statics.getConnectionRequests = function (criteria, callBack) {
 
     var _query = {
         connected_with: Util.toObjectId(criteria.user_id),
-        status: ConnectionStatus.REQUEST_SENT
+        status: ConnectionStatus.REQUEST_SENT,
+        connected_with_type: ConnectedType.PERSONAL_CONNECTION
     }
 
 
@@ -374,6 +375,7 @@ ConnectionSchema.statics.acceptConnectionRequest = function (criteria, callBack)
             var now = new Date();
             _this.update({
                 user_id: Util.toObjectId(criteria.sender_id),
+                connected_with_type: ConnectedType.PERSONAL_CONNECTION,
                 connected_with: Util.toObjectId(criteria.user_id)
             }, {
                 $set: {
@@ -638,11 +640,13 @@ ConnectionSchema.statics.getMyConnectionsBindUnfriendConnections = function (cri
                 $or: [
                     {
                         connected_with: Util.toObjectId(criteria.user_id),
-                        status: ConnectionStatus.CONNECTION_UNFRIEND
+                        status: ConnectionStatus.CONNECTION_UNFRIEND,
+                        connected_with_type: ConnectedType.PERSONAL_CONNECTION
                     },
                     {
                         user_id: Util.toObjectId(criteria.user_id),
-                        status: ConnectionStatus.CONNECTION_UNFRIEND
+                        status: ConnectionStatus.CONNECTION_UNFRIEND,
+                        connected_with_type: ConnectedType.PERSONAL_CONNECTION
                     }
                 ]
             };
@@ -784,6 +788,7 @@ ConnectionSchema.statics.checkRequestSentReceived = function (i, other, callBack
 
     var criteria = {
         status: ConnectionStatus.REQUEST_SENT,
+        connected_with_type: ConnectedType.PERSONAL_CONNECTION,
         $or: [
             {$and: [{user_id: Util.toObjectId(i)}, {connected_with: Util.toObjectId(other)}]},
             {$and: [{user_id: Util.toObjectId(other)}, {connected_with: Util.toObjectId(i)}]}
@@ -820,11 +825,13 @@ ConnectionSchema.statics.unfriendUser = function (criteria, callBack) {
                     $or: [
                         {
                             user_id: Util.toObjectId(criteria.sender_id),
-                            connected_with: Util.toObjectId(criteria.user_id)
+                            connected_with: Util.toObjectId(criteria.user_id),
+                            connected_with_type: ConnectedType.PERSONAL_CONNECTION
                         },
                         {
                             user_id: Util.toObjectId(criteria.user_id),
-                            connected_with: Util.toObjectId(criteria.sender_id)
+                            connected_with: Util.toObjectId(criteria.sender_id),
+                            connected_with_type: ConnectedType.PERSONAL_CONNECTION
                         }
                     ]
                 }
