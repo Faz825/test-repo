@@ -215,12 +215,20 @@ export class CoverImage extends React.Component{
                                 </div> : null
                             }
                         </div>
-                        {(this.props.onFriendsProfile) ?
-                            <ConnectionIndicator dt ={this.props.dt} readOnly={this.props.readOnly}/>
-                            :
-                            <MutualConnectionIndicator
-                                mutualCount={this.props.dt.mutual_connection_count}
-                                onLoadMutualFriends  = {this.props.onLoadMutualFriends}/>
+                        {
+                            (
+                                this.props.readOnly == false ?
+                                    <ConnectionIndicator dt ={this.props.dt} readOnly={this.props.readOnly}/>
+                                :
+                                    (
+                                        this.props.onFriendsProfile == true ?
+                                            <ConnectionIndicator dt={this.props.dt} readOnly={this.props.readOnly}/>
+                                        :
+                                            <MutualConnectionIndicator
+                                                mutualCount={this.props.dt.mutual_connection_count}
+                                                onLoadMutualFriends={this.props.onLoadMutualFriends}/>
+                                    )
+                            )
                         }
                     </div>
 
@@ -240,7 +248,7 @@ const ConnectionIndicator =(props)=> {
                     <div>
                         <span className="icon"></span>
                         <div className="mutual-count">
-                            <span className="count">{props.mutualCount}</span>
+                            <span className="count">{props.dt.mutual_connection_count}</span>
                             <span className="des">connections</span>
                         </div>
                     </div>
@@ -260,31 +268,34 @@ const ConnectionIndicator =(props)=> {
 /**
  * Show Mutual Friends count
  */
-const MutualConnectionIndicator =(props)=> {
-    return (
-        <div>
-            {
-                (props.mutualCount != 0)?
-                <div className="mutual-connections" onClick={props.onLoadMutualFriends}>
-                    <span className="icon"></span>
-                    <div className="mutual-count">
-                        <span className="count">{props.mutualCount}</span>
-                        <span className="text">mutual</span>
-                        <span className="des">connections</span>
+export class MutualConnectionIndicator extends React.Component {
+
+    constructor(props){
+        super(props);
+
+    }
+    loadMutualFriends() {
+        if(this.props.mutualCount != undefined && this.props.mutualCount > 0) {
+            this.props.onLoadMutualFriends()
+        }
+    }
+
+    render() {
+        return (
+            <div>
+                {
+                    <div className="mutual-connections" onClick={this.loadMutualFriends}>
+                        <span className="icon"></span>
+                        <div className="mutual-count">
+                            <span className="count">{this.props.mutualCount}</span>
+                            <span className="text">mutual</span>
+                            <span className="des">connections</span>
+                        </div>
                     </div>
-                </div>
-                :
-                <div className="mutual-connections">
-                    <span className="icon"></span>
-                    <div className="mutual-count">
-                        <span className="count">{props.mutualCount}</span>
-                        <span className="text">mutual</span>
-                        <span className="des">connections</span>
-                    </div>
-                </div>
-            }
-        </div>
-    );
+                }
+            </div>
+        )
+    };
 };
 
 

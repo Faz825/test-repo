@@ -460,6 +460,33 @@ ConnectionSchema.statics.acceptConnectionRequest = function (criteria, callBack)
 
 }
 
+
+/**
+ * Decline connection request
+ * Update the db connection status with REQUEST_BLOCKED
+ *
+ * @param criteria
+ * @param callBack
+ */
+ConnectionSchema.statics.declineConnectionRequest = function (criteria, callBack) {
+
+    var _this = this;
+    var now = new Date();
+    _this.update({
+        user_id: Util.toObjectId(criteria.sender_id),
+        connected_with: Util.toObjectId(criteria.user_id)
+    }, {
+        $set: {
+            status: ConnectionStatus.REQUEST_BLOCKED,
+            updated_at: now,
+            action_user_id: Util.toObjectId(criteria.user_id)
+        }
+    }, {upsert: false, multi: false}, function (err, rsUpdate) {
+        callBack({status: 200})
+    })
+
+}
+
 /**
  * Get My Connection
  * @param criteria

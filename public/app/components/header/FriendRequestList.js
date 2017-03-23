@@ -1,14 +1,53 @@
 import React from 'react';
 import moment from 'moment';
 import { Scrollbars } from 'react-custom-scrollbars';
+import Session  from '../../middleware/Session';
+import Lib from '../../middleware/Lib';
 
 export default class FriendRequestList extends React.Component {
     constructor(props) {
         super(props);
 
+        if(Session.getSession('prg_lg') == null){
+            window.location.href = "/";
+        }
+
         this.state = {
-            seeAll: false
+            seeAll: false,
+            loggedUser: Session.getSession('prg_lg'),
+            show_request_skip:false,
+            show_suggestion_skip:false,
+            showFriendRequestNotification: this.props.showFriendRequests,
+            my_connections: this.props.my_connections
         };
+
+        this.loadFriendRequests();
+        this.allFriendRequest = [];
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({my_connections: nextProps.my_connections, showFriendRequestNotification: nextProps.showFriendRequests});
+    }
+
+    loadFriendRequests(){
+        $.ajax({
+            url: '/connection/requests',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            data:{ page_count: 10},
+        }).done(function(data){
+            if(data.status.code == 200){
+
+                let _tmp_req_cons = [];
+                if( data.req_cons.length > 0){
+                    this.allFriendRequest = data.req_cons;
+                }
+                this.props.setFriendRequestCount(this.allFriendRequest.length);
+                this.setState({friend_requests:this.allFriendRequest});
+
+            }
+        }.bind(this));
     }
 
     toggleRequestList(){
@@ -18,92 +57,79 @@ export default class FriendRequestList extends React.Component {
         });
     }
 
+    acceptFriendRequest(userReq){
+        $.ajax({
+            url: '/connection/accept',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            data:{ sender_id: userReq.user_id},
+
+        }).done(function(data){
+            if(data.status.code == 200){
+                this.loadFriendRequests();
+            }
+        }.bind(this));
+
+    }
+
+    declineFriendRequest(userReq){
+        $.ajax({
+            url: '/connection/decline',
+            method: "POST",
+            dataType: "JSON",
+            headers: { 'prg-auth-header':this.state.loggedUser.token },
+            data:{ sender_id: userReq.user_id},
+
+        }).done(function(data){
+            if(data.status.code == 200){
+                this.loadFriendRequests();
+            }
+        }.bind(this));
+    }
+
     render() {
 
-        let _dummyRequests = [
-            {
-                profileImg: "/images/header-icons/dropdown/pic1.png",
-                profName: "Science Group",
-                subTitle: "8 mutual Friends",
-                requestedTime: "2 hours ago",
+        let _this = this;
+        let _requestsMap = null;
 
-            },
-            {
-                profileImg: "/images/header-icons/dropdown/pic2.png",
-                profName: "Tamia Bello",
-                subTitle: "20 mutual Friends",
-                requestedTime: "yesterday",
-
-            },
-            {
-                profileImg: "/images/header-icons/dropdown/pic3.png",
-                profName: "Jayden Rye",
-                subTitle: "20 mutual Friends",
-                requestedTime: "last friday",
-
-            },
-            {
-                profileImg: "/images/header-icons/dropdown/pic4.png",
-                profName: "Leah Amber",
-                subTitle: "8 mutual Friends",
-                requestedTime: "last thursday",
-
-            },
-            {
-                profileImg: "/images/header-icons/dropdown/pic5.png",
-                profName: "Helena Hernanez",
-                subTitle: "20 mutual Friends",
-                requestedTime: "about a week ago",
-
-            },
-            {
-                profileImg: "/images/header-icons/dropdown/pic6.png",
-                profName: "Tony Pham",
-                subTitle: "in Science Group",
-                requestedTime: "about a week ago",
-
-            },
-            {
-                profileImg: "/images/header-icons/dropdown/pic7.png",
-                profName: "Sarah Serif",
-                subTitle: "in History 101",
-                requestedTime: "about a month ago",
-
-            },
-            {
-                profileImg: "/images/header-icons/dropdown/pic6.png",
-                profName: "Tony Pham",
-                subTitle: "in Science Group",
-                requestedTime: "about a month ago",
-
-            }
-        ];
-
-        let _requestsMap = _dummyRequests.map(function(request ,key){
-            return (
-                <RequestItem profileImg={request.profileImg} profName={request.profName} subTitle={request.subTitle} requestedTime={request.requestedTime} key={key}/>
-            );
-        });
+        if(this.state.friend_requests != undefined) {
+            _requestsMap = this.state.friend_requests.map(function(request ,key){
+                return (
+                    <RequestItem
+                        friend_req={request}
+                        key={key}
+                        acceptRequest={_this.acceptFriendRequest.bind(_this)}
+                        declineRequest={_this.declineFriendRequest.bind(_this)}
+                    />
+                );
+            });
+        }
 
         return (
-            <section className="friends-popover-holder">
-                <div className="inner-wrapper">
-                    <div className="popover-header">
-                        <p className="friend-requests">friend requests</p>
-                        <p className="find-friends">find friend</p>
-                    </div>
-                    <div className={(this.state.seeAll) ? "friends-list-holder see-all" : "friends-list-holder"}>
-                        {_requestsMap}
-                    </div>
-                    {
-                        (_dummyRequests.length > 7) ?
-                            <div className="popover-footer">
-                                <p className="see-all" onClick={this.toggleRequestList.bind(this)}>{(this.state.seeAll)?"see less":"see all"}</p>
-                            </div> : null
-                    }
+            (this.state.showFriendRequestNotification ?
+                <section className="friends-popover-holder">
+                    <div className="inner-wrapper">
+                        <div className="popover-header">
+                            <p className="friend-requests">friend requests</p>
+                            <p className="find-friends">find friend</p>
+                        </div>
+                        <div className={(this.state.seeAll) ? "friends-list-holder see-all" : "friends-list-holder"}>
+                            {_requestsMap}
+                        </div>
+                        {
+                            (_dummyRequests.length > 7) ?
+                                <div className="popover-footer">
+                                    <p className="see-all" onClick={this.toggleRequestList.bind(this)}>{(this.state.seeAll)?"see less":"see all"}</p>
+                                </div> : null
+                        }
 
-                </div>
-            </section>
+                    </div>
+                </section>
+                :
+                null
+            )
+
         );
     }
 }
@@ -113,12 +139,21 @@ export class RequestItem extends React.Component {
         super(props);
     }
 
+    acceptFriendRequest() {
+        this.props.acceptRequest(this.props.friend_req);
+    }
+
+    declineFriendRequest() {
+        this.props.declineRequest(this.props.friend_req);
+    }
+
     render (){
 
-        let profileImg = this.props.profileImg;
-        let profName = this.props.profName;
-        let subTitle = this.props.subTitle;
-        let requestedTime = this.props.requestedTime;
+        let friend_req = this.props.friend_req;
+        let profileImg = friend_req.images.profile_image.http_url;
+        let profName = friend_req.first_name + " " +friend_req.last_name;
+        let subTitle = friend_req.mutual_connection_count + " mutual Friends";
+        let requestedTime = Lib.getRelativeTime(friend_req.created_time);
 
         return (
             <div className="friends-item">
@@ -131,9 +166,9 @@ export class RequestItem extends React.Component {
                     <p className="requested-time">{requestedTime}</p>
                 </div>
                 <div className="controls">
-                    <button className="btn btn-decline">
+                    <button className="btn btn-decline" onClick={this.declineFriendRequest.bind(this)}>
                         <span className="ico"></span> decline</button>
-                    <button className="btn btn-accept">
+                    <button className="btn btn-accept" onClick={this.acceptFriendRequest.bind(this)}>
                         <span className="ico"></span> accept</button>
                 </div>
             </div>
