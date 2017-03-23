@@ -39,6 +39,11 @@ var ConnectionSchema = new Schema({
         ref: 'User',
         default: null
     },
+    connected_group: {
+        type: Schema.ObjectId,
+        ref: 'Groups',
+        default: null
+    },
     connected_with_type: {
         type: Number,
         required: true,
