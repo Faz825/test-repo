@@ -155,7 +155,10 @@ export class RequestItem extends React.Component {
     render (){
 
         let friend_req = this.props.friend_req;
-        let profileImg = friend_req.images.profile_image.http_url;
+        let _default_img = "/images/default-profile-pic.png";
+        let _images = friend_req.images;
+        let profileImg = _images.hasOwnProperty('profile_image') ? (_images.profile_image.hasOwnProperty('http_url') ? _images.profile_image.http_url : _default_img) : _default_img;
+        //let profileImg = friend_req.images.profile_image.http_url;
         let profName = friend_req.first_name + " " +friend_req.last_name;
         let subTitle = friend_req.mutual_connection_count + " mutual Friends";
         let requestedTime = Lib.getRelativeTime(friend_req.created_time);
