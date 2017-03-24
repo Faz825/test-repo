@@ -425,6 +425,7 @@ PostSchema.statics.postList=function(userId,posts,callBack){
     var _this = this,
         _async = require('async'),
         Comment = require('mongoose').model('Comment'),
+        Groups =  require('mongoose').model('Groups'),
         Like =require('mongoose').model('Like');
 
     var a =0;
@@ -450,6 +451,18 @@ PostSchema.statics.postList=function(userId,posts,callBack){
                         _post['share_count'] = sharedCount;
                         callBack(null);
                     });
+                },
+                function getSharedCount(callBack) {
+                    if(_post.group_id != null) {
+                        Groups.getGroup({_id : _post.group_id }, function (groupResult) {
+                            if(groupResult.status == 200) {
+                                _post['group'] = groupResult.group[0];
+                            }
+                            callBack(null);
+                        });
+                    } else {
+                        callBack(null);
+                    }
                 },
                 function getCommentCount(callBack) {
                    //GET COMMENT COUNT
@@ -585,10 +598,9 @@ PostSchema.statics.formatPost=function(postData){
         lng:(postData.lng)?postData.lng:"",
         life_event:(postData.life_event)?postData.life_event:"",
         upload:(postData.has_attachment)?postData.upload:[],
-        shared_post:(postData.shared_post)?postData.shared_post:""
-
+        shared_post:(postData.shared_post)?postData.shared_post:"",
+        group_id:(postData.group_id)?postData.group_id:null,
     }
-
     return outPut;
 };
 
