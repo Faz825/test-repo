@@ -10,6 +10,7 @@ import Lib    from '../../middleware/Lib';
 import CommentElement from './CommentElement';
 import ProgressBar from '../elements/ProgressBar';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import {Alert} from '../../config/Alert';
 import Scroll from 'react-scroll';
 const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,onLikeSuccess,onLoadProfile,postType, groupId})=>{
 
@@ -57,7 +58,8 @@ class SinglePost extends React.Component{
             showCommentPane: false,
             comments: [],
             unformattedComments: [],
-            liked_users: [],
+            // liked_users: this.props.postItem.liked_user,
+            liked_users: typeof(this.props.postItem.liked_user) != "undefined" ? this.props.postItem.liked_user : [],
             isShowingModal: false,
             iniTextisVisible: false,
             text: "",
@@ -92,33 +94,53 @@ class SinglePost extends React.Component{
 
     }
 
-    onLikeClick(index){
+    componentWillReceiveProps(nextProps) {
 
-        let _this =  this;
+        // Basically, whenever you assign parent's props to a child's state
+        // the render method isn't always called on prop update
+        if (nextProps.postItem !== this.state.postItem) {
+            this.setState({ postItem: nextProps.postItem });
+        }
+
+        if (nextProps.postItem.liked_user !== this.state.liked_users) {
+            this.setState({ liked_users: typeof(nextProps.postItem.liked_user) != "undefined" ? nextProps.postItem.liked_user : []});
+        }
+    }
+
+    onLikeClick(index){
+        let _this = this;
         $.ajax({
             url: '/like/composer',
             method: "POST",
             dataType: "JSON",
-            data:{__post_id:this.props.postItem.post_id},
-            headers: { 'prg-auth-header':this.loggedUser.token },
-        }).done(function (data, text) {
-            if(data.status.code == 200){
-                //this.setState({is_i_liked_now:true});
-
+            data:{__post_id:_this.props.postItem.post_id},
+            headers: { 'prg-auth-header':_this.loggedUser.token },
+            success: function (data, text) {
+                
+                var me = {
+                    "name" : "You",
+                    "profile_image" : "you",
+                    "user_id" : _this.loggedUser.id,
+                    "user_name" : _this.loggedUser.user_name
+                };
+                var likedUsers = _this.state.liked_users;
+                likedUsers.push(me);
+                _this.setState({liked_users : likedUsers});
                 let _notificationData = {
                     post_id:data.like.post_id,
                     notification_type:"like",
-                    notification_sender:this.loggedUser
+                    notification_sender:_this.loggedUser
                 };
-
                 Socket.sendNotification(_notificationData);
+                _this.props.onLikeSuccess(index);
 
-                this.props.onLikeSuccess(index);
-
+            },
+            error: function (request, status, error) {
+                console.log("Alert.ALREADY_LIKED");
             }
-        }.bind(this));
-
+        });
     }
+
     onShareClick(event){
         this.setState({isShowingModal : true});
     }
@@ -422,15 +444,15 @@ class SinglePost extends React.Component{
                                                    onCommentClick = {event=>this.onCommentClick()}
                                                    OnLikeHover = {event=>this.loadLikedUsers()}
                                                    is_i_liked = {_is_i_liked}
-                                                   liked_users = {_post.liked_user}
+                                                   liked_users = {this.state.liked_users}
                                                    show_share_button ={true}/>
 
 
                                 {/*
-                                    (typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
+                                    (typeof this.state.liked_users != 'undefined' &&  this.state.liked_users.length > 0)?
                                         <LikeSummery
                                             visibility={true}
-                                            likes ={_post.liked_user}/>
+                                            likes ={this.state.liked_users}/>
                                         :null
                                 */}
 
@@ -569,17 +591,17 @@ class SinglePost extends React.Component{
                                         onCommentClick = {event=>this.onCommentClick()}
                                         OnLikeHover = {event=>this.loadLikedUsers()}
                                         is_i_liked = {_is_i_liked}
-                                        liked_users = {_post.liked_user}
+                                        liked_users = {this.state.liked_users}
                                         share_count ={_post.share_count}
                                         show_share_button ={true}
                                         userProPic = {loggedUserProPic}
                         />
 
                         {
-                            /*(typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
+                            /*(typeof this.state.liked_users != 'undefined' &&  this.state.liked_users.length > 0)?
                                 <LikeSummery
                                     visibility={true}
-                                    likes ={_post.liked_user}/>
+                                    likes ={this.state.liked_users}/>
                                 :null*/
                         }
 
