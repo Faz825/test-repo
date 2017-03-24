@@ -117,12 +117,17 @@ export default class FriendRequestList extends React.Component {
                         <div className={(this.state.seeAll) ? "friends-list-holder see-all" : "friends-list-holder"}>
                             {_requestsMap}
                         </div>
-                        {
-                            (_dummyRequests.length > 7) ?
-                                <div className="popover-footer">
-                                    <p className="see-all" onClick={this.toggleRequestList.bind(this)}>{(this.state.seeAll)?"see less":"see all"}</p>
-                                </div> : null
-                        }
+
+                            <div className="popover-footer">
+                                {
+                                    (this.state.friend_requests.length > 7) ?
+                                        <p className="see-all" onClick={this.toggleRequestList.bind(this)}>
+                                            {(this.state.seeAll) ? "see less" : "see all"}
+                                        </p>
+                                        :
+                                        null
+                                }
+                            </div>
 
                     </div>
                 </section>
