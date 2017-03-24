@@ -100,6 +100,11 @@ app.use(function(err, req, res, next) {
 GLOBAL.ESUpdateHandler = require('./middleware/ESUpdateHandler');
 ESUpdateHandler.init();
 
+//ES Connection Update - init
+GLOBAL.UpdateConnectionsHandler = require('./middleware/UpdateConnectionsHandler');
+UpdateConnectionsHandler.init();
+
+
 //Update notification category
 GLOBAL.NotificationCategoryUpdateHandler = require('./middleware/NotificationCategoryUpdateHandler');
 NotificationCategoryUpdateHandler.init();
