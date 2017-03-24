@@ -168,8 +168,11 @@ var GroupsController = {
 
                     var _members = [];
                     for (var x = 0; x < notifyUsers.length; x++) {
-                        _members.push(notifyUsers[x].user_id);
+                        if(userId.toString() != notifyUsers[x].user_id.toString()){
+                            _members.push(notifyUsers[x].user_id);
+                        }
                     }
+
                     var _data = {
                         notification_id: notification_id,
                         recipients: _members

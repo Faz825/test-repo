@@ -923,7 +923,8 @@ var NotificationController ={
 
                     function trimNotificationsGetSenders(callBack){
 
-                        if(_notificationType == Notifications.LIKE || _notificationType == Notifications.COMMENT || _notificationType == Notifications.SHARE) {
+                        if(_notificationType == Notifications.LIKE || _notificationType == Notifications.COMMENT || _notificationType == Notifications.SHARE ||
+                            _notificationType == Notifications.ADD_GROUP_POST) {
 
                             var currentPostId = notification.post_id.toString();
 
@@ -1208,10 +1209,22 @@ var NotificationController ={
                                 callBack(null);
                             });
                         }else  if(notification['notification_type'] == Notifications.ADD_GROUP_POST){
-                            /**
-                             * TODO :: bind add group post data to notificationObj & push it to resultNotifications
-                             */
-                            callBack(null);
+                            _async.waterfall([
+                                function getPostData(callBack){
+                                    Post.bindNotificationData(notificationObj, user_id, function (r) {
+                                        callBack(null, r);
+                                    });
+                                },
+                                function getGroupData(notificationObj, callBack) {
+                                    Groups.bindNotificationData(notificationObj, function (r) {
+                                        notificationObj['group_name'] = r.group_name;
+                                        resultNotifications.push(notificationObj);
+                                        callBack(null);
+                                    });
+                                }
+                            ],function(err){
+                                callBack(null);
+                            });
                         }else {
                             callBack(null);
                         }

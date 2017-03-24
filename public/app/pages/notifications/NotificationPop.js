@@ -431,6 +431,7 @@ export class Notifications extends React.Component {
             case 'calendar_schedule_carried_next_day' : return " Your calendar event moved to next day - " + notification.calendar_text;
             case 'share_group_notebook' : return notification.sender_name + " has shared you to collaborate on " + notification.notebook_name + " on " + notification.group_name;
             case 'share_group' : return notification.sender_name + " added you to a group " + notification.group_name;
+            case 'add_group_post' : return notification.sender_name + " added a new post to " + notification.group_name;
             default : return ""
         }
     }

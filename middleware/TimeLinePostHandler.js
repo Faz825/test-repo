@@ -153,9 +153,17 @@ var TimeLinePostHandler ={
 
                 if (typeof notification_id != 'undefined' && _post.visible_users.length > 0 && parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_MEMBERS) {
 
+                    var recipients = [];
+
+                    for(var i=0; i < _post.visible_users.length; i++){
+                        if(postData.created_by != _post.visible_users[i]){
+                            recipients.push(_post.visible_users[i]);
+                        }
+                    }
+
                     var _data = {
                         notification_id: notification_id,
-                        recipients: _post.visible_users
+                        recipients: recipients
                     };
                     NotificationRecipient.saveRecipients(_data, function (res) {
                         callBack(null);
