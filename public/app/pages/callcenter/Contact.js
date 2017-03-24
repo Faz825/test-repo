@@ -32,9 +32,9 @@ export default class Contact extends React.Component {
             mood = "offline";
         }
 
-        if (contact.contactType == ContactType.MULTI) {
+        if (contact.type == ContactType.MULTI) {
             call_type = "multi";
-        } else if (contact.contactType == ContactType.GROUP) {
+        } else if (contact.type == ContactType.GROUP) {
             call_type = "group";
         } else {
             call_type = "user";

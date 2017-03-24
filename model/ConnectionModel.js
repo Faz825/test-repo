@@ -89,6 +89,24 @@ ConnectionSchema.statics.createConnection = function (connectionData, callBack) 
     });
 };
 
+
+/**
+ * Update connection
+ * @param criteria
+ * @param data to update
+ */
+ConnectionSchema.statics.updateConnection = function (criteria, _data, callBack) {
+
+    this.collection.update(criteria, {$set: _data}, {upsert: true, multi: false}, function (err, rsUpdate) {
+            if (!err) {
+                callBack(null);
+            } else {
+                console.log("user connection update error \n");
+                console.log(err);
+            }
+        })
+};
+
 ConnectionSchema.statics.sendConnectionRequest = function (user_id, connected_users, unconnected_users, callBack) {
     var _connected_users = [], now = new Date(), _this = this, _async = require('async');
     //REMOVE UNSELECTED CONNECTIONS

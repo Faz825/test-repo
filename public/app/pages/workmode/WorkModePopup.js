@@ -623,7 +623,7 @@ export default class WorkModePopup extends React.Component {
                                 deactive work mode</button>
                             :
                             <button type="submit" className="btn work-mode" onClick={this.onWorkModeSet.bind(this)}>
-                                active work mode</button>
+                                activate work mode</button>
                         }
                     </div>
 

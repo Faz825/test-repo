@@ -51,6 +51,7 @@ export default class Index extends React.Component {
 
         // Get Contacts
         let _this = this;
+        this.allContacts = [];
 
         CallCenter.getCallRecords().done(function (data) {
             if (data.status.code == 200) {
@@ -62,6 +63,16 @@ export default class Index extends React.Component {
         CallCenter.getContacts().done(function (data) {
             if (data.status.code == 200) {
                 _this.setState({userContacts: data.contacts});
+                
+                for (var key in data.contacts) {
+                    for (var subKey in data.contacts[key].users) {
+                        let type = data.contacts[key].users[subKey].type;
+                        if (type == ContactType.INDIVIDUAL) {
+                            _this.allContacts.push(data.contacts[key].users[subKey]);
+                        }
+                    }
+                }
+
             }
         });
 
@@ -533,7 +544,6 @@ export default class Index extends React.Component {
 
                 }
                 else if (cat == "contact" && subCat == "individual") {
-                    console.log(cat + '' + subCat);
                     let dataSet = [],
                         usersSet = [],
                         letter = "";
@@ -1032,6 +1042,7 @@ export default class Index extends React.Component {
                                         loggedUser={this.state.loggedUser}
                                         targetUser={this.state.targetUser}
                                         closePopup={this.onPopupClose.bind(this)}
+                                        allContacts={this.allContacts}
                                         minimizePopup={this.onMinimizePopup.bind(this)}/>
                                 </ModalDialog>
                             </ModalContainer>
