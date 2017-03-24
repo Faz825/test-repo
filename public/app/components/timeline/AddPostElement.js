@@ -128,7 +128,7 @@ export class TextPostElement extends React.Component{
             fileIds                 :[],
             inProgressUploads       :{},
             post_mode               :"NP",
-            btnEnabled              :true,
+            btnEnabled              :false,
             iniTextisVisible        : true,
             emptyPostWarningIsVisible : false,
             isLocationPanelOpen     :false,
