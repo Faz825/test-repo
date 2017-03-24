@@ -9,6 +9,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Session  from '../../middleware/Session';
 import Lib from '../../middleware/Lib';
+import Moment from 'moment';
 
 export default class Index extends React.Component{
     constructor(props) {
@@ -404,6 +405,7 @@ export default class Index extends React.Component{
                                     </div>
                                     <div className="right-col pull-right">
                                         <span className="settings-button"></span>
+                                        <span className="date">{Moment().format("MMMM Do, YYYY")}</span>
                                     </div>
                                 </div>
                                 <div className="outer-wrapper clearfix">

@@ -386,8 +386,8 @@ export class EducationForm extends React.Component{
                         <label>Description</label>
                         <textarea className="form-control" name="description" rows="3" value={formData.description} onChange={this.fieldChangeHandler} ></textarea>
                     </div>
-                    <button type="submit" className="btn btn-primary pg-btn-custom">Save</button>
                     <button type="button" className="btn btn-default pg-btn-custom" onClick={this.props.onCancel}>Cancel</button>
+                    <button type="submit" className="btn btn-primary pg-btn-custom">Save</button>
                 </form>
             </div>
         );

@@ -20,6 +20,7 @@ export default class CallModel extends React.Component {
             callerList: []
         };
 
+        this.addToCallList = [];
         this.userList = null;
         this.contactList = this.props.allContacts;
         this.userNameChange = this.userNameChange.bind(this);
@@ -71,22 +72,29 @@ export default class CallModel extends React.Component {
     }
 
     addRemoveUser(action, contact, key){
-        console.log(action);
-        console.log(contact);
-        let callerList = this.state.callerList;
-        let i;
+        let callerList = this.state.callerList,
+            i;
 
         if(action == "add"){
             callerList.push(contact);
-            this.setState({addStatus : key});
+            this.addToCallList.push(key);
         }else{
             for(i=callerList.length-1; i>=0; i--) {
                 if( callerList[i].user_id == contact.user_id) callerList.splice(i,1);
             }
-            this.setState({addStatus : false});
+
+            let index = this.addToCallList.indexOf(key);
+            if (index > -1) {
+                this.addToCallList.splice(index, 1);
+            }
+
         }
 
         this.setState({callerList : callerList});
+    }
+
+    isInArray(value, array) {
+        return array.indexOf(value) > -1;
     }
 
     render() {
@@ -103,11 +111,11 @@ export default class CallModel extends React.Component {
 
         let _listContacts = this.state.contactList.map(function(contact,key){
             return(
-                <li className="user-block">
+                <li className="user-block" key={key}>
                     <p className="user-name">{contact.contact_name}</p>
                     <div className="icon-holder">
-                        <i className={(_this.state.addStatus == key)? "fa fa-plus active" : "fa fa-plus"} onClick={(e) => _this.addRemoveUser("add", contact, key)}></i>
-                        <i className="fa fa-minus" onClick={(e) => _this.addRemoveUser("remove", contact)}></i>
+                        <i className={(_this.isInArray(key, _this.addToCallList))? "fa fa-plus active" : "fa fa-plus"} onClick={(e) => _this.addRemoveUser("add", contact, key)}></i>
+                        <i className="fa fa-minus" onClick={(e) => _this.addRemoveUser("remove", contact, key)}></i>
                     </div>
                 </li>
             );

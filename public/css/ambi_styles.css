@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
+ * Bootstrap v3.3.6 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,6 +1418,7 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3118,6 +3119,7 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3670,6 +3672,7 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10247,16 +10250,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* 
-  Method to use:
-  @include @border {
-    border ($style,  $sides, $emptySides){
-  }
+	Method to use:
+	@include @border {
+		border ($style,  $sides, $emptySides){
+	}
 */
 /* 
-  Method to use:
-  @include @mixin {
-    content
-  }
+	Method to use:
+	@include @mixin {
+		content
+	}
 */
 header {
   background: #fff;
@@ -20431,6 +20434,7 @@ header .friends-popover-holder .popover-footer .see-all {
 }
 .news-feed-container .feed-container .news-feed-header-block .right-col {
   overflow: hidden;
+  text-align: right;
 }
 .news-feed-container .feed-container .news-feed-header-block .right-col .options-button {
   margin: 14px 1px 0 0;
@@ -20442,11 +20446,16 @@ header .friends-popover-holder .popover-footer .see-all {
 }
 .news-feed-container .feed-container .news-feed-header-block .right-col .settings-button {
   margin: 14px 1px 0 0;
-  float: right;
+  display: inline-block;
   width: 18px;
   height: 18px;
   background-image: url("../images/news-feed/news-settings.png");
   cursor: pointer;
+}
+.news-feed-container .feed-container .news-feed-header-block .right-col .date {
+  display: block;
+  color: rgba(2, 2, 2, 0.38);
+  font-size: 14px;
 }
 .news-feed-container .feed-container .news-channels-section {
   display: block;
@@ -23577,6 +23586,22 @@ header .friends-popover-holder .popover-footer .see-all {
   margin: 7px auto 0;
   height: 13px;
   background-color: #00a6ef;
+  border-radius: 100%;
+}
+.notification-popup-wrapper .notification-popup-holder .notification-body .notification-item .task-icon .task-dot {
+  display: block;
+  width: 13px;
+  margin: 7px auto 0;
+  height: 13px;
+  background-color: #a6c74a;
+  border-radius: 100%;
+}
+.notification-popup-wrapper .notification-popup-holder .notification-body .notification-item .task-icon .todo-dot {
+  display: block;
+  width: 13px;
+  margin: 7px auto 0;
+  height: 13px;
+  background-color: #ed1e7a;
   border-radius: 100%;
 }
 .notification-popup-wrapper .notification-popup-holder .notification-body .notification-item .task-icon .task {

@@ -633,10 +633,10 @@ a.rc-time-picker-panel-clear-btn {
     background: #fff;
     color: #B1105D;
     font-size: 0.6em;
-    line-height: 1.7;
     z-index: 10;
     text-align: center;
     display: none;
+    padding: 3px 5px 5px 2.5%;
 }
 
 .folder-wrapper:hover .fldr-delete-btn{
@@ -923,7 +923,7 @@ footer .notification-alert-holder.slideOut{
     width: 13px;
     margin: 7px auto 0;
     height: 13px;
-    background-color: #a6c74a;
+    background-color: #ff0005;
     border-radius: 100%;
 }
 
@@ -932,7 +932,7 @@ footer .notification-alert-holder.slideOut{
     width: 13px;
     margin: 7px auto 0;
     height: 13px;
-    background-color: #ed1e7a;
+    background-color: #038247;
     border-radius: 100%;
 }
 
@@ -1319,9 +1319,9 @@ footer .notification-alert-holder.slideOut{
   display: block;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li div.checkbox-area.bg-success {
+/*.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li div.checkbox-area.bg-success {
   padding: 10px;
-}
+}*/
 
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.people-list,
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.people-list span,
@@ -1912,5 +1912,5 @@ header .chat-popover-holder .inner-wrapper .see-all{
 }
 
 .workmode-popup-wrapper .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.selected .type-content .type-title{
-    backgroud: #a6c74a;
+    background: #a6c74a;
 }

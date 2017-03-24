@@ -1710,6 +1710,9 @@ button.addEduInfo{
 	z-index: 100;
 	width: 100%;
 }
+.form-area .btn-default{
+	margin-right: 5px;
+}
 .yearDropDownHolder{
 	overflow: hidden;
 	position: relative;
