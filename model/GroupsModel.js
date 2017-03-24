@@ -325,9 +325,10 @@ GroupsSchema.statics.updateGroups = function(filter, value, callBack){
             console.log("Error - An Error occured in group updating.");
             callBack({status:400,error:err});
         } else {
-            console.log(update);
             console.log("Success - The group updating is success.");
-            callBack({status:200, group:update});
+            _this.getGroupById(filter._id, function (r){
+                callBack({status:200, group:r});
+            });
         }
     });
 };
