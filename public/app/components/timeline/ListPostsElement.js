@@ -416,7 +416,7 @@ class SinglePost extends React.Component{
         return(
             <div>
                 {this.state.isShowingImgModal &&
-                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999} width="70%">
                     <ModalDialog onClose={this.handleClose.bind(this)} className="imgPop-holder">
                         <div className="share-popup-holder feed-container">
                             <div className="img-holder">
@@ -551,14 +551,13 @@ class SinglePost extends React.Component{
                             <div className="user-name-container">
                                 <PostOwner post={_post}
                                             profile={_profile}
-                                            onLoadProfile = {this.props.onLoadProfile}/>
+                                            onLoadProfile = {this.props.onLoadProfile}
+                                           loggedUser={this.loggedUser}/>
 
                                 <SharedPostTitle post={_post}
                                                     loggedUser={this.loggedUser}
                                                     onLoadProfile = {this.props.onLoadProfile}/>
 
-                                <UpdatedProPic post={_post}
-                                                loggedUser={this.loggedUser}/>
                                 <span className="posted-time">{_post.date.time_a_go}</span>
                             </div>
                         </div>
@@ -857,11 +856,14 @@ const PostContentBody = ({loggedUser,post})=>{
 
 };
 
-const PostOwner = ({post,profile,onLoadProfile}) => {
+const PostOwner = ({post,profile,onLoadProfile,loggedUser}) => {
     if(post.post_owned_by != undefined){
         return (
             (post.created_by.user_id == post.post_owned_by.user_id)?
-                <span className="name" onClick={()=>onLoadProfile(profile.user_name)} >{profile.first_name + " " + profile.last_name + " "} </span>
+                <span className="name" onClick={()=>onLoadProfile(profile.user_name)} >{profile.first_name + " " + profile.last_name + " "}
+                    <UpdatedProPic post={post} loggedUser={loggedUser}/>
+
+                </span>
                 :
                 <span className="user-title-wrapper">
                     <div className="user-name-container">

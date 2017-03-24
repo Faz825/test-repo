@@ -598,6 +598,12 @@
     height: 148px;
 }
 
+.user-name-container .own-post-share{
+    color: #878787;
+    font-size: 0.9em;
+    font-weight: 400;
+}
+
 .feed-container .wall-post .post-footer .comments-container .comments-list .comment{
     position: relative;
 }

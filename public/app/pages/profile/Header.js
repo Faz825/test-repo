@@ -182,9 +182,8 @@ export class CoverImage extends React.Component{
     }
 
     render() {
-        console.log(this.props.dt)
         let bgImg = {
-            "backgroundImage" : this.state.coverimgSrc
+            backgroundImage: 'url('+this.state.coverimgSrc+')'
         }
 
         let full_name =  this.props.dt.first_name + " " +  this.props.dt.last_name;

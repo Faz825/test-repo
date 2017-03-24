@@ -654,9 +654,51 @@ a.rc-time-picker-panel-clear-btn {
     bottom: 7px;
     left: 7px;
     margin: 0 2px 0 2px;
-    font-size: 0.5625em;
+    font-size: 0.6em;
     opacity: 0;
+    color: #000000;
+    font-weight: 500;
     transition: opacity 0.5s ease-out 0s;
+}
+
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .file-owner{
+    color: #ffffff;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col > .clearfix{
+    border: 1px solid transparent;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.pink{
+    border-color: #ed1e7a;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.lightBlue{
+    border-color: #00a6ef;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.lightGreen{
+    border-color: #a6c74a;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.grey{
+    border-color: #bebfbf;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.black{
+    border-color: #000;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.darkGreen{
+    border-color: #038247;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.darkBlue{
+    border-color: #000f75;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.red{
+    border-color: #b21e53;
 }
 
 .note-popup-dialog{
