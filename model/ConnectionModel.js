@@ -131,6 +131,7 @@ ConnectionSchema.statics.sendConnectionRequest = function (user_id, connected_us
                         {
                             user_id: Util.toObjectId(user_id),
                             connected_with: Util.toObjectId(connected_user.toObjectId())
+
                         }
                     ]
                 }
@@ -140,7 +141,8 @@ ConnectionSchema.statics.sendConnectionRequest = function (user_id, connected_us
                         connected_with: connected_user.toObjectId(),
                         created_at: now,
                         action_user_id: Util.toObjectId(user_id),
-                        status: ConnectionStatus.REQUEST_SENT
+                        status: ConnectionStatus.REQUEST_SENT,
+                        connected_with_type: ConnectedType.PERSONAL_CONNECTION
                     }
                 }, {upsert: true, multi: false}, function (err, rsUpdate) {
                     if (!err) {
