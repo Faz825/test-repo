@@ -294,12 +294,26 @@ export default class AmbiLayout extends React.Component {
         this.loadMyConnections();
     }
 
+    /*
+        This is the common function for all child components (folder, calendar etc.. )
+        from any index.js file call 'this.props.parentCommonFunction'
+    */
+    commonForAllChildrenComponents() {
+        console.log("commonForAllChildrenComponents called ** ");
+    }
+
     render() {
         let currPage = "";
         if(this.props.children){
             currPage = this.props.children.props.route.name;
         }
         let dashbrdClass = (this.props.children) ? "sub-page" : "";
+
+        let _this = this;
+        var childrenWithProps = React.Children.map(this.props.children, function(child) {
+            return React.cloneElement(child, { parentCommonFunction: _this.commonForAllChildrenComponents.bind(_this) });
+        });
+
         return (
             <div className="app-holder">
                 <SigninHeader quickChat={this.loadQuickChat.bind(this)}
@@ -310,7 +324,7 @@ export default class AmbiLayout extends React.Component {
                 />
                 <section
                     className={(!this.state.isNavHidden) ? "body-container " + dashbrdClass : "body-container nav-hidden"}>
-                    {this.props.children || <AmbiDashboard />}
+                    {childrenWithProps || <AmbiDashboard />}
                 </section>
                 <CallHandler/>
                 {
