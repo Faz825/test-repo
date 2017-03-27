@@ -1703,6 +1703,14 @@ header .chat-popover-holder .inner-wrapper .see-all{
     margin: 7px 0 0;
 }
 
+.cover-container .cover-image .actions-wrapper .action-event{
+    padding: 0px 10px 2px;
+}
+
+.actions-wrapper .action-event + div {
+    float: left;
+}
+
 /* News feed */
 .news-popup-holder .closeButton--jss-0-1{
     left: auto;
