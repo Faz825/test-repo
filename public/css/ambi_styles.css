@@ -10549,7 +10549,7 @@ header .chat-popover-holder .chat-list-holder .chat-item .chat-preview .mark-rea
 }
 header .friends-popover-holder {
   position: absolute;
-  top: 56px;
+  top: 47px;
   right: 8px;
 }
 header .friends-popover-holder .inner-wrapper {
@@ -23808,158 +23808,158 @@ footer .nav-holder .nav-item.notebooks {
 }
 footer .nav-holder .nav-item.notebooks.active .icon-holder {
   background-color: #128851;
-  background-image: url(../images/nav-icons/note-click-icon.png);
+  background-image: url(../images/nav-icons/notebook-active.svg), none;
 }
 footer .nav-holder .nav-item.notebooks.active:hover .icon-holder {
   margin-top: 0;
   width: 35px;
   height: 35px;
-  background-image: url(../images/nav-icons/note-click-icon.png);
+  background-image: url(../images/nav-icons/notebook-active.svg), none;
 }
 footer .nav-holder .nav-item.notebooks .icon-holder {
-  background-image: url(../images/nav-icons/note-icon.png);
+  background-image: url(../images/nav-icons/notebook.svg), none;
   border: 1px solid #038247;
 }
 footer .nav-holder .nav-item.notebooks:hover .icon-holder {
   margin-top: -2px;
   width: 39px;
   height: 39px;
-  background-image: url(../images/nav-icons/note-hover-icon.png);
+  background-image: url(../images/nav-icons/notebook-hover.svg), none;
 }
 footer .nav-holder .nav-item.folders {
   padding: 0 3.9%;
 }
 footer .nav-holder .nav-item.folders.active .icon-holder {
   background-color: #000f75;
-  background-image: url(../images/nav-icons/folder-click-icon.png);
+  background-image: url(../images/nav-icons/folders-active.svg), none;
 }
 footer .nav-holder .nav-item.folders.active:hover .icon-holder {
   margin-top: 0;
   width: 35px;
   height: 35px;
-  background-image: url(../images/nav-icons/folder-click-icon.png);
+  background-image: url(../images/nav-icons/folders-active.svg), none;
 }
 footer .nav-holder .nav-item.folders .icon-holder {
-  background-image: url(../images/nav-icons/folder-icon.png);
+  background-image: url(../images/nav-icons/folders.svg), none;
   border: 1px solid #000f75;
 }
 footer .nav-holder .nav-item.folders:hover .icon-holder {
   margin-top: -2px;
   width: 39px;
   height: 39px;
-  background-image: url(../images/nav-icons/folder-hover-icon.png);
+  background-image: url(../images/nav-icons/folders-hover.svg), none;
 }
 footer .nav-holder .nav-item.news {
   padding: 0 4.7%;
 }
 footer .nav-holder .nav-item.news.active .icon-holder {
   background-color: #b21e53;
-  background-image: url(../images/nav-icons/news-click-icon.png);
+  background-image: url(../images/nav-icons/news-active.svg), none;
 }
 footer .nav-holder .nav-item.news.active:hover .icon-holder {
   margin-top: 0;
   width: 35px;
   height: 35px;
-  background-image: url(../images/nav-icons/news-click-icon.png);
+  background-image: url(../images/nav-icons/news-active.svg), none;
 }
 footer .nav-holder .nav-item.news .icon-holder {
-  background-image: url(../images/nav-icons/news-icon.png);
+  background-image: url(../images/nav-icons/news.svg), none;
   border: 1px solid #b21e53;
 }
 footer .nav-holder .nav-item.news:hover .icon-holder {
   margin-top: -2px;
   width: 39px;
   height: 39px;
-  background-image: url(../images/nav-icons/news-hover-icon.png);
+  background-image: url(../images/nav-icons/news-hover.svg), none;
 }
 footer .nav-holder .nav-item.interests {
   padding: 0 2.9%;
 }
 footer .nav-holder .nav-item.interests.active .icon-holder {
   background-color: #a9c854;
-  background-image: url(../images/nav-icons/interest-click-icon.png);
+  background-image: url(../images/nav-icons/interests-active.svg), none;
 }
 footer .nav-holder .nav-item.interests.active:hover .icon-holder {
   margin-top: 0;
   width: 35px;
   height: 35px;
-  background-image: url(../images/nav-icons/interest-click-icon.png);
+  background-image: url(../images/nav-icons/interests-active.svg), none;
 }
 footer .nav-holder .nav-item.interests .icon-holder {
-  background-image: url(../images/nav-icons/interest-icon.png);
+  background-image: url(../images/nav-icons/interests.svg), none;
   border: 1px solid #a6c74a;
 }
 footer .nav-holder .nav-item.interests:hover .icon-holder {
   margin-top: -2px;
   width: 39px;
   height: 39px;
-  background-image: url(../images/nav-icons/interest-hover-icon.png);
+  background-image: url(../images/nav-icons/interests-hover.svg), none;
 }
 footer .nav-holder .nav-item.groups {
   padding: 0 3.9%;
 }
 footer .nav-holder .nav-item.groups.active .icon-holder {
   background-color: #ec2c81;
-  background-image: url(../images/nav-icons/groups-click-icon.png);
+  background-image: url(../images/nav-icons/groups-active.svg), none;
 }
 footer .nav-holder .nav-item.groups.active:hover .icon-holder {
   margin-top: 0;
   width: 35px;
   height: 35px;
-  background-image: url(../images/nav-icons/groups-click-icon.png);
+  background-image: url(../images/nav-icons/groups-active.svg), none;
 }
 footer .nav-holder .nav-item.groups .icon-holder {
-  background-image: url(../images/nav-icons/groups-icon.png);
+  background-image: url(../images/nav-icons/groups.svg), none;
   border: 1px solid #ed1e7a;
 }
 footer .nav-holder .nav-item.groups:hover .icon-holder {
   margin-top: -2px;
   width: 39px;
   height: 39px;
-  background-image: url(../images/nav-icons/groups-hover-icon.png);
+  background-image: url(../images/nav-icons/groups-hover.svg), none;
 }
 footer .nav-holder .nav-item.calendar.active .icon-holder {
   background-color: #00a6ef;
-  background-image: url(../images/nav-icons/cal-click-icon.png);
+  background-image: url(../images/nav-icons/calendar-active.svg), none;
 }
 footer .nav-holder .nav-item.calendar.active:hover .icon-holder {
   margin-top: 0;
   width: 35px;
   height: 35px;
-  background-image: url(../images/nav-icons/cal-click-icon.png);
+  background-image: url(../images/nav-icons/calendar-active.svg), none;
 }
 footer .nav-holder .nav-item.calendar .icon-holder {
-  background-image: url(../images/nav-icons/cal-icon.png);
+  background-image: url(../images/nav-icons/calendar.svg), none;
   border: 1px solid #00a6ef;
 }
 footer .nav-holder .nav-item.calendar:hover .icon-holder {
   margin-top: -2px;
   width: 39px;
   height: 39px;
-  background-image: url(../images/nav-icons/cal-hover-icon.png);
+  background-image: url(../images/nav-icons/calendar-hover.svg), none;
 }
 footer .nav-holder .nav-item.call-center {
   padding: 0 2.2%;
 }
 footer .nav-holder .nav-item.call-center.active .icon-holder {
   background-color: #3ac353;
-  background-image: url(../images/nav-icons/call-center-click-icon.png);
+  background-image: url(../images/nav-icons/call-center-active.svg), none;
 }
 footer .nav-holder .nav-item.call-center.active:hover .icon-holder {
   margin-top: 0;
   width: 35px;
   height: 35px;
-  background-image: url(../images/nav-icons/call-center-click-icon.png);
+  background-image: url(../images/nav-icons/call-center-active.svg), none;
 }
 footer .nav-holder .nav-item.call-center .icon-holder {
-  background-image: url(../images/nav-icons/call-center-icon.png);
+  background-image: url(../images/nav-icons/call-center.svg), none;
   border: 1px solid #17c235;
 }
 footer .nav-holder .nav-item.call-center:hover .icon-holder {
   margin-top: -2px;
   width: 39px;
   height: 39px;
-  background-image: url(../images/nav-icons/call-center-hover-icon.png);
+  background-image: url(../images/nav-icons/call-center-hover.svg), none;
 }
 footer .nav-holder .nav-item .icon-holder {
   width: 35px;
