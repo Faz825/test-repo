@@ -197,6 +197,8 @@ var UserSchema = new Schema({
 
     onlineMode: {type: Number, required: true},
 
+    bit6Group: {type: String, default: null},
+
     created_at: {
         type: Date
     },
@@ -1118,7 +1120,7 @@ UserSchema.statics.formatSkills = function (userObject, callBack) {
             'experienced': []
         };
 
-    if(userObject.skills != undefined && userObject.skills) {
+    if (userObject.skills != undefined && userObject.skills) {
         _async.each(userObject.skills,
             function (skill, callBack) {
 
@@ -1288,7 +1290,8 @@ UserSchema.statics.authenticate = function (data, callback) {
                             country: resultSet.country,
                             dob: resultSet.dob,
                             secretary_id: resultSet.secretary,
-                            online_mode:resultSet.onlineMode
+                            online_mode: resultSet.onlineMode,
+                            bit6_group: resultSet.bit6Group
                         };
 
                         for (var i = 0; i < resultSet.working_experiences.length; i++) {
@@ -1392,7 +1395,7 @@ UserSchema.statics.getSenderDetails = function (related_senders, callBack) {
                 };
                 //Find User from Elastic search
                 ES.search(query, function (csResultSet) {
-                    if(csResultSet != undefined) {
+                    if (csResultSet != undefined) {
                         var _result = csResultSet.result[0];
                         var _images = _result['images'];
                         var _pic = _images.hasOwnProperty('http_url') ? _images['http_url'] : _images.hasOwnProperty('profile_image') ? _images['profile_image']['http_url'] : "images/default-profile-pic.png";

@@ -24,7 +24,6 @@ export default class Index extends React.Component {
             window.location.href = "/";
         } else {
             this.b6 = CallCenter.b6;
-            this.initCall(this.b6);
         }
 
         this.state = {
@@ -32,6 +31,7 @@ export default class Index extends React.Component {
             targetUser: null,
             inProgressCall: false,
             callMode: CallChannel.AUDIO,
+            bit6Call: null,
             userContacts: [],
             callRecords: {all: [], missed: [], individual: [], groups: [], multi: []},
             userStatus: loggedUser.online_mode,
@@ -69,14 +69,6 @@ export default class Index extends React.Component {
         this.answerAudio = this.answerAudio.bind(this);
         this.reject = this.reject.bind(this);
         this.currUserList = null;
-    }
-
-    initCall(b6) {
-        let _this = this;
-
-        b6.on('video', function (v, d, op) {
-            _this.onVideoCall(v, d, op);
-        });
     }
 
     getContacts(cat, subCat) {
@@ -620,7 +612,8 @@ export default class Index extends React.Component {
     }
 
     onPopupClose() {
-        this.setState({inProgressCall: false, minimizeBar: false});
+        this.state.bit6Call.hangup();
+        this.setState({inProgressCall: false, minimizeBar: false, bit6Call: null});
     }
 
     onDialing(user, callType) {
@@ -795,31 +788,6 @@ export default class Index extends React.Component {
         )
     }
 
-    // Let's say you want to display the video elements in DOM element '#container'
-    // Get notified about video elements to be added or removed
-    // v - video element to add or remove
-    // d - Dialog - call controller. null for a local video feed
-    // op - operation. 1 - add, 0 - update, -1 - remove
-    onVideoCall(v, d, op) {
-        console.log("====== video call ======");
-
-        // TODO Please change the container name for popup container
-        var vc = $('#webcamStage');
-        if (op < 0) {
-            vc[0].removeChild(v);
-        }
-        else if (op > 0) {
-            v.setAttribute('class', d ? 'remote' : 'local');
-            vc.append(v);
-        }
-        // Total number of video elements (local and remote)
-        var n = vc[0].children.length;
-        // Display the container if we have any video elements
-        if (op != 0) {
-            vc.toggle(n > 0);
-        }
-    }
-
     startOutgoingCall(oTargetUser, callMode) {
         // Outgoing call params
         let opts = {
@@ -838,18 +806,21 @@ export default class Index extends React.Component {
         // Start the outgoing call
         let to = CallCenter.getBit6Identity(oTargetUser);
         var c = this.b6.startCall(to, opts);
+
         this.attachCallEvents(c);
 
         this.callRecord.contact = oTargetUser;
         this.callRecord.callChannel = this.state.callMode;
         this.callRecord.targets.push({user_id: oTargetUser.user_id});
+        this.callRecord.dialedAt = new Date().toISOString();
+
+        /* CallCenter.addCallRecord(this.callRecord).done(function (oData) {
+         // console.log(oData);
+         });*/
 
         c.connect(opts);
 
-        this.setState({inProgressCall: true});
-        this.setState({targetUser: oTargetUser});
-        console.log("===== startOutgoingCall ===");
-        console.log(c);
+        this.setState({inProgressCall: true, targetUser: oTargetUser, bit6Call: c});
     };
 
     // Attach call state events to a RtcDialog
@@ -858,39 +829,36 @@ export default class Index extends React.Component {
 
         // Call progress
         c.on('progress', function () {
-            _this.callRecord.dialedAt = new Date().toISOString();
-
-            CallCenter.addCallRecord(_this.callRecord).done(function (oData) {
-                console.log(oData);
-            });
+            console.log(c);
+            _this.setState({bit6Call: c});
         });
 
         // Number of video feeds/elements changed
         c.on('videos', function () {
-            console.log('video');
             console.log(c);
+            _this.setState({bit6Call: c});
             // TODO show video call details in popup
         });
 
         // Call answered
         c.on('answer', function () {
-            console.log('answered');
             console.log(c);
+            _this.setState({bit6Call: c});
             // TODO show timer , call buttons
         });
+
         // Error during the call
         c.on('error', function () {
-            console.log('error');
             console.log(c);
+            _this.setState({bit6Call: c});
             // TODO show call error in popup
         });
+
         // Call ended
         c.on('end', function () {
             console.log('end');
             console.log(c);
-
-            // _this.setState({inProgressCall: false, targetUser: null, callMode: CallChannel.AUDIO});
-
+            _this.setState({inProgressCall: false, targetUser: null, callMode: CallChannel.AUDIO});
             // TODO show call end details in popup
         });
     }
@@ -916,6 +884,22 @@ export default class Index extends React.Component {
 
     onPopupMaximize() {
         this.setState({inProgressCall: true, minimizeBar: false});
+    }
+
+    toggleMic(bMic) {
+        var oCall = this.state.bit6Call;
+        oCall.connect({audio: bMic});
+        this.setState({callMode: (bMic) ? CallChannel.VIDEO : CallChannel.AUDIO, bit6Call: oCall});
+    }
+
+    toggleVideo(bVideo) {
+        var oCall = this.state.bit6Call;
+        oCall.connect({video: bVideo});
+        this.setState({callMode: (bVideo) ? CallChannel.VIDEO : CallChannel.AUDIO, bit6Call: oCall});
+    }
+
+    toggleSpeaker() {
+
     }
 
     onSearch(e) {
@@ -944,7 +928,6 @@ export default class Index extends React.Component {
                 }
                 usersSet = [];
             }
-
         }
 
         if (val == "") {
@@ -1022,9 +1005,11 @@ export default class Index extends React.Component {
                             <ModalContainer zIndex={9999}>
                                 <ModalDialog className="modalPopup">
                                     <CallModel
-                                        callMode={this.state.callMode}
+                                        bit6Call={this.state.bit6Call}
                                         loggedUser={this.state.loggedUser}
                                         targetUser={this.state.targetUser}
+                                        toggleMic={this.toggleMic.bind(this)}
+                                        toggleVideo={this.toggleVideo.bind(this)}
                                         closePopup={this.onPopupClose.bind(this)}
                                         minimizePopup={this.onMinimizePopup.bind(this)}/>
                                 </ModalDialog>

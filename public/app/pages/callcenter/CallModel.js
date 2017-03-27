@@ -12,36 +12,33 @@ export default class CallModel extends React.Component {
         super(props);
 
         this.state = {
-            isCallBtnEnabled: true,
-            isVideoBtnEnabled: true,
-            isValoumeBtnEnabled: true,
+            isSpeakerEnabled: true,
+            isVideoBtnEnabled: false,
+            isMicEnabled: true,
             selectedUser: null
         };
 
         this.userList = null;
     }
 
-    onCallBtnClick() {
-        let isEnabled = this.state.isCallBtnEnabled;
-        this.setState({isCallBtnEnabled: !isEnabled});
-    }
-
     onVideoBtnClick() {
-        let isEnabled = this.state.isVideoBtnEnabled;
-        this.setState({isVideoBtnEnabled: !isEnabled});
+        (this.props.bit6Call.options.video) ? this.props.toggleVideo(false) : this.props.toggleVideo(true);
     }
 
-    onVolumeBtnClick() {
-        let isEnabled = this.state.isValoumeBtnEnabled;
-        this.setState({isValoumeBtnEnabled: !isEnabled});
+    onMicBtnClick() {
+        (this.props.bit6Call.options.audio) ? this.props.toggleMic(false) : this.props.toggleMic(true);
+    }
+
+    onSpeakerBtnClick() {
+
     }
 
     onMinimizePopup() {
-        this.setState({inCall: false, minimizeBar: true});
+        this.setState({minimizeBar: true});
     }
 
     onPopupClose() {
-        this.setState({inCall: false, minimizeBar: false});
+        this.setState({minimizeBar: false});
     }
 
     switchUser(oUser) {
@@ -87,17 +84,21 @@ export default class CallModel extends React.Component {
                             </div>
                             <div className="active-user-block">
                                 <div id="webcamStage">
-                                    {   (this.props.callMode == CallChannel.AUDIO) ?
-                                        <img src={this.props.targetUser.images.profile_image.http_url}/>
+                                    {   (!this.props.bit6Call.remoteOptions.video) ?
+                                        <img className="avatar" src={this.props.targetUser.images.profile_image.http_url}/>
                                         : null }
                                 </div>
                                 <div className="active-call-nav">
-                                    <span className={(this.state.isVideoBtnEnabled) ? "video active" : "video"}
-                                          onClick={this.onVideoBtnClick.bind(this)}></span>
-                                    <span className={(this.state.isCallBtnEnabled) ? "mute" : "mute active"}
-                                          onClick={this.onCallBtnClick.bind(this)}></span>
-                                    <span className={(this.state.isValoumeBtnEnabled) ? "speaker" : "speaker active"}
-                                          onClick={this.onVolumeBtnClick.bind(this)}></span>
+                                    <span
+                                        className={(this.props.bit6Call.options.video) ? "video active" : "video"}
+                                        onClick={this.onVideoBtnClick.bind(this)}></span>
+
+                                    <span className={(this.props.bit6Call.options.audio) ? "mute" : "mute active"}
+                                          onClick={this.onMicBtnClick.bind(this)}></span>
+
+                                    <span className={(this.state.isSpeakerEnabled) ? "speaker" : "speaker active"}
+                                          onClick={this.onSpeakerBtnClick.bind(this)}></span>
+
                                     <span className="hang-up" onClick={(e) => this.props.closePopup(e)}></span>
                                 </div>
                                 <p className="call-receiver-status">Dialling....</p>
@@ -129,7 +130,7 @@ export class UserBlock extends React.Component {
 
     onUserClick(oUser) {
         console.log(this);
-       // this.props.switchUser(oUser);
+        // this.props.switchUser(oUser);
         this.setState({userName: oUser.user_name});
     }
 
