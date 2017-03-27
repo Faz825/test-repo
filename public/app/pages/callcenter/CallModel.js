@@ -185,7 +185,9 @@ export default class CallModel extends React.Component {
                                 (this.props.targetUser.type == ContactType.INDIVIDUAL) ?
                                     <UserBlock switchUser={this.switchUser.bind(this)}
                                                targetUser={this.props.targetUser}
-                                               loggedUser={this.props.loggedUser}/>
+                                               loggedUser={this.props.loggedUser}
+                                               bit6Call={this.props.bit6Call}
+                                    />
                                     :
                                     null
                             }
@@ -235,10 +237,11 @@ export class UserBlock extends React.Component {
             <div className="participants">
                 <div id="origin_webcamStage" className={this.isUserActive(_loggedUser.user_name)}
                      onClick={this.onUserClick.bind(_loggedUser)}>
-                    {   (!this.props.bit6Call.options.video) ?
-                        <img
-                            src={(_loggedUser.profile_image) ? _loggedUser.profile_image : "/images/default-profile-pic.png"}/>
-                        : null }
+                    {
+                        (!this.props.bit6Call.options.video) ?
+                            <img
+                                src={(_loggedUser.profile_image) ? _loggedUser.profile_image : "/images/default-profile-pic.png"}/>
+                            : null }
                     <div className="actions-wrapper">
                         <span className="video"></span>
                         <span className="mute"></span>
