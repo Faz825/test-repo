@@ -815,6 +815,8 @@ export default class Index extends React.Component {
                 screen: false
             };
 
+            console.log(callMode);
+
             if (callMode == CallChannel.VIDEO) {
                 opts.video = true;
                 this.setState({callMode: CallChannel.VIDEO});
@@ -837,7 +839,7 @@ export default class Index extends React.Component {
              // console.log(oData);
              });*/
 
-            //  c.connect(opts);
+            c.connect(opts);
 
             this.setState({inProgressCall: true, targetUser: oTargetUser, bit6Call: c});
         } else {
