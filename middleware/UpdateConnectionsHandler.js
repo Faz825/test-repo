@@ -5,10 +5,6 @@
 var UpdateConnectionsHandler = {
 
     init: function () {
-        console.log("==============================================");
-        console.log("**    Connection update is initialized      **");
-        console.log("==============================================");
-
         this.updateConnections(function (payload) {
             console.log("RUNNING");
         });
@@ -58,13 +54,11 @@ var UpdateConnectionsHandler = {
                     } else {
                         console.log("group connection update error \n");
                         console.log(err);
+                        callBack(err);
                     }
                 });
             }
         ], function (err) {
-            console.log("==============================================");
-            console.log("**      Connection update is FINISHED       **");
-            console.log("==============================================");
             callBack(null);
         });
     }
