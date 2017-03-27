@@ -197,8 +197,6 @@ var UserSchema = new Schema({
 
     onlineMode: {type: Number, required: true},
 
-    bit6Group: {type: String, default: null},
-
     created_at: {
         type: Date
     },
@@ -1290,8 +1288,7 @@ UserSchema.statics.authenticate = function (data, callback) {
                             country: resultSet.country,
                             dob: resultSet.dob,
                             secretary_id: resultSet.secretary,
-                            online_mode: resultSet.onlineMode,
-                            bit6_group: resultSet.bit6Group
+                            online_mode: resultSet.onlineMode
                         };
 
                         for (var i = 0; i < resultSet.working_experiences.length; i++) {

@@ -12,14 +12,11 @@ export default class CallModel extends React.Component {
         super(props);
 
         this.state = {
- isSpeakerEnabled: true,
+            isSpeakerEnabled: true,
             isVideoBtnEnabled: false,
             isMicEnabled: true,
-            selectedUser: null
-            isCallBtnEnabled: true,
-            isVideoBtnEnabled: true,
-            isValoumeBtnEnabled: true,
             selectedUser: null,
+            isCallBtnEnabled: true,
             contactList: [],
             callerList: []
         };
@@ -55,33 +52,33 @@ export default class CallModel extends React.Component {
         this.setState({selectedUser: oUser});
     }
 
-    userNameChange(e){
+    userNameChange(e) {
         let contactList = [];
-        
-        if(e.target.value.length >= 1){
+
+        if (e.target.value.length >= 1) {
             for (var key in this.contactList) {
                 let uName = this.contactList[key].contact_name;
                 if (uName.toLowerCase().indexOf(e.target.value) >= 0) {
                     contactList.push(this.contactList[key]);
                 }
             }
-        }else{
+        } else {
             contactList = [];
         }
 
-        this.setState({userName : e.target.value, contactList : contactList});
+        this.setState({userName: e.target.value, contactList: contactList});
     }
 
-    addRemoveUser(action, contact, key){
+    addRemoveUser(action, contact, key) {
         let callerList = this.state.callerList,
             i;
 
-        if(action == "add"){
+        if (action == "add") {
             callerList.push(contact);
             this.addToCallList.push(key);
-        }else{
-            for(i=callerList.length-1; i>=0; i--) {
-                if( callerList[i].user_id == contact.user_id) callerList.splice(i,1);
+        } else {
+            for (i = callerList.length - 1; i >= 0; i--) {
+                if (callerList[i].user_id == contact.user_id) callerList.splice(i, 1);
             }
 
             let index = this.addToCallList.indexOf(key);
@@ -91,7 +88,7 @@ export default class CallModel extends React.Component {
 
         }
 
-        this.setState({callerList : callerList});
+        this.setState({callerList: callerList});
     }
 
     isInArray(value, array) {
@@ -110,12 +107,13 @@ export default class CallModel extends React.Component {
             </Popover>
         );
 
-        let _listContacts = this.state.contactList.map(function(contact,key){
-            return(
+        let _listContacts = this.state.contactList.map(function (contact, key) {
+            return (
                 <li className="user-block" key={key}>
                     <p className="user-name">{contact.contact_name}</p>
                     <div className="icon-holder">
-                        <i className={(_this.isInArray(key, _this.addToCallList))? "fa fa-plus active" : "fa fa-plus"} onClick={(e) => _this.addRemoveUser("add", contact, key)}></i>
+                        <i className={(_this.isInArray(key, _this.addToCallList)) ? "fa fa-plus active" : "fa fa-plus"}
+                           onClick={(e) => _this.addRemoveUser("add", contact, key)}></i>
                         <i className="fa fa-minus" onClick={(e) => _this.addRemoveUser("remove", contact, key)}></i>
                     </div>
                 </li>
@@ -129,29 +127,31 @@ export default class CallModel extends React.Component {
                 <div className="row">
                     <div className="col-sm-12">
                         {
-                            (this.props.targetUser.type == ContactType.GROUP)?
+                            (this.props.targetUser.type == ContactType.GROUP) ?
                                 <div className="group-members-container col-sm-3">
                                     <div className="form-group">
-                                        <input type="text" className="form-control" placeholder="Type name" value={this.state.userName} onChange={(e) => this.userNameChange(e)}/>
+                                        <input type="text" className="form-control" placeholder="Type name"
+                                               value={this.state.userName} onChange={(e) => this.userNameChange(e)}/>
                                     </div>
                                     <ul className="user-block-holder">
                                         {_listContacts}
                                     </ul>
                                 </div>
-                            :
-                            null
+                                :
+                                null
 
                         }
-                        <div className={(this.props.targetUser.type == ContactType.GROUP)? "active-call-container col-sm-9" : "active-call-container"}>
+                        <div
+                            className={(this.props.targetUser.type == ContactType.GROUP) ? "active-call-container col-sm-9" : "active-call-container"}>
                             <div className="top-nav">
                                 <span className="close-ico" onClick={(e) => this.props.closePopup(e)}></span>
                                 {
-                                    (this.props.targetUser.type == ContactType.INDIVIDUAL)?
-                                    <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
-                                        <span className="add-new-ico"></span>
-                                    </OverlayTrigger>
-                                    :
-                                    null
+                                    (this.props.targetUser.type == ContactType.INDIVIDUAL) ?
+                                        <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                            <span className="add-new-ico"></span>
+                                        </OverlayTrigger>
+                                        :
+                                        null
                                 }
                                 <span className="minus-ico" onClick={(e) => this.props.minimizePopup(e)}></span>
                                 <span className="expand-ico"></span>
@@ -159,7 +159,8 @@ export default class CallModel extends React.Component {
                             <div className="active-user-block">
                                 <div id="webcamStage">
                                     {   (!this.props.bit6Call.remoteOptions.video) ?
-                                        <img className="avatar" src={this.props.targetUser.images.profile_image.http_url}/>
+                                        <img className="avatar"
+                                             src={this.props.targetUser.images.profile_image.http_url}/>
                                         : null }
                                 </div>
                                 <div className="active-call-nav">
@@ -178,11 +179,12 @@ export default class CallModel extends React.Component {
                                 <p className="call-receiver-status">Dialling....</p>
                             </div>
                             {
-                                (this.props.targetUser.type == ContactType.INDIVIDUAL)?
-                                <UserBlock switchUser={this.switchUser.bind(this)} targetUser={this.props.targetUser}
-                                           loggedUser={this.props.loggedUser}/>
-                                :
-                                null
+                                (this.props.targetUser.type == ContactType.INDIVIDUAL) ?
+                                    <UserBlock switchUser={this.switchUser.bind(this)}
+                                               targetUser={this.props.targetUser}
+                                               loggedUser={this.props.loggedUser}/>
+                                    :
+                                    null
                             }
                             <div className="call-timer">
                                 <p className="call-status">On Call -</p>
