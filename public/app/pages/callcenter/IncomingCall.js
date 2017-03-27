@@ -20,7 +20,6 @@ export default class IncomingCall extends React.Component {
     }
 
     hangUp() {
-
         this.props.hangUp();
     }
 

@@ -140,6 +140,22 @@ var CallCenterController = {
                     return res.status(200).json(outPut);
                 }
             });
+        },
+        getGroupMembers: function (req, res) {
+            var GroupId = req.body.group_id;
+
+            var query = {
+                q: '_id:' + GroupId,
+                index: 'idx_group'
+            };
+
+            ES.search(query, function (ResultSet) {
+                if (ResultSet.hasOwnProperty('result')) {
+                    return res.status(200).json(ResultSet.result.shift());
+                } else {
+                    return res.status(200).json([]);
+                }
+            });
         }
     }
     ,

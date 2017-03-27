@@ -72,10 +72,10 @@ export default class Contact extends React.Component {
                 <div className="col-sm-6">
                     <div className="call-ico-wrapper">
                         <button className="call-ico video" onClick={(event)=> {
-                            _this.handleClick(contact, "video")
+                            _this.handleClick(contact, CallChannel.VIDEO)
                         }}></button>
                         <button className="call-ico phone" onClick={(event)=> {
-                            _this.handleClick(contact, "audio")
+                            _this.handleClick(contact, CallChannel.AUDIO)
                         }}></button>
                     </div>
                 </div>
