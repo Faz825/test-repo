@@ -40,7 +40,7 @@ export default class DayView extends Component {
             currentDay : this.props.dayDate,
             defaultType : 'event',
             defaultEventType : this.props.eventType,
-            defaultEventTime : moment().format('HH:mm'),
+            defaultEventTime : moment().format('YYYY-MM-DD HH:mm'),
             events : [],
             user : user,
             showTimePanel : '',
@@ -138,7 +138,7 @@ export default class DayView extends Component {
             showTimePanel:'',
             showUserPanelWindow: false,
             showTimePanelWindow: false,
-            defaultEventTime: moment().format('HH:mm'),
+            defaultEventTime: moment().format('YYYY-MM-DD HH:mm'),
             editOn : false,
             isButtonDisabled: false
         });
@@ -154,8 +154,7 @@ export default class DayView extends Component {
     addEvent(event) {
 
         const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
-        const strTime = this.state.defaultEventTime;
-        const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+        const dateWithTime = this.state.defaultEventTime;
 
         const Editor = this.refs.EditorFieldValues.state.editorState;
         const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
@@ -183,7 +182,7 @@ export default class DayView extends Component {
             priority = (plainText.includes("!1")) ? 1 : priority;
         }
 
-        console.log(priority);
+        console.log( moment(dateWithTime).format('HH:mm'));
 
         // get shared users from SharedUsers field
         const sharedUsers = this.sharedWithIds;
@@ -192,7 +191,7 @@ export default class DayView extends Component {
             plain_text : plainText,
             type : this.state.defaultType,
             apply_date : dateWithTime,
-            event_time : strTime,
+            event_time : moment(dateWithTime).format('HH:mm'),
             event_timezone : moment.tz.guess(),
             shared_users : sharedUsers,
             calendar_origin : this.props.calendarOrigin,
@@ -240,7 +239,8 @@ export default class DayView extends Component {
 
         const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
         const strTime = this.state.defaultEventTime;
-        const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+        // const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+        const dateWithTime = this.state.defaultEventTime;
 
         const Editor = this.refs.EditorFieldValues.state.editorState;
         const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
@@ -269,7 +269,7 @@ export default class DayView extends Component {
             plain_text : plainText,
             type : this.state.defaultType,
             apply_date : dateWithTime,
-            event_time : strTime,
+            event_time : moment(dateWithTime).format('HH:mm'),
             shared_users : sharedUsers,
             id : this.state.editEventId
         };
@@ -378,6 +378,7 @@ export default class DayView extends Component {
                     this.setState({
                         sharedWithNames: data.event.sharedWithNames,
                         sharedWithIds: data.event.sharedWithIds,
+                        showTimePanelWindow : true
                     });
                     var eventType = 'event';
                     switch(data.event.type) {
@@ -449,7 +450,8 @@ export default class DayView extends Component {
     }
 
     handleTimeChange(time) {
-        this.setState({ defaultEventTime: moment(time).format('HH:mm') });
+        // this.setState({ defaultEventTime: moment(time).format('HH:mm') });
+        this.setState({ defaultEventTime: time });
     }
 
     _onBoldClick() {
@@ -545,12 +547,15 @@ export default class DayView extends Component {
     setTime(selected) {
 
         var arrEntries = selected._root.entries;
-        var time = arrEntries[1][1];
+        var strTime = arrEntries[1][1];
+        const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
+        const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+
         // let year = moment(this.state.currentDay).year();
         // let month = moment(this.state.currentDay).month();
         // let date = moment(this.state.currentDay).day();
         // let timeWithDay = year+'/'+month+'/'+date+' '+time;
-        this.setState({ defaultEventTime: time });
+        this.setState({ defaultEventTime: dateWithTime, showTimePanelWindow : true });
     }
 
     closeModal() {
@@ -646,10 +651,15 @@ export default class DayView extends Component {
                                         </div>
                                         <div className="time-wrapper" >
                                             <p className="title"  onClick={this._onAtClick.bind(this)}>Insert time &#58;</p>
-                                                {/*
-                                                <Datetime dateFormat={false} onChange={this.handleTimeChange}/>
-                                                */}
-                                            {this.state.showTimePanelWindow ?
+                                            { this.state.showTimePanelWindow ?
+                                                <Datetime
+                                                    dateFormat={false}
+                                                    onChange={this.handleTimeChange}
+                                                    value={moment(this.state.defaultEventTime).format('LT')}/>
+                                            :
+                                                null
+                                            }
+                                            { /* this.state.showTimePanelWindow ?
                                                 <TimePicker
                                                     style={{ width: 100 }}
                                                     showSecond={showSecond}
@@ -658,7 +668,7 @@ export default class DayView extends Component {
                                                 />
                                             :
                                                 null
-                                            }
+                                            */ }
                                         </div>
                                     </div>
                                     <div className={this.state.defaultType + " calender-input-type"}>
