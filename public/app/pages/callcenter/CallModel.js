@@ -23,7 +23,7 @@ export default class CallModel extends React.Component {
 
         this.addToCallList = [];
         this.userList = null;
-        this.contactList = this.props.allContacts;
+        this.contactList = this.props.targetUser.members;
         this.userNameChange = this.userNameChange.bind(this);
         this.addRemoveUser = this.addRemoveUser.bind(this);
     }
@@ -46,6 +46,7 @@ export default class CallModel extends React.Component {
 
     onPopupClose() {
         this.setState({minimizeBar: false});
+
     }
 
     switchUser(oUser) {
@@ -57,7 +58,7 @@ export default class CallModel extends React.Component {
 
         if (e.target.value.length >= 1) {
             for (var key in this.contactList) {
-                let uName = this.contactList[key].contact_name;
+                let uName = this.contactList[key].name;
                 if (uName.toLowerCase().indexOf(e.target.value) >= 0) {
                     contactList.push(this.contactList[key]);
                 }
@@ -110,7 +111,7 @@ export default class CallModel extends React.Component {
         let _listContacts = this.state.contactList.map(function (contact, key) {
             return (
                 <li className="user-block" key={key}>
-                    <p className="user-name">{contact.contact_name}</p>
+                    <p className="user-name">{contact.name}</p>
                     <div className="icon-holder">
                         <i className={(_this.isInArray(key, _this.addToCallList)) ? "fa fa-plus active" : "fa fa-plus"}
                            onClick={(e) => _this.addRemoveUser("add", contact, key)}></i>
@@ -158,10 +159,12 @@ export default class CallModel extends React.Component {
                             </div>
                             <div className="active-user-block">
                                 <div id="webcamStage">
-                                    {   (!this.props.bit6Call.remoteOptions.video) ?
-                                        <img className="avatar"
-                                             src={this.props.targetUser.images.profile_image.http_url}/>
-                                        : null }
+                                    {
+                                        (this.props.targetUser.type == ContactType.INDIVIDUAL && !this.props.bit6Call.remoteOptions.video ) ?
+                                            <img src={this.props.targetUser.images.profile_image.http_url}/> :
+                                            <img
+                                                src={(this.props.targetUser.group_pic_link) ? this.props.targetUser.group_pic_link : "images/group/dashboard/grp-icon.png"}/>
+                                    }
                                 </div>
                                 <div className="active-call-nav">
                                     <span
@@ -232,7 +235,7 @@ export class UserBlock extends React.Component {
             <div className="participants">
                 <div id="origin_webcamStage" className={this.isUserActive(_loggedUser.user_name)}
                      onClick={this.onUserClick.bind(_loggedUser)}>
-                    {   (this.props.callMode == CallType.AUDIO) ?
+                    {   (!this.props.bit6Call.options.video) ?
                         <img
                             src={(_loggedUser.profile_image) ? _loggedUser.profile_image : "/images/default-profile-pic.png"}/>
                         : null }

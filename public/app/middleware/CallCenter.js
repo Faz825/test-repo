@@ -87,6 +87,17 @@ class CallCenter {
         });
     }
 
+    getGroupMembers(groupid) {
+        let _this = this;
+
+        return $.ajax({
+            url: '/contact/group-members',
+            method: "POST",
+            data: {group_id: groupid},
+            headers: {'prg-auth-header': _this.loggedUser.token}
+        });
+    }
+
     /**
      * @param ident - bit6 ident
      * @param pass - bit6 password

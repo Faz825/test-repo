@@ -63,7 +63,7 @@ export default class Index extends React.Component {
         CallCenter.getContacts().done(function (data) {
             if (data.status.code == 200) {
                 _this.setState({userContacts: data.contacts});
-                
+
                 for (var key in data.contacts) {
                     for (var subKey in data.contacts[key].users) {
                         let type = data.contacts[key].users[subKey].type;
@@ -721,32 +721,32 @@ export default class Index extends React.Component {
         let subCat = this.state.activeSubCat;
 
         const popoverClickRootClose = (
-        <Popover id="popover-trigger-click-root-close" className="user-status-popover">
-            <section className="cc-online-status-popup">
-                <div className="status-type" onClick={(event)=> {
-                    this.onUserStateUpdate(UserMode.ONLINE.VALUE)
-                }}>
-                    <span className="status online"></span>
-                    <p className="type">{UserMode.ONLINE.TITLE}</p>
-                </div>
-                <div className="status-type" onClick={(event)=> {
-                    this.onUserStateUpdate(UserMode.WORK_MODE.VALUE)
-                }}>
-                    <span className="status work-mode"></span>
-                    <p className="type">{UserMode.WORK_MODE.TITLE}</p>
-                </div>
-                <div className="status-type" onClick={(event)=> {
-                    this.onUserStateUpdate(UserMode.OFFLINE.VALUE)
-                }}>
-                    <span className="status offline"></span>
-                    <p className="type">{UserMode.OFFLINE.TITLE}</p>
-                </div>
-                <div className="mood-msg status-type">
-                    <span className="status addIcon"></span>
-                    <p>Edit Mood Message</p>
-                </div>
-            </section>
-        </Popover>
+            <Popover id="popover-trigger-click-root-close" className="user-status-popover">
+                <section className="cc-online-status-popup">
+                    <div className="status-type" onClick={(event)=> {
+                        this.onUserStateUpdate(UserMode.ONLINE.VALUE)
+                    }}>
+                        <span className="status online"></span>
+                        <p className="type">{UserMode.ONLINE.TITLE}</p>
+                    </div>
+                    <div className="status-type" onClick={(event)=> {
+                        this.onUserStateUpdate(UserMode.WORK_MODE.VALUE)
+                    }}>
+                        <span className="status work-mode"></span>
+                        <p className="type">{UserMode.WORK_MODE.TITLE}</p>
+                    </div>
+                    <div className="status-type" onClick={(event)=> {
+                        this.onUserStateUpdate(UserMode.OFFLINE.VALUE)
+                    }}>
+                        <span className="status offline"></span>
+                        <p className="type">{UserMode.OFFLINE.TITLE}</p>
+                    </div>
+                    <div className="mood-msg status-type">
+                        <span className="status addIcon"></span>
+                        <p>Edit Mood Message</p>
+                    </div>
+                </section>
+            </Popover>
         );
 
         return (
@@ -756,7 +756,8 @@ export default class Index extends React.Component {
                         <img
                             src={(this.state.loggedUser.hasOwnProperty('profile_image') && this.state.loggedUser.profile_image) ?
                                 this.state.loggedUser.profile_image : "/images/default-profile-pic.png"}/>
-                        <OverlayTrigger ref="overlay" trigger="click" rootClose placement="right" overlay={popoverClickRootClose}>
+                        <OverlayTrigger ref="overlay" trigger="click" rootClose placement="right"
+                                        overlay={popoverClickRootClose}>
                             <span className={"status user-mode " + this.getUserStatusClass(this.state.userStatus)}
                                   onClick={this.onUserStatusClick.bind(this)}></span>
                         </OverlayTrigger>
@@ -805,39 +806,69 @@ export default class Index extends React.Component {
     }
 
     startOutgoingCall(oTargetUser, callMode) {
-        // Outgoing call params
-        let opts = {
-            audio: true,
-            video: false,
-            screen: false
-        };
+        console.log(oTargetUser);
+        if (oTargetUser.type == ContactType.INDIVIDUAL) {
 
-        if (callMode == CallChannel.VIDEO) {
-            opts.video = true;
-            this.setState({callMode: CallChannel.VIDEO});
+            let opts = {
+                audio: true,
+                video: false,
+                screen: false
+            };
+
+            if (callMode == CallChannel.VIDEO) {
+                opts.video = true;
+                this.setState({callMode: CallChannel.VIDEO});
+            } else {
+                this.setState({callMode: CallChannel.AUDIO});
+            }
+
+            // Start the outgoing call
+            let to = CallCenter.getBit6Identity(oTargetUser);
+            var c = this.b6.startCall(to, opts);
+
+            this.attachCallEvents(c);
+
+            this.callRecord.contact = oTargetUser;
+            this.callRecord.callChannel = this.state.callMode;
+            this.callRecord.targets.push({user_id: oTargetUser.user_id});
+            this.callRecord.dialedAt = new Date().toISOString();
+
+            /* CallCenter.addCallRecord(this.callRecord).done(function (oData) {
+             // console.log(oData);
+             });*/
+
+            //  c.connect(opts);
+
+            this.setState({inProgressCall: true, targetUser: oTargetUser, bit6Call: c});
         } else {
-            this.setState({callMode: CallChannel.AUDIO});
+            let _this = this;
+
+            CallCenter.getGroupMembers(oTargetUser._id).done(function (Group) {
+                Group.type = ContactType.GROUP;
+
+                var bit6Call = {
+                    options: {video: false, audio: false},
+                    remoteOptions: {video: false}
+                };
+
+                var GroupMembers = Group.members.reduce(function (members, member) {
+                    if (member.user_id != _this.state.loggedUser.id) {
+                        members.push(member);
+                    }
+
+                    return members;
+                }, []);
+
+                Group.members = GroupMembers;
+
+                _this.setState({inProgressCall: true, targetUser: Group, bit6Call: bit6Call});
+            });
         }
+    }
 
-        // Start the outgoing call
-        let to = CallCenter.getBit6Identity(oTargetUser);
-        var c = this.b6.startCall(to, opts);
+    startGroupCall() {
 
-        this.attachCallEvents(c);
-
-        this.callRecord.contact = oTargetUser;
-        this.callRecord.callChannel = this.state.callMode;
-        this.callRecord.targets.push({user_id: oTargetUser.user_id});
-        this.callRecord.dialedAt = new Date().toISOString();
-
-        /* CallCenter.addCallRecord(this.callRecord).done(function (oData) {
-         // console.log(oData);
-         });*/
-
-        c.connect(opts);
-
-        this.setState({inProgressCall: true, targetUser: oTargetUser, bit6Call: c});
-    };
+    }
 
     // Attach call state events to a RtcDialog
     attachCallEvents(c) {
@@ -1027,7 +1058,6 @@ export default class Index extends React.Component {
                                         toggleMic={this.toggleMic.bind(this)}
                                         toggleVideo={this.toggleVideo.bind(this)}
                                         closePopup={this.onPopupClose.bind(this)}
-                                        allContacts={this.allContacts}
                                         minimizePopup={this.onMinimizePopup.bind(this)}/>
                                 </ModalDialog>
                             </ModalContainer>
