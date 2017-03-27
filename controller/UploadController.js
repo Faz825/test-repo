@@ -33,6 +33,44 @@ var UploadController = {
         })
     },
 
+    uploadTimeLineVideo:function(req,res){
+
+        var outPut ={};
+        if(typeof req.body.file_name == 'undefined' || typeof req.body.file_name == ""){
+            outPut['status']    = ApiHelper.getMessage(400, Alert.POST_CONTENT_EMPTY, Alert.ERROR);
+            res.status(400).send(outPut);
+            return 0;
+        }
+
+        var uuid = require('node-uuid');
+
+        var data ={
+            entity_id: req.body.entity_id,
+            entity_tag: UploadMeta.TIME_LINE_IMAGE,
+            upload_index: req.body.upload_index,
+            file_id: req.body.file_id,
+            file_name: req.body.file_name,
+            file_type: req.body.file_type,
+            content_title: 'Post Video',
+            http_url: req.body.http_url,
+            thumb_file_name: req.body.thumb_file_name,
+            thumb_file_type: req.body.thumb_file_type,
+            thumb_http_url: req.body.thumb_http_url
+        }
+
+        var _async = require('async'),
+            Upload = require('mongoose').model('Upload'),
+            _this = this;
+
+        var _cacheKey = data.entity_tag+data.entity_id;
+
+        CacheEngine.addBottomToList(_cacheKey,data,function(csResultSet){
+            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+            res.status(200).json(outPut);
+        });
+
+    },
+
     uploadFolderDocument:function(req,res){
 
         console.log("came to uploadFolderDocument");

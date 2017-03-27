@@ -165,7 +165,6 @@ var CacheEngine ={
                 callBack(err);
             }else{
                 console.log("ADD TO LIST");
-                console.log(result);
                 callBack(result);
             }
 

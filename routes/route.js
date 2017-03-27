@@ -134,6 +134,7 @@ router.post('/comment/delete', CommentController.deleteComment);
 
 // Upload
 router.post('/ajax/upload/image', UploadController.uploadTimeLinePhoto);
+router.post('/ajax/upload/video', UploadController.uploadTimeLineVideo);
 router.post('/ajax/upload/folderDoc', UploadController.uploadFolderDocument);
 
 
