@@ -1211,15 +1211,11 @@ footer .notification-alert-holder.slideOut{
     position: relative;
 }
 
-.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper {
-    float: left !important;
-    height: 25px;
-    overflow: visible;
-}
-
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper,
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
     float: left !important;
     height: 25px;
+    overflow: visible;
 }
 
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
