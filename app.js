@@ -107,6 +107,8 @@ UpdateConnectionsHandler.init();
 
 //Update notification category
 GLOBAL.NotificationCategoryUpdateHandler = require('./middleware/NotificationCategoryUpdateHandler');
-NotificationCategoryUpdateHandler.init();
+
+// TODO : @Naveen - uncomment this after fixing issue
+//NotificationCategoryUpdateHandler.init();
 
 module.exports = app;

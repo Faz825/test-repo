@@ -1211,15 +1211,11 @@ footer .notification-alert-holder.slideOut{
     position: relative;
 }
 
-.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper {
-    float: left !important;
-    height: 25px;
-    overflow: visible;
-}
-
+.popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper,
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
     float: left !important;
     height: 25px;
+    overflow: visible;
 }
 
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
@@ -1701,6 +1697,14 @@ header .chat-popover-holder .inner-wrapper .see-all{
 .group-container .outer-wrapper .input-options .options-wrapper{
     float: left;
     margin: 7px 0 0;
+}
+
+.cover-container .cover-image .actions-wrapper .action-event{
+    padding: 0px 10px 2px;
+}
+
+.actions-wrapper .action-event + div {
+    float: left;
 }
 
 /* News feed */
