@@ -96,7 +96,7 @@ export default class DayTodosList extends React.Component {
 							{/*<div className={acceptedClass} dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></div>*/}
 							<p>People in the To-do : {ownerString}{usersString}</p>
 						</label>
-						<div className="time-wrapper pull-right">{event.event_time}</div>
+						<div className="time-wrapper pull-right">{moment(event.start_date_time).format('LT')}</div>
 						{event.user_id == _this.state.user.id && startDateTime > moment().format('YYYY-MM-DD HH:mm') ?
 							<span>
 								<i onClick={_this.props.clickEdit.bind(_this, event._id)} className="fa fa-pencil pull-right action-icons edit-icon" aria-hidden="true"></i>
