@@ -2,6 +2,7 @@
 import React from 'react';
 import Session from '../../middleware/Session';
 import moment from 'moment-timezone';
+import Datetime from 'react-datetime';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import { EditorState, RichUtils, ContentState, convertFromRaw, convertToRaw, Modifier} from 'draft-js';
@@ -378,10 +379,12 @@ export default class WeekDayEventPopUp extends React.Component {
                                         </div>
                                         <div className="time-wrapper" >
                                             <p className="title"  onClick={this._onAtClick.bind(this)}>Time &#58;</p>
+                                                {/*<Datetime dateFormat={false} onChange={this.handleTimeChange}/>*/}
                                             {this.state.showTimePanelWindow ?
                                                 <TimePicker
+                                                    style={{ width: 100 }}
                                                     showSecond={showSecond}
-                                                    onChange={this.handleTimeChange.bind(this)}
+                                                    onChange={this.handleTimeChange}
                                                     placeholder="00:00"
                                                 />
                                             :

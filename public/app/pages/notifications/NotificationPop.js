@@ -371,7 +371,7 @@ export default class NotificationPop extends React.Component{
                             <div className={wrapper_class}>
                                 <span className="icon"></span>
                                 <h3 className="title">{notifiTypeTitle}</h3>
-                                <span className="notify-num">{currentTypeNumber}</span>
+                                <span className="notify-num">{_result.length}</span>
                                 <span className="arrow left" onClick={this.loadPrevType.bind(this)}></span>
                                 <span className="arrow right" onClick={this.loadNextType.bind(this)}></span>
                             </div>
@@ -431,6 +431,7 @@ export class Notifications extends React.Component {
             case 'calendar_schedule_carried_next_day' : return " Your calendar event moved to next day - " + notification.calendar_text;
             case 'share_group_notebook' : return notification.sender_name + " has shared you to collaborate on " + notification.notebook_name + " on " + notification.group_name;
             case 'share_group' : return notification.sender_name + " added you to a group " + notification.group_name;
+            case 'add_group_post' : return notification.sender_name + " added a new post to " + notification.group_name;
             default : return ""
         }
     }

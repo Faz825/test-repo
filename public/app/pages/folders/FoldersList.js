@@ -292,12 +292,6 @@ export default class FolderList extends React.Component{
             ownerName = folderData.folder_user.first_name;
         }
 
-        let _fileList = documents.map(function(file,key){
-            return (
-                <File fileData={file} key={key} showConfirm={_this.onShowConfirm.bind(this)} viewFile={_this.viewFile.bind(this)}/>
-            )
-        });
-
         let _uploadFileList = this.state.files.map(function(uploadFile,key){
             return(
                 <FilePreview uploadData={uploadFile} key={key}/>
@@ -305,37 +299,50 @@ export default class FolderList extends React.Component{
 
         });
 
+        let fileCls;
+
         switch(fldrClr) {
             case "#ed1e7a":
                 borderClr = "#f57fb4";
+                fileCls = "pink";
                 break;
             case "#00a6ef":
                 borderClr = "#b3e4fa";
+                fileCls = "lightBlue";
                 break;
             case "#a6c74a":
                 borderClr = "#e6efcc";
+                fileCls = "lightGreen";
                 break;
             case "#bebfbf":
                 borderClr = "#dedfdf";
+                fileCls = "grey";
                 break;
             case "#000000":
                 borderClr = "#828182";
+                fileCls = "black";
                 break;
             case "#038247":
                 borderClr = "#d2e3a4";
+                fileCls = "darkGreen";
                 break;
             case "#000f75":
                 borderClr = "#7fd2f7";
+                fileCls = "darkBlue";
                 break;
             case "#b21e53":
                 borderClr = "#b21e53";
+                fileCls = "red";
                 break;
         }
 
-        let _folderName = folderData.folder_name == 'undefined' ? folderData.folder_name : folderData.folder_name.length <= 12 ? folderData.folder_name : folderData.folder_name.slice(0,14) + '...';
+        let _fileList = documents.map(function(file,key){
+            return (
+                <File fileData={file} key={key} showConfirm={_this.onShowConfirm.bind(this)} viewFile={_this.viewFile.bind(this)} fileCls={fileCls}/>
+            )
+        });
 
-        console.log("this.props.tabType");
-        console.log(folderData.folder_name + " " +this.props.tabType);
+        let _folderName = folderData.folder_name == 'undefined' ? folderData.folder_name : folderData.folder_name.length <= 12 ? folderData.folder_name : folderData.folder_name.slice(0,14) + '...';
 
         return(
             <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
@@ -555,7 +562,7 @@ export class File extends React.Component{
 
         return(
             <div className="folder-col">
-                <div className="clearfix" onClick={()=>this.viewFile(data)}>
+                <div className={this.props.fileCls + " clearfix"} onClick={()=>this.viewFile(data)}>
                     <div className={"folder-item " + data.document_type + " " + imgClass + " " + isSelected} style={thumbIMg}>
                         <div className={(imgClass)? "img-wrapper" : "inner-wrapper"}>
                             <div className="time-wrapper">

@@ -633,10 +633,10 @@ a.rc-time-picker-panel-clear-btn {
     background: #fff;
     color: #B1105D;
     font-size: 0.6em;
-    line-height: 1.7;
     z-index: 10;
     text-align: center;
     display: none;
+    padding: 3px 5px 5px 2.5%;
 }
 
 .folder-wrapper:hover .fldr-delete-btn{
@@ -654,9 +654,51 @@ a.rc-time-picker-panel-clear-btn {
     bottom: 7px;
     left: 7px;
     margin: 0 2px 0 2px;
-    font-size: 0.5625em;
+    font-size: 0.6em;
     opacity: 0;
+    color: #000000;
+    font-weight: 500;
     transition: opacity 0.5s ease-out 0s;
+}
+
+.folder-container .folder-body .folder .folder-wrapper .col-sm-10 .folder-content-wrapper .folder-items-wrapper .folder-col .folder-item.image .file-owner{
+    color: #ffffff;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col > .clearfix{
+    border: 1px solid transparent;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.pink{
+    border-color: #ed1e7a;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.lightBlue{
+    border-color: #00a6ef;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.lightGreen{
+    border-color: #a6c74a;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.grey{
+    border-color: #bebfbf;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.black{
+    border-color: #000;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.darkGreen{
+    border-color: #038247;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.darkBlue{
+    border-color: #000f75;
+}
+
+.folder-container .folder-body .folder-content-wrapper .folder-items-wrapper .folder-col:hover > .clearfix.red{
+    border-color: #b21e53;
 }
 
 .note-popup-dialog{
@@ -881,7 +923,7 @@ footer .notification-alert-holder.slideOut{
     width: 13px;
     margin: 7px auto 0;
     height: 13px;
-    background-color: #a6c74a;
+    background-color: #ff0005;
     border-radius: 100%;
 }
 
@@ -890,7 +932,7 @@ footer .notification-alert-holder.slideOut{
     width: 13px;
     margin: 7px auto 0;
     height: 13px;
-    background-color: #ed1e7a;
+    background-color: #038247;
     border-radius: 100%;
 }
 
@@ -1146,6 +1188,7 @@ footer .notification-alert-holder.slideOut{
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
     float: left !important;
     height: 25px;
+    overflow: visible;
 }
 
 .calendar-input-area .react-autosuggest__suggestion,
@@ -1171,6 +1214,7 @@ footer .notification-alert-holder.slideOut{
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .time-wrapper {
     float: left !important;
     height: 25px;
+    overflow: visible;
 }
 
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
@@ -1275,9 +1319,9 @@ footer .notification-alert-holder.slideOut{
   display: block;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li div.checkbox-area.bg-success {
+/*.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li div.checkbox-area.bg-success {
   padding: 10px;
-}
+}*/
 
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.people-list,
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label p span.people-list span,
@@ -1679,4 +1723,194 @@ header .chat-popover-holder .inner-wrapper .see-all{
 
 .popover.remove-member-popup .popover-content{
   padding: 0;
+}
+
+.news-popup-holder .pg-modal-body{
+   width: 500px;
+   margin: 0 auto;
+}
+
+.news-popup-holder .pg-modal-body .chanel-logo{
+    position: absolute;
+    top: -8px;
+    width: 70px;
+    left: -158px;
+    height: auto;
+}
+
+.user-status-popover .popover-content{
+    padding: 0;
+}
+
+.user-status-popover .cc-online-status-popup{
+    width: 135px;
+    overflow: hidden;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px 2px #ebeff1;
+}
+
+.user-status-popover .cc-online-status-popup .status-type{
+    margin-top: 1px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.user-status-popover .cc-online-status-popup .status-type:first-child{
+    margin-top: 9px;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .status{
+    margin-top: 3px;
+    margin-left: 11px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    float: left;
+    border: 2px solid #ffffff;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .status.online{
+    background-color: #6abf6d;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .status.work-mode{
+    background-color: #dc2726;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .status.offline{
+    background-color: #ffffff;
+    border: 2px solid #6ac374;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .type{
+    margin: 1px 0 2px 8px;
+    float: left;
+    font-size: 11px;
+    color: #464646;
+}
+
+.user-status-popover .cc-online-status-popup .status-type:hover {
+    background-color: #00a5ef;
+}
+
+.user-status-popover .cc-online-status-popup .status-type:hover p{
+    color: #fff;
+}
+
+.user-status-popover .cc-online-status-popup .status-type .status.addIcon{
+    margin-top: 2px;
+    margin-left: 11px;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    float: left;
+    border: none;
+    background: url(../images/call-center/add-status-icon.png) no-repeat center center;
+}
+
+.user-status-popover .cc-online-status-popup .mood-msg p{
+    margin: 1px 0 2px 8px;
+    font-size: 11px;
+    color: #464646;
+    float: left;
+}
+
+.user-status-popover{
+    margin: 30px 0 0 -20px !important;
+}
+
+.user-status-popover .arrow{
+    display: none;
+}
+
+.user-status-popover .cc-online-status-popup .status-type.mood-msg {
+    border-top: 1px solid #dee6eb;
+}
+
+.profile-container .feed-container .outer-wrapper .new-post .input-wrapper{
+    width: 517px;
+}
+
+.tag-wrapper .time-wrapper .rdt {
+    float: right;
+    width: 100px;
+}
+
+.model-body .tag-wrapper .time-wrapper .rdt {
+    width: 77px;
+}
+
+.tag-wrapper .time-wrapper .rdt .form-control{
+    padding: 6px 10px;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+    box-shadow: none;
+    height: 30px;
+    color: rgba(136, 136, 136, 0.57);
+}
+
+.tag-wrapper .time-wrapper .rdt .rdtPicker{
+    width: 110px;
+    padding: 0;
+    left: -6px;
+}
+
+.tag-wrapper .time-wrapper .rdt .rdtPicker .rdtCounter{
+    height: auto;
+    width: 30px;
+}
+
+.tag-wrapper .time-wrapper .rdt .rdtPicker .rdtCounterSeparator{
+    line-height: 85px;
+}
+
+.tag-wrapper .time-wrapper .rdt .rdtPicker .rdtCounter .rdtBtn{
+    height: 30%;
+    line-height: 32px;
+    color: #00a6ef;
+}
+
+.tag-wrapper .time-wrapper .rdt .rdtPicker .rdtCounter .rdtCount {
+    font-size: 0.9em;
+}
+
+.group-members-container{
+    margin: 15px 0 0;
+}
+
+.user-block-holder .user-block{
+    overflow: hidden;
+}
+
+.user-block-holder .user-block .user-name{
+    float: left;
+}
+
+.user-block-holder .user-block .icon-holder{
+    float: right;
+}
+
+.user-block-holder .user-block .fa{
+    cursor: pointer;
+    border-radius: 100%;
+    background: rgba(0, 166, 239, 0.6);
+    color: #fff;
+    font-size: 0.5em;
+    margin-right: 5px;
+    padding: 5px 6px;
+}
+
+.user-block-holder .user-block .fa.active{
+    color: #a6c74a;
+}
+
+.user-block-holder .user-block .fa:last-child{
+    margin: 0;
+}
+
+.workmode-popup-wrapper .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.selected .type-content .type-title{
+    background: #a6c74a;
 }

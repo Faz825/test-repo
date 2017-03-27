@@ -592,8 +592,16 @@
     width: 23.5%;
     margin: 0 0px 5px 10px;
     padding: 0;
+    float: left;
     position: relative;
     overflow: hidden;
+    height: 148px;
+}
+
+.user-name-container .own-post-share{
+    color: #878787;
+    font-size: 0.9em;
+    font-weight: 400;
 }
 
 .feed-container .wall-post .post-footer .comments-container .comments-list .comment{
@@ -953,6 +961,19 @@
     padding: 0 0 40px;
 }
 
+.share-popup-holder #input{
+    border-radius: 4px;
+    border: 1px solid #e3e4e8;
+    background-color: #ffffff;
+    color: #aaaaaa;
+    font-size: 0.75em;
+    font-weight: 500;
+    line-height: 18px;
+    max-height: 50px;
+    box-shadow: none;
+    overflow-y: scroll;
+}
+
 .share-popup-holder .share-popup-post-view{
     margin-top: 15px;
 }
@@ -973,6 +994,22 @@
     border: none;
     text-transform: uppercase;
     text-decoration: none;
+}
+
+.share-popup-holder .pg-newsfeed-profile-name{
+    margin: 5px 0 0 0px;
+    display: block;
+    color: #000000;
+    font-size: 0.75em;
+    font-weight: 700;
+}
+
+.share-popup-holder .pg-newsfeed-post-time{
+    margin: 0px;
+    display: block;
+    color: #878787;
+    font-size: 0.625em;
+    font-weight: 400;
 }
 
 .share-popup-holder .pg-status-post-btn:hover,

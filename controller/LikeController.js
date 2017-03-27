@@ -30,21 +30,26 @@ var LikeController ={
         };
 
         var _likeData = [];
-
         _async.waterfall([
-
+            function isAlreadyLiked(callBack){
+                Like.isAlreadyLiked(req.body.__post_id, CurrentSession.id, function(resultSet){
+                    if(resultSet.status != 200) {
+                        callBack(resultSet.error);
+                    } else if (resultSet.liked == true) {
+                        callBack("Already liked");
+                    } else {
+                        callBack(null);
+                    }
+                });
+            },
             function saveLikeInDb(callBack){
-
                 Like.addLike(_like,function(resultSet){
                     _likeData = resultSet.like;
                     callBack(null)
                 });
-
             },
 
             function getUserDetails(callBack){
-
-                //GET COMMENTED USER FROM INDEXING SERVER
                 var query={
                     q:_like.user_id.toString(),
                     index:'idx_usr'
@@ -114,10 +119,17 @@ var LikeController ={
                 }
             }
         ],function(err,resultSet){
-            outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
-            outPut['like']   = _likeData;
-            res.status(200).send(outPut);
-            return ;
+            if(err) {
+                outPut['status'] = ApiHelper.getMessage(400, Alert.ALREADY_LIKED, Alert.ALREADY_LIKED);
+                outPut['like'] = null;
+                res.status(406).send(outPut);
+                return ;
+            } else {
+                outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
+                outPut['like']   = _likeData;
+                res.status(200).send(outPut);
+            }
+
         });
 
 

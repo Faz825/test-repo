@@ -10,6 +10,8 @@ var mongoose = require('mongoose'),
 
 GLOBAL.FolderDocsConfig = {
     ES_INDEX_SHARED_DOC :"shared_docs:",
+    ES_INDEX_SHARED_GROUP_DOC :"shared_group_docs:",
+    ES_INDEX_OWN_GROUP_DOC : "own_group_docs:",
     ES_INDEX_OWN_DOC : "own_docs:"
 };
 
@@ -251,6 +253,19 @@ FolderDocsSchema.statics.searchFolderDocument = function(payload,callBack){
             callBack({status:400,documents:[]});
         }else{
             callBack({status:200, documents:esResultSet.result});
+        }
+    });
+
+};
+
+FolderDocsSchema.statics.getDocumentsFromCache = function(criteria,callBack){
+
+    ES.search(criteria,function(esResultSet){
+        //console.log(esResultSet)
+        if(esResultSet == null || typeof esResultSet.result == "undefined"){
+            callBack({status:400,folderDocs:[]});
+        }else{
+            callBack({status:200, folderDocs:esResultSet.result});
         }
     });
 

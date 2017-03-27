@@ -9,6 +9,7 @@ import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Session  from '../../middleware/Session';
 import Lib from '../../middleware/Lib';
+import Moment from 'moment';
 
 export default class Index extends React.Component{
     constructor(props) {
@@ -245,7 +246,7 @@ export default class Index extends React.Component{
         if(typeof popupData.article_image != 'undefined'){
             _articalImage = popupData.article_image;
         }
-        console.log(popupData)
+        
         return(
             <div>
                 {this.state.isShowingModal &&
@@ -253,7 +254,7 @@ export default class Index extends React.Component{
                     <ModalDialog onClose={this.handleClose.bind(this)} width="840" className="news-popup-holder">
                         <div className="modal-body pg-modal-body">
                             <div className="popup-img-holder">
-                                <img className="img-responsive pg-main-pop-img" alt src={_articalImage} />
+                                <img className="img-responsive pg-main-pop-img" alt="" src={_articalImage} />
                             </div>
                             <div className="row row-clr pg-new-news-popup-inner-container">
                                 <h3 className="pg-body-heading-title">{popupData.heading}</h3>
@@ -262,6 +263,7 @@ export default class Index extends React.Component{
                                     <div dangerouslySetInnerHTML={{__html: popupData.content}} />
                                 </Scrollbars>
                             </div>
+                            <img src={'/images/news/'+popupData.channel+'.png'} className="chanel-logo"/>
                         </div>
                         <div className="save-news">
                             <a href="javascript:void(0)" onClick={this.saveArticle.bind(this)} className="artical-save-btn btn btn-default">Save</a>
@@ -403,6 +405,7 @@ export default class Index extends React.Component{
                                     </div>
                                     <div className="right-col pull-right">
                                         <span className="settings-button"></span>
+                                        <span className="date">{Moment().format("MMMM Do, YYYY")}</span>
                                     </div>
                                 </div>
                                 <div className="outer-wrapper clearfix">

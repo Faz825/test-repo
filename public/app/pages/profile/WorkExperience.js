@@ -126,7 +126,11 @@ export class WorkPlaces extends React.Component{
 
         if(is_current_work_place ){
             _worked_year = (start_date.year > 0)?today.getFullYear() - start_date.year:0;
-            _formatted_date_str += "- Current";
+            if(_worked_year == 0){
+                _formatted_date_str += ", Current";
+            }else{
+                _formatted_date_str += "- Current";
+            }
         }
         if(end_date != null && end_date.year >0 && end_date.month > 0){
             _worked_year =end_date.year - start_date.year;
@@ -157,17 +161,29 @@ export class WorkPlaces extends React.Component{
                                 : null
                             }
                         </div>
-                        : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Title</button>:null
+                        : (!readOnly)?
+                            <div>
+                                <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Title</button>
+                            </div>
+                            :null
                     }
                     {
                         (data.company_name)?
                         <p className="title-text">{data.company_name + ", " + data.location} <span class="time">{_time_period}</span></p>
-                        : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Company Details</button>:null
+                        : (!readOnly)?
+                        <div>
+                            <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Company Details</button>
+                        </div>
+                        :null
                     }
                 {
                     (data.description)?
                     <p className="description">{data.description}</p>
-                    : (!readOnly)?<button onClick={this.editForm.bind(this)} className="addEduInfo">Add Title Description</button>:null
+                    : (!readOnly)?
+                        <div>
+                            <button onClick={this.editForm.bind(this)} className="addEduInfo">Add Title Description</button>
+                        </div>
+                        :null
                 }
             </div>
         );
@@ -311,8 +327,8 @@ export class WorkPlaceForm extends React.Component{
                         <label>Description</label>
                         <textarea className="form-control non-resize" value={data.description} onChange={this.onFieldChange} name="description" rows="3"></textarea>
                     </div>
-                    <button type="submit" className="btn btn-primary pg-btn-custom">Save</button>
                     <button type="button" className="btn btn-default pg-btn-custom" onClick={this.props.onCancel}>Cancel</button>
+                    <button type="submit" className="btn btn-primary pg-btn-custom">Save</button>
                 </form>
             </div>
         );

@@ -10,17 +10,28 @@ import Lib    from '../../middleware/Lib';
 import CommentElement from './CommentElement';
 import ProgressBar from '../elements/ProgressBar';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+import {Alert} from '../../config/Alert';
 import Scroll from 'react-scroll';
-const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,onLikeSuccess,onLoadProfile})=>{
+const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,onLikeSuccess,onLoadProfile,postType, groupId})=>{
 
+        var postType = (postType ? postType : 1); // PERSONAL_POST :1, GROUP_POST:2
+        var groupId = (groupId ? groupId : null);
         if(posts.length <= 0){
             return (<div />)
         }
 
         let _postElement = posts.map((post,key)=>{
 
-            return (<SinglePost postItem = {post} key={key} postIndex={key} onPostSubmitSuccess ={(post)=>onPostSubmitSuccess(post)}
-                                onPostDeleteSuccess = {onPostDeleteSuccess} onLikeSuccess = {onLikeSuccess} onLoadProfile = {onLoadProfile}/>)
+            return (<SinglePost
+                        postItem = {post}
+                        key={key} postIndex={key}
+                        onPostSubmitSuccess ={(post)=>onPostSubmitSuccess(post)}
+                        onPostDeleteSuccess = {onPostDeleteSuccess}
+                        onLikeSuccess = {onLikeSuccess}
+                        onLoadProfile = {onLoadProfile}
+                        postType={postType}
+                        groupId={groupId}/>)
+
         });
 
         return (
@@ -47,7 +58,8 @@ class SinglePost extends React.Component{
             showCommentPane: false,
             comments: [],
             unformattedComments: [],
-            liked_users: [],
+            // liked_users: this.props.postItem.liked_user,
+            liked_users: typeof(this.props.postItem.liked_user) != "undefined" ? this.props.postItem.liked_user : [],
             isShowingModal: false,
             iniTextisVisible: false,
             text: "",
@@ -82,33 +94,53 @@ class SinglePost extends React.Component{
 
     }
 
-    onLikeClick(index){
+    componentWillReceiveProps(nextProps) {
 
-        let _this =  this;
+        // Basically, whenever you assign parent's props to a child's state
+        // the render method isn't always called on prop update
+        if (nextProps.postItem !== this.state.postItem) {
+            this.setState({ postItem: nextProps.postItem });
+        }
+
+        if (nextProps.postItem.liked_user !== this.state.liked_users) {
+            this.setState({ liked_users: typeof(nextProps.postItem.liked_user) != "undefined" ? nextProps.postItem.liked_user : []});
+        }
+    }
+
+    onLikeClick(index){
+        let _this = this;
         $.ajax({
             url: '/like/composer',
             method: "POST",
             dataType: "JSON",
-            data:{__post_id:this.props.postItem.post_id},
-            headers: { 'prg-auth-header':this.loggedUser.token },
-        }).done(function (data, text) {
-            if(data.status.code == 200){
-                //this.setState({is_i_liked_now:true});
-
+            data:{__post_id:_this.props.postItem.post_id},
+            headers: { 'prg-auth-header':_this.loggedUser.token },
+            success: function (data, text) {
+                
+                var me = {
+                    "name" : "You",
+                    "profile_image" : "you",
+                    "user_id" : _this.loggedUser.id,
+                    "user_name" : _this.loggedUser.user_name
+                };
+                var likedUsers = _this.state.liked_users;
+                likedUsers.push(me);
+                _this.setState({liked_users : likedUsers});
                 let _notificationData = {
                     post_id:data.like.post_id,
                     notification_type:"like",
-                    notification_sender:this.loggedUser
+                    notification_sender:_this.loggedUser
                 };
-
                 Socket.sendNotification(_notificationData);
+                _this.props.onLikeSuccess(index);
 
-                this.props.onLikeSuccess(index);
-
+            },
+            error: function (request, status, error) {
+                console.log("Alert.ALREADY_LIKED");
             }
-        }.bind(this));
-
+        });
     }
+
     onShareClick(event){
         this.setState({isShowingModal : true});
     }
@@ -163,11 +195,11 @@ class SinglePost extends React.Component{
         let post_data ={
             __content :this.state.text,
             __pid:this.props.postItem.post_id,
-            __own:this.props.postItem.created_by.user_id
+            __own:this.props.postItem.created_by.user_id,
+            __post_type:this.props.postType,
+            __group_id: this.props.groupId
         }
-
         let _this = this;
-
         this.setState({shareBtnEnabled:false});
         $.ajax({
             url: '/post/share',
@@ -335,7 +367,7 @@ class SinglePost extends React.Component{
 
                             <div className="row row-clr pg-newsfeed-section-common-content-post-info share-popup-post-view">
                                 <div className="pg-user-pro-pic">
-                                    <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive"/>
+                                    <img src={profile_image} alt={_profile.first_name + " " + _profile.last_name} className="img-responsive img-circle"/>
                                 </div>
                                 <div className="pg-user-pro-info">
                                     <h5 className="pg-newsfeed-profile-name">{_profile.first_name + " " + _profile.last_name}</h5>
@@ -384,7 +416,7 @@ class SinglePost extends React.Component{
         return(
             <div>
                 {this.state.isShowingImgModal &&
-                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999} width="70%">
                     <ModalDialog onClose={this.handleClose.bind(this)} className="imgPop-holder">
                         <div className="share-popup-holder feed-container">
                             <div className="img-holder">
@@ -412,15 +444,15 @@ class SinglePost extends React.Component{
                                                    onCommentClick = {event=>this.onCommentClick()}
                                                    OnLikeHover = {event=>this.loadLikedUsers()}
                                                    is_i_liked = {_is_i_liked}
-                                                   liked_users = {_post.liked_user}
+                                                   liked_users = {this.state.liked_users}
                                                    show_share_button ={true}/>
 
 
                                 {/*
-                                    (typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
+                                    (typeof this.state.liked_users != 'undefined' &&  this.state.liked_users.length > 0)?
                                         <LikeSummery
                                             visibility={true}
-                                            likes ={_post.liked_user}/>
+                                            likes ={this.state.liked_users}/>
                                         :null
                                 */}
 
@@ -519,14 +551,13 @@ class SinglePost extends React.Component{
                             <div className="user-name-container">
                                 <PostOwner post={_post}
                                             profile={_profile}
-                                            onLoadProfile = {this.props.onLoadProfile}/>
+                                            onLoadProfile = {this.props.onLoadProfile}
+                                           loggedUser={this.loggedUser}/>
 
                                 <SharedPostTitle post={_post}
                                                     loggedUser={this.loggedUser}
                                                     onLoadProfile = {this.props.onLoadProfile}/>
 
-                                <UpdatedProPic post={_post}
-                                                loggedUser={this.loggedUser}/>
                                 <span className="posted-time">{_post.date.time_a_go}</span>
                             </div>
                         </div>
@@ -559,16 +590,17 @@ class SinglePost extends React.Component{
                                         onCommentClick = {event=>this.onCommentClick()}
                                         OnLikeHover = {event=>this.loadLikedUsers()}
                                         is_i_liked = {_is_i_liked}
-                                        liked_users = {_post.liked_user}
+                                        liked_users = {this.state.liked_users}
+                                        share_count ={_post.share_count}
                                         show_share_button ={true}
-                                        userProPic = {loggedUserProPic} 
+                                        userProPic = {loggedUserProPic}
                         />
 
                         {
-                            /*(typeof _post.liked_user != 'undefined' &&  _post.liked_user.length > 0)?
+                            /*(typeof this.state.liked_users != 'undefined' &&  this.state.liked_users.length > 0)?
                                 <LikeSummery
                                     visibility={true}
-                                    likes ={_post.liked_user}/>
+                                    likes ={this.state.liked_users}/>
                                 :null*/
                         }
 
@@ -602,11 +634,12 @@ class SinglePost extends React.Component{
  * @param onComment
  * @constructor
  */
-const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onCommentClick,liked_users,is_i_liked,show_share_button,userProPic})=>{
+const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onCommentClick,liked_users,is_i_liked,show_share_button,userProPic,share_count})=>{
     let __opt ={};
     if(is_i_liked){
         __opt['style'] = {color:"#61b3de", "pointerEvents": "none",cursor: "default"}
     }
+    let shareActiveClass = (share_count > 0)? "action-event share active" : "action-event share";
     return (
         <div>
             <div className="display-container clearfix">
@@ -619,7 +652,7 @@ const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onComme
                                 : null
                             : null
                         }
-                        {   
+                        {
                             (liked_users)?
                                 (liked_users.length == 1)?
                                     <span>
@@ -633,7 +666,7 @@ const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onComme
                                 :
                                     null
                             :null
-                        }                    
+                        }
                         {
                             (liked_users)?
                             (liked_users.length == 2)?
@@ -651,7 +684,7 @@ const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onComme
                             :
                                 null
                             :null
-                        }                    
+                        }
                         {
                             (liked_users)?
                                 (liked_users.length == 3)?
@@ -672,7 +705,7 @@ const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onComme
                                 :
                                     null
                             :null
-                        }                    
+                        }
                         {
                             (liked_users)?
                                 (liked_users.length > 3)?
@@ -693,17 +726,17 @@ const PostActionBar =({comment_count,post_index,onLikeClick,onShareClick,onComme
                                 :
                                     null
                             :null
-                        }                    
+                        }
                     </div>
                 </div>
                 <div className="pull-right">
                     <div className="action-event comment" onClick ={(event)=>{onCommentClick(event)}}>
-                        <span className="icon"></span> 
+                        <span className="icon"></span>
                         <span className="text">{comment_count}</span>
                     </div>
-                    <div className="action-event share active">
-                        <span className="icon"></span> 
-                        <span className="text">0</span>
+                    <div className={shareActiveClass}>
+                        <span className="icon"></span>
+                        <span className="text">{share_count}</span>
                     </div>
                 </div>
             </div>
@@ -763,13 +796,13 @@ const LikeSummery=({likes,visibility}) =>{
 
 
 const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost,btnEnabled})=>{
-    let full_name = loggedUser.first_name + " " +loggedUser.last_name;
+    let full_name = loggedUser.first_name + " " +loggedUser.last_name,
+        proImg = (loggedUser.profile_image)? loggedUser.profile_image : "/images/default-profile-image.png";
     return (
         <div id="pg_content_1" className="row row_clr pg-newsfeed-post-content tab_info clearfix">
             <div className="pg-user-pro-pic">
-                <img src={loggedUser.profile_image} alt={full_name} className="img-responsive" />
+                <img src={proImg} alt={full_name} className="img-responsive img-circle" />
             </div>
-
 
             <div className="editerHolder">
                 <div id="input" contentEditable={true}
@@ -793,14 +826,14 @@ const SharedPostTitle = ({loggedUser,post,onLoadProfile}) =>{
         return (
             (post.created_by.user_id == post.shared_post.created_by.user_id)?
                 <span className="own-post-share">shared own post</span>
-                :   
-                <div className="user-title-wrapper">
+                :
+                <span className="user-title-wrapper">
                     <span className="shared-text">shared</span>
-                    <div className="user-name-container post-owner">
+                    <span className="user-name-container post-owner">
                         <span className="name" onClick={()=>onLoadProfile(post.shared_post.created_by.user_name)}>{" "+post.shared_post.created_by.first_name + " " + post.shared_post.created_by.last_name + "'s"}</span>
                         <span className="shared-text">post</span>
-                    </div>
-                </div>
+                    </span>
+                </span>
         )
     }
     return (<span />);
@@ -823,11 +856,14 @@ const PostContentBody = ({loggedUser,post})=>{
 
 };
 
-const PostOwner = ({post,profile,onLoadProfile}) => {
+const PostOwner = ({post,profile,onLoadProfile,loggedUser}) => {
     if(post.post_owned_by != undefined){
         return (
             (post.created_by.user_id == post.post_owned_by.user_id)?
-                <span className="name" onClick={()=>onLoadProfile(profile.user_name)} >{profile.first_name + " " + profile.last_name + " "} </span>
+                <span className="name" onClick={()=>onLoadProfile(profile.user_name)} >{profile.first_name + " " + profile.last_name + " "}
+                    <UpdatedProPic post={post} loggedUser={loggedUser}/>
+
+                </span>
                 :
                 <span className="user-title-wrapper">
                     <div className="user-name-container">

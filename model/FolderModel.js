@@ -21,7 +21,8 @@ GLOBAL.FolderSharedMode = {
 GLOBAL.FolderSharedRequest = {
     REQUEST_PENDING: 1,
     REQUEST_REJECTED: 2,
-    REQUEST_ACCEPTED: 3
+    REQUEST_ACCEPTED: 3,
+    MEMBER_REMOVED: 4
 };
 
 GLOBAL.FolderType = {

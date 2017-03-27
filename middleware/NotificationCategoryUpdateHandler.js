@@ -42,12 +42,13 @@ var NotificationCategoryUpdateHandler = {
                         }
 
                         Notification.getNotifications(criteria, function (r) {
-                            for(var i = 0; i < r.result.length; i++){
-                                todosNotifications.push(
-                                    Util.toObjectId(r.result[i]._id)
-                                );
+                            if(typeof r.result != "undefined" && r.result.length > 0){
+                                for(var i = 0; i < r.result.length; i++){
+                                    todosNotifications.push(
+                                        Util.toObjectId(r.result[i]._id)
+                                    );
+                                }
                             }
-
                             callBack(null);
                         });
                     },
@@ -74,10 +75,12 @@ var NotificationCategoryUpdateHandler = {
                         }
 
                         Notification.getNotifications(criteria, function (r) {
-                            for(var i = 0; i < r.result.length; i++){
-                                socialNotifications.push(
-                                    Util.toObjectId(r.result[i]._id)
-                                );
+                            if(typeof r.result != "undefined" && r.result.length > 0) {
+                                for (var i = 0; i < r.result.length; i++) {
+                                    socialNotifications.push(
+                                        Util.toObjectId(r.result[i]._id)
+                                    );
+                                }
                             }
 
                             callBack(null);
@@ -108,10 +111,12 @@ var NotificationCategoryUpdateHandler = {
                         }
 
                         Notification.getNotifications(criteria, function (r) {
-                            for(var i = 0; i < r.result.length; i++){
-                                productivityNotifications.push(
-                                    Util.toObjectId(r.result[i]._id)
-                                );
+                            if(typeof r.result != "undefined" && r.result.length > 0) {
+                                for (var i = 0; i < r.result.length; i++) {
+                                    productivityNotifications.push(
+                                        Util.toObjectId(r.result[i]._id)
+                                    );
+                                }
                             }
 
                             callBack(null);

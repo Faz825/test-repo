@@ -266,11 +266,21 @@ var UploadController = {
 
                         //check folder owner and document user same
                         if (_folderOwner.toString() == saved_document.document_user.toString()){
-                            _index = FolderDocsConfig.ES_INDEX_OWN_DOC;
-                            _type = "own_document";
+                            if(result.type == FolderType.PERSONAL_FOLDER){
+                                _index = FolderDocsConfig.ES_INDEX_OWN_DOC;
+                                _type = "own_document";
+                            }else {
+                                _index = FolderDocsConfig.ES_INDEX_OWN_GROUP_DOC;
+                                _type = "own_group_document";
+                            }
                         } else{
-                            _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
-                            _type = "shared_document";
+                            if(result.type == FolderType.PERSONAL_FOLDER) {
+                                _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
+                                _type = "shared_document";
+                            }else {
+                                _index = FolderDocsConfig.ES_INDEX_SHARED_GROUP_DOC;
+                                _type = "shared_group_document";
+                            }
                         }
                         console.log(_index);console.log(_type);
 
@@ -299,11 +309,21 @@ var UploadController = {
                                     console.log("typeof saved_document.document_user ==> "+typeof saved_document.document_user);
 
                                     if (_documentUser.toString() == saved_document.document_user.toString()){
-                                        _index = FolderDocsConfig.ES_INDEX_OWN_DOC;
-                                        _type = "own_document";
+                                        if(result.type == FolderType.PERSONAL_FOLDER){
+                                            _index = FolderDocsConfig.ES_INDEX_OWN_DOC;
+                                            _type = "own_document";
+                                        }else {
+                                            _index = FolderDocsConfig.ES_INDEX_OWN_GROUP_DOC;
+                                            _type = "own_group_document";
+                                        }
                                     } else{
-                                        _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
-                                        _type = "shared_document";
+                                        if(result.type == FolderType.PERSONAL_FOLDER) {
+                                            _index = FolderDocsConfig.ES_INDEX_SHARED_DOC;
+                                            _type = "shared_document";
+                                        }else {
+                                            _index = FolderDocsConfig.ES_INDEX_SHARED_GROUP_DOC;
+                                            _type = "shared_group_document";
+                                        }
                                     }
                                     console.log(_index);console.log(_type);
 

@@ -86,7 +86,6 @@ var CallCenterController = {
                             var textB = b.contact_name.toUpperCase();
                             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                         });
-
                         var aConnsLength = aConns.length;
 
                         for (var i = 0; i < aConnsLength; i++) {
@@ -114,7 +113,6 @@ var CallCenterController = {
                             var first_letter = aConns[i].contact_name[0].toUpperCase();
 
                             var contactsLength = aContacts.length;
-
                             for (var x = 0; x < contactsLength; x++) {
                                 if (aContacts[x].letter == first_letter) {
                                     delete aContacts[x]['contact_name'];

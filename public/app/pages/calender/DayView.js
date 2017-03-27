@@ -6,6 +6,7 @@
 
 import React, { Component } from 'react';
 import moment from 'moment-timezone';
+import Datetime from 'react-datetime';
 import Session from '../../middleware/Session';
 import MiniCalender from './MiniCalender';
 import DayEventsList from './DayEventsList';
@@ -26,6 +27,7 @@ import { fromJS } from 'immutable';
 import forEach from 'lodash.foreach';
 
 import 'rc-time-picker/assets/index.css';
+import '../../../css/react-datetime.css';
 import TimePicker from 'rc-time-picker';
 
 export default class DayView extends Component {
@@ -644,6 +646,9 @@ export default class DayView extends Component {
                                         </div>
                                         <div className="time-wrapper" >
                                             <p className="title"  onClick={this._onAtClick.bind(this)}>Insert time &#58;</p>
+                                                {/*
+                                                <Datetime dateFormat={false} onChange={this.handleTimeChange}/>
+                                                */}
                                             {this.state.showTimePanelWindow ?
                                                 <TimePicker
                                                     style={{ width: 100 }}

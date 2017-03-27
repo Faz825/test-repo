@@ -174,6 +174,28 @@ LikeSchema.statics.deleteLike = function(criteria,callBack){
     })
 };
 
+/**
+ * Add Like to selected post
+ * @param likes
+ * @param callBack
+ */
+LikeSchema.statics.isAlreadyLiked = function(postId, userId, callBack){
+
+    var _like = new this(),
+        _this = this;
+
+    _this.findOne({ "post_id" : postId, "user_id": userId}).exec(function(err, likeResult){
+        console.log(likeResult);
+        if(err){
+            callBack({status:400, error:err});
+        } else if (likeResult === null) {
+            callBack({status:200, liked: false});
+        } else {
+            callBack({status:200, liked: true});
+        }
+    });
+}
+
 
 
 mongoose.model('Like',LikeSchema);

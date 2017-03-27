@@ -59,6 +59,8 @@ GLOBAL.Alert={
     COMMENT_CONTENT_EMPTY:"Comment text cannot be blank",
     COMMENT_POST_ID_EMPTY:"Post Id cannot be blank",
 
+    ALREADY_LIKED:"You have already liked to this post",
+
     CALENDAR_MONTH_EMPTY:"Year and Month cannot be blank",
     CALENDAR_WEEK_EMPTY:"Year, Month and week cannot be blank",
 
