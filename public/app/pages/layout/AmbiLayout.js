@@ -14,6 +14,7 @@ import PubSub from 'pubsub-js';
 import Chat from '../../middleware/Chat';
 import QuickChatDummy from '../chat/QuickChatDummy'
 import VideoChatPopOver from '../chat/VideoChatPopOver'
+import CallCenter from '../../middleware/CallCenter';
 
 export default class AmbiLayout extends React.Component {
     constructor(props) {
@@ -32,6 +33,8 @@ export default class AmbiLayout extends React.Component {
         let _socialNotifications = false;
 
         this.checkWorkModeInterval = null;
+
+        this.b6 = CallCenter.b6;
 
         if (Session.getSession('prg_wm') != null) {
             let _currentTime = new Date().getTime();
@@ -53,24 +56,35 @@ export default class AmbiLayout extends React.Component {
 
         this.state = {
             chatBubble: [],
-            userLoggedIn : Session.getSession('prg_lg'),
+            userLoggedIn: Session.getSession('prg_lg'),
             rightBottom: _rightBottom,
             socialNotifications: _socialNotifications,
             isShowingModal: false,
             isShowingWMP: false,
-            showNotificationsPopup:false,
+            showNotificationsPopup: false,
             notifiType: "",
             notificationCount: "",
             isNavHidden: false,
             toastMessage: {
                 visible: false,
-                message:'',
-                type:''
+                message: '',
+                type: ''
             },
-            dummyChatArray:[],
-            loadedChatBubbleId:0,
+            dummyChatArray: [],
+            loadedChatBubbleId: 0,
             isNewChatLoaded: false,
-            my_connections:[]
+            my_connections: [],
+
+            // bit6Call States
+            bit6Call: null,
+            targetUser: null, // Individual User or Group
+            inProgressCall: false,
+            inCall: false
+        };
+
+        // Call Record
+        this.callRecord = {
+            targets: []
         };
 
         this.quickChatUsers = [];
@@ -171,7 +185,7 @@ export default class AmbiLayout extends React.Component {
 
     loadNewChat(conv) {
 
-        if(!this.state.isNewChatLoaded && this.quickChatUsers.length < 3) {
+        if (!this.state.isNewChatLoaded && this.quickChatUsers.length < 3) {
             this.quickChatUsers.push(conv);
             let convId = "usr:" + conv.proglobeTitle;
             this.setState({isNewChatLoaded: true, chatBubble: this.quickChatUsers, loadedChatBubbleId: convId});
@@ -189,7 +203,7 @@ export default class AmbiLayout extends React.Component {
             }
             this.quickChatUsers = [];
             this.quickChatUsers = bbList;
-            if(title == "NEW_CHAT_MESSAGE") {
+            if (title == "NEW_CHAT_MESSAGE") {
                 isNewChatLoaded = !isNewChatLoaded;
             }
             this.setState({chatBubble: this.quickChatUsers, isNewChatLoaded: isNewChatLoaded});
@@ -237,34 +251,34 @@ export default class AmbiLayout extends React.Component {
         this.setState({isNavHidden: !isVissible});
     }
 
-    onToastClose(){
+    onToastClose() {
         let _toastMessage = {
             visible: false,
-            message:'',
-            type:''
+            message: '',
+            type: ''
         };
 
-        this.setState({toastMessage : _toastMessage});
+        this.setState({toastMessage: _toastMessage});
     }
 
-    onToastOpen(_toast){
-        this.setState({toastMessage : _toast});
+    onToastOpen(_toast) {
+        this.setState({toastMessage: _toast});
     }
 
     loadDummyQuickChat(_id) {
-        console.log("came to load dummy chat >>", _id );
+        console.log("came to load dummy chat >>", _id);
         let _chat = this.state.dummyChatArray;
-        if(_chat.indexOf(_id) == -1) {
+        if (_chat.indexOf(_id) == -1) {
             _chat.push(_id);
             this.setState({dummyChatArray: _chat});
         }
     }
 
     closeDummyQuickChat(_id) {
-        console.log("came to load dummy chat >>", _id );
+        console.log("came to load dummy chat >>", _id);
         let _chat = this.state.dummyChatArray;
         let _index = _chat.indexOf(_id)
-        if(_chat.indexOf(_id) != -1) {
+        if (_chat.indexOf(_id) != -1) {
             _chat.splice(_index, 1);
             this.setState({dummyChatArray: _chat});
         }
@@ -277,15 +291,15 @@ export default class AmbiLayout extends React.Component {
         this.setState({chatBubble: this.quickChatUsers, loadedChatBubbleId: convId});
     }
 
-    loadMyConnections(){
+    loadMyConnections() {
         $.ajax({
             url: '/connection/me/unfriend',
             method: "GET",
             dataType: "JSON",
-            headers: { 'prg-auth-header':this.state.userLoggedIn.token }
-        }).done(function(data){
-            if(data.status.code == 200){
-                this.setState({my_connections:data.my_con});
+            headers: {'prg-auth-header': this.state.userLoggedIn.token}
+        }).done(function (data) {
+            if (data.status.code == 200) {
+                this.setState({my_connections: data.my_con});
             }
         }.bind(this));
     }
@@ -295,23 +309,81 @@ export default class AmbiLayout extends React.Component {
     }
 
     /*
-        This is the common function for all child components (folder, calendar etc.. )
-        from any index.js file call 'this.props.parentCommonFunction'
-    */
+     This is the common function for all child components (folder, calendar etc.. )
+     from any index.js file call 'this.props.parentCommonFunction'
+     */
     commonForAllChildrenComponents() {
         console.log("commonForAllChildrenComponents called ** ");
     }
 
+    /* CallCenter Methods */
+
+    startCall(TargetUser, CallChannel) {
+
+    }
+
+    startGroupCall(Group, CallChannel) {
+
+    }
+
+    answerCall() {
+
+    }
+
+    // Attach call state events to a RtcDialog
+    attachCallEvents(c) {
+        var _this = this;
+
+        // Call progress
+        c.on('progress', function () {
+            console.log(c);
+            _this.setState({bit6Call: c});
+        });
+
+        // Number of video feeds/elements changed
+        c.on('videos', function () {
+            console.log(c);
+            _this.setState({bit6Call: c});
+            // TODO show video call details in popup
+        });
+
+        // Call answered
+        c.on('answer', function () {
+            console.log(c);
+            _this.setState({bit6Call: c});
+            // TODO show timer , call buttons
+        });
+
+        // Error during the call
+        c.on('error', function () {
+            console.log(c);
+            _this.setState({bit6Call: c});
+            // TODO show call error in popup
+        });
+
+        // Call ended
+        c.on('end', function () {
+            console.log('end');
+            console.log(c);
+            _this.setState({inProgressCall: false, targetUser: null, callMode: CallChannel.AUDIO});
+            // TODO show call end details in popup
+        });
+    }
+
     render() {
         let currPage = "";
-        if(this.props.children){
+        if (this.props.children) {
             currPage = this.props.children.props.route.name;
         }
         let dashbrdClass = (this.props.children) ? "sub-page" : "";
 
         let _this = this;
-        var childrenWithProps = React.Children.map(this.props.children, function(child) {
-            return React.cloneElement(child, { parentCommonFunction: _this.commonForAllChildrenComponents.bind(_this) });
+
+        var childrenWithProps = React.Children.map(this.props.children, function (child) {
+            return React.cloneElement(child, {
+                parentCommonFunction: _this.commonForAllChildrenComponents.bind(_this),
+                startCall: _this.startCall.bind(_this)
+            });
         });
 
         return (
@@ -329,22 +401,23 @@ export default class AmbiLayout extends React.Component {
                 <CallHandler/>
                 {
                     /*this.state.isShowingModal &&
-                    <ModalContainer zIndex={9999}>
-                        <ModalDialog width="65%" className="workmode-popup-holder">
-                            <div className="workmode-popup-wrapper">
-                                <WorkMode />
-                                <i className="fa fa-times close-icon" aria-hidden="true"
-                                   onClick={this.handleClose.bind(this)}></i>
-                            </div>
-                        </ModalDialog>
-                    </ModalContainer>*/
+                     <ModalContainer zIndex={9999}>
+                     <ModalDialog width="65%" className="workmode-popup-holder">
+                     <div className="workmode-popup-wrapper">
+                     <WorkMode />
+                     <i className="fa fa-times close-icon" aria-hidden="true"
+                     onClick={this.handleClose.bind(this)}></i>
+                     </div>
+                     </ModalDialog>
+                     </ModalContainer>*/
                 }
                 {
                     this.state.isShowingWMP &&
                     <ModalContainer zIndex={9999}>
                         <ModalDialog className="workmode-popup-holder">
                             <div className="workmode-popup-wrapper">
-                                <WorkModePopup closePopUp={this.handleClose.bind(this)} showMessage={this.onToastOpen.bind(this)}/>
+                                <WorkModePopup closePopUp={this.handleClose.bind(this)}
+                                               showMessage={this.onToastOpen.bind(this)}/>
                                 <i className="fa fa-times close-icon" aria-hidden="true"
                                    onClick={this.handleClose.bind(this)}></i>
                             </div>
@@ -376,9 +449,10 @@ export default class AmbiLayout extends React.Component {
                               onNavCollapse={this.onNavCollapse.bind(this)}/>
                 <span className={(!this.state.isNavHidden) ? "settings-icon" : "settings-icon slideUp"}></span>
                 {
-                    (this.state.toastMessage.visible)?
-                        <Toast msg={this.state.toastMessage.message} type={this.state.toastMessage.type} onToastClose={this.onToastClose.bind(this)} />//types: success, warning
-                    :
+                    (this.state.toastMessage.visible) ?
+                        <Toast msg={this.state.toastMessage.message} type={this.state.toastMessage.type}
+                               onToastClose={this.onToastClose.bind(this)}/>//types: success, warning
+                        :
                         null
                 }
             </div>

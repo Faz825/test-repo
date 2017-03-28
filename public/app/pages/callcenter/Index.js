@@ -5,6 +5,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import {Modal, ButtonToolbar, DropdownButton, MenuItem, Popover, OverlayTrigger} from 'react-bootstrap';
+import asnyc from 'async';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {CallChannel, CallType, CallStatus, UserMode, ContactType} from '../../config/CallcenterStats';
@@ -53,28 +54,41 @@ export default class Index extends React.Component {
         let _this = this;
         this.allContacts = [];
 
-        CallCenter.getCallRecords().done(function (data) {
-            if (data.status.code == 200) {
-                _this.setState({recentCalls: _this.processCallRecords(data.call_records)});
+        asnyc.waterfall([
+            function getContacts(callback) {
+                CallCenter.getContacts().done(function (data) {
+                    if (data.status.code == 200) {
+                        for (var key in data.contacts) {
+                            for (var subKey in data.contacts[key].users) {
+                                let type = data.contacts[key].users[subKey].type;
+                                if (type == ContactType.INDIVIDUAL) {
+                                    _this.allContacts.push(data.contacts[key].users[subKey]);
+                                }
+                            }
+                        }
+
+                        callback(null, data.contacts);
+                    } else {
+                        callback(data.status);
+                    }
+                });
+            },
+            function getCallRecords(Contacts, callback) {
+                CallCenter.getCallRecords().done(function (data) {
+                    if (data.status.code == 200) {
+                        callback(null, Contacts, data.call_records);
+                    } else {
+                        callback(data.status);
+                    }
+                });
+            }
+        ], function (error, Contacts, CallRecords) {
+            if (!error) {
+                _this.setState({userContacts: Contacts, recentCalls: _this.processCallRecords(CallRecords)});
                 _this.setActiveTabData('recent', 'all');
             }
         });
 
-        CallCenter.getContacts().done(function (data) {
-            if (data.status.code == 200) {
-                _this.setState({userContacts: data.contacts});
-
-                for (var key in data.contacts) {
-                    for (var subKey in data.contacts[key].users) {
-                        let type = data.contacts[key].users[subKey].type;
-                        if (type == ContactType.INDIVIDUAL) {
-                            _this.allContacts.push(data.contacts[key].users[subKey]);
-                        }
-                    }
-                }
-
-            }
-        });
 
         this.answerVideo = this.answerVideo.bind(this);
         this.answerAudio = this.answerAudio.bind(this);
@@ -987,6 +1001,11 @@ export default class Index extends React.Component {
     }
 
     render() {
+
+        console.log('abc');
+
+        //  console.log(this.props);
+
         let mainCat = this.state.activeMainCat,
             subCat = this.state.activeSubCat;
 
