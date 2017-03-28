@@ -12,7 +12,6 @@ import WorkModePopup from '../workmode/WorkModePopup';
 import NotificationPop from '../notifications/NotificationPop';
 import PubSub from 'pubsub-js';
 import Chat from '../../middleware/Chat';
-import QuickChatDummy from '../chat/QuickChatDummy'
 import VideoChatPopOver from '../chat/VideoChatPopOver'
 
 export default class AmbiLayout extends React.Component {
