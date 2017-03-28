@@ -154,7 +154,9 @@ export default class DayView extends Component {
     addEvent(event) {
 
         const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
-        const dateWithTime = this.state.defaultEventTime;
+        const strTime = moment(this.state.defaultEventTime).format('HH:mm');
+        const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+        // const dateWithTime = this.state.defaultEventTime;
 
         const Editor = this.refs.EditorFieldValues.state.editorState;
         const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();
@@ -182,7 +184,7 @@ export default class DayView extends Component {
             priority = (plainText.includes("!1")) ? 1 : priority;
         }
 
-        console.log( moment(dateWithTime).format('HH:mm'));
+        console.log(moment(dateWithTime).format('HH:mm'));
 
         // get shared users from SharedUsers field
         const sharedUsers = this.sharedWithIds;
@@ -238,9 +240,11 @@ export default class DayView extends Component {
     updateEvent() {
 
         const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
-        const strTime = this.state.defaultEventTime;
-        // const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
-        const dateWithTime = this.state.defaultEventTime;
+        const strTime = moment(this.state.defaultEventTime).format('HH:mm');
+        const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+        // const dateWithTime = this.state.defaultEventTime;
+
+        console.log(dateWithTime);
 
         const Editor = this.refs.EditorFieldValues.state.editorState;
         const contentState = this.refs.EditorFieldValues.state.editorState.getCurrentContent();

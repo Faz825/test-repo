@@ -23,7 +23,8 @@ export default class WeekDayEventPopUp extends React.Component {
             eventType:'event',
             sharedWithIds:[],
             sharedWithNames: [],
-            defaultEventTime:moment().format('HH:mm'),
+            // defaultEventTime:moment().format('HH:mm'),
+            defaultEventTime : moment().format('YYYY-MM-DD HH:mm'),
             getEditor : false,
             showTimePanel : '',
             showTimePanelWindow : false,
@@ -40,6 +41,7 @@ export default class WeekDayEventPopUp extends React.Component {
         this.sharedWithNames = [];
         this.addEvent = this.addEvent.bind(this);
         this.toggleMsg = this.toggleMsg.bind(this);
+        this.handleTimeChange = this.handleTimeChange.bind(this);
     }
 
     componentDidMount() {
@@ -140,7 +142,8 @@ export default class WeekDayEventPopUp extends React.Component {
         let date = this.props.curr_date.day();
         let timeWithDay = year+'/'+month+'/'+date+' '+time;
 
-        this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
+        // this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
+        this.setState({ defaultEventTime: moment(timeWithDay).format('YYYY-MM-DD HH:mm')});
     }
 
     _onHashClick() {
@@ -156,7 +159,8 @@ export default class WeekDayEventPopUp extends React.Component {
     }
 
     handleTimeChange(time) {
-        this.setState({ defaultEventTime: moment(time).format('HH:mm')});
+        this.setState({ defaultEventTime: time });
+        // this.setState({ defaultEventTime: moment(time).format('HH:mm')});
     }
 
     toggleMsg() {
@@ -165,8 +169,8 @@ export default class WeekDayEventPopUp extends React.Component {
 
     addEvent(event) {
 
-        const strDate = this.props.curr_date.format('YYYY-MM-DD');
-        const strTime = this.state.defaultEventTime;
+        const strDate = moment(this.props.curr_date).format('YYYY-MM-DD');
+        const strTime = moment(this.state.defaultEventTime).format('HH:mm');
         const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
 
         const Editor = this.editor.state.editorState;
@@ -379,8 +383,15 @@ export default class WeekDayEventPopUp extends React.Component {
                                         </div>
                                         <div className="time-wrapper" >
                                             <p className="title"  onClick={this._onAtClick.bind(this)}>Time &#58;</p>
-                                                {/*<Datetime dateFormat={false} onChange={this.handleTimeChange}/>*/}
-                                            {this.state.showTimePanelWindow ?
+                                            { this.state.showTimePanelWindow ?
+                                                <Datetime
+                                                    dateFormat={false}
+                                                    onChange={this.handleTimeChange}
+                                                    value={moment(this.state.defaultEventTime).format('LT')}/>
+                                            :
+                                                null
+                                            }
+                                            { /* this.state.showTimePanelWindow ?
                                                 <TimePicker
                                                     style={{ width: 100 }}
                                                     showSecond={showSecond}
@@ -389,7 +400,7 @@ export default class WeekDayEventPopUp extends React.Component {
                                                 />
                                             :
                                                 null
-                                            }
+                                            */ }
                                         </div>
                                     </div>
                                 </div>
