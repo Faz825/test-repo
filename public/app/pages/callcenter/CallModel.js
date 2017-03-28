@@ -160,11 +160,11 @@ export default class CallModel extends React.Component {
                             <div className="active-user-block">
                                 <div id="webcamStage">
                                     {
-                                        (this.props.targetUser.type == ContactType.INDIVIDUAL && !this.props.bit6Call.remoteOptions.video ) ?
-                                            <img src={this.props.targetUser.images.profile_image.http_url}/> :
-                                            <img
-                                                src={(this.props.targetUser.group_pic_link) ? this.props.targetUser.group_pic_link : "images/group/dashboard/grp-icon.png"}/>
-                                    }
+                                        /*(this.props.targetUser.type == ContactType.INDIVIDUAL && !this.props.bit6Call.remoteOptions.video ) ?
+                                         <img src={this.props.targetUser.images.profile_image.http_url}/> :
+                                         <img
+                                         src={(this.props.targetUser.group_pic_link) ? this.props.targetUser.group_pic_link : "images/group/dashboard/grp-icon.png"}/>
+                                         */ }
                                 </div>
                                 <div className="active-call-nav">
                                     <span
