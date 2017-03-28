@@ -279,7 +279,8 @@ export default class FolderList extends React.Component{
         let borderClr= "#828182";
 
         let i = (
-            <Popover id="popover-contained" className="share-popover-contained" style={{maxWidth: "556px", width: "556px", boxShadow: "none"}}>
+            <Popover id="popover-contained"  className={(folderData.owned_by == 'me') ? "popup-holder share-folder" : "popup-holder share-folder other"}
+                     style={{width: "438px", marginLeft: "24px"}}>
                 <SharePopup folderData={folderData}/>
             </Popover>
         );

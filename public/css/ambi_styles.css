@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v3.3.6 (http://getbootstrap.com)
- * Copyright 2011-2015 Twitter, Inc.
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1418,7 +1418,6 @@ a:hover, a:focus {
   text-decoration: underline;
 }
 a:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3119,7 +3118,6 @@ select[size] {
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -3672,7 +3670,6 @@ select[multiple].input-lg,
   user-select: none;
 }
 .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
-  outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -10250,16 +10247,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* 
-	Method to use:
-	@include @border {
-		border ($style,  $sides, $emptySides){
-	}
+  Method to use:
+  @include @border {
+    border ($style,  $sides, $emptySides){
+  }
 */
 /* 
-	Method to use:
-	@include @mixin {
-		content
-	}
+  Method to use:
+  @include @mixin {
+    content
+  }
 */
 header {
   background: #fff;
@@ -21017,202 +21014,187 @@ header .friends-popover-holder .popover-footer .see-all {
 .popup-holder .create-folder-popup .folder-footer .action-bar .btn-add-folder:hover {
   background-color: #0093db;
 }
-.popup-holder .share-folder-popup {
+.popup-holder .share-folder {
   position: relative;
-  overflow: hidden;
-  width: 556px;
+  width: 438px;
   box-shadow: 2px 5px 15px 2px rgba(0, 0, 0, 0.45);
-  border-radius: 18px;
+  border-radius: 8px;
   background-color: #ffffff;
 }
-.popup-holder .share-folder-popup .folder-header .search-people-wrapper {
+.popup-holder .share-folder .folder-header .header-wrapper {
   position: relative;
   margin-top: 19px;
-  padding: 0 20px;
   overflow: hidden;
 }
-.popup-holder .share-folder-popup .folder-header .search-people-wrapper .input-ico {
+.popup-holder .share-folder .folder-header .header-wrapper .popup-title {
+  text-transform: lowercase;
+  margin: 10px 26px 0px;
+  float: left;
+  font-size: 0.875em;
+  color: rgba(0, 0, 0, 0.87);
+  font-family: "Work Sans";
+  font-weight: 500;
+  line-height: 32px;
+}
+.popup-holder .share-folder .folder-header .header-wrapper .search-people {
+  margin: 10px 30px 0px;
+  padding-right: 28px;
+  float: right;
+  width: 130px;
+  height: 33px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.19);
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #bebfbf;
+  font-family: "Work Sans";
+  font-size: 0.75em;
+  font-weight: 400;
+  line-height: 16px;
+  border: none;
+}
+.popup-holder .share-folder .folder-header .header-wrapper .search-ico {
   position: absolute;
-  top: 11px;
-  left: 41px;
+  top: 19px;
+  right: 41px;
   padding: 2px;
   color: #c0c1c1;
   background-image: url("../images/folder/search-ico_sp.png");
   width: 12px;
   height: 13px;
 }
-.popup-holder .share-folder-popup .folder-header .search-people-wrapper .search-people {
-  padding-top: 8px;
-  padding-left: 34px;
-  height: 31px;
-  font-size: 0.75em;
-  font-weight: 400;
-  border: 1px solid #d9dbde;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
-  border-radius: 6px;
-  background-color: #e9ebee;
-  color: #bebfbf;
-  line-height: 16px;
+.popup-holder .share-folder .folder-body {
+  margin-top: 38px;
 }
-.popup-holder .share-folder-popup .folder-header .search-people-wrapper .search-people:-moz-placeholder {
-  color: #bebfbf;
-}
-.popup-holder .share-folder-popup .folder-header .search-people-wrapper .search-people::-moz-placeholder {
-  color: #bebfbf;
-}
-.popup-holder .share-folder-popup .folder-header .search-people-wrapper .search-people:-ms-input-placeholder {
-  color: #bebfbf;
-}
-.popup-holder .share-folder-popup .folder-header .search-people-wrapper .search-people::-webkit-input-placeholder {
-  color: #bebfbf;
-}
-.popup-holder .share-folder-popup .folder-header .header-wrapper {
-  margin-top: 19px;
-  overflow: hidden;
-  background-color: #f5f5f5;
-  border-top: 1px solid #e2e2e2;
-  border-bottom: 1px solid #e2e2e2;
-}
-.popup-holder .share-folder-popup .folder-header .header-wrapper .popup-title {
-  margin: 17px 21px 14px;
-  text-transform: lowercase;
-  font-size: 0.9375em;
-  font-weight: 500;
-  color: #000000;
-}
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper {
+.popup-holder .share-folder .folder-body .shared-user-wrapper {
   overflow: hidden;
   margin-left: 10px;
 }
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user {
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user {
   overflow: hidden;
-  padding-top: 15px;
-  padding-bottom: 9px;
+  margin: 0px 15px 15px;
+  padding-bottom: 12px;
+  border-bottom-radius: 2px;
+  border-bottom: 3px solid #f6f6f6;
 }
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .user-image {
-  margin-left: 11px;
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user:last-child {
+  margin-bottom: 22px;
+}
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user .user-image {
   float: left;
-  width: 46px;
-  height: 46px;
+  width: 31px;
+  height: 31px;
 }
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper {
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user .name-wrapper {
   width: 177px;
-  margin-left: 20px;
+  margin-left: 9px;
   float: left;
   overflow: hidden;
 }
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper .name {
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user .name-wrapper .name {
   width: 175px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   margin-top: 2px;
   margin-left: 2px;
-  font-size: 0.9375em;
-  font-weight: 500;
-  color: #000000;
+  margin-bottom: 5px;
+  font-size: 0.75em;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.49);
 }
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .name-wrapper .name-title {
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user .name-wrapper .name-title {
   width: 175px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   margin-top: -8px;
   margin-left: 2px;
-  font-size: 0.6875em;
+  margin-bottom: 0px;
+  font-size: 0.5625em;
   font-weight: 400;
-  color: #464646;
+  color: rgba(0, 0, 0, 0.37);
 }
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .share-opt-holder {
-  float: left;
-  margin: 1px 0px 0 5px;
-}
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .shared-privacy {
-  margin-left: 47px;
-  padding-top: 8px;
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user .share-opt-holder {
   float: left;
 }
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .shared-privacy .owner {
-  margin-top: 6px;
-  margin-left: 5px;
-  font-size: 0.75em;
-  font-weight: 400;
-  color: #000000;
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user .shared-privacy {
+  margin-left: 15px;
+  padding-top: 2px;
+  min-width: 87px;
+  float: left;
 }
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .shared-privacy .privacy-selector {
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user .shared-privacy .owner, .popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user .shared-privacy .request-pending {
+  margin-top: 7px;
+  margin-left: 4px;
+  font-size: 0.625em;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.49);
+}
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user .shared-privacy .privacy-selector {
   outline: none;
   border: none;
-  font-size: 0.75em;
+  font-size: 0.625em;
   font-weight: 400;
-  color: #000000;
+  color: rgba(0, 0, 0, 0.49);
   cursor: pointer;
 }
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action {
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user .action {
   position: relative;
-  margin-top: 4px;
-  margin-left: 74px;
+  margin-top: 9px;
+  margin-left: 29px;
   float: left;
   cursor: pointer;
   width: 22px;
   height: 22px;
 }
-.popup-holder .share-folder-popup .folder-body .shared-user-wrapper .shared-user .action .remove-people {
+.popup-holder .share-folder .folder-body .shared-user-wrapper .shared-user .action .remove-people {
   position: absolute;
   background-image: url("../images/folder/remove-people.png");
-  width: 22px;
-  height: 22px;
-}
-.popup-holder .share-folder-popup .folder-footer .footer-action-wrapper {
-  margin-top: 24px;
-  margin-bottom: 15px;
-  overflow: hidden;
-}
-.popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .see-all {
-  margin-top: 3px;
-  margin-left: 241px;
-  float: left;
-  color: #33a2db;
-  cursor: pointer;
-}
-.popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .see-all p {
-  text-transform: lowercase;
-  margin: -3px 5px 0px 0px;
-  float: right;
-  font-weight: 500;
-  color: #000000;
-  line-height: 18px;
-  font-size: 0.9375em;
-}
-.popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .see-all .see-all-ico {
-  margin-left: 4px;
-  margin-top: -2px;
   width: 14px;
   height: 14px;
-  float: right;
-  background-color: #00a6ef;
-  background-image: url("../images/folder/see-all_sp.png");
-  background-repeat: no-repeat;
-  background-position: center center;
-  border-radius: 100%;
+  background-size: contain;
 }
-.popup-holder .share-folder-popup .folder-footer .footer-action-wrapper .add-people {
+.popup-holder .share-folder .folder-footer .footer-action-wrapper {
+  overflow: hidden;
+  background-color: #00a5ef;
+  padding-bottom: 15px;
+  border-radius: 0px 0px 8px 8px;
+}
+.popup-holder .share-folder .folder-footer .footer-action-wrapper .see-all {
   text-transform: lowercase;
-  margin-right: 22px;
+  margin: 17px 34px 0px 0px;
   float: right;
-  font-size: 0.9375em;
-  color: #00a6ef;
+  cursor: pointer;
+  font-size: 0.875em;
+  font-weight: 400;
+  color: #FFFFFF;
+}
+.popup-holder .share-folder .folder-footer .footer-action-wrapper .see-all.c {
+  margin: 17px 0px 0px 0px;
+  float: none;
+  text-align: center;
+}
+.popup-holder .share-folder .folder-footer .footer-action-wrapper .add-people {
+  text-transform: lowercase;
+  margin: 16px 0px 0px 28px;
+  float: left;
+  font-size: 0.875em;
+  color: #ffffff;
   cursor: pointer;
   line-height: 18px;
-  font-weight: 500;
+  font-weight: 400;
+}
+.popup-holder .share-folder .folder-footer .footer-action-wrapper .add-people.c {
+  margin: 17px 0px 0px 0px;
+  float: none;
+  text-align: center;
 }
 .popup-holder .share-folder-add-people-popup {
   position: relative;
   overflow: hidden;
-  background-color: #ffffff;
+  width: 331px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
-  width: 296px;
-  box-shadow: 2px 5px 15px 2px rgba(0, 0, 0, 0.45);
-  border-radius: 18px;
   background-color: #ffffff;
 }
 .popup-holder .share-folder-add-people-popup .input-wrapper {
@@ -21220,30 +21202,18 @@ header .friends-popover-holder .popover-footer .see-all {
   padding: 0 12px;
   margin-top: 11px;
 }
-.popup-holder .share-folder-add-people-popup .input-wrapper .input-ico {
-  position: absolute;
-  top: 10px;
-  left: 33px;
-  padding: 2px;
-  color: #c0c1c1;
-  background-image: url("../images/folder/search-ico_sp.png");
-  width: 12px;
-  height: 13px;
-}
 .popup-holder .share-folder-add-people-popup .input-wrapper input {
-  margin-top: 3px;
-  margin-bottom: 5px;
-  padding-top: 7px;
-  padding-left: 34px;
-  height: 31px;
+  margin: 31px 0px 0px 17px;
   color: #bebfbf;
   font-size: 0.75em;
   line-height: 16px;
   font-weight: 400;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
-  border-radius: 6px;
-  background-color: #e9ebee;
-  border: 1px solid #d9dbde;
+  border: none;
+  width: 272px;
+  height: 33px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.19);
+  border-radius: 4px;
+  background-color: #ffffff;
 }
 .popup-holder .share-folder-add-people-popup .input-wrapper input:-moz-placeholder {
   color: #bebfbf;
@@ -21260,29 +21230,34 @@ header .friends-popover-holder .popover-footer .see-all {
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper {
   overflow: hidden;
   margin-top: 14px;
+  max-height: 196px;
+  overflow-y: scroll;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion {
   overflow: hidden;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  margin: 1px 27px 15px 27px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #f6f6f6;
+}
+.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:last-child {
+  margin-bottom: 18px;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .user-image {
-  margin-left: 13px;
-  margin-top: -1px;
   float: left;
-  width: 37px;
-  height: 37px;
+  width: 31px;
+  height: 31px;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .name-wrapper {
-  margin-left: 20px;
+  margin-left: 10px;
   float: left;
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .name-wrapper .name {
-  margin-top: 8px;
+  margin-top: 6px;
   margin-bottom: 0;
-  font-size: 0.875em;
-  font-weight: 500;
-  color: #000000;
+  font-size: 0.75em;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.49);
+  font-family: "Work Sans";
   width: 165px;
   overflow: hidden;
   white-space: nowrap;
@@ -21290,7 +21265,7 @@ header .friends-popover-holder .popover-footer .see-all {
 }
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .action {
   position: relative;
-  margin-top: 5px;
+  margin-top: 6px;
   margin-right: 20px;
   float: right;
   cursor: pointer;
@@ -21300,17 +21275,9 @@ header .friends-popover-holder .popover-footer .see-all {
 .popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion .action .add-people {
   position: absolute;
   background-image: url("../images/folder/add-people.png");
-  width: 23px;
-  height: 23px;
-}
-.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:hover {
-  background-color: #1b9ed9;
-}
-.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:hover .name-wrapper .name {
-  color: #ffffff;
-}
-.popup-holder .share-folder-add-people-popup .suggestions-wrapper .suggestion:hover .action i {
-  background-color: #ffffff;
+  width: 15px;
+  height: 14px;
+  background-size: cover;
 }
 .popup-holder .share-folder-popover.add-new-user .arrow {
   display: none;

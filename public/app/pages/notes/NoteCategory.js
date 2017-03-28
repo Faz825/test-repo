@@ -581,7 +581,7 @@ export class  SharedUsers extends React.Component {
         });
 
         return (
-            <div className="notebook-alluser-wrapper" style={{overflowY: this.props.scrollProp, border: "none", boxShadow: "none", maxHeight: "136px"}}>
+            <div className="notebook-alluser-wrapper" style={{overflowY: this.props.scrollProp, border: "none", boxShadow: "none", maxHeight: "134px"}}>
                 {_allUsers}
             </div>
         )

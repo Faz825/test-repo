@@ -78,7 +78,7 @@ var GroupsController = {
                             _shared_users.push(
                                 {
                                     user_id : groupData.members[i].user_id,
-                                    shared_type : FolderSharedMode.VIEW_ONLY,
+                                    shared_type : FolderSharedMode.VIEW_UPLOAD,
                                     status : FolderSharedRequest.REQUEST_ACCEPTED
                                 }
                             );
@@ -105,7 +105,7 @@ var GroupsController = {
                                 folder_color: resultSet.folder.color,
                                 folder_owner: resultSet.folder.user_id,
                                 folder_updated_at: resultSet.folder.updated_at,
-                                folder_shared_mode: FolderSharedMode.VIEW_ONLY,
+                                folder_shared_mode: FolderSharedMode.VIEW_UPLOAD,
                                 folder_user: member.user_id.toString(),
                                 folder_type: FolderType.GROUP_FOLDER,
                                 group_id: resultSet.folder.group_id.toString(),

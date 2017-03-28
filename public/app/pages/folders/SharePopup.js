@@ -41,10 +41,14 @@ export default class SharePopup extends React.Component{
         }else{
             this.setState({scrollProp : 'hidden'});
         }
+
     }
 
     allSharedUsers(){
-        this.setState({seeAllSharedUsers : true}, function (){
+
+        let seeAllSharedUsers = this.state.seeAllSharedUsers;
+
+        this.setState({seeAllSharedUsers : !seeAllSharedUsers}, function (){
             this.handleScroll();
         });
     }
@@ -158,7 +162,7 @@ export default class SharePopup extends React.Component{
         let ownerName = this.state.owner.first_name;
 
         let i = (
-            <Popover id="popover-contained" className="share-folder-popover add-new-user" style={{maxWidth: "280px", width: "280px", marginTop: "6.2%", marginLeft: "20%", boxShadow: "none"}}>
+            <Popover id="popover-contained" className="share-folder-popover share-folder-new" positionTop="150px">
                 <SharePopupNewUsr  folderData={_folderData}/>
             </Popover>
         );
@@ -168,7 +172,7 @@ export default class SharePopup extends React.Component{
             let name = user.first_name;
 
             return (
-                <div key={key}>
+                <div key={key} className="user-row">
                     {
                         (user.shared_status == 3) ?
                             <div className="shared-user" key={key}>
@@ -198,7 +202,12 @@ export default class SharePopup extends React.Component{
                                                 <span className="remove-people"></span>
                                             </div>
                                         </div>
-                                        : null
+                                        :
+                                        <div className="share-opt-holder clearfix">
+                                            <div className="shared-privacy">
+                                                <p className="request-pending">{(user.shared_type == "1") ? "Read Only" : "Read/Write"}</p>
+                                            </div>
+                                        </div>
                                 }
                             </div> :
                             <div className="shared-user" key={key}>
@@ -213,18 +222,17 @@ export default class SharePopup extends React.Component{
                                             <p className="name-title">{user.company_name}</p>
                                     }
                                 </div>
-                                {
-                                    (_folderData.owned_by == 'me') ?
-                                        <div className="share-opt-holder clearfix">
-                                            <div className="shared-privacy">
-                                                <p className="pending">Request Pending</p>
-                                            </div>
-                                            <div className="action" onClick={()=>this.handleClick(user)}>
-                                                <span className="remove-people"></span>
-                                            </div>
-                                        </div>
-                                        : null
-                                }
+                                <div className="share-opt-holder clearfix">
+                                    <div className="shared-privacy">
+                                        <p className="request-pending">Request Pending</p>
+                                    </div>
+                                    {
+                                        (_folderData.owned_by == 'me') ?
+                                    <div className="action" onClick={()=>this.handleClick(user)}>
+                                        <span className="remove-people"></span>
+                                    </div> : null
+                                    }
+                                </div>
                             </div>
                     }
                 </div>
@@ -233,20 +241,14 @@ export default class SharePopup extends React.Component{
 
         return(
             <div className="popup-holder">
-                <section className="share-folder-popup">
+                <section className="share-folder">
                     <section className="folder-header">
-                        <div className="row">
-                            <div className="col-sm-12">
-                                <div className="search-people-wrapper">
-                                    <span className="input-ico"></span>
-                                    <input className="form-control search-people" type="text" placeholder="search" onChange={(event)=>this.filterSharedUsers(_folderData.folder_id, event)}/>
-                                </div>
-                            </div>
-                        </div>
                         <div className="row">
                             <div className="col-sm-12">
                                 <div className="header-wrapper">
                                     <h3 className="popup-title">people in this folder</h3>
+                                    <input className="form-control search-people" type="text" placeholder="search" onChange={(event)=>this.filterSharedUsers(_folderData.folder_id, event)}/>
+                                    <span className="search-ico"></span>
                                 </div>
                             </div>
                         </div>
@@ -268,34 +270,30 @@ export default class SharePopup extends React.Component{
                                     <p className="owner">(Owner)</p>
                                 </div>
                             </div>
-                            <div className="shared-users-container" style={{overflowY: this.state.scrollProp, overflowX: 'hidden', maxHeight: '155px'}}>
+                            <div className="shared-users-container" style={{overflowY: this.state.scrollProp, border: "none", boxShadow: "none", maxHeight: "134px"}}>
                                 {_allUsers}
                             </div>
                         </div>
                     </section>
-                    <section className="folder-footer">
-                        <div className="footer-action-wrapper">
-                            <div className="see-all">
-                                {
-                                    (!this.state.seeAllSharedUsers && this.state.sharedUsers.length > 2) ?
-                                        <div onClick={this.allSharedUsers.bind(this)}>
-                                            <span className="see-all-ico"></span>
-                                            <p>See All</p>
-                                        </div> : null
-                                }
-
-                            </div>
-                            {
-                                (_folderData.owned_by == 'me')?
-                                    <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
-                                        <p className="add-people">
-                                            + Add more
-                                        </p>
-                                    </OverlayTrigger> : null
-                            }
-                        </div>
-                        {this.getPopupRemoveUser()}
-                    </section>
+                    {
+                        (_folderData.owned_by == 'me' || this.state.sharedUsers.length > 2) ?
+                            <section className="folder-footer">
+                                <div className="footer-action-wrapper">
+                                    {
+                                        (_folderData.owned_by == 'me') ?
+                                            <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
+                                                <p className={(this.state.sharedUsers.length > 2) ? "add-people" : "add-people c"}>+ Add member</p>
+                                            </OverlayTrigger> : null
+                                    }
+                                    {
+                                        (this.state.sharedUsers.length > 2) ?
+                                            <p className={(_folderData.owned_by == 'me') ? "see-all" : "see-all c"} onClick={this.allSharedUsers.bind(this)}>{(this.state.seeAllSharedUsers) ?
+                                                "See Less" : "See All"}</p> : null
+                                    }
+                                </div>
+                                {this.getPopupRemoveUser()}
+                            </section> : null
+                    }
                 </section>
             </div>
 

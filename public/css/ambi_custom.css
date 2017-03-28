@@ -874,6 +874,65 @@ a.rc-time-picker-panel-clear-btn {
     padding: 0px;
 }
 
+
+.popup-holder.share-folder {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    max-width: 438px;
+}
+.popup-holder.share-folder.other .arrow{
+    top: 88px !important;
+}
+.popup-holder.share-folder .arrow{
+    top: 106px !important;
+    z-index: 1;
+}
+.popup-holder.share-folder .arrow{
+
+}
+.popup-holder.share-folder .popover-content {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+.popup-holder.share-folder .popover-content .notebook-alluser-wrapper{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    vertical-align: baseline;
+    background: transparent;
+    width: 100%;
+}
+
+.popup-holder.share-folder .popover-content .shared-users-container .user-row {
+    width: 98%;
+}
+
+.popover.share-folder-new {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    max-width: 331px;
+    width: 331px;
+    margin-top: 40px;
+}
+.popover.share-folder-new .arrow{
+    top: -10px !important;
+    z-index: 1;
+}
+.popover.share-folder-new .arrow:after{
+    border-right-color: transparent;
+}
+.popover.share-folder-new .popover-content {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0px;
+}
+
+
 /* Footer on collapse */
 .body-container.sub-page{
 	padding-bottom: 100px;
