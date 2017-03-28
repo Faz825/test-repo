@@ -40,6 +40,10 @@ var GroupsController = {
                     group_pic_id: req.body._group_pic_id,
                     members: req.body._members,
                     created_by: Util.getCurrentSession(req).id,
+
+                    /*TODO@Eranga : Define group-connection type in elasticsearch also.
+                     This type must reflect connections model in database. */
+
                     type: (typeof req.body._type != 'undefined' ? req.body._type : 1)
                 };
                 Groups.createGroup(_group, function (resultSet) {
@@ -63,43 +67,83 @@ var GroupsController = {
                     callBack(null, groupData);
                 }
             },
-            // function createDefaultFolder(groupData, callBack) {
+            function createDefaultFolder(groupData, callBack) {
+
+                if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {
+
+                    var _shared_users = [];
+
+                    for(var i = 0; i < groupData.members.length; i++){
+                        if(groupData.members[i].user_id != userId){
+                            _shared_users.push(
+                                {
+                                    user_id : groupData.members[i].user_id,
+                                    shared_type : FolderSharedMode.VIEW_ONLY,
+                                    status : FolderSharedRequest.REQUEST_ACCEPTED
+                                }
+                            );
+                        }
+                    }
+
+                    var _folderData = {
+                        name: groupData.name,
+                        color: groupData.color,
+                        user_id: userId,
+                        group_id: groupData._id,
+                        shared_users: _shared_users,
+                        isDefault: 1,
+                        folder_type: FolderType.GROUP_FOLDER
+                    };
+
+                    Folders.addNewFolder(_folderData, function (resultSet) {
+
+                        _async.eachSeries(_shared_users, function (member, membersCallBack) {
+
+                            var memberData = {
+                                folder_id: resultSet.folder._id,
+                                folder_name: resultSet.folder.name,
+                                folder_color: resultSet.folder.color,
+                                folder_owner: resultSet.folder.user_id,
+                                folder_updated_at: resultSet.folder.updated_at,
+                                folder_shared_mode: FolderSharedMode.VIEW_ONLY,
+                                folder_user: member.user_id.toString(),
+                                folder_type: FolderType.GROUP_FOLDER,
+                                group_id: resultSet.folder.group_id.toString(),
+                                cache_key: FolderConfig.ES_INDEX_SHARED_GROUP_FOLDER+member.user_id.toString()
+                            }
+
+                            Folders.addFolderToCache(memberData, function(r){
+                                membersCallBack(null);
+                            });
+
+                        }, function (err) {
+                            callBack(null, groupData);
+                        });
+
+                    });
+
+                } else {
+                    callBack(null, groupData);
+                }
+            },
+            // function createDefaultNoteBook(groupData, callBack) {
             //
             //     if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {
             //
-            //         var _folderData = {
+            //         var _notebook = {
             //             name: groupData.name,
             //             color: groupData.color,
-            //             isGrouped: 1,
+            //             type: NoteBookType.GROUP_NOTEBOOK,
             //             user_id: userId,
             //             group_id: groupData._id
             //         };
-            //         Folders.addNewFolder(_folderData, function (resultSet) {
-            //
+            //         NoteBook.addNewNoteBook(_notebook, function (resultSet) {
             //             callBack(null, groupData);
             //         });
             //     } else {
             //         callBack(null, groupData);
             //     }
             // },
-            function createDefaultNoteBook(groupData, callBack) {
-
-                if (typeof groupData != 'undefined' && Object.keys(groupData).length > 0) {
-
-                    var _notebook = {
-                        name: groupData.name,
-                        color: groupData.color,
-                        type: NoteBookType.GROUP_NOTEBOOK,
-                        user_id: userId,
-                        group_id: groupData._id
-                    };
-                    NoteBook.addNewNoteBook(_notebook, function (resultSet) {
-                        callBack(null, groupData);
-                    });
-                } else {
-                    callBack(null, groupData);
-                }
-            },
             function addNotification(groupData, callBack) {
 
                 if (notifyUsers.length > 0 && Object.keys(groupData).length > 0) {
@@ -124,8 +168,11 @@ var GroupsController = {
 
                     var _members = [];
                     for (var x = 0; x < notifyUsers.length; x++) {
-                        _members.push(notifyUsers[x].user_id);
+                        if(userId.toString() != notifyUsers[x].user_id.toString()){
+                            _members.push(notifyUsers[x].user_id);
+                        }
                     }
+
                     var _data = {
                         notification_id: notification_id,
                         recipients: _members
@@ -440,6 +487,12 @@ var GroupsController = {
 
     removeMember: function (req, res) {
         var Groups = require('mongoose').model('Groups'),
+            Folders = require('mongoose').model('Folders'),
+            Posts = require('mongoose').model('Post'),
+            FolderDocs = require('mongoose').model('FolderDocs'),
+            SubscribedPost = require('mongoose').model('SubscribedPost'),
+            Connection = require('mongoose').model('Connection'),
+            User = require('mongoose').model('User'),
             _async = require('async'),
             _arrIndex = require('array-index-of-property');
 
@@ -459,16 +512,233 @@ var GroupsController = {
                 };
 
                 Groups.updateGroups(criteria, _status, function (r) {
-                    callBack(null);
+                    callBack(null, r.group);
                 });
             },
-            function removePostSubscriptions(callBack) {
-                //ToDo: remove member post subs
-                callBack(null);
+            function removeMemberFolders(groupData, callBack){
+
+                _async.waterfall([
+                    function updateMemberStatus(rfCallBack){
+
+                        var _udata = {
+                            'shared_users.$.status': FolderSharedRequest.MEMBER_REMOVED
+                        };
+                        var criteria = {
+                            type: FolderType.GROUP_FOLDER,
+                            group_id: Util.toObjectId(group_id),
+                            'shared_users.user_id': Util.toObjectId(member_id)
+                        };
+
+                        Folders.updateFolder(criteria, _udata, function(res){
+                            rfCallBack(null);
+                        });
+                    },
+                    function getOwnFoldersToGroup(rfCallBack) {
+                        var es_criteria= {
+                            _index: FolderConfig.ES_INDEX_OWN_GROUP_FOLDER + member_id.toString(),
+                            q: 'folder_type:' + FolderType.GROUP_FOLDER + ' AND folder_group_id:' + group_id.toString()
+                        };
+
+                        Folders.getSharedFolders(es_criteria, function (r) {
+                            rfCallBack(null, r.folders);
+                        });
+                    },
+                    function getSharedFoldersToGroup(ownFolders, rfCallBack) {
+                        var es_criteria= {
+                            _index: FolderConfig.ES_INDEX_SHARED_GROUP_FOLDER + member_id.toString(),
+                            q: 'folder_type:' + FolderType.GROUP_FOLDER + ' AND folder_group_id:' + group_id.toString()
+                        };
+
+                        Folders.getSharedFolders(es_criteria, function (r) {
+                            var allFolders = ownFolders.concat(r.folders);
+                            rfCallBack(null, allFolders);
+                        });
+                    },
+                    function removeFolderDocs(allFolders, rfCallBack){
+
+                        if(typeof allFolders != "undefined" && allFolders.length >0){
+                            _async.eachSeries(allFolders, function (folder, folderCallBack) {
+
+                                _async.waterfall([
+                                    function getFolderDocs(innerCallBack){
+                                        var docs_criteria = {
+                                            folder_id: Util.toObjectId(folder.folder_id)
+                                        }
+
+                                        FolderDocs.getDocuments(docs_criteria, function(docsResult){
+                                            innerCallBack(null, docsResult.documents);
+                                        });
+                                    },
+                                    function removeFromES(docs,innerCallBack){
+
+                                        if(typeof docs != "undefined" && docs.length > 0){
+                                            _async.eachSeries(docs, function (doc, docsCallBack) {
+                                                var _index = "";
+                                                var _type = "";
+
+                                                if (member_id.toString() == doc.user_id.toString()) {
+                                                    _index = FolderDocsConfig.ES_INDEX_OWN_GROUP_DOC;
+                                                    _type = "own_group_document";
+                                                }else {
+                                                    _index = FolderDocsConfig.ES_INDEX_SHARED_GROUP_DOC;
+                                                    _type = "shared_group_document";
+                                                }
+
+                                                var _payload = {
+                                                    id: doc._id.toString(),
+                                                    type: _type,
+                                                    cache_key: _index + member_id.toString()
+                                                };
+
+                                                FolderDocs.deleteDocumentFromCache(_payload, function(r) {
+                                                    docsCallBack(null);
+                                                });
+
+                                            }, function (err) {
+                                                innerCallBack(null);
+                                            });
+
+                                        }else {
+                                            innerCallBack(null);
+                                        }
+                                    },
+                                    function removeFolderFromES(innerCallBack){
+
+                                        var _index = "";
+                                        var _type = "";
+
+                                        if (member_id.toString() == folder.folder_owner.toString()) {
+                                            _index = FolderConfig.ES_INDEX_OWN_GROUP_FOLDER;
+                                            _type = "own_folder";
+                                        }else {
+                                            _index = FolderConfig.ES_INDEX_SHARED_GROUP_FOLDER;
+                                            _type = "shared_folder";
+                                        }
+
+                                        var _payload = {
+                                            id: folder.folder_id.toString(),
+                                            type: _type,
+                                            cache_key: _index + member_id.toString()
+                                        };
+
+                                        Folders.deleteFolderFromCache(_payload, function(r) {
+                                            innerCallBack(null);
+                                        });
+
+                                    }
+                                ], function (err) {
+                                    folderCallBack(null);
+                                });
+                            }, function (err) {
+                                rfCallBack(null);
+                            });
+                        }else {
+                            rfCallBack(null);
+                        }
+
+                    }
+                ], function (err) {
+                    callBack(null, groupData);
+                });
             },
-            function removeSharedCalendar(callBack) {
+            function removePostSubscriptions(groupData, callBack) {
+                _async.waterfall([
+                    function getAllPostsToGroup(rpCallBack){
+
+                        var payLoad = {
+                            q:"post_type:" + PostType.GROUP_POST
+                        }, postsType = PostType.GROUP_POST;
+
+                        Posts.ch_getPost(group_id,payLoad,postsType,function(resultSet){
+                            var _posts = resultSet;
+                            rpCallBack(null, _posts);
+                        });
+                    },
+                    function removeFromSubscribedPosts(posts, rpCallBack){
+
+                        var post_ids = [];
+
+                        if(posts != null && posts.length > 0){
+                            for(var i = 0; i < posts.length; i++){
+                                post_ids.push(Util.toObjectId(posts[i].post_id));
+                            }
+
+                            var criteria = {
+                                post_id: {'$in': post_ids},
+                                user_id: Util.toObjectId(member_id)
+                            }
+                            SubscribedPost.deleteSubscribedUsers(criteria, function (r){
+                                rpCallBack(null);
+                            });
+                        }else {
+                            rpCallBack(null);
+                        }
+                    }
+                ], function (err) {
+                    callBack(null, groupData);
+                });
+            },
+            function removeSharedCalendar(groupData, callBack) {
                 //ToDo: remove member calendar events tasks todos
-                callBack(null);
+                callBack(null, groupData);
+            },
+            function removeConnections(groupData, callBack){
+                _async.waterfall([
+                    function statusUpdateMemberConnection(rcCallBack){
+                        var criteria = {
+                            user_id: Util.toObjectId(member_id),
+                            connected_group: Util.toObjectId(group_id)
+                        }, dataToUpdate = {
+                            status: ConnectionStatus.CONNECTION_BLOCKED
+                        };
+
+                        Connection.updateConnection(criteria, dataToUpdate, function(r){
+                            rcCallBack(null);
+                        });
+                    },
+                    function updateESGroupIndex(rcCallBack){
+
+                        var groupKey = GroupConfig.ES_INDEX;
+                        var groupPayLoad={
+                            index: groupKey,
+                            id: group_id.toString(),
+                            type: 'group',
+                            data: groupData
+                        };
+
+                        ES.update(groupPayLoad, function(r){
+                            rcCallBack(null);
+                        });
+                    },
+                    function removeESIndexWithGroup(rcCallBack){
+
+                        var groupKey = ConnectionConfig.ES_INDEX_NAME+group_id.toString();
+                        var _payload={
+                            index: groupKey,
+                            id: member_id.toString(),
+                            type: 'connections'
+                        };
+
+                        ES.delete(_payload, function(r){
+                            rcCallBack(null);
+                        });
+                    },
+                    function removeESIndexWithUser(rcCallBack){
+
+                        var userKey = ConnectionConfig.ES_GROUP_INDEX_NAME+member_id.toString();
+                        var _payload={
+                            index: userKey,
+                            id: group_id.toString(),
+                            type: 'connections'
+                        };
+
+                        ES.delete(_payload, function(r){
+                            rcCallBack(null);
+                        });
+                    }
+                ], function (err) {
+                    callBack(null);
+                });
             }
 
         ], function (err) {
@@ -568,14 +838,14 @@ var GroupsController = {
             function getGroups(callBack) {
                 var userId = Util.getCurrentSession(req).id.toString();
                 var query = {
-                    index : ConnectionConfig.ES_GROUP_INDEX_NAME+userId,
+                    index: ConnectionConfig.ES_GROUP_INDEX_NAME + userId,
                     type: 'connections',
                     id: userId
                 };
-                console.log(" THE INDEX IS : " + ConnectionConfig.ES_GROUP_INDEX_NAME+userId);
-                ES.search(query,function(groupsResult){
+                console.log(" THE INDEX IS : " + ConnectionConfig.ES_GROUP_INDEX_NAME + userId);
+                ES.search(query, function (groupsResult) {
                     var groups = [];
-                    if(groupsResult) {
+                    if (groupsResult) {
                         groups = groupsResult.result;
                     }
                     callBack(null, groups);

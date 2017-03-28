@@ -22,40 +22,20 @@ export default class Header extends React.Component {
         super(props);
         this.state={
             headerChatUnreadCount:0,
-            my_connections:[],
+            my_connections:this.props.my_connections,
             showChatNotification: false,
             showFriendRequestNotification: false,
             chat_conversations: [],
-            unreadChatCount:0
+            unreadChatCount:0,
+            friendRequestsCount:0
 
         }
         this.quickChatUsers = [];
         this.logged_me = Session.getSession('prg_lg');
-        if(this.logged_me != null){
-            this.loadMyConnections(this.logged_me.token);
-        }
     }
 
-    showChatList(){
-        $("#chat_notification_wrapper").toggle();
-        if($("#chat_notification_wrapper").is(':visible')){
-            $("#chat_notification_a").addClass('chat-notification-wrapper-opened');
-        } else{
-            $("#chat_notification_a").removeClass('chat-notification-wrapper-opened')
-        }
-    }
-
-    loadMyConnections(token){
-        $.ajax({
-            url: '/connection/me/unfriend',
-            method: "GET",
-            dataType: "JSON",
-            headers: { 'prg-auth-header':token }
-        }).done(function(data){
-            if(data.status.code == 200){
-                this.setState({my_connections:data.my_con});
-            }
-        }.bind(this));
+    componentWillReceiveProps(nextProps) {
+        this.setState({showFriendRequestNotification: nextProps.showFriendRequestNotification, my_connections: nextProps.my_connections});
     }
 
     initiateQuickChat(conv) {
@@ -90,6 +70,11 @@ export default class Header extends React.Component {
         this.setState({unreadChatCount: _count});
     }
 
+    setFriendRequestCount(_count) {
+        this.setState({friendRequestsCount: _count});
+        this.props.resetConnections();
+    }
+
     render(){
         return(
             <header>
@@ -122,14 +107,13 @@ export default class Header extends React.Component {
                             <div onClick={this.toggleFriendRequestNotifications.bind(this)} className="friends-icon opt-holder">
                                 <div className="icon-holder"></div>
                                 <div className="notifi-alert-holder">
-                                    <span className="notifi-num">2</span>
+                                    {this.state.friendRequestsCount > 0 ? <span className="notifi-num">{this.state.friendRequestsCount}</span> : null}
                                 </div>
                             </div>
                             <ProfileImg />
                         </div>
                     </div>
 
-                    {/*this.state.showChatNotification ? <DummyConversationList onMessaging={this.initiateDummyQuickChat.bind(this)}/> : null*/}
                     {
                         <ConversationList connections={this.state.my_connections}
                                           loadQuickChat={this.initiateQuickChat.bind(this)}
@@ -140,7 +124,10 @@ export default class Header extends React.Component {
                                           loadNewChat={this.props.loadNewChat}
                         />
                     }
-                    {this.state.showFriendRequestNotification ? <FriendRequestList /> : null}
+                    <FriendRequestList my_connections={this.state.my_connections}
+                                       showFriendRequests={this.state.showFriendRequestNotification}
+                                       setFriendRequestCount={this.setFriendRequestCount.bind(this)}
+                    />
 
                 </div>
             </header>

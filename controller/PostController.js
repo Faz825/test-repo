@@ -38,9 +38,6 @@ var PostController ={
             group_id:(typeof req.body.__group_id != 'undefined')?req.body.__group_id: null,
         };
 
-
-        console.log("PostController - addPost - data - ");
-        console.log(data);
         TimeLinePostHandler.addNewPost(data,function(resultSet){
             outPut['status']    = ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS);
             outPut['post']      = resultSet;
@@ -58,7 +55,7 @@ var PostController ={
      */
     getPost:function(req,res){
         var Post = require('mongoose').model('Post');
-        var postsType   = typeof(req.query.__posts_type) != 'undefined' ? req.query.__posts_type : PostType.PERSONAL_POST;
+        var postsType   = typeof(req.query.__post_type) != 'undefined' ? req.query.__post_type : PostType.PERSONAL_POST;
         var page   = req.query.__pg;
 
         if(postsType == PostType.GROUP_POST) {
@@ -131,13 +128,16 @@ var PostController ={
             created_by:CurrentSession.id,
             post_owned_by:CurrentSession.id,
             shared_post_id:req.body.__pid,
+            post_id:req.body.__pid,
             post_visible_mode:PostVisibleMode.PUBLIC,
             post_mode:(typeof req.body.__post_mode != 'undefined')?req.body.__post_mode:PostConfig.SHARED_POST,
             post_owner:req.body.__own,
             friends_post_sharing: CurrentSession.id != req.body.__own ? true  :false,
-            group_id:(typeof req.body.__group_id != 'undefined') ? req.body.__group_id : null,
-            visible_users:(typeof req.body.__visible_users != 'undefined')?req.body.__visible_users: []
+            group_id:(typeof req.body.__group_id == 'undefined' || req.body.__group_id.length == 0) ? null : req.body.__group_id,
+            visible_users:(typeof req.body.__visible_users != 'undefined')?req.body.__visible_users: [],
+            post_type:(typeof req.body.__post_type != 'undefined')?req.body.__post_type:PostType.PERSONAL_POST,
         }
+
         var TimeLinePostHandler = require('../middleware/TimeLinePostHandler');
         TimeLinePostHandler.sharePost(data,function(resultSet){
             var outPut ={};
@@ -341,9 +341,6 @@ var PostController ={
             },
             function deleteFromCache(callback){
                 console.log("deleteFromCache")
-
-                console.log(_post.visible_users)
-
                 _async.parallel([
 
                     // delete post from cache

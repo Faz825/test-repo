@@ -4,10 +4,10 @@
 
 import React from 'react';
 import ReactDom from 'react-dom';
-import {Modal, ButtonToolbar, DropdownButton, MenuItem} from 'react-bootstrap';
+import {Modal, ButtonToolbar, DropdownButton, MenuItem, Popover, OverlayTrigger} from 'react-bootstrap';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
-import {CallChannel, CallType, CallStatus, UserMode} from '../../config/CallcenterStats';
+import {CallChannel, CallType, CallStatus, UserMode, ContactType} from '../../config/CallcenterStats';
 import ContactList from "./ContactList";
 import RecentList from "./RecentList";
 import StatusList from "./StatusList";
@@ -18,21 +18,23 @@ export default class Index extends React.Component {
     constructor(props) {
         super(props);
 
-        if (Session.getSession('prg_lg') == null) {
+        var loggedUser = Session.getSession('prg_lg');
+
+        if (loggedUser == null) {
             window.location.href = "/";
         } else {
             this.b6 = CallCenter.b6;
-            this.initCall(this.b6);
         }
 
         this.state = {
-            loggedUser: Session.getSession('prg_lg'),
+            loggedUser: loggedUser,
             targetUser: null,
             inProgressCall: false,
             callMode: CallChannel.AUDIO,
+            bit6Call: null,
             userContacts: [],
-            recentCalls: [],
-            userStatus: "online",
+            callRecords: {all: [], missed: [], individual: [], groups: [], multi: []},
+            userStatus: loggedUser.online_mode,
             activeMainCat: "",
             activeSubCat: "",
             showModal: false,
@@ -49,10 +51,11 @@ export default class Index extends React.Component {
 
         // Get Contacts
         let _this = this;
+        this.allContacts = [];
 
         CallCenter.getCallRecords().done(function (data) {
             if (data.status.code == 200) {
-                _this.setState({recentCalls: data.call_records});
+                _this.setState({recentCalls: _this.processCallRecords(data.call_records)});
                 _this.setActiveTabData('recent', 'all');
             }
         });
@@ -60,6 +63,16 @@ export default class Index extends React.Component {
         CallCenter.getContacts().done(function (data) {
             if (data.status.code == 200) {
                 _this.setState({userContacts: data.contacts});
+
+                for (var key in data.contacts) {
+                    for (var subKey in data.contacts[key].users) {
+                        let type = data.contacts[key].users[subKey].type;
+                        if (type == ContactType.INDIVIDUAL) {
+                            _this.allContacts.push(data.contacts[key].users[subKey]);
+                        }
+                    }
+                }
+
             }
         });
 
@@ -67,14 +80,6 @@ export default class Index extends React.Component {
         this.answerAudio = this.answerAudio.bind(this);
         this.reject = this.reject.bind(this);
         this.currUserList = null;
-    }
-
-    initCall(b6) {
-        let _this = this;
-
-        b6.on('video', function (v, d, op) {
-            _this.onVideoCall(v, d, op);
-        });
     }
 
     getContacts(cat, subCat) {
@@ -88,7 +93,8 @@ export default class Index extends React.Component {
     }
 
     getContactsByStatus(cat, subCat) {
-
+        this.setActiveTabData(cat, subCat);
+        this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
     }
 
     setActiveTabData(cat, subCat) {
@@ -104,8 +110,8 @@ export default class Index extends React.Component {
             for (var key in aContacts) {
                 letter = aContacts[key].letter;
                 for (var subKey in aContacts[key].users) {
-                    let type = aContacts[key].users[subKey].contactType;
-                    if (type == 1) {
+                    let type = aContacts[key].users[subKey].type;
+                    if (type == ContactType.INDIVIDUAL) {
                         usersSet.push(aContacts[key].users[subKey]);
                     }
                 }
@@ -126,8 +132,8 @@ export default class Index extends React.Component {
             for (var key in aContacts) {
                 letter = aContacts[key].letter;
                 for (var subKey in aContacts[key].users) {
-                    let type = aContacts[key].users[subKey].contactType;
-                    if (type == 2) {
+                    let type = aContacts[key].users[subKey].type;
+                    if (type == ContactType.GROUP) {
                         usersSet.push(aContacts[key].users[subKey]);
                     }
                 }
@@ -139,57 +145,113 @@ export default class Index extends React.Component {
 
             this.setState({activeTabData: dataSet});
         } else if (cat == "recent" && subCat == "all") {
-            let callRecords = [];
-            let aRecentCalls = this.state.recentCalls;
+            this.setState({activeTabData: this.state.recentCalls});
+        } else if (cat == "recent" && subCat == "missed") {
 
-            for (var i = 0; i < aRecentCalls.length; i++) {
-                let callChannel = null;
-                let callType = null;
-                let callStatus = null;
-                let time = null;
-                let dd = null;
+        } else if (cat == "recent" && subCat == "individual") {
 
-                let date = new Date(aRecentCalls[i].call_started_at);
-                let hh = date.getHours();
-                let m = date.getMinutes();
-                let s = date.getSeconds();
+        } else if (cat == "recent" && subCat == "groups") {
 
-                (hh > 12) ? dd = 'PM' : dd = 'AM';
-                (m < 10) ? m = '0' + m : m = m;
-                (hh < 10) ? hh = '0' + hh : hh = hh;
+        } else if (cat == "recent" && subCat == "multi") {
 
-                time = hh + ':' + m + ' ' + dd;
+        } else if (cat == "status" && subCat == "online") {
+            let dataSet = [],
+                usersSet = [],
+                letter = "";
 
-                (aRecentCalls[i].call_channel == CallChannel.VIDEO) ? callChannel = 'video' : callChannel = 'phone';
-                (aRecentCalls[i].call_type == CallType.INCOMING) ? callType = CallType.INCOMING : callType = CallType.OUTGOING;
+            let aContacts = this.state.userContacts;
 
-                if (aRecentCalls[i].call_status == CallStatus.MISSED) {
-                    callStatus == 'missed';
-                } else if (aRecentCalls[i].call_status == CallStatus.ANSWERED) {
-                    callStatus == 'answered';
-                } else if (aRecentCalls[i].call_status == CallStatus.REJECTED) {
-                    callStatus == 'rejected';
-                } else if (aRecentCalls[i].call_status == CallStatus.CANCELLED) {
-                    callStatus == 'cancelled';
+            for (var key in aContacts) {
+                letter = aContacts[key].letter;
+                for (var subKey in aContacts[key].users) {
+                    let onlineStatus = aContacts[key].users[subKey].online_mode;
+                    if (onlineStatus == UserMode.ONLINE.VALUE) {
+                        usersSet.push(aContacts[key].users[subKey]);
+                    }
                 }
-
-                callRecords.push({
-                    user_id: aRecentCalls[i].receivers_list[0].user_id,
-                    first_name: aRecentCalls[i].receivers_list[0].first_name,
-                    last_name: aRecentCalls[i].receivers_list[0].last_name,
-                    calls: 1,
-                    time: time,
-                    call_type: callType,
-                    call_channel: callChannel,
-                    call_status: callStatus,
-                    images: aRecentCalls[i].receivers_list[0].images
-                });
+                if (usersSet.length >= 1) {
+                    dataSet.push({"letter": letter, "users": usersSet});
+                    usersSet = [];
+                }
             }
 
-            this.setState({activeTabData: callRecords});
+            this.setState({activeTabData: dataSet});
+        } else if (cat == "status" && subCat == "work_mode") {
+            let dataSet = [],
+                usersSet = [],
+                letter = "";
+
+            let aContacts = this.state.userContacts;
+
+            for (var key in aContacts) {
+                letter = aContacts[key].letter;
+                for (var subKey in aContacts[key].users) {
+                    let onlineStatus = aContacts[key].users[subKey].online_mode;
+                    if (onlineStatus == UserMode.WORK_MODE.VALUE) {
+                        usersSet.push(aContacts[key].users[subKey]);
+                    }
+                }
+                if (usersSet.length >= 1) {
+                    dataSet.push({"letter": letter, "users": usersSet});
+                    usersSet = [];
+                }
+            }
+
+            this.setState({activeTabData: dataSet});
         }
 
         this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
+    }
+
+    processCallRecords(aCallRecords) {
+        let callRecords = [];
+
+        for (var i = 0; i < aCallRecords.length; i++) {
+            let callChannel = null;
+            let callType = null;
+            let callStatus = null;
+            let time = null;
+            let dd = null;
+
+            let date = new Date(aCallRecords[i].call_started_at);
+            let hh = date.getHours();
+            let m = date.getMinutes();
+            let s = date.getSeconds();
+
+            (hh > 12) ? dd = 'PM' : dd = 'AM';
+            (m < 10) ? m = '0' + m : m = m;
+            (hh < 10) ? hh = '0' + hh : hh = hh;
+
+            time = hh + ':' + m + ' ' + dd;
+
+            (aCallRecords[i].call_channel == CallChannel.VIDEO) ? callChannel = 'video' : callChannel = 'phone';
+            (aCallRecords[i].call_type == CallType.INCOMING) ? callType = CallType.INCOMING : callType = CallType.OUTGOING;
+
+            if (aCallRecords[i].call_status == CallStatus.MISSED) {
+                callStatus == 'missed';
+            } else if (aCallRecords[i].call_status == CallStatus.ANSWERED) {
+                callStatus == 'answered';
+            } else if (aCallRecords[i].call_status == CallStatus.REJECTED) {
+                callStatus == 'rejected';
+            } else if (aCallRecords[i].call_status == CallStatus.CANCELLED) {
+                callStatus == 'cancelled';
+            }
+
+            callRecords.push({
+                user_id: aCallRecords[i].receivers_list[0].user_id,
+                first_name: aCallRecords[i].receivers_list[0].first_name,
+                last_name: aCallRecords[i].receivers_list[0].last_name,
+                calls: 1,
+                time: time,
+                call_type: callType,
+                call_channel: callChannel,
+                call_status: callStatus,
+                online_mode: aCallRecords[i].receivers_list[0].online_mode,
+                images: aCallRecords[i].receivers_list[0].images
+            });
+        }
+
+        return callRecords;
     }
 
     loadContactData(cat, subCat) {
@@ -459,7 +521,7 @@ export default class Index extends React.Component {
                     for (var key in data.contacts) {
                         letter = data.contacts[key].letter;
                         for (var subKey in data.contacts[key].users) {
-                            let type = data.contacts[key].users[subKey].contactType;
+                            let type = data.contacts[key].users[subKey].type;
                             if (type == 2) {
                                 usersSet.push(data.contacts[key].users[subKey]);
                             }
@@ -481,7 +543,7 @@ export default class Index extends React.Component {
                     for (var key in data.contacts) {
                         letter = data.contacts[key].letter;
                         for (var subKey in data.contacts[key].users) {
-                            let type = data.contacts[key].users[subKey].contactType;
+                            let type = data.contacts[key].users[subKey].type;
                             if (type == 1) {
                                 usersSet.push(data.contacts[key].users[subKey]);
                             }
@@ -560,7 +622,8 @@ export default class Index extends React.Component {
     }
 
     onPopupClose() {
-        this.setState({inProgressCall: false, minimizeBar: false});
+        this.state.bit6Call.hangup();
+        this.setState({inProgressCall: false, minimizeBar: false, bit6Call: null});
     }
 
     onDialing(user, callType) {
@@ -574,7 +637,7 @@ export default class Index extends React.Component {
         return (
             <div className="rw-contact-menu sub-menu">
                 <div className={(subCat == "all") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
-                    this.loadContactData("recent", "all")
+                    this.getCallRecords("recent", "all")
                 }}>All <span className="selector"></span></div>
                 <div className={(subCat == "missed") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
                     this.loadContactData("recent", "missed")
@@ -618,20 +681,24 @@ export default class Index extends React.Component {
         return (
             <div className="rw-contact-menu sub-menu">
                 <div className={(subCat == "online") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
-                    this.loadContactData("status", "online")
+                    this.getContactsByStatus("status", "online")
                 }}>Online <span className="selector"></span></div>
                 <div className={(subCat == "busy") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
-                    this.loadContactData("status", "busy")
-                }}>Busy <span className="selector"></span></div>
+                    this.getContactsByStatus("status", "work_mode")
+                }}>Work-Mode <span className="selector"></span></div>
             </div>
         )
     }
 
     onUserStateUpdate(mode) {
+        this.refs.overlay.hide();
         this.setState({userStatus: mode, isStatusVisible: false});
 
         CallCenter.updateUserMode(mode).done(function (data) {
-            CallCenter.changeUserMode(mode);
+            if (data.status.code == 200) {
+                Session.updateSession('prg_lg', 'online_mode', data.onlineMode);
+                CallCenter.changeUserMode(data.onlineMode);
+            }
         });
     }
 
@@ -652,42 +719,48 @@ export default class Index extends React.Component {
     headerNav() {
         let mainCat = this.state.activeMainCat;
         let subCat = this.state.activeSubCat;
-                
+
+        const popoverClickRootClose = (
+            <Popover id="popover-trigger-click-root-close" className="user-status-popover">
+                <section className="cc-online-status-popup">
+                    <div className="status-type" onClick={(event)=> {
+                        this.onUserStateUpdate(UserMode.ONLINE.VALUE)
+                    }}>
+                        <span className="status online"></span>
+                        <p className="type">{UserMode.ONLINE.TITLE}</p>
+                    </div>
+                    <div className="status-type" onClick={(event)=> {
+                        this.onUserStateUpdate(UserMode.WORK_MODE.VALUE)
+                    }}>
+                        <span className="status work-mode"></span>
+                        <p className="type">{UserMode.WORK_MODE.TITLE}</p>
+                    </div>
+                    <div className="status-type" onClick={(event)=> {
+                        this.onUserStateUpdate(UserMode.OFFLINE.VALUE)
+                    }}>
+                        <span className="status offline"></span>
+                        <p className="type">{UserMode.OFFLINE.TITLE}</p>
+                    </div>
+                    <div className="mood-msg status-type">
+                        <span className="status addIcon"></span>
+                        <p>Edit Mood Message</p>
+                    </div>
+                </section>
+            </Popover>
+        );
+
         return (
             <div className="inner-header clearfix">
                 <div className="col-sm-6 user-status">
                     <div className="image-wrapper">
                         <img
-                            src={(this.state.loggedUser.hasOwnProperty('profile_image') && this.state.loggedUser.profile_image) ? 
-                            this.state.loggedUser.profile_image : "/images/default-profile-pic.png"}/>
-                        {(!this.state.isStatusVisible) ?
+                            src={(this.state.loggedUser.hasOwnProperty('profile_image') && this.state.loggedUser.profile_image) ?
+                                this.state.loggedUser.profile_image : "/images/default-profile-pic.png"}/>
+                        <OverlayTrigger ref="overlay" trigger="click" rootClose placement="right"
+                                        overlay={popoverClickRootClose}>
                             <span className={"status user-mode " + this.getUserStatusClass(this.state.userStatus)}
                                   onClick={this.onUserStatusClick.bind(this)}></span>
-                            :
-                            <section className="cc-online-status-popup">
-                                <div className="status-type" onClick={(event)=> {
-                                    this.onUserStateUpdate(UserMode.ONLINE.VALUE)
-                                }}>
-                                    <span className="status online"></span>
-                                    <p className="type">{UserMode.ONLINE.TITLE}</p>
-                                </div>
-                                <div className="status-type" onClick={(event)=> {
-                                    this.onUserStateUpdate(UserMode.WORK_MODE.VALUE)
-                                }}>
-                                    <span className="status work-mode"></span>
-                                    <p className="type">{UserMode.WORK_MODE.TITLE}</p>
-                                </div>
-                                <div className="status-type" onClick={(event)=> {
-                                    this.onUserStateUpdate(UserMode.OFFLINE.VALUE)
-                                }}>
-                                    <span className="status offline"></span>
-                                    <p className="type">{UserMode.OFFLINE.TITLE}</p>
-                                </div>
-                                <div className="mood-msg">
-                                    <p>Edit Mood Message</p>
-                                </div>
-                            </section>
-                        }
+                        </OverlayTrigger>
                     </div>
                     <div className="name-wrapper">
                         <p className="name">{this.state.loggedUser.first_name + " " + this.state.loggedUser.last_name}</p>
@@ -732,62 +805,72 @@ export default class Index extends React.Component {
         )
     }
 
-    // Let's say you want to display the video elements in DOM element '#container'
-    // Get notified about video elements to be added or removed
-    // v - video element to add or remove
-    // d - Dialog - call controller. null for a local video feed
-    // op - operation. 1 - add, 0 - update, -1 - remove
-    onVideoCall(v, d, op) {
-        console.log("====== video call ======");
+    startOutgoingCall(oTargetUser, callMode) {
+        console.log(oTargetUser);
+        if (oTargetUser.type == ContactType.INDIVIDUAL) {
 
-        // TODO Please change the container name for popup container
-        var vc = $('#webcamStage');
-        if (op < 0) {
-            vc[0].removeChild(v);
-        }
-        else if (op > 0) {
-            v.setAttribute('class', d ? 'remote' : 'local');
-            vc.append(v);
-        }
-        // Total number of video elements (local and remote)
-        var n = vc[0].children.length;
-        // Display the container if we have any video elements
-        if (op != 0) {
-            vc.toggle(n > 0);
+            let opts = {
+                audio: true,
+                video: false,
+                screen: false
+            };
+
+            console.log(callMode);
+
+            if (callMode == CallChannel.VIDEO) {
+                opts.video = true;
+                this.setState({callMode: CallChannel.VIDEO});
+            } else {
+                this.setState({callMode: CallChannel.AUDIO});
+            }
+
+            // Start the outgoing call
+            let to = CallCenter.getBit6Identity(oTargetUser);
+            var c = this.b6.startCall(to, opts);
+
+            this.attachCallEvents(c);
+
+            this.callRecord.contact = oTargetUser;
+            this.callRecord.callChannel = this.state.callMode;
+            this.callRecord.targets.push({user_id: oTargetUser.user_id});
+            this.callRecord.dialedAt = new Date().toISOString();
+
+            /* CallCenter.addCallRecord(this.callRecord).done(function (oData) {
+             // console.log(oData);
+             });*/
+
+            c.connect(opts);
+
+            this.setState({inProgressCall: true, targetUser: oTargetUser, bit6Call: c});
+        } else {
+            let _this = this;
+
+            CallCenter.getGroupMembers(oTargetUser._id).done(function (Group) {
+                Group.type = ContactType.GROUP;
+
+                var bit6Call = {
+                    options: {video: false, audio: false},
+                    remoteOptions: {video: false}
+                };
+
+                var GroupMembers = Group.members.reduce(function (members, member) {
+                    if (member.user_id != _this.state.loggedUser.id) {
+                        members.push(member);
+                    }
+
+                    return members;
+                }, []);
+
+                Group.members = GroupMembers;
+
+                _this.setState({inProgressCall: true, targetUser: Group, bit6Call: bit6Call});
+            });
         }
     }
 
-    startOutgoingCall(oTargetUser, callMode) {
-        // Outgoing call params
-        let opts = {
-            audio: true,
-            video: false,
-            screen: false
-        };
+    startGroupCall() {
 
-        if (callMode == CallChannel.VIDEO) {
-            opts.video = true;
-            this.setState({callMode: CallChannel.VIDEO});
-        } else {
-            this.setState({callMode: CallChannel.AUDIO});
-        }
-
-        // Start the outgoing call
-        let to = CallCenter.getBit6Identity(oTargetUser);
-        var c = this.b6.startCall(to, opts);
-        this.attachCallEvents(c);
-
-        this.callRecord.contact = oTargetUser;
-        this.callRecord.callChannel = this.state.callMode;
-        this.callRecord.targets.push({user_id: oTargetUser.user_id});
-
-        c.connect(opts);
-
-        this.setState({inProgressCall: true});
-        this.setState({targetUser: oTargetUser});
-        console.log("===== startOutgoingCall ===");
-        console.log(c);
-    };
+    }
 
     // Attach call state events to a RtcDialog
     attachCallEvents(c) {
@@ -795,39 +878,36 @@ export default class Index extends React.Component {
 
         // Call progress
         c.on('progress', function () {
-            _this.callRecord.dialedAt = new Date().toISOString();
-
-            CallCenter.addCallRecord(_this.callRecord).done(function (oData) {
-                console.log(oData);
-            });
+            console.log(c);
+            _this.setState({bit6Call: c});
         });
 
         // Number of video feeds/elements changed
         c.on('videos', function () {
-            console.log('video');
             console.log(c);
+            _this.setState({bit6Call: c});
             // TODO show video call details in popup
         });
 
         // Call answered
         c.on('answer', function () {
-            console.log('answered');
             console.log(c);
+            _this.setState({bit6Call: c});
             // TODO show timer , call buttons
         });
+
         // Error during the call
         c.on('error', function () {
-            console.log('error');
             console.log(c);
+            _this.setState({bit6Call: c});
             // TODO show call error in popup
         });
+
         // Call ended
         c.on('end', function () {
             console.log('end');
             console.log(c);
-
-            // _this.setState({inProgressCall: false, targetUser: null, callMode: CallChannel.AUDIO});
-
+            _this.setState({inProgressCall: false, targetUser: null, callMode: CallChannel.AUDIO});
             // TODO show call end details in popup
         });
     }
@@ -853,6 +933,22 @@ export default class Index extends React.Component {
 
     onPopupMaximize() {
         this.setState({inProgressCall: true, minimizeBar: false});
+    }
+
+    toggleMic(bMic) {
+        var oCall = this.state.bit6Call;
+        oCall.connect({audio: bMic});
+        this.setState({callMode: (bMic) ? CallChannel.VIDEO : CallChannel.AUDIO, bit6Call: oCall});
+    }
+
+    toggleVideo(bVideo) {
+        var oCall = this.state.bit6Call;
+        oCall.connect({video: bVideo});
+        this.setState({callMode: (bVideo) ? CallChannel.VIDEO : CallChannel.AUDIO, bit6Call: oCall});
+    }
+
+    toggleSpeaker() {
+
     }
 
     onSearch(e) {
@@ -881,7 +977,6 @@ export default class Index extends React.Component {
                 }
                 usersSet = [];
             }
-
         }
 
         if (val == "") {
@@ -959,9 +1054,11 @@ export default class Index extends React.Component {
                             <ModalContainer zIndex={9999}>
                                 <ModalDialog className="modalPopup">
                                     <CallModel
-                                        callMode={this.state.callMode}
+                                        bit6Call={this.state.bit6Call}
                                         loggedUser={this.state.loggedUser}
                                         targetUser={this.state.targetUser}
+                                        toggleMic={this.toggleMic.bind(this)}
+                                        toggleVideo={this.toggleVideo.bind(this)}
                                         closePopup={this.onPopupClose.bind(this)}
                                         minimizePopup={this.onMinimizePopup.bind(this)}/>
                                 </ModalDialog>

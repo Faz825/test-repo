@@ -139,7 +139,6 @@ var TimeLinePostHandler ={
                         notified_group : _post.group_id,
                         notified_post : _post.post_id
                     }
-                    console.log(_data);
 
                     Notification.saveNotification(_data, function (res) {
                         if (res.status == 200) {
@@ -154,9 +153,17 @@ var TimeLinePostHandler ={
 
                 if (typeof notification_id != 'undefined' && _post.visible_users.length > 0 && parseInt(_post.post_visible_mode) == PostVisibleMode.GROUP_MEMBERS) {
 
+                    var recipients = [];
+
+                    for(var i=0; i < _post.visible_users.length; i++){
+                        if(postData.created_by != _post.visible_users[i]){
+                            recipients.push(_post.visible_users[i]);
+                        }
+                    }
+
                     var _data = {
                         notification_id: notification_id,
-                        recipients: _post.visible_users
+                        recipients: recipients
                     };
                     NotificationRecipient.saveRecipients(_data, function (res) {
                         callBack(null);
@@ -235,7 +242,8 @@ var TimeLinePostHandler ={
             SubscribedPost = require('mongoose').model('SubscribedPost'),
             Notification = require('mongoose').model('Notification'),
             NotificationRecipient = require('mongoose').model('NotificationRecipient'),
-            _post = postData; console.log(_post);
+            _post = postData;
+            console.log(_post);
         _async.waterfall([
             //GET FRIEND LIST BASED ON POST OWNER
             function getPostVisibleUsers(callBack){
@@ -388,12 +396,17 @@ var TimeLinePostHandler ={
             },
             //GET SHARED POST FROM CACHE
             function getPostFromCache(callBack){
-                console.log("getPostFromCache")
-
                 var _pay_load = {
-                    q:"post_id:"+_post.shared_post_id,
+                    // q:"post_id:"+_post.shared_post_id,
+                    q:"post_type:"+_post.post_type,
                 }
-                Post.ch_getPost(_post.post_owner,_pay_load,function(csResultSet){
+
+                var getPostBy = _post.post_owner;
+                if(_post.post_type == PostType.GROUP_POST) {
+                    getPostBy = _post.group_id;
+                }
+
+                Post.ch_getPost(getPostBy,_pay_load,_post.post_type, function(csResultSet){
                     if(csResultSet.length >0){
                         var selected_post = csResultSet[0];
                         delete selected_post.date;
@@ -416,7 +429,7 @@ var TimeLinePostHandler ={
             },
             function saveInCache(callBack){
                 console.log("saveInCache")
-               Post.addToCache(_post.visible_users,_post,function(chData){ });
+                Post.addToCache(_post.visible_users,_post,function(chData){ });
                 callBack(null)
             },
             function finalizedPost(callBack){

@@ -166,8 +166,8 @@ PostSchema.statics.addNew = function(post,callBack){
  */
 PostSchema.statics.addToCache=function(users,data,callBack){
 
-
     if(data.post_type == PostType.GROUP_POST) {
+
         // creating the index using group id.
         var _cache_key = "idx_post:"+PostConfig.GROUP_PREFIX+data.group_id;
         var payLoad={
@@ -184,7 +184,6 @@ PostSchema.statics.addToCache=function(users,data,callBack){
     }
 
     for(var i=0;i<users.length;i++){
-
         var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+users[i];
         var payLoad={
             index:_cache_key,
@@ -212,11 +211,11 @@ PostSchema.statics.addToCache=function(users,data,callBack){
  */
 PostSchema.statics.ch_getPost= function(id,payload,type,callBack){
     var _this = this;
+
     var _cache_key = "idx_post:"+PostConfig.CACHE_PREFIX+id;
     if(type == PostType.GROUP_POST) {
         _cache_key = "idx_post:"+PostConfig.GROUP_PREFIX+id;
     }
-
     var query={
         q:payload.q,
         index:_cache_key
@@ -426,13 +425,13 @@ PostSchema.statics.postList=function(userId,posts,callBack){
     var _this = this,
         _async = require('async'),
         Comment = require('mongoose').model('Comment'),
+        Groups =  require('mongoose').model('Groups'),
         Like =require('mongoose').model('Like');
 
     var a =0;
 
     _async.each(posts,
         function(post,callBack){
-            //console.log(post);
             var _post = _this.formatPost(post),
             _created_date = _post.date.time_stamp;
 
@@ -452,6 +451,18 @@ PostSchema.statics.postList=function(userId,posts,callBack){
                         _post['share_count'] = sharedCount;
                         callBack(null);
                     });
+                },
+                function getSharedCount(callBack) {
+                    if(_post.group_id != null) {
+                        Groups.getGroup({_id : _post.group_id }, function (groupResult) {
+                            if(groupResult.status == 200) {
+                                _post['group'] = groupResult.group[0];
+                            }
+                            callBack(null);
+                        });
+                    } else {
+                        callBack(null);
+                    }
                 },
                 function getCommentCount(callBack) {
                    //GET COMMENT COUNT
@@ -587,10 +598,9 @@ PostSchema.statics.formatPost=function(postData){
         lng:(postData.lng)?postData.lng:"",
         life_event:(postData.life_event)?postData.life_event:"",
         upload:(postData.has_attachment)?postData.upload:[],
-        shared_post:(postData.shared_post)?postData.shared_post:""
-
+        shared_post:(postData.shared_post)?postData.shared_post:"",
+        group_id:(postData.group_id)?postData.group_id:null,
     }
-
     return outPut;
 };
 

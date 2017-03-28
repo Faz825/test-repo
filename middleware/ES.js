@@ -43,11 +43,9 @@ var ES = {
         this.esClient.index(_esData, function (error, response) {
             if (error)
                 console.log('===============================================');
-                console.log(error);
+            console.log(error);
 
             callBack(response);
-
-
         });
     },
     /**
@@ -88,13 +86,27 @@ var ES = {
      */
     search: function (payLoad, callBack) {
         var search_param = {
-                q: payLoad.q,
                 size: 1000
             },
             _this = this;
 
         if (typeof payLoad.index != "undefined") {
             search_param['index'] = payLoad.index
+        }
+
+        if (typeof payLoad.id != "undefined") {
+            search_param['id'] = payLoad.id
+        }
+
+        if (typeof payLoad.q != "undefined") {
+            search_param['q'] = payLoad.q
+        }
+
+        if (typeof payLoad.sort != "undefined") {
+            search_param['sort'] = payLoad.sort
+        }
+        if (typeof payLoad.type != "undefined") {
+            search_param['type'] = payLoad.type
         }
 
         this.esClient.search(search_param).then(function (resp) {

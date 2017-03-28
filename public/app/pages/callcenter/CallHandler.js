@@ -4,7 +4,7 @@ import Session from '../../middleware/Session';
 import CallCenter from '../../middleware/CallCenter';
 import IncomingCall from './IncomingCall';
 import CallModel from './CallModel';
-import {CallType} from '../../config/CallcenterStats';
+import {CallType, CallChannel} from '../../config/CallcenterStats';
 
 export default class CallHandler extends React.Component {
     constructor(props) {
@@ -34,8 +34,6 @@ export default class CallHandler extends React.Component {
 
         let _this = this;
 
-        //  console.log(getContacts);
-
         getContacts.done(function (data) {
             _this.setState({contacts: data.contacts});
         });
@@ -61,14 +59,20 @@ export default class CallHandler extends React.Component {
     onVideoCall(v, d, op) {
         console.log("====== video call ======");
 
-        // TODO Please change the container name for popup container
         var vc = $('#webcamStage');
+
         if (op < 0) {
             vc[0].removeChild(v);
+            $('.avatar').show();
         }
+
         else if (op > 0) {
             v.setAttribute('class', d ? 'remote' : 'local');
             vc.append(v);
+
+            if ($(v).hasClass('remote')) {
+                $('.avatar').hide();
+            }
         }
         // Total number of video elements (local and remote)
         var n = vc[0].children.length;
@@ -76,6 +80,8 @@ export default class CallHandler extends React.Component {
         if (op != 0) {
             vc.toggle(n > 0);
         }
+
+        //  this.setState({bit6Call: d});
     }
 
     onIncomingCall(c, b6) {
@@ -88,13 +94,6 @@ export default class CallHandler extends React.Component {
             let _callType = CallCenter.getCallType(c);
 
             let targetUser = this.getContactBySlug(c.other);
-
-            console.log(targetUser);
-
-            // Get caller details
-            // let cf = b6.getNameFromIdentity(c.other);
-            // let title_array = cf.split('proglobe');
-            // let title = title_array[1];
 
             this.setState({inComingCall: true, callMode: _callType, targetUser: targetUser, bit6Call: c});
 
@@ -134,20 +133,6 @@ export default class CallHandler extends React.Component {
         this.answerCall(c, opts);
     }
 
-
-    loadCallerProfile(title) {
-        $.ajax({
-            url: '/get-profile/' + title,
-            method: "GET",
-            dataType: "JSON",
-            headers: {'prg-auth-header': this.state.loggedUser.token}
-        }).done(function (data) {
-            if (data.status.code == 200 && data.profile_data != null) {
-                this.callerProfile = data.profile_data;
-            }
-        }.bind(this));
-    }
-
     checkWorkMode() {
         let _messages = false;
 
@@ -167,41 +152,43 @@ export default class CallHandler extends React.Component {
 
     // Attach call state events to a RtcDialog
     attachCallEvents(c) {
+        var _this = this;
+
         // Call progress
         c.on('progress', function () {
-            // TODO show call progress details in popup
+            console.log(c);
+            _this.setState({bit6Call: c});
         });
+
         // Number of video feeds/elements changed
         c.on('videos', function () {
+            console.log(c);
+            _this.setState({bit6Call: c});
             // TODO show video call details in popup
         });
+
         // Call answered
         c.on('answer', function () {
-            console.log('answered');
+            console.log(c);
+            _this.setState({bit6Call: c});
             // TODO show timer , call buttons
         });
+
         // Error during the call
         c.on('error', function () {
+            console.log(c);
+            _this.setState({bit6Call: c});
             // TODO show call error in popup
         });
+
         // Call ended
         c.on('end', function () {
+            console.log('end');
+            console.log(c);
+            _this.setState({inProgressCall: false, targetUser: null, callMode: CallChannel.AUDIO});
+
             // TODO show call end details in popup
         });
-    }
-
-    loadMyConnections() {
-        $.ajax({
-            url: '/connection/me',
-            method: "GET",
-            dataType: "JSON",
-            headers: {'prg-auth-header': this.state.loggedUser.token}
-        }).done(function (data) {
-            if (data.status.code == 200) {
-                this.my_connections = data.my_con;
-                this.setState({my_connections: this.my_connections});
-            }
-        }.bind(this));
     }
 
     notificationDomIdForConversation(c) {
@@ -228,17 +215,17 @@ export default class CallHandler extends React.Component {
     };
 
     answerAudioMode() {
-        this.setState({inComingCall: false, inProgressCall: true, audioMode: false, videoMode: true});
-
         let c = this.state.bit6Call;
         c.connect({audio: true, video: false});
+        this.attachCallEvents(c);
+        this.setState({inComingCall: false, inProgressCall: true, audioMode: false, videoMode: true, bit6Call: c});
     }
 
     answerVideoMode() {
-        this.setState({inComingCall: false, inProgressCall: true, audioMode: true, videoMode: false});
-
         let c = this.state.bit6Call;
         c.connect({audio: true, video: true});
+        this.attachCallEvents(c);
+        this.setState({inComingCall: false, inProgressCall: true, audioMode: true, videoMode: false, bit6Call: c});
     }
 
     hangUpCall() {
@@ -252,7 +239,23 @@ export default class CallHandler extends React.Component {
     }
 
     onPopupClose() {
-        this.setState({inProgressCall: false, minimizeBar: false});
+        this.state.bit6Call.hangup();
+    }
+
+    toggleMic(bMic) {
+        var oCall = this.state.bit6Call;
+        oCall.connect({audio: bMic});
+        this.setState({callMode: (bMic) ? CallChannel.VIDEO : CallChannel.AUDIO, bit6Call: oCall});
+    }
+
+    toggleVideo(bVideo) {
+        var oCall = this.state.bit6Call;
+        oCall.connect({video: bVideo});
+        this.setState({callMode: (bVideo) ? CallChannel.VIDEO : CallChannel.AUDIO, bit6Call: oCall});
+    }
+
+    toggleSpeaker() {
+
     }
 
     componentDidMount() {
@@ -290,9 +293,11 @@ export default class CallHandler extends React.Component {
                     <ModalContainer zIndex={9999}>
                         <ModalDialog className="modalPopup">
                             <CallModel
-                                callMode={this.state.callMode}
+                                bit6Call={this.state.bit6Call}
                                 loggedUser={this.state.loggedUser}
                                 targetUser={this.state.targetUser}
+                                toggleMic={this.toggleMic.bind(this)}
+                                toggleVideo={this.toggleVideo.bind(this)}
                                 closePopup={this.onPopupClose.bind(this)}
                                 minimizePopup={this.onMinimizePopup.bind(this)}
                             />

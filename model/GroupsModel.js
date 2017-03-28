@@ -301,6 +301,7 @@ GroupsSchema.statics.bindNotificationData = function(notificationObj, callBack){
     this.getGroupById(notificationObj.group_id,function(groupData){
 
         notificationObj['group_name'] = groupData.name;
+        notificationObj['name_prefix'] = groupData.name_prefix;
 
         callBack(notificationObj);
     });
@@ -324,9 +325,10 @@ GroupsSchema.statics.updateGroups = function(filter, value, callBack){
             console.log("Error - An Error occured in group updating.");
             callBack({status:400,error:err});
         } else {
-            console.log(update);
             console.log("Success - The group updating is success.");
-            callBack({status:200, group:update});
+            _this.getGroupById(filter._id, function (r){
+                callBack({status:200, group:r});
+            });
         }
     });
 };
@@ -340,13 +342,7 @@ GroupsSchema.statics.updateGroups = function(filter, value, callBack){
 GroupsSchema.statics.addConnections = function(groupData, userId, callBack){
 
     var Connection = require('mongoose').model('Connection');
-    var connectionData = new Connection();
     var _async = require('async');
-    connectionData.connected_with = groupData._id;
-    connectionData.connected_with_type = ConnectedType.GROUP_CONNECTION;
-    connectionData.action_user_id = userId;
-    connectionData.status = ConnectionStatus.REQUEST_ACCEPTED;
-
     _async.waterfall([
         function createIndex(callBack) {
             // creates the group index
@@ -369,6 +365,11 @@ GroupsSchema.statics.addConnections = function(groupData, userId, callBack){
             groupData.members.forEach(function(member) {
 
                 // create connection in DB
+                var connectionData = new Connection();
+                connectionData.connected_group = groupData._id;
+                connectionData.connected_with_type = ConnectedType.GROUP_CONNECTION;
+                connectionData.action_user_id = userId;
+                connectionData.status = ConnectionStatus.REQUEST_ACCEPTED;
                 connectionData.user_id = member.user_id;
                 Connection.createConnection(connectionData, function(connectionResult) {
                     console.log("CREATE DB CONNECTION FOR "+ member.user_id.toString());
@@ -394,7 +395,6 @@ GroupsSchema.statics.addConnections = function(groupData, userId, callBack){
                     // create ES index with group id
                     ES.createIndex(groupPayLoad, function(resultSet){
                         console.log("ES INDEX IS CREATED FOR : " +ConnectionConfig.ES_INDEX_NAME+groupData._id);
-                        callBack(null, groupData);
                     });
                 });
 

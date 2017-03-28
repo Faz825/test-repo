@@ -340,9 +340,9 @@ export class DailyEvents extends React.Component {
                 return(
                     <li className={_this.isPending(event) == false ? "events clearfix" : "events pending"} key={key}>
                         {_this.isPending(event) == false ?
-                            <p className="item" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p>
+                            <div className="item" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></div>
                             :
-                            <p className="item pending" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p>
+                            <div className="item pending" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></div>
                         }
                     </li>
                 );
@@ -359,11 +359,10 @@ export class DailyEvents extends React.Component {
 
                 let contentState = convertFromRaw(event.description);
                 let htmlC = stateToHTML(contentState);
-
                 let _text = event.description.blocks[0].text;
                 return(
                     <li className={_this.isPending(event) == false ? "events clearfix" : "events pending"} key={key}>
-                        {_this.isPending(event) == false ? <p className="item" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p> : <p className="item pending" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p>}
+                        {_this.isPending(event) == false ? <div className="item" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></div> : <div className="item pending" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></div>}
                     </li>
                 );
             });
@@ -383,7 +382,7 @@ export class DailyEvents extends React.Component {
 
                 return(
                     <li className={_this.isPending(event) == false ? "events clearfix" : "events pending"} key={key}>
-                        {_this.isPending(event) == false ? <p className="item" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p> : <p className="item pending" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></p>}
+                        {_this.isPending(event) == false ? <div className="item" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></div> : <div className="item pending" dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></div>}
                     </li>
                 );
             });

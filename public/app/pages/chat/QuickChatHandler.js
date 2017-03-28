@@ -13,7 +13,7 @@ export default class QuickChatHandler extends React.Component{
         this.state= {
             chatWith:this.getUrl(),
             userLoggedIn : Session.getSession('prg_lg'),
-            my_connections:[],
+            my_connections:this.props.my_connections,
             chatWithUserName:"",
             unreadConversations:[],
             conversations:[],
@@ -34,7 +34,6 @@ export default class QuickChatHandler extends React.Component{
         this.msgDivIds = [];
         this.messages = [];
         this.checkChatWith = this.getUrl();
-        this.loadMyConnections();
 
         this.onBubbleClose = this.onBubbleClose.bind(this);
         this.setActiveBubbleId = this.setActiveBubbleId.bind(this);
@@ -43,16 +42,8 @@ export default class QuickChatHandler extends React.Component{
     };
 
     componentWillReceiveProps(nextProps) {
-        this.setState({bubbleList: nextProps.chatList, isNavHidden: nextProps.isNavHidden, activeBubbleId: nextProps.loadedChatBubbleId});
+        this.setState({bubbleList: nextProps.chatList, isNavHidden: nextProps.isNavHidden, activeBubbleId: nextProps.loadedChatBubbleId, my_connections: nextProps.my_connections});
         this.initChat(this.b6);
-    }
-
-    componentDidMount() {
-        //Chat.bit6AuthVerification(this.b6);
-
-        //Chat.initGroupChat(this.b6, null, null);
-        //Chat.getGroupById(this.b6, "ZU0pxrYOGiPTwWz3R8rpUx");
-        //Chat.addMemberToGroupChat(this.b6, null, "ZU0pxrYOGiPTwWz3R8rpUx");
     }
 
     initChat(b6){
@@ -369,19 +360,6 @@ export default class QuickChatHandler extends React.Component{
 
         }
 
-    }
-
-    loadMyConnections(){
-        $.ajax({
-            url: '/connection/me/unfriend',
-            method: "GET",
-            dataType: "JSON",
-            headers: { 'prg-auth-header':this.state.userLoggedIn.token }
-        }).done(function(data){
-            if(data.status.code == 200){
-                this.setState({my_connections:data.my_con});
-            }
-        }.bind(this));
     }
 
     loadRoute(url){

@@ -103,7 +103,6 @@ export default class Index extends React.Component{
                         this.addDefaultFolder();
                     } else{
                         this.loadFolders();
-                        this.loadGroupFolders();
                     }
                 }
             }.bind(this));
@@ -585,6 +584,12 @@ export default class Index extends React.Component{
 
     changeFolderType(_value) {
         this.setState({f_type: _value});
+
+        if(_value == "MY_FOLDER"){
+            this.loadFolders();
+        }else {
+            this.loadGroupFolders();
+        }
     }
 
     render(){

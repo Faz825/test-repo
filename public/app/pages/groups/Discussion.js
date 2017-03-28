@@ -14,6 +14,7 @@ import Toast from '../../components/elements/Toast';
 
 import RichTextEditor from '../../components/elements/RichTextEditor';
 import Lib    from '../../middleware/Lib';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 
 export default class Discussion extends React.Component{
 
@@ -37,7 +38,7 @@ export default class Discussion extends React.Component{
             showSave : false,
             descriptionMsg : "",
             descriptionMsgStatus : "warning",
-            showDesToast : false  
+            showDesToast : false
         };
 
         this.postType = 2; // [ PERSONAL_POST:1, GROUP_POST:2 ]
@@ -79,7 +80,7 @@ export default class Discussion extends React.Component{
 
         var data = {
             __group_id: this.currentGroup._id,
-            __posts_type: this.postType,
+            __post_type: this.postType,
             __pg: page,
             uname: this.state.uname,
             __own: "me"
@@ -102,8 +103,12 @@ export default class Discussion extends React.Component{
         });
     }
 
-    onPostSubmitSuccess() {
-        console.log("onPostSubmitSuccess");
+
+
+    onPostSubmitSuccess(data){
+        let _posts = this.state.posts;
+        _posts.unshift(data);
+        this.setState({posts:_posts});
     }
 
     onPostDeleteSuccess() {
@@ -141,14 +146,14 @@ export default class Discussion extends React.Component{
             }).done(function (data, text) {
                 if(data.status.code == 200){
                     this.setState({
-                        showSave : false, 
+                        showSave : false,
                         showDesToast: true,
                         descriptionMsg : "Saved the description successfully",
                         descriptionMsgStatus : 'success'
                     });
                 } else {
                     this.setState({
-                        showSave : false, 
+                        showSave : false,
                         showDesToast: true,
                         descriptionMsg : "Error in saving the description",
                         descriptionMsgStatus : 'warning'
@@ -177,32 +182,34 @@ export default class Discussion extends React.Component{
                     <div className="grp-desc panel">
                         <h3 className="panel-title">Description</h3>
                         <div className="desc"
-                            contentEditable={true}
-                            dangerouslySetInnerHTML={{__html: this.state.currentDescription}}
-                            onFocus={this.enableSaveDescription}
-                            onBlur={this.saveDescription}
-                            onInput={(event)=>{this.handleDescription(event)}}>
+                             contentEditable={true}
+                             dangerouslySetInnerHTML={{__html: this.state.currentDescription}}
+                             onFocus={this.enableSaveDescription}
+                             onBlur={this.saveDescription}
+                             onInput={(event)=>{this.handleDescription(event)}}>
                         </div>
                         {this.state.showSave ?
                             <span className="save-btn" onInput={()=>{this.saveDescription()}}>save</span>
                         : ''}
-                        {this.state.showDesToast ? 
-                            <Toast 
-                                msg={this.state.descriptionMsg} 
-                                onToastClose={this.onToastClose.bind(this)} 
+                        {this.state.showDesToast ?
+                            <Toast
+                                msg={this.state.descriptionMsg}
+                                onToastClose={this.onToastClose.bind(this)}
                                 type={this.state.descriptionMsgStatus}
                             />
-                        : ''}
+                            : ''}
                     </div>
                     <MembersWidget
+                        members={this.state.members}
                         randomMembers={this.state.randomMembers}
                         membersCount={this.state.membersCount}
                         currentGroup={this.state.currentGroup}
+                        onLoadMembers={this.props.onLoadMembers}
                     />
                     <CalendarWidget currentGroup={this.state.currentGroup} />
                 </div>
                 <div className="post-panel col-sm-8">
-                    <div className="post-holder">
+                    <div className="outer-wrapper clearfix">
                         <AddPostElement
                             workModeStyles={workmodeClass}
                             onPostSubmitSuccess={this.onPostSubmitSuccess.bind(this)}
@@ -221,6 +228,8 @@ export default class Discussion extends React.Component{
                             onPostDeleteSuccess = {this.onPostDeleteSuccess.bind(this)}
                             onLikeSuccess = {this.onLikeSuccess.bind(this)}
                             onLoadProfile = {this.onLoadProfile.bind(this)}
+                            postType={this.postType}
+                            groupId={this.state.currentGroup._id}
                         />
                     </div>
                 </div>
@@ -245,7 +254,7 @@ export class MembersWidget extends React.Component{
             user : user,
             randomMembers : this.props.randomMembers,
             membersCount : this.props.membersCount,
-            members : [],
+            members : this.props.members,
             group : group
         };
 
@@ -263,6 +272,10 @@ export class MembersWidget extends React.Component{
 
         if (nextProps.membersCount !== this.state.membersCount) {
             this.setState({ membersCount: nextProps.membersCount });
+        }
+
+        if (nextProps.members !== this.state.members) {
+            this.setState({ members: nextProps.members });
         }
 
         if (nextProps.currentGroup !== this.state.group) {
@@ -301,6 +314,13 @@ export class MembersWidget extends React.Component{
         var overflowCountStr = '+'+overflowCount.toString();
         var _this = this;
 
+        let i = (
+            <Popover id="popover-contained"  positionTop="150px" className="remove-member-popup">
+                <RemoveMemberPopup groupData={this.state.group} members={this.state.members}
+                                   randomMembers={this.state.randomMembers} onLoadMembers={this.props.onLoadMembers} />
+            </Popover>
+        );
+
         if(this.state.randomMembers.length > 0 ) {
             userBlocks = this.state.randomMembers.map(function(member,userKey){
 
@@ -321,7 +341,11 @@ export class MembersWidget extends React.Component{
         return (
             <div className="grp-members panel">
                 <div className="panel-header clearfix">
-                    <h3 className="panel-title">Group Members</h3>
+                    {(this.state.user.id == this.state.members.owner) ?
+                            <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                <h3 className="panel-title" style={{cursor: 'pointer'}}>Group Members</h3>
+                            </OverlayTrigger> :
+                            <h3 className="panel-title">Group Members</h3>}
                     <span className="mem-count">{this.state.membersCount} Members</span>
                 </div>
                 <div className="add-member invite-people clearfix">
@@ -465,6 +489,111 @@ export class CalendarWidget extends React.Component{
                         </ul>
                     </div>
                 </div>
+            </div>
+        );
+    }
+}
+
+export class RemoveMemberPopup extends React.Component{
+    constructor(props) {
+        super(props);
+
+        this.state={
+            user: Session.getSession('prg_lg'),
+            seeAll: false,
+            randomMembers: this.props.randomMembers,
+            members: this.props.members,
+            groupData: this.props.groupData
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+        // Basically, whenever you assign parent's props to a child's state
+        // the render method isn't always called on prop update
+        if (nextProps.randomMembers !== this.state.randomMembers) {
+            this.setState({ randomMembers: nextProps.randomMembers });
+        }
+
+        if (nextProps.members !== this.state.members) {
+            this.setState({ members: nextProps.members });
+        }
+
+        if (nextProps.groupData !== this.state.groupData) {
+            this.setState({ groupData: nextProps.groupData });
+        }
+
+    }
+
+    toggleMemberList(){
+        let _rql = this.state.seeAll;
+        this.setState({
+            seeAll: !_rql
+        });
+    }
+
+    onRemoveMember(userId){
+
+        let params = {
+            _group_id: this.state.groupData._id,
+            _member_id: userId
+        }
+
+        $.ajax({
+            url: '/group/remove-member',
+            method: "POST",
+            dataType: "JSON",
+            data: params,
+            headers: { 'prg-auth-header':this.state.user.token }
+        }).done( function (data, text) {
+            if(data.status.code == 200) {
+                this.props.onLoadMembers();
+            }
+        }.bind(this));
+    }
+
+    render(){
+
+        let _this = this;
+        let _members = this.state.randomMembers.map(function(member,key){
+            return (
+                <div className="member-item" key={key}>
+                    <div className="prof-img">
+                        <img src={member.profile_image} className="img-responsive img-circle"/>
+                    </div>
+                    <div className="members-preview">
+                        <h3 className="prof-name">{member.name}</h3>
+                    </div>
+                    {(_this.state.members.owner == member.user_id) ? null :
+                        <div className="controls">
+                            <button className="btn btn-decline" onClick={()=>_this.onRemoveMember(member.user_id)}>
+                                remove</button>
+                        </div>
+                    }
+                </div>
+            );
+        });
+
+        return (
+            <div className="popup-holder">
+                <section className="group-members-popover-holder">
+                    <div className="inner-wrapper">
+                        <div className="popover-header">
+                            <p className="group-members">group members</p>
+                            <p className="find-member">find member</p>
+                        </div>
+                        <div className={(this.state.seeAll) ? "members-list-holder see-all" : "members-list-holder"}>
+                            {_members}
+                        </div>
+
+                        {
+                            (_members.length > 4) ?
+                                <div className="popover-footer">
+                                    <p className="see-all" onClick={this.toggleMemberList.bind(this)}>{(this.state.seeAll)?"see less":"see all"}</p>
+                                </div> : null
+                        }
+                    </div>
+                </section>
             </div>
         );
     }

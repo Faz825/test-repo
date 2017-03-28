@@ -92,10 +92,13 @@ export default class GlobalSearch extends React.Component{
 
     renderSuggestion(suggestion) {
         console.log(suggestion);
-        let img = suggestion.images.profile_image.http_url;
+
+        let _default_img = "/images/default-profile-pic.png";
+        let _images = suggestion.images;
+        let img = _images.hasOwnProperty('profile_image') ? (_images.profile_image.hasOwnProperty('http_url') ? _images.profile_image.http_url : _default_img) : _default_img;
 
         if (typeof img == 'undefined'){
-            img = "/images/default-profile-pic.png";
+            img = _default_img;
         }
 
         return (

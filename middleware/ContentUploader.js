@@ -202,6 +202,10 @@ var ContentUploader ={
                 });
             },
             function saveCache(cdnReturn,callBack){
+
+                console.log("cdn return data");
+                console.log(cdnReturn);
+
                 if(cdnReturn != null && cdnReturn.status == 200){
 
                     var _cacheKey = payLoad.entity_tag+payLoad.entity_id;
@@ -238,8 +242,13 @@ var ContentUploader ={
      */
     getUploadFromTemp:function(payLoad,callBack){
         var _cacheKey = payLoad.entity_tag+payLoad.entity_id;
+
+        console.log("=== cache key ===");
+        console.log(_cacheKey);
+
         CacheEngine.getList(_cacheKey,0,-1,function(chData){
             callBack(chData.result)
+            console.log("cache key result");
         });
     },
 
@@ -256,30 +265,20 @@ var ContentUploader ={
 
         this.getUploadFromTemp(payLoad,function(tmpUploads){
 
-            console.log("ContentUploader - copyFromTempToDb - getUploadFromTemp - tmpUploads - ")
-            console.log(tmpUploads)
-
             _async.each(tmpUploads,
                 function(upload,callBack){
-                    console.log("UPLOAD ==> ")
-                    console.log(upload)
 
                     upload['entity_id'] = Util.toObjectId(payLoad.post_id);
 
                     _async.waterfall([
 
                         function copyVideoToActualBucket(callback){
-
-                            console.log("copyVideoToActualBucket - params - ")
-
                             var params = {
                                 Bucket : toBucket,
                                 CopySource : fromBucket+"/"+upload.file_name,
                                 Key : upload.file_name,
                                 ACL : 'public-read'
                             };
-
-                            console.log(params)
 
                             _this.s3.copyObject(params, function(err, data) {
                                 if (!err)
@@ -295,8 +294,6 @@ var ContentUploader ={
                         },
                         function copyThumbnailToActualBucket(callback){
 
-                            console.log("copyThumbnailToActualBucket - paramsThumb - ")
-
                             if(typeof upload.thumb_file_name != 'undefined' && upload.thumb_file_name != null){
                                 var paramsThumb = {
                                     Bucket : toBucket,
@@ -304,8 +301,6 @@ var ContentUploader ={
                                     Key : upload.thumb_file_name,
                                     ACL : 'public-read'
                                 };
-
-                                console.log(paramsThumb)
 
                                 _this.s3.copyObject(paramsThumb, function(err, data) {
                                     if (!err)
@@ -323,8 +318,6 @@ var ContentUploader ={
 
                         },
                         function saveDataToDB(callback){
-
-                            console.log("saveDataToDB")
 
                             //Add to Database
                             Upload.saveOnDb(upload,function(dbResultSet){

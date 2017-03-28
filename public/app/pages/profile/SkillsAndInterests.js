@@ -293,8 +293,8 @@ export class SkillsForm extends React.Component{
                                 removeSkill={this.removeSkill} />
                         </div>
                     </div>
-                    <button type="submit" className="btn btn-primary pg-btn-custom">Save</button>
                     <button type="button" className="btn btn-default pg-btn-custom" onClick={this.props.onFormClose}>Cancel</button>
+                    <button type="submit" className="btn btn-primary pg-btn-custom">Save</button>
                 </form>
             </div>
         );

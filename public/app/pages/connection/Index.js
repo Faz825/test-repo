@@ -38,14 +38,12 @@ export default class Index extends React.Component{
     loadFriendRequests(){
         $.ajax({
             url: '/connection/requests',
-            method: "GET",
+            method: "POST",
             dataType: "JSON",
             headers: { 'prg-auth-header':this.loggedUser.token },
-
+            data:{ page_count: 3},
         }).done(function(data){
             if(data.status.code == 200){
-
-
 
                 let _tmp_req_cons = [];
                 if( data.req_cons.length > 0){
@@ -64,9 +62,6 @@ export default class Index extends React.Component{
 
                 this.setState({friend_requests:_tmp_req_cons})
             }
-
-
-
         }.bind(this));
     }
     onAcceptFriendRequestSuccess(isAccept){
@@ -111,8 +106,6 @@ export default class Index extends React.Component{
 
         }
     }
-
-
 
 
     loadFriendSuggestions(){

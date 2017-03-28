@@ -36,7 +36,8 @@ export default class QuickChatBubble extends React.Component{
             isMinimized : false,
             isNavHidden: this.props.isNavHidden,
             chatData: this.props.chatData,
-            isActiveBubble: this.props.isActiveBubble
+            isActiveBubble: this.props.isActiveBubble,
+            my_connections: this.props.my_connections
 
         };
 
@@ -62,7 +63,7 @@ export default class QuickChatBubble extends React.Component{
             }
         }
         this.setState({messages:{}});
-        this.setState({messages:this.messages, isNavHidden: nextProps.isNavHidden, chatData: nextProps.chatData, isActiveBubble: nextProps.isActiveBubble});
+        this.setState({messages:this.messages, isNavHidden: nextProps.isNavHidden, chatData: nextProps.chatData, isActiveBubble: nextProps.isActiveBubble, my_connections: nextProps.my_connections});
     }
 
     //shouldComponentUpdate(nextProps, nextState) {
@@ -148,7 +149,7 @@ export default class QuickChatBubble extends React.Component{
                         sendChat={this.sendMsg.bind(this)}
                         setActiveBubbleId= {this.props.setActiveBubbleId}
                         isActiveBubble= {this.state.isActiveBubble}
-                        my_connections={this.props.my_connections}
+                        my_connections={this.state.my_connections}
                         setNewChatToList= {this.props.setNewChatToList}
                     />
                 </div>
@@ -174,7 +175,7 @@ export default class QuickChatBubble extends React.Component{
                         sendChat={this.sendMsg.bind(this)}
                         setActiveBubbleId= {this.props.setActiveBubbleId}
                         isActiveBubble= {this.state.isActiveBubble}
-                        my_connections={this.props.my_connections}
+                        my_connections={this.state.my_connections}
                         setNewChatToList= {this.props.setNewChatToList}
                     />
                 </div>
@@ -230,7 +231,8 @@ export class NewChatMessage extends React.Component{
             isActiveBubble: this.props.isActiveBubble,
             suggestions: [],
             suggestionsList: [],
-            value: ''
+            value: '',
+            my_connections: this.props.my_connections
         };
 
         this.onMinimiseClick = this.onMinimiseClick.bind(this);
@@ -241,7 +243,7 @@ export class NewChatMessage extends React.Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({minimized:nextProps.minimizeChat, conversations: nextProps.conv, messages: nextProps.messages, isActiveBubble: nextProps.isActiveBubble});
+        this.setState({minimized:nextProps.minimizeChat, conversations: nextProps.conv, messages: nextProps.messages, isActiveBubble: nextProps.isActiveBubble, my_connections: nextProps.my_connections});
     }
 
     onCloseClick(e){
@@ -284,8 +286,8 @@ export class NewChatMessage extends React.Component{
 
     onSuggestionsUpdateRequested({ value }) {
         this.setState({
-            suggestions: this.getSuggestions(value, this.props.my_connections),
-            suggestionsList : this.getSuggestions(value, this.props.my_connections)
+            suggestions: this.getSuggestions(value, this.state.my_connections),
+            suggestionsList : this.getSuggestions(value, this.state.my_connections)
         });
     }
 

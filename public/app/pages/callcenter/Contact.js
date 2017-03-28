@@ -24,34 +24,46 @@ export default class Contact extends React.Component {
 
         let mood, call_type;
 
-        if (contact.mood == UserMode.ONLINE) {
+        if (contact.online_mode == UserMode.ONLINE.VALUE) {
             mood = "online";
-        } else if (contact.mood == UserMode.WORK_MODE) {
-            mood = "busy";
+        } else if (contact.online_mode == UserMode.WORK_MODE.VALUE) {
+            mood = "work-mode";
         } else {
             mood = "offline";
         }
 
-        if (contact.contactType == ContactType.MULTI) {
+        if (contact.type == ContactType.MULTI) {
             call_type = "multi";
-        } else if (contact.contactType == ContactType.GROUP) {
+        } else if (contact.type == ContactType.GROUP) {
             call_type = "group";
         } else {
             call_type = "user";
+        }
+
+        let profilePic = null;
+
+        if (contact.type == 1 && contact.images.profile_image.http_url) {
+            profilePic = contact.images.profile_image.http_url;
+        } else if (contact.type == 1 && !contact.images.profile_image.http_url) {
+            profilePic = "images/default-profile-pic.png";
+        } else if (contact.type == 2 && contact.group_pic_link) {
+            profilePic = contact.group_pic_link;
+        } else {
+            profilePic = "images/group/dashboard/grp-icon.png";
         }
 
         return (
             <div className="contact-item">
                 <div className="col-sm-6">
                     <div className="image-wrapper">
-                        <img src={contact.images.profile_image.http_url}/>
-                        <span className={"status " + mood}></span>
+                        <img src={profilePic}/>
+                        {(contact.type == 1) ? <span className={"status " + mood}></span> : null}
                     </div>
                     <div className="name-wrapper">
                         <div className="name-holder">
-                            <p className="name">{contact.first_name + " " + contact.last_name}</p>
+                            <p className="name">{(contact.type == 1) ? contact.first_name + " " + contact.last_name : contact.name_prefix}</p>
                         </div>
-                        <p className="status">{mood}</p>
+                        <p className="status">{(contact.type == 1) ? mood : null}</p>
                     </div>
                     <div className={"type-icon contact-type " + call_type}>
                         <span></span>
@@ -60,16 +72,14 @@ export default class Contact extends React.Component {
                 <div className="col-sm-6">
                     <div className="call-ico-wrapper">
                         <button className="call-ico video" onClick={(event)=> {
-                            _this.handleClick(contact, "video")
+                            _this.handleClick(contact, CallChannel.VIDEO)
                         }}></button>
                         <button className="call-ico phone" onClick={(event)=> {
-                            _this.handleClick(contact, "audio")
+                            _this.handleClick(contact, CallChannel.AUDIO)
                         }}></button>
                     </div>
                 </div>
             </div>
         );
-
-
     }
 }

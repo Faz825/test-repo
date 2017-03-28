@@ -34,7 +34,7 @@ export default class ContactList extends React.Component {
                     </div>
                 )
             });
-        }else{
+        } else {
             usersList = (<h3 className="no-data">No contacts.</h3>);
         }
 

@@ -39,6 +39,11 @@ var ConnectionSchema = new Schema({
         ref: 'User',
         default: null
     },
+    connected_group: {
+        type: Schema.ObjectId,
+        ref: 'Groups',
+        default: null
+    },
     connected_with_type: {
         type: Number,
         required: true,
@@ -84,6 +89,24 @@ ConnectionSchema.statics.createConnection = function (connectionData, callBack) 
     });
 };
 
+
+/**
+ * Update connection
+ * @param criteria
+ * @param data to update
+ */
+ConnectionSchema.statics.updateConnection = function (criteria, _data, callBack) {
+
+    this.collection.update(criteria, {$set: _data}, {upsert: true, multi: false}, function (err, rsUpdate) {
+            if (!err) {
+                callBack(null);
+            } else {
+                console.log("user connection update error \n");
+                console.log(err);
+            }
+        })
+};
+
 ConnectionSchema.statics.sendConnectionRequest = function (user_id, connected_users, unconnected_users, callBack) {
     var _connected_users = [], now = new Date(), _this = this, _async = require('async');
     //REMOVE UNSELECTED CONNECTIONS
@@ -108,6 +131,7 @@ ConnectionSchema.statics.sendConnectionRequest = function (user_id, connected_us
                         {
                             user_id: Util.toObjectId(user_id),
                             connected_with: Util.toObjectId(connected_user.toObjectId())
+
                         }
                     ]
                 }
@@ -117,7 +141,8 @@ ConnectionSchema.statics.sendConnectionRequest = function (user_id, connected_us
                         connected_with: connected_user.toObjectId(),
                         created_at: now,
                         action_user_id: Util.toObjectId(user_id),
-                        status: ConnectionStatus.REQUEST_SENT
+                        status: ConnectionStatus.REQUEST_SENT,
+                        connected_with_type: ConnectedType.PERSONAL_CONNECTION
                     }
                 }, {upsert: true, multi: false}, function (err, rsUpdate) {
                     if (!err) {
@@ -162,7 +187,7 @@ ConnectionSchema.statics.getFriends = function (userId, status, callBack) {
 
     _async.waterfall([
         function getMyRequestAcceptedUsers(callBack) {
-            _this.find({user_id: userId, status: _status})
+            _this.find({user_id: userId, status: _status, connected_with_type: ConnectedType.PERSONAL_CONNECTION})
                 .exec(function (err, resultSet) {
                     if (!err) {
                         for (var a = 0; a < resultSet.length; a++) {
@@ -182,7 +207,7 @@ ConnectionSchema.statics.getFriends = function (userId, status, callBack) {
                 });
         },
         function getIAcceptedRequest(callBack) {
-            _this.find({connected_with: userId, status: _status})
+            _this.find({connected_with: userId, status: _status, connected_with_type: ConnectedType.PERSONAL_CONNECTION})
                 .exec(function (err, resultSet) {
                     if (!err) {
                         for (var a = 0; a < resultSet.length; a++) {
@@ -248,7 +273,7 @@ ConnectionSchema.statics.getFriendsCount = function (userId, callBack) {
 
     _async.waterfall([
         function getMyRequestAcceptedUsers(callBack) {
-            _this.count({user_id: userId, status: ConnectionStatus.REQUEST_ACCEPTED})
+            _this.count({user_id: userId, status: ConnectionStatus.REQUEST_ACCEPTED, connected_with_type: ConnectedType.PERSONAL_CONNECTION})
                 .exec(function (err, resultCount) {
                     if (!err) {
                         friendsCount = resultCount
@@ -261,7 +286,7 @@ ConnectionSchema.statics.getFriendsCount = function (userId, callBack) {
                 });
         },
         function getIAcceptedRequest(callBack) {
-            _this.count({connected_with: userId, status: ConnectionStatus.REQUEST_ACCEPTED})
+            _this.count({connected_with: userId, status: ConnectionStatus.REQUEST_ACCEPTED, connected_with_type: ConnectedType.PERSONAL_CONNECTION})
                 .exec(function (err, resultCount) {
                     if (!err) {
                         friendsCount = friendsCount + resultCount;
@@ -304,7 +329,8 @@ ConnectionSchema.statics.getConnectionRequests = function (criteria, callBack) {
 
     var _query = {
         connected_with: Util.toObjectId(criteria.user_id),
-        status: ConnectionStatus.REQUEST_SENT
+        status: ConnectionStatus.REQUEST_SENT,
+        connected_with_type: ConnectedType.PERSONAL_CONNECTION
     }
 
 
@@ -369,6 +395,7 @@ ConnectionSchema.statics.acceptConnectionRequest = function (criteria, callBack)
             var now = new Date();
             _this.update({
                 user_id: Util.toObjectId(criteria.sender_id),
+                connected_with_type: ConnectedType.PERSONAL_CONNECTION,
                 connected_with: Util.toObjectId(criteria.user_id)
             }, {
                 $set: {
@@ -453,6 +480,33 @@ ConnectionSchema.statics.acceptConnectionRequest = function (criteria, callBack)
 
 }
 
+
+/**
+ * Decline connection request
+ * Update the db connection status with REQUEST_BLOCKED
+ *
+ * @param criteria
+ * @param callBack
+ */
+ConnectionSchema.statics.declineConnectionRequest = function (criteria, callBack) {
+
+    var _this = this;
+    var now = new Date();
+    _this.update({
+        user_id: Util.toObjectId(criteria.sender_id),
+        connected_with: Util.toObjectId(criteria.user_id)
+    }, {
+        $set: {
+            status: ConnectionStatus.REQUEST_BLOCKED,
+            updated_at: now,
+            action_user_id: Util.toObjectId(criteria.user_id)
+        }
+    }, {upsert: false, multi: false}, function (err, rsUpdate) {
+        callBack({status: 200})
+    })
+
+}
+
 /**
  * Get My Connection
  * @param criteria
@@ -479,6 +533,7 @@ ConnectionSchema.statics.getMyConnection = function (criteria, callBack) {
                         q: "user_id:" + result.user_id,
                         index: 'idx_usr'
                     };
+
                     ES.search(query, function (sesResultSet) {
                         if (result.user_id != criteria.user_id) {
                             if (result.connected_at) {
@@ -501,6 +556,85 @@ ConnectionSchema.statics.getMyConnection = function (criteria, callBack) {
 }
 
 /**
+ * Get User Connections - Users, Groups
+ * @param criteria {Object} include search params needed for elastic search
+ * @param callBack {Object} return elastic search result
+ * **/
+ConnectionSchema.statics.getConnections = function (criteria, getConnCallback) {
+    var _async = require('async');
+
+    _async.waterfall([
+        function getUserConnections(callback) {
+            var _cache_key = ConnectionConfig.ES_INDEX_NAME + criteria.user_id.toString();
+            var query = {
+                q: criteria.q,
+                index: _cache_key
+            };
+
+            ES.search(query, function (esResultSet) {
+                callback(null, esResultSet.result);
+            });
+        },
+        function getEachUser(aConnections, callback) {
+            var formatted_users = [];
+
+            _async.each(aConnections, function (oResult, userCallback) {
+                var query = {
+                    q: "user_id:" + oResult.user_id,
+                    index: "idx_usr"
+                };
+
+                ES.search(query, function (sesResultSet) {
+                    if (oResult.user_id != criteria.user_id) {
+                        if (oResult.connected_at) {
+                            sesResultSet.result[0]['connected_at'] = oResult.connected_at;
+                            sesResultSet.result[0]['type'] = 1;
+                            sesResultSet.result[0]['contact_name'] = sesResultSet.result[0].first_name;
+                        }
+                        formatted_users.push(sesResultSet.result[0]);
+                    }
+                    userCallback();
+                });
+            }, function (error) {
+                error ? callback(error) : callback(null, formatted_users);
+            });
+        },
+        function getGroupConnections(aIndividualUsers, callback) {
+            var _cache_key = ConnectionConfig.ES_GROUP_INDEX_NAME + criteria.user_id.toString();
+            var query = {
+                q: criteria.q,
+                index: _cache_key
+            };
+
+            ES.search(query, function (sesResultSet) {
+                callback(null, aIndividualUsers, sesResultSet.result);
+            });
+        }, function getEachGroup(aUsers, aGroups, callback) {
+            var formatted_groups = [];
+
+            _async.each(aGroups, function (oGroup, groupCallback) {
+                var query = {
+                    q: '_id:' + oGroup._id,
+                    index: 'idx_group'
+                };
+
+                ES.search(query, function (sesResultSet) {
+                    sesResultSet.result[0]['type'] = 2;
+                    sesResultSet.result[0]['contact_name'] = sesResultSet.result[0].name_prefix;
+                    delete sesResultSet.result[0]['members'];
+                    formatted_groups.push(sesResultSet.result[0]);
+                    groupCallback();
+                });
+            }, function (error) {
+                error ? callback(error) : callback(null, aUsers.concat(formatted_groups));
+            });
+        }
+    ], function (error, aConnections) {
+        error ? getConnCallback({status: 400, error: error}) : getConnCallback({status: 200, data: aConnections});
+    });
+};
+
+/**
  * Get My Connection with Unfriend Users
  * @param criteria
  * @param callBack
@@ -517,7 +651,7 @@ ConnectionSchema.statics.getMyConnectionsBindUnfriendConnections = function (cri
             var query = {
                 q: criteria.q,
                 index: _cache_key
-            }
+            };
 
             ES.search(query, function (esResultSet) {
 
@@ -553,11 +687,13 @@ ConnectionSchema.statics.getMyConnectionsBindUnfriendConnections = function (cri
                 $or: [
                     {
                         connected_with: Util.toObjectId(criteria.user_id),
-                        status: ConnectionStatus.CONNECTION_UNFRIEND
+                        status: ConnectionStatus.CONNECTION_UNFRIEND,
+                        connected_with_type: ConnectedType.PERSONAL_CONNECTION
                     },
                     {
                         user_id: Util.toObjectId(criteria.user_id),
-                        status: ConnectionStatus.CONNECTION_UNFRIEND
+                        status: ConnectionStatus.CONNECTION_UNFRIEND,
+                        connected_with_type: ConnectedType.PERSONAL_CONNECTION
                     }
                 ]
             };
@@ -699,6 +835,7 @@ ConnectionSchema.statics.checkRequestSentReceived = function (i, other, callBack
 
     var criteria = {
         status: ConnectionStatus.REQUEST_SENT,
+        connected_with_type: ConnectedType.PERSONAL_CONNECTION,
         $or: [
             {$and: [{user_id: Util.toObjectId(i)}, {connected_with: Util.toObjectId(other)}]},
             {$and: [{user_id: Util.toObjectId(other)}, {connected_with: Util.toObjectId(i)}]}
@@ -735,11 +872,13 @@ ConnectionSchema.statics.unfriendUser = function (criteria, callBack) {
                     $or: [
                         {
                             user_id: Util.toObjectId(criteria.sender_id),
-                            connected_with: Util.toObjectId(criteria.user_id)
+                            connected_with: Util.toObjectId(criteria.user_id),
+                            connected_with_type: ConnectedType.PERSONAL_CONNECTION
                         },
                         {
                             user_id: Util.toObjectId(criteria.user_id),
-                            connected_with: Util.toObjectId(criteria.sender_id)
+                            connected_with: Util.toObjectId(criteria.sender_id),
+                            connected_with_type: ConnectedType.PERSONAL_CONNECTION
                         }
                     ]
                 }

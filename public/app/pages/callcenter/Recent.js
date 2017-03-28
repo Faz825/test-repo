@@ -24,10 +24,10 @@ export default class Recent extends React.Component {
 
         let mood;
 
-        if (contact.mood == UserMode.ONLINE) {
+        if (contact.online_mode == UserMode.ONLINE.VALUE) {
             mood = "online";
-        } else if (contact.mood == UserMode.WORK_MODE) {
-            mood = "busy";
+        } else if (contact.online_mode == UserMode.WORK_MODE.VALUE) {
+            mood = "work-mode";
         } else {
             mood = "offline";
         }

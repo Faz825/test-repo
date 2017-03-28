@@ -1412,6 +1412,7 @@ input[type=number]::-webkit-outer-spin-button {
 	width: 150px;
 	height: 150px;
 	position: relative;
+	background: #fff;
 }
 .proImgHolder .imageSelector{
 	position: absolute;
@@ -1708,6 +1709,9 @@ button.addEduInfo{
 	position: relative;;
 	z-index: 100;
 	width: 100%;
+}
+.form-area .btn-default{
+	margin-right: 5px;
 }
 .yearDropDownHolder{
 	overflow: hidden;

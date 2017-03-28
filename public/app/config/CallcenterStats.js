@@ -25,8 +25,14 @@ const CallStatus = {
 };
 
 const CallChannel = {
-    VIDEO: 1,
-    AUDIO: 2
+    "VIDEO": 1,
+    "AUDIO": 2
+};
+
+const Bit6State = {
+    "ANSWER": "got-answer",
+    "REQUEST": "req",
+    "REJECT": "got-bye"
 };
 
 export {UserMode, ContactType, CallStatus, CallType, CallChannel};

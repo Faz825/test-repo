@@ -21,7 +21,9 @@ class CallCenter {
     }
 
     bit6Auth() {
-        if (Session.getSession('prg_lg') != null) {
+        var authedUser = Session.getSession('prg_lg');
+
+        if (authedUser) {
             var _this = this;
             var oUser = Session.getSession('prg_lg');
 
@@ -40,6 +42,22 @@ class CallCenter {
                         _this.bit6SignUp(ident, pass, oUser);
                     } else {
                         _this.b6.session.displayName = oUser.first_name + " " + oUser.last_name;
+
+                        if (!_this.getBit6PrivateGroup(_this.b6.session.client.groups, authedUser)) {
+                            var opts = {
+                                meta: {
+                                    title: 'private_group_' + authedUser.user_name,
+                                    group_id: Config.BIT6_PRIVATE_GROUP_SLUG + '_' + authedUser.user_name
+                                }
+                            };
+
+                            _this.createPrivateGroup(opts, function (groupRes) {
+                                console.log(groupRes);
+                            });
+                        }
+
+                        console.log(_this.b6.session);
+
                         return true;
                     }
                 });
@@ -69,6 +87,17 @@ class CallCenter {
         });
     }
 
+    getGroupMembers(groupid) {
+        let _this = this;
+
+        return $.ajax({
+            url: '/contact/group-members',
+            method: "POST",
+            data: {group_id: groupid},
+            headers: {'prg-auth-header': _this.loggedUser.token}
+        });
+    }
+
     /**
      * @param ident - bit6 ident
      * @param pass - bit6 password
@@ -77,13 +106,44 @@ class CallCenter {
     bit6SignUp(ident, pass, oUser) {
         var _this = this;
 
+        var authedUser = Session.getSession('prg_lg');
+
         this.b6.session['signup']({'identity': ident, 'password': pass}, function (err) {
             if (err) {
                 return false;
             }
             else {
                 _this.b6.session.displayName = oUser.first_name + " " + oUser.last_name;
+
+                var opts = {
+                    meta: {
+                        title: 'private_group_' + authedUser.user_name,
+                        group_id: Config.BIT6_PRIVATE_GROUP_SLUG + '_' + authedUser.user_name
+                    }
+                };
+
+                _this.createPrivateGroup(opts, function (groupRes) {
+                    console.log(groupRes);
+                });
+
                 return true;
+            }
+        });
+    }
+
+    /**
+     * create private group for user
+     * @param groupData - group params object
+     * @param callBack - group creation callback
+     * **/
+    createPrivateGroup(groupData, callBack) {
+        this.b6.createGroup(groupData, function (error, group) {
+            if (error) {
+                console.log('error', error);
+                callBack({status: 400, error: error});
+            } else {
+                console.log('created group >>', group);
+                callBack({status: 200, data: group});
             }
         });
     }
@@ -93,6 +153,23 @@ class CallCenter {
      * **/
     getBit6Identity(oUser) {
         return Config.BIT6_IDENTITY_USER_SLUG + oUser.user_name;
+    }
+
+    /**
+     * get bit6 - private group_id of user
+     * @params groups - bit6 groups of the user
+     * @params user - authed user
+     * **/
+
+    getBit6PrivateGroup(groups, user) {
+        for (var key in groups) {
+            var group_id = groups[key].meta.group_id;
+
+            if (group_id == Config.BIT6_PRIVATE_GROUP_SLUG + '_' + user.user_name) {
+                return groups[key];
+            }
+        }
+        return false;
     }
 
     /**
