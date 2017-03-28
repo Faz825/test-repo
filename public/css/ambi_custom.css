@@ -1856,6 +1856,10 @@ header .chat-popover-holder .inner-wrapper .see-all{
     color: rgba(136, 136, 136, 0.57);
 }
 
+.model-body .tag-wrapper .time-wrapper .rdt .form-control{
+    padding: 6px 7px;
+}
+
 .tag-wrapper .time-wrapper .rdt .rdtPicker{
     width: 110px;
     padding: 0;

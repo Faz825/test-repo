@@ -663,16 +663,6 @@ export default class DayView extends Component {
                                             :
                                                 null
                                             }
-                                            { /* this.state.showTimePanelWindow ?
-                                                <TimePicker
-                                                    style={{ width: 100 }}
-                                                    showSecond={showSecond}
-                                                    onChange={this.handleTimeChange}
-                                                    placeholder="00:00"
-                                                />
-                                            :
-                                                null
-                                            */ }
                                         </div>
                                     </div>
                                     <div className={this.state.defaultType + " calender-input-type"}>
