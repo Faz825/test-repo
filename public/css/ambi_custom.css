@@ -437,7 +437,7 @@ a.rc-time-picker-panel-clear-btn {
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-date-wrapper h4 {
-		font-size: 1.1em;
+    font-size: 0.85em;
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper .input-items-wrapper li .menu-ico-group.active {
@@ -1920,5 +1920,5 @@ header .chat-popover-holder .inner-wrapper .see-all{
 }
 
 .workmode-popup-wrapper .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.selected .type-content .type-title{
-    background: #a6c74a;
+    color: #a6c74a;
 }

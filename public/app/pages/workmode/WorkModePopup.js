@@ -428,7 +428,7 @@ export default class WorkModePopup extends React.Component {
             <div className="popup-holder">
                 <div className="work-mode-popup-wrapper">
                     <div className="header-wrapper">
-                        <img src="images/work-mode/logo.png" alt="" className="logo"/>
+                        <img src="../images/work-mode/logo.png" alt="" className="logo"/>
                         <p className="header">work mode</p>
                     </div>
 
@@ -447,7 +447,7 @@ export default class WorkModePopup extends React.Component {
                                                disabled={this.state.timeBlockIsVisible}/>
                                         <label htmlFor="newsfeed-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/newsfeed.png" className="type-icon"/>
+                                                <img src="../images/work-mode/newsfeed.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">newsfeed</p>
                                                 </div>
@@ -465,7 +465,7 @@ export default class WorkModePopup extends React.Component {
                                                checked={(this.selectedList.includes("calls") || this.selectedList.includes("all"))? true : false }/>
                                         <label htmlFor="calls-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/calls.png" className="type-icon"/>
+                                                <img src="../images/work-mode/calls.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">calls</p>
                                                 </div>
@@ -482,7 +482,7 @@ export default class WorkModePopup extends React.Component {
                                                checked={(this.selectedList.includes("msg") || this.selectedList.includes("all"))? true : false }/>
                                         <label htmlFor="msg-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/messages.png" className="type-icon"/>
+                                                <img src="../images/work-mode/messages.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">messages</p>
                                                 </div>
@@ -500,7 +500,7 @@ export default class WorkModePopup extends React.Component {
                                                checked={(this.selectedList.includes("social_notifications") || this.selectedList.includes("all"))? true : false }/>
                                         <label htmlFor="social_notifications-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/social.png" className="type-icon"/>
+                                                <img src="../images/work-mode/social.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">social notifications</p>
                                                 </div>
@@ -519,7 +519,7 @@ export default class WorkModePopup extends React.Component {
                                                checked={(this.selectedList.includes("all_notifications") || this.selectedList.includes("all"))? true : false }/>
                                         <label htmlFor="notifications-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/notifications.png" className="type-icon"/>
+                                                <img src="../images/work-mode/notifications.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">all notifications</p>
                                                 </div>
@@ -536,7 +536,7 @@ export default class WorkModePopup extends React.Component {
                                                checked={(this.selectedList.includes("all"))? true : false }/>
                                         <label htmlFor="all-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/all.png" className="type-icon"/>
+                                                <img src="../images/work-mode/all.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">all</p>
                                                 </div>
