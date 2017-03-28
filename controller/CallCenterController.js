@@ -222,53 +222,64 @@ var CallCenterController = {
                         var aReceiverIds = [];
 
                         // TODO : Group call records in 2 hours range
+                        if (esCallRecords.length > 0) {
+                            esCallRecords.forEach(function (oRecord) {
+                                oRecord.receivers_list.forEach(function (oReceiver) {
+                                    if (aReceiverIds.indexOf(oReceiver.user_id) == -1) {
+                                        aReceiverIds.push(oReceiver.user_id);
+                                    }
+                                });
+                            });
 
-                        esCallRecords.forEach(function (oRecord) {
-                            oRecord.receivers_list.forEach(function (oReceiver) {
-                                if (aReceiverIds.indexOf(oReceiver.user_id) == -1) {
-                                    aReceiverIds.push(oReceiver.user_id);
+                            var aReceivers = [];
+
+                            callback(null, aReceiverIds, aReceivers, esCallRecords);
+                        } else {
+                            callback(null, null, null, null);
+                        }
+                    });
+                }, function getReceivers(aReceiverIds, aReceivers, aCallRecords, callback) {
+                    if (aReceiverIds) {
+                        _async.each(aReceiverIds, function (receiverId, getReceiverCallback) {
+
+                            var query = {
+                                q: 'user_id:' + receiverId,
+                                index: 'idx_usr'
+                            };
+
+                            ES.search(query, function (oUserResult) {
+                                aReceivers.push(oUserResult.result[0]);
+                                getReceiverCallback();
+                            });
+
+                        }, function (error) {
+                            error ? callback(error) : callback(null, aReceivers, aCallRecords);
+                        });
+                    } else {
+                        callback(null, null, null);
+                    }
+                }, function prepareCallRecords(aReceivers, aCallRecords, callback) {
+                    if (aReceivers) {
+                        aCallRecords.forEach(function (oCallRecord) {
+                            var aReceiverIds = [];
+
+                            oCallRecord.receivers_list.forEach(function (oReceiver) {
+                                aReceiverIds.push(oReceiver.user_id);
+                            });
+
+                            oCallRecord.receivers_list = [];
+
+                            aReceivers.forEach(function (oReceiver) {
+                                if (aReceiverIds.indexOf(oReceiver.user_id) != -1) {
+                                    oCallRecord.receivers_list.push(oReceiver);
                                 }
                             });
                         });
 
-                        var aReceivers = [];
-
-                        callback(null, aReceiverIds, aReceivers, esCallRecords);
-                    });
-                }, function getReceivers(aReceiverIds, aReceivers, aCallRecords, callback) {
-                    _async.each(aReceiverIds, function (receiverId, getReceiverCallback) {
-
-                        var query = {
-                            q: 'user_id:' + receiverId,
-                            index: 'idx_usr'
-                        };
-
-                        ES.search(query, function (oUserResult) {
-                            aReceivers.push(oUserResult.result[0]);
-                            getReceiverCallback();
-                        });
-
-                    }, function (error) {
-                        error ? callback(error) : callback(null, aReceivers, aCallRecords);
-                    });
-                }, function prepareCallRecords(aReceivers, aCallRecords, callback) {
-                    aCallRecords.forEach(function (oCallRecord) {
-                        var aReceiverIds = [];
-
-                        oCallRecord.receivers_list.forEach(function (oReceiver) {
-                            aReceiverIds.push(oReceiver.user_id);
-                        });
-
-                        oCallRecord.receivers_list = [];
-
-                        aReceivers.forEach(function (oReceiver) {
-                            if (aReceiverIds.indexOf(oReceiver.user_id) != -1) {
-                                oCallRecord.receivers_list.push(oReceiver);
-                            }
-                        });
-                    });
-
-                    callback(null, aCallRecords);
+                        callback(null, aCallRecords);
+                    } else {
+                        callback(null, []);
+                    }
                 }
             ], function (error, aCallRecords) {
                 var outPut = {};
