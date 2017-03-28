@@ -175,7 +175,7 @@ const CommentItem =({comment,unformattedComment,loggedUser,onCommentDelete}) =>{
                 <div className="comment-inner-wrapper">
                     <p className="comment-text">{comment.comment}</p>
                     {
-                        (comment.attachment)?
+                        (comment.attachment.length >= 1)?
                             <div className="pg-newsfeed-post-upload-image">
                                 <img src = {comment.attachment.http_url}/>
                             </div>

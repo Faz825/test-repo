@@ -47,6 +47,18 @@ body{
 	border: 1px solid #dddddd;
 }
 
+.grp-members .invite-people #react-autowhatever-1{
+	width: 100%;
+	float: left;
+	position: absolute;
+	top: 35px;
+	left: auto;
+	overflow-y: scroll;
+	z-index: 9999;
+	background: #ffffff;
+	border: 1px solid #dddddd;
+}
+
 .invite-people .suggestion-item{
 	overflow: hidden;
 }
@@ -150,6 +162,10 @@ body{
 
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper {
     overflow: visible !important;
+}
+
+.group-container .group-content .sidebar .grp-members .all-members .mem-img{
+    overflow: hidden;
 }
 
 .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .close-btn {
@@ -490,6 +506,18 @@ a.rc-time-picker-panel-clear-btn {
 	white-space: nowrap;
 	width: 150px;
 	overflow: hidden;
+}
+
+.group-container .group-content .sidebar .grp-day-panel .event-task-holder .list .list-wrapper .list-item{
+    overflow: hidden;
+}
+
+.group-container .group-content .sidebar .grp-day-panel .event-task-holder .list .list-wrapper .list-item .time{
+    float: right;
+}
+
+.group-container .group-content .sidebar .grp-day-panel .event-task-holder .list {
+    width: 89%;
 }
 
 .calender-container .mini-calender-box > div.week > span.day.today{
@@ -1627,7 +1655,7 @@ body .modal-backdrop{
     width: 100%;
 }
 
-.group-container .group-content .event-task-holder ul li:before {
+/*.group-container .group-content .event-task-holder ul li:before {
     color: #00a6ef;
     content: "\f111";
     font-family: FontAwesome;
@@ -1646,7 +1674,7 @@ body .modal-backdrop{
     white-space: nowrap;
     width: 200px;
     overflow: hidden;
-}
+}*/
 
 .group-container .group-content .sidebar .grp-desc .desc {
     outline: none;

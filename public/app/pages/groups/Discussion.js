@@ -447,9 +447,9 @@ export class CalendarWidget extends React.Component{
         var tasks = [];
         this.state.events.map(function(event,key){
 			if(event.type == 1) {
-				events.push(<li>{event.plain_text}</li>);
+				events.push(<li className="list-item">{event.plain_text}<span className="time">{event.event_time}</span></li>);
 			} else {
-                tasks.push(<li>{event.plain_text}</li>);
+                tasks.push(<li className="list-item">{event.plain_text}</li>);
             }
 		});
 
@@ -462,31 +462,35 @@ export class CalendarWidget extends React.Component{
                         <span className="fa fa-angle-right next slide-btn" onClick={() => this.nextDay()}></span>
                     </div>
                 </div>
-                <div className="date-selected clearfix">
+                {/*<div className="date-selected clearfix">
                     <div className="date-wrapper pull-left">
                         <p className="day-name">{moment(this.state.currentDate).format('dddd')}</p>
                         <p className="day-num">{moment(this.state.currentDate).format('D')}</p>
                     </div>
                     <p className="month-name pull-right">{moment(this.state.currentDate).format('MMMM')}</p>
-                </div>
+                </div>*/}
                 <div className="event-task-holder">
-                    <div className="event-wrapper inner-wrapper">
+                    <div className="event-wrapper clearfix inner-wrapper">
                         <div className="title-holder clearfix">
                             <i className="fa fa-calendar task-icon" aria-hidden="true"></i>
                             <h3 className="title">Event</h3>
                         </div>
-                        <ul className="events-tasks-list events-list">
-                            {events}
-                        </ul>
+                        <div className="events-list list">
+                            <ul className="list-wrapper">
+                                {events}
+                            </ul>
+                        </div>
                     </div>
-                    <div className="task-wrapper inner-wrapper">
+                    <div className="task-wrapper clearfix inner-wrapper">
                         <div className="title-holder clearfix">
                             <span className="task-icon"></span>
                             <h3 className="title">Tasks</h3>
                         </div>
-                        <ul className="events-tasks-list tasks-list">
-                            {tasks}
-                        </ul>
+                        <div className="tasks-list list">
+                            <ul className="list-wrapper">
+                                {tasks}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
