@@ -116,7 +116,7 @@ class SinglePost extends React.Component{
             data:{__post_id:_this.props.postItem.post_id},
             headers: { 'prg-auth-header':_this.loggedUser.token },
             success: function (data, text) {
-                
+
                 var me = {
                     "name" : "You",
                     "profile_image" : "you",
@@ -549,14 +549,16 @@ class SinglePost extends React.Component{
                                                 onLoadProfile = {this.props.onLoadProfile}/>
                             </div>
                             <div className="user-name-container">
-                                <PostOwner post={_post}
-                                            profile={_profile}
-                                            onLoadProfile = {this.props.onLoadProfile}
-                                           loggedUser={this.loggedUser}/>
+                                <PostOwner
+                                    post={_post}
+                                    profile={_profile}
+                                    onLoadProfile = {this.props.onLoadProfile}
+                                    loggedUser={this.loggedUser}/>
 
-                                <SharedPostTitle post={_post}
-                                                    loggedUser={this.loggedUser}
-                                                    onLoadProfile = {this.props.onLoadProfile}/>
+                                <PostTitlePrefix
+                                    post={_post}
+                                    loggedUser={this.loggedUser}
+                                    onLoadProfile = {this.props.onLoadProfile}/>
 
                                 <span className="posted-time">{_post.date.time_a_go}</span>
                             </div>
@@ -819,7 +821,6 @@ const AddPostElementPopupText =({loggedUser,onContentAdd,onSubmitPost,btnEnabled
     )
 };
 
-
 const SharedPostTitle = ({loggedUser,post,onLoadProfile}) =>{
 
     if(post.post_mode == "SP"){
@@ -837,10 +838,36 @@ const SharedPostTitle = ({loggedUser,post,onLoadProfile}) =>{
         )
     }
     return (<span />);
-
-
 };
 
+const PostTitlePrefix = ({loggedUser,post, onLoadProfile}) =>{
+    
+    if(post.post_type == 2){
+        return (
+            <span className="user-title-wrapper">
+                <span className="shared-text">posted on</span>
+                <span className="user-name-container post-owner">
+                    <span className="name">{post.group.name}</span>
+                </span>
+            </span>
+        )
+    } else if(post.post_mode == "SP"){
+        return (
+            (post.created_by.user_id == post.shared_post.created_by.user_id)?
+                <span className="own-post-share">shared own post</span>
+                :
+                <span className="user-title-wrapper">
+                    <span className="shared-text">shared</span>
+                    <span className="user-name-container post-owner">
+                        <span className="name" onClick={()=>onLoadProfile(post.shared_post.created_by.user_name)}>{" "+post.shared_post.created_by.first_name + " " + post.shared_post.created_by.last_name + "'s"}</span>
+                        <span className="shared-text">post</span>
+                    </span>
+                </span>
+        )
+    }
+    return (<span />);
+
+};
 
 const PostContentBody = ({loggedUser,post})=>{
     if(post.post_mode == "LE"){

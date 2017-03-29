@@ -1804,6 +1804,21 @@ header .chat-popover-holder .inner-wrapper .see-all{
     margin: 7px 0 0;
 }
 
+.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .name,
+.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper,
+.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span {
+    float: none;
+    display: inline-block;
+}
+
+.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on {
+    float: left;
+}
+
+.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share {
+    margin-left: 5px;
+}
+
 .cover-container .cover-image .actions-wrapper .action-event{
     padding: 0px 10px 2px;
 }
