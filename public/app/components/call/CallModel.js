@@ -4,7 +4,7 @@
 
 import React from "react";
 import {Popover, OverlayTrigger} from 'react-bootstrap';
-import {CallType, Bit6CallState, CallChannel, ContactType} from '../../config/CallcenterStats';
+import {CallType, Bit6CallState, CallChannel, ContactType, CallStage} from '../../config/CallcenterStats';
 import InputField from '../elements/InputField';
 
 export default class CallModel extends React.Component {
@@ -53,8 +53,9 @@ export default class CallModel extends React.Component {
 
         if (e.target.value.length >= 1) {
             for (var key in this.contactList) {
-                let uName = this.contactList[key].name;
+                let uName = this.contactList[key].first_name + ' ' + this.contactList[key].last_name;
                 if (uName.toLowerCase().indexOf(e.target.value) >= 0) {
+                    this.contactList[key].name = uName;
                     contactList.push(this.contactList[key]);
                 }
             }
@@ -106,6 +107,10 @@ export default class CallModel extends React.Component {
         }
     }
 
+    dialCall(){
+        this.props.dialCall();
+    }
+
     render() {
         let _this = this;
         let i = (
@@ -131,7 +136,7 @@ export default class CallModel extends React.Component {
             );
         });
 
-        console.log(this.state.callerList);
+        console.log(this.state.addToCallList);
 
         return (
             <div className="popup-holder">
@@ -183,8 +188,13 @@ export default class CallModel extends React.Component {
 
                                     <span className={(this.state.isSpeakerEnabled) ? "speaker" : "speaker active"}
                                     ></span>
+                                    {
+                                        (this.props.callStage == CallStage.DIAL_CALL) ?
+                                            <span className="hang-up" onClick={(e) => this.props.closePopup(e)}></span>
+                                            :
+                                            <span className="dial-call" onClick={(e) => this.dialCall(e)}></span>
+                                    }
 
-                                    <span className="hang-up" onClick={(e) => this.props.closePopup(e)}></span>
                                 </div>
                                 <p className="call-receiver-status">Dialling....</p>
                             </div>

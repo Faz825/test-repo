@@ -13,7 +13,7 @@ import NotificationPop from '../notifications/NotificationPop';
 import PubSub from 'pubsub-js';
 import Chat from '../../middleware/Chat';
 import VideoChatPopOver from '../chat/VideoChatPopOver';
-import {CallChannel, CallType, CallStatus, UserMode, ContactType} from '../../config/CallcenterStats';
+import {CallChannel, CallType, CallStatus, UserMode, ContactType, CallStage} from '../../config/CallcenterStats';
 import {Config} from '../../config/Config';
 import CallCenter from '../../middleware/CallCenter';
 import CallModel from '../../components/call/CallModel';
@@ -84,7 +84,8 @@ export default class AmbiLayout extends React.Component {
             targetUser: null, // Individual User or Group
             callInProgress: false,
             inComingCall: false,
-            callChannel: null
+            callChannel: null,
+            callStage: null
         };
 
         // Call Record
@@ -142,8 +143,6 @@ export default class AmbiLayout extends React.Component {
             }
 
         });
-
-
     }
 
     doVideoCall(callObj) {
@@ -391,17 +390,23 @@ export default class AmbiLayout extends React.Component {
 
         c.connect(opts);
 
-        this.setState({callInProgress: true, callChannel: Channel, targetUser: TargetUser, bit6Call: c});
+        this.setState({
+            callInProgress: true,
+            callChannel: Channel,
+            targetUser: TargetUser,
+            bit6Call: c,
+            callStage: CallStage.DIAL_CALL
+        });
     }
 
     startGroupCall(Group, Channel) {
 
     }
 
-    createGroupCall() {
+    createGroupCall(contact, callChannel) {
         let _this = this;
 
-        CallCenter.getGroupMembers(oTargetUser._id).done(function (Group) {
+        CallCenter.getGroupMembers(contact._id).done(function (Group) {
             Group.type = ContactType.GROUP;
 
             var bit6Call = {
@@ -419,7 +424,13 @@ export default class AmbiLayout extends React.Component {
 
             Group.members = GroupMembers;
 
-            _this.setState({callInProgress: true, targetUser: Group, bit6Call: bit6Call});
+            _this.setState({
+                callInProgress: true,
+                targetUser: Group,
+                bit6Call: bit6Call,
+                callChannel: callChannel,
+                callStage: CallStage.CREATE_CALL
+            });
         });
     }
 
@@ -616,6 +627,8 @@ export default class AmbiLayout extends React.Component {
                                         targetUser={this.state.targetUser}
                                         toggleMic={this.toggleMic.bind(this)}
                                         toggleVideo={this.toggleVideo.bind(this)}
+                                        callStage={this.state.callStage}
+                                        dialCall={this.startGroupCall.bind(this)}
                                         closePopup={this.onCloseCallModal.bind(this)}
                                         minimizePopup={this.onMinimizeCallModal.bind(this)}/>
                                 </ModalDialog>
