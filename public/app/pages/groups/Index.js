@@ -368,7 +368,7 @@ export class CreateStepTwo extends React.Component{
             });
         }
 
-        return (
+        /*return (
             <ModalContainer>
                 <ModalDialog className="modalPopup">
                     <div className="popup-holder">
@@ -439,6 +439,79 @@ export class CreateStepTwo extends React.Component{
                                     <button className="btn btn-default cancel-btn" onClick={this.props.handleClose}>Cancel</button>
                                     <button className="btn btn-default success-btn" onClick={this.handleCreate}>Create</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </ModalDialog>
+            </ModalContainer>
+        );*/
+
+        return (
+            <ModalContainer>
+                <ModalDialog className="modalPopup">
+                    <div className="popup-holder">
+                        <div className="create-group-popup">
+                            <div className="model-header">
+                                <h3 className="modal-title">Create a group</h3>
+                                <span className="close-icon" onClick={this.props.handleClose}></span>
+                            </div>
+                            <div className="model-body clearfix">
+                                <section className="folder-body">
+                                    <div className="form-group">
+                                        <label for="grpname">name your group</label>
+                                        <input type="text" className="form-control" id="grpname" onChange={this.setName}/>
+                                    </div>
+                                    <div className="form-group invite-people clearfix">
+                                        <label>invite some people</label>
+                                        <SearchMembersField
+                                            handleSearchUser={this.handleSearchUser}
+                                            placeholder=""
+                                            sharedWithIds={this.state.sharedWithIds}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label for="desc">enter a group description</label>
+                                        <textarea className="form-control" rows="5" id="desc" onChange={this.setDescription}></textarea>
+                                    </div>
+                                    <div className="form-group">
+                                        <p className="label">choose a colour</p>
+                                        <div className="color-palette">
+                                            <div className={this.state.groupColor == '#ed1e7a' ? 'color-block pink active' : 'color-block pink'} onClick={(color)=>{this.setColor('#ed1e7a')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#00a6ef' ? 'color-block light-blue active' : 'color-block light-blue'} onClick={(color)=>{this.setColor('#00a6ef')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#a6c74a' ? 'color-block light-green active' : 'color-block light-green'} onClick={(color)=>{this.setColor('#a6c74a')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#b21e53' ? 'color-block red active' : 'color-block red'} onClick={(color)=>{this.setColor('#b21e53')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#000f75' ? 'color-block dark-blue active' : 'color-block dark-blue'} onClick={(color)=>{this.setColor('#000f75')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#bfbfbf' ? 'color-block gray active' : 'color-block gray'} onClick={(color)=>{this.setColor('#bfbfbf')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#038247' ? 'color-block dark-green active' : 'color-block dark-green'} onClick={(color)=>{this.setColor('#038247')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#000000' ? 'color-block black active' : 'color-block black'} onClick={(color)=>{this.setColor('#000000')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <p className="label">Group icon</p>
+                                        <div className="btn-holder clearfix">
+                                            <button className="btn btn-upload"><GroupProfileImageUploader className="btn-default upload-btn btn" profileImgSrc={this.state.groupProfileImgSrc} imgUpdated={this.imgUpdated} />Upload New</button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div className="model-footer">
+                                <button className="btn btn-create-group" onClick={this.handleCreate}>Create</button>
                             </div>
                         </div>
                     </div>
