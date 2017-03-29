@@ -50,7 +50,9 @@ export default class Index extends React.Component {
             loggedUser:Session.getSession('prg_lg'),
             noteOwnerProfileImage: null,
             noteOwner: null,
-            noteCreatedTime: null
+            noteCreatedTime: null,
+            isNBNameEmpty: false,
+            isNBClrEmpty: false
         };
         this.saveInterval = null;
         this.elementChangeHandler = this.elementChangeHandler.bind(this);
@@ -97,11 +99,7 @@ export default class Index extends React.Component {
     }
 
     handleClose() {
-        this.setState({catNameValue: ""});
-        this.setState({catColor: ""});
-        this.setState({isDefault: 0});
-        this.setState({validateAlert:""});
-        this.setState({isShowingModal: false});
+        this.setState({catNameValue: "", catColor: "", isDefault: 0, validateAlert:"", isShowingModal: false, isNBNameEmpty: false, isNBClrEmpty: false});
     }
 
     elementChangeHandler(key,data,status){
@@ -110,13 +108,18 @@ export default class Index extends React.Component {
 
     addNoteBook(){
 
-        if(this.state.catNameValue == ""){
-            this.setState({validateAlert:Alert.EMPTY_NOTEBOOK_NAME})
-        } else if(this.state.catColor == ""){
-            this.setState({validateAlert:Alert.INVALID_COLOR})
-        } else if(this.state.catNameValue == "My Notes"){
-            this.setState({validateAlert:Alert.NOTEBOOK_NAME_ERROR})
-        } else{
+        let _nameErr = this.state.catNameValue == "";
+        let _clrErr = this.state.catColor == "";
+        this.setState({isNBNameEmpty: _nameErr});
+        this.setState({isNBClrEmpty: _clrErr});
+
+        if(this.state.catNameValue != "" && this.state.catColor != ""){
+        //    this.setState({validateAlert:Alert.EMPTY_NOTEBOOK_NAME})
+        //} else if(this.state.catColor == ""){
+        //    this.setState({validateAlert:Alert.INVALID_COLOR})
+        //} else if(this.state.catNameValue == "My Notes"){
+        //    this.setState({validateAlert:Alert.NOTEBOOK_NAME_ERROR})
+        //} else{
             let _noteBook = {
                 notebookName:this.state.catNameValue,
                 notebookColor:this.state.catColor,
@@ -134,11 +137,7 @@ export default class Index extends React.Component {
             }).done( function (data, text) {
                 if(data.code == 200){
                     this.loadNotes();
-                    this.setState({catNameValue: ""});
-                    this.setState({catColor: ""});
-                    this.setState({isDefault: 0});
-                    this.setState({validateAlert:""});
-                    this.setState({isShowingModal: false});
+                    this.setState({catNameValue: "", catColor: "", isDefault: 0, validateAlert:"", isShowingModal: false, isNBNameEmpty: false, isNBClrEmpty: false});
                 }
             }.bind(this));
         }
@@ -168,11 +167,7 @@ export default class Index extends React.Component {
         }).done( function (data, text) {
             if(data.code == 200){
                 this.loadNotes();
-                this.setState({catNameValue: ""});
-                this.setState({catColor: ""});
-                this.setState({isDefault: 0});
-                this.setState({validateAlert:""});
-                this.setState({isShowingModal: false});
+                this.setState({catNameValue: "", catColor: "", isDefault: 0, validateAlert:"", isShowingModal: false, isNBNameEmpty: false, isNBClrEmpty: false});
             }
         }.bind(this));
 
@@ -180,11 +175,11 @@ export default class Index extends React.Component {
 
     colorPicker(e){
         let colorName = e.target.getAttribute('data-name');
-        this.setState({catColor : e.target.id, clrChosen : colorName});
+        this.setState({catColor : e.target.id, clrChosen : colorName, isNBClrEmpty: false});
     }
 
     handleChange(event) {
-        this.setState({catNameValue: event.target.value});
+        this.setState({catNameValue: event.target.value, isNBNameEmpty: false});
     }
 
     isActive(value){
@@ -214,6 +209,12 @@ export default class Index extends React.Component {
                                             <input type="text" className="form-control" placeholder="type a category name..." value={this.state.catNameValue}
                                                    name="NoteCategoryName"
                                                    onChange={this.handleChange.bind(this)}/>
+                                            {
+                                                (this.state.isNBNameEmpty)?
+                                                    <span className="errorMsg">Please add a Notebook name</span>
+                                                    :
+                                                    null
+                                            }
                                         </div>
                                     </div>
                                     <div className="notebook-color">
@@ -245,6 +246,12 @@ export default class Index extends React.Component {
                                                     <i className="fa fa-check" aria-hidden="true"></i>
                                                 </div>
                                             </div>
+                                            {
+                                                (this.state.isNBClrEmpty)?
+                                                    <span className="errorMsg">Please select Notebook color</span>
+                                                    :
+                                                    null
+                                            }
                                         </div>
                                     </div>
                                     <div className="invite-people">

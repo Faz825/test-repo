@@ -84,7 +84,9 @@ export default class Header extends React.Component {
                         <GlobalSearch/>
                         <div className="notification-holder clearfix">
                             <div className="news-feed opt-holder">
-                                <div className="icon-holder"></div>
+                                <a href="/news-feed">
+                                    <div className="icon-holder"></div>
+                                </a>
                             </div>
                             <div onClick={this.toggleChatNotifications.bind(this)} className="chat-icon opt-holder chat-dropdown-holder dropDown-holder" id="chat_notification_a">
                                 <div className="icon-holder"></div>

@@ -391,7 +391,7 @@ export default class Index extends React.Component{
     handleClose() {
         this.setState({isShowingModal: false, isFolderNameEmpty : false, isFolderClrEmpty : false, CFName : "", CFClrClass : "",
             clrChosen : "", isAlreadySelected:false, value: '', suggestions: [], suggestionsList : {}, sharedWithIds : [],
-            sharedWithNames : [], sharedWithUsernames : []});
+            sharedWithNames : [], sharedWithUsernames : [], addFolder: true, CFColor : ""});
 
         this.users = [];
         this.sharedWithIds = [];
@@ -429,7 +429,7 @@ export default class Index extends React.Component{
                 success: function (data, text) {
                     if (data.status.code == 200) {
                         this.loadFolders();
-                        this.setState({isShowingModal: false, CFName : "", CFColor : "", addFolder : true});
+                        //this.setState({isShowingModal: false, CFName : "", CFColor : "", addFolder : true, sharedWithNames: []});
 
                         let _notificationData = {
                             folder_id:data.folder_id,
@@ -439,7 +439,7 @@ export default class Index extends React.Component{
                         };
 
                         Socket.sendFolderNotification(_notificationData);
-
+                        this.handleClose();
                     }
                 }.bind(this),
                 error: function (request, status, error) {
