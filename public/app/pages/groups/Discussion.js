@@ -176,6 +176,7 @@ export default class Discussion extends React.Component{
         let workmodeClass = "workmode-switched";
         // let user = Session.getSession('prg_lg');
         const {user, uname}= this.state;
+        var descriptionText = this.state.currentDescription ? this.state.currentDescription : "No description is added";
         return (
             <section className="group-content">
                 <div className="sidebar col-sm-4">
@@ -183,7 +184,7 @@ export default class Discussion extends React.Component{
                         <h3 className="panel-title">Description</h3>
                         <div className="desc"
                              contentEditable={true}
-                             dangerouslySetInnerHTML={{__html: this.state.currentDescription}}
+                             dangerouslySetInnerHTML={{__html: descriptionText}}
                              onFocus={this.enableSaveDescription}
                              onBlur={this.saveDescription}
                              onInput={(event)=>{this.handleDescription(event)}}>
@@ -255,6 +256,8 @@ export class MembersWidget extends React.Component{
             randomMembers : this.props.randomMembers,
             membersCount : this.props.membersCount,
             members : this.props.members,
+            newMembers : [],
+            sharedWithIds : [],
             group : group
         };
 
@@ -284,15 +287,16 @@ export class MembersWidget extends React.Component{
     }
 
     handleSearchUser(sharedWithIds, members){
-        this.setState({members: members});
+        this.setState({newMembers: members});
     }
 
     addNewMembers() {
 
         var groupData = {
             __groupId : this.state.group._id,
-            __members : this.state.members
-        }
+            __members : this.state.newMembers
+        };
+        var _this = this;
 
         $.ajax({
             url: '/groups/add-members',
@@ -303,7 +307,9 @@ export class MembersWidget extends React.Component{
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
-                console.log(data);
+                var randomMembers = _this.state.randomMembers;
+                var newRandomMembers = randomMembers.concat(_this.state.newMembers);
+                _this.setState({randomMembers: newRandomMembers, newMembers: [], sharedWithIds: []});
             }
         }.bind(this));
     }
@@ -316,24 +322,25 @@ export class MembersWidget extends React.Component{
 
         let i = (
             <Popover id="popover-contained"  positionTop="150px" className="remove-member-popup">
-                <RemoveMemberPopup groupData={this.state.group} members={this.state.members}
-                                   randomMembers={this.state.randomMembers} onLoadMembers={this.props.onLoadMembers} />
+                <RemoveMemberPopup
+                    groupData={this.state.group}
+                    members={this.state.members}
+                    randomMembers={this.state.randomMembers}
+                    onLoadMembers={this.props.onLoadMembers}/>
             </Popover>
         );
 
         if(this.state.randomMembers.length > 0 ) {
             userBlocks = this.state.randomMembers.map(function(member,userKey){
-
                 if(userKey+1 == _this.state.randomMembers.length && _this.state.randomMembers.length < _this.state.membersCount) {
-
                     return <div key={userKey+1} className="mem-img last-mem">
-                        <img src={member.profile_image} alt="mem" />
+                        <img src={member.profile_image} alt="mem" title={member.name} />
                         <div className="mem-count">
                             <span className="count">{overflowCountStr}</span>
                         </div>
                     </div>;
                 } else {
-                    return <div key={userKey+1} className="mem-img"><img src={member.profile_image} alt="mem" /></div>;
+                    return <div key={userKey+1} className="mem-img"><img src={member.profile_image} alt="mem" title={member.name} /></div>;
                 }
             });
         }
@@ -353,6 +360,7 @@ export class MembersWidget extends React.Component{
                         <SearchMembersField
                             handleSearchUser={this.handleSearchUser}
                             placeholder="+ Add a member to this group..."
+                            sharedWithIds={this.state.sharedWithIds}
                         />
                     </div>
                     <button
@@ -363,7 +371,6 @@ export class MembersWidget extends React.Component{
                 </div>
                 <div className="all-members clearfix">
                     {userBlocks}
-
                 </div>
             </div>
         );
@@ -431,7 +438,6 @@ export class CalendarWidget extends React.Component{
             headers : { "prg-auth-header" : this.state.user.token },
             success : function (data, text) {
                 if (data.status.code == 200) {
-                    console.log(data);
                     this.setState({events: data.events});
                 }
             }.bind(this),
