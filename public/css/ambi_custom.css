@@ -1806,16 +1806,21 @@ header .chat-popover-holder .inner-wrapper .see-all{
 
 .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .name,
 .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper,
-.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span {
+.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span,
+.group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .name,
+.group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper,
+.group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span {
     float: none;
     display: inline-block;
 }
 
-.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on {
+.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on,
+.group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on {
     float: left;
 }
 
-.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share {
+.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share,
+.group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share {
     margin-left: 5px;
 }
 
