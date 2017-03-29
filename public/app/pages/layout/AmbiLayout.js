@@ -12,13 +12,11 @@ import WorkModePopup from '../workmode/WorkModePopup';
 import NotificationPop from '../notifications/NotificationPop';
 import PubSub from 'pubsub-js';
 import Chat from '../../middleware/Chat';
-import QuickChatDummy from '../chat/QuickChatDummy';
 import VideoChatPopOver from '../chat/VideoChatPopOver';
 import {CallChannel, CallType, CallStatus, UserMode, ContactType} from '../../config/CallcenterStats';
 import {Config} from '../../config/Config';
 import CallCenter from '../../middleware/CallCenter';
 import CallModel from '../../components/call/CallModel';
-import VideoChatPopOver from '../chat/VideoChatPopOver'
 
 export default class AmbiLayout extends React.Component {
     constructor(props) {
