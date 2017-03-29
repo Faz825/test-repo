@@ -350,7 +350,9 @@ var GroupsController = {
         var outPut = {};
         var currentSession = Util.getCurrentSession(req);
         var async = require('async');
+        var randColor = require('randomcolor');
         var groups = require('mongoose').model('Groups');
+        var folders = require('mongoose').model('Folders');
         var groupId = (typeof req.body.__groupId != 'undefined') ? req.body.__groupId : null;
         var newMembers = (typeof req.body.__members != 'undefined') ? req.body.__members : [];
 
@@ -394,6 +396,84 @@ var GroupsController = {
                     callBack(null, groupData);
                 } else {
                     callBack(null, groupData);
+                }
+            },
+            function getGroupFolders(groupData, callBack) {
+                if (newMembers.length > 0) {
+                    folders.getFoldersByGroupId(groupId, function (result) {
+                        if (result.status == 200) {
+                            var arrFolders = result.data;
+                            callBack(null, arrFolders);
+                        } else {
+                            callBack(null, []);
+                        }
+                    });
+                } else {
+                    callBack(null, []);
+                }
+            },
+            function updateGroupFolders(arrFolders, callBack) {
+                if (arrFolders.length > 0) {
+                    async.each(arrFolders, function(folder, callBack) {
+                        var arrMembers = folder.shared_users;
+                        async.each(newMembers, function(member, callBack) {
+                            var color = randColor.randomColor({
+                                luminosity: 'light',
+                                hue: 'random'
+                            });
+                            var sharingMember = {
+                                user_id: member.user_id,
+                                user_note_color: color,
+                                shared_type: FolderSharedMode.VIEW_UPLOAD,
+                                status: FolderSharedRequest.REQUEST_ACCEPTED
+                            };
+                            arrMembers.push(sharingMember);
+
+                            var cacheData = {
+                                folder_id: folder._id,
+                                folder_name: folder.name,
+                                folder_color: folder.color,
+                                folder_owner: folder.user_id,
+                                folder_updated_at: folder.updated_at,
+                                folder_shared_mode: FolderSharedMode.VIEW_UPLOAD,
+                                folder_user: member.user_id.toString(),
+                                folder_type: FolderType.GROUP_FOLDER,
+                                group_id: folder.group_id.toString(),
+                                cache_key: FolderConfig.ES_INDEX_SHARED_GROUP_FOLDER+member.user_id.toString()
+                            }
+
+                            folders.addFolderToCache(cacheData, function(cacheResult){
+                                callBack(null);
+                            });
+                        }, function(err) {
+                            if( err ) {
+                                console.log('A group member failed to process');
+                                callBack(null);
+                            } else {
+                                var criteria = {
+                                    "_id":folder._id
+                                };
+                                var data = {
+                                    "shared_users":arrMembers
+                                };
+                                folders.updateFolder(criteria, data, function (updateResult) {
+                                    callBack(null, updateResult.group);
+                                });
+                                console.log('All new members are added to a group folder');
+                            }
+                        });
+                    }, function(err) {
+                        if( err ) {
+                            console.log('A group folder failed to process');
+                            callBack(null);
+                        } else {
+                            callBack(null);
+                            console.log('All group folders are processed successfully');
+                        }
+                    });
+
+                } else {
+                    callBack(null, []);
                 }
             }
         ], function (err) {

@@ -101,7 +101,6 @@ var CallCenterController = {
                         var aContacts = [];
 
                         var aAlphabetLength = aAlphabet.length;
-
                         for (var i = 0; i < aAlphabetLength; i++) {
                             aContacts.push({
                                 letter: aAlphabet[i],

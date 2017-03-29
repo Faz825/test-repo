@@ -1639,6 +1639,24 @@ body .modal-backdrop{
     padding: 0px 0px;
 }
 
+.group-container .group-content .sidebar .grp-members .add-member .search-field-holder .user-holder .user {
+    float: left;
+    margin-top: 2px;
+    margin-left: 3px;
+    padding: 3px;
+    font-size: 0.875em;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: #00a6ef;
+    border-radius: 3px;
+    background-color: rgba(0, 166, 239, 0.3);
+}
+
+.group-container .group-content .sidebar .grp-members .add-member .search-field-holder .user-holder .user:hover {
+    color: #ffffff;
+    background-color: #00a6ef;
+}
+
 .group-container .add-member .btn{
     position: absolute;
     top: 3px;
