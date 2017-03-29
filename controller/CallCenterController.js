@@ -148,13 +148,59 @@ var CallCenterController = {
                 index: 'idx_group'
             };
 
-            ES.search(query, function (ResultSet) {
-                if (ResultSet.hasOwnProperty('result')) {
-                    return res.status(200).json(ResultSet.result.shift());
+            var _async = require('async');
+
+            _async.waterfall([
+                function getGroupMembers(callback) {
+                    ES.search(query, function (ResultSet) {
+                        if (ResultSet.hasOwnProperty('result')) {
+                            callback(null, ResultSet.result.shift());
+                        } else {
+                            callback(null, null);
+                        }
+                    });
+                },
+                function getUsersFromMembers(aMembers, callback) {
+                    var aUsers = [];
+
+                    if (aMembers) {
+                        _async.each(aMembers.members, function (member, getUserCallback) {
+
+                            var query = {
+                                q: '_id:' + member.user_id,
+                                index: 'idx_usr'
+                            };
+
+                            ES.search(query, function (ResultSet) {
+                                if (ResultSet.hasOwnProperty('result')) {
+                                    aUsers.push(ResultSet.result.shift());
+                                    getUserCallback();
+                                }
+
+                                getUserCallback();
+                            });
+
+                        }, function (error) {
+                            (error) ? callback(error) : callback(null, aUsers);
+                        });
+                    } else {
+                        callback(null, []);
+                    }
+                }
+            ], function (error, aGroupMembers) {
+                var outPut = {};
+
+                if (error) {
+                    outPut.status = ApiHelper.getMessage(400, Alert.ERROR);
+                    return res.status(400).json(outPut);
                 } else {
-                    return res.status(200).json([]);
+                    outPut.members = aGroupMembers;
+                    outPut.status = ApiHelper.getMessage(200, Alert.SUCCESS);
+                    return res.status(200).json(outPut);
                 }
             });
+
+
         }
     }
     ,
@@ -212,27 +258,31 @@ var CallCenterController = {
                 sort: "createdAt:desc"
             };
 
-
             _async.waterfall([
                 function searchCallRecords(callback) {
                     ES.search(query, function (esCallRecordsResult) {
-                        var esCallRecords = esCallRecordsResult.result;
+                        if (esCallRecordsResult) {
+                            var esCallRecords = esCallRecordsResult.result;
 
-                        var aReceiverIds = [];
+                            var aReceiverIds = [];
 
-                        // TODO : Group call records in 2 hours range
-                        if (esCallRecords.length > 0) {
-                            esCallRecords.forEach(function (oRecord) {
-                                oRecord.receivers_list.forEach(function (oReceiver) {
-                                    if (aReceiverIds.indexOf(oReceiver.user_id) == -1) {
-                                        aReceiverIds.push(oReceiver.user_id);
-                                    }
+                            // TODO : Group call records in 2 hours range
+                            if (esCallRecords && esCallRecords.length > 0) {
+                                
+                                esCallRecords.forEach(function (oRecord) {
+                                    oRecord.receivers_list.forEach(function (oReceiver) {
+                                        if (aReceiverIds.indexOf(oReceiver.user_id) == -1) {
+                                            aReceiverIds.push(oReceiver.user_id);
+                                        }
+                                    });
                                 });
-                            });
 
-                            var aReceivers = [];
+                                var aReceivers = [];
 
-                            callback(null, aReceiverIds, aReceivers, esCallRecords);
+                                callback(null, aReceiverIds, aReceivers, esCallRecords);
+                            } else {
+                                callback(null, null, null, null);
+                            }
                         } else {
                             callback(null, null, null, null);
                         }

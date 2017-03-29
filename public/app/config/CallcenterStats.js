@@ -29,6 +29,11 @@ const CallChannel = {
     "AUDIO": 2
 };
 
+const CallStage = {
+    "DIAL_CALL": 1,
+    "CREATE_CALL": 2
+};
+
 const Bit6CallState = {
     "OUTGOING": {
         "DIAL": "req",
@@ -46,4 +51,4 @@ const Bit6CallState = {
     }
 };
 
-export {UserMode, ContactType, CallStatus, CallType, CallChannel, Bit6CallState};
+export {UserMode, ContactType, CallStatus, CallType, CallChannel, Bit6CallState, CallStage};
