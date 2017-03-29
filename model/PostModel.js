@@ -588,6 +588,7 @@ PostSchema.statics.formatPost=function(postData){
         post_id:postData.post_id,
         has_attachment:(postData.has_attachment)?postData.has_attachment:false,
         post_mode:postData.post_mode,
+        post_type:postData.post_type,
         content:(postData.content)?postData.content:"",
         created_by:postData.created_by,
         post_owned_by:postData.post_owned_by,

@@ -91,7 +91,6 @@ export default class Discussion extends React.Component{
             dataType: "JSON",
             data:data,
             success: function (data, text) {
-
                 if(data.status.code == 200){
                     this.setState({posts:data.posts})
                 }
@@ -220,7 +219,7 @@ export default class Discussion extends React.Component{
                             postType={this.postType}
                             postVisibleMode={this.postVisibleMode}
                             members={this.state.members.members}
-                            group={this.state.currentGroup._id}
+                            group={this.state.currentGroup}
                         />
                         <ListPostsElement
                             posts={this.state.posts}

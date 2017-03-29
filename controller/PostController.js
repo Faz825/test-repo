@@ -35,7 +35,8 @@ var PostController ={
             life_event:(typeof req.body.__lf_evt  != 'undefined')?req.body.__lf_evt:"",
             shared_post:"",
             visible_users:(typeof req.body.__visible_users != 'undefined')?req.body.__visible_users: [],
-            group_id:(typeof req.body.__group_id != 'undefined')?req.body.__group_id: null,
+            group_id:(typeof req.body.__group != 'undefined')?req.body.__group._id: null,
+            group:(typeof req.body.__group != 'undefined')?req.body.__group: {},
         };
 
         TimeLinePostHandler.addNewPost(data,function(resultSet){

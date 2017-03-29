@@ -215,7 +215,8 @@ export class TextPostElement extends React.Component{
             _pay_load['__visible_users'] = this.state.members;
         }
 
-        _pay_load['__group_id'] = this.state.group;
+        // _pay_load['__group_id'] = this.state.group._id;
+        _pay_load['__group'] = this.state.group;
 
         if(this.isValidToSubmit){
 
