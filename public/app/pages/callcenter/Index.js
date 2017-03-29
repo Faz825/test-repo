@@ -5,13 +5,13 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import {Modal, ButtonToolbar, DropdownButton, MenuItem, Popover, OverlayTrigger} from 'react-bootstrap';
+import asnyc from 'async';
 import Session from '../../middleware/Session';
 import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import {CallChannel, CallType, CallStatus, UserMode, ContactType} from '../../config/CallcenterStats';
 import ContactList from "./ContactList";
 import RecentList from "./RecentList";
 import StatusList from "./StatusList";
-import CallModel from "./CallModel";
 import CallCenter from '../../middleware/CallCenter';
 
 export default class Index extends React.Component {
@@ -22,16 +22,11 @@ export default class Index extends React.Component {
 
         if (loggedUser == null) {
             window.location.href = "/";
-        } else {
-            this.b6 = CallCenter.b6;
         }
 
         this.state = {
             loggedUser: loggedUser,
             targetUser: null,
-            inProgressCall: false,
-            callMode: CallChannel.AUDIO,
-            bit6Call: null,
             userContacts: [],
             callRecords: {all: [], missed: [], individual: [], groups: [], multi: []},
             userStatus: loggedUser.online_mode,
@@ -44,41 +39,45 @@ export default class Index extends React.Component {
             activeTabData: null
         };
 
-        // Call Record
-        this.callRecord = {
-            targets: []
-        };
-
         // Get Contacts
         let _this = this;
         this.allContacts = [];
 
-        CallCenter.getCallRecords().done(function (data) {
-            if (data.status.code == 200) {
-                _this.setState({recentCalls: _this.processCallRecords(data.call_records)});
+        asnyc.waterfall([
+            function getContacts(callback) {
+                CallCenter.getContacts().done(function (data) {
+                    if (data.status.code == 200) {
+                        for (var key in data.contacts) {
+                            for (var subKey in data.contacts[key].users) {
+                                let type = data.contacts[key].users[subKey].type;
+                                if (type == ContactType.INDIVIDUAL) {
+                                    _this.allContacts.push(data.contacts[key].users[subKey]);
+                                }
+                            }
+                        }
+
+                        callback(null, data.contacts);
+                    } else {
+                        callback(data.status);
+                    }
+                });
+            },
+            function getCallRecords(Contacts, callback) {
+                CallCenter.getCallRecords().done(function (data) {
+                    if (data.status.code == 200) {
+                        callback(null, Contacts, data.call_records);
+                    } else {
+                        callback(data.status);
+                    }
+                });
+            }
+        ], function (error, Contacts, CallRecords) {
+            if (!error) {
+                _this.setState({userContacts: Contacts, recentCalls: _this.processCallRecords(CallRecords)});
                 _this.setActiveTabData('recent', 'all');
             }
         });
 
-        CallCenter.getContacts().done(function (data) {
-            if (data.status.code == 200) {
-                _this.setState({userContacts: data.contacts});
-
-                for (var key in data.contacts) {
-                    for (var subKey in data.contacts[key].users) {
-                        let type = data.contacts[key].users[subKey].type;
-                        if (type == ContactType.INDIVIDUAL) {
-                            _this.allContacts.push(data.contacts[key].users[subKey]);
-                        }
-                    }
-                }
-
-            }
-        });
-
-        this.answerVideo = this.answerVideo.bind(this);
-        this.answerAudio = this.answerAudio.bind(this);
-        this.reject = this.reject.bind(this);
         this.currUserList = null;
     }
 
@@ -254,380 +253,12 @@ export default class Index extends React.Component {
         return callRecords;
     }
 
-    loadContactData(cat, subCat) {
-        let userGroupList = [
-            {
-                letter: "A",
-                users: [
-                    {
-                        "user_id": "57fcded7a083f22a099afff1",
-                        "email": "test2@gmail.com",
-                        "onlineStatus": 2,
-                        "contactType": 2,
-                        "call_type": 'phone',
-                        "calls": 1,
-                        "callStatus": 1,
-                        "first_name": "test1",
-                        "last_name": "ambi",
-                        "zip_code": null,
-                        "dob": "2-02-2013",
-                        "country": "United States",
-                        "user_name": "test2.ambi.86688",
-                        "introduction": null,
-                        "cur_exp_id": "57fcdeeba083f22a099affff",
-                        "cur_working_at": "asd",
-                        "cur_designation": "asd",
-                        "call_time": "2:03 AM",
-                        "city_details": "United States",
-                        "connection_count": 0,
-                        "calls": "2",
-                        "images": {
-                            "profile_image": {
-                                "id": "DEFAULT",
-                                "file_name": "default-profile-image.png",
-                                "file_type": ".png",
-                                "http_url": "/images/default-profile-pic.png"
-                            }
-                        },
-                        "receivers_list": [
-                            {
-                                "name": "Steve Young",
-                                "user_id": 1,
-                                "call_status": 1
-                            },
-                            {
-                                "name": "Christina Chapman",
-                                "user_id": 2,
-                                "call_status": 4
-                            }
-                        ],
-                        "connected_at": "2016-10-11T12:47:03.594Z"
-                    },
-                    {
-                        "user_id": "57fcded7a083f22a099afff2",
-                        "email": "test2@gmail.com",
-                        "onlineStatus": 2,
-                        "contactType": 2,
-                        "call_type": 'video',
-                        "calls": 1,
-                        "callStatus": 2,
-                        "first_name": "test2",
-                        "last_name": "ambi",
-                        "zip_code": null,
-                        "dob": "2-02-2013",
-                        "country": "United States",
-                        "user_name": "test2.ambi.86688",
-                        "introduction": null,
-                        "cur_exp_id": "57fcdeeba083f22a099affff",
-                        "cur_working_at": "asd",
-                        "cur_designation": "asd",
-                        "call_time": "2:03 AM",
-                        "city_details": "United States",
-                        "connection_count": 0,
-                        "calls": "2",
-                        "images": {
-                            "profile_image": {
-                                "id": "DEFAULT",
-                                "file_name": "default-profile-image.png",
-                                "file_type": ".png",
-                                "http_url": "/images/default-profile-pic.png"
-                            }
-                        },
-                        "receivers_list": [
-                            {
-                                "name": "Steve Young",
-                                "user_id": 1,
-                                "call_status": 1
-                            },
-                            {
-                                "name": "Christina Chapman",
-                                "user_id": 2,
-                                "call_status": 4
-                            }
-                        ],
-                        "connected_at": "2016-10-11T12:47:03.594Z"
-                    }
-                ]
-            },
-            {
-                letter: "B",
-                users: [
-                    {
-                        "user_id": "57fcded7a083f22a099afff3",
-                        "email": "test2@gmail.com",
-                        "onlineStatus": 1,
-                        "contactType": 2,
-                        "call_type": "phone",
-                        "calls": 1,
-                        "callStatus": 1,
-                        "first_name": "test3",
-                        "last_name": "ambi",
-                        "zip_code": null,
-                        "dob": "2-02-2013",
-                        "country": "United States",
-                        "user_name": "test2.ambi.86688",
-                        "introduction": null,
-                        "cur_exp_id": "57fcdeeba083f22a099affff",
-                        "cur_working_at": "asd",
-                        "cur_designation": "asd",
-                        "call_time": "2:03 AM",
-                        "city_details": "United States",
-                        "connection_count": 0,
-                        "calls": "2",
-                        "images": {
-                            "profile_image": {
-                                "id": "DEFAULT",
-                                "file_name": "default-profile-image.png",
-                                "file_type": ".png",
-                                "http_url": "/images/default-profile-pic.png"
-                            }
-                        },
-                        "receivers_list": [
-                            {
-                                "name": "Steve Young",
-                                "user_id": 1,
-                                "call_status": 1
-                            },
-                            {
-                                "name": "Christina Chapman",
-                                "user_id": 2,
-                                "call_status": 4
-                            }
-                        ],
-                        "connected_at": "2016-10-11T12:47:03.594Z"
-                    }
-                ]
-            }
-        ];
-
-        let recentList = [
-            {
-                "user_id": "57fcded7a083f22a099afffe",
-                "email": "test2@gmail.com",
-                "onlineStatus": 1,
-                "contact_type": 1,
-                "call_type": 'phone',
-                "calls": 1,
-                "first_name": "test3",
-                "last_name": "ambi",
-                "zip_code": null,
-                "dob": "2-02-2013",
-                "country": "United States",
-                "user_name": "test2.ambi.86688",
-                "introduction": null,
-                "cur_exp_id": "57fcdeeba083f22a099affff",
-                "cur_working_at": "asd",
-                "cur_designation": "asd",
-                "call_time": "2:03 AM",
-                "city_details": "United States",
-                "connection_count": 0,
-                "calls": "2",
-                "images": {
-                    "profile_image": {
-                        "id": "DEFAULT",
-                        "file_name": "default-profile-image.png",
-                        "file_type": ".png",
-                        "http_url": "/images/default-profile-pic.png"
-                    }
-                },
-                "receivers_list": [
-                    {
-                        "name": "Steve Young",
-                        "user_id": 1,
-                        "call_status": 1
-                    },
-                    {
-                        "name": "Christina Chapman",
-                        "user_id": 2,
-                        "call_status": 4
-                    }
-                ],
-                "connected_at": "2016-10-11T12:47:03.594Z"
-            },
-            {
-                "user_id": "57fcded7a083f22a099afffe",
-                "email": "test2@gmail.com",
-                "onlineStatus": 1,
-                "contact_type": 1,
-                "call_type": 'video',
-                "calls": 1,
-                "first_name": "test2",
-                "last_name": "ambi",
-                "zip_code": null,
-                "dob": "2-02-2013",
-                "country": "United States",
-                "user_name": "test2.ambi.86688",
-                "introduction": null,
-                "cur_exp_id": "57fcdeeba083f22a099affff",
-                "cur_working_at": "asd",
-                "cur_designation": "asd",
-                "call_time": "2:03 AM",
-                "city_details": "United States",
-                "connection_count": 0,
-                "calls": "2",
-                "images": {
-                    "profile_image": {
-                        "id": "DEFAULT",
-                        "file_name": "default-profile-image.png",
-                        "file_type": ".png",
-                        "http_url": "/images/default-profile-pic.png"
-                    }
-                },
-                "receivers_list": [
-                    {
-                        "name": "Steve Young",
-                        "user_id": 1,
-                        "call_status": 1
-                    },
-                    {
-                        "name": "Christina Chapman",
-                        "user_id": 2,
-                        "call_status": 4
-                    }
-                ],
-                "connected_at": "2016-10-11T12:47:03.594Z"
-            }
-        ];
-
-        $.ajax({
-            url: '/contacts/all',
-            method: "GET",
-            dataType: "JSON",
-            headers: {'prg-auth-header': this.state.loggedUser.token}
-        }).done(function (data) {
-            data.contacts.push.apply(data.contacts, userGroupList);
-            data.contacts.sort(function (a, b) {
-                var nameA = a.letter.toUpperCase(); // ignore upper and lowercase
-                var nameB = b.letter.toUpperCase(); // ignore upper and lowercase
-                if (nameA < nameB) {
-                    return -1;
-                }
-                if (nameA > nameB) {
-                    return 1;
-                }
-
-                // names must be equal
-                return 0;
-            });
-            if (data.status.code == 200) {
-                if (cat == "contact" && subCat == "all") {
-                    this.setState({userContacts: data.contacts});
-                }
-                else if (cat == "contact" && subCat == "groups") {
-                    let dataSet = [],
-                        usersSet = [],
-                        letter = "";
-
-                    for (var key in data.contacts) {
-                        letter = data.contacts[key].letter;
-                        for (var subKey in data.contacts[key].users) {
-                            let type = data.contacts[key].users[subKey].type;
-                            if (type == 2) {
-                                usersSet.push(data.contacts[key].users[subKey]);
-                            }
-                        }
-                        if (usersSet.length >= 1) {
-                            dataSet.push({"letter": letter, "users": usersSet});
-                            usersSet = [];
-                        }
-                    }
-
-                    this.setState({userContacts: dataSet});
-
-                }
-                else if (cat == "contact" && subCat == "individual") {
-                    let dataSet = [],
-                        usersSet = [],
-                        letter = "";
-
-                    for (var key in data.contacts) {
-                        letter = data.contacts[key].letter;
-                        for (var subKey in data.contacts[key].users) {
-                            let type = data.contacts[key].users[subKey].type;
-                            if (type == 1) {
-                                usersSet.push(data.contacts[key].users[subKey]);
-                            }
-                        }
-                        if (usersSet.length >= 1) {
-                            dataSet.push({"letter": letter, "users": usersSet});
-                            usersSet = [];
-                        }
-                    }
-
-                    this.setState({userContacts: dataSet});
-                }
-                else if (cat == "recent" && subCat == "all") {
-                    this.setState({userContacts: userGroupList});
-                }
-                else if (cat == "status" && subCat == "online") {
-                    let dataSet = [],
-                        usersSet = [],
-                        letter = "";
-
-                    for (var key in data.contacts) {
-                        letter = data.contacts[key].letter;
-                        for (var subKey in data.contacts[key].users) {
-                            let stat = data.contacts[key].users[subKey].onlineStatus;
-                            if (stat == 1) {
-                                usersSet.push(data.contacts[key].users[subKey]);
-                            }
-                        }
-                        if (usersSet.length >= 1) {
-                            dataSet.push({"letter": letter, "users": usersSet});
-                            usersSet = [];
-                        }
-                    }
-
-                    this.setState({userContacts: dataSet});
-                }
-                else if (cat == "status" && subCat == "busy") {
-                    let dataSet = [],
-                        usersSet = [],
-                        letter = "";
-
-                    for (var key in data.contacts) {
-                        letter = data.contacts[key].letter;
-                        for (var subKey in data.contacts[key].users) {
-                            let stat = data.contacts[key].users[subKey].onlineStatus;
-                            if (stat == 2) {
-                                usersSet.push(data.contacts[key].users[subKey]);
-                            }
-                        }
-                        if (usersSet.length >= 1) {
-                            dataSet.push({"letter": letter, "users": usersSet});
-                            usersSet = [];
-                        }
-                    }
-
-                    this.setState({userContacts: dataSet});
-                }
-                else if (cat == "recent" && subCat == "missed") {
-                    this.setState({userContacts: userGroupList});
-                } else if (cat == "recent" && subCat == "individual") {
-                    this.setState({userContacts: userGroupList});
-                } else if (cat == "recent" && subCat == "groups") {
-                    this.setState({userContacts: userGroupList});
-                }
-                else {
-                    this.setState({userContacts: []});
-                }
-            }
-            this.currUserList = this.state.userContacts;
-            this.setState({activeMainCat: cat, activeSubCat: subCat, searchValue: ""});
-        }.bind(this));
+    startCall(user, callChannel) {
+        this.props.startCall(user, callChannel);
     }
 
-    onMinimizePopup() {
-        this.setState({inProgressCall: false, minimizeBar: true});
-    }
-
-    onPopupClose() {
-        this.state.bit6Call.hangup();
-        this.setState({inProgressCall: false, minimizeBar: false, bit6Call: null});
-    }
-
-    onDialing(user, callType) {
-        this.startOutgoingCall(user, callType);
+    createCall(contact, callChannel){
+        this.props.createCall(contact, callChannel);
     }
 
     headerNavRecent() {
@@ -805,150 +436,8 @@ export default class Index extends React.Component {
         )
     }
 
-    startOutgoingCall(oTargetUser, callMode) {
-        console.log(oTargetUser);
-        if (oTargetUser.type == ContactType.INDIVIDUAL) {
-
-            let opts = {
-                audio: true,
-                video: false,
-                screen: false
-            };
-
-            console.log(callMode);
-
-            if (callMode == CallChannel.VIDEO) {
-                opts.video = true;
-                this.setState({callMode: CallChannel.VIDEO});
-            } else {
-                this.setState({callMode: CallChannel.AUDIO});
-            }
-
-            // Start the outgoing call
-            let to = CallCenter.getBit6Identity(oTargetUser);
-            var c = this.b6.startCall(to, opts);
-
-            this.attachCallEvents(c);
-
-            this.callRecord.contact = oTargetUser;
-            this.callRecord.callChannel = this.state.callMode;
-            this.callRecord.targets.push({user_id: oTargetUser.user_id});
-            this.callRecord.dialedAt = new Date().toISOString();
-
-            /* CallCenter.addCallRecord(this.callRecord).done(function (oData) {
-             // console.log(oData);
-             });*/
-
-            c.connect(opts);
-
-            this.setState({inProgressCall: true, targetUser: oTargetUser, bit6Call: c});
-        } else {
-            let _this = this;
-
-            CallCenter.getGroupMembers(oTargetUser._id).done(function (Group) {
-                Group.type = ContactType.GROUP;
-
-                var bit6Call = {
-                    options: {video: false, audio: false},
-                    remoteOptions: {video: false}
-                };
-
-                var GroupMembers = Group.members.reduce(function (members, member) {
-                    if (member.user_id != _this.state.loggedUser.id) {
-                        members.push(member);
-                    }
-
-                    return members;
-                }, []);
-
-                Group.members = GroupMembers;
-
-                _this.setState({inProgressCall: true, targetUser: Group, bit6Call: bit6Call});
-            });
-        }
-    }
-
-    startGroupCall() {
-
-    }
-
-    // Attach call state events to a RtcDialog
-    attachCallEvents(c) {
-        var _this = this;
-
-        // Call progress
-        c.on('progress', function () {
-            console.log(c);
-            _this.setState({bit6Call: c});
-        });
-
-        // Number of video feeds/elements changed
-        c.on('videos', function () {
-            console.log(c);
-            _this.setState({bit6Call: c});
-            // TODO show video call details in popup
-        });
-
-        // Call answered
-        c.on('answer', function () {
-            console.log(c);
-            _this.setState({bit6Call: c});
-            // TODO show timer , call buttons
-        });
-
-        // Error during the call
-        c.on('error', function () {
-            console.log(c);
-            _this.setState({bit6Call: c});
-            // TODO show call error in popup
-        });
-
-        // Call ended
-        c.on('end', function () {
-            console.log('end');
-            console.log(c);
-            _this.setState({inProgressCall: false, targetUser: null, callMode: CallChannel.AUDIO});
-            // TODO show call end details in popup
-        });
-    }
-
     handleShowModal() {
         this.setState({showModal: true});
-    }
-
-    answerVideo() {
-        console.log("Video");
-        this.setState({inProgressCall: true, showModal: false});
-    }
-
-    answerAudio() {
-        console.log("Audio");
-        this.setState({inProgressCall: true, showModal: false});
-    }
-
-    reject() {
-        console.log("reject");
-        this.setState({showModal: false});
-    }
-
-    onPopupMaximize() {
-        this.setState({inProgressCall: true, minimizeBar: false});
-    }
-
-    toggleMic(bMic) {
-        var oCall = this.state.bit6Call;
-        oCall.connect({audio: bMic});
-        this.setState({callMode: (bMic) ? CallChannel.VIDEO : CallChannel.AUDIO, bit6Call: oCall});
-    }
-
-    toggleVideo(bVideo) {
-        var oCall = this.state.bit6Call;
-        oCall.connect({video: bVideo});
-        this.setState({callMode: (bVideo) ? CallChannel.VIDEO : CallChannel.AUDIO, bit6Call: oCall});
-    }
-
-    toggleSpeaker() {
-
     }
 
     onSearch(e) {
@@ -987,6 +476,7 @@ export default class Index extends React.Component {
     }
 
     render() {
+
         let mainCat = this.state.activeMainCat,
             subCat = this.state.activeSubCat;
 
@@ -1016,21 +506,21 @@ export default class Index extends React.Component {
                         {
                             (mainCat == "recent") ?
                                 <RecentList callRecords={this.state.activeTabData}
-                                            onUserCall={this.onDialing.bind(this)}/>
+                                            onUserCall={this.startCall.bind(this)}/>
                                 :
                                 null
                         }
                         {
                             (mainCat == "contact") ?
                                 <ContactList userContacts={this.state.activeTabData}
-                                             onUserCall={this.onDialing.bind(this)}/>
+                                             startCall={this.startCall.bind(this)} createCall={this.createCall.bind(this)} />
                                 :
                                 null
                         }
                         {
                             (mainCat == "status") ?
                                 <StatusList userContacts={this.state.activeTabData}
-                                            onUserCall={this.onDialing.bind(this)}/>
+                                            onUserCall={this.startCall.bind(this)}/>
                                 :
                                 null
                         }
@@ -1048,23 +538,6 @@ export default class Index extends React.Component {
                             null
                     }
                 </div>
-                {
-                    (this.state.inProgressCall) ?
-                        <div>
-                            <ModalContainer zIndex={9999}>
-                                <ModalDialog className="modalPopup">
-                                    <CallModel
-                                        bit6Call={this.state.bit6Call}
-                                        loggedUser={this.state.loggedUser}
-                                        targetUser={this.state.targetUser}
-                                        toggleMic={this.toggleMic.bind(this)}
-                                        toggleVideo={this.toggleVideo.bind(this)}
-                                        closePopup={this.onPopupClose.bind(this)}
-                                        minimizePopup={this.onMinimizePopup.bind(this)}/>
-                                </ModalDialog>
-                            </ModalContainer>
-                        </div> : null
-                }
             </section>
         );
     }

@@ -4,8 +4,8 @@
 
 import React from "react";
 import {Popover, OverlayTrigger} from 'react-bootstrap';
-import {CallType, CallChannel, ContactType} from '../../config/CallcenterStats';
-import InputField from '../../components/elements/InputField';
+import {CallType, Bit6CallState, CallChannel, ContactType} from '../../config/CallcenterStats';
+import InputField from '../elements/InputField';
 
 export default class CallModel extends React.Component {
     constructor(props) {
@@ -36,17 +36,12 @@ export default class CallModel extends React.Component {
         (this.props.bit6Call.options.audio) ? this.props.toggleMic(false) : this.props.toggleMic(true);
     }
 
-    onSpeakerBtnClick() {
-
-    }
-
     onMinimizePopup() {
         this.setState({minimizeBar: true});
     }
 
     onPopupClose() {
         this.setState({minimizeBar: false});
-
     }
 
     switchUser(oUser) {
@@ -96,6 +91,21 @@ export default class CallModel extends React.Component {
         return array.indexOf(value) > -1;
     }
 
+    getVideoStage() {
+        if (this.props.targetUser.type == ContactType.INDIVIDUAL) {
+            if (this.props.remoteChannel === CallChannel.VIDEO && (this.props.bit6Call.state == Bit6CallState.OUTGOING.ANSWER || this.props.bit6Call.state == Bit6CallState.OUTGOING.RENEGOTIATION || this.props.bit6Call.state == Bit6CallState.INCOMING.ANSWER || this.props.bit6Call.state == Bit6CallState.INCOMING.RENEGOTIATION)) {
+                return null;
+            } else {
+                return (<img src={this.props.targetUser.images.profile_image.http_url}/>);
+            }
+        } else {
+            return (
+                <img
+                    src={(this.props.targetUser.group_pic_link) ? this.props.targetUser.group_pic_link : "images/group/dashboard/grp-icon.png"}/>
+            );
+        }
+    }
+
     render() {
         let _this = this;
         let i = (
@@ -121,7 +131,7 @@ export default class CallModel extends React.Component {
             );
         });
 
-        console.log(this.state.callerList)
+        console.log(this.state.callerList);
 
         return (
             <div className="popup-holder">
@@ -160,11 +170,8 @@ export default class CallModel extends React.Component {
                             <div className="active-user-block">
                                 <div id="webcamStage">
                                     {
-                                        /*(this.props.targetUser.type == ContactType.INDIVIDUAL && !this.props.bit6Call.remoteOptions.video ) ?
-                                         <img src={this.props.targetUser.images.profile_image.http_url}/> :
-                                         <img
-                                         src={(this.props.targetUser.group_pic_link) ? this.props.targetUser.group_pic_link : "images/group/dashboard/grp-icon.png"}/>
-                                         */ }
+                                        this.getVideoStage()
+                                    }
                                 </div>
                                 <div className="active-call-nav">
                                     <span
@@ -175,7 +182,7 @@ export default class CallModel extends React.Component {
                                           onClick={this.onMicBtnClick.bind(this)}></span>
 
                                     <span className={(this.state.isSpeakerEnabled) ? "speaker" : "speaker active"}
-                                          onClick={this.onSpeakerBtnClick.bind(this)}></span>
+                                    ></span>
 
                                     <span className="hang-up" onClick={(e) => this.props.closePopup(e)}></span>
                                 </div>

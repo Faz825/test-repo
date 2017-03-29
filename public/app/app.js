@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDom from 'react-dom'
-import { Router , Route, browserHistory } from 'react-router'
+import {Router, Route, browserHistory} from 'react-router'
 
 import Main from './pages/main';
 import SignupIndex from './pages/signup/Index';
@@ -28,10 +28,10 @@ import GroupsIndex from './pages/groups/Index';
 import GroupsLayout from './pages/groups/GroupsLayout';
 
 
-let rootRoute =(
+let rootRoute = (
     <Route name="main" path="/" component={Main} state="1">
-		<Route name="signupIndex" path="/sign-up" component={SignupIndex}/>
-		<Route name="choose-secretary" path="/choose-secretary" component={SignupIndex}/>
+        <Route name="signupIndex" path="/sign-up" component={SignupIndex}/>
+        <Route name="choose-secretary" path="/choose-secretary" component={SignupIndex}/>
         <Route name="about-you" path="/about-you" component={SignupIndex}/>
         <Route name="establish-connections" path="/establish-connections" component={SignupIndex}/>
         <Route name="news-categories" path="/news-categories" component={SignupIndex}/>
@@ -67,29 +67,29 @@ let rootRoute =(
         <Route name="connections" path="/connections" component={Connection}/>
 
 
-		/**
-		 * News
-		 */
+        /**
+         * News
+         */
 
         <Route name="news-feed" path="/news-feed" component={NewsIndex}/>
         <Route name="news" path="/news" component={NewsSettings}/>
 
         /**
-		 * Notes
-		 */
+         * Notes
+         */
 
         <Route name="notes" path="/notes" component={NotesIndex}/>
         <Route name="notes" path="/notes/:name" component={NotesIndex}/>
 
         /**
-		 * Notifications
-		 */
+         * Notifications
+         */
 
         <Route name="notifications" path="/notifications" component={NotificationsIndex}/>
 
         /**
-		 * Folders
-		 */
+         * Folders
+         */
 
         <Route name="folders" path="/folders" component={FoldersIndex}/>
 
@@ -100,29 +100,31 @@ let rootRoute =(
         <Route name="doc" path="/doc" component={DocIndex}/>
 
         /**
-		 * Callcenter
-		 */
+         * Callcenter
+         */
 
         <Route name="callcenter" path="/callcenter" component={CallcenterIndex}/>
+
+       /* <Route name="callcenter" path="/callcenter" handler={()=><CallcenterIndex />}/> */
 
         /**
          * Groups
          */
-        <Route name="groups" path="/groups" component={GroupsIndex} />
-        <Route name="groups" path="/groups/:name" component={GroupsLayout} />
+        <Route name="groups" path="/groups" component={GroupsIndex}/>
+        <Route name="groups" path="/groups/:name" component={GroupsLayout}/>
 
         /**
-		 * Workmode
-		 */
+         * Workmode
+         */
 
         <Route name="workmode" path="/work-mode" component={WorkmodeIndex}/>
 
-	</Route>
+    </Route>
 );
 
 
 ReactDom.render((
-	<Router  history={browserHistory}  routes={rootRoute}/>
+    <Router history={browserHistory} routes={rootRoute}/>
 
 
 

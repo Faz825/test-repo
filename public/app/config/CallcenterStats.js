@@ -29,10 +29,21 @@ const CallChannel = {
     "AUDIO": 2
 };
 
-const Bit6State = {
-    "ANSWER": "got-answer",
-    "REQUEST": "req",
-    "REJECT": "got-bye"
+const Bit6CallState = {
+    "OUTGOING": {
+        "DIAL": "req",
+        "ANSWER": "got-answer",
+        "END": "sent-bye",
+        "END_BY_OTHER": "got-bye",
+        "RENEGOTIATION": "got-offer"
+    },
+    "INCOMING": {
+        "INCOMING": "pre-answer",
+        "ANSWER": "sent-answer",
+        "END": "sent-bye",
+        "END_BY_OTHER": "got-bye",
+        "RENEGOTIATION": "got-offer"
+    }
 };
 
-export {UserMode, ContactType, CallStatus, CallType, CallChannel};
+export {UserMode, ContactType, CallStatus, CallType, CallChannel, Bit6CallState};

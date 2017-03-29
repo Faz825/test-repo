@@ -51,12 +51,8 @@ class CallCenter {
                                 }
                             };
 
-                            _this.createPrivateGroup(opts, function (groupRes) {
-                                console.log(groupRes);
-                            });
+                            _this.createPrivateGroup(opts, function (groupRes) {});
                         }
-
-                        console.log(_this.b6.session);
 
                         return true;
                     }

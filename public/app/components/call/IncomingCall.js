@@ -5,22 +5,14 @@ export default class IncomingCall extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            endCall: false
-        };
     }
 
-    answerAudio() {
-        this.props.answerAudio();
-    }
-
-    answerVideo() {
-        this.props.answerVideo();
+    answerCall(AnswerChannel){
+        this.props.answerCall(AnswerChannel);
     }
 
     hangUp() {
-        this.props.hangUp();
+        this.props.hangUpCall();
     }
 
     render() {
@@ -38,15 +30,15 @@ export default class IncomingCall extends React.Component {
                                 <h4 id="incomingCallFrom">User is calling...</h4>
                                 <p>
                                     {
-                                        (this.props.callMode == CallChannel.VIDEO) ?
+                                        (this.props.callChannel == CallChannel.VIDEO) ?
                                             <button type="button" className="btn btn-success income-call"
                                                     id="answerVideo"
-                                                    onClick={()=>this.answerVideo()}>Video
+                                                    onClick={()=>this.answerCall(CallChannel.VIDEO)}>Video
                                             </button> : null
                                     }
 
                                     <button type="button" className="btn btn-success income-call" id="answerAudio"
-                                            onClick={()=>this.answerAudio()}>Audio
+                                            onClick={()=>this.answerCall(CallChannel.AUDIO)}>Audio
                                     </button>
                                     <button type="button" className="btn btn-danger income-call" id="reject"
                                             onClick={()=>this.hangUp()}>Reject
