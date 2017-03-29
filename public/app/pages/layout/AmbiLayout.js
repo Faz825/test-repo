@@ -454,7 +454,7 @@ export default class AmbiLayout extends React.Component {
         var _this = this;
 
         c.on('progress', function () {
-            console.log('progress',c);
+            console.log('progress', c);
             _this.setState({bit6Call: c});
         });
 
@@ -465,19 +465,19 @@ export default class AmbiLayout extends React.Component {
         });
 
         c.on('answer', function () {
-            console.log('answer',c);
-            _this.setState({bit6Call: c});
+            console.log('answer', c);
+            _this.setState({bit6Call: c, callChannel: (c.remoteOptions.video) ? CallChannel.VIDEO : CallChannel.AUDIO});
             // TODO show timer , call buttons
         });
 
         c.on('error', function () {
-            console.log('error',c);
+            console.log('error', c);
             _this.setState({bit6Call: c});
             // TODO show call error in popup
         });
 
         c.on('end', function () {
-            console.log('end',c);
+            console.log('end', c);
             _this.setState({callInProgress: false, targetUser: null, callMode: CallChannel.AUDIO});
             // TODO show call end details in popup
         });
