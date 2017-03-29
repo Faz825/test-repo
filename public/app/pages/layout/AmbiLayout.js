@@ -5,16 +5,19 @@ import FooterHolder from '../../components/footer/FooterHolder';
 import Toast from '../../components/elements/Toast';
 import Session  from '../../middleware/Session';
 import AmbiDashboard  from '../dashboard/AmbiDashboard';
-import CallHandler  from '../callcenter/CallHandler';
+import CallHandler  from '../../components/call/CallHandler';
 import QuickChatHandler from '../chat/QuickChatHandler';
 import WorkMode from '../workmode/Index';
 import WorkModePopup from '../workmode/WorkModePopup';
 import NotificationPop from '../notifications/NotificationPop';
 import PubSub from 'pubsub-js';
 import Chat from '../../middleware/Chat';
-import QuickChatDummy from '../chat/QuickChatDummy'
-import VideoChatPopOver from '../chat/VideoChatPopOver'
+import QuickChatDummy from '../chat/QuickChatDummy';
+import VideoChatPopOver from '../chat/VideoChatPopOver';
+import {CallChannel, CallType, CallStatus, UserMode, ContactType} from '../../config/CallcenterStats';
+import {Config} from '../../config/Config';
 import CallCenter from '../../middleware/CallCenter';
+import CallModel from '../../components/call/CallModel';
 
 export default class AmbiLayout extends React.Component {
     constructor(props) {
@@ -35,6 +38,8 @@ export default class AmbiLayout extends React.Component {
         this.checkWorkModeInterval = null;
 
         this.b6 = CallCenter.b6;
+
+        this.initCall(this.b6);
 
         if (Session.getSession('prg_wm') != null) {
             let _currentTime = new Date().getTime();
@@ -78,8 +83,9 @@ export default class AmbiLayout extends React.Component {
             // bit6Call States
             bit6Call: null,
             targetUser: null, // Individual User or Group
-            inProgressCall: false,
-            inCall: false
+            callInProgress: false,
+            inComingCall: false,
+            callChannel: null
         };
 
         // Call Record
@@ -87,12 +93,22 @@ export default class AmbiLayout extends React.Component {
             targets: []
         };
 
+        this.contacts = [];
+
         this.quickChatUsers = [];
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.doVideoCall = this.doVideoCall.bind(this);
         this.doAudioCall = this.doAudioCall.bind(this);
         this.onToastClose = this.onToastClose.bind(this);
+
+        let _this = this;
+
+        CallCenter.getContacts().done(function (data) {
+            if (data.status.code == 200) {
+                _this.contacts = data.contacts;
+            }
+        });
     }
 
     componentWillMount() {
@@ -138,7 +154,6 @@ export default class AmbiLayout extends React.Component {
     doAudioCall(callObj) {
         Chat.startOutgoingCall(callObj.uri, false);
     };
-
 
     checkWorkMode() {
         if (Session.getSession('prg_wm') != null) {
@@ -308,6 +323,22 @@ export default class AmbiLayout extends React.Component {
         this.loadMyConnections();
     }
 
+    sendCallBlockedMessage(c, b6) {
+        let _uri = c.other;
+        console.log(_uri);
+        let _msg = "On work mode";
+        let user = Session.getSession('prg_lg');
+        b6.session.displayName = user.first_name + " " + user.last_name;
+        b6.compose(_uri).text(_msg).send(function (err) {
+            if (err) {
+                console.log('error', err);
+            }
+            else {
+                console.log("msg sent");
+            }
+        });
+    }
+
     /*
      This is the common function for all child components (folder, calendar etc.. )
      from any index.js file call 'this.props.parentCommonFunction'
@@ -318,56 +349,222 @@ export default class AmbiLayout extends React.Component {
 
     /* CallCenter Methods */
 
-    startCall(TargetUser, CallChannel) {
+    initCall(b6) {
+        let _this = this;
+
+        b6.on('incomingCall', function (c) {
+            _this.onIncomingCall(c, b6);
+        });
+
+        b6.on('video', function (v, d, op) {
+            _this.onVideoCall(v, d, op);
+        });
+    }
+
+    startCall(TargetUser, Channel) {
+        console.log('start call', TargetUser, Channel);
+        let opts = {
+            audio: true,
+            video: false,
+            screen: false
+        };
+
+        if (Channel == CallChannel.VIDEO) opts.video = true;
+
+        console.log('call channel', Channel);
+
+        // Start the outgoing call
+        let to = CallCenter.getBit6Identity(TargetUser);
+        var c = this.b6.startCall(to, opts);
+
+        this.attachCallEvents(c);
+
+        this.callRecord.contact = TargetUser;
+        this.callRecord.callChannel = this.state.callMode;
+        this.callRecord.targets.push({user_id: TargetUser.user_id});
+        this.callRecord.dialedAt = new Date().toISOString();
+
+        /*
+         CallCenter.addCallRecord(this.callRecord).done(function (oData) {
+         // console.log(oData);
+         });
+         */
+
+        c.connect(opts);
+
+        this.setState({callInProgress: true, callChannel: Channel, targetUser: TargetUser, bit6Call: c});
+    }
+
+    startGroupCall(Group, Channel) {
 
     }
 
-    startGroupCall(Group, CallChannel) {
+    createGroupCall() {
+        let _this = this;
 
+        CallCenter.getGroupMembers(oTargetUser._id).done(function (Group) {
+            Group.type = ContactType.GROUP;
+
+            var bit6Call = {
+                options: {video: false, audio: false},
+                remoteOptions: {video: false}
+            };
+
+            var GroupMembers = Group.members.reduce(function (members, member) {
+                if (member.user_id != _this.state.userLoggedIn.id) {
+                    members.push(member);
+                }
+
+                return members;
+            }, []);
+
+            Group.members = GroupMembers;
+
+            _this.setState({callInProgress: true, targetUser: Group, bit6Call: bit6Call});
+        });
     }
 
-    answerCall() {
+    answerCall(IncomingCallChannel) {
+        let Call = this.state.bit6Call;
 
+        if (IncomingCallChannel == CallChannel.AUDIO) {
+            Call.connect({audio: true, video: false});
+        } else {
+            Call.connect({audio: true, video: true});
+        }
+
+        this.attachCallEvents(Call);
+
+        this.setState({inComingCall: false, callInProgress: true, callChannel: IncomingCallChannel, bit6Call: Call});
+    }
+
+    hangUpCall() {
+        this.state.bit6Call.hangup();
+    }
+
+    hangUpIncomingCall() {
+        let Call = this.state.bit6Call;
+        Call.hangup();
+
+        this.setState({inComingCall: false, bit6Call: null, callChannel: null, targetUser: null});
     }
 
     // Attach call state events to a RtcDialog
     attachCallEvents(c) {
         var _this = this;
 
-        // Call progress
         c.on('progress', function () {
-            console.log(c);
+            console.log('progress',c);
             _this.setState({bit6Call: c});
         });
 
-        // Number of video feeds/elements changed
         c.on('videos', function () {
-            console.log(c);
+            console.log('videos', c);
             _this.setState({bit6Call: c});
             // TODO show video call details in popup
         });
 
-        // Call answered
         c.on('answer', function () {
-            console.log(c);
+            console.log('answer',c);
             _this.setState({bit6Call: c});
             // TODO show timer , call buttons
         });
 
-        // Error during the call
         c.on('error', function () {
-            console.log(c);
+            console.log('error',c);
             _this.setState({bit6Call: c});
             // TODO show call error in popup
         });
 
-        // Call ended
         c.on('end', function () {
-            console.log('end');
-            console.log(c);
-            _this.setState({inProgressCall: false, targetUser: null, callMode: CallChannel.AUDIO});
+            console.log('end',c);
+            _this.setState({callInProgress: false, targetUser: null, callMode: CallChannel.AUDIO});
             // TODO show call end details in popup
         });
+    }
+
+    onVideoCall(v, d, op) {
+        console.log("====== video call ======");
+
+        var vc = $('#webcamStage');
+
+        if (op < 0) {
+            if ($(v).hasClass('remote')) {
+                this.setState({callChannel: CallChannel.AUDIO});
+            }
+
+            vc[0].removeChild(v);
+        }
+
+        else if (op > 0) {
+            v.setAttribute('class', d ? 'remote' : 'local');
+            vc.append(v);
+
+            if ($(v).hasClass('remote')) {
+                this.setState({callChannel: CallChannel.VIDEO});
+            }
+        }
+        // Total number of video elements (local and remote)
+        var n = vc[0].children.length;
+        // Display the container if we have any video elements
+        if (op != 0) {
+            vc.toggle(n > 0);
+        }
+
+        //  this.setState({bit6Call: d});
+    }
+
+    onIncomingCall(c, b6) {
+        console.log('incoming call', c);
+        let _blockCall = this.checkWorkMode();
+
+        if (!_blockCall) {
+            console.log("Incoming call");
+            let CallChannel = CallCenter.getCallType(c);
+            let targetUser = this.getContactBySlug(c.other);
+
+            this.setState({inComingCall: true, callChannel: CallChannel, targetUser: targetUser, bit6Call: c});
+        } else {
+            console.log("Call blocked in work mode. Informing caller via messaging");
+            this.hangupCall();
+            this.sendCallBlockedMessage(c, b6);
+        }
+    }
+
+    getContactBySlug(slug) {
+        let _this = this;
+        let username = slug.split(Config.BIT6_IDENTITY_USER_SLUG);
+
+        for (let i = 0; i < _this.contacts.length; i++) {
+            var letter = _this.contacts[i];
+
+            for (let x = 0; x < letter.users.length; x++) {
+                if (letter.users[x].user_name == username[1]) {
+                    return letter.users[x];
+                }
+            }
+        }
+    }
+
+    toggleMic(bMic) {
+        var oCall = this.state.bit6Call;
+        oCall.connect({audio: bMic});
+        this.setState({callMode: (bMic) ? CallChannel.VIDEO : CallChannel.AUDIO, bit6Call: oCall});
+    }
+
+    toggleVideo(bVideo) {
+        var oCall = this.state.bit6Call;
+        oCall.connect({video: bVideo});
+        this.setState({callMode: (bVideo) ? CallChannel.VIDEO : CallChannel.AUDIO, bit6Call: oCall});
+    }
+
+    onMinimizeCallModal() {
+        this.setState({callInProgress: false, minimizeBar: true});
+    }
+
+    onCloseCallModal() {
+        this.state.bit6Call.hangup();
+        this.setState({callInProgress: false, minimizeBar: false, bit6Call: null});
     }
 
     render() {
@@ -382,7 +579,8 @@ export default class AmbiLayout extends React.Component {
         var childrenWithProps = React.Children.map(this.props.children, function (child) {
             return React.cloneElement(child, {
                 parentCommonFunction: _this.commonForAllChildrenComponents.bind(_this),
-                startCall: _this.startCall.bind(_this)
+                startCall: _this.startCall.bind(_this),
+                createCall: _this.createGroupCall.bind(_this)
             });
         });
 
@@ -398,7 +596,35 @@ export default class AmbiLayout extends React.Component {
                     className={(!this.state.isNavHidden) ? "body-container " + dashbrdClass : "body-container nav-hidden"}>
                     {childrenWithProps || <AmbiDashboard />}
                 </section>
-                <CallHandler/>
+                {
+                    (this.state.inComingCall) ?
+                        <CallHandler
+                            callChannel={this.state.callChannel}
+                            answerCall={this.answerCall.bind(this)}
+                            hangUpIncomingCall={this.hangUpIncomingCall.bind(this)}/>
+                        :
+                        null
+                }
+                {
+                    (this.state.callInProgress) ?
+                        <div>
+                            <ModalContainer zIndex={9999}>
+                                <ModalDialog className="modalPopup">
+                                    <CallModel
+                                        remoteChannel={this.state.callChannel}
+                                        bit6Call={this.state.bit6Call}
+                                        loggedUser={this.state.userLoggedIn}
+                                        targetUser={this.state.targetUser}
+                                        toggleMic={this.toggleMic.bind(this)}
+                                        toggleVideo={this.toggleVideo.bind(this)}
+                                        closePopup={this.onCloseCallModal.bind(this)}
+                                        minimizePopup={this.onMinimizeCallModal.bind(this)}/>
+                                </ModalDialog>
+                            </ModalContainer>
+                        </div>
+                        :
+                        null
+                }
                 {
                     /*this.state.isShowingModal &&
                      <ModalContainer zIndex={9999}>

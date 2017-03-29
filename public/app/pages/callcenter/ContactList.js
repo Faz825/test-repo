@@ -8,8 +8,12 @@ export default class ContactList extends React.Component {
         this.contacts = [];
     }
 
-    onCalling(user, callMode) {
-        this.props.onUserCall(user, callMode);
+    startCall(user, callChannel) {
+        this.props.startCall(user, callChannel);
+    }
+
+    createCall(contact, callChannel) {
+        this.props.createCall(contact, callChannel);
     }
 
     render() {
@@ -27,7 +31,8 @@ export default class ContactList extends React.Component {
                             {oGroupedContacts.users.map(function (oContact) {
                                 return (
                                     <Contact key={oContact.user_id} contact={oContact} type="contact"
-                                             onCalling={_this.onCalling.bind(_this)}/>
+                                             startCall={_this.startCall.bind(_this)}
+                                             createCall={_this.createCall.bind(_this)}/>
                                 )
                             })}
                         </div>

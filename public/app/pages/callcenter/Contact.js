@@ -14,8 +14,8 @@ export default class Contact extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
-    handleClick(user, callChannel) {
-        this.props.onCalling(user, callChannel);
+    handleClick(contact, callChannel) {
+        (contact.type == ContactType.INDIVIDUAL) ? this.props.startCall(contact, callChannel) : this.props.createCall(contact, callChannel);
     }
 
     render() {
