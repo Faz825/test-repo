@@ -65,7 +65,7 @@ export default class NoteBooks extends React.Component {
 
         return (
             <section className="group-content">
-                <div className="group-folder-container">
+                {/*<div className="group-folder-container">
                     <section className="folder-header">
                         <div className="row">
                             <div className="col-sm-7">
@@ -96,7 +96,7 @@ export default class NoteBooks extends React.Component {
                                 :null
                         }
                     </section>
-                </div>
+                </div>*/}
             </section>
         );
     }

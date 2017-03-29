@@ -497,7 +497,8 @@
     box-shadow: 1px 1px 1px 0 lightgray inset;
     padding: 2px 25px 2px 3px;
 }
-.feed-container .post-list-wrapper .wall-post .post-footer .comments-container .input-comment .input-wrapper .emoji{
+.feed-container .post-list-wrapper .wall-post .post-footer .comments-container .input-comment .input-wrapper .emoji,
+.sub-page .group-container .group-content .post-panel .wall-post .post-footer .comments-container .input-comment .input-wrapper .emoji{
     right: 77px;
 }
 .pg-newsfeed-new-comment-icon-wrapper{
@@ -596,6 +597,10 @@
     position: relative;
     overflow: hidden;
     height: 148px;
+}
+
+.comment-inner-wrapper .pg-newsfeed-post-upload-image{
+    float: none;
 }
 
 .user-name-container .own-post-share{

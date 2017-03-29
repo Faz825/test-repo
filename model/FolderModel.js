@@ -426,7 +426,35 @@ FolderSchema.statics.searchFolders = function(payload,callBack){
             callBack({status:200, folders:esResultSet.result});
         }
     });
-
 };
+
+
+/**
+ * Returns the set of folders which are related to a given group
+ */
+FolderSchema.statics.getFoldersByGroupId = function(groupId,callBack){
+    
+    var arrFolders = [];
+
+    if(typeof(groupId) === "undefined" ) {
+        callBack(arrFolders);
+    } else {
+        var _this = this;
+        _this.find({group_id: Util.toObjectId(groupId)}).lean().exec(function (err, resultSet) {
+            if (!err) {
+                if (resultSet == null) {
+                    callBack({status: 400, data: arrFolders});
+                    return;
+                }
+                callBack({status: 200, data: resultSet});
+            } else {
+                callBack({status: 400, error: err});
+            }
+        });
+    }
+};
+
+
+
 
 mongoose.model('Folders',FolderSchema);

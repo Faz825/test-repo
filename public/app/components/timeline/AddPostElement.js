@@ -408,12 +408,36 @@ export class TextPostElement extends React.Component{
                         uploadedFiles[a].show_loader = false;
                         uploadedFiles[a].http_url = data.video_upload.thumb_http_url;
                         uploadedFiles[a].isVideo = true;
+
+                        var uploadContent = {
+                            entity_id: data.video_upload.entity_id,
+                            upload_index: data.video_upload.upload_index,
+                            file_id: data.video_upload.file_id,
+                            file_name: data.video_upload.file_name,
+                            file_type: data.video_upload.file_type,
+                            content_title: 'Post Video',
+                            http_url: data.video_upload.http_url,
+                            thumb_file_name: data.video_upload.thumb_file_name,
+                            thumb_file_type: data.video_upload.thumb_file_type,
+                            thumb_http_url: data.video_upload.thumb_http_url
+                        }
+
+                        $.ajax({
+                            url: '/ajax/upload/video',
+                            method: "POST",
+                            dataType: "JSON",
+                            headers: { 'prg-auth-header': _this.loggedUser.token },
+                            data:uploadContent
+
+                        }).done(function (data, text) {}.bind(this));
+
+
                     }
                 }
             }
 
             let file_ids = _this.state.fileIds;
-            file_ids.push(data.video_upload.file_id)
+            file_ids.push(data.video_upload.file_id);
             _this.setState({uploadedFiles:uploadedFiles,file_ids:file_ids,post_mode:"AP",btnEnabled:true});
 
         });

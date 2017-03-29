@@ -98,13 +98,13 @@ ConnectionSchema.statics.createConnection = function (connectionData, callBack) 
 ConnectionSchema.statics.updateConnection = function (criteria, _data, callBack) {
 
     this.collection.update(criteria, {$set: _data}, {upsert: true, multi: false}, function (err, rsUpdate) {
-            if (!err) {
-                callBack(null);
-            } else {
-                console.log("user connection update error \n");
-                console.log(err);
-            }
-        })
+        if (!err) {
+            callBack(null);
+        } else {
+            console.log("user connection update error \n");
+            console.log(err);
+        }
+    })
 };
 
 ConnectionSchema.statics.sendConnectionRequest = function (user_id, connected_users, unconnected_users, callBack) {
@@ -207,7 +207,11 @@ ConnectionSchema.statics.getFriends = function (userId, status, callBack) {
                 });
         },
         function getIAcceptedRequest(callBack) {
-            _this.find({connected_with: userId, status: _status, connected_with_type: ConnectedType.PERSONAL_CONNECTION})
+            _this.find({
+                connected_with: userId,
+                status: _status,
+                connected_with_type: ConnectedType.PERSONAL_CONNECTION
+            })
                 .exec(function (err, resultSet) {
                     if (!err) {
                         for (var a = 0; a < resultSet.length; a++) {
@@ -273,7 +277,11 @@ ConnectionSchema.statics.getFriendsCount = function (userId, callBack) {
 
     _async.waterfall([
         function getMyRequestAcceptedUsers(callBack) {
-            _this.count({user_id: userId, status: ConnectionStatus.REQUEST_ACCEPTED, connected_with_type: ConnectedType.PERSONAL_CONNECTION})
+            _this.count({
+                user_id: userId,
+                status: ConnectionStatus.REQUEST_ACCEPTED,
+                connected_with_type: ConnectedType.PERSONAL_CONNECTION
+            })
                 .exec(function (err, resultCount) {
                     if (!err) {
                         friendsCount = resultCount
@@ -286,7 +294,11 @@ ConnectionSchema.statics.getFriendsCount = function (userId, callBack) {
                 });
         },
         function getIAcceptedRequest(callBack) {
-            _this.count({connected_with: userId, status: ConnectionStatus.REQUEST_ACCEPTED, connected_with_type: ConnectedType.PERSONAL_CONNECTION})
+            _this.count({
+                connected_with: userId,
+                status: ConnectionStatus.REQUEST_ACCEPTED,
+                connected_with_type: ConnectedType.PERSONAL_CONNECTION
+            })
                 .exec(function (err, resultCount) {
                     if (!err) {
                         friendsCount = friendsCount + resultCount;
@@ -578,26 +590,30 @@ ConnectionSchema.statics.getConnections = function (criteria, getConnCallback) {
         function getEachUser(aConnections, callback) {
             var formatted_users = [];
 
-            _async.each(aConnections, function (oResult, userCallback) {
-                var query = {
-                    q: "user_id:" + oResult.user_id,
-                    index: "idx_usr"
-                };
+            if (aConnections.length > 0) {
+                _async.each(aConnections, function (oResult, userCallback) {
+                    var query = {
+                        q: "user_id:" + oResult.user_id,
+                        index: "idx_usr"
+                    };
 
-                ES.search(query, function (sesResultSet) {
-                    if (oResult.user_id != criteria.user_id) {
-                        if (oResult.connected_at) {
-                            sesResultSet.result[0]['connected_at'] = oResult.connected_at;
-                            sesResultSet.result[0]['type'] = 1;
-                            sesResultSet.result[0]['contact_name'] = sesResultSet.result[0].first_name;
+                    ES.search(query, function (sesResultSet) {
+                        if (oResult.user_id != criteria.user_id) {
+                            if (oResult.connected_at) {
+                                sesResultSet.result[0]['connected_at'] = oResult.connected_at;
+                                sesResultSet.result[0]['type'] = 1;
+                                sesResultSet.result[0]['contact_name'] = sesResultSet.result[0].first_name;
+                            }
+                            formatted_users.push(sesResultSet.result[0]);
                         }
-                        formatted_users.push(sesResultSet.result[0]);
-                    }
-                    userCallback();
+                        userCallback();
+                    });
+                }, function (error) {
+                    error ? callback(error) : callback(null, formatted_users);
                 });
-            }, function (error) {
-                error ? callback(error) : callback(null, formatted_users);
-            });
+            } else {
+                callback(null, []);
+            }
         },
         function getGroupConnections(aIndividualUsers, callback) {
             var _cache_key = ConnectionConfig.ES_GROUP_INDEX_NAME + criteria.user_id.toString();
@@ -612,22 +628,27 @@ ConnectionSchema.statics.getConnections = function (criteria, getConnCallback) {
         }, function getEachGroup(aUsers, aGroups, callback) {
             var formatted_groups = [];
 
-            _async.each(aGroups, function (oGroup, groupCallback) {
-                var query = {
-                    q: '_id:' + oGroup._id,
-                    index: 'idx_group'
-                };
 
-                ES.search(query, function (sesResultSet) {
-                    sesResultSet.result[0]['type'] = 2;
-                    sesResultSet.result[0]['contact_name'] = sesResultSet.result[0].name_prefix;
-                    delete sesResultSet.result[0]['members'];
-                    formatted_groups.push(sesResultSet.result[0]);
-                    groupCallback();
+            if (aGroups.length > 0) {
+                _async.each(aGroups, function (oGroup, groupCallback) {
+                    var query = {
+                        q: '_id:' + oGroup._id,
+                        index: 'idx_group'
+                    };
+
+                    ES.search(query, function (sesResultSet) {
+                        sesResultSet.result[0]['type'] = 2;
+                        sesResultSet.result[0]['contact_name'] = sesResultSet.result[0].name_prefix;
+                        delete sesResultSet.result[0]['members'];
+                        formatted_groups.push(sesResultSet.result[0]);
+                        groupCallback();
+                    });
+                }, function (error) {
+                    error ? callback(error) : callback(null, aUsers.concat(formatted_groups));
                 });
-            }, function (error) {
-                error ? callback(error) : callback(null, aUsers.concat(formatted_groups));
-            });
+            } else {
+                callback(null, aUsers);
+            }
         }
     ], function (error, aConnections) {
         error ? getConnCallback({status: 400, error: error}) : getConnCallback({status: 200, data: aConnections});

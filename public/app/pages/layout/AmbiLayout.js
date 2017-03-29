@@ -18,6 +18,7 @@ import {CallChannel, CallType, CallStatus, UserMode, ContactType} from '../../co
 import {Config} from '../../config/Config';
 import CallCenter from '../../middleware/CallCenter';
 import CallModel from '../../components/call/CallModel';
+import VideoChatPopOver from '../chat/VideoChatPopOver'
 
 export default class AmbiLayout extends React.Component {
     constructor(props) {

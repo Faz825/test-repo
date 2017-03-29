@@ -388,6 +388,7 @@ export class CreateStepTwo extends React.Component{
                                         <SearchMembersField
                                             handleSearchUser={this.handleSearchUser}
                                             placeholder=""
+                                            sharedWithIds={this.state.sharedWithIds}
                                         />
                                     </div>
                                     <div className="form-group">

@@ -8,6 +8,7 @@ import Session from '../../middleware/Session';
 import Chat from '../../middleware/Chat';
 import Lib from '../../middleware/Lib';
 import CallCenter from '../../middleware/CallCenter';
+import moment from 'moment';
 
 export default class ConversationList extends React.Component{
     constructor(props){
@@ -127,6 +128,9 @@ export default class ConversationList extends React.Component{
                         }
 
                         conv.date = stamp;
+                        conv.date_time = c.updated;
+                        conv.date_string = moment(c.updated).format("DD MMM YYYY hh:mm a");
+                        conv.date_up = new Date(c.updated);
                         conv.latestMsg = latestText;
                         conv.message_id = "msg__m" + mId;
 
@@ -196,6 +200,9 @@ export default class ConversationList extends React.Component{
         if(op >= 0 && title != 'undefined'){
             //Update Conversation data
             var stamp = Lib.getRelativeTime(c.updated);
+            var moment_data = moment(c.updated).format("DD MMM YYYY hh:mm a");
+            var _updated = c.updated;
+            var _date = new Date(c.updated);
             var latestText = '';
             var lastMsg = c.getLastMessage();
             if (lastMsg) {
@@ -215,8 +222,12 @@ export default class ConversationList extends React.Component{
 
             for(let con in cons){
                 if(cons[con].title == title){
-                    cons[con].date = stamp;
-                    cons[con].latestMsg = latestText;
+                    let _conObj = cons[con];
+                    _conObj.date = stamp;
+                    _conObj.date_time = _updated;
+                    _conObj.date_string = moment_data;
+                    _conObj.date_up = _date;
+                    _conObj.latestMsg = latestText;
                     cur_conv = con;
                     updated = true;
                 }
@@ -248,6 +259,9 @@ export default class ConversationList extends React.Component{
                             }
 
                             conv.date = stamp;
+                            conv.date_time = _updated;
+                            conv.date_string = moment_data;
+                            conv.date_up = _date;
                             conv.latestMsg = latestText;
                             conv.message_id = "msg__m" + mId;
 
@@ -336,36 +350,11 @@ export default class ConversationList extends React.Component{
     }
 
     render() {
-        /*let _this = this;
-         let convs = this.state.conversations.map(function(conv,key){
-         let _classNames = "tab msg-holder ";
 
-         return (
-         <div className={_classNames} key={key}>
-         <a href="javascript:void(0)" onClick={()=>_this.onLoadQuickChat(conv)}>
-         <div className="chat-pro-img">
-         <img src={conv.user.images.profile_image.http_url}/>
-         </div>
-         <div className="chat-body">
-         <span className="connection-name">{conv.user.first_name + " " + conv.user.last_name}</span>
-         <p className="msg">{conv.latestMsg}</p>
-         <span className="chat-date">{conv.date}</span>
-         </div>
-         </a>
-         </div>
-         );
-         });
-
-         return (
-         <div className="chat-notification-header" id="unread_chat_list">
-         {convs}
-         </div>
-
-         )*/
-
-        //console.log('this.state.conversations >>', this.state.conversations);
-
-        let _count = this.state.conversations.length;
+        //let _conversationsList = this.state.conversations;
+        this.state.conversations.sort(function(a, b) {
+            return moment(a.date_up) < moment(b.date_up);
+        })
 
         let _this = this;
         let _convs = this.state.conversations.map(function(conv,key){
@@ -398,7 +387,7 @@ export default class ConversationList extends React.Component{
                         <div className="popover-header">
                             <div className="top-section clearfix">
                                 <p className="inbox-count header-text clearfix">
-                                    <span className="count">({_count})</span>inbox
+                                    <span className="count">({this.unreadCount})</span>inbox
                                 </p>
                                 <p className="mark-all header-text">mark all as read</p>
                                 <p className="new-msg header-text" onClick={this.openNewChat.bind(this)}>new message</p>

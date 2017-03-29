@@ -13,11 +13,13 @@ export default class SearchMembersField extends React.Component{
             members : [],
             value: '',
             suggestions: [],
-            sharedWithIds : [],
+            // sharedWithIds : [],
+            sharedWithIds : this.props.sharedWithIds,
             placeholder : this.props.placeholder
         };
 
         this.users = [];
+        // this.sharedWithIds = this.state.sharedWithIds ? this.state.sharedWithIds : [];
         this.sharedWithIds = [];
         this.members = [];
 
@@ -26,6 +28,15 @@ export default class SearchMembersField extends React.Component{
         this.onSuggestionsUpdateRequested = this.onSuggestionsUpdateRequested.bind(this);
         this.getSuggestionValue = this.getSuggestionValue.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+        if (nextProps.sharedWithIds !== this.state.sharedWithIds) {
+            this.sharedWithIds = [];
+            this.members = [];
+            this.setState({ sharedWithIds: this.sharedWithIds, members: []});
+        }
     }
 
     removeUser(key){
@@ -49,20 +60,17 @@ export default class SearchMembersField extends React.Component{
             var userObject = {
                 "name" : suggestion.first_name+" "+suggestion.last_name,
             	"user_id" : suggestion.user_id,
-             	"status" : 3 // ACCEPTED 
+             	"status" : 3, // ACCEPTED
+                "profile_image" : suggestion.images.profile_image.http_url
             }
             this.members.push(userObject);
             this.sharedWithIds.push(suggestion.user_id);
             this.setState({sharedWithIds:this.sharedWithIds, members:this.members, isAlreadySelected:false});
-            console.log("BEFORE SET MEMBERS");
-            console.log(this.members);
             this.props.handleSearchUser(this.sharedWithIds, this.members);
-
         } else{
             this.setState({isAlreadySelected:true});
             console.log("already selected" + this.state.isAlreadySelected)
         }
-
         return "";
     }
 
@@ -92,7 +100,6 @@ export default class SearchMembersField extends React.Component{
                     }
                 }.bind(this),
                 error: function (request, status, error) {
-                    console.log(request.responseText);
                     console.log(status);
                     console.log(error);
                 }.bind(this)

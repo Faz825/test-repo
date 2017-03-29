@@ -15,8 +15,6 @@ export default class WorkModePopup extends React.Component {
             window.location.href = "/";
         }
 
-        //this.tPeriod = Moment().format("A");
-        //this.cH = Moment().format("hh");
         //this.cM = Moment().format("mm");
         let _sesData = Session.getSession('prg_wm');
         let _startTime = new Date().getTime();
@@ -48,8 +46,8 @@ export default class WorkModePopup extends React.Component {
 
         this.state = {
             startDate: Moment(),
-            customHours: Moment().format("hh"),
-            customMins: Moment().format("mm"),
+            customHours: '00',
+            customMins: '00',
             selectedTime: 0,
             selectedTimeOption: '',
             blockedMode: "",
@@ -152,7 +150,7 @@ export default class WorkModePopup extends React.Component {
             }
             this.setState({remainingTime: timeLeft, remainingTimeIn: timeIn});
         } else {
-            console.log("NO session data");
+            //console.log("NO session data");
             clearInterval(this.checkRemainingTimeInterval);
             this.checkRemainingTimeInterval = null;
             this.setState({timeBlockIsVisible: true, errorMessage: "Work Mode time out"})
@@ -182,9 +180,6 @@ export default class WorkModePopup extends React.Component {
 
     onTimeChange(e) {
 
-        console.log("onTimeChange")
-        console.log(e.target.name)
-        console.log(e.target.value)
         let timeField = e.target.name;
         let timeFieldValue = e.target.value;
         let currSpinerH = this.state.customHours;
@@ -192,7 +187,6 @@ export default class WorkModePopup extends React.Component {
         if (timeField == "hours") {
             if (timeFieldValue <= 12) {
                 timeFieldValue = e.target.value.substring(0, 2);
-                console.log("hours  >> "+ timeFieldValue);
                 this.setState({customHours: timeFieldValue});
             }
         }
@@ -201,13 +195,11 @@ export default class WorkModePopup extends React.Component {
             if (timeFieldValue == 60) {
                 timeFieldValue = e.target.value.substring(0, 2);
                 currSpinerH = parseInt(currSpinerH) + 1;
-                console.log("mins 1 >> "+ currSpinerH);
                 this.setState({customMins: 0, customHours: currSpinerH});
             }
 
             if (timeFieldValue <= 59) {
                 timeFieldValue = e.target.value.substring(0, 2);
-                console.log("mins 2 >> "+ timeFieldValue);
                 this.setState({customMins: timeFieldValue});
             }
         }
@@ -254,7 +246,7 @@ export default class WorkModePopup extends React.Component {
             }
         }
 
-        console.log(this.selectedList);
+        //console.log(this.selectedList);
         let workModeErrorDetected = (this.state.errorMessage == "Please Select Work Mode" || this.state.errorMessage == "Work Mode time out") ? '' : this.state.errorMessage;
         this.setState({blockedMode: this.selectedList, errorMessage: workModeErrorDetected});
     }
@@ -281,7 +273,7 @@ export default class WorkModePopup extends React.Component {
 
         if (this.selectedList.length >= 1) {
             if (this.formatDate == 'undefined') {
-                console.log("not set");
+                //console.log("not set");
                 this.formatDate = Moment().format("YYYY-MM-DD");
             }
             data = {
@@ -300,7 +292,7 @@ export default class WorkModePopup extends React.Component {
             this.setState({errorMessage: "Please Select Work Mode"});
             return false;
         }
-        console.log(data);
+        //console.log(data);
 
         let _startTime = (this.state.sesStartTime) ? this.state.sesStartTime : new Date().getTime();
         let howLong = (this.state.sesHowLong) ? this.state.sesHowLong : 0;
@@ -359,7 +351,7 @@ export default class WorkModePopup extends React.Component {
         Session.createSession("prg_wm", '');
         clearInterval(this.checkRemainingTimeInterval);
         this.checkRemainingTimeInterval = null;
-        this.setState({sesStartTime: undefined, sesHowLong: undefined, sesEndTime: undefined, timeBlockIsVisible: false, selectedTimeOption: ''})
+        this.setState({sesStartTime: undefined, sesHowLong: undefined, sesEndTime: undefined, timeBlockIsVisible: false, selectedTimeOption: '', customHours: '00', customMins: '00'})
         //this.props.closePopUp();
     }
 
@@ -436,7 +428,7 @@ export default class WorkModePopup extends React.Component {
             <div className="popup-holder">
                 <div className="work-mode-popup-wrapper">
                     <div className="header-wrapper">
-                        <img src="images/work-mode/logo.png" alt="" className="logo"/>
+                        <img src="../images/work-mode/logo.png" alt="" className="logo"/>
                         <p className="header">work mode</p>
                     </div>
 
@@ -455,7 +447,7 @@ export default class WorkModePopup extends React.Component {
                                                disabled={this.state.timeBlockIsVisible}/>
                                         <label htmlFor="newsfeed-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/newsfeed.png" className="type-icon"/>
+                                                <img src="../images/work-mode/newsfeed.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">newsfeed</p>
                                                 </div>
@@ -473,7 +465,7 @@ export default class WorkModePopup extends React.Component {
                                                checked={(this.selectedList.includes("calls") || this.selectedList.includes("all"))? true : false }/>
                                         <label htmlFor="calls-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/calls.png" className="type-icon"/>
+                                                <img src="../images/work-mode/calls.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">calls</p>
                                                 </div>
@@ -490,7 +482,7 @@ export default class WorkModePopup extends React.Component {
                                                checked={(this.selectedList.includes("msg") || this.selectedList.includes("all"))? true : false }/>
                                         <label htmlFor="msg-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/messages.png" className="type-icon"/>
+                                                <img src="../images/work-mode/messages.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">messages</p>
                                                 </div>
@@ -508,7 +500,7 @@ export default class WorkModePopup extends React.Component {
                                                checked={(this.selectedList.includes("social_notifications") || this.selectedList.includes("all"))? true : false }/>
                                         <label htmlFor="social_notifications-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/social.png" className="type-icon"/>
+                                                <img src="../images/work-mode/social.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">social notifications</p>
                                                 </div>
@@ -527,7 +519,7 @@ export default class WorkModePopup extends React.Component {
                                                checked={(this.selectedList.includes("all_notifications") || this.selectedList.includes("all"))? true : false }/>
                                         <label htmlFor="notifications-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/notifications.png" className="type-icon"/>
+                                                <img src="../images/work-mode/notifications.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">all notifications</p>
                                                 </div>
@@ -544,7 +536,7 @@ export default class WorkModePopup extends React.Component {
                                                checked={(this.selectedList.includes("all"))? true : false }/>
                                         <label htmlFor="all-block-check" className="selector-label">
                                             <div className="select-content clearfix">
-                                                <img src="images/work-mode/all.png" className="type-icon"/>
+                                                <img src="../images/work-mode/all.png" className="type-icon"/>
                                                 <div className="type-content">
                                                     <p className="type-title">all</p>
                                                 </div>
@@ -620,7 +612,7 @@ export default class WorkModePopup extends React.Component {
                     <div className="footer">
                         {this.state.timeBlockIsVisible ?
                             <button type="submit" className="btn work-mode" onClick={this.onWorkModeRemove.bind(this)}>
-                                deactive work mode</button>
+                                deactivate work mode</button>
                             :
                             <button type="submit" className="btn work-mode" onClick={this.onWorkModeSet.bind(this)}>
                                 activate work mode</button>
