@@ -74,7 +74,11 @@ var CallCenterController = {
             async.waterfall([
                 function (callback) {
                     Connection.getConnections(criteria, function (resultSet) {
-                        callback(null, resultSet.data);
+                        if (resultSet) {
+                            callback(null, resultSet.data);
+                        } else {
+                            callback(null, null);
+                        }
                     });
                 },
                 function (aConns, callback) {
@@ -124,6 +128,7 @@ var CallCenterController = {
 
                         callback(null, aContacts);
                     } else {
+
                         callback(null, []);
                     }
                 }
