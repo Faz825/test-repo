@@ -589,7 +589,6 @@ export class RemoveMemberPopup extends React.Component{
                     <div className="inner-wrapper">
                         <div className="popover-header">
                             <p className="group-members">group members</p>
-                            <p className="find-member">find member</p>
                         </div>
                         <div className={(this.state.seeAll) ? "members-list-holder see-all" : "members-list-holder"}>
                             {_members}

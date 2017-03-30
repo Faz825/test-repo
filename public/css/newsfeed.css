@@ -568,7 +568,7 @@
 .input-content .statusIniText{
     color: #9197a3;
     position: absolute;
-    top: 3px;
+    top: 8px;
     left: 5px;
 }
 .input-content .statusIniText.onFocus{
