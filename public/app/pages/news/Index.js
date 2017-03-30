@@ -430,6 +430,23 @@ export default class Index extends React.Component{
                         </div>
                     </div>
                 </div>
+                {
+                    (this.state.blockNewsFeed)?
+                    <div className="workmode-overlay-holder">
+                        <div className="row">
+                            <div className="container">
+                                <div className="secretary-holder">
+                                    <img src={_secretary_image} alt="Secretary" className="img-responsive"/>
+                                </div>
+                                <div className="msg-holder">
+                                    <h3>{user.first_name + " " + user.last_name}, Don't get distracted, get back to
+                                        work!</h3>
+                                    <img className="arrow" src="images/workmode_msg_arrow.png"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div> : null
+                }
             </section>
         )
     }

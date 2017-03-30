@@ -11119,13 +11119,14 @@ header .friends-popover-holder .popover-footer .see-all {
   border-radius: 999px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
-  margin-top: 14px;
+  margin-top: 5px;
   margin-left: 2px;
   font-size: 1em;
   color: #ffffff;
   font-weight: 400;
   letter-spacing: 0px;
-  line-height: 0px;
+  line-height: 0.9;
+  padding: 0 7px;
 }
 .folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .share-folder {
   position: absolute;
@@ -12334,7 +12335,7 @@ header .friends-popover-holder .popover-footer .see-all {
   margin-bottom: 0;
   font-size: 0.6875em;
 }
-.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div span {
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .people-list {
   font-size: 0.6875em;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .people-list-wrapper {
@@ -12345,6 +12346,7 @@ header .friends-popover-holder .popover-footer .see-all {
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .selected-people {
   color: #00a6ef;
+  font-size: 0.6875em;
 }
 .calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li .event-time {
   color: #00a6ef;
@@ -15193,13 +15195,14 @@ header .friends-popover-holder .popover-footer .see-all {
   border-radius: 999px;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .content-wrapper h3 {
-  margin-top: 14px;
+  margin-top: 5px;
   margin-left: 2px;
   font-size: 1em;
   color: #ffffff;
   font-weight: 400;
   letter-spacing: 0px;
-  line-height: 0px;
+  line-height: 0.9;
+  padding: 0 7px;
 }
 .group-container .group-folder-container .folder-body .folder .folder-wrapper .col-sm-2 .folder-cover-wrapper .folder-cover .share-folder {
   position: absolute;
@@ -16407,7 +16410,7 @@ header .friends-popover-holder .popover-footer .see-all {
   margin-bottom: 0;
   font-size: 0.6875em;
 }
-.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div span {
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .people-list {
   font-size: 0.6875em;
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .people-list-wrapper {
@@ -16418,6 +16421,7 @@ header .friends-popover-holder .popover-footer .see-all {
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div .selected-people {
   color: #00a6ef;
+  font-size: 0.6875em;
 }
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li .event-time {
   color: #00a6ef;
@@ -19129,12 +19133,16 @@ header .friends-popover-holder .popover-footer .see-all {
 .group-dashboard-container .group-dashboard-header .action-holder {
   text-align: right;
 }
-.group-dashboard-container .group-dashboard-header .crt-grp {
-  display: inline-block;
+.group-dashboard-container .group-dashboard-header .header-actions-wrapper {
+  float: right;
+}
+.group-dashboard-container .group-dashboard-header .header-actions-wrapper .crt-grp {
+  float: left;
+  margin-top: 1px;
   margin-right: 8px;
 }
-.group-dashboard-container .group-dashboard-header .crt-grp .btn-crt-grp {
-  padding: 8px 19px;
+.group-dashboard-container .group-dashboard-header .header-actions-wrapper .crt-grp .btn-crt-grp {
+  padding: 9px 19px;
   border-radius: 4px;
   background-color: #ed1e7a;
   color: #ffffff;
@@ -19143,16 +19151,16 @@ header .friends-popover-holder .popover-footer .see-all {
   font-weight: 400;
   outline: none;
 }
-.group-dashboard-container .group-dashboard-header .crt-grp .btn-crt-grp i {
+.group-dashboard-container .group-dashboard-header .header-actions-wrapper .crt-grp .btn-crt-grp i {
   font-size: 10px;
   margin-right: 15px;
 }
-.group-dashboard-container .group-dashboard-header .search-group {
+.group-dashboard-container .group-dashboard-header .header-actions-wrapper .search-group {
   position: relative;
-  display: inline-block;
+  float: left;
   width: 115px;
 }
-.group-dashboard-container .group-dashboard-header .search-group .inner-addon i {
+.group-dashboard-container .group-dashboard-header .header-actions-wrapper .search-group .inner-addon i {
   position: absolute;
   right: 11px;
   top: 9px;
@@ -19161,23 +19169,23 @@ header .friends-popover-holder .popover-footer .see-all {
   color: #bebfbf;
   font-size: 0.75em;
 }
-.group-dashboard-container .group-dashboard-header .search-group .inner-addon input {
+.group-dashboard-container .group-dashboard-header .header-actions-wrapper .search-group .inner-addon input {
   border-radius: 4px;
   padding-right: 30px;
   height: 33px;
   font-size: 0.6875em;
   box-shadow: none;
 }
-.group-dashboard-container .group-dashboard-header .search-group .inner-addon input:-moz-placeholder {
+.group-dashboard-container .group-dashboard-header .header-actions-wrapper .search-group .inner-addon input:-moz-placeholder {
   color: #bebfbf;
 }
-.group-dashboard-container .group-dashboard-header .search-group .inner-addon input::-moz-placeholder {
+.group-dashboard-container .group-dashboard-header .header-actions-wrapper .search-group .inner-addon input::-moz-placeholder {
   color: #bebfbf;
 }
-.group-dashboard-container .group-dashboard-header .search-group .inner-addon input:-ms-input-placeholder {
+.group-dashboard-container .group-dashboard-header .header-actions-wrapper .search-group .inner-addon input:-ms-input-placeholder {
   color: #bebfbf;
 }
-.group-dashboard-container .group-dashboard-header .search-group .inner-addon input::-webkit-input-placeholder {
+.group-dashboard-container .group-dashboard-header .header-actions-wrapper .search-group .inner-addon input::-webkit-input-placeholder {
   color: #bebfbf;
 }
 .group-dashboard-container .group-content {
@@ -19347,6 +19355,7 @@ header .friends-popover-holder .popover-footer .see-all {
   width: 100%;
   height: 73px;
   display: block;
+  border-bottom: 1px solid #e0e0e0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

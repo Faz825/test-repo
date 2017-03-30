@@ -105,7 +105,7 @@ export default class Index extends React.Component{
         if(this.state.groups.length > 0 ) {
             groupBlock = this.state.groups.map(function(group,userKey){
                 return <a className="list-item clearfix" href={'groups/'+group.name_prefix}>
-                    <img src={group.group_pic_link ? group.group_pic_link : "images/group/dashboard/grp-icon.png"} alt="Group icon" className="pull-left" />
+                    <img src={group.group_pic_link ? group.group_pic_link : "images/group/dashboard/grp-default-icon.png"} alt="Group icon" className="pull-left" />
                     <p className="list-item-title">{group.name}</p>
                 </a>
             });
@@ -116,7 +116,7 @@ export default class Index extends React.Component{
                     <section className="group-dashboard-header">
                         <div className="row">
                             <div className="col-sm-6">
-                                <h2>group</h2>
+                                <h2>groups</h2>
                             </div>
                             <div className="col-sm-6 action-holder">
                                 <div className="crt-grp">
@@ -200,7 +200,7 @@ export class GroupsList extends React.Component{
         var groupBlock = '';
         if(this.state.groups.length > 0 ) {
             groupBlock = this.state.groups.map(function(group,key){
-                let group_pic = group.group_pic_link ? group.group_pic_link : "/images/group/dashboard/grp-icon.png";
+                let group_pic = group.group_pic_link ? group.group_pic_link : "/images/group/dashboard/grp-default-icon.png";
                 const wallpaper = {
                     backgroundImage: 'url(' + group_pic + ')'
                 };
