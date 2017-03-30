@@ -22012,6 +22012,14 @@ header .friends-popover-holder .popover-footer .see-all {
   background-repeat: no-repeat;
   background-image: url("../images/call-center/active-call-hangup-ico.png");
 }
+
+.popup-holder .active-call-container .active-user-block .active-call-nav span.dial-call {
+  background-color: #07b13b;
+  opacity: 1;
+  background-repeat: no-repeat;
+  background-image: url("../images/call-center/phone-ico.png");
+}
+
 .popup-holder .active-call-container .participants {
   text-align: center;
   overflow: hidden;

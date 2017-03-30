@@ -42,7 +42,6 @@ class CallCenter {
                         _this.bit6SignUp(ident, pass, oUser);
                     } else {
                         _this.b6.session.displayName = oUser.first_name + " " + oUser.last_name;
-
                         if (!_this.getBit6PrivateGroup(_this.b6.session.client.groups, authedUser)) {
                             var opts = {
                                 meta: {
@@ -51,7 +50,8 @@ class CallCenter {
                                 }
                             };
 
-                            _this.createPrivateGroup(opts, function (groupRes) {});
+                            _this.createPrivateGroup(opts, function (groupRes) {
+                            });
                         }
 
                         return true;
