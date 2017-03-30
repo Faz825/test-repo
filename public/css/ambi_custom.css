@@ -47,6 +47,18 @@ body{
 	border: 1px solid #dddddd;
 }
 
+.grp-members .invite-people #react-autowhatever-1{
+   width: 100%;
+   float: left;
+   position: absolute;
+   top: 35px;
+   left: auto;
+   overflow-y: scroll;
+   z-index: 9999;
+   background: #ffffff;
+   border: 1px solid #dddddd;
+}
+
 .invite-people .suggestion-item{
 	overflow: hidden;
 }
@@ -154,6 +166,10 @@ body{
 
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper {
     overflow: visible !important;
+}
+
+.group-container .group-content .sidebar .grp-members .all-members .mem-img{
+     overflow: hidden;
 }
 
 .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .close-btn {
@@ -343,6 +359,7 @@ body{
 }
 
 .calender-container .calender-box > div.week > span.day .event-area > ul li p{
+  margin: 0;
 	width: 98px;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -495,6 +512,18 @@ a.rc-time-picker-panel-clear-btn {
 	white-space: nowrap;
 	width: 150px;
 	overflow: hidden;
+}
+
+.group-container .group-content .sidebar .grp-day-panel .event-task-holder .list .list-wrapper .list-item{
+     overflow: hidden;
+}
+ 
+ .group-container .group-content .sidebar .grp-day-panel .event-task-holder .list .list-wrapper .list-item .time{
+   float: right;
+}
+ 
+.group-container .group-content .sidebar .grp-day-panel .event-task-holder .list {
+     width: 89%;
 }
 
 .calender-container .mini-calender-box > div.week > span.day.today{
@@ -1639,6 +1668,24 @@ body .modal-backdrop{
     padding: 0px 0px;
 }
 
+.group-container .group-content .sidebar .grp-members .add-member .search-field-holder .user-holder .user {
+     float: left;
+     margin-top: 2px;
+     margin-left: 3px;
+     padding: 3px;
+     font-size: 0.875em;
+     font-weight: 400;
+     letter-spacing: 1px;
+     color: #00a6ef;
+     border-radius: 3px;
+     background-color: rgba(0, 166, 239, 0.3);
+ }
+ 
+ .group-container .group-content .sidebar .grp-members .add-member .search-field-holder .user-holder .user:hover {
+     color: #ffffff;
+     background-color: #00a6ef;
+ }
+
 .group-container .add-member .btn{
     position: absolute;
     top: 3px;
@@ -1655,14 +1702,14 @@ body .modal-backdrop{
     width: 100%;
 }
 
-.group-container .group-content .event-task-holder ul li:before {
+/*.group-container .group-content .event-task-holder ul li:before {
     color: #00a6ef;
     content: "\f111";
     font-family: FontAwesome;
     line-height: 1;
     font-size: 5px;
     margin-right: 10px;
-}
+}*/
 
 .group-container .group-content .event-task-holder ul.tasks-list li:before {
     color: #ff0000;
@@ -1760,6 +1807,26 @@ header .chat-popover-holder .inner-wrapper .see-all{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .name,
+ .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper,
+ .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span,
+ .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .name,
+ .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper,
+ .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span {
+     float: none;
+     display: inline-block;
+ }
+ 
+ .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on,
+ .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on {
+     float: left;
+ }
+ 
+ .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share,
+ .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share {
+     margin-left: 5px;
+ }
 
 .feed-container .outer-wrapper .new-post .input-wrapper .input-options label,
 .group-container .outer-wrapper .new-post .input-wrapper .input-options label{
