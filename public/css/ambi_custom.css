@@ -2047,3 +2047,50 @@ header .chat-popover-holder .inner-wrapper .see-all{
 .workmode-popup-wrapper .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.selected .type-content .type-title{
     color: #a6c74a;
 }
+
+.imgPop-holder .share-popup-holder .img-holder {
+    min-width: 600px;
+    background: #838383;
+    padding: 30px 0px;
+}
+
+.imgPop-holder .share-popup-holder .img-holder img {
+    margin: auto;
+}
+
+.share-popup-holder.feed-container {
+    margin-top: 0px;
+}
+
+.imgPop-holder.dialog--jss-0-0 {
+    padding: 0px;
+}
+
+.pg-newsfeed-post-upload-image {
+    width: 31.01%;
+}
+
+.pg-newsfeed-post-upload-image img.post-img.img-responsive {
+    transform: scale(1.5);
+  -moz-transform: scale(1.5);
+  -webkit-transform: scale(1.5);
+  -o-transform: scale(1.5);
+  -ms-transform: scale(1.5); /* IE 9 */
+}
+
+.pg-newsfeed-post-upload-image .post-img-container {
+    display: block;
+    font-size: 0px;
+    line-height: 0px;
+}
+
+.pg-newsfeed-post-upload-image .post-img-container .img-helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.pg-newsfeed-post-upload-image .post-img-container .img-helper img {
+    width: 100%;
+    vertical-align: middle;
+}
