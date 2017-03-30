@@ -400,15 +400,18 @@ export default class QuickChatHandler extends React.Component{
 
     };
 
-    doVideoCall(callObj){
-        //TODO Call has to be integrated after callcenter is completed
+    /*doVideoCall(callUser){
+        console.log("doVideoCall >>", callUser);
+        this.props.startCall(callUser, CallChannel.VIDEO );
+
         //Chat.startOutgoingCall(callObj.uri, true);
     };
 
-    doAudioCall(callObj){
-        //TODO Call has to be integrated after callcenter is completed
+    doAudioCall(callUser){
+        console.log("doAudioCall >>", callUser);
+        this.props.startCall(callUser, CallChannel.AUDIO );
         //Chat.startOutgoingCall(callObj.uri, false);
-    };
+    };*/
 
     makeConversationRead(uri){
         var conv = this.b6.getConversation(uri);
@@ -536,12 +539,13 @@ export default class QuickChatHandler extends React.Component{
                     my_connections={_this.state.my_connections}
                     bubbleClosed={_this.onBubbleClose.bind(this)}
                     sendMyMessage={_this.sendChat.bind(this)}
-                    doAudioCall = {_this.doAudioCall.bind(this)}
-                    doVideoCall = {_this.doVideoCall.bind(this)}
+                    //doAudioCall = {_this.doAudioCall.bind(this)}
+                    //doVideoCall = {_this.doVideoCall.bind(this)}
                     isNavHidden={_this.state.isNavHidden}
                     setActiveBubbleId= {_this.setActiveBubbleId.bind(this)}
                     isActiveBubble={_isActive}
                     setNewChatToList={_this.setNewChatToBubbleList.bind(this)}
+                    startCall={_this.props.startCall}
                     />
             );
         });
