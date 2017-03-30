@@ -278,11 +278,12 @@ export class  PostCommentAction extends React.Component{
                 <div className="user-image-holder">
                     <img src={profile_image} alt={this.loggedUser.first_name +" "+ this.loggedUser.last_name} className="img-responsive img-circle"/>
                 </div>
-                <div className="input-wrapper">
+                <div className="input-wrapper input-content">
                     <div id="comment_input" contentEditable={true}
-                            className="form-control input-comment"
-                            onInput={this.onContentAdd.bind(this)}
-                            placeholder="write a comment..."></div>
+                        className="form-control input-comment"
+                        onInput={this.onContentAdd.bind(this)}
+                        placeholder="write a comment...">
+                    </div>
                     <label htmlFor="cmntImgUpload" className="img-comment">
                         <i className="fa fa-camera"></i>
                     </label>

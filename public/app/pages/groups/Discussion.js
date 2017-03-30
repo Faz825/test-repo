@@ -175,18 +175,18 @@ export default class Discussion extends React.Component{
         let workmodeClass = "workmode-switched";
         // let user = Session.getSession('prg_lg');
         const {user, uname}= this.state;
-        var descriptionText = this.state.currentDescription ? this.state.currentDescription : "No description is added";
         return (
             <section className="group-content">
                 <div className="sidebar col-sm-4">
                     <div className="grp-desc panel">
                         <h3 className="panel-title">Description</h3>
                         <div className="desc"
-                             contentEditable={true}
-                             dangerouslySetInnerHTML={{__html: descriptionText}}
-                             onFocus={this.enableSaveDescription}
-                             onBlur={this.saveDescription}
-                             onInput={(event)=>{this.handleDescription(event)}}>
+                            contentEditable={true}
+                            dangerouslySetInnerHTML={{__html: this.state.currentDescription}}
+                            onFocus={this.enableSaveDescription}
+                            onBlur={this.saveDescription}
+                            onInput={(event)=>{this.handleDescription(event)}}
+                            placeholder="No description is added">
                         </div>
                         {this.state.showSave ?
                             <span className="save-btn" onInput={()=>{this.saveDescription()}}>save</span>
