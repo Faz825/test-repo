@@ -32,7 +32,7 @@ export default class SearchMembersField extends React.Component{
 
     componentWillReceiveProps(nextProps) {
 
-        if (nextProps.sharedWithIds !== this.state.sharedWithIds) {
+        if (nextProps.sharedWithIds !== this.state.sharedWithIds && nextProps.sharedWithIds.length === 0) {
             this.sharedWithIds = [];
             this.members = [];
             this.setState({ sharedWithIds: this.sharedWithIds, members: []});
@@ -57,6 +57,7 @@ export default class SearchMembersField extends React.Component{
 
     getSuggestionValue(suggestion) {
         if(this.sharedWithIds.indexOf(suggestion.user_id)==-1){
+
             var userObject = {
                 "name" : suggestion.first_name+" "+suggestion.last_name,
             	"user_id" : suggestion.user_id,
