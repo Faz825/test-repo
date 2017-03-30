@@ -1358,13 +1358,15 @@ footer .notification-alert-holder.slideOut{
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper {
     width: 343px !important;
     margin-right: 15px;
-    height: 25px;
+    height: auto;
+    min-height: 25px;
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper.tagged .people-container{
     width: 100%;
     max-width: 343px !important;
-    height: 25px;
+    height: auto;
+    min-height: 25px;
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper{
