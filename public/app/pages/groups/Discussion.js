@@ -286,7 +286,7 @@ export class MembersWidget extends React.Component{
     }
 
     handleSearchUser(sharedWithIds, members){
-        this.setState({newMembers: members});
+        this.setState({newMembers: members, sharedWithIds : sharedWithIds});
     }
 
     addNewMembers() {
