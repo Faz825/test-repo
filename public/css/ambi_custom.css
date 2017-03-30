@@ -148,6 +148,10 @@ body{
     position: relative;
 }
 
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper.tagged .people-container .react-autosuggest__container {
+    float: left;
+}
+
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper {
     overflow: visible !important;
 }
@@ -1260,6 +1264,10 @@ footer .notification-alert-holder.slideOut{
     height: 25px;
 }
 
+.calender-container .calender-body.day-view .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
+    height: auto;
+}
+
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
     float: left !important;
     height: 25px;
@@ -1294,9 +1302,13 @@ footer .notification-alert-holder.slideOut{
 }
 
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
-    width: 100%;
+    width: 100% !important;
     max-width: 430px !important;
     height: 25px;
+}
+
+.group-container .group-calendar-container .calender-body.day-view .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
+    height: auto;
 }
 
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input {
