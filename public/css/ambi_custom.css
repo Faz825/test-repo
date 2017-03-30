@@ -1668,6 +1668,11 @@ body .modal-backdrop{
     outline: none;
 }
 
+.group-container .group-content .sidebar .grp-desc .desc:empty:before{
+  content: attr(placeholder);
+  display: block; /* For Firefox */
+}
+
 .group-container .group-content .sidebar .grp-desc .save-btn {
     color: #00a6ef;
     cursor: pointer;
@@ -2043,4 +2048,9 @@ header .chat-popover-holder .inner-wrapper .see-all{
 .pg-newsfeed-post-upload-image .post-img-container .img-helper img {
     width: 100%;
     vertical-align: middle;
+}
+
+.wall-post .post-footer .comments-container .input-comment .input-wrapper .input-comment:empty:before {
+  content: attr(placeholder);
+  display: block; /* For Firefox */
 }
