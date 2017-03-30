@@ -584,7 +584,11 @@ ConnectionSchema.statics.getConnections = function (criteria, getConnCallback) {
             };
 
             ES.search(query, function (esResultSet) {
-                callback(null, esResultSet.result);
+                if (esResultSet) {
+                    callback(null, esResultSet.result);
+                } else {
+                    callback(null, []);
+                }
             });
         },
         function getEachUser(aConnections, callback) {
@@ -623,11 +627,14 @@ ConnectionSchema.statics.getConnections = function (criteria, getConnCallback) {
             };
 
             ES.search(query, function (sesResultSet) {
-                callback(null, aIndividualUsers, sesResultSet.result);
+                if (sesResultSet) {
+                    callback(null, aIndividualUsers, sesResultSet.result);
+                } else {
+                    callback(null, aIndividualUsers, []);
+                }
             });
         }, function getEachGroup(aUsers, aGroups, callback) {
             var formatted_groups = [];
-
 
             if (aGroups.length > 0) {
                 _async.each(aGroups, function (oGroup, groupCallback) {
