@@ -343,6 +343,7 @@ body{
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+    margin-bottom: 2px;
 }
 
 .calender-container .calender-box > div.week > span.day .event-area > ul li.color-1,
