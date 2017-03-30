@@ -268,7 +268,6 @@ var CallCenterController = {
 
                             // TODO : Group call records in 2 hours range
                             if (esCallRecords && esCallRecords.length > 0) {
-                                
                                 esCallRecords.forEach(function (oRecord) {
                                     oRecord.receivers_list.forEach(function (oReceiver) {
                                         if (aReceiverIds.indexOf(oReceiver.user_id) == -1) {

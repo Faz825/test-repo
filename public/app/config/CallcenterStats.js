@@ -31,7 +31,8 @@ const CallChannel = {
 
 const CallStage = {
     "DIAL_CALL": 1,
-    "CREATE_CALL": 2
+    "CREATE_CALL": 2,
+    "ANSWER_CALL": 3
 };
 
 const Bit6CallState = {

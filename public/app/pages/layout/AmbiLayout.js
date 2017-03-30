@@ -17,6 +17,7 @@ import {CallChannel, CallType, CallStatus, UserMode, ContactType, CallStage} fro
 import {Config} from '../../config/Config';
 import CallCenter from '../../middleware/CallCenter';
 import CallModel from '../../components/call/CallModel';
+import async from 'async';
 
 export default class AmbiLayout extends React.Component {
     constructor(props) {
@@ -357,6 +358,15 @@ export default class AmbiLayout extends React.Component {
         b6.on('video', function (v, d, op) {
             _this.onVideoCall(v, d, op);
         });
+
+        b6.on('group', function (g, op) {
+            console.log('onGrp', op, g);
+            /* // Is this the currently selected group?
+             if (currentGroupId === g.id) {
+             // Update GroupInfo modal UI
+             populateGroupInfoModal(g);
+             }*/
+        });
     }
 
     startCall(TargetUser, Channel) {
@@ -382,11 +392,9 @@ export default class AmbiLayout extends React.Component {
         this.callRecord.targets.push({user_id: TargetUser.user_id});
         this.callRecord.dialedAt = new Date().toISOString();
 
-        /*
-         CallCenter.addCallRecord(this.callRecord).done(function (oData) {
-         // console.log(oData);
-         });
-         */
+        CallCenter.addCallRecord(this.callRecord).done(function (oData) {
+            console.log(oData);
+        });
 
         c.connect(opts);
 
@@ -399,43 +407,119 @@ export default class AmbiLayout extends React.Component {
         });
     }
 
-    startGroupCall(Group, Channel) {
+    startGroupCall(Group) {
+        var _this = this;
 
+        var bit6PrivateGroup = CallCenter.getBit6PrivateGroup(this.b6.groups, this.state.userLoggedIn);
+
+        async.waterfall([
+            function joinMembersToGroup(callback) {
+                async.each(Group, function (member, joinMemberCallback) {
+                    var bit6Identity = CallCenter.getBit6Identity(member);
+
+                    _this.b6.inviteGroupMember(bit6PrivateGroup, bit6Identity, 'user', function (error) {
+                        (error) ? joinMemberCallback(error) : joinMemberCallback();
+                    });
+
+                }, function (error) {
+                    (error) ? callback(error) : callback(null);
+                });
+            },
+            function startGroupCall(callback) {
+                var privateGroup = _this.b6.getGroup(bit6PrivateGroup.id);
+
+                let opts = {
+                    audio: true,
+                    video: false,
+                    screen: false
+                };
+
+                //   console.log('group', privateGroup);
+
+
+                setTimeout(function () {
+
+                    var c = _this.b6.startCall('grp:' + privateGroup.id, opts);
+
+                    _this.attachCallEvents(c);
+
+                    c.connect(opts);
+
+                    console.log('call', c);
+
+                    callback(null);
+
+                }, 4000);
+
+
+                //callback(null);
+            }
+        ], function (error) {
+            console.log('done');
+        });
     }
 
     createGroupCall(contact, callChannel) {
-        let _this = this;
+        var _this = this;
 
-        CallCenter.getGroupMembers(contact._id).done(function (Group) {
-            Group.type = ContactType.GROUP;
+        var bit6PrivateGroup = CallCenter.getBit6PrivateGroup(this.b6.groups, this.state.userLoggedIn);
 
-            var bit6Call = {
-                options: {video: false, audio: false},
-                remoteOptions: {video: false}
-            };
+        console.log(bit6PrivateGroup);
 
-            var GroupMembers = Group.members.reduce(function (members, member) {
-                if (member.user_id != _this.state.userLoggedIn.id) {
-                    members.push(member);
-                }
+        async.waterfall([
+            function removeGroupMembers(callback) {
+                async.each(bit6PrivateGroup.members, function (member, kickMemberCallback) {
+                    if (member.id != CallCenter.getBit6Identity(_this.state.userLoggedIn)) {
+                        _this.b6.kickGroupMember(bit6PrivateGroup.id, member.id, function (error) {
+                            (error) ? kickMemberCallback(error) : kickMemberCallback();
+                        });
+                    } else {
+                        kickMemberCallback();
+                    }
+                }, function (error) {
+                    console.log(_this.b6.groups);
+                    (error) ? callback(error) : callback(null);
+                });
+            },
+            function getGroupMembers(callback) {
+                CallCenter.getGroupMembers(contact._id).done(function (Group) {
+                    callback(null, Group);
+                });
+            }
+        ], function (error, Group) {
+            if (!error) {
+                Group.type = ContactType.GROUP;
 
-                return members;
-            }, []);
+                var bit6Call = {
+                    options: {video: false, audio: false},
+                    remoteOptions: {video: false}
+                };
 
-            Group.members = GroupMembers;
+                var GroupMembers = Group.members.reduce(function (members, member) {
+                    if (member.user_id != _this.state.userLoggedIn.id) {
+                        members.push(member);
+                    }
 
-            _this.setState({
-                callInProgress: true,
-                targetUser: Group,
-                bit6Call: bit6Call,
-                callChannel: callChannel,
-                callStage: CallStage.CREATE_CALL
-            });
+                    return members;
+                }, []);
+
+                Group.members = GroupMembers;
+
+                _this.setState({
+                    callInProgress: true,
+                    targetUser: Group,
+                    bit6Call: bit6Call,
+                    callChannel: callChannel,
+                    callStage: CallStage.CREATE_CALL
+                });
+            }
         });
     }
 
     answerCall(IncomingCallChannel) {
         let Call = this.state.bit6Call;
+
+        console.log(IncomingCallChannel);
 
         if (IncomingCallChannel == CallChannel.AUDIO) {
             Call.connect({audio: true, video: false});
@@ -443,9 +527,15 @@ export default class AmbiLayout extends React.Component {
             Call.connect({audio: true, video: true});
         }
 
-        this.attachCallEvents(Call);
+      //  this.attachCallEvents(Call);
 
-        this.setState({inComingCall: false, callInProgress: true, callChannel: IncomingCallChannel, bit6Call: Call});
+        this.setState({
+            inComingCall: false,
+            callInProgress: true,
+            callChannel: IncomingCallChannel,
+            bit6Call: Call,
+            callStage: CallStage.ANSWER_CALL
+        });
     }
 
     hangUpCall() {
@@ -456,7 +546,7 @@ export default class AmbiLayout extends React.Component {
         let Call = this.state.bit6Call;
         Call.hangup();
 
-        this.setState({inComingCall: false, bit6Call: null, callChannel: null, targetUser: null});
+        this.setState({inComingCall: false, bit6Call: null, callChannel: null, targetUser: null, callStage: null});
     }
 
     // Attach call state events to a RtcDialog
@@ -488,13 +578,17 @@ export default class AmbiLayout extends React.Component {
 
         c.on('end', function () {
             console.log('end', c);
-            _this.setState({callInProgress: false, targetUser: null, callMode: CallChannel.AUDIO});
+            _this.setState({inComingCall:false, callInProgress: false, targetUser: null, callMode: CallChannel.AUDIO});
             // TODO show call end details in popup
         });
     }
 
     onVideoCall(v, d, op) {
         console.log("====== video call ======");
+
+        console.log('v', v);
+        console.log('d', d);
+        console.log('op', op);
 
         var vc = $('#webcamStage');
 
@@ -527,6 +621,8 @@ export default class AmbiLayout extends React.Component {
     onIncomingCall(c, b6) {
         console.log('incoming call', c);
         let _blockCall = this.checkWorkMode();
+
+        this.attachCallEvents(c);
 
         if (!_blockCall) {
             console.log("Incoming call");

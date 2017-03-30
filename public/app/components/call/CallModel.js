@@ -107,8 +107,8 @@ export default class CallModel extends React.Component {
         }
     }
 
-    dialCall(){
-        this.props.dialCall();
+    dialCall() {
+        this.props.dialCall(this.state.callerList);
     }
 
     render() {
@@ -136,7 +136,7 @@ export default class CallModel extends React.Component {
             );
         });
 
-        console.log(this.state.addToCallList);
+        console.log(this.addToCallList);
 
         return (
             <div className="popup-holder">
@@ -189,7 +189,7 @@ export default class CallModel extends React.Component {
                                     <span className={(this.state.isSpeakerEnabled) ? "speaker" : "speaker active"}
                                     ></span>
                                     {
-                                        (this.props.callStage == CallStage.DIAL_CALL) ?
+                                        (this.props.callStage == CallStage.DIAL_CALL ||  this.props.callStage == CallStage.ANSWER_CALL) ?
                                             <span className="hang-up" onClick={(e) => this.props.closePopup(e)}></span>
                                             :
                                             <span className="dial-call" onClick={(e) => this.dialCall(e)}></span>
