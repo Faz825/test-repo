@@ -241,6 +241,7 @@ export default class Index extends React.Component{
 
     getPopup(){
         let popupData = this.state.popupData;
+        let _safeContent = DOMPurify.sanitize(popupData.content);
 
         let _articalImage = '/images/image_not_found.png';
         if(typeof popupData.article_image != 'undefined'){
@@ -260,7 +261,7 @@ export default class Index extends React.Component{
                                 <h3 className="pg-body-heading-title">{popupData.heading}</h3>
                                 <div className="row row-clr pg-new-news-popup-inner-border" />
                                 <Scrollbars style={{ height: 250 }} onScroll={this.handleScroll}>
-                                    <div dangerouslySetInnerHTML={{__html: popupData.content}} />
+                                    <div dangerouslySetInnerHTML={{__html: _safeContent}} />
                                 </Scrollbars>
                             </div>
                             <img src={'/images/news/'+popupData.channel+'.png'} className="chanel-logo"/>
@@ -496,6 +497,8 @@ export class NewsArtical extends React.Component{
             if (newsItem.content.length > 59) {
                 desc = newsItem.content.substring(0, 59) + "...";
             }
+            let _safeDescContent = DOMPurify.sanitize(desc);
+
             return(
                 <div className="news-block" onClick={event=>_this.onArticalSelect(newsItem)} key={key}>
                 {/*<div className="row row-clr pg-newsfeed-left-post-item" onClick={event=>_this.onArticalSelect(newsItem)} key={key}>
@@ -524,7 +527,7 @@ export class NewsArtical extends React.Component{
                     </div>
                     <div className="news-body">
                         <p className="news-title">{newsItem.heading}</p>
-                        <div className="news-description" dangerouslySetInnerHTML={{__html: desc}} />
+                        <div className="news-description" dangerouslySetInnerHTML={{__html: _safeDescContent}} />
                         <div className="news-block-footer">
                             <span className="date">{newsItem.article_date}</span>
                             <span className={_className} onClick={event=>_this.saveArticle(newsItem)}></span>
