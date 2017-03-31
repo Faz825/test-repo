@@ -172,7 +172,7 @@ export default class Discussion extends React.Component{
     }
 
     render() {
-        let workmodeClass = "workmode-switched";
+        let workmodeClass = "";
         // let user = Session.getSession('prg_lg');
         const {user, uname}= this.state;
         return (
