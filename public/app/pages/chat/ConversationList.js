@@ -9,18 +9,19 @@ import Chat from '../../middleware/Chat';
 import Lib from '../../middleware/Lib';
 import CallCenter from '../../middleware/CallCenter';
 import moment from 'moment';
+import asnyc from 'async';
 
 export default class ConversationList extends React.Component{
     constructor(props){
         super(props);
         this.state ={
             conversations : this.props.conversations,
-            connections: this.props.connections,
-            showChatNotification: this.props.showChatNotification
+            connections: this.props.my_connections,
+            showChatNotification: this.props.showChatNotification,
+            userLoggedIn: Session.getSession('prg_lg')
         };
         this.b6 = CallCenter.b6;
         //CallCenter.initBit6();
-        this.initChat(this.b6);
         this.unreadConversationCount = [];
         this.unreadConversationTitles = [];
         this.unreadCount = 0;
@@ -28,6 +29,40 @@ export default class ConversationList extends React.Component{
         this.convUsers = [];
         this.quickChatUsers = [];
         this.notifiedUsers = [];
+
+        let _this = this;
+        asnyc.waterfall([
+            function getMyConnections(callBack) {
+                if(_this.state.connections != undefined && _this.state.connections.length > 0) {
+                    callBack(null, _this.state.connections);
+                } else {
+                    $.ajax({
+                        url: '/connection/me/unfriend',
+                        method: "GET",
+                        dataType: "JSON",
+                        headers: {'prg-auth-header': _this.state.userLoggedIn.token}
+                    }).done(function (data) {
+                        if (data.status.code == 200) {
+                            _this.setState({connections: data.my_con});
+                            callBack(null, data.my_con);
+                        } else {
+                            callBack(null, null);
+                        }
+                    }.bind(this));
+                }
+            },
+            function getCallRecords(_connections, callBack) {
+                if(_connections && _connections.length > 0) {
+                    _this.initChat(_this.b6);
+                    callBack(null, _connections);
+                } else {
+                    callBack(null, null);
+                }
+            }
+        ], function (error, _connections) {
+            console.log("_connections === ", _connections);
+        });
+
     }
 
     initChat(b6){
@@ -41,7 +76,8 @@ export default class ConversationList extends React.Component{
 
     componentWillReceiveProps(nextProps) {
         //console.log("ConversationList componentWillReceiveProps")
-        this.setState({connections: nextProps.connections, conversations: nextProps.conversations, showChatNotification: nextProps.showChatNotification});
+        this.setState({connections: nextProps.my_connections, conversations: nextProps.conversations, showChatNotification: nextProps.showChatNotification});
+        //this.setState({conversations: nextProps.conversations, showChatNotification: nextProps.showChatNotification});
     }
 
     checkWorkMode(){
@@ -76,7 +112,6 @@ export default class ConversationList extends React.Component{
         if (op < 0) {
             return
         }
-
         var notificationId = this.notificationDomIdForConversation(c);
         var proglobe_title = b6.getNameFromIdentity(c.id);
         var proglobe_title_array = proglobe_title.split('proglobe');
@@ -94,14 +129,14 @@ export default class ConversationList extends React.Component{
                 for(let my_con in this.state.connections){
                     if(title === this.state.connections[my_con].user_name){
                         this.convUsers[title] = this.state.connections[my_con];
-
                         conv = {
                             id:notificationId.substring(1),
                             tabId:notificationId,
                             proglobeTitle:proglobe_title,
                             title:title,
                             user:this.state.connections[my_con],
-                            connection_status:this.state.connections[my_con].connection_status
+                            connection_status:this.state.connections[my_con].connection_status,
+                            date_up: c.updated
                         };
 
                         if(this.conv_ids.indexOf(c.id) == -1){
@@ -128,16 +163,15 @@ export default class ConversationList extends React.Component{
                         }
 
                         conv.date = stamp;
-                        conv.date_time = c.updated;
-                        conv.date_string = moment(c.updated).format("DD MMM YYYY hh:mm a");
-                        conv.date_up = new Date(c.updated);
+                        //conv.date_time = c.updated;
+                        //conv.date_string = moment(c.updated).format("DD MMM YYYY hh:mm a");
+                        //conv.date_up = new Date(c.updated);
                         conv.latestMsg = latestText;
                         conv.message_id = "msg__m" + mId;
 
                         cons = this.state.conversations;
                         cons.push(conv);
                         //this.setState({conversations:cons});
-
                         this.setToConnections(cons);
 
                         if (c.unread > 0 && this.unreadConversationCount.indexOf(c.id) == -1) {
@@ -224,9 +258,9 @@ export default class ConversationList extends React.Component{
                 if(cons[con].title == title){
                     let _conObj = cons[con];
                     _conObj.date = stamp;
-                    _conObj.date_time = _updated;
-                    _conObj.date_string = moment_data;
-                    _conObj.date_up = _date;
+                    //_conObj.date_time = _updated;
+                    //_conObj.date_string = moment_data;
+                    _conObj.date_up = c.updated;
                     _conObj.latestMsg = latestText;
                     cur_conv = con;
                     updated = true;
@@ -247,7 +281,8 @@ export default class ConversationList extends React.Component{
                                 proglobeTitle:proglobe_title,
                                 title:title,
                                 user:this.state.connections[my_con],
-                                connection_status:this.state.connections[my_con].connection_status
+                                connection_status:this.state.connections[my_con].connection_status,
+                                date_up: c.updated
                             };
 
                             //Update Conversation data
@@ -259,9 +294,9 @@ export default class ConversationList extends React.Component{
                             }
 
                             conv.date = stamp;
-                            conv.date_time = _updated;
-                            conv.date_string = moment_data;
-                            conv.date_up = _date;
+                            //conv.date_time = _updated;
+                            //conv.date_string = moment_data;
+                            //conv.date_up = _date;
                             conv.latestMsg = latestText;
                             conv.message_id = "msg__m" + mId;
 
@@ -343,6 +378,7 @@ export default class ConversationList extends React.Component{
             user:"",
             connection_status:"",
             date:"",
+            date_up:"",
             latestMsg:"",
             message_id:""
         };
@@ -350,13 +386,12 @@ export default class ConversationList extends React.Component{
     }
 
     render() {
-
-        this.state.conversations.sort(function(a, b) {
+        let _conversationsList = this.state.conversations;
+        _conversationsList.sort(function(a, b) {
             return moment(a.date_up) < moment(b.date_up);
-        })
-
+        });
         let _this = this;
-        let _convs = this.state.conversations.map(function(conv,key){
+        let _convs = _conversationsList.map(function(conv,key){
 
             let convId = "usr:" + conv.proglobeTitle;
             let _index = _this.getUnreadIndex(convId);
@@ -389,7 +424,7 @@ export default class ConversationList extends React.Component{
                         <div className="popover-header">
                             <div className="top-section clearfix">
                                 <p className="inbox-count header-text clearfix">
-                                    <span className="count">({this.unreadCount})</span>inbox
+                                    inbox<span className="count">({this.unreadCount})</span>
                                 </p>
                                 <p className="mark-all header-text">mark all as read</p>
                                 <p className="new-msg header-text" onClick={this.openNewChat.bind(this)}>new message</p>

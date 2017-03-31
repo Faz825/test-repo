@@ -1425,6 +1425,46 @@ footer .notification-alert-holder.slideOut{
     background: #ff0000;
 }
 
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label:before,
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li.active label:before{
+    display: none;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li .selectCheckbox{
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    position: absolute;
+    left: 0;
+    top: 4px;
+    background-color: transparent;
+    border: 1px solid #a6c649;
+    border-radius: 3px;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li.active .selectCheckbox{
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    position: absolute;
+    left: 0;
+    top: 4px;
+    color: #ffffff;
+    background-color: #a6c649;
+    border: 1px solid #a6c649;
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+    line-height: 16px;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .people-input{
+    font-size: 11px;
+    margin-top: 7px;
+}
+
 #react-autowhatever-1 {
     z-index: 1;
 }
@@ -1493,6 +1533,9 @@ footer .notification-alert-holder.slideOut{
 .popup-holder .active-call-container .participants{
     height: 100px;
     margin: 20px 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .callModelMinimized{
@@ -1640,7 +1683,8 @@ body .modal-backdrop{
 }
 
 #webcamStage .remote{
-  width: 100%;
+    width: 100%;
+    height: 400px;
 }
 
 /**

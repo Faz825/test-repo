@@ -1031,6 +1031,11 @@ export const UpdatedProPic = ({loggedUser,post})=>{
             <span className="own-post-share">has updated profile picture.</span>
         )
     }
+    if(post.post_mode == "CP"){
+        return (
+            <span className="own-post-share">has updated cover picture.</span>
+        )
+    }
     return (<span />);
 }
 

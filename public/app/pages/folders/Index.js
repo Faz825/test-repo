@@ -597,10 +597,21 @@ export default class Index extends React.Component{
         const { folderSuggestions, folderSuggestionsList } = this.state;
         let _this = this;
         let x = 1;
+        let i = 0;
+        let fldrId;
         let _folders = (this.state.selectedFileFolder.length > 0)?this.state.selectedFileFolder:this.state.folders;
         let folderList = _folders.map(function(folder,key){
+            ++i;
+            if(i == _folders.length){
+                fldrId = "lastFolder";
+            }else if(i == _folders.length - 1){
+                fldrId = "oneBeforLastFolder";
+            }else{
+                fldrId = i;
+            }
+
             return (
-                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} tabType={_this.state.f_type} folderCount={x++}  />
+                <FolderList key={key} folderData={folder} folderCount={key} onLoadFolders={_this.loadFolders.bind(this)} tabType={_this.state.f_type} folderCount={x++} folderId={fldrId} />
             )
         });
 
