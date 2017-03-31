@@ -85,13 +85,19 @@ export default class DayTodosList extends React.Component {
 						{event.user_id == _this.state.user.id ?
 							<input id="check1" name="check" value="check1" type="checkbox" />
 						: ''}
-						<label for="check1"
-							onClick={event.user_id == _this.state.user.id ?
+						<label for="check1" className={event.user_id == _this.state.user.id ? "description-holder" : "description-holder disabled" }
+						>
+							<span className="selectCheckbox" onClick={event.user_id == _this.state.user.id ?
 								_this.props.onClickItem.bind(_this, event._id, event.status)
 								: ''
-							}
-							className={event.user_id == _this.state.user.id ? "description-holder" : "description-holder disabled" }
-						>
+							}>
+								{
+									(event.status == 2)?
+										<i className="fa fa-check" aria-hidden="true"></i>
+									:
+										null
+								}
+							</span>
 							{/*<div className={acceptedClass} >{event.plain_text}</div>*/}
 							<div className={acceptedClass} dangerouslySetInnerHTML={_this.createMarkup(htmlC)}></div>
 							<p>People in the To-do : {ownerString}{usersString}</p>

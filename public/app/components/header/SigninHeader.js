@@ -117,7 +117,7 @@ export default class Header extends React.Component {
                     </div>
 
                     {
-                        <ConversationList connections={this.state.my_connections}
+                        <ConversationList my_connections={this.state.my_connections}
                                           loadQuickChat={this.initiateQuickChat.bind(this)}
                                           chatConversations={this.setChatConversations.bind(this)}
                                           unreadChatCount={this.setUnreadChatCount.bind(this)}

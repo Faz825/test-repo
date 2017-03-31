@@ -397,8 +397,7 @@ var TimeLinePostHandler ={
             //GET SHARED POST FROM CACHE
             function getPostFromCache(callBack){
                 var _pay_load = {
-                    // q:"post_id:"+_post.shared_post_id,
-                    q:"post_type:"+_post.post_type,
+                    q:"post_id:"+_post.shared_post_id,
                 }
 
                 var getPostBy = _post.post_owner;
@@ -418,7 +417,7 @@ var TimeLinePostHandler ={
                         delete selected_post.shared_post;
 
 
-                        _post.shared_post =selected_post;
+                        _post.shared_post = selected_post;
                         _post.is_i_liked = false;
                         _post.upload = [];
 
@@ -428,7 +427,7 @@ var TimeLinePostHandler ={
 
             },
             function saveInCache(callBack){
-                console.log("saveInCache")
+                
                 Post.addToCache(_post.visible_users,_post,function(chData){ });
                 callBack(null)
             },

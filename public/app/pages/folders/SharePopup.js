@@ -6,7 +6,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import Lib from '../../middleware/Lib';
 import Socket  from '../../middleware/Socket';
-
+import Scroll from 'react-scroll';
 
 export default class SharePopup extends React.Component{
     constructor(props) {
@@ -155,6 +155,15 @@ export default class SharePopup extends React.Component{
         )
     }
 
+    scrollToShareUserPopup(id){
+        if(id == "lastFolder" || id == "oneBeforLastFolder"){
+            Scroll.directScroller.scrollTo("popover-user-share", {
+                duration: 800,
+                smooth: true
+            });
+        }
+    }
+
     render(){
 
         let _folderData = this.props.folderData;
@@ -162,7 +171,7 @@ export default class SharePopup extends React.Component{
         let ownerName = this.state.owner.first_name;
 
         let i = (
-            <Popover id="popover-contained" className="share-folder-popover share-folder-new" positionTop="150px">
+            <Popover id="popover-user-share" className="share-folder-popover share-folder-new" positionTop="150px" >
                 <SharePopupNewUsr  folderData={_folderData}/>
             </Popover>
         );
@@ -281,7 +290,7 @@ export default class SharePopup extends React.Component{
                                 <div className="footer-action-wrapper">
                                     {
                                         (_folderData.owned_by == 'me') ?
-                                            <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
+                                            <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i} onEntered={(e) => this.scrollToShareUserPopup(this.props.fldrId)}>
                                                 <p className={(this.state.sharedUsers.length > 2) ? "add-people" : "add-people c"}>+ Add member</p>
                                             </OverlayTrigger> : null
                                     }

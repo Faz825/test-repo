@@ -7,6 +7,7 @@ import { Popover, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import SharePopup from './SharePopup';
 import moment from 'moment-timezone';
+import Scroll from 'react-scroll';
 
 export default class FolderList extends React.Component{
     constructor(props){
@@ -29,6 +30,7 @@ export default class FolderList extends React.Component{
         };
         this.files = [];
         this.active_folder_id = 0;
+        this.scrolledPos;
 
         this.onDrop = this.onDrop.bind(this);
         this.onOpenClick = this.onOpenClick.bind(this);
@@ -270,6 +272,19 @@ export default class FolderList extends React.Component{
         this.setState({showFolderConfirm:true, deleteFolderId:folder_id});
     }
 
+    scrollToSharePopup(id){
+        if(id == "lastFolder" || id == "oneBeforLastFolder"){
+            Scroll.directScroller.scrollTo("popover-contained", {
+                duration: 800,
+                smooth: true
+            });
+        }
+    }
+
+    setPageScrollPos(){
+        this.scrolledPos = window.pageYOffset;
+    }
+
     render(){
         let _this = this;
         let folderData = this.props.folderData;
@@ -281,7 +296,7 @@ export default class FolderList extends React.Component{
         let i = (
             <Popover id="popover-contained"  className={(folderData.owned_by == 'me') ? "popup-holder share-folder" : "popup-holder share-folder other"}
                      style={{width: "438px", marginLeft: "24px"}}>
-                <SharePopup folderData={folderData}/>
+                <SharePopup folderData={folderData} fldrId={this.props.folderId} />
             </Popover>
         );
 
@@ -346,7 +361,7 @@ export default class FolderList extends React.Component{
         let _folderName = folderData.folder_name == 'undefined' ? folderData.folder_name : folderData.folder_name.length <= 26 ? folderData.folder_name : folderData.folder_name.slice(0,26) + '...';
 
         return(
-            <div className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
+            <div id={this.props.folderId} className={(this.state.isCollapsed)? "row folder" : "row folder see-all"}>
                 {
                     (folderData.shared_mode == 2)?
                         <Dropzone className="folder-wrapper" ref={(node) => { this.dropzone = node; }} onDrop={(event)=>{this.onDrop(folderData.folder_id)}} multiple={true} maxSize={10485760} disableClick={true} activeClassName="drag" accept="image/*, application/*, text/plain" onDropAccepted={this.onDropAccepted} onDropRejected={this.onDropRejected}>
@@ -365,7 +380,7 @@ export default class FolderList extends React.Component{
                                         </div>
                                         {
                                             (this.props.folderCount != 0 && folderData.folder_name != "My Folder" && this.props.tabType == "MY_FOLDER")?
-                                                <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                                <OverlayTrigger rootClose trigger="click" placement="right" overlay={i} onEntered={(e) => this.scrollToSharePopup(this.props.folderId)}>
                                                     <div className="share-folder">
                                                         {
                                                             (folderData.is_shared) ?

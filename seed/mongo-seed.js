@@ -7,6 +7,7 @@ seeder.connect('mongodb://' + Config.DB_HOST + '/' + Config.DB_NAME, function ()
 
     seeder.loadModels([
         '../model/SecretaryModel.js',
+        '../model/NewsModel.js'
     ]);
 
     seeder.clearModels(['Secretary'], function () {
