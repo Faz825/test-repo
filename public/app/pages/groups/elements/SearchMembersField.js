@@ -56,13 +56,18 @@ export default class SearchMembersField extends React.Component{
     }
 
     getSuggestionValue(suggestion) {
+
+        let _default_img = "/images/default-profile-pic.png";
+        let _images = suggestion.images;
+        let profileImg = _images.hasOwnProperty('profile_image') ? (_images.profile_image.hasOwnProperty('http_url') ? _images.profile_image.http_url : _default_img) : _default_img;
+
         if(this.sharedWithIds.indexOf(suggestion.user_id)==-1){
 
             var userObject = {
                 "name" : suggestion.first_name+" "+suggestion.last_name,
             	"user_id" : suggestion.user_id,
              	"status" : 3, // ACCEPTED
-                "profile_image" : suggestion.images.profile_image.http_url
+                "profile_image" : profileImg
             }
             this.members.push(userObject);
             this.sharedWithIds.push(suggestion.user_id);
@@ -76,9 +81,13 @@ export default class SearchMembersField extends React.Component{
     }
 
     renderSuggestion(suggestion) {
+        let _default_img = "/images/default-profile-pic.png";
+        let _images = suggestion.images;
+        let profileImg = _images.hasOwnProperty('profile_image') ? (_images.profile_image.hasOwnProperty('http_url') ? _images.profile_image.http_url : _default_img) : _default_img;
+
         return (
             <div id={suggestion.user_id} className="suggestion-item">
-                <img className="suggestion-img" src={suggestion.images.profile_image.http_url} alt={suggestion.first_name} />
+                <img className="suggestion-img" src={profileImg} alt={suggestion.first_name} />
                 <span>{suggestion.first_name+" "+suggestion.last_name}</span>
             </div>
         );
