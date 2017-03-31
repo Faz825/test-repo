@@ -151,8 +151,8 @@ export default class Index extends React.Component {
 
             var data = [];
 
-            for(var i =0; i < aRecentCalls.length; i++){
-                if(aRecentCalls[i].call_status == 'missed'){
+            for (var i = 0; i < aRecentCalls.length; i++) {
+                if (aRecentCalls[i].call_status == 'missed') {
                     data.push(aRecentCalls[i]);
                 }
             }
@@ -235,13 +235,16 @@ export default class Index extends React.Component {
             (m < 10) ? m = '0' + m : m = m;
             (hh < 10) ? hh = '0' + hh : hh = hh;
 
+            if (hh > 12) {
+                hh = hh - 12;
+            }
             time = hh + ':' + m + ' ' + dd;
 
             (aCallRecords[i].call_channel == CallChannel.VIDEO) ? callChannel = 'video' : callChannel = 'phone';
             (aCallRecords[i].call_type == CallType.INCOMING) ? callType = CallType.INCOMING : callType = CallType.OUTGOING;
 
             if (aCallRecords[i].call_status == CallStatus.MISSED) {
-                if(aCallRecords[i].call_type == CallType.INCOMING){
+                if (aCallRecords[i].call_type == CallType.INCOMING) {
                     call_status = 'missed';
                 }
             } else if (aCallRecords[i].call_status == CallStatus.ANSWERED) {
