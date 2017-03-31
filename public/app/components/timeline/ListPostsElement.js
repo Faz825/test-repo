@@ -323,6 +323,7 @@ class SinglePost extends React.Component{
     }
     getPopup(){
 
+        var _this = this;
         const _post = this.state.postItem;
         let post_content = "";
         let img_div_class = "image-col-wrapper pg-newsfeed-post-upload-image";
@@ -349,20 +350,66 @@ class SinglePost extends React.Component{
         let _show_share_button = (_profile.user_id != this.loggedUser.id)?true:false;
 
         var uploaded_files = _post.upload.map((upload,key)=>{
+            // if(key <= 2){
+            //     let _url = "";
+            //     if(upload.file_type == "mp4"){
+            //         _url = upload.thumb_http_url;
+            //     } else{
+            //         _url = upload.http_url
+            //     }
+            //     return (
+            //         <div className={img_div_class} key={key}>
+            //             <img src = {_url} className="img-responsive post-img" />{
+            //             (upload.file_type == "mp4")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true"></i>:null
+            //         }
+            //             {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
+            //         </div>
+            //     )
+            // }
+
+            let _url = "";
+            if(upload.file_type == "mp4"){
+                _url = upload.thumb_http_url;
+            } else{
+                _url = upload.http_url
+            }
+            // _this.imgList.push(_url);
+
             if(key <= 2){
-                let _url = "";
-                if(upload.file_type == "mp4"){
-                    _url = upload.thumb_http_url;
-                } else{
-                    _url = upload.http_url
-                }
                 return (
                     <div className={img_div_class} key={key}>
-                        <img src = {_url} className="img-responsive post-img" />{
-                        (upload.file_type == "mp4")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true"></i>:null
-                    }
-                        {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
+
+                        {(key == 2 && postImgLength > 3) ?
+                            <img src = {_url} className="img-responsive post-img" />
+                        :
+                            <a className="post-img-container"
+                                href={_url}
+                                key={key}
+                                onClick={(e) => _this.openLightbox(key, e)}>
+                                <span className="img-helper"></span>
+                                <img src = {_url} className="img-responsive post-img" />
+                            </a>
+                        }
+                        {(upload.file_type == "mp4") ?
+                            <i className="fa fa-play-circle-o post-video-play" aria-hidden="true" onClick = {(event)=>{_this.onVideoPlay(upload)}}></i>
+                        :null }
+                        {(key == 2 && postImgLength > 3) ?
+                            <a className="post-img-container"
+                                href={_url}
+                                key={key}
+                                onClick={(e) => _this.openLightbox(key, e)}>
+                                <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 3)}</p></div>
+                            </a>
+                        : null }
                     </div>
+                )
+            } else {
+                return(
+                    <a className="post-img-container"
+                        href={_url}
+                        key={key}
+                        onClick={(e) => _this.openLightbox(key, e)}>
+                    </a>
                 )
             }
         });
@@ -990,6 +1037,7 @@ export const UpdatedProPic = ({loggedUser,post})=>{
 
 const SharedPostBody = ({loggedUser,post,onLoadProfile}) => {
 
+    var _this = this;
     if(post.post_mode != "SP"){
         return (<span />);
     }
@@ -1000,19 +1048,70 @@ const SharedPostBody = ({loggedUser,post,onLoadProfile}) => {
     let profile_image =  (typeof _profile.images.profile_image != 'undefined')?
         _profile.images.profile_image.http_url:"";
 
+    let img_div_class = "image-col-wrapper pg-newsfeed-post-upload-image";
+    if(post.post_mode == "PP"){//profile update post
+        img_div_class += " profile-update";
+    }
+
     let uploaded_files = sharedPost.upload.map((upload,key)=>{
-        if(key <= 3){
+        // if(key <= 3){
+        //     return (
+        //         <div className="pg-newsfeed-post-upload-image" key={key}>
+        //             <img src = {upload.http_url}/>
+        //             {
+        //                 (key == 3 && postImgLength > 4)?
+        //                     <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1">
+        //                         <p>{"+" + (postImgLength - 4)}</p>
+        //                     </div> :
+        //                 null
+        //             }
+        //         </div>
+        //     )
+        // }
+
+        let _url = "";
+        if(upload.file_type == "mp4"){
+            _url = upload.thumb_http_url;
+        } else{
+            _url = upload.http_url
+        }
+        // _this.imgList.push(_url);
+
+        if(key <= 2){
             return (
-                <div className="pg-newsfeed-post-upload-image" key={key}>
-                    <img src = {upload.http_url}/>
-                    {
-                        (key == 3 && postImgLength > 4)?
-                            <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1">
-                                <p>{"+" + (postImgLength - 4)}</p>
-                            </div> :
-                        null
+                <div className={img_div_class} key={key}>
+
+                    {(key == 2 && postImgLength > 3) ?
+                        <img src = {_url} className="img-responsive post-img" />
+                    :
+                        <a className="post-img-container"
+                            href={_url}
+                            key={key}
+                            onClick={(e) => _this.openLightbox(key, e)}>
+                            <span className="img-helper"></span>
+                            <img src = {_url} className="img-responsive post-img" />
+                        </a>
                     }
+                    {(upload.file_type == "mp4") ?
+                        <i className="fa fa-play-circle-o post-video-play" aria-hidden="true" onClick = {(event)=>{_this.onVideoPlay(upload)}}></i>
+                    :null }
+                    {(key == 2 && postImgLength > 3) ?
+                        <a className="post-img-container"
+                            href={_url}
+                            key={key}
+                            onClick={(e) => _this.openLightbox(key, e)}>
+                            <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 3)}</p></div>
+                        </a>
+                    : null }
                 </div>
+            )
+        } else {
+            return(
+                <a className="post-img-container"
+                    href={_url}
+                    key={key}
+                    onClick={(e) => _this.openLightbox(key, e)}>
+                </a>
             )
         }
     });
@@ -1038,8 +1137,11 @@ const SharedPostBody = ({loggedUser,post,onLoadProfile}) => {
                                  loggedUser={loggedUser}/>
 
             </div>
-            <div id="image_display" className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
-                {uploaded_files}
+
+            <div id="image_display" className="image-container">
+                <div className="row row_clr pg-newsfeed-post-uploads-images  clearfix">
+                    {uploaded_files}
+                </div>
             </div>
         </div>
     )

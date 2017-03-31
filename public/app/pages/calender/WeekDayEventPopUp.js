@@ -135,15 +135,21 @@ export default class WeekDayEventPopUp extends React.Component {
     }
 
     setTime(selected) {
-        var arrEntries = selected._root.entries;
-        var time = arrEntries[1][1];
-        let year = this.props.curr_date.year();
-        let month = this.props.curr_date.month();
-        let date = this.props.curr_date.day();
-        let timeWithDay = year+'/'+month+'/'+date+' '+time;
+        // var arrEntries = selected._root.entries;
+        // var time = arrEntries[1][1];
+        // let year = this.props.curr_date.year();
+        // let month = this.props.curr_date.month();
+        // let date = this.props.curr_date.day();
+        // let timeWithDay = year+'/'+month+'/'+date+' '+time;
 
         // this.setState({ defaultEventTime: moment(timeWithDay).format('HH:mm') });
-        this.setState({ defaultEventTime: moment(timeWithDay).format('YYYY-MM-DD HH:mm')});
+        // this.setState({ defaultEventTime: moment(timeWithDay).format('YYYY-MM-DD HH:mm')});
+
+        var arrEntries = selected._root.entries;
+        var strTime = arrEntries[1][1];
+        const strDate = moment(this.state.currentDay).format('YYYY-MM-DD');
+        const dateWithTime = moment(strDate + ' ' + strTime, "YYYY-MM-DD HH:mm").format('YYYY-MM-DD HH:mm');
+        this.setState({ defaultEventTime: dateWithTime, showTimePanelWindow : true });
     }
 
     _onHashClick() {
