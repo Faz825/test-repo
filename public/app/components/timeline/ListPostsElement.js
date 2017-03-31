@@ -24,7 +24,8 @@ const ListPostsElement  = ({posts,uname,onPostSubmitSuccess,onPostDeleteSuccess,
 
             return (<SinglePost
                         postItem = {post}
-                        key={key} postIndex={key}
+                        key={key}
+                        postIndex={key}
                         onPostSubmitSuccess ={(post)=>onPostSubmitSuccess(post)}
                         onPostDeleteSuccess = {onPostDeleteSuccess}
                         onLikeSuccess = {onLikeSuccess}
@@ -67,7 +68,10 @@ class SinglePost extends React.Component{
             isShowingVideoModal: false,
             isShowingImgModal: false,
             videoUrl: "",
-            currentImage: 0
+            currentImage: 0,
+            postIndex:this.props.postIndex,
+            groupId:this.props.groupId ? this.props.groupId : null,
+            postType:this.props.postType
         };
         this.loggedUser= Session.getSession('prg_lg');
 
@@ -96,14 +100,24 @@ class SinglePost extends React.Component{
 
     componentWillReceiveProps(nextProps) {
 
-        // Basically, whenever you assign parent's props to a child's state
-        // the render method isn't always called on prop update
         if (nextProps.postItem !== this.state.postItem) {
             this.setState({ postItem: nextProps.postItem });
         }
 
         if (nextProps.postItem.liked_user !== this.state.liked_users) {
             this.setState({ liked_users: typeof(nextProps.postItem.liked_user) != "undefined" ? nextProps.postItem.liked_user : []});
+        }
+
+        if (nextProps.postIndex !== this.state.postIndex) {
+            this.setState({ postIndex: nextProps.postIndex });
+        }
+
+        if (nextProps.postType !== this.state.postType) {
+            this.setState({ postType: nextProps.postType });
+        }
+
+        if (nextProps.groupId !== this.state.groupId) {
+            this.setState({ groupId: nextProps.groupId });
         }
     }
 
@@ -113,7 +127,7 @@ class SinglePost extends React.Component{
             url: '/like/composer',
             method: "POST",
             dataType: "JSON",
-            data:{__post_id:_this.props.postItem.post_id},
+            data:{__post_id:_this.state.postItem.post_id},
             headers: { 'prg-auth-header':_this.loggedUser.token },
             success: function (data, text) {
 
@@ -157,7 +171,7 @@ class SinglePost extends React.Component{
             url: '/pull/comments',
             method: "GET",
             dataType: "JSON",
-            data:{__pg:0,__post_id:this.props.postItem.post_id},
+            data:{__pg:0,__post_id:this.state.postItem.post_id},
             headers: { 'prg-auth-header':this.loggedUser.token},
             success: function (data, text) {
                 if(data.status.code == 200){
@@ -194,10 +208,10 @@ class SinglePost extends React.Component{
 
         let post_data ={
             __content :this.state.text,
-            __pid:this.props.postItem.post_id,
-            __own:this.props.postItem.created_by.user_id,
-            __post_type:this.props.postType,
-            __group_id: this.props.groupId
+            __pid:this.state.postItem.post_id,
+            __own:this.state.postItem.created_by.user_id,
+            __post_type:this.state.postType,
+            __group_id: this.state.groupId
         }
         let _this = this;
         this.setState({shareBtnEnabled:false});
@@ -210,6 +224,7 @@ class SinglePost extends React.Component{
             success:function(data){
 
                 if (data.status.code == 200) {
+
 
                     let _subscribeData = {
                         post_id:data.post.post_id,
@@ -308,7 +323,7 @@ class SinglePost extends React.Component{
     }
     getPopup(){
 
-        const _post = this.props.postItem;
+        const _post = this.state.postItem;
         let post_content = "";
         let img_div_class = "image-col-wrapper pg-newsfeed-post-upload-image";
         if (_post.post_mode == "NP" ){
@@ -409,8 +424,8 @@ class SinglePost extends React.Component{
     }
 
     getImgPopup(){
-        const _post = this.props.postItem;
-        const _postIndex = this.props.postIndex;
+        const _post = this.state.postItem;
+        const _postIndex = this.state.postIndex;
         const _is_i_liked = _post.is_i_liked;
 
         return(
@@ -488,18 +503,18 @@ class SinglePost extends React.Component{
     }
 
     render(){
-        if(typeof  this.props.postItem == 'undefined'){
+        if(typeof  this.state.postItem == 'undefined'){
             return(<div />);
         }
         let _this = this;
         this.imgList = [];
-        const _post = this.props.postItem;
+        const _post = this.state.postItem;
         let img_div_class = "image-col-wrapper pg-newsfeed-post-upload-image";
         if(_post.post_mode == "PP"){//profile update post
             img_div_class += " profile-update";
         }
 
-        const _postIndex = this.props.postIndex;
+        const _postIndex = this.state.postIndex;
         const _is_i_liked = _post.is_i_liked;
 
         let _profile = _post.created_by;
@@ -860,7 +875,7 @@ const SharedPostTitle = ({loggedUser,post,onLoadProfile}) =>{
 
 const PostTitlePrefix = ({loggedUser,post, onLoadProfile}) =>{
 
-    if(post.post_type == 2){
+    if(post.post_type == 2 && post.post_mode != "SP"){
         return (
             <span className="user-title-wrapper">
                 <span className="shared-text">posted on</span>
@@ -873,14 +888,14 @@ const PostTitlePrefix = ({loggedUser,post, onLoadProfile}) =>{
         return (
             (post.created_by.user_id == post.shared_post.created_by.user_id)?
                 <span className="own-post-share">shared own post</span>
-                :
-                <span className="user-title-wrapper">
-                    <span className="shared-text">shared</span>
-                    <span className="user-name-container post-owner">
-                        <span className="name" onClick={()=>onLoadProfile(post.shared_post.created_by.user_name)}>{" "+post.shared_post.created_by.first_name + " " + post.shared_post.created_by.last_name + "'s"}</span>
-                        <span className="shared-text">post</span>
-                    </span>
+            :
+            <span className="user-title-wrapper">
+                <span className="shared-text">shared</span>
+                <span className="user-name-container post-owner">
+                    <span className="name" onClick={()=>onLoadProfile(post.shared_post.created_by.user_name)}>{" "+post.shared_post.created_by.first_name + " " + post.shared_post.created_by.last_name + "'s"}</span>
+                    <span className="shared-text">post</span>
                 </span>
+            </span>
         )
     }
     return (<span />);
@@ -978,8 +993,6 @@ const SharedPostBody = ({loggedUser,post,onLoadProfile}) => {
     if(post.post_mode != "SP"){
         return (<span />);
     }
-
-
 
     let sharedPost = post.shared_post;
     let _profile = sharedPost.created_by;
