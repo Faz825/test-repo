@@ -406,12 +406,11 @@ export default class AmbiLayout extends React.Component {
                 callStage: CallStage.DIAL_CALL,
                 callRecord: oData.call_record
             });
+
+            c.connect(opts);
+
+            console.log('start call', c);
         });
-
-        c.connect(opts);
-
-        console.log('start call', c);
-
     }
 
     startGroupCall(Group) {
@@ -597,11 +596,11 @@ export default class AmbiLayout extends React.Component {
 
             if (_this.state.callRecord) {
                 if (_this.state.callRecord.user_id == _this.state.userLoggedIn.id) {
-                    if(_this.state.callStage){
+                    if (_this.state.callStage) {
                         if (_this.state.callStage == CallStage.DIAL_CALL && _this.state.bit6Call.state == 'req') {
-                            CallCenter.updateCallRecord(_this.state.callRecord._id, CallStatus.CANCELLED).done(function (callRecordUpdateRes) {
+                          /*  CallCenter.updateCallRecord(_this.state.callRecord._id, CallStatus.CANCELLED).done(function (callRecordUpdateRes) {
 
-                            });
+                            });*/
                         }
                     }
                 }
@@ -620,12 +619,6 @@ export default class AmbiLayout extends React.Component {
     }
 
     onVideoCall(v, d, op) {
-        console.log("====== video call ======");
-
-        console.log('v', v);
-        console.log('d', d);
-        console.log('op', op);
-
         var vc = $('#webcamStage');
 
         if (op < 0) {
@@ -645,6 +638,7 @@ export default class AmbiLayout extends React.Component {
             }
         }
         // Total number of video elements (local and remote)
+
         var n = vc[0].children.length;
         // Display the container if we have any video elements
         if (op != 0) {
