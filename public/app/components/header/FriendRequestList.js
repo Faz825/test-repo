@@ -112,7 +112,7 @@ export default class FriendRequestList extends React.Component {
                     <div className="inner-wrapper">
                         <div className="popover-header">
                             <p className="friend-requests">friend requests</p>
-                            <p className="find-friends">find friend</p>
+                            <p className="find-friends">find friends</p>
                         </div>
                         <div className={(this.state.seeAll) ? "friends-list-holder see-all" : "friends-list-holder"}>
                             {_requestsMap}

@@ -99,7 +99,7 @@ export default class Index extends React.Component {
     }
 
     handleClose() {
-        this.setState({catNameValue: "", catColor: "", isDefault: 0, validateAlert:"", isShowingModal: false, isNBNameEmpty: false, isNBClrEmpty: false});
+        this.setState({catNameValue: "", catColor: "", isDefault: 0, validateAlert:"", isShowingModal: false, isNBNameEmpty: false, isNBClrEmpty: false, clrChosen: ""});
     }
 
     elementChangeHandler(key,data,status){
@@ -137,7 +137,7 @@ export default class Index extends React.Component {
             }).done( function (data, text) {
                 if(data.code == 200){
                     this.loadNotes();
-                    this.setState({catNameValue: "", catColor: "", isDefault: 0, validateAlert:"", isShowingModal: false, isNBNameEmpty: false, isNBClrEmpty: false});
+                    this.setState({catNameValue: "", catColor: "", isDefault: 0, validateAlert:"", isShowingModal: false, isNBNameEmpty: false, isNBClrEmpty: false, clrChosen: ""});
                 }
             }.bind(this));
         }

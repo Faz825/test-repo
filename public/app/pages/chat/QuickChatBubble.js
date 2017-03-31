@@ -386,12 +386,14 @@ export class ChatHeader extends React.Component{
             } = this.state;
 
         let user = conversations.user;
+        let _defaultImg = "/images/default-profile-pic.png";
+        let _profileImg = user.images.hasOwnProperty('profile_image') ? ( user.images.profile_image.hasOwnProperty('http_url') ? user.images.profile_image.http_url : _defaultImg ) : _defaultImg;
         return (
             (minimized)?
                 <div className="chat-bubble minimized" onClick={this.onMinimiseClick.bind(this)}>
                     <div className="bubble-header clearfix">
                         <div className="pro-pic">
-                            <img src={user.images.profile_image.http_url} alt={user.first_name + " " + user.last_name} onClick={this.props.onLoadProfile} className="img-responsive" />
+                            <img src={_profileImg} alt={user.first_name + " " + user.last_name} onClick={this.props.onLoadProfile} className="img-responsive" />
                         </div>
                         <div className="username-holder"  onClick={this.onMinimiseClick.bind(this)}>
                             <h3 className="name" onClick={this.onMinimiseClick.bind(this)}>{user.first_name + " " + user.last_name}</h3>
@@ -411,7 +413,7 @@ export class ChatHeader extends React.Component{
                 <div className={this.state.isActiveBubble ? "chat-bubble active" : "chat-bubble"}>
                     <div className="bubble-header clearfix" id="hdr_btn" onClick={this.onHeaderClick.bind(this)}>
                         <div className="pro-pic">
-                            <img src={user.images.profile_image.http_url} alt={user.first_name + " " + user.last_name} onClick={this.props.onLoadProfile} className="img-responsive" />
+                            <img src={_profileImg} alt={user.first_name + " " + user.last_name} onClick={this.props.onLoadProfile} className="img-responsive" />
                         </div>
                         <div className="username-holder">
                             <h3 className="name">{user.first_name + " " + user.last_name}</h3>
@@ -535,8 +537,10 @@ export class MessageList extends React.Component{
         )*/
 
         let _messages = this.props.messages.map(function(msg, key){
-            let receiver_image = _this.props.conv.user.images.profile_image.http_url;
-            //let sender_image = _this.props.loggedUser.profile_image;
+
+            let _defaultImg = "/images/default-profile-pic.png";
+            let _image = _this.props.conv.user.images;
+            let receiver_image = _image.hasOwnProperty('profile_image') ? ( _image.profile_image.hasOwnProperty('http_url') ? _image.profile_image.http_url : _defaultImg ) : _defaultImg;
             return (
                 <div className={msg.cssClass == "receiver" ? "chat-msg received" : "chat-msg sent"} key={key}>
                     {

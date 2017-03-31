@@ -351,7 +351,6 @@ export default class ConversationList extends React.Component{
 
     render() {
 
-        //let _conversationsList = this.state.conversations;
         this.state.conversations.sort(function(a, b) {
             return moment(a.date_up) < moment(b.date_up);
         })
@@ -361,11 +360,14 @@ export default class ConversationList extends React.Component{
 
             let convId = "usr:" + conv.proglobeTitle;
             let _index = _this.getUnreadIndex(convId);
+            let _defaultImg = "/images/default-profile-pic.png";
+            let _image = conv.user.images;
+            let receiver_image = _image.hasOwnProperty('profile_image') ? ( _image.profile_image.hasOwnProperty('http_url') ? _image.profile_image.http_url : _defaultImg ) : _defaultImg;
 
             return (
                 <div className={_index > -1 ? "chat-item clearfix unread" : "chat-item clearfix"} onClick={()=>_this.onLoadQuickChat(conv, _this.unreadCount)} key={key}>
                     <div className="prof-img">
-                        <img src={conv.user.images.profile_image.http_url} className="img-responsive" />
+                        <img src={receiver_image} className="img-responsive" />
                     </div>
                     <div className="chat-preview">
                         <div className="chat-preview-header clearfix">
