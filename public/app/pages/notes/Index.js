@@ -358,7 +358,7 @@ export default class Index extends React.Component {
             if (noteContent.length > 1) {
                 noteText = noteContent.slice(0,30);
             }else{
-                noteText = "Title your note";
+                noteText = "";
             }
         }
         this.setState({editNoteTitle : noteText, isAutoTitled: false});

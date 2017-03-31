@@ -308,7 +308,7 @@ export default class Index extends React.Component{
                     <section className="folder-header">
                         <div className="row">
                             <div className="col-sm-7">
-                                <h2>My Group Folder</h2>
+                                <h2>Group Folder</h2>
                             </div>
                             <div className="col-sm-5">
                                 <div className="search-folder">

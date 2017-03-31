@@ -334,7 +334,7 @@ class SinglePost extends React.Component{
         let _show_share_button = (_profile.user_id != this.loggedUser.id)?true:false;
 
         var uploaded_files = _post.upload.map((upload,key)=>{
-            if(key <= 3){
+            if(key <= 2){
                 let _url = "";
                 if(upload.file_type == "mp4"){
                     _url = upload.thumb_http_url;
@@ -491,11 +491,8 @@ class SinglePost extends React.Component{
         if(typeof  this.props.postItem == 'undefined'){
             return(<div />);
         }
-
         let _this = this;
-
         this.imgList = [];
-
         const _post = this.props.postItem;
         let img_div_class = "image-col-wrapper pg-newsfeed-post-upload-image";
         if(_post.post_mode == "PP"){//profile update post
@@ -513,27 +510,48 @@ class SinglePost extends React.Component{
         let loggedUserProPic = (this.loggedUser.profile_image)? this.loggedUser.profile_image : "/images/default-profile-image.png";
 
         var uploaded_files = _post.upload.map((upload,key)=>{
-            if(key <= 3){
-                let _url = "";
-                if(upload.file_type == "mp4"){
-                    _url = upload.thumb_http_url;
-                } else{
-                    _url = upload.http_url
-                }
-
-                _this.imgList.push(_url);
-
+            let _url = "";
+            if(upload.file_type == "mp4"){
+                _url = upload.thumb_http_url;
+            } else{
+                _url = upload.http_url
+            }
+            _this.imgList.push(_url);
+            if(key <= 2){
                 return (
                     <div className={img_div_class} key={key}>
-                        <a
-                            href={_url}
-                            key={key}
-                            onClick={(e) => this.openLightbox(key, e)}
-                        ><img src = {_url} className="img-responsive post-img" /></a>{
-                        (upload.file_type == "mp4")?<i className="fa fa-play-circle-o post-video-play" aria-hidden="true" onClick = {(event)=>{this.onVideoPlay(upload)}}></i>:null
-                    }
-                        {(key == 3 && postImgLength > 4)? <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 4)}</p></div> : null}
+
+                        {(key == 2 && postImgLength > 3) ?
+                            <img src = {_url} className="img-responsive post-img" />
+                        :
+                            <a className="post-img-container"
+                                href={_url}
+                                key={key}
+                                onClick={(e) => this.openLightbox(key, e)}>
+                                <span className="img-helper"></span>
+                                <img src = {_url} className="img-responsive post-img" />
+                            </a>
+                        }
+                        {(upload.file_type == "mp4") ?
+                            <i className="fa fa-play-circle-o post-video-play" aria-hidden="true" onClick = {(event)=>{this.onVideoPlay(upload)}}></i>
+                        :null }
+                        {(key == 2 && postImgLength > 3) ?
+                            <a className="post-img-container"
+                                href={_url}
+                                key={key}
+                                onClick={(e) => this.openLightbox(key, e)}>
+                                <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 3)}</p></div>
+                            </a>
+                        : null }
                     </div>
+                )
+            } else {
+                return(
+                    <a className="post-img-container"
+                        href={_url}
+                        key={key}
+                        onClick={(e) => this.openLightbox(key, e)}>
+                    </a>
                 )
             }
         });
@@ -841,7 +859,7 @@ const SharedPostTitle = ({loggedUser,post,onLoadProfile}) =>{
 };
 
 const PostTitlePrefix = ({loggedUser,post, onLoadProfile}) =>{
-    
+
     if(post.post_type == 2){
         return (
             <span className="user-title-wrapper">

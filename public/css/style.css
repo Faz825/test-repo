@@ -4214,6 +4214,15 @@ textarea{
 }
 
 /* Work Mode */
+.workmode-overlay-holder{
+	position: fixed;
+	width: 100%;
+	top: 0;
+	left: 0;
+	height: 100%;
+	background: rgba(0,0,0,.5);
+}
+
 .workmode-overlay-holder .container{
     margin-top: 70px;
 }

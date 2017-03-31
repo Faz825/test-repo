@@ -10,6 +10,7 @@ import Chat from '../../middleware/Chat';
 import {Alert} from '../../config/Alert';
 import Lib from '../../middleware/Lib';
 import Autosuggest from 'react-autosuggest';
+import {CallChannel} from '../../config/CallcenterStats';
 
 let errorStyles = {
     color         : "#ed0909",
@@ -137,8 +138,6 @@ export default class QuickChatBubble extends React.Component{
                     <NewChatMessage
                         conv={this.state.chatData}
                         bubbleClose={this.onbubbleClosed.bind(this)}
-                        doAudioCall = {this.doAudioCall.bind(this)}
-                        doVideoCall = {this.doVideoCall.bind(this)}
                         onLoadProfile = {this.onLoadProfile.bind(this)}
                         onMinimize = {this.onChatMinimize.bind(this)}
 
@@ -163,8 +162,6 @@ export default class QuickChatBubble extends React.Component{
                     <ChatHeader
                         conv={this.state.chatData}
                         bubbleClose={this.onbubbleClosed.bind(this)}
-                        doAudioCall = {this.doAudioCall.bind(this)}
-                        doVideoCall = {this.doVideoCall.bind(this)}
                         onLoadProfile = {this.onLoadProfile.bind(this)}
                         onMinimize = {this.onChatMinimize.bind(this)}
 
@@ -177,6 +174,7 @@ export default class QuickChatBubble extends React.Component{
                         isActiveBubble= {this.state.isActiveBubble}
                         my_connections={this.state.my_connections}
                         setNewChatToList= {this.props.setNewChatToList}
+                        startCall={this.props.startCall}
                     />
                 </div>
 
@@ -368,6 +366,16 @@ export class ChatHeader extends React.Component{
         this.props.setActiveBubbleId(convId);
     }
 
+    videoCall(){
+        let _user = this.state.conversations.user;
+        this.props.startCall(_user, CallChannel.VIDEO);
+    };
+
+    audioCall(){
+        let _user = this.state.conversations.user;
+        this.props.startCall(_user, CallChannel.AUDIO);
+    };
+
     render() {
 
         const {
@@ -378,7 +386,6 @@ export class ChatHeader extends React.Component{
             } = this.state;
 
         let user = conversations.user;
-
         return (
             (minimized)?
                 <div className="chat-bubble minimized" onClick={this.onMinimiseClick.bind(this)}>
@@ -416,8 +423,8 @@ export class ChatHeader extends React.Component{
                             }
                         </div>
                         <div className="opt-icons clearfix">
-                            <span className="icon phn-icon"  id="aud_btn" onClick={this.props.doAudioCall}></span>
-                            <span className="icon video-icon"  id="vid_btn" onClick={this.props.doVideoCall}></span>
+                            <span className="icon phn-icon"  id="aud_btn" onClick={this.audioCall.bind(this)}></span>
+                            <span className="icon video-icon"  id="vid_btn" onClick={this.videoCall.bind(this)}></span>
                             <span className="icon minimize-icon"  id="min_btn" onClick={this.onMinimiseClick.bind(this)}></span>
                             <span className="icon close-icon"  id="cls_btn" onClick={this.onCloseClick.bind(this)}></span>
                         </div>

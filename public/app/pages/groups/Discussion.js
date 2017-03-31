@@ -175,18 +175,18 @@ export default class Discussion extends React.Component{
         let workmodeClass = "workmode-switched";
         // let user = Session.getSession('prg_lg');
         const {user, uname}= this.state;
-        var descriptionText = this.state.currentDescription ? this.state.currentDescription : "No description is added";
         return (
             <section className="group-content">
                 <div className="sidebar col-sm-4">
                     <div className="grp-desc panel">
                         <h3 className="panel-title">Description</h3>
                         <div className="desc"
-                             contentEditable={true}
-                             dangerouslySetInnerHTML={{__html: descriptionText}}
-                             onFocus={this.enableSaveDescription}
-                             onBlur={this.saveDescription}
-                             onInput={(event)=>{this.handleDescription(event)}}>
+                            contentEditable={true}
+                            dangerouslySetInnerHTML={{__html: this.state.currentDescription}}
+                            onFocus={this.enableSaveDescription}
+                            onBlur={this.saveDescription}
+                            onInput={(event)=>{this.handleDescription(event)}}
+                            placeholder="No description is added">
                         </div>
                         {this.state.showSave ?
                             <span className="save-btn" onInput={()=>{this.saveDescription()}}>save</span>
@@ -286,7 +286,7 @@ export class MembersWidget extends React.Component{
     }
 
     handleSearchUser(sharedWithIds, members){
-        this.setState({newMembers: members});
+        this.setState({newMembers: members, sharedWithIds : sharedWithIds});
     }
 
     addNewMembers() {
@@ -589,7 +589,6 @@ export class RemoveMemberPopup extends React.Component{
                     <div className="inner-wrapper">
                         <div className="popover-header">
                             <p className="group-members">group members</p>
-                            <p className="find-member">find member</p>
                         </div>
                         <div className={(this.state.seeAll) ? "members-list-holder see-all" : "members-list-holder"}>
                             {_members}

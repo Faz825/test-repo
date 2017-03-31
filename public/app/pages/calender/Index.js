@@ -24,7 +24,7 @@ export default class Index extends React.Component{
         super(props);
         this.dayViewDate = moment().format('YYYY-MM-DD');
         this.state = {
-            current : 'day',
+            current : 'week',
             dayViewDate: moment().format('YYYY-MM-DD'),
             monthViewDate: moment().startOf("day"),
             user: user

@@ -48,15 +48,15 @@ body{
 }
 
 .grp-members .invite-people #react-autowhatever-1{
-	width: 100%;
-	float: left;
-	position: absolute;
-	top: 35px;
-	left: auto;
-	overflow-y: scroll;
-	z-index: 9999;
-	background: #ffffff;
-	border: 1px solid #dddddd;
+   width: 100%;
+   float: left;
+   position: absolute;
+   top: 35px;
+   left: auto;
+   overflow-y: scroll;
+   z-index: 9999;
+   background: #ffffff;
+   border: 1px solid #dddddd;
 }
 
 .invite-people .suggestion-item{
@@ -160,12 +160,16 @@ body{
     position: relative;
 }
 
+.group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper.tagged .people-container .react-autosuggest__container {
+    float: left;
+}
+
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper {
     overflow: visible !important;
 }
 
 .group-container .group-content .sidebar .grp-members .all-members .mem-img{
-    overflow: hidden;
+     overflow: hidden;
 }
 
 .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper .people-container .close-btn {
@@ -355,10 +359,12 @@ body{
 }
 
 .calender-container .calender-box > div.week > span.day .event-area > ul li p{
+  margin: 0;
 	width: 98px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+    margin-bottom: 2px;
 }
 
 .calender-container .calender-box > div.week > span.day .event-area > ul li.color-1,
@@ -509,15 +515,15 @@ a.rc-time-picker-panel-clear-btn {
 }
 
 .group-container .group-content .sidebar .grp-day-panel .event-task-holder .list .list-wrapper .list-item{
-    overflow: hidden;
+     overflow: hidden;
 }
 
-.group-container .group-content .sidebar .grp-day-panel .event-task-holder .list .list-wrapper .list-item .time{
-    float: right;
+ .group-container .group-content .sidebar .grp-day-panel .event-task-holder .list .list-wrapper .list-item .time{
+   float: right;
 }
 
 .group-container .group-content .sidebar .grp-day-panel .event-task-holder .list {
-    width: 89%;
+     width: 89%;
 }
 
 .calender-container .mini-calender-box > div.week > span.day.today{
@@ -960,6 +966,21 @@ a.rc-time-picker-panel-clear-btn {
     padding: 0px;
 }
 
+.modalPopup.create-group-type-container {
+  box-shadow: none;
+}
+
+.modalPopup.create-group-type-container .popup-holder{
+  background-color: transparent;
+}
+
+.modalPopup.create-group-popup-container {
+  box-shadow: none;
+}
+
+.modalPopup.create-group-popup-container .popup-holder{
+  background-color: transparent;
+}
 
 /* Footer on collapse */
 .body-container.sub-page{
@@ -1272,6 +1293,10 @@ footer .notification-alert-holder.slideOut{
     height: 25px;
 }
 
+.calender-container .calender-body.day-view .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
+    height: auto;
+}
+
 .calender-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .time-wrapper {
     float: left !important;
     height: 25px;
@@ -1306,9 +1331,13 @@ footer .notification-alert-holder.slideOut{
 }
 
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
-    width: 100%;
+    width: 100% !important;
     max-width: 430px !important;
     height: 25px;
+}
+
+.group-container .group-calendar-container .calender-body.day-view .col-sm-9 .calender-view .calender-input .tag-wrapper .people-wrapper {
+    height: auto;
 }
 
 .group-container .group-calendar-container .calender-body .col-sm-9 .calender-view .calender-input {
@@ -1329,13 +1358,15 @@ footer .notification-alert-holder.slideOut{
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper {
     width: 343px !important;
     margin-right: 15px;
-    height: 25px;
+    height: auto;
+    min-height: 25px;
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-body .calendar-input-area .tag-wrapper .people-wrapper.tagged .people-container{
     width: 100%;
     max-width: 343px !important;
-    height: 25px;
+    height: auto;
+    min-height: 25px;
 }
 
 .popup-holder .calendar-week-popup-wrapper .model-footer .input-items-outer-wrapper{
@@ -1640,22 +1671,22 @@ body .modal-backdrop{
 }
 
 .group-container .group-content .sidebar .grp-members .add-member .search-field-holder .user-holder .user {
-    float: left;
-    margin-top: 2px;
-    margin-left: 3px;
-    padding: 3px;
-    font-size: 0.875em;
-    font-weight: 400;
-    letter-spacing: 1px;
-    color: #00a6ef;
-    border-radius: 3px;
-    background-color: rgba(0, 166, 239, 0.3);
-}
+     float: left;
+     margin-top: 2px;
+     margin-left: 3px;
+     padding: 3px;
+     font-size: 0.875em;
+     font-weight: 400;
+     letter-spacing: 1px;
+     color: #00a6ef;
+     border-radius: 3px;
+     background-color: rgba(0, 166, 239, 0.3);
+ }
 
-.group-container .group-content .sidebar .grp-members .add-member .search-field-holder .user-holder .user:hover {
-    color: #ffffff;
-    background-color: #00a6ef;
-}
+ .group-container .group-content .sidebar .grp-members .add-member .search-field-holder .user-holder .user:hover {
+     color: #ffffff;
+     background-color: #00a6ef;
+ }
 
 .group-container .add-member .btn{
     position: absolute;
@@ -1666,7 +1697,7 @@ body .modal-backdrop{
 }
 
 .group-container .group-content .sidebar .grp-members .add-member .form-control{
-    padding: 15px 62px 15px 20px;
+    padding: 10px 62px 10px 20px;
 }
 
 .group-container .group-content .event-task-holder .title-holder {
@@ -1680,7 +1711,7 @@ body .modal-backdrop{
     line-height: 1;
     font-size: 5px;
     margin-right: 10px;
-}
+}*/
 
 .group-container .group-content .event-task-holder ul.tasks-list li:before {
     color: #ff0000;
@@ -1692,10 +1723,15 @@ body .modal-backdrop{
     white-space: nowrap;
     width: 200px;
     overflow: hidden;
-}*/
+}
 
 .group-container .group-content .sidebar .grp-desc .desc {
     outline: none;
+}
+
+.group-container .group-content .sidebar .grp-desc .desc:empty:before{
+  content: attr(placeholder);
+  display: block; /* For Firefox */
 }
 
 .group-container .group-content .sidebar .grp-desc .save-btn {
@@ -1774,6 +1810,26 @@ header .chat-popover-holder .inner-wrapper .see-all{
     text-overflow: ellipsis;
 }
 
+.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .name,
+ .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper,
+ .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span,
+ .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .name,
+ .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper,
+ .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span {
+     float: none;
+     display: inline-block;
+ }
+
+ .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on,
+ .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on {
+     float: left;
+ }
+
+ .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share,
+ .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share {
+     margin-left: 5px;
+ }
+
 .feed-container .outer-wrapper .new-post .input-wrapper .input-options label,
 .group-container .outer-wrapper .new-post .input-wrapper .input-options label{
     cursor: pointer;
@@ -1802,26 +1858,6 @@ header .chat-popover-holder .inner-wrapper .see-all{
 .group-container .outer-wrapper .input-options .options-wrapper{
     float: left;
     margin: 7px 0 0;
-}
-
-.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .name,
-.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper,
-.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span,
-.group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .name,
-.group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper,
-.group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span {
-    float: none;
-    display: inline-block;
-}
-
-.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on,
-.group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on {
-    float: left;
-}
-
-.feed-container .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share,
-.group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share {
-    margin-left: 5px;
 }
 
 .cover-container .cover-image .actions-wrapper .action-event{
@@ -2046,4 +2082,56 @@ header .chat-popover-holder .inner-wrapper .see-all{
 
 .workmode-popup-wrapper .popup-holder .work-mode-popup-wrapper .content-wrapper .components-wrapper .time-selector-wrapper .option.selected .type-content .type-title{
     color: #a6c74a;
+}
+
+.imgPop-holder .share-popup-holder .img-holder {
+    min-width: 600px;
+    background: #838383;
+    padding: 30px 0px;
+}
+
+.imgPop-holder .share-popup-holder .img-holder img {
+    margin: auto;
+}
+
+.share-popup-holder.feed-container {
+    margin-top: 0px;
+}
+
+.imgPop-holder.dialog--jss-0-0 {
+    padding: 0px;
+}
+
+.pg-newsfeed-post-upload-image {
+    width: 31.01%;
+}
+
+.pg-newsfeed-post-upload-image img.post-img.img-responsive {
+    transform: scale(2.0);
+  -moz-transform: scale(2.0);
+  -webkit-transform: scale(2.0);
+  -o-transform: scale(2.0);
+  -ms-transform: scale(2.0); /* IE 9 */
+}
+
+.pg-newsfeed-post-upload-image .post-img-container {
+    display: block;
+    font-size: 0px;
+    line-height: 0px;
+}
+
+.pg-newsfeed-post-upload-image .post-img-container .img-helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.pg-newsfeed-post-upload-image .post-img-container .img-helper img {
+    width: 100%;
+    vertical-align: middle;
+}
+
+.wall-post .post-footer .comments-container .input-comment .input-wrapper .input-comment:empty:before {
+  content: attr(placeholder);
+  display: block; /* For Firefox */
 }

@@ -100,8 +100,8 @@ export default class AmbiLayout extends React.Component {
         this.quickChatUsers = [];
         this.handleClick = this.handleClick.bind(this);
         this.handleClose = this.handleClose.bind(this);
-        this.doVideoCall = this.doVideoCall.bind(this);
-        this.doAudioCall = this.doAudioCall.bind(this);
+        //this.doVideoCall = this.doVideoCall.bind(this);
+        //this.doAudioCall = this.doAudioCall.bind(this);
         this.onToastClose = this.onToastClose.bind(this);
 
         let _this = this;
@@ -139,9 +139,11 @@ export default class AmbiLayout extends React.Component {
         PubSub.subscribe(FPVC, function (msg, data) {
 
             if (data.type == VIDEO_CALL) {
-                _this.doVideoCall(data);
+                //_this.doVideoCall(data);
+                _this.startCall(data.user, CallChannel.VIDEO)
             } else {
-                _this.doAudioCall(data);
+                //_this.doAudioCall(data);
+                _this.startCall(data.user, CallChannel.AUDIO)
             }
 
         });
@@ -781,6 +783,7 @@ export default class AmbiLayout extends React.Component {
                                   loadedChatBubbleId={this.state.loadedChatBubbleId}
                                   my_connections={this.state.my_connections}
                                   setNewChatToList={this.setNewChatToList.bind(this)}
+                                  startCall={this.startCall.bind(this)}
                 />
                 {/*<QuickChatDummy dummyChatList={this.state.dummyChatArray} closeQuickChat={this.closeDummyQuickChat.bind(this)} isNavHidden={this.state.isNavHidden}/>*/}
                 <VideoChatPopOver />

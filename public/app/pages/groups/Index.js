@@ -27,7 +27,8 @@ export default class Index extends React.Component{
             firstStepOpen : false,
             secondStepOpen : false,
             defaultType : 1,
-            groups : []
+            groups : [],
+            communities: []
         };
     }
 
@@ -77,6 +78,9 @@ export default class Index extends React.Component{
 
         // adding the values got from the first step
         groupData['_type'] = this.state.defaultType;
+
+        console.log("selected type", groupData['_type']);
+
         console.log(groupData);
         $.ajax({
             url: '/groups/add',
@@ -101,7 +105,7 @@ export default class Index extends React.Component{
         if(this.state.groups.length > 0 ) {
             groupBlock = this.state.groups.map(function(group,userKey){
                 return <a className="list-item clearfix" href={'groups/'+group.name_prefix}>
-                    <img src={group.group_pic_link ? group.group_pic_link : "images/group/dashboard/grp-icon.png"} alt="Group icon" className="pull-left" />
+                    <img src={group.group_pic_link ? group.group_pic_link : "images/group/dashboard/grp-default-icon.png"} alt="Group icon" className="pull-left" />
                     <p className="list-item-title">{group.name}</p>
                 </a>
             });
@@ -112,28 +116,30 @@ export default class Index extends React.Component{
                     <section className="group-dashboard-header">
                         <div className="row">
                             <div className="col-sm-6">
-                                <h2>group</h2>
+                                <h2>groups</h2>
                             </div>
                             <div className="col-sm-6 action-holder">
-                                <div className="crt-grp">
-                                    <button className="btn btn-crt-grp" onClick={this.openFirstStep.bind(this)}>CREATE A GROUP</button>
-                                </div>
-                                <div className="search-group">
+                                <div className="header-actions-wrapper">
+                                    <div className="crt-grp">
+                                        <button className="btn btn-crt-grp" onClick={this.openFirstStep.bind(this)}><i className="fa fa-plus"></i> new group</button>
+                                    </div>
+                                    <div className="search-group">
                                     <span className="inner-addon">
                                         <i className="fa fa-search"></i>
-                                        <input type="text" className="form-control" placeholder="Search" />
+                                        <input type="text" className="form-control" placeholder="search" />
                                     </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </section>
                     <section className="group-content">
-                        <section className="group-list list-holder">
-                            <h3 className="list-title">My groups</h3>
-                            <div className="list-wrapper clearfix">
-                                {groupBlock}
-                            </div>
-                        </section>
+                        <div className="group-body">
+                            <GroupsList handleNext={this.openSecondStep.bind(this)} handleType={this.setType.bind(this)} groups={this.state.groups}
+                                        groupType={"my-groups"}/>
+                            <GroupsList handleNext={this.openSecondStep.bind(this)} handleType={this.setType.bind(this)} groups={this.state.communities}
+                                        groupType={"my-communities"}/>
+                        </div>
                     </section>
                 </div>
                 {this.state.firstStepOpen ?
@@ -157,6 +163,121 @@ export default class Index extends React.Component{
     }
 }
 
+export class GroupsList extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            user: Session.getSession('prg_lg'),
+            isCollapsed: true,
+            groups: this.props.groups
+        };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.groups !== this.state.groups) {
+            this.setState({ groups: nextProps.groups });
+        }
+    }
+
+    onGroupExpand(){
+        let isCollapsedState = this.state.isCollapsed;
+        this.setState({isCollapsed : !isCollapsedState});
+    }
+
+    setType(type) {
+        this.props.handleType(type);
+        this.props.handleNext();
+    }
+
+    render() {
+
+        let _this = this;
+        let groupType = this.props.groupType;
+
+        let groupCls = (groupType == "my-groups") ? "my-groups" : "my-communities";
+        let _type = (groupType == "my-groups") ? 1 : 2;
+
+        var groupBlock = '';
+        if(this.state.groups.length > 0 ) {
+            groupBlock = this.state.groups.map(function(group,key){
+                let group_pic = group.group_pic_link ? group.group_pic_link : "/images/group/dashboard/grp-default-icon.png";
+                const wallpaper = {
+                    backgroundImage: 'url(' + group_pic + ')'
+                };
+                return (
+                    <div className="group-col" key={key}>
+                        <a className="list-item clearfix" href={'groups/'+group.name_prefix}>
+                            <div className="group-item">
+                                <div className="group-title-holder">
+                                    <span className="group-image-holder" style={wallpaper}></span>
+                                    <p className="group-title">{group.name}</p>
+                                </div>
+                                <div className="group-member-wrapper">
+                                    {(group.created_by == _this.state.user.id) ?
+                                        <p className="group-member">owner</p> : <p className="group-member">member</p> }
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                )
+            });
+        }
+
+        return (
+            <div className={(_this.state.isCollapsed) ? "row group " + groupCls : "row group see-all " + groupCls}>
+                <div className="group-wrapper">
+                    <div className="col-sm-2">
+                        <div className="group-cover-wrapper">
+                            <div className="group-cover">
+                                <div className="content-wrapper">
+                                    <div className="logo-wrapper">
+                                        <img src="/images/group/dashboard/my-groups.png" className="img-rounded"/>
+                                    </div>
+                                    {
+                                        (groupType == "my-groups") ? <h3>my groups</h3> : <h3>my communities</h3>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-sm-10">
+                        <div className="row">
+                            {
+                                (groupType == "my-communities") ?
+                                    <div className="coming-soon-overlay">
+                                        <p className="title">coming soon!</p>
+                                    </div> : null
+                            }
+                            <div className="group-content-wrapper">
+                                <div className="group-items-wrapper">
+                                    <div className="group-col">
+                                        <div className="group-item create-group-fl" onClick={(type)=>{this.setType(_type)}}>
+                                            <i className="fa fa-plus"></i>
+                                            {
+                                                (groupType == "my-groups") ? <p>create a group</p> : <p>add new community</p>
+                                            }
+                                        </div>
+                                    </div>
+                                    {groupBlock}
+                                </div>
+                                {
+                                    (_this.state.groups.length > 4) ?
+                                        <div className="see-all" onClick={_this.onGroupExpand.bind(this)}>
+                                            <i className={"fa fa-chevron-circle-right " + groupCls} aria-hidden="true"></i>
+                                            {
+                                                (_this.state.isCollapsed) ? <p>see all</p> : <p>see less</p>
+                                            }
+                                        </div> : null
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
 /**
  * Popup 1 - The group creation
  */
@@ -165,90 +286,75 @@ export class CreateStepOne extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            activeType : 1
+            activeType : 0,
+            moveNextWarning: false
         };
     }
 
     setType(type) {
-        this.setState({activeType : type});
+        this.setState({activeType : type, moveToNextWarning: false});
         this.props.handleType(type);
     }
 
-    render() {
-        const whatIsGroup = (
-            <Popover title="Popover bottom">
-                <strong>Lorem ipsum dolor sit amet</strong>  consectetur adipiscing elit.
-            </Popover>
-        );
+    handleNext(){
 
-        const whatIsCommunity = (
-            <Popover title="Popover bottom">
-                <strong>Donec pellentesque ante,</strong> nec vulputate eros pretium.
-            </Popover>
-        );
+        if(this.state.activeType == 0){
+            this.setState({moveToNextWarning : true});
+        }
+
+        if(this.state.activeType == 1){
+            this.props.handleNext();
+        } else if (this.state.activeType == 2){
+            this.props.handleClose();
+        }
+    }
+
+    render() {
         return (
-            <ModalContainer>
-                <ModalDialog className="modalPopup">
+            <ModalContainer onClose={this.props.handleClose}>
+                <ModalDialog onClose={this.props.handleClose} className="modalPopup create-group-type-container">
                     <div className="popup-holder">
                         <div className="create-group-type-popup">
                             <div className="model-header">
                                 <h3 className="modal-title">Create a group</h3>
-                                <p className="sub-title">Which type of group would you like to make?</p>
-                                <span
-                                    className="close-icon"
-                                    onClick={this.props.handleClose}
-                                ></span>
+                                <p className="sub-title">discuss, collaborate, connect, and manage tasks, all in one place. ambi groups is your go-to place for team work.</p>
                             </div>
                             <div className="model-body clearfix">
-                                <div className={this.state.activeType == 1 ? 'selected col-sm-6 selector-wrapper' : 'col-sm-6 selector-wrapper'}>
-                                    <div className="inner-holder clearfix">
+                                <p className="group-type">which kind of group would you like to create?</p>
+                                <div className="option-container">
+                                    <div  className={this.state.activeType == 1 ? 'selected option' : 'option'}>
                                         <input type="radio" name="group" id="group-select" />
                                         <label for="group-select" onClick={(type)=>{this.setType(1)}}>
                                             <div className="select-content clearfix">
-                                                <img src="images/group/group-icon.png" className="type-icon" />
+                                                <span className="type-icon group"></span>
                                                 <div className="type-content">
-                                                    <h3 className="type-title">Group</h3>
-                                                    <div className="tool-tip clearfix">
-                                                        <p className="tool-tip-text">What is group</p>
-                                                        <i className="fa fa-question-circle-o" aria-hidden="true"></i>
-                                                    </div>
+                                                    <h3 className="type-title">group</h3>
                                                 </div>
                                             </div>
                                         </label>
                                     </div>
-                                </div>
-                                <div className={this.state.activeType == 2 ? 'selected col-sm-6 selector-wrapper' : 'col-sm-6 selector-wrapper'}>
-                                    <div className="inner-holder clearfix">
+                                    <div className={this.state.activeType == 2 ? 'selected option' : 'option'}>
                                         <input type="radio" name="group" id="community-select" />
-                                        <label
-                                            for="community-select"
-                                            onClick={(type)=>{this.setType(2)}}
-                                            className={this.state.activeType == 2 ? 'selected' : ''}>
+                                        <label for="group-select" onClick={(type)=>{this.setType(2)}}>
                                             <div className="select-content clearfix">
-                                                <img src="images/group/community-icon.png" className="type-icon" />
+                                                <span className="type-icon community"></span>
                                                 <div className="type-content">
-                                                    <h3 className="type-title">Community</h3>
-                                                    <div className="tool-tip clearfix">
-                                                        <p className="tool-tip-text">What is community</p>
-                                                        <i className="fa fa-question-circle-o" aria-hidden="true"></i>
-                                                    </div>
+                                                    <h3 className="type-title">community</h3>
                                                 </div>
                                             </div>
                                         </label>
                                     </div>
                                 </div>
+                                {
+                                    (this.state.moveToNextWarning) ? <p className="warning">please select a group!</p> : null
+                                }
                             </div>
                             <div className="model-footer">
-                                <div className="footer-btn btn-holder">
-                                    <button
-                                        className="btn btn-default cancel-btn"
-                                        onClick={this.props.handleClose}
-                                    >Cancel</button>
-                                    <button
-                                        className="btn btn-default success-btn"
-                                        onClick={this.props.handleNext}
-                                    >Next</button>
-                                </div>
+                                {
+                                    (this.state.activeType == 2) ?
+                                        <button className="btn btn-create-group" style={{backgroundColor: "#b0b3bc"}} onClick={this.handleNext.bind(this)}>coming soon</button> :
+                                            <button className="btn btn-create-group" onClick={this.handleNext.bind(this)}>next</button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -266,13 +372,18 @@ export class CreateStepTwo extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            groupColor : 'pink',
+            groupColor : '',
             groupName : '',
             groupDescription : '',
             members : [],
             sharedWithIds : [],
             groupProfileImgSrc : '',
-            groupProfileImgId : ''
+            groupProfileImgId : '',
+            warningStateName: false,
+            warningStateColor: false,
+            warningStateImage: false,
+            uploadingImage: "init",
+            uploadingImageAlert: ''
         };
 
         this.sharedWithIds = [];
@@ -287,11 +398,11 @@ export class CreateStepTwo extends React.Component{
     }
 
     setColor(color) {
-        this.setState({ groupColor : color});
+        this.setState({ groupColor : color, warningStateColor: false});
     }
 
     setName(event) {
-        this.setState({groupName : event.target.value});
+        this.setState({groupName : event.target.value, warningStateName : false});
     }
 
     setDescription(event) {
@@ -300,15 +411,34 @@ export class CreateStepTwo extends React.Component{
 
     handleCreate(event) {
         event.preventDefault();
-        var groupData = {
-            _name : this.state.groupName,
-            _description : this.state.groupDescription,
-            _color : this.state.groupColor,
-            _members : this.state.members,
-            _group_pic_link : this.state.groupProfileImgSrc,
-            _group_pic_id : this.state.groupProfileImgId
+
+        if(this.state.groupName == '' || this.state.groupName.length == 0){
+            this.setState({ warningStateName : true});
         }
-        this.props.handleCreate(groupData);
+        if(this.state.groupColor == '' || this.state.groupColor.length == 0){
+            this.setState({ warningStateColor : true});
+        }
+        if(this.state.uploadingImage == 'uploading' || this.state.uploadingImage == 'uploading-error'){
+            this.setState({
+                warningStateImage : true,
+                uploadingImageAlert: 'please wait until the group image is getting uploaded.'
+            });
+        }
+
+        if((this.state.groupName != '' || this.state.groupName.length != 0) &&
+            (this.state.groupColor != '' || this.state.groupColor.length != 0) && (this.state.uploadingImage == "init" || this.state.uploadingImage == "uploading-done")) {
+            this.setState({ warningStateName : false, warningStateColor: false});
+
+            var groupData = {
+                _name : this.state.groupName,
+                _description : this.state.groupDescription,
+                _color : this.state.groupColor,
+                _members : this.state.members,
+                _group_pic_link : this.state.groupProfileImgSrc,
+                _group_pic_id : this.state.groupProfileImgId
+            }
+            this.props.handleCreate(groupData);
+        }
     }
 
     handleSearchUser(sharedWithIds, members){
@@ -317,7 +447,12 @@ export class CreateStepTwo extends React.Component{
 
     imgUpdated(data){
 
-        this.setState({loadingBarIsVisible : true});
+        this.setState({
+            warningStateImage: true,
+            uploadingImage : "uploading",
+            uploadingImageAlert: ''
+        });
+
         let _this =  this;
         $.ajax({
             url: '/groups/upload-image',
@@ -330,16 +465,19 @@ export class CreateStepTwo extends React.Component{
             success: function (data, text) {
                 if (data.status.code == 200) {
                     _this.setState({
-                        loadingBarIsVisible : false,
+                        uploadingImage : "uploading-done",
+                        warningStateImage: false,
                         groupProfileImgSrc : data.upload.http_url,
                         groupProfileImgId : data.upload.document_id
                     });
                 }
             },
             error: function (request, status, error) {
-                console.log(request.responseText);
-                console.log(status);
-                console.log(error);
+                _this.setState({
+                    warningStateImage: true,
+                    uploadingImage : "uploading-error",
+                    uploadingImageAlert: 'there was an error occurred. Please upload again.'
+                });
             }
         });
     }
@@ -367,6 +505,21 @@ export class CreateStepTwo extends React.Component{
                 return <span key={key} className="user">{member.name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
             });
         }
+
+        const uploadScript = (
+
+                (this.state.uploadingImage == "uploading") ?
+                    <span><i className="fa fa-spinner fa-spin"></i> uploading</span>
+                :
+                (this.state.uploadingImage == "uploading-done") ?
+                    <span><i className="fa fa-check"></i> upload new</span>
+                :
+                (this.state.uploadingImage == "uploading-error") ?
+                    <span><i className="fa fa-thumbs-down"></i> upload new</span>
+                :
+                    <span>upload new</span>
+
+        )
 
         /*return (
             <ModalContainer>
@@ -447,8 +600,8 @@ export class CreateStepTwo extends React.Component{
         );*/
 
         return (
-            <ModalContainer>
-                <ModalDialog className="modalPopup">
+            <ModalContainer onClose={this.props.handleClose}>
+                <ModalDialog onClose={this.props.handleClose} className="modalPopup create-group-popup-container">
                     <div className="popup-holder">
                         <div className="create-group-popup">
                             <div className="model-header">
@@ -456,57 +609,75 @@ export class CreateStepTwo extends React.Component{
                                 <span className="close-icon" onClick={this.props.handleClose}></span>
                             </div>
                             <div className="model-body clearfix">
-                                <section className="folder-body">
+                                <section className="group-body">
                                     <div className="form-group">
                                         <label for="grpname">name your group</label>
-                                        <input type="text" className="form-control" id="grpname" onChange={this.setName}/>
+                                        <input type="text" className="form-control" id="grpname" onChange={this.setName} placeholder="what’s your group called?"/>
+                                        {
+                                            (this.state.warningStateName) ? <span className="errorMsg">please enter a group name</span> : null
+                                        }
                                     </div>
                                     <div className="form-group invite-people clearfix">
                                         <label>invite some people</label>
                                         <SearchMembersField
                                             handleSearchUser={this.handleSearchUser}
-                                            placeholder=""
+                                            placeholder="type a name"
                                             sharedWithIds={this.state.sharedWithIds}
                                         />
                                     </div>
                                     <div className="form-group">
                                         <label for="desc">enter a group description</label>
-                                        <textarea className="form-control" rows="5" id="desc" onChange={this.setDescription}></textarea>
+                                        <textarea className="form-control" rows="5" id="desc" onChange={this.setDescription} placeholder="what’s the purpose of this group?"></textarea>
                                     </div>
                                     <div className="form-group">
                                         <p className="label">choose a colour</p>
                                         <div className="color-palette">
-                                            <div className={this.state.groupColor == '#ed1e7a' ? 'color-block pink active' : 'color-block pink'} onClick={(color)=>{this.setColor('#ed1e7a')}}>
-                                                <i className="fa fa-check" aria-hidden="true"></i>
-                                            </div>
-                                            <div className={this.state.groupColor == '#00a6ef' ? 'color-block light-blue active' : 'color-block light-blue'} onClick={(color)=>{this.setColor('#00a6ef')}}>
-                                                <i className="fa fa-check" aria-hidden="true"></i>
-                                            </div>
-                                            <div className={this.state.groupColor == '#a6c74a' ? 'color-block light-green active' : 'color-block light-green'} onClick={(color)=>{this.setColor('#a6c74a')}}>
-                                                <i className="fa fa-check" aria-hidden="true"></i>
-                                            </div>
-                                            <div className={this.state.groupColor == '#b21e53' ? 'color-block red active' : 'color-block red'} onClick={(color)=>{this.setColor('#b21e53')}}>
+                                            <div className={this.state.groupColor == '#038247' ? 'color-block dark-green active' : 'color-block dark-green'} onClick={(color)=>{this.setColor('#038247')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
                                             <div className={this.state.groupColor == '#000f75' ? 'color-block dark-blue active' : 'color-block dark-blue'} onClick={(color)=>{this.setColor('#000f75')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
-                                            <div className={this.state.groupColor == '#bfbfbf' ? 'color-block gray active' : 'color-block gray'} onClick={(color)=>{this.setColor('#bfbfbf')}}>
-                                                <i className="fa fa-check" aria-hidden="true"></i>
-                                            </div>
-                                            <div className={this.state.groupColor == '#038247' ? 'color-block dark-green active' : 'color-block dark-green'} onClick={(color)=>{this.setColor('#038247')}}>
+                                            <div className={this.state.groupColor == '#b21e53' ? 'color-block red active' : 'color-block red'} onClick={(color)=>{this.setColor('#b21e53')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
                                             <div className={this.state.groupColor == '#000000' ? 'color-block black active' : 'color-block black'} onClick={(color)=>{this.setColor('#000000')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
+                                            <div className={this.state.groupColor == '#a6c74a' ? 'color-block light-green active' : 'color-block light-green'} onClick={(color)=>{this.setColor('#a6c74a')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#00a6ef' ? 'color-block light-blue active' : 'color-block light-blue'} onClick={(color)=>{this.setColor('#00a6ef')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#ed1e7a' ? 'color-block pink active' : 'color-block pink'} onClick={(color)=>{this.setColor('#ed1e7a')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#bfbfbf' ? 'color-block gray active' : 'color-block gray'} onClick={(color)=>{this.setColor('#bfbfbf')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+
+
                                         </div>
+                                        {
+                                            (this.state.warningStateColor) ? <span className="errorMsg">please choose a group color</span> : null
+                                        }
                                     </div>
                                     <div className="form-group">
                                         <p className="label">Group icon</p>
                                         <div className="btn-holder clearfix">
-                                            <button className="btn btn-upload"><GroupProfileImageUploader className="btn-default upload-btn btn" profileImgSrc={this.state.groupProfileImgSrc} imgUpdated={this.imgUpdated} />Upload New</button>
+                                            <button className="btn btn-upload">
+                                                <GroupProfileImageUploader className="btn-default upload-btn btn"
+                                                                           profileImgSrc={this.state.groupProfileImgSrc} imgUpdated={this.imgUpdated} />
+                                                {uploadScript}
+                                            </button>
                                         </div>
+                                        {
+                                            (this.state.warningStateImage) ?
+                                                (this.state.uploadingImage == "uploading" || this.state.uploadingImage == "uploading-error") ?
+                                                    <span className="errorMsg">{this.state.uploadingImageAlert}</span>
+                                                    : null : null
+                                        }
                                     </div>
                                 </section>
                             </div>
