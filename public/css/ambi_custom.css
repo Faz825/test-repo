@@ -1533,6 +1533,9 @@ footer .notification-alert-holder.slideOut{
 .popup-holder .active-call-container .participants{
     height: 100px;
     margin: 20px 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .callModelMinimized{
