@@ -32,7 +32,7 @@ export default class NewsSettings extends React.Component{
         this.removeNewsChannel = this.removeNewsChannel.bind(this);
 
         this.loadCategories();
-        this.addNewsChannel();
+        // this.addNewsChannel();
         // this.removeNewsChannel();
     }
 
