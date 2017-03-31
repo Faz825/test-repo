@@ -333,7 +333,7 @@ var CalendarController = {
                             if (myEvent) {
                                 console.log(_event._id);
                                 var criteria = {notified_calendar: _event._id};
-                                Notification.getFirstNotification(criteria, function (results) {
+                                Notification.getNotifications(criteria, function (results) {
                                     if (results.status == 200) {
                                         callBack(null, results.result, _event);
                                     } else {
@@ -346,13 +346,28 @@ var CalendarController = {
                             }
 
                         },
-                        function removeRecipients(_notification, _event, callBack) {
+                        function getNotificationIdAll(_notifications, _event, callBack) {
+                            if (_notifications) {
+                                var _ids = [];
+                                for(var i = 0; i < _notifications.length; i++){
+                                    _ids.push(_notifications[i]._id);
+                                }
+                                callBack(null, _ids, _event);
+                            } else {
+                                callBack(null, null, _event);
+                            }
+                        },
+                        function removeRecipients(_notificationIds, _event, callBack) {
                             console.log("came to removeRecipients");
-                            if (_notification && _event) {
-                                var criteria = {notification_id: _notification._id}
+
+                            if (_notificationIds.length > 0 && _event) {
+                                var _ids = {
+                                    $in: _notificationIds
+                                }
+                                var criteria = {notification_id: _ids}
                                 NotificationRecipient.deleteNotificationRecipients(criteria, function (results) {
                                     if (results.status == 200) {
-                                        callBack(null, results.status, _notification);
+                                        callBack(null, results.status, _notificationIds);
                                     } else {
                                         callBack(null, null, null);
                                     }
@@ -361,10 +376,13 @@ var CalendarController = {
                                 callBack(null, null, null);
                             }
                         },
-                        function removeNotification(delRecipients, _notification, callBack) {
+                        function removeNotification(delRecipients, _notificationIds, callBack) {
                             console.log("came to removeNotification");
-                            if (delRecipients == 200 && _notification) {
-                                var criteria = {_id: _notification._id}
+                            if (delRecipients == 200 && _notificationIds.length > 0) {
+                                var _ids = {
+                                    $in: _notificationIds
+                                }
+                                var criteria = {_id: _ids}
 
                                 Notification.deleteNotification(criteria, function (results) {
                                     if (results.status == 200) {
