@@ -120,8 +120,6 @@ CallSchema.statics.addNew = function (oCall, callBack) {
 
     _async.waterfall([
         function saveCallRecord(callback) {
-            console.log('call record', oNewCallRecord);
-
             oNewCallRecord.save(function (error, oCallRecord) {
                 if (error) {
                     callback(error);
@@ -160,7 +158,6 @@ CallSchema.statics.addNew = function (oCall, callBack) {
                 };
 
                 ES.createIndex(callPayload, function (result) {
-                    console.log('CALL RECORD INDEX CREATED:' + _user_key);
                     forEachCallBack(null);
                 });
 
@@ -184,12 +181,7 @@ CallSchema.statics.getRecordById = function (id, callBack) {
 
     _this.findOne({_id: id}).lean().exec(function (err, resultSet) {
         if (!err) {
-            if (resultSet == null) {
-                callBack(null);
-                return;
-            }
-
-            callBack(resultSet);
+            callBack({status: 200, data: resultSet})
         } else {
             console.log(err);
             callBack({status: 400, error: err})
@@ -224,17 +216,14 @@ CallSchema.statics.get = function (filter, fields, callBack) {
  * @param value
  * @param callBack
  */
-CallSchema.statics.updateCallRecord = function (filter, value, callBack) {
-
+CallSchema.statics.updateCallRecord = function (recordId, oRecord, callBack) {
     var _this = this;
-    var options = {multi: true};
 
-    _this.update(filter, value, options, function (err, update) {
-        if (err) {
-            console.log(err);
-            callBack({status: 400, error: err});
+    _this.findOneAndUpdate({_id: recordId}, {$set: oRecord}, {new: true}, function (error, data) {
+        if (!error) {
+            return callBack({status: 200, data: data});
         } else {
-            callBack({status: 200, event: update});
+            return callBack({status: 400, error: error});
         }
     });
 };
