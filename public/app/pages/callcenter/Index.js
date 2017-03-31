@@ -236,18 +236,33 @@ export default class Index extends React.Component {
                 callStatus == 'cancelled';
             }
 
-            callRecords.push({
-                user_id: aCallRecords[i].receivers_list[0].user_id,
-                first_name: aCallRecords[i].receivers_list[0].first_name,
-                last_name: aCallRecords[i].receivers_list[0].last_name,
-                calls: 1,
-                time: time,
-                call_type: callType,
-                call_channel: callChannel,
-                call_status: callStatus,
-                online_mode: aCallRecords[i].receivers_list[0].online_mode,
-                images: aCallRecords[i].receivers_list[0].images
-            });
+            if(callType == CallType.INCOMING){
+                callRecords.push({
+                    user_id: aCallRecords[i].origin_user.user_id,
+                    first_name: aCallRecords[i].origin_user.first_name,
+                    last_name: aCallRecords[i].origin_user.last_name,
+                    calls: 1,
+                    time: time,
+                    call_type: callType,
+                    call_channel: callChannel,
+                    call_status: callStatus,
+                    online_mode: aCallRecords[i].origin_user.online_mode,
+                    images: aCallRecords[i].origin_user.images
+                });
+            }else{
+                callRecords.push({
+                    user_id: aCallRecords[i].receivers_list[0].user_id,
+                    first_name: aCallRecords[i].receivers_list[0].first_name,
+                    last_name: aCallRecords[i].receivers_list[0].last_name,
+                    calls: 1,
+                    time: time,
+                    call_type: callType,
+                    call_channel: callChannel,
+                    call_status: callStatus,
+                    online_mode: aCallRecords[i].receivers_list[0].online_mode,
+                    images: aCallRecords[i].receivers_list[0].images
+                });
+            }
         }
 
         return callRecords;

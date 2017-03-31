@@ -189,14 +189,14 @@ export default class CallModel extends React.Component {
                                     <span className={(this.state.isSpeakerEnabled) ? "speaker" : "speaker active"}
                                     ></span>
                                     {
-                                        (this.props.callStage == CallStage.DIAL_CALL ||  this.props.callStage == CallStage.ANSWER_CALL) ?
+                                        (this.props.callStage == CallStage.DIAL_CALL || this.props.callStage == CallStage.ANSWER_CALL) ?
                                             <span className="hang-up" onClick={(e) => this.props.closePopup(e)}></span>
                                             :
                                             <span className="dial-call" onClick={(e) => this.dialCall(e)}></span>
                                     }
 
                                 </div>
-                                <p className="call-receiver-status">Dialling....</p>
+                                <p className="call-receiver-status">{(this.props.callStage == CallStage.DIAL_CALL) ? 'Dialling....' : ''}</p>
                             </div>
                             {
                                 (this.props.targetUser.type == ContactType.INDIVIDUAL) ?

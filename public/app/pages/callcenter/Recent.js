@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {UserMode, ContactType, CallStatus} from '../../config/CallcenterStats';
+import {UserMode, ContactType, CallStatus, CallChannel} from '../../config/CallcenterStats';
 
 export default class Recent extends React.Component {
     constructor(props) {
@@ -30,6 +30,14 @@ export default class Recent extends React.Component {
             mood = "work-mode";
         } else {
             mood = "offline";
+        }
+
+        let callIcon = null;
+
+        if(contact.call_channel == CallChannel.AUDIO){
+            callIcon = 'phone';
+        }else{
+            callIcon = 'video';
         }
 
         return (

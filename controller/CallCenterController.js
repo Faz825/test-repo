@@ -128,7 +128,6 @@ var CallCenterController = {
 
                         callback(null, aContacts);
                     } else {
-
                         callback(null, []);
                     }
                 }
@@ -206,6 +205,25 @@ var CallCenterController = {
             });
 
 
+        },
+        getContact: function (req, res, next) {
+            var query = {
+                q: '_id:' + req.body.user_name,
+                index: 'idx_usr'
+            };
+
+            ES.search(query, function (ResultSet) {
+                var outPut = {};
+
+                if (ResultSet.hasOwnProperty('result')) {
+                    outPut.user = ResultSet.result.shift();
+                    outPut.status = ApiHelper.getMessage(200, Alert.SUCCESS);
+                    return res.status(200).json(outPut);
+                }else{
+                    outPut.status = ApiHelper.getMessage(400, Alert.ERROR);
+                    return res.status(400).json(outPut);
+                }
+            });
         }
     }
     ,
@@ -313,7 +331,7 @@ var CallCenterController = {
                     }
                 }, function prepareCallRecords(aReceivers, aCallRecords, callback) {
                     if (aReceivers) {
-                        aCallRecords.forEach(function (oCallRecord) {
+                        _async.each(aCallRecords, function (oCallRecord, callRecordCallback) {
                             var aReceiverIds = [];
 
                             oCallRecord.receivers_list.forEach(function (oReceiver) {
@@ -322,14 +340,35 @@ var CallCenterController = {
 
                             oCallRecord.receivers_list = [];
 
-                            aReceivers.forEach(function (oReceiver) {
+                            _async.each(aReceivers, function (oReceiver, getUserCallback) {
                                 if (aReceiverIds.indexOf(oReceiver.user_id) != -1) {
-                                    oCallRecord.receivers_list.push(oReceiver);
-                                }
-                            });
-                        });
+                                    if (oReceiver.user_id == CurrentSession.id && oCallRecord.call_type == mCall.callTypes.INCOMING) {
+                                        var query = {
+                                            q: 'user_id:' + oCallRecord.user_id,
+                                            index: 'idx_usr'
+                                        };
 
-                        callback(null, aCallRecords);
+                                        ES.search(query, function (oUserResult) {
+                                            if (oUserResult) {
+                                                oCallRecord.origin_user = oUserResult.result[0];
+                                            }
+
+                                            oCallRecord.receivers_list.push(oReceiver);
+                                            getUserCallback();
+                                        });
+                                    } else {
+                                        oCallRecord.receivers_list.push(oReceiver);
+                                        getUserCallback();
+                                    }
+                                } else {
+                                    getUserCallback();
+                                }
+                            }, function (error) {
+                                (error) ? callRecordCallback(error) : callRecordCallback();
+                            });
+                        }, function (error) {
+                            (error) ? callback(error) : callback(null, aCallRecords);
+                        });
                     } else {
                         callback(null, []);
                     }

@@ -216,6 +216,17 @@ class CallCenter {
             headers: {'prg-auth-header': _this.loggedUser.token}
         });
     }
+
+    getContact(username) {
+        let _this = this;
+
+        return $.ajax({
+            url: '/contact/caller',
+            method: "POST",
+            data: {user_name: username},
+            headers: {'prg-auth-header': _this.loggedUser.token}
+        });
+    }
 }
 
 export default new CallCenter;
