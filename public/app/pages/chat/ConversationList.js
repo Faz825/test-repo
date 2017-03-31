@@ -29,39 +29,41 @@ export default class ConversationList extends React.Component{
         this.convUsers = [];
         this.quickChatUsers = [];
         this.notifiedUsers = [];
+        this.loadMyConnections();
+        //this.initChat(this.b6)
 
-        let _this = this;
-        asnyc.waterfall([
-            function getMyConnections(callBack) {
-                if(_this.state.connections != undefined && _this.state.connections.length > 0) {
-                    callBack(null, _this.state.connections);
-                } else {
-                    $.ajax({
-                        url: '/connection/me/unfriend',
-                        method: "GET",
-                        dataType: "JSON",
-                        headers: {'prg-auth-header': _this.state.userLoggedIn.token}
-                    }).done(function (data) {
-                        if (data.status.code == 200) {
-                            _this.setState({connections: data.my_con});
-                            callBack(null, data.my_con);
-                        } else {
-                            callBack(null, null);
-                        }
-                    }.bind(this));
-                }
-            },
-            function getCallRecords(_connections, callBack) {
-                if(_connections && _connections.length > 0) {
-                    _this.initChat(_this.b6);
-                    callBack(null, _connections);
-                } else {
-                    callBack(null, null);
-                }
-            }
-        ], function (error, _connections) {
-            console.log("_connections === ", _connections);
-        });
+        //let _this = this;
+        //asnyc.waterfall([
+        //    function getMyConnections(callBack) {
+        //        if(_this.state.connections != undefined && _this.state.connections.length > 0) {
+        //            callBack(null, _this.state.connections);
+        //        } else {
+        //            $.ajax({
+        //                url: '/connection/me/unfriend',
+        //                method: "GET",
+        //                dataType: "JSON",
+        //                headers: {'prg-auth-header': _this.state.userLoggedIn.token}
+        //            }).done(function (data) {
+        //                if (data.status.code == 200) {
+        //                    _this.setState({connections: data.my_con});
+        //                    callBack(null, data.my_con);
+        //                } else {
+        //                    callBack(null, null);
+        //                }
+        //            }.bind(this));
+        //        }
+        //    },
+        //    function getCallRecords(_connections, callBack) {
+        //        if(_connections && _connections.length > 0) {
+        //            _this.initChat(_this.b6);
+        //            callBack(null, _connections);
+        //        } else {
+        //            callBack(null, null);
+        //        }
+        //    }
+        //], function (error, _connections) {
+        //    console.log("_connections === ", _connections);
+        //});
 
     }
 
@@ -74,10 +76,25 @@ export default class ConversationList extends React.Component{
         });
     }
 
+    loadMyConnections() {
+        let _this = this;
+        $.ajax({
+            url: '/connection/me/unfriend',
+            method: "GET",
+            dataType: "JSON",
+            headers: {'prg-auth-header': _this.state.userLoggedIn.token}
+        }).done(function (data) {
+            if (data.status.code == 200) {
+                _this.setState({connections: data.my_con});
+                _this.initChat(_this.b6);
+            }
+        }.bind(this));
+    }
+
     componentWillReceiveProps(nextProps) {
         //console.log("ConversationList componentWillReceiveProps")
-        this.setState({connections: nextProps.my_connections, conversations: nextProps.conversations, showChatNotification: nextProps.showChatNotification});
-        //this.setState({conversations: nextProps.conversations, showChatNotification: nextProps.showChatNotification});
+        //this.setState({connections: nextProps.my_connections, conversations: nextProps.conversations, showChatNotification: nextProps.showChatNotification});
+        this.setState({conversations: nextProps.conversations, showChatNotification: nextProps.showChatNotification});
     }
 
     checkWorkMode(){
