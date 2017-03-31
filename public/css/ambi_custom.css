@@ -499,12 +499,28 @@ a.rc-time-picker-panel-clear-btn {
 		color: #bebfbf;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label div.event-description.accepted p {
-		color: #00a6ef;
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description.accepted,
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description.accepted p {
+    color: #00a6ef;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description.accepted{
-    color: #000;
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li div.event-description.accepted,
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li div.event-description.accepted p {
+    color: #038247;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label:before {
+    border: 1px solid #038247;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li .time-wrapper {
+    color: #038247;
+    border: 1px solid #038247;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li.active label:before {
+    background-color: #038247;
+    border: 1px solid #038247;
 }
 
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li .item {
