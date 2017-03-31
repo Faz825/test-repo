@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {UserMode, ContactType, CallStatus, CallChannel} from '../../config/CallcenterStats';
+import {UserMode, ContactType, CallStatus, CallChannel, CallType} from '../../config/CallcenterStats';
 
 export default class Recent extends React.Component {
     constructor(props) {
@@ -32,14 +32,6 @@ export default class Recent extends React.Component {
             mood = "offline";
         }
 
-        let callIcon = null;
-
-        if(contact.call_channel == CallChannel.AUDIO){
-            callIcon = 'phone';
-        }else{
-            callIcon = 'video';
-        }
-
         return (
             <div className={"row contact-item " + contact.call_status}>{/* if its a miss call add class:  missed*/}
                 <div className="col-sm-6">
@@ -62,6 +54,7 @@ export default class Recent extends React.Component {
                         <span
                             className={"call-type-icon " + contact.call_channel}></span>{/* class are: video || phone */}
                         <p className="call-time">{contact.time}</p>
+                        <p className="call-time">{(contact.call_type == CallType.INCOMING) ? 'IN':'OUT'}</p>
                     </div>
                 </div>
                 <div className="col-sm-6">

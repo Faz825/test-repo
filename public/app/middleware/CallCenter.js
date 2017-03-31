@@ -227,6 +227,17 @@ class CallCenter {
             headers: {'prg-auth-header': _this.loggedUser.token}
         });
     }
+
+    updateCallRecord(recordId, status) {
+        let _this = this;
+
+        return $.ajax({
+            url: '/call/update-record',
+            method: "POST",
+            data: {record_id: recordId, status: status},
+            headers: {'prg-auth-header': _this.loggedUser.token}
+        });
+    }
 }
 
 export default new CallCenter;

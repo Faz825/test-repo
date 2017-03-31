@@ -4,9 +4,11 @@ var async = require('async');
 
 var ES = require('../middleware/ES');
 var ESUpdateHandler = require('../middleware/ESUpdateHandler');
+
 var Connection = require('mongoose').model('Connection');
 var mUser = require('mongoose').model('User');
 var mCall = require('mongoose').model('Call');
+
 
 var CallCenterController = {
     me: {
@@ -219,7 +221,7 @@ var CallCenterController = {
                     outPut.user = ResultSet.result.shift();
                     outPut.status = ApiHelper.getMessage(200, Alert.SUCCESS);
                     return res.status(200).json(outPut);
-                }else{
+                } else {
                     outPut.status = ApiHelper.getMessage(400, Alert.ERROR);
                     return res.status(400).json(outPut);
                 }
@@ -257,7 +259,7 @@ var CallCenterController = {
                     outPut.status = ApiHelper.getMessage(400, Alert.ERROR);
                     return res.status(400).json(outPut);
                 } else {
-                    outPut.call_reocrd = oCallRes.data;
+                    outPut.call_record = oCallRes.data;
                     outPut.status = ApiHelper.getMessage(200, Alert.SUCCESS);
                     return res.status(200).json(outPut);
                 }
@@ -394,7 +396,51 @@ var CallCenterController = {
          * @param res
          */
         updateCallRecord: function (req, res, next) {
+            var _async = require('async');
 
+            var odm = require('mongoose');
+            var recordId = odm.Types.ObjectId(req.body.record_id);
+
+            _async.waterfall([
+                function updateCallRecord(callback) {
+                    mCall.updateCallRecord(recordId, {call_status: req.body.status}, function (callRecordResult) {
+                        if (callRecordResult.status == 200) {
+                            callback(null, callRecordResult.data);
+                        } else {
+                            callback(callRecordResult.error);
+                        }
+                    });
+                }, function updateES(oRecord, callback) {
+                    var oReceiver = oRecord.receivers_list.shift();
+
+                    var _cache_key = CallConfig.CACHE_PREFIX + oReceiver.user_id.toString();
+
+                    var payLoad = {
+                        index: _cache_key,
+                        id: oRecord._id.toString(),
+                        type: 'call-record',
+                        data: {call_status: oRecord.call_status}
+                    };
+
+                    console.log('payload', payLoad);
+
+                    ES.update(payLoad, function (resultSet) {
+                        callback(null, oRecord);
+                    });
+                }
+            ], function (error, oCallRecord) {
+                var outPut = {};
+
+                if (error) {
+                    outPut.error = error;
+                    outPut.status = ApiHelper.getMessage(400, Alert.ERROR);
+                    return res.status(400).json(outPut);
+                } else {
+                    outPut.call_record = oCallRecord;
+                    outPut.status = ApiHelper.getMessage(200, Alert.SUCCESS);
+                    return res.status(200).json(outPut);
+                }
+            });
         }
     }
 };

@@ -232,6 +232,7 @@ router.get('/call/get-records', CallCenterController.call.getCallRecords);
 router.post('/call/add-record', CallCenterController.call.addCallRecord);
 router.post('/me/update/user-mode', CallCenterController.me.updateMode);
 router.post('/contact/caller', CallCenterController.contact.getContact);
+router.post('/call/update-record', CallCenterController.call.updateCallRecord);
 
 //Group
 router.post('/groups/add', GroupsController.createGroup);

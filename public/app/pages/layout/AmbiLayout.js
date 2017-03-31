@@ -87,7 +87,8 @@ export default class AmbiLayout extends React.Component {
             inComingCall: false,
             callChannel: null,
             callStage: null,
-            incomingCallerName: null
+            incomingCallerName: null,
+            callRecord: null
         };
 
         // Call Record
@@ -373,7 +374,6 @@ export default class AmbiLayout extends React.Component {
     }
 
     startCall(TargetUser, Channel) {
-        console.log('start call', TargetUser, Channel);
         let opts = {
             audio: true,
             video: false,
@@ -395,19 +395,23 @@ export default class AmbiLayout extends React.Component {
         this.callRecord.targets.push({user_id: TargetUser.user_id});
         this.callRecord.dialedAt = new Date().toISOString();
 
+        let _this = this;
+
         CallCenter.addCallRecord(this.callRecord).done(function (oData) {
-            console.log(oData);
+            _this.setState({
+                callInProgress: true,
+                callChannel: Channel,
+                targetUser: TargetUser,
+                bit6Call: c,
+                callStage: CallStage.DIAL_CALL,
+                callRecord: oData.call_record
+            });
         });
 
         c.connect(opts);
 
-        this.setState({
-            callInProgress: true,
-            callChannel: Channel,
-            targetUser: TargetUser,
-            bit6Call: c,
-            callStage: CallStage.DIAL_CALL
-        });
+        console.log('start call', c);
+
     }
 
     startGroupCall(Group) {
@@ -572,6 +576,13 @@ export default class AmbiLayout extends React.Component {
                 callChannel: (c.remoteOptions.video) ? CallChannel.VIDEO : CallChannel.AUDIO,
                 callStage: CallStage.ANSWER_CALL
             });
+
+            if (_this.state.callRecord.user_id == _this.state.userLoggedIn.id) {
+                CallCenter.updateCallRecord(_this.state.callRecord._id, CallStatus.ANSWERED).done(function (callRecordUpdateRes) {
+                    _this.setState({callRecord: callRecordUpdateRes.call_record});
+                });
+            }
+
             // TODO show timer , call buttons
         });
 
@@ -583,7 +594,27 @@ export default class AmbiLayout extends React.Component {
 
         c.on('end', function () {
             console.log('end', c);
-            _this.setState({inComingCall: false, callInProgress: false, targetUser: null, callMode: CallChannel.AUDIO});
+
+            if (_this.state.callRecord) {
+                if (_this.state.callRecord.user_id == _this.state.userLoggedIn.id) {
+                    if(_this.state.callStage){
+                        if (_this.state.callStage == CallStage.DIAL_CALL && _this.state.bit6Call.state == 'req') {
+                            CallCenter.updateCallRecord(_this.state.callRecord._id, CallStatus.CANCELLED).done(function (callRecordUpdateRes) {
+
+                            });
+                        }
+                    }
+                }
+            }
+
+            _this.setState({
+                inComingCall: false,
+                callInProgress: false,
+                targetUser: null,
+                callMode: CallChannel.AUDIO,
+                callStage: null
+            });
+
             // TODO show call end details in popup
         });
     }

@@ -147,7 +147,21 @@ export default class Index extends React.Component {
             this.setState({activeTabData: this.state.recentCalls});
         } else if (cat == "recent" && subCat == "missed") {
 
+            var aRecentCalls = this.state.recentCalls;
+
+            var data = [];
+
+            for(var i =0; i < aRecentCalls.length; i++){
+                if(aRecentCalls[i].call_status == 'missed'){
+                    data.push(aRecentCalls[i]);
+                }
+            }
+
+            this.setState({activeTabData: data});
+
         } else if (cat == "recent" && subCat == "individual") {
+
+            this.setState({activeTabData: this.state.recentCalls});
 
         } else if (cat == "recent" && subCat == "groups") {
 
@@ -208,7 +222,7 @@ export default class Index extends React.Component {
         for (var i = 0; i < aCallRecords.length; i++) {
             let callChannel = null;
             let callType = null;
-            let callStatus = null;
+            let call_status = null;
             let time = null;
             let dd = null;
 
@@ -227,16 +241,18 @@ export default class Index extends React.Component {
             (aCallRecords[i].call_type == CallType.INCOMING) ? callType = CallType.INCOMING : callType = CallType.OUTGOING;
 
             if (aCallRecords[i].call_status == CallStatus.MISSED) {
-                callStatus == 'missed';
+                if(aCallRecords[i].call_type == CallType.INCOMING){
+                    call_status = 'missed';
+                }
             } else if (aCallRecords[i].call_status == CallStatus.ANSWERED) {
-                callStatus == 'answered';
+                call_status = 'answered';
             } else if (aCallRecords[i].call_status == CallStatus.REJECTED) {
-                callStatus == 'rejected';
+                call_status = 'rejected';
             } else if (aCallRecords[i].call_status == CallStatus.CANCELLED) {
-                callStatus == 'cancelled';
+                call_status = 'cancelled';
             }
 
-            if(callType == CallType.INCOMING){
+            if (callType == CallType.INCOMING) {
                 callRecords.push({
                     user_id: aCallRecords[i].origin_user.user_id,
                     first_name: aCallRecords[i].origin_user.first_name,
@@ -245,11 +261,11 @@ export default class Index extends React.Component {
                     time: time,
                     call_type: callType,
                     call_channel: callChannel,
-                    call_status: callStatus,
+                    call_status: call_status,
                     online_mode: aCallRecords[i].origin_user.online_mode,
                     images: aCallRecords[i].origin_user.images
                 });
-            }else{
+            } else {
                 callRecords.push({
                     user_id: aCallRecords[i].receivers_list[0].user_id,
                     first_name: aCallRecords[i].receivers_list[0].first_name,
@@ -258,7 +274,7 @@ export default class Index extends React.Component {
                     time: time,
                     call_type: callType,
                     call_channel: callChannel,
-                    call_status: callStatus,
+                    call_status: call_status,
                     online_mode: aCallRecords[i].receivers_list[0].online_mode,
                     images: aCallRecords[i].receivers_list[0].images
                 });
@@ -272,7 +288,7 @@ export default class Index extends React.Component {
         this.props.startCall(user, callChannel);
     }
 
-    createCall(contact, callChannel){
+    createCall(contact, callChannel) {
         this.props.createCall(contact, callChannel);
     }
 
@@ -286,10 +302,10 @@ export default class Index extends React.Component {
                     this.getCallRecords("recent", "all")
                 }}>All <span className="selector"></span></div>
                 <div className={(subCat == "missed") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
-                    this.loadContactData("recent", "missed")
+                    this.getCallRecords("recent", "missed")
                 }}>Missed <span className="selector"></span></div>
                 <div className={(subCat == "individual") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
-                    this.loadContactData("recent", "individual")
+                    this.getCallRecords("recent", "individual")
                 }}>Individual <span className="selector"></span></div>
                 <div className={(subCat == "groups") ? "col-sm-2-4 active" : "col-sm-2-4" } onClick={(event)=> {
                     this.loadContactData("recent", "groups")
@@ -528,7 +544,8 @@ export default class Index extends React.Component {
                         {
                             (mainCat == "contact") ?
                                 <ContactList userContacts={this.state.activeTabData}
-                                             startCall={this.startCall.bind(this)} createCall={this.createCall.bind(this)} />
+                                             startCall={this.startCall.bind(this)}
+                                             createCall={this.createCall.bind(this)}/>
                                 :
                                 null
                         }

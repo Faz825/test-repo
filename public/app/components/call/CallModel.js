@@ -97,7 +97,7 @@ export default class CallModel extends React.Component {
             if (this.props.remoteChannel === CallChannel.VIDEO && (this.props.bit6Call.state == Bit6CallState.OUTGOING.ANSWER || this.props.bit6Call.state == Bit6CallState.OUTGOING.RENEGOTIATION || this.props.bit6Call.state == Bit6CallState.INCOMING.ANSWER || this.props.bit6Call.state == Bit6CallState.INCOMING.RENEGOTIATION)) {
                 return null;
             } else {
-                return (<img src={this.props.targetUser.images.profile_image.http_url}/>);
+                return (<img src={(this.props.targetUser.images.profile_image.http_url) ? this.props.targetUser.images.profile_image.http_url : "images/default-profile-pic.png"}/>);
             }
         } else {
             return (
@@ -135,8 +135,6 @@ export default class CallModel extends React.Component {
                 </li>
             );
         });
-
-        console.log(this.addToCallList);
 
         return (
             <div className="popup-holder">
