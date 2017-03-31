@@ -517,11 +517,11 @@ a.rc-time-picker-panel-clear-btn {
 .group-container .group-content .sidebar .grp-day-panel .event-task-holder .list .list-wrapper .list-item{
      overflow: hidden;
 }
- 
+
  .group-container .group-content .sidebar .grp-day-panel .event-task-holder .list .list-wrapper .list-item .time{
    float: right;
 }
- 
+
 .group-container .group-content .sidebar .grp-day-panel .event-task-holder .list {
      width: 89%;
 }
@@ -1682,7 +1682,7 @@ body .modal-backdrop{
      border-radius: 3px;
      background-color: rgba(0, 166, 239, 0.3);
  }
- 
+
  .group-container .group-content .sidebar .grp-members .add-member .search-field-holder .user-holder .user:hover {
      color: #ffffff;
      background-color: #00a6ef;
@@ -1819,12 +1819,12 @@ header .chat-popover-holder .inner-wrapper .see-all{
      float: none;
      display: inline-block;
  }
- 
+
  .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on,
  .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on {
      float: left;
  }
- 
+
  .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share,
  .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share {
      margin-left: 5px;
@@ -2107,11 +2107,11 @@ header .chat-popover-holder .inner-wrapper .see-all{
 }
 
 .pg-newsfeed-post-upload-image img.post-img.img-responsive {
-    transform: scale(1.5);
-  -moz-transform: scale(1.5);
-  -webkit-transform: scale(1.5);
-  -o-transform: scale(1.5);
-  -ms-transform: scale(1.5); /* IE 9 */
+    transform: scale(2.0);
+  -moz-transform: scale(2.0);
+  -webkit-transform: scale(2.0);
+  -o-transform: scale(2.0);
+  -ms-transform: scale(2.0); /* IE 9 */
 }
 
 .pg-newsfeed-post-upload-image .post-img-container {
