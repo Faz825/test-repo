@@ -76,6 +76,8 @@ export default class Index extends React.Component{
 
     createGroup(groupData) {
 
+        this.closeSecondStep();
+        this.closeFirstStep();
         // adding the values got from the first step
         groupData['_type'] = this.state.defaultType;
 
@@ -91,8 +93,7 @@ export default class Index extends React.Component{
             contentType: "application/json; charset=utf-8",
         }).done(function (data, text) {
             if(data.status.code == 200){
-                this.closeSecondStep();
-                this.closeFirstStep();
+
                 if(data.result.name_prefix) {
                     window.location = '/groups/'+data.result.name_prefix;
                 }
@@ -426,7 +427,8 @@ export class CreateStepTwo extends React.Component{
         }
 
         if((this.state.groupName != '' || this.state.groupName.length != 0) &&
-            (this.state.groupColor != '' || this.state.groupColor.length != 0) && (this.state.uploadingImage == "init" || this.state.uploadingImage == "uploading-done")) {
+            (this.state.groupColor != '' || this.state.groupColor.length != 0) &&
+            (this.state.uploadingImage == "init" || this.state.uploadingImage == "uploading-done")) {
             this.setState({ warningStateName : false, warningStateColor: false});
 
             var groupData = {
