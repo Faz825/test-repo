@@ -40,8 +40,10 @@ export default class FriendRequestList extends React.Component {
             if(data.status.code == 200){
 
                 let _tmp_req_cons = [];
-                if( data.req_cons.length > 0){
+                if( data.req_cons != undefined){
                     this.allFriendRequest = data.req_cons;
+                } else {
+                    this.allFriendRequest = [];
                 }
                 this.props.setFriendRequestCount(this.allFriendRequest.length);
                 this.setState({friend_requests:this.allFriendRequest});
