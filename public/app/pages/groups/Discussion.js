@@ -308,7 +308,8 @@ export class MembersWidget extends React.Component{
             if(data.status.code == 200){
                 var randomMembers = _this.state.randomMembers;
                 var newRandomMembers = randomMembers.concat(_this.state.newMembers);
-                _this.setState({randomMembers: newRandomMembers, newMembers: [], sharedWithIds: []});
+                this.props.onLoadMembers();
+                _this.setState({newMembers: [], sharedWithIds: []});
             }
         }.bind(this));
     }

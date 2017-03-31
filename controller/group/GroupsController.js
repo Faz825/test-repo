@@ -351,10 +351,15 @@ var GroupsController = {
         var currentSession = Util.getCurrentSession(req);
         var async = require('async');
         var randColor = require('randomcolor');
+        var _grep = require('grep-from-array')
         var groups = require('mongoose').model('Groups');
         var folders = require('mongoose').model('Folders');
+        var Notification = require('mongoose').model('Notification');
+        var NotificationRecipient = require('mongoose').model('NotificationRecipient');
         var groupId = (typeof req.body.__groupId != 'undefined') ? req.body.__groupId : null;
-        var newMembers = (typeof req.body.__members != 'undefined') ? req.body.__members : [];
+        var requestMembers = (typeof req.body.__members != 'undefined') ? req.body.__members : [];
+        var userId = currentSession.id;
+        var newMembers = [];
 
         if (groupId == null) {
             outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_ID_EMPTY, Alert.GROUP_ID_EMPTY);
@@ -362,13 +367,31 @@ var GroupsController = {
             return;
         }
 
-        if (newMembers == null) {
+        if (requestMembers == null) {
             outPut['status'] = ApiHelper.getMessage(602, Alert.GROUP_MEMBERS_EMPTY, Alert.GROUP_MEMBERS_EMPTY);
             res.status(602).send(outPut);
             return;
         }
 
         async.waterfall([
+            function isMemberExists(callBack){
+
+                var group_id= Util.toObjectId(groupId);
+
+                groups.getGroupById(group_id, function (groupData){
+                    var members = groupData.members;
+                    for(var i = 0; i < requestMembers.length; i++){
+                        var grep_member = _grep(members, function (e) {
+                            return e.user_id.toString() == requestMembers[i].user_id;
+                        });
+                        if(grep_member.length == 0){
+                            newMembers.push(requestMembers[i]);
+                        }
+                    }
+
+                    callBack(null);
+                });
+            },
             function updateDb(callBack) {
                 var filter = {
                     "_id": groupId
@@ -473,7 +496,56 @@ var GroupsController = {
                     });
 
                 } else {
-                    callBack(null, []);
+                    callBack(null);
+                }
+            },
+            function addNotification(callBack) {
+
+                if (newMembers.length > 0) {
+
+                    var _data = {
+                        sender: userId,
+                        notification_type: Notifications.SHARE_GROUP,
+                        notified_group: Util.toObjectId(groupId)
+                    }
+
+
+                    Notification.getNotification(_data, function (res) {
+                        if(res.status == 200 && typeof res.result != "undefined" && res.result != null){
+                            callBack(null, res.result._id);
+                        }else {
+                            Notification.saveNotification(_data, function (res) {
+                                if (res.status == 200) {
+                                    callBack(null, res.result._id);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    callBack(null, null);
+                }
+            },
+            function notifyingUsers(notification_id, callBack) {
+
+                if (typeof notification_id != 'undefined' && newMembers.length > 0) {
+
+                    var _members = [];
+                    for (var x = 0; x < newMembers.length; x++) {
+                        if(userId.toString() != newMembers[x].user_id.toString()){
+                            _members.push(newMembers[x].user_id);
+                        }
+                    }
+
+                    var _data = {
+                        notification_id: notification_id,
+                        recipients: _members
+                    };
+                    NotificationRecipient.saveRecipients(_data, function (res) {
+                        callBack(null);
+                    });
+
+                } else {
+                    callBack(null);
                 }
             }
         ], function (err) {
