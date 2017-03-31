@@ -561,6 +561,8 @@ export class File extends React.Component{
             <Tooltip id="tooltip">{data.document_user_name}</Tooltip>
         );
 
+        let _fileName = data.document_name == 'undefined' ? data.document_name : data.document_name <= 42 ? data.document_name : data.document_name.slice(0,39) + '...';
+
         return(
             <div className="folder-col">
                 <div className={this.props.fileCls + " clearfix"} onClick={()=>this.viewFile(data)}>
@@ -571,7 +573,7 @@ export class File extends React.Component{
                                 <p className="time-created">{_documentUpdatedDate.createdTime}</p>
                             </div>
                             <div className="folder-title-holder">
-                                <p className="folder-title">{data.document_name}</p>
+                                <p className="folder-title">{_fileName}</p>
                             </div>
                             <p className="file-owner">{data.document_user_name}</p>
                             <div className="item-type">
@@ -613,11 +615,14 @@ export class FilePreview extends React.Component{
     }
 
     render(){
+
+        let _fileName = this.state.fileData.name == 'undefined' ? this.state.fileData.name : this.state.fileData.name <= 42 ? this.state.fileData.name : this.state.fileData.name.slice(0,39) + '...';
+
         return(
             <div className="folder-col">
                 <div className="folder-item pdf">
                     <div className="folder-title-holder">
-                        <p className="folder-title">{this.state.fileData.name}</p>
+                        <p className="folder-title">{_fileName}</p>
                     </div>
                     <div className="upload-anime">
                         <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>

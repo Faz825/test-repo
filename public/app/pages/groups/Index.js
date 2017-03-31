@@ -119,14 +119,16 @@ export default class Index extends React.Component{
                                 <h2>groups</h2>
                             </div>
                             <div className="col-sm-6 action-holder">
-                                <div className="crt-grp">
-                                    <button className="btn btn-crt-grp" onClick={this.openFirstStep.bind(this)}><i className="fa fa-plus"></i> new group</button>
-                                </div>
-                                <div className="search-group">
+                                <div className="header-actions-wrapper">
+                                    <div className="crt-grp">
+                                        <button className="btn btn-crt-grp" onClick={this.openFirstStep.bind(this)}><i className="fa fa-plus"></i> new group</button>
+                                    </div>
+                                    <div className="search-group">
                                     <span className="inner-addon">
                                         <i className="fa fa-search"></i>
                                         <input type="text" className="form-control" placeholder="search" />
                                     </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -194,8 +196,6 @@ export class GroupsList extends React.Component{
 
         let groupCls = (groupType == "my-groups") ? "my-groups" : "my-communities";
         let _type = (groupType == "my-groups") ? 1 : 2;
-
-        console.log(_type);
 
         var groupBlock = '';
         if(this.state.groups.length > 0 ) {
@@ -317,7 +317,7 @@ export class CreateStepOne extends React.Component{
                         <div className="create-group-type-popup">
                             <div className="model-header">
                                 <h3 className="modal-title">Create a group</h3>
-                                <p className="sub-title">discuss, collaborate, connect, and manage tasks, all in one place. ambi group is your go-to place for team work.</p>
+                                <p className="sub-title">discuss, collaborate, connect, and manage tasks, all in one place. ambi groups is your go-to place for team work.</p>
                             </div>
                             <div className="model-body clearfix">
                                 <p className="group-type">which kind of group would you like to create?</p>
@@ -346,7 +346,7 @@ export class CreateStepOne extends React.Component{
                                     </div>
                                 </div>
                                 {
-                                    (this.state.moveToNextWarning) ? <p className="warning">please select a group</p> : null
+                                    (this.state.moveToNextWarning) ? <p className="warning">please select a group!</p> : null
                                 }
                             </div>
                             <div className="model-footer">
@@ -379,8 +379,11 @@ export class CreateStepTwo extends React.Component{
             sharedWithIds : [],
             groupProfileImgSrc : '',
             groupProfileImgId : '',
-            warningState: false,
-            warningAlert: ''
+            warningStateName: false,
+            warningStateColor: false,
+            warningStateImage: false,
+            uploadingImage: "init",
+            uploadingImageAlert: ''
         };
 
         this.sharedWithIds = [];
@@ -395,11 +398,11 @@ export class CreateStepTwo extends React.Component{
     }
 
     setColor(color) {
-        this.setState({ groupColor : color});
+        this.setState({ groupColor : color, warningStateColor: false});
     }
 
     setName(event) {
-        this.setState({groupName : event.target.value});
+        this.setState({groupName : event.target.value, warningStateName : false});
     }
 
     setDescription(event) {
@@ -410,13 +413,21 @@ export class CreateStepTwo extends React.Component{
         event.preventDefault();
 
         if(this.state.groupName == '' || this.state.groupName.length == 0){
-            this.setState({ warningState : true, warningAlert: 'Please enter a group name'});
-        }else if(this.state.members.length == 0){
-            this.setState({ warningState : true, warningAlert: 'Please add members to group'});
-        }else if(this.state.groupColor == '' || this.state.groupColor.length == 0){
-            this.setState({ warningState : true, warningAlert: 'Please choose a group color'});
-        }else {
-            this.setState({ warningState : false});
+            this.setState({ warningStateName : true});
+        }
+        if(this.state.groupColor == '' || this.state.groupColor.length == 0){
+            this.setState({ warningStateColor : true});
+        }
+        if(this.state.uploadingImage == 'uploading' || this.state.uploadingImage == 'uploading-error'){
+            this.setState({
+                warningStateImage : true,
+                uploadingImageAlert: 'please wait until the group image is getting uploaded.'
+            });
+        }
+
+        if((this.state.groupName != '' || this.state.groupName.length != 0) &&
+            (this.state.groupColor != '' || this.state.groupColor.length != 0) && (this.state.uploadingImage == "init" || this.state.uploadingImage == "uploading-done")) {
+            this.setState({ warningStateName : false, warningStateColor: false});
 
             var groupData = {
                 _name : this.state.groupName,
@@ -436,7 +447,12 @@ export class CreateStepTwo extends React.Component{
 
     imgUpdated(data){
 
-        this.setState({loadingBarIsVisible : true});
+        this.setState({
+            warningStateImage: true,
+            uploadingImage : "uploading",
+            uploadingImageAlert: ''
+        });
+
         let _this =  this;
         $.ajax({
             url: '/groups/upload-image',
@@ -449,16 +465,19 @@ export class CreateStepTwo extends React.Component{
             success: function (data, text) {
                 if (data.status.code == 200) {
                     _this.setState({
-                        loadingBarIsVisible : false,
+                        uploadingImage : "uploading-done",
+                        warningStateImage: false,
                         groupProfileImgSrc : data.upload.http_url,
                         groupProfileImgId : data.upload.document_id
                     });
                 }
             },
             error: function (request, status, error) {
-                console.log(request.responseText);
-                console.log(status);
-                console.log(error);
+                _this.setState({
+                    warningStateImage: true,
+                    uploadingImage : "uploading-error",
+                    uploadingImageAlert: 'there was an error occurred. Please upload again.'
+                });
             }
         });
     }
@@ -486,6 +505,21 @@ export class CreateStepTwo extends React.Component{
                 return <span key={key} className="user">{member.name}<i className="fa fa-times" aria-hidden="true" onClick={(event)=>{this.removeUser(key)}}></i></span>
             });
         }
+
+        const uploadScript = (
+
+                (this.state.uploadingImage == "uploading") ?
+                    <span><i className="fa fa-spinner fa-spin"></i> uploading</span>
+                :
+                (this.state.uploadingImage == "uploading-done") ?
+                    <span><i className="fa fa-check"></i> upload new</span>
+                :
+                (this.state.uploadingImage == "uploading-error") ?
+                    <span><i className="fa fa-thumbs-down"></i> upload new</span>
+                :
+                    <span>upload new</span>
+
+        )
 
         /*return (
             <ModalContainer>
@@ -578,58 +612,73 @@ export class CreateStepTwo extends React.Component{
                                 <section className="group-body">
                                     <div className="form-group">
                                         <label for="grpname">name your group</label>
-                                        <input type="text" className="form-control" id="grpname" onChange={this.setName}/>
+                                        <input type="text" className="form-control" id="grpname" onChange={this.setName} placeholder="what’s your group called?"/>
+                                        {
+                                            (this.state.warningStateName) ? <span className="errorMsg">please enter a group name</span> : null
+                                        }
                                     </div>
                                     <div className="form-group invite-people clearfix">
                                         <label>invite some people</label>
                                         <SearchMembersField
                                             handleSearchUser={this.handleSearchUser}
-                                            placeholder=""
+                                            placeholder="type a name"
                                             sharedWithIds={this.state.sharedWithIds}
                                         />
                                     </div>
                                     <div className="form-group">
                                         <label for="desc">enter a group description</label>
-                                        <textarea className="form-control" rows="5" id="desc" onChange={this.setDescription}></textarea>
+                                        <textarea className="form-control" rows="5" id="desc" onChange={this.setDescription} placeholder="what’s the purpose of this group?"></textarea>
                                     </div>
                                     <div className="form-group">
                                         <p className="label">choose a colour</p>
                                         <div className="color-palette">
-                                            <div className={this.state.groupColor == '#ed1e7a' ? 'color-block pink active' : 'color-block pink'} onClick={(color)=>{this.setColor('#ed1e7a')}}>
-                                                <i className="fa fa-check" aria-hidden="true"></i>
-                                            </div>
-                                            <div className={this.state.groupColor == '#00a6ef' ? 'color-block light-blue active' : 'color-block light-blue'} onClick={(color)=>{this.setColor('#00a6ef')}}>
-                                                <i className="fa fa-check" aria-hidden="true"></i>
-                                            </div>
-                                            <div className={this.state.groupColor == '#a6c74a' ? 'color-block light-green active' : 'color-block light-green'} onClick={(color)=>{this.setColor('#a6c74a')}}>
-                                                <i className="fa fa-check" aria-hidden="true"></i>
-                                            </div>
-                                            <div className={this.state.groupColor == '#b21e53' ? 'color-block red active' : 'color-block red'} onClick={(color)=>{this.setColor('#b21e53')}}>
+                                            <div className={this.state.groupColor == '#038247' ? 'color-block dark-green active' : 'color-block dark-green'} onClick={(color)=>{this.setColor('#038247')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
                                             <div className={this.state.groupColor == '#000f75' ? 'color-block dark-blue active' : 'color-block dark-blue'} onClick={(color)=>{this.setColor('#000f75')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
-                                            <div className={this.state.groupColor == '#bfbfbf' ? 'color-block gray active' : 'color-block gray'} onClick={(color)=>{this.setColor('#bfbfbf')}}>
-                                                <i className="fa fa-check" aria-hidden="true"></i>
-                                            </div>
-                                            <div className={this.state.groupColor == '#038247' ? 'color-block dark-green active' : 'color-block dark-green'} onClick={(color)=>{this.setColor('#038247')}}>
+                                            <div className={this.state.groupColor == '#b21e53' ? 'color-block red active' : 'color-block red'} onClick={(color)=>{this.setColor('#b21e53')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
                                             <div className={this.state.groupColor == '#000000' ? 'color-block black active' : 'color-block black'} onClick={(color)=>{this.setColor('#000000')}}>
                                                 <i className="fa fa-check" aria-hidden="true"></i>
                                             </div>
+                                            <div className={this.state.groupColor == '#a6c74a' ? 'color-block light-green active' : 'color-block light-green'} onClick={(color)=>{this.setColor('#a6c74a')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#00a6ef' ? 'color-block light-blue active' : 'color-block light-blue'} onClick={(color)=>{this.setColor('#00a6ef')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#ed1e7a' ? 'color-block pink active' : 'color-block pink'} onClick={(color)=>{this.setColor('#ed1e7a')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                            <div className={this.state.groupColor == '#bfbfbf' ? 'color-block gray active' : 'color-block gray'} onClick={(color)=>{this.setColor('#bfbfbf')}}>
+                                                <i className="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+
+
                                         </div>
+                                        {
+                                            (this.state.warningStateColor) ? <span className="errorMsg">please choose a group color</span> : null
+                                        }
                                     </div>
                                     <div className="form-group">
                                         <p className="label">Group icon</p>
                                         <div className="btn-holder clearfix">
-                                            <button className="btn btn-upload"><GroupProfileImageUploader className="btn-default upload-btn btn" profileImgSrc={this.state.groupProfileImgSrc} imgUpdated={this.imgUpdated} />Upload New</button>
+                                            <button className="btn btn-upload">
+                                                <GroupProfileImageUploader className="btn-default upload-btn btn"
+                                                                           profileImgSrc={this.state.groupProfileImgSrc} imgUpdated={this.imgUpdated} />
+                                                {uploadScript}
+                                            </button>
                                         </div>
+                                        {
+                                            (this.state.warningStateImage) ?
+                                                (this.state.uploadingImage == "uploading" || this.state.uploadingImage == "uploading-error") ?
+                                                    <span className="errorMsg">{this.state.uploadingImageAlert}</span>
+                                                    : null : null
+                                        }
                                     </div>
-                                    {
-                                        (this.state.warningState) ? <p className="warning">{this.state.warningAlert}</p> : null
-                                    }
                                 </section>
                             </div>
                             <div className="model-footer">
