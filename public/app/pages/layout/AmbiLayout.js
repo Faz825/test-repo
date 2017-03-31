@@ -86,7 +86,8 @@ export default class AmbiLayout extends React.Component {
             callInProgress: false,
             inComingCall: false,
             callChannel: null,
-            callStage: null
+            callStage: null,
+            incomingCallerName: null
         };
 
         // Call Record
@@ -390,7 +391,7 @@ export default class AmbiLayout extends React.Component {
         this.attachCallEvents(c);
 
         this.callRecord.contact = TargetUser;
-        this.callRecord.callChannel = this.state.callMode;
+        this.callRecord.callChannel = Channel;
         this.callRecord.targets.push({user_id: TargetUser.user_id});
         this.callRecord.dialedAt = new Date().toISOString();
 
@@ -529,8 +530,6 @@ export default class AmbiLayout extends React.Component {
             Call.connect({audio: true, video: true});
         }
 
-      //  this.attachCallEvents(Call);
-
         this.setState({
             inComingCall: false,
             callInProgress: true,
@@ -568,7 +567,11 @@ export default class AmbiLayout extends React.Component {
 
         c.on('answer', function () {
             console.log('answer', c);
-            _this.setState({bit6Call: c, callChannel: (c.remoteOptions.video) ? CallChannel.VIDEO : CallChannel.AUDIO});
+            _this.setState({
+                bit6Call: c,
+                callChannel: (c.remoteOptions.video) ? CallChannel.VIDEO : CallChannel.AUDIO,
+                callStage: CallStage.ANSWER_CALL
+            });
             // TODO show timer , call buttons
         });
 
@@ -580,7 +583,7 @@ export default class AmbiLayout extends React.Component {
 
         c.on('end', function () {
             console.log('end', c);
-            _this.setState({inComingCall:false, callInProgress: false, targetUser: null, callMode: CallChannel.AUDIO});
+            _this.setState({inComingCall: false, callInProgress: false, targetUser: null, callMode: CallChannel.AUDIO});
             // TODO show call end details in popup
         });
     }
@@ -629,9 +632,15 @@ export default class AmbiLayout extends React.Component {
         if (!_blockCall) {
             console.log("Incoming call");
             let CallChannel = CallCenter.getCallType(c);
-            let targetUser = this.getContactBySlug(c.other);
+            let TargetUser = this.getContactBySlug(c.other);
 
-            this.setState({inComingCall: true, callChannel: CallChannel, targetUser: targetUser, bit6Call: c});
+            this.setState({
+                inComingCall: true,
+                callChannel: CallChannel,
+                targetUser: TargetUser,
+                incomingCallerName: c.invite.sender_name,
+                bit6Call: c
+            });
         } else {
             console.log("Call blocked in work mode. Informing caller via messaging");
             this.hangupCall();
@@ -707,6 +716,7 @@ export default class AmbiLayout extends React.Component {
                 {
                     (this.state.inComingCall) ?
                         <CallHandler
+                            callerName={this.state.incomingCallerName}
                             callChannel={this.state.callChannel}
                             answerCall={this.answerCall.bind(this)}
                             hangUpIncomingCall={this.hangUpIncomingCall.bind(this)}/>

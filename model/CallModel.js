@@ -120,6 +120,8 @@ CallSchema.statics.addNew = function (oCall, callBack) {
 
     _async.waterfall([
         function saveCallRecord(callback) {
+            console.log('call record', oNewCallRecord);
+
             oNewCallRecord.save(function (error, oCallRecord) {
                 if (error) {
                     callback(error);

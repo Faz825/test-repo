@@ -27,7 +27,7 @@ export default class IncomingCall extends React.Component {
                                 <img src="/images/default-profile-pic.png"
                                      id="incoming_call_alert_other_profile_image"
                                      className="img-circle img-custom-medium bottom-margin-20"/>
-                                <h4 id="incomingCallFrom">User is calling...</h4>
+                                <h4 id="incomingCallFrom">{this.props.callerName} is calling...</h4>
                                 <p>
                                     {
                                         (this.props.callChannel == CallChannel.VIDEO) ?

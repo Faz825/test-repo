@@ -25,6 +25,7 @@ export default class CallHandler extends React.Component {
     render() {
         return (
             <IncomingCall
+                callerName={this.props.callerName}
                 callChannel={this.props.callChannel}
                 answerCall={this.answerCall.bind(this)}
                 hangUpCall={this.hangUpCall.bind(this)}
