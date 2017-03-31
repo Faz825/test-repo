@@ -520,18 +520,28 @@ class SinglePost extends React.Component{
             if(key <= 2){
                 return (
                     <div className={img_div_class} key={key}>
-                        <a className="post-img-container"
-                            href={_url}
-                            key={key}
-                            onClick={(e) => this.openLightbox(key, e)}>
-                            <span className="img-helper"></span>
+
+                        {(key == 2 && postImgLength > 3) ?
                             <img src = {_url} className="img-responsive post-img" />
-                        </a>
+                        :
+                            <a className="post-img-container"
+                                href={_url}
+                                key={key}
+                                onClick={(e) => this.openLightbox(key, e)}>
+                                <span className="img-helper"></span>
+                                <img src = {_url} className="img-responsive post-img" />
+                            </a>
+                        }
                         {(upload.file_type == "mp4") ?
                             <i className="fa fa-play-circle-o post-video-play" aria-hidden="true" onClick = {(event)=>{this.onVideoPlay(upload)}}></i>
                         :null }
                         {(key == 2 && postImgLength > 3) ?
-                            <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 3)}</p></div>
+                            <a className="post-img-container"
+                                href={_url}
+                                key={key}
+                                onClick={(e) => this.openLightbox(key, e)}>
+                                <div className="pg-post-img-hover pg-profile-img-hover pg-profile-img-hover-1"><p>{"+" + (postImgLength - 3)}</p></div>
+                            </a>
                         : null }
                     </div>
                 )

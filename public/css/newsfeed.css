@@ -284,7 +284,7 @@
     width: 100%;
     height: 100%;
     z-index: 100;
-    display: none;
+    display: block;
 }
 .pg-post-img-hover p {
     font: 22px 'montserratlight', sans-serif;
@@ -292,9 +292,9 @@
     margin: 40% 0 0;
     text-align: center;
 }
-.pg-newsfeed-post-upload-image:hover .pg-post-img-hover{
+/*.pg-newsfeed-post-upload-image:hover .pg-post-img-hover{
     display: block;
-}
+}*/
 
 .pg-newsfeed-common-content-post-status {
     background-color: #fff;
@@ -812,7 +812,7 @@
     width: 100%;
     height: 100%;
     z-index: 100;
-    display: none;
+    display: block;
 }
 .pg-post-img-hover-txt{
     font: 22px 'montserratlight', sans-serif;
