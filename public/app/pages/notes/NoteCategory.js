@@ -11,6 +11,7 @@ import Lib    from '../../middleware/Lib';
 import RichTextEditor from '../../components/elements/RichTextEditor';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 import Socket  from '../../middleware/Socket';
+import Scroll from 'react-scroll';
 
 export default class NoteCategory extends React.Component{
     constructor(props) {
@@ -45,11 +46,20 @@ export default class NoteCategory extends React.Component{
         if (notebooks.length <= 0) {
             return <div />
         }
-        let i = 0;
+        let i, x = 0;
+        let notebkId;
 
         let _noteBooks = notebooks.map(function(notebook,key){
+            ++x;
+            if(x == notebooks.length){
+                notebkId = "lastNoteBK";
+            }else if(x == notebooks.length - 1){
+                notebkId = "oneBeforLastNoteBK";
+            }else{
+                notebkId = x;
+            }
             return (
-                <NoteList key={notebook.notebook_id} notebook={notebook} showConfirm={showConfirm} showNotePopup={showNotePopup} />
+                <NoteList key={notebook.notebook_id} notebook={notebook} showConfirm={showConfirm} showNotePopup={showNotePopup} notebkId={notebkId}/>
             );
         });
 
@@ -215,13 +225,21 @@ export class SharePopup extends React.Component{
         )
     }
 
+    scrollToSharePopup(id){
+        if(id == "lastNoteBK" || id == "oneBeforLastNoteBK"){
+            Scroll.directScroller.scrollTo("popover-contained", {
+                duration: 800,
+                smooth: true
+            });
+        }
+    }
+
     render(){
 
         let _notebook = this.props.notebook;
-            console.log(this.state.loggedUser);
         let i = (
             <Popover id="popover-contained"  positionTop="150px" className="share-notebook-new">
-                <SharePopupNewUsr notebook={_notebook} onShareuser={this.props.onUserAdd} onLoadNotes={this.props.onLoadNotes}/>
+                <SharePopupNewUsr notebook={_notebook} onShareuser={this.props.onUserAdd} onLoadNotes={this.props.onLoadNotes} />
             </Popover>
         );
 
@@ -298,7 +316,7 @@ export class SharePopup extends React.Component{
                             <div className="footer-action-wrapper">
                                 {
                                     (_notebook.owned_by == 'me') ?
-                                        <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i}>
+                                        <OverlayTrigger container={this} trigger="click" placement="bottom" overlay={i} onEntered={(e) => this.scrollToSharePopup(this.props.notebkId)}>
                                             <p className={(this.state.sharedUsers.length > 2) ? "add-people" : "add-people c"}>+ Add member</p>
                                         </OverlayTrigger> : null
                                 }
@@ -616,6 +634,15 @@ export class NoteList extends React.Component {
         });
     }
 
+    scrollToSharePopup(id){
+        if(id == "lastNoteBK" || id == "oneBeforLastNoteBK"){
+            Scroll.directScroller.scrollTo("popover-contained", {
+                duration: 800,
+                smooth: true
+            });
+        }
+    }
+
     render (){
 
         let notebook = this.props.notebook;
@@ -637,7 +664,7 @@ export class NoteList extends React.Component {
 
         let i = (
             <Popover id="popover-contained" className={(notebook.owned_by == 'me') ? "popup-holder share-notebook" : "popup-holder share-notebook other"} style={{width: "438px", marginLeft: "24px"}}>
-                <SharePopup notebook={notebook} onUserAdd={this.userAdded} onLoadNotes={this.props.onLoadNotes}/>
+                <SharePopup notebook={notebook} onUserAdd={this.userAdded} onLoadNotes={this.props.onLoadNotes} notebkId={this.props.notebkId}/>
             </Popover>
         );
 
@@ -686,7 +713,7 @@ export class NoteList extends React.Component {
                                     <h3 className="name-wrapper">{notebook.notebook_name}</h3>
                                     {
                                         (notebook.notebook_name != "My Notes")?
-                                        <OverlayTrigger rootClose trigger="click" placement="right" overlay={i}>
+                                        <OverlayTrigger rootClose trigger="click" placement="right" overlay={i} onEntered={(e) => this.scrollToSharePopup(this.props.notebkId)}>
                                             <div className="share-notebook">
                                             {
                                                 (notebook.is_shared) ?
