@@ -499,12 +499,28 @@ a.rc-time-picker-panel-clear-btn {
 		color: #bebfbf;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label div.event-description.accepted p {
-		color: #00a6ef;
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description.accepted,
+.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description.accepted p {
+    color: #00a6ef;
 }
 
-.calender-container .calender-body .col-sm-9 .calender-view .events-list-area .events-list-area-content .events-list-area-content-list li div.event-description.accepted{
-    color: #000;
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li div.event-description.accepted,
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li div.event-description.accepted p {
+    color: #038247;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li label:before {
+    border: 1px solid #038247;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li .time-wrapper {
+    color: #038247;
+    border: 1px solid #038247;
+}
+
+.calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li.active label:before {
+    background-color: #038247;
+    border: 1px solid #038247;
 }
 
 .calender-week-view .view-tile-area .week-tiles .day-tile .day-tile-body .content-wrapper .body-wrapper .list-items li .item {
@@ -517,11 +533,11 @@ a.rc-time-picker-panel-clear-btn {
 .group-container .group-content .sidebar .grp-day-panel .event-task-holder .list .list-wrapper .list-item{
      overflow: hidden;
 }
- 
+
  .group-container .group-content .sidebar .grp-day-panel .event-task-holder .list .list-wrapper .list-item .time{
    float: right;
 }
- 
+
 .group-container .group-content .sidebar .grp-day-panel .event-task-holder .list {
      width: 89%;
 }
@@ -1682,7 +1698,7 @@ body .modal-backdrop{
      border-radius: 3px;
      background-color: rgba(0, 166, 239, 0.3);
  }
- 
+
  .group-container .group-content .sidebar .grp-members .add-member .search-field-holder .user-holder .user:hover {
      color: #ffffff;
      background-color: #00a6ef;
@@ -1819,12 +1835,12 @@ header .chat-popover-holder .inner-wrapper .see-all{
      float: none;
      display: inline-block;
  }
- 
+
  .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on,
  .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .user-title-wrapper span.posted-on {
      float: left;
  }
- 
+
  .feed-container .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share,
  .group-container .group-content .post-panel .wall-post .post-header .user-title-wrapper .user-name-container .own-post-share {
      margin-left: 5px;
