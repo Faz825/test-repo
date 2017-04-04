@@ -60,7 +60,8 @@ export default class SharedUsers extends Component {
 
         if(newValue.length == 1){
             $.ajax({
-                url: '/connection/search/'+newValue,
+                // url: '/connection/search/'+newValue,
+                url : '/calendar/suggest-users/'+this.props.calendarOrigin+'/2/'+newValue,
                 method: "GET",
                 dataType: "JSON",
                 headers : { "prg-auth-header" : this.state.user.token },
@@ -81,9 +82,11 @@ export default class SharedUsers extends Component {
             });
         } else if(newValue.length > 1 && this.users.length < 10){
             $.ajax({
-                url: '/connection/search/'+newValue,
+                // url: '/connection/search/'+newValue,
+                url : '/calendar/suggest-users/'+this.props.calendarOrigin+'/2/'+this.props.groupId+'/'+newValue,
                 method: "GET",
                 dataType: "JSON",
+                headers : { "prg-auth-header" : this.state.user.token },
                 success: function (data, text) {
                     if(data.status.code == 200){
                         this.users = data.suggested_users;

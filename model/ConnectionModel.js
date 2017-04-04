@@ -852,6 +852,30 @@ ConnectionSchema.statics.getMyConnectionData = function (criteria, callBack) {
     });
 };
 
+ConnectionSchema.statics.getGroupConnectionsData = function (criteria, callBack) {
+    var _cache_key = ConnectionConfig.ES_INDEX_NAME + criteria.group_id.toString(),
+        _async = require('async');
+
+    var query = {
+            q: criteria.q,
+            index: _cache_key
+        },
+        formatted_users = [];
+
+    ES.search(query, function (esResultSet) {
+
+        if (esResultSet != null) {
+
+            formatted_users = esResultSet.result;
+            callBack({result_count: formatted_users.length, results: formatted_users})
+            
+        } else {
+            callBack({result_count: 0, results: []})
+        }
+
+    });
+};
+
 
 /**
  * Get Request Count

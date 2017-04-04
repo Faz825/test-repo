@@ -2452,7 +2452,123 @@ var CalendarController = {
                 res.status(200).send(outPut);
             }
         });
+    },
+
+    /**
+     * Get my connections
+     * @param req
+     * @param res
+     * @param URL Param string calendarType [ 1 PERSONAL_CALENDAR  | 2 - GROUP_CALENDAR ]
+     * @param URL Param string listType [ 1 - Editor suggestions | 2 - input field suggestions ]
+     * @return outPut.status
+     */
+    suggestUsers: function (req, res) {
+
+        var User = require('mongoose').model('User');
+        var Connection = require('mongoose').model('Connection');
+        var CurrentSession = Util.getCurrentSession(req);
+
+        var userId = CurrentSession.id;
+        var search = req.params['q'];
+        var calendarType = req.params['calendar_type'] ? req.params['calendar_type'] : 1;
+        var listType = req.params['list_type'] ? req.params['list_type'] : 1;
+        var groupId = req.params['group_id'] ? req.params['group_id'] : null;
+
+        var suggested_users = [];
+
+        if(calendarType == 1) { // if A PERSONAL_CALENDAR
+            var criteria = {
+                user_id: userId,
+                q: 'first_name:' + search + '* OR last_name:' + search + '*'
+            };
+
+            Connection.getMyConnectionData(criteria, function (resultSet) {
+                if (resultSet.results.length == 0) {
+                    var outPut = {
+                        status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                        suggested_users: suggested_users
+                    };
+                    res.status(200).send(outPut);
+                }
+
+                if(listType == 2 ) {
+                    var outPut = {
+                        status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                        suggested_users: resultSet.results
+                    };
+                    res.status(200).send(outPut);
+                }
+                for (var i = 0; i < resultSet.results.length; i++) {
+                    var user = resultSet.results[i];
+                    var userObj = {
+                        name: user.first_name + ' ' + user.last_name,
+                        title: (user.cur_designation ? user.cur_designation : 'Unknown'),
+                        avatar: user.images.profile_image.http_url,
+                        user_id: user.user_id
+                    }
+                    suggested_users.push(userObj);
+
+                    if (i + 1 == resultSet.results.length) {
+                        var outPut = {
+                            status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                            suggested_users: suggested_users
+                        };
+                        res.status(200).send(outPut);
+                    }
+                }
+                return 0;
+            });
+        } else { // if A GROUP_CALENDAR
+            var criteria = {
+                group_id: groupId,
+                q: 'first_name:' + search + '* OR last_name:' + search + '*'
+            };
+
+            Connection.getGroupConnectionsData(criteria, function (resultSet) {
+
+                if (resultSet.results.length == 0) {
+                    var outPut = {
+                        status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                        suggested_users: suggested_users
+                    };
+                    res.status(200).send(outPut);
+                    // return 0;
+                }
+
+                if(listType == 2 ) {
+                    var outPut = {
+                        status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                        suggested_users: resultSet.results
+                    };
+                    res.status(200).send(outPut);
+                    // return 0;
+                }
+
+                for (var i = 0; i < resultSet.results.length; i++) {
+                    var user = resultSet.results[i];
+                    var userObj = {
+                        name: user.first_name + ' ' + user.last_name,
+                        title: (user.cur_designation ? user.cur_designation : 'Unknown'),
+                        avatar: user.images.profile_image.http_url,
+                        user_id: user.user_id
+                    }
+                    suggested_users.push(userObj);
+
+                    if (i + 1 == resultSet.results.length) {
+                        var outPut = {
+                            status: ApiHelper.getMessage(200, Alert.SUCCESS, Alert.SUCCESS),
+                            suggested_users: suggested_users
+                        };
+                        res.status(200).send(outPut);
+                    }
+                }
+                return 0;
+            });
+
+        }
     }
+
+
 };
 
 module.exports = CalendarController;
