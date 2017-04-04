@@ -338,6 +338,8 @@ export default class WeekDayEventPopUp extends React.Component {
                                             setTime={this.setTime.bind(this)}
                                             setSharedUsers={this.setSharedUsers.bind(this)}
                                             removeUsersByName={this.removeUsersByName.bind(this)}
+                                            calendarOrigin={this.props.calendarOrigin}
+                                            groupId={this.props.groupId}
                                             />
                                     : null }
                                     { /*
@@ -381,6 +383,8 @@ export default class WeekDayEventPopUp extends React.Component {
                                                     <SharedUsers
                                                         setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
                                                         removeUser={this.removeUser}
+                                                        calendarOrigin={this.props.calendarOrigin}
+                                                        groupId={this.props.groupId}
                                                     />
                                                 :
                                                     null

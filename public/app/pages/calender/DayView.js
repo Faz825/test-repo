@@ -634,6 +634,8 @@ export default class DayView extends Component {
                                             setTime={this.setTime.bind(this)}
                                             setSharedUsers={this.setSharedUsers.bind(this)}
                                             removeUsersByName={this.removeUsersByName.bind(this)}
+                                            calendarOrigin={this.props.calendarOrigin}
+                                            groupId={this.props.groupId}
                                         />
                                     </div>
 
@@ -647,6 +649,8 @@ export default class DayView extends Component {
                                                         ref="SharedUserField"
                                                         setSharedUsersFromDropDown={this.setSharedUsersFromDropDown.bind(this)}
                                                         removeUser={this.removeUser}
+                                                        calendarOrigin={this.props.calendarOrigin}
+                                                        groupId={this.props.groupId}
                                                     />
                                                 :
                                                     null

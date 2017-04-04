@@ -55,7 +55,7 @@ export default class EditorField extends Component {
             user : user,
             suggestions : fromJS([]),
             suggestions2 : timeSuggestions,
-            editorState : EditorState.createEmpty(),
+            editorState : EditorState.createEmpty()
         };
 
         this.focus = this.focus.bind(this);
@@ -66,7 +66,8 @@ export default class EditorField extends Component {
             var str = value.replace("#", "");
             if(str.length > 0) {
                 $.ajax({
-                    url : '/connection/get/'+str,
+                    // url : '/connection/get/'+str,
+                    url : '/calendar/suggest-users/'+this.props.calendarOrigin+'/1/'+this.props.groupId+'/'+str,
                     method : "GET",
                     dataType : "JSON",
                     headers : { "prg-auth-header" : this.state.user.token },

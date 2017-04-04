@@ -224,6 +224,7 @@ router.get('/calendar/task/priority-list', CalendarController.getPriorityList);
 router.post('/calendar/event/completion', CalendarController.updateEventCompletion);
 router.post('/calendar/event/get', CalendarController.getEvent);
 router.post('/calendar/delete', CalendarController.deleteCalendarEvent);
+router.get('/calendar/suggest-users/:calendar_type/:list_type/:group_id/:q', CalendarController.suggestUsers);
 
 // Call Center
 router.get('/contacts/all', CallCenterController.contact.getAll);
