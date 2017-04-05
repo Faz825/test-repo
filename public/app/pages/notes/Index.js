@@ -281,12 +281,21 @@ export default class Index extends React.Component {
             <div>
                 {this.state.showConfirm &&
                 <ModalContainer zIndex={9999}>
-                    <ModalDialog width="30%" style={{marginTop : "-100px"}}>
-                        <div className="col-xs-12">
-                            <p className="confirmation_p">Are you sure to delete this note?</p>
-                        </div>
-                        <p className="add-note-cat btn" onClick={this.deleteNote.bind(this)}>Yes</p>
-                        <p className="add-note-cat confirm-no btn" onClick={this.closeConfirmPopup.bind(this)}>No</p>
+                    <ModalDialog width="402px" style={{marginTop : "-100px" , padding : "0"}}>
+                        <div className="popup-holder">
+                            <div className="notification-alert-holder delete-alert">
+                                <div className="model-header">
+                                    <h3 className="modal-title">delete message</h3>
+                                </div>
+                                <div className="model-body">
+                                    <p className="alert-content">are you sure you want to delete this note?</p>
+                                </div>
+                                <div className="model-footer">
+                                    <button className="btn cancel-btn" onClick={this.closeConfirmPopup.bind(this)}>cancel</button>
+                                    <button className="btn delete-btn" onClick={this.deleteNote.bind(this)}>delete</button>
+                                </div>
+                            </div>
+                        </div> 
                     </ModalDialog>
                 </ModalContainer>
                 }
