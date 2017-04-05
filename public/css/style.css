@@ -2448,7 +2448,7 @@ textarea{
 	margin: auto;
 	background: url(../images/add.png) no-repeat 0 0;
 }
-.pg-notes-item-main-row .note-holder .note-delete-btn{
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item .note-delete-btn{
 	content: "";
 	display: none;
 	width: 25px;
@@ -2564,7 +2564,7 @@ textarea{
 .pg-notes-item-main-row .note-holder .note:hover {
 	box-shadow: 0px 2px 7px 0px #000;
 }
-.pg-notes-item-main-row .note:hover .note-delete-btn{
+.notebook-container .notebook-body .notebook .notebook-wrapper .col-sm-10 .notebook-content-wrapper .notebook-items-wrapper .notebook-col .notebook-item:hover .note-delete-btn{
 	display: block;
 }
 .pg-see-all-click,
