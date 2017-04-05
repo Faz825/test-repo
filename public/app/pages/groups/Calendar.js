@@ -127,12 +127,9 @@ export default class Index extends React.Component {
 
         return (
             <section className="group-content">
-                <div className="group-calendar-container">
+                <div className={"group-calendar-container " + this.state.current}>
                     <section className="calender-header row">
-                        <div className="col-sm-3">
-                            <h2>Calendar</h2>
-                        </div>
-                        <div className="col-sm-6 calender-tab-holder">
+                        <div className="col-sm-6 col-sm-offset-3 calender-tab-holder">
                             <div className="inner-wrapper clearfix">
                                 <div
                                     className={ this.state.current == 'day' ? 'calender-type active' : 'calender-type'}

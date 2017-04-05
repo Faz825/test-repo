@@ -419,7 +419,7 @@ class SinglePost extends React.Component{
                 {this.state.isShowingModal &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
 
-                    <ModalDialog onClose={this.handleClose.bind(this)} width="50%">
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="750px">
                         <div className="share-popup-holder">
                             <AddPostElementPopupText onContentAdd = {event=>this.onContentAdd(event)}
                                                      iniTextisVisible = {this.state.iniTextisVisible}

@@ -45,7 +45,7 @@ export default class YearView extends Component {
             <div className="calendar-main-row">
                 <div className="calender-year-view">
                     <div className="view-header">
-                        <div className="col-sm-6 remove-padding">
+                        <div className="col-sm-3 remove-padding">
                             <div className="date-wrapper">
                                 <div className="date-nav" onClick={() => this.previousYear()}>
                                     <i className="fa fa-angle-left" aria-hidden="true"></i>
@@ -58,7 +58,7 @@ export default class YearView extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-sm-6 calender-date remove-padding">
+                        <div className="col-sm-9 calender-date remove-padding">
                             <p>{this.state.currentYear.format("YYYY")}</p>
                         </div>
                     </div>

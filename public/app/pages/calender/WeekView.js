@@ -153,7 +153,7 @@ export default class WeekView extends React.Component {
                 <div className="calendar-main-row">
                     <div className="calender-week-view">
                         <div className="view-header">
-                            <div className="col-sm-6 remove-padding">
+                            <div className="col-sm-3 remove-padding">
                                 <div className="date-wrapper">
                                     <div className="date-nav">
                                         <i className="fa fa-angle-left" aria-hidden="true" onClick={() => this.prevWeek()}></i>
@@ -166,7 +166,7 @@ export default class WeekView extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-sm-6 calender-date  remove-padding">
+                            <div className="col-sm-9 calender-date  remove-padding">
                                 <p>{moment(this.state.weekStartDate).format('MMM, YYYY')}</p>
                             </div>
                         </div>

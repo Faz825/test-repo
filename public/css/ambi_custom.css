@@ -475,6 +475,15 @@ a.rc-time-picker-panel-clear-btn {
   box-shadow: none;
 }
 
+.group-container .group-calendar-container.year .calender-body,
+.group-container .group-calendar-container.week .calender-body{
+    margin-top: -39px;
+}
+
+.group-container .group-calendar-container.year .calender-body .calender-date,
+.group-container .group-calendar-container.week .calender-body .calender-date{
+    display: none;
+}
 /* event list */
 .calender-container .calender-body .col-sm-9 .calender-view .to-do-list-area .to-do-list-area-content .to-do-list-area-content-list li {
 	padding: 20px 10px 20px 30px;
