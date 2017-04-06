@@ -327,11 +327,20 @@ export class ConnectionStatus extends React.Component{
             <div>
                 {this.state.showUnfriendPopup &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} width="35%" style={{marginTop: "-100px"}}>
-                        <div className="col-xs-12 shared-user-r-popup">
-                            <p>Do you want to unfriend this friend?</p>
-                            <button className="btn btn-popup" onClick={this.doUnfriend.bind(this)}>Yes</button>
-                            <button className="btn btn-popup reject" onClick={this.handleClose.bind(this)}>No</button>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="402px" style={{marginTop : "-100px", padding : "0"}}>
+                        <div className="popup-holder">
+                            <div className="notification-alert-holder delete-alert">
+                                <div className="model-header">
+                                    <h3 className="modal-title">unfriend message</h3>
+                                </div>
+                                <div className="model-body">
+                                    <p className="alert-content">are you sure you want to unfriend this friend?</p>
+                                </div>
+                                <div className="model-footer">
+                                    <button className="btn cancel-btn" onClick={this.handleClose.bind(this)}>cancel</button>
+                                    <button className="btn delete-btn" onClick={this.doUnfriend.bind(this)}>yes</button>
+                                </div>
+                            </div>
                         </div>
                     </ModalDialog>
                 </ModalContainer>
