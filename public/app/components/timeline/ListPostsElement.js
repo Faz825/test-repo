@@ -71,7 +71,10 @@ class SinglePost extends React.Component{
             currentImage: 0,
             postIndex:this.props.postIndex,
             groupId:this.props.groupId ? this.props.groupId : null,
-            postType:this.props.postType
+            postType:this.props.postType,
+            deletePost: '',
+            deletePostIndex: '',
+            showRemovePostPopup: false
         };
         this.loggedUser= Session.getSession('prg_lg');
 
@@ -196,7 +199,7 @@ class SinglePost extends React.Component{
         this.loadComment();
     }
     handleClose() {
-        this.setState({isShowingModal: false, isShowingVideoModal:false, isShowingImgModal:false});
+        this.setState({isShowingModal: false, isShowingVideoModal:false, isShowingImgModal:false, showRemovePostPopup: false, deletePost: '', deletePostIndex: ''});
     }
     onContentAdd(event){
         let _text  = Lib.sanitize(event.target.innerHTML);
@@ -302,25 +305,51 @@ class SinglePost extends React.Component{
 
     }
 
-    onPostDelete(post, index){
+    loadDeletePostPopup(post, index) {
+        this.setState({deletePost: post, deletePostIndex: index, showRemovePostPopup: true});
+    }
+
+    onPostDelete(){
 
         $.ajax({
             url: '/post/delete',
             method: "POST",
             dataType: "JSON",
-            data:{__post_id:post.post_id},
+            data:{__post_id:this.state.deletePost.post_id},
             headers: { 'prg-auth-header':this.loggedUser.token },
         }).done(function (data, text) {
             if(data.status.code == 200){
                 let _unsubscribeData = {
-                    post_id:post.post_id,
+                    post_id:this.state.deletePost.post_id,
                     unsubscribedUsers:data.unsubscribeUsers
                 };
                 Socket.unsubscribeUsers(_unsubscribeData);
-                this.props.onPostDeleteSuccess(index);
+                this.props.onPostDeleteSuccess(this.state.deletePostIndex);
+                this.setState({deletePost: '', deletePostIndex: '', showRemovePostPopup: false});
             }
         }.bind(this));
+
     }
+
+    getPopupRemovePost(){
+        return(
+            <div>
+                {this.state.showRemovePostPopup &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="35%" style={{marginTop: "-100px"}}>
+                        <div className="col-xs-12 shared-user-r-popup">
+                            <p>Do you want to remove this post?</p>
+                            <button className="btn btn-popup" onClick={this.onPostDelete.bind(this)}>Yes</button>
+                            <button className="btn btn-popup reject" onClick={this.handleClose.bind(this)}>No</button>
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
+    }
+
+
     getPopup(){
 
         var _this = this;
@@ -619,7 +648,7 @@ class SinglePost extends React.Component{
         });
         return (
             <div className="pg-timeline-white-box wall-post" id={_post.post_id}>
-                {this.loggedUser.id == _profile.user_id?<i className="fa fa-times pg-status-delete-icon" onClick={(event)=>{this.onPostDelete(_post,_postIndex)}}/>:null}
+                {this.loggedUser.id == _profile.user_id?<i className="fa fa-times pg-status-delete-icon" onClick={(event)=>{this.loadDeletePostPopup(_post,_postIndex)}}/>:null}
                 <div className="pg-newsfeed-section-common-content-post-info">
                     <div className="post-header">
                         <div className="user-title-wrapper">
@@ -701,6 +730,7 @@ class SinglePost extends React.Component{
                     {this.getPopup()}
                     {this.getVideoPopup()}
                     {this.getImgPopup()}
+                    {this.getPopupRemovePost()}
                 </div>
             </div>
         );
