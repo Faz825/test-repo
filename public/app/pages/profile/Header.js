@@ -7,6 +7,7 @@ import React,{Component} from 'react';
 import Session  from '../../middleware/Session';
 import CoverImageUploader from '../../components/elements/CoverImageUploader';
 import ProfileImageUploader from '../../components/elements/ProfileImageUploader';
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
 import PubSub from 'pubsub-js';
 
 export default class Header extends Component {
@@ -302,37 +303,77 @@ export class ConnectionStatus extends React.Component{
     constructor(props){
         super(props);
 
+        this.state = {
+            showUnfriendPopup : false
+        }
         //0-already connected (nothing to display), 1-request sent (Display "Request Pending" label), 2-request received (Display "Accept" button), 3-can send request (Display "Add as a Connection" button)
     }
 
-    render(){
-        {
-            return(
-                (this.props.connectionStatus == 0)?
-                    (this.props.usrId != null)?
-                        <div className="action-event unfriend" onClick={ () => this.props.onUnfriendUser(this.props.usrId) }>
-                            <span className="icon"></span><span className="text">unfriend</span>
+    loadUnfriendPopup() {
+        this.setState({showUnfriendPopup: true});
+    }
+
+    doUnfriend(){
+        this.props.onUnfriendUser(this.props.usrId);
+        this.handleClose();
+    }
+
+    handleClose(){
+        this.setState({showUnfriendPopup: false});
+    }
+
+    getPopupUnfriend(){
+        return(
+            <div>
+                {this.state.showUnfriendPopup &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="35%" style={{marginTop: "-100px"}}>
+                        <div className="col-xs-12 shared-user-r-popup">
+                            <p>Do you want to unfriend this friend?</p>
+                            <button className="btn btn-popup" onClick={this.doUnfriend.bind(this)}>Yes</button>
+                            <button className="btn btn-popup reject" onClick={this.handleClose.bind(this)}>No</button>
                         </div>
-                    : 
-                    null :
-                    (this.props.connectionStatus == 1) ? 
-                        <div className="action-event">
-                            <span className="text">Request Pending</span>
-                        </div>
-                    :
-                    (this.props.connectionStatus == 2) ?
-                        <div className="action-event" onClick={ () => this.props.onAcceptFriendRequest(this.props.usrId) }>
-                            <span className="text">Accept</span>
-                        </div>
-                    :
-                    (this.props.connectionStatus == 3) ?
-                        <div className="action-event" onClick={ () => this.props.onAddFriend(this.props.usrId) }>
-                            <span className="text">Add as a Connection</span>
-                        </div>
-                    : 
-                    null
-            )
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
+    }
+
+    renderMainStatus() {
+        switch (this.props.connectionStatus) {
+            case 0: return (
+                (this.props.usrId != null)?
+                    <div className="action-event unfriend" onClick={ this.loadUnfriendPopup.bind(this) }>
+                        <span className="icon"></span><span className="text">unfriend</span>
+                    </div> : null
+            );
+            case 1:return (
+                <div className="action-event">
+                    <span className="text">Request Pending</span>
+                </div>
+            );
+            case 2:return (
+                <div className="action-event" onClick={ () => this.props.onAcceptFriendRequest(this.props.usrId) }>
+                    <span className="text">Accept</span>
+                </div>
+            );
+            case 3:return (
+                <div className="action-event" onClick={ () => this.props.onAddFriend(this.props.usrId) }>
+                    <span className="text">Add as a Connection</span>
+                </div>
+            );
+            default: return null;
         }
+    }
+
+    render(){
+        return(
+            <div>
+                {this.renderMainStatus()}
+                {this.getPopupUnfriend()}
+            </div>
+        )
     }
 }
 
