@@ -23350,7 +23350,7 @@ header .friends-popover-holder .popover-footer .see-all {
   line-height: 1;
 }
 .popup-holder .notification-alert-holder .model-footer .btn:first-child {
-  margin-right: 2px;
+  margin-right: 8px;
 }
 .popup-holder .notification-alert-holder .model-footer .btn.cancel-btn {
   color: #bfbfbf;
