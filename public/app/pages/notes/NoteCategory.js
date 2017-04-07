@@ -212,12 +212,21 @@ export class SharePopup extends React.Component{
             <div>
                 {this.state.isShowingModal &&
                 <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
-                    <ModalDialog onClose={this.handleClose.bind(this)} width="35%" style={{marginTop: "-100px"}}>
-                        <div className="col-xs-12 shared-user-r-popup">
-                            <p>Do you want to remove the shared user?</p>
-                            <button className="btn btn-popup" onClick={this.onRemoveSharedUser.bind(this)}>Yes</button>
-                            <button className="btn btn-popup reject">No</button>
-                        </div>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="402px" style={{marginTop : "-100px", padding : "0"}}>
+                        <div className="popup-holder">
+                            <div className="notification-alert-holder delete-alert">
+                                <div className="model-header">
+                                    <h3 className="modal-title">delete message</h3>
+                                </div>
+                                <div className="model-body">
+                                    <p className="alert-content">are you sure you want to remove the shared user?</p>
+                                </div>
+                                <div className="model-footer">
+                                    <button className="btn cancel-btn">No</button>
+                                    <button className="btn delete-btn" onClick={this.onRemoveSharedUser.bind(this)}>Yes</button>
+                                </div>
+                            </div>
+                        </div>  
                     </ModalDialog>
                 </ModalContainer>
                 }

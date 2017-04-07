@@ -1899,18 +1899,18 @@ textarea{
 	left: 0;
 	margin: 0;
 	padding: 0;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 #react-autowhatever-1 li{
 	list-style-type: none;
-	padding: 8px 5px;
-	border-bottom: 1px solid #dee6eb;
+	padding: 4px 10px;
 	cursor: pointer;
 	background: #fff;
 }
 #react-autowhatever-1 li:hover,
 #react-autowhatever-1 .react-autosuggest__suggestion--focused{
-	color: #fff;
-	background: #61b3de;
+	color: #333333;
+	background-color: #CCEDFC;
 }
 #react-autowhatever-1 .react-autosuggest__suggestion-container{
 	z-index: 9999;
