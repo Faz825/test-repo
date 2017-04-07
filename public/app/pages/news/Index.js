@@ -176,7 +176,8 @@ export default class Index extends React.Component{
                 //this.setState({display_news_articles:data.news});
                 _this.getRandomNewsArticles();
                 if(data.news.length > 10){
-                    this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
+                    /* Commenting below line not to reload content randomly (as per client's request) */
+                    //this.refreshInterval = setInterval(function(){_this.getRandomNewsArticles()}, 60000);
                 }else{
                     this.setState({display_news_articles:data.news});
                 }
