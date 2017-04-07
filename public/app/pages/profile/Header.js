@@ -337,8 +337,8 @@ export class ConnectionStatus extends React.Component{
                                     <p className="alert-content">are you sure you want to unfriend this friend?</p>
                                 </div>
                                 <div className="model-footer">
-                                    <button className="btn cancel-btn" onClick={this.handleClose.bind(this)}>cancel</button>
-                                    <button className="btn delete-btn" onClick={this.doUnfriend.bind(this)}>yes</button>
+                                    <button className="btn cancel-btn" onClick={this.handleClose.bind(this)}>No</button>
+                                    <button className="btn delete-btn" onClick={this.doUnfriend.bind(this)}>Yes</button>
                                 </div>
                             </div>
                         </div>

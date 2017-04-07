@@ -187,7 +187,7 @@
     padding: 7px 24px;
     display: inline-block;
     text-decoration: none;
-    text-transform: uppercase;
+    text-transform: lowercase;
     font-weight: 700;
     border: none;
     outline: none;
@@ -518,7 +518,7 @@
     padding: 11px 9px;
     display: block;
     line-height: 1;
-    text-transform: uppercase;
+    text-transform: lowercase;
     text-decoration: none;
 }
 .pg-newsfeed-new-comment-icon-wrapper a:hover{

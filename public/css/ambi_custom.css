@@ -2066,6 +2066,10 @@ header .chat-popover-holder .inner-wrapper .see-all{
     width: 517px;
 }
 
+.cover-container .cover-image .actions-wrapper > div{
+    float: left;
+}
+
 .tag-wrapper .time-wrapper .rdt {
     float: right;
     width: 100px;
