@@ -5,12 +5,16 @@ import React from 'react';
 import Session from '../../middleware/Session';
 import Socket  from '../../middleware/Socket';
 import Lib    from '../../middleware/Lib'
+import {ModalContainer, ModalDialog} from 'react-modal-dialog';
+
 export default class CommentElement extends React.Component{
     constructor(props){
         super(props);
         this.state={
             postId:this.props.postId,
-            loggedUser : Session.getSession('prg_lg')
+            loggedUser : Session.getSession('prg_lg'),
+            showRemoveCommentPopup: false,
+            unformattedComment: ''
         };
     }
     onCommentAdd(comment){
@@ -60,19 +64,19 @@ export default class CommentElement extends React.Component{
         }
     }
 
-    onCommentDelete(unformattedComment){
-        console.log("onCommentDelete");
-        console.log(unformattedComment);
+    onCommentDelete(){
+        //console.log("onCommentDelete");
 
         $.ajax({
             url: '/comment/delete',
             method: "POST",
             dataType: "JSON",
             headers: { 'prg-auth-header':this.state.loggedUser.token },
-            data:{data:JSON.stringify(unformattedComment)},
+            data:{data:JSON.stringify(this.state.unformattedComment)},
             success: function (data, text) {
+                this.handleClose();
                 if (data.status.code == 200) {
-                    console.log(data);
+                    //console.log(data);
                     if(data.unsubscribe){
                         let _unsubscribeData = {
                             post_id:this.state.postId
@@ -80,6 +84,7 @@ export default class CommentElement extends React.Component{
                         Socket.unsubscribe(_unsubscribeData);
                     }
                     this.props.onCommentDeleteSuccess(this.state.postId);
+
                 }
             }.bind(this),
             error: function (request, status, error) {
@@ -87,6 +92,41 @@ export default class CommentElement extends React.Component{
                 console.log(error);
             }
         });
+    }
+
+    enableCommentDelete(_unformattedComment) {
+        this.setState({unformattedComment: _unformattedComment, showRemoveCommentPopup: true})
+    }
+
+    handleClose() {
+        this.setState({unformattedComment: '', showRemoveCommentPopup: false});
+    }
+
+    getPopupRemovePost(){
+        return(
+            <div>
+                {this.state.showRemoveCommentPopup &&
+                <ModalContainer onClose={this.handleClose.bind(this)} zIndex={9999}>
+                    <ModalDialog onClose={this.handleClose.bind(this)} width="402px" style={{marginTop : "-100px", padding : "0"}}>
+                        <div className="popup-holder">
+                            <div className="notification-alert-holder delete-alert">
+                                <div className="model-header">
+                                    <h3 className="modal-title">delete message</h3>
+                                </div>
+                                <div className="model-body">
+                                    <p className="alert-content">are you sure you want to delete this comment?</p>
+                                </div>
+                                <div className="model-footer">
+                                    <button className="btn cancel-btn" onClick={this.handleClose.bind(this)}>cancel</button>
+                                    <button className="btn delete-btn" onClick={this.onCommentDelete.bind(this)}>delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </ModalDialog>
+                </ModalContainer>
+                }
+            </div>
+        )
     }
 
     render(){
@@ -103,7 +143,7 @@ export default class CommentElement extends React.Component{
         }
         const comments = this.props.comments.map((comment,key)=>{
             let unformattedComment = this.props.unformattedComments[key];
-            return (<CommentItem comment={comment} key={key} unformattedComment={unformattedComment} loggedUser={this.state.loggedUser} onCommentDelete = {this.onCommentDelete.bind(this)}/>)
+            return (<CommentItem comment={comment} key={key} unformattedComment={unformattedComment} loggedUser={this.state.loggedUser} onCommentDelete = {this.enableCommentDelete.bind(this)}/>)
 
         });
 
@@ -115,6 +155,7 @@ export default class CommentElement extends React.Component{
                 <PostCommentAction
                     onCommentAdd = {this.onCommentAdd.bind(this)}
                     loggedUser = {this.state.loggedUser}/>
+                {this.getPopupRemovePost()}
             </div>
 
         );
