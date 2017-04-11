@@ -1,0 +1,10 @@
+.idea/
+node_modules/
+public/lib/
+public/web/
+npm-debug.log
+yarn.lock
+yarn-error.log
+config/app.config.js
+public/app/config/Config.js
+.gitignore
